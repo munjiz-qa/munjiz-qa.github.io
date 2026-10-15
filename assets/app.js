@@ -42,7 +42,7 @@ const T=EN?{
   prices:'قائمة الأسعار الكاملة',eOk:'وافق على سياسة الخصوصية لإرسال الطلب.',lVia:'وسيلة التواصل المفضلة',
   sec:{about:'تعرّف إلى منجز',services:'الخدمات المساعدة',consult:'الدراسات والاستشارات',packages:'باقات الشركات',estimate:'احسب التكلفة',how:'كيف ننجز معاملتك',request:'اطلب خدمة',faq:'أسئلة شائعة'}
 };
-const WA=CFG.WHATSAPP||'97472232609';const MAIL=CFG.EMAIL||'baseeratactions@gmail.com';
+const WA=CFG.WHATSAPP||'97451600498';const MAIL=CFG.EMAIL||'munijizqa@gmail.com';
 
 // ---- catalogue: government services, setup bundles, consultancy ----
 const entName=(k,ar)=>EN?((D._entities||{})[k]||ar):ar;
