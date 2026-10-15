@@ -83,7 +83,7 @@ function showMode(){const m=$('modeBar');m.hidden=false;
   m.className='modebar'+(CFG.API&&!CFG.DEMO?' ok':'')}
 function hideAll(){$('login').hidden=$('chg').hidden=true;$('tabs').hidden=true;document.querySelectorAll('.view').forEach(v=>v.hidden=true)}
 function showLogin(){hideAll();$('login').hidden=false;
-  $('loginHint').textContent='اكتب اسم المستخدم وكلمة المرور. أول دخول للمدير: 123 و123، ثم يطلب النظام تغييرهما.';
+  $('loginHint').textContent='اكتب اسم المستخدم وكلمة المرور الخاصين بك.';
   const u=new URLSearchParams(location.search).get('u');if(u)$('un').value=u;($('un').value?$('pw'):$('un')).focus()}
 let lastPw='';
 function showChg(){hideAll();$('chg').hidden=false;$('cUn').value=ME&&ME.username!=='123'?ME.username:'';$('cUn').focus()}

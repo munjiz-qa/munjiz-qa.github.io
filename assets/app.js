@@ -218,6 +218,7 @@ function openSvc(code){const s=byCode[code];if(!s||!dlg)return;const d=s.d||{};
    ${d.note?`<p class="dnote">${esc(d.note)}</p>`:''}
    ${s.kind!=='consult'?`<p class="mute sm">${T.govFee}</p>`:''}`;
   const a=$('dlgAdd');a.textContent=cart.has(code)?T.inCalc:T.addCalc;a.onclick=()=>{if(!cart.has(code))toggleCart(code);a.textContent=T.inCalc};
+  const wa=$('dlgWa');if(wa)wa.href='https://wa.me/'+WA+'?text='+encodeURIComponent(L('السلام عليكم، أريد خدمة: ','Hello, I would like this service: ')+s.n+' ('+s.c+')'+((getClient()||{}).name?L('\nالاسم: ','\nName: ')+getClient().name:''));
   $('dlgReq').onclick=()=>{if(!cart.has(code))cart.set(code,1);renderCart();render();renderCon();$('fSvc').value=cartText();dlg.close();if(location.hash==='#request')route();else location.hash='request'};
   if(dlg.showModal){if(!dlg.open)dlg.showModal()}else dlg.setAttribute('open','')}
 if(dlg){$('dlgX').onclick=()=>dlg.close();dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()})}
@@ -320,12 +321,15 @@ function fillFromClient(c){if(!c)return;
   const set=(id,v)=>{const el=$(id);if(el&&v!=null)el.value=v};
   set('fName',c.name);set('fPhone',c.phone);set('fMail',c.email||'');set('fCo',c.company||'');
   if(c.company){$('fType').value='org';syncPlan()}
-  const w=$('who');if(w){w.hidden=false;w.textContent='👤 '+(c.company||c.name)}}
+  const w=$('who');if(w){w.hidden=false;w.textContent='👤 '+(c.name||c.company)}}
 const reg=$('reg');
-function openReg(){const c=getClient()||window.__client||{};$('rName').value=c.name||'';$('rPhone').value=c.phone||'';$('rMail').value=c.email||'';$('rCo').value=c.company||'';$('rOk').checked=!!c.name;$('rNew').hidden=!getClient();
+function openReg(){const c=getClient()||window.__client||{};$('rName').value=c.name||'';$('rPhone').value=c.phone||'';$('rMail').value=c.email||'';$('rCo').value=c.company||'';$('rOk').checked=!!c.name;$('rNew').hidden=!getClient();$('rSkip').hidden=!!getClient();
   if(reg.showModal){if(!reg.open)reg.showModal()}else reg.setAttribute('open','')}
 // the sign-up cannot be dismissed until it is completed once
-reg.addEventListener('cancel',e=>{if(!(getClient()||window.__client))e.preventDefault()});
+// visitors may browse without signing up (this tab only); the quote form still asks for their name and mobile
+const SKIP='munjiz_skip',skipped=()=>{try{return sessionStorage.getItem(SKIP)==='1'}catch(e){return false}};
+reg.addEventListener('cancel',e=>{if(!(getClient()||window.__client||skipped()))e.preventDefault()});
+$('rSkip').onclick=()=>{try{sessionStorage.setItem(SKIP,'1')}catch(e){}reg.close()};
 $('who')&&($('who').onclick=openReg);
 // another client at this device (or a different company) starts from an empty sign-up; the quote form is cleared too
 $('rNew').onclick=()=>{try{localStorage.removeItem(RKEY)}catch(e){}window.__client=null;
@@ -340,7 +344,7 @@ $('regF').addEventListener('submit',e=>{e.preventDefault();
   if(!ok)return;
   const c={name:n,phone:ph,email:em,company:co,legal:'1.0',at:new Date().toISOString()};saveClient(c);reg.close();toast(L('أهلاً ','Welcome ')+n);
   if(CFG.API)fetch(CFG.API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'register',...c,accept:true,lang:EN?'en':'ar',page:location.href})}).catch(()=>{})});
-(function(){const c=getClient();if(c)fillFromClient(c);else openReg()})();
+(function(){const c=getClient();if(c)fillFromClient(c);else if(!skipped())openReg()})();
 
 $('copyMsg').onclick=()=>copy($('out').textContent,$('out'));
 $('waFab')&&($('waFab').href='https://wa.me/'+WA);
