@@ -418,3 +418,10 @@ footer .wrap.fc{justify-content:flex-start;opacity:1}
 .acctbar i{font-style:normal;font-weight:700;background:var(--navy);color:var(--navy-ink);border-radius:10px;padding:7px 14px;white-space:nowrap}
 .menu>li>a.acct{border:1.5px solid currentColor;opacity:1}
 .agree>span:not(.err){flex:1;min-width:0}
+/* البسملة: ختم دائري خفيف جداً أعلى يمين الصفحة، لا يعيق القراءة أو النقر */
+body{position:relative}
+body::before{content:"";position:absolute;top:66px;right:10px;width:104px;height:104px;background:url(seal.svg) center/contain no-repeat;opacity:.16;pointer-events:none;z-index:4}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body::before{opacity:.28}}
+:root[data-theme="dark"] body::before{opacity:.28}
+@media (max-width:640px){body::before{width:78px;height:78px;top:62px;right:6px}}
+@media print{body::before{display:none}}
