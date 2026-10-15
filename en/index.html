@@ -13,7 +13,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect x='4' y='4' width='72' height='72' rx='18' fill='%237a1e3a'/%3E%3Cpath d='M22 42l12 12 24-28' fill='none' stroke='%23b8923a' stroke-width='8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="../assets/style.css?v=20261015n">
+<link rel="stylesheet" href="../assets/style.css?v=20261015p">
 </head>
 <body>
 <header class="top"><div class="wrap">
@@ -25,6 +25,7 @@
     <li><a href="#packages">Packages</a></li>
     <li><a href="#how">How we work</a></li>
     <li><a href="#faq">FAQ</a></li>
+    <li><a href="portal.html" class="acct">My account</a></li>
     <li><a href="#request" class="navcta">Request a service</a></li>
     <li><a href="../index.html" lang="ar" class="lang">العربية</a></li>
   </ul></nav>
@@ -60,6 +61,7 @@
     <a class="tile" href="#faq"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13"/><path d="M12 12a4 4 0 1 1 5.5 3.7c-1 .5-1.5 1.2-1.5 2.3v1M16 23v.5"/></svg><b>FAQ</b><span>Prices, fees and payment</span></a>
     <a class="tile wa" href="https://wa.me/97451600498" target="_blank" rel="noopener"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3z"/><path d="M11 10c0 6 5 11 11 11l1.5-2.5-3-1.5-1.5 1.5c-2-1-3.5-2.5-4.5-4.5L16 12.5 14.5 9.5z"/></svg><b>Chat on WhatsApp</b><span><span dir="ltr">+974 51600498</span></span></a>
   </div>
+  <a class="acctbar" href="portal.html#signup"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="11" r="6"/><path d="M5 28c1.5-6 5.5-9 11-9s9.5 3 11 9"/></svg><span><b>Create your company account</b>Request services, follow your requests, and download your files and licences in one place.</span><i>My account</i></a>
 </div></section>
 
 <section class="sec" id="services"><div class="wrap">
@@ -169,7 +171,7 @@
   </div>
 </div></section>
 
-<footer><div class="wrap fc"><b>Contact</b><a href="tel:+97451600498" dir="ltr">☎ +974 51600498</a><a href="https://wa.me/97451600498" target="_blank" rel="noopener">WhatsApp</a><a href="mailto:munijizqa@gmail.com">✉ munijizqa@gmail.com</a></div><div class="wrap"><span>Munjiz Business Services · Doha, Qatar</span><span><a href="../index.html" lang="ar">العربية</a> · <a href="privacy.html">Privacy policy</a></span><span><a href="#prices">Services and prices</a> · <a href="#packages">Packages</a> · <a href="#about">About Munjiz</a></span><span>Prices valid from 2026 and subject to review. Final decisions and processing times rest with the government authority.</span></div></footer>
+<footer><div class="wrap fc"><b>Contact</b><a href="tel:+97451600498" dir="ltr">☎ +974 51600498</a><a href="https://wa.me/97451600498" target="_blank" rel="noopener">WhatsApp</a><a href="mailto:munijizqa@gmail.com">✉ munijizqa@gmail.com</a></div><div class="wrap"><span>Munjiz Business Services · Doha, Qatar</span><span><a href="../index.html" lang="ar">العربية</a> · <a href="privacy.html">Privacy policy</a> · <a href="legal.html">Legal documents</a> · <a href="portal.html">My account</a> · <a href="portal.html#admin">Management and staff sign-in</a></span><span><a href="#prices">Services and prices</a> · <a href="#packages">Packages</a> · <a href="#about">About Munjiz</a></span><span>Prices valid from 2026 and subject to review. Final decisions and processing times rest with the government authority.</span></div></footer>
 
 <dialog id="dlg" aria-labelledby="dlgT"><div class="dlg">
   <button class="x dx" id="dlgX" type="button" aria-label="Close">×</button>
@@ -183,13 +185,13 @@
   <label>Mobile<input id="rPhone" inputmode="tel" required autocomplete="tel" placeholder="5XXXXXXX" dir="ltr"><span class="err" id="erPhone"></span></label>
   <label>Email (optional)<input id="rMail" type="email" inputmode="email" autocomplete="email" placeholder="name@example.com" dir="ltr"><span class="err" id="erMail"></span></label>
   <label>Company (optional)<input id="rCo" autocomplete="organization"></label>
-  <label class="agree"><input type="checkbox" id="rOk"> I agree to the <a href="privacy.html" target="_blank">privacy policy</a> and to my details being used to contact me and prepare quotes.<span class="err" id="erOk"></span></label>
-  <button class="btn pri" type="submit">Start browsing</button>
+  <label class="agree"><input type="checkbox" id="rOk"> <span>I have read and accept the <a href="legal.html" target="_blank">service agreement, limitation of liability, authorization, and data and confidentiality terms</a>, and agree to my details being used to contact me and prepare quotes.</span><span class="err" id="erOk"></span></label>
+  <div class="contact"><button class="btn pri" type="submit">Start browsing</button><button class="btn ghost sm" type="button" id="rNew" hidden>Register a new client</button><a href="portal.html" class="sm">Have an account? Sign in</a></div>
 </form></dialog>
 <div class="toast" id="toast" hidden></div>
-<script>window.MUNJIZ_CONFIG={API:"",WHATSAPP:"97451600498",EMAIL:"munijizqa@gmail.com"};</script>
-<script src="../assets/data.js?v=20261015n"></script>
-<script src="../assets/details.js?v=20261015n"></script>
-<script src="../assets/app.js?v=20261015n"></script>
+<script src="../assets/config.js?v=20261015p"></script>
+<script src="../assets/data.js?v=20261015p"></script>
+<script src="../assets/details.js?v=20261015p"></script>
+<script src="../assets/app.js?v=20261015p"></script>
 </body>
 </html>

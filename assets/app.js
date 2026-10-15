@@ -322,11 +322,15 @@ function fillFromClient(c){if(!c)return;
   if(c.company){$('fType').value='org';syncPlan()}
   const w=$('who');if(w){w.hidden=false;w.textContent='👤 '+(c.company||c.name)}}
 const reg=$('reg');
-function openReg(){const c=getClient()||window.__client||{};$('rName').value=c.name||'';$('rPhone').value=c.phone||'';$('rMail').value=c.email||'';$('rCo').value=c.company||'';$('rOk').checked=!!c.name;
+function openReg(){const c=getClient()||window.__client||{};$('rName').value=c.name||'';$('rPhone').value=c.phone||'';$('rMail').value=c.email||'';$('rCo').value=c.company||'';$('rOk').checked=!!c.name;$('rNew').hidden=!getClient();
   if(reg.showModal){if(!reg.open)reg.showModal()}else reg.setAttribute('open','')}
 // the sign-up cannot be dismissed until it is completed once
 reg.addEventListener('cancel',e=>{if(!(getClient()||window.__client))e.preventDefault()});
 $('who')&&($('who').onclick=openReg);
+// another client at this device (or a different company) starts from an empty sign-up; the quote form is cleared too
+$('rNew').onclick=()=>{try{localStorage.removeItem(RKEY)}catch(e){}window.__client=null;
+  ['rName','rPhone','rMail','rCo','fName','fPhone','fMail','fCo'].forEach(id=>{const el=$(id);if(el)el.value=''});
+  $('rOk').checked=false;$('rNew').hidden=true;const w=$('who');if(w)w.hidden=true;$('rName').focus();toast(L('سجّل بيانات العميل الجديد.','Enter the new client\'s details.'))};
 $('regF').addEventListener('submit',e=>{e.preventDefault();
   const n=$('rName').value.trim(),ph=$('rPhone').value.replace(/\s/g,''),em=$('rMail').value.trim(),co=$('rCo').value.trim();let ok=true;
   $('erName').textContent=n?'':L('اكتب الاسم.','Enter your name.');if(!n)ok=false;
@@ -334,8 +338,8 @@ $('regF').addEventListener('submit',e=>{e.preventDefault();
   const emOk=!em||/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em);$('erMail').textContent=emOk?'':T.eMail;if(!emOk)ok=false;
   $('erOk').textContent=$('rOk').checked?'':T.eOk;if(!$('rOk').checked)ok=false;
   if(!ok)return;
-  const c={name:n,phone:ph,email:em,company:co,at:new Date().toISOString()};saveClient(c);reg.close();toast(L('أهلاً ','Welcome ')+n);
-  if(CFG.API)fetch(CFG.API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'register',...c,page:location.href})}).catch(()=>{})});
+  const c={name:n,phone:ph,email:em,company:co,legal:'1.0',at:new Date().toISOString()};saveClient(c);reg.close();toast(L('أهلاً ','Welcome ')+n);
+  if(CFG.API)fetch(CFG.API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'register',...c,accept:true,lang:EN?'en':'ar',page:location.href})}).catch(()=>{})});
 (function(){const c=getClient();if(c)fillFromClient(c);else openReg()})();
 
 $('copyMsg').onclick=()=>copy($('out').textContent,$('out'));

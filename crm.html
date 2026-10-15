@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>لوحة الإدارة | منجز لخدمات الأعمال</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#7a1e3a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect x='4' y='4' width='72' height='72' rx='18' fill='%237a1e3a'/%3E%3Cpath d='M22 42l12 12 24-28' fill='none' stroke='%23b8923a' stroke-width='8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="assets/style.css?v=20261015p">
+<link rel="stylesheet" href="assets/crm.css?v=20261015p">
+</head>
+<body class="crm">
+<header class="top"><div class="wrap">
+  <a class="brand" href="./"><svg width="30" height="30" viewBox="0 0 80 80" aria-hidden="true"><rect x="5" y="5" width="70" height="70" rx="18" fill="none" stroke="#b8923a" stroke-width="5"/><path d="M22 42l12 12 24-28" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>لوحة الإدارة</a>
+  <nav class="tabs" id="tabs" hidden aria-label="أقسام لوحة الإدارة">
+    <button type="button" data-tab="dash" aria-pressed="true">لوحة المتابعة</button>
+    <button type="button" data-tab="req">الطلبات <span class="pill num" id="nReq"></span></button>
+    <button type="button" data-tab="cli">العملاء</button>
+    <button type="button" data-tab="txn">المعاملات</button>
+    <button type="button" data-tab="msg">المراسلات <span class="pill num" id="nMsg"></span></button>
+    <button type="button" data-tab="log">السجل</button>
+    <button type="button" data-tab="emp" id="tabEmp" hidden>الموظفون</button>
+    <button type="button" data-tab="set">حسابي</button>
+    <button type="button" id="logout" class="ghostbtn">خروج</button>
+  </nav>
+</div></header>
+
+<main class="wrap crm-main">
+  <div id="modeBar" class="modebar" hidden></div>
+
+  <section id="login" class="panel login" hidden>
+    <h2>دخول الإدارة والموظفين</h2>
+    <p class="mute" id="loginHint"></p>
+    <form id="loginF" class="stack">
+      <label>اسم المستخدم<input id="un" autocomplete="username" dir="ltr" required></label>
+      <label>كلمة المرور<input id="pw" type="password" autocomplete="current-password" dir="ltr" required></label>
+      <span class="err" id="loginErr"></span>
+      <button class="btn pri" type="submit" id="loginBtn">دخول</button>
+      <a class="sm" href="portal.html">دخول العملاء</a>
+    </form>
+  </section>
+
+  <section id="chg" class="panel login" hidden>
+    <h2>غيّر بيانات الدخول</h2>
+    <p class="mute" id="chgHint">هذا أول دخول. لحماية بيانات العملاء اختر اسم مستخدم وكلمة مرور جديدين بدلاً من 123.</p>
+    <form id="chgF" class="stack">
+      <label>اسم المستخدم الجديد<input id="cUn" autocomplete="username" dir="ltr" required></label>
+      <label>كلمة المرور الجديدة (8 أحرف على الأقل)<input id="cPw" type="password" autocomplete="new-password" dir="ltr" required></label>
+      <label>أعد كتابة كلمة المرور<input id="cPw2" type="password" autocomplete="new-password" dir="ltr" required></label>
+      <span class="err" id="chgErr"></span>
+      <button class="btn pri" type="submit">حفظ والمتابعة</button>
+    </form>
+  </section>
+
+  <section id="v-dash" class="view" hidden>
+    <div class="kpis" id="kpis"></div>
+    <div class="grid2">
+      <div class="panel"><h3>طلبات جديدة من الموقع</h3><div id="dReq"></div></div>
+      <div class="panel"><h3>معاملات تجاوزت الموعد المتوقع</h3><div id="dLate"></div></div>
+      <div class="panel"><h3>مستندات تنتهي خلال 30 يوماً</h3><div id="dRenew"></div></div>
+      <div class="panel"><h3>اشتراكات باقات تنتهي خلال 30 يوماً</h3><div id="dPlans"></div></div>
+      <div class="panel"><h3>رسائل العملاء التي تنتظر الرد</h3><div id="dMsg"></div></div>
+      <div class="panel"><h3>حسابات تنتظر التفعيل</h3><div id="dAcc"></div></div>
+    </div>
+  </section>
+
+  <section id="v-req" class="view" hidden>
+    <div class="bar"><h2>الطلبات الواردة</h2><select id="reqF"><option value="">كل الحالات</option></select><input id="reqQ" type="search" placeholder="بحث بالاسم أو الجوال"><button class="btn sm ghost" data-export="Requests" type="button">تصدير Excel</button></div>
+    <div class="tbl" id="reqT"></div>
+  </section>
+
+  <section id="v-cli" class="view" hidden>
+    <div class="bar"><h2>العملاء</h2><input id="cliQ" type="search" placeholder="بحث بالاسم أو الجوال أو الرقم الشخصي أو السجل"><button class="btn sm pri" id="newCli" type="button">عميل جديد</button><button class="btn sm ghost" data-export="Clients" type="button">تصدير Excel</button></div>
+    <div class="tbl" id="cliT"></div>
+  </section>
+
+  <section id="v-client" class="view" hidden>
+    <div class="bar"><button class="btn sm ghost" type="button" id="backCli">رجوع إلى العملاء</button><h2 id="cName"></h2><span class="sp"></span>
+      <button class="btn sm ghost" type="button" id="cEdit">تعديل البيانات</button><button class="btn sm pri" type="button" id="cTxn">معاملة جديدة</button><button class="btn sm ghost" type="button" id="cMail">إرسال بريد</button><a class="btn sm ghost" id="cWa" target="_blank" rel="noopener">واتساب</a><button class="btn sm ghost" type="button" id="cNote">إضافة ملاحظة</button></div>
+    <div class="grid2">
+      <div class="panel"><h3>البيانات والأرقام</h3><dl class="dl" id="cInfo"></dl></div>
+      <div class="panel"><h3>المتطلبات والملاحظات</h3><div id="cReq"></div></div>
+    </div>
+    <div class="panel"><h3>معاملات العميل وأعماله</h3><div class="tbl" id="cTx"></div></div>
+    <div class="grid2">
+      <div class="panel" id="cMsgP"><h3>المراسلات مع العميل</h3><div class="thread" id="cMsgs"></div>
+        <form id="replyF" class="stack"><textarea id="rBody" rows="3" placeholder="اكتب ردك على العميل. يظهر في حسابه ويصله بالبريد إن كان مسجلاً." required></textarea>
+        <div class="contact"><button class="btn sm pri" type="submit">إرسال الرد</button><label class="chk sm"><input type="checkbox" id="rMail" checked> إرسال نسخة بالبريد</label></div></form></div>
+      <div class="panel"><h3>حساب العميل على الموقع</h3><div id="cAcc"></div></div>
+    </div>
+    <div class="grid2">
+      <div class="panel"><h3>الملفات والتراخيص المرفوعة للعميل</h3><div id="cFiles"></div>
+        <form id="fileF" class="stack">
+          <label>عنوان الملف كما يراه العميل<input id="fTitle" placeholder="مثال: السجل التجاري بعد التجديد" required></label>
+          <label>المعاملة المرتبطة (اختياري)<select id="fTxn"><option value="">بدون</option></select></label>
+          <label id="fUpL">الملف (حتى 10 ميجابايت)<input id="fUp" type="file"></label>
+          <label>أو رابط (Google Drive أو غيره)<input id="fUrl" type="url" dir="ltr" placeholder="https://"></label>
+          <div class="contact"><button class="btn sm pri" type="submit">رفع للعميل</button><span class="mute sm" id="fHint"></span></div>
+        </form></div>
+      <div class="panel"><h3>بيانات الدخول إلى البوابات الحكومية</h3><p class="mute sm">كلمات المرور مشفرة. كل إظهار يُسجَّل باسمك في سجل العميل.</p><div id="cCreds"></div>
+        <h3>الموافقات القانونية</h3><div id="cCons"></div></div>
+    </div>
+    <div class="panel"><h3>سجل التواصل</h3><div id="cLog"></div></div>
+  </section>
+
+  <section id="v-emp" class="view" hidden>
+    <div class="bar"><h2>الموظفون: الحضور والإنجاز</h2><span class="sp"></span><button class="btn sm pri" type="button" id="addEmp">إضافة موظف</button></div>
+    <div class="panel"><div class="bar">
+      <select id="repP"><option value="today">اليوم</option><option value="yesterday">أمس</option><option value="week">آخر 7 أيام</option><option value="month">هذا الشهر</option><option value="custom">فترة محددة</option></select>
+      <label class="inl" id="repFL" hidden>من<input type="date" id="repF"></label><label class="inl" id="repTL" hidden>إلى<input type="date" id="repT"></label>
+      <button class="btn sm pri" type="button" id="repGo">عرض التقرير</button><span class="sp"></span>
+      <button class="btn sm ghost" type="button" id="repCsv">تصدير Excel</button><button class="btn sm ghost" type="button" id="repMail">إرسال بالبريد للمكتب</button></div>
+      <div class="tbl" id="repT1"></div>
+    </div>
+    <div class="panel" id="repD" hidden><h3 id="repDT"></h3><div class="grid2"><div><h3>الحضور اليومي</h3><div class="tbl" id="repDays"></div></div><div><h3>آخر أعماله</h3><div id="repLog"></div></div></div></div>
+    <div class="panel"><h3>حسابات الموظفين</h3><div id="staffL" class="tbl"></div></div>
+  </section>
+
+  <section id="v-msg" class="view" hidden>
+    <div class="bar"><h2>المراسلات مع العملاء</h2></div>
+    <div class="tbl" id="msgT"></div>
+  </section>
+
+  <section id="v-set" class="view" hidden>
+    <div class="grid2">
+      <div class="panel"><h3>بيانات دخولي</h3><p class="mute sm" id="meLine"></p>
+        <form id="meF" class="stack">
+          <label>اسم المستخدم<input id="meUn" dir="ltr" autocomplete="username"></label>
+          <label>كلمة المرور الحالية<input id="meOld" type="password" dir="ltr" autocomplete="current-password" required></label>
+          <label>كلمة المرور الجديدة (اتركها فارغة إن لم تغيّرها)<input id="mePw" type="password" dir="ltr" autocomplete="new-password"></label>
+          <label>أعد كتابة كلمة المرور الجديدة<input id="mePw2" type="password" dir="ltr" autocomplete="new-password"></label>
+          <span class="err" id="meErr"></span>
+          <button class="btn sm pri" type="submit">حفظ</button>
+        </form></div>
+      <div class="panel"><h3>صلاحياتي</h3><p class="sm" id="myPerms"></p></div>
+    </div>
+  </section>
+
+  <section id="v-txn" class="view" hidden>
+    <div class="bar"><h2>المعاملات</h2><select id="txF"><option value="">كل الحالات</option><option value="open">المفتوحة فقط</option></select><input id="txQ" type="search" placeholder="بحث بالعميل أو الخدمة أو رقم الطلب لدى الجهة"><button class="btn sm pri" id="newTx" type="button">معاملة جديدة</button><button class="btn sm ghost" data-export="Transactions" type="button">تصدير Excel</button></div>
+    <div class="tbl" id="txT"></div>
+  </section>
+
+  <section id="v-log" class="view" hidden>
+    <div class="bar"><h2>سجل التواصل والأحداث</h2><span class="sp"></span><button class="btn sm ghost" data-export="Log" type="button">تصدير Excel</button><button class="btn sm ghost" id="backup" type="button">نسخة احتياطية كاملة</button><label class="btn sm ghost" id="restoreL" hidden>استرجاع نسخة<input type="file" id="restore" accept=".json" hidden></label></div>
+    <div id="logL"></div>
+  </section>
+</main>
+
+<dialog id="dlgC" aria-labelledby="dlgCT"><form class="dlg crmform" id="fC" method="dialog">
+  <h3 id="dlgCT">بيانات العميل</h3>
+  <div class="g2">
+    <label>الاسم أو اسم المنشأة<input name="name" required></label>
+    <label>النوع<select name="type"><option>فرد</option><option>منشأة</option></select></label>
+    <label>الجوال<input name="phone" inputmode="tel" required></label>
+    <label>البريد الإلكتروني<input name="email" type="email" dir="ltr"></label>
+    <label>الرقم الشخصي (QID)<input name="qid" inputmode="numeric"></label>
+    <label>رقم السجل التجاري<input name="cr"></label>
+    <label>رقم بطاقة المنشأة<input name="estCard"></label>
+    <label>الرقم الضريبي<input name="taxNo"></label>
+    <label>الباقة<select name="plan"><option value="">بدون باقة</option><option>منجز بداية</option><option>منجز متابعة</option></select></label>
+    <label>نهاية الاشتراك<input name="planEnd" type="date"></label>
+    <label>العنوان<input name="address"></label>
+    <label>مصدر العميل<select name="source"><option>الموقع</option><option>واتساب</option><option>زيارة المكتب</option><option>توصية</option><option>شبكة المالك</option><option>أخرى</option></select></label>
+    <label class="full">متطلبات العميل (ما يحتاجه حالياً ولاحقاً)<textarea name="requirements"></textarea></label>
+    <label class="full">ملاحظات<textarea name="notes"></textarea></label>
+  </div>
+  <div class="contact"><button class="btn pri" value="save">حفظ</button><button class="btn ghost" value="cancel" formnovalidate>إلغاء</button><span class="sp"></span><button class="btn ghost danger" type="button" id="delC">حذف العميل</button></div>
+</form></dialog>
+
+<dialog id="dlgT" aria-labelledby="dlgTT"><form class="dlg crmform" id="fT" method="dialog">
+  <h3 id="dlgTT">بيانات المعاملة</h3>
+  <div class="g2">
+    <label class="full">العميل<select name="clientId" required></select></label>
+    <label class="full">الخدمة<select name="code" required></select></label>
+    <label>الحالة<select name="status"></select></label>
+    <label>المسؤول<input name="assignee" list="assignees"></label>
+    <label>أتعاب منجز (ر.ق)<input name="fee" type="number" min="0"></label>
+    <label>الرسوم الحكومية (ر.ق)<input name="govFee" type="number" min="0"></label>
+    <label>المدفوع من العميل (ر.ق)<input name="paid" type="number" min="0"></label>
+    <label>رقم الطلب لدى الجهة<input name="govRef"></label>
+    <label>تاريخ البدء<input name="startDate" type="date"></label>
+    <label>الموعد المتوقع للإنجاز<input name="dueDate" type="date"></label>
+    <label>تاريخ انتهاء المستند الناتج (للتذكير بالتجديد)<input name="expiryDate" type="date"></label>
+    <label>تاريخ الإغلاق<input name="closed" type="date"></label>
+    <fieldset class="full docs"><legend>المستندات المطلوبة (علّم ما استُلم)</legend><div id="tDocs"></div><div class="contact"><input id="tDocNew" placeholder="أضف مستنداً آخر"><button class="btn sm ghost" type="button" id="tDocAdd">إضافة</button></div></fieldset>
+    <label class="full">ملاحظات<textarea name="notes"></textarea></label>
+  </div>
+  <datalist id="assignees"><option>المدير العام</option><option>مدير العلاقات الحكومية</option><option>المندوب</option><option>منسق خدمة العملاء</option></datalist>
+  <div class="contact"><button class="btn pri" value="save">حفظ</button><button class="btn ghost" value="cancel" formnovalidate>إلغاء</button><span class="sp"></span><button class="btn ghost danger" type="button" id="delT">حذف المعاملة</button></div>
+</form></dialog>
+
+<dialog id="dlgM" aria-labelledby="dlgMT"><form class="dlg crmform" id="fM" method="dialog">
+  <h3 id="dlgMT">إرسال بريد للعميل</h3>
+  <label>القالب<select id="mTpl"></select></label>
+  <label>إلى<input name="to" type="email" dir="ltr" required></label>
+  <label>الموضوع<input name="subject" required></label>
+  <label>الرسالة<textarea name="body" rows="10" required></textarea></label>
+  <p class="mute sm" id="mHint"></p>
+  <div class="contact"><button class="btn pri" value="send">إرسال</button><button class="btn ghost" value="cancel" formnovalidate>إلغاء</button></div>
+</form></dialog>
+
+<dialog id="dlgQ" aria-labelledby="qT"><form class="dlg crmform" id="fQ" method="dialog">
+  <h3 id="qT"></h3><textarea id="qIn" rows="4" hidden></textarea>
+  <div class="contact"><button class="btn pri" value="ok" id="qOk">نعم</button><button class="btn ghost" value="cancel" formnovalidate>إلغاء</button></div>
+</form></dialog>
+<dialog id="dlgA" aria-labelledby="dlgAT"><form class="dlg crmform" id="fA" method="dialog">
+  <h3 id="dlgAT">حساب العميل على الموقع</h3>
+  <label>اسم المستخدم<input name="username" dir="ltr" required></label>
+  <label>كلمة مرور جديدة (اتركها فارغة للإبقاء على الحالية)<input name="password" dir="ltr" autocomplete="off"></label>
+  <label>الحالة<select name="status"><option>مفعّل</option><option>بانتظار التفعيل</option><option>موقوف</option></select></label>
+  <p class="mute sm">أرسل للعميل اسم المستخدم وكلمة المرور على واتساب، واطلب منه تغييرها من «حسابي».</p>
+  <div class="contact"><button class="btn pri" value="save">حفظ</button><button class="btn ghost" value="cancel" formnovalidate>إلغاء</button><button class="btn ghost" type="button" id="aGen">كلمة مرور عشوائية</button></div>
+</form></dialog>
+<dialog id="dlgS" aria-labelledby="dlgST"><form class="dlg crmform" id="fS" method="dialog">
+  <h3 id="dlgST">بيانات الموظف</h3>
+  <div class="g2">
+    <label>الاسم الكامل<input name="name" required></label>
+    <label>المسمى الوظيفي<input name="jobTitle" list="jobs"></label>
+    <label>اسم المستخدم<input name="username" dir="ltr" required></label>
+    <label>كلمة مرور مؤقتة<input name="password" dir="ltr" autocomplete="off"><span class="mute sm" id="sPwHint"></span></label>
+    <label>الجوال<input name="phone" inputmode="tel" dir="ltr"></label>
+    <label>البريد<input name="email" type="email" dir="ltr"></label>
+    <label>الرقم الشخصي<input name="qid" inputmode="numeric" dir="ltr"></label>
+    <label>تاريخ التعيين<input name="hireDate" type="date"></label>
+    <label>بداية الدوام<input name="shiftStart" type="time"></label>
+    <label>نهاية الدوام<input name="shiftEnd" type="time"></label>
+    <label class="full">أيام العمل<input name="workDays" placeholder="مثال: الأحد إلى الخميس"></label>
+    <label>نوع الحساب<select name="role"><option value="staff">موظف</option><option value="admin">مدير (كل الصلاحيات)</option></select></label>
+    <label>الحالة<select name="status"><option>مفعّل</option><option>موقوف</option></select></label>
+    <fieldset class="full docs" id="permBox"><legend>الصلاحيات</legend>
+      <div class="contact"><button class="btn xs ghost" type="button" id="permAll">صلاحيات كاملة</button><button class="btn xs ghost" type="button" id="permNone">إلغاء الكل</button></div>
+      <div class="perms" id="permL"></div></fieldset>
+    <label class="full">ملاحظات<textarea name="notes" rows="2"></textarea></label>
+  </div>
+  <span class="err" id="sErr"></span>
+  <div class="contact"><button class="btn pri" value="save">حفظ</button><button class="btn ghost" value="cancel" formnovalidate>إلغاء</button><button class="btn ghost" type="button" id="sGen">كلمة مرور عشوائية</button></div>
+  <datalist id="jobs"><option>مدير العلاقات الحكومية</option><option>مندوب</option><option>منسق خدمة العملاء</option><option>محاسب</option><option>مستشار</option></datalist>
+</form></dialog>
+<div class="toast" id="toast" hidden></div>
+<script src="assets/config.js?v=20261015p"></script>
+<script src="assets/data.js?v=20261015p"></script>
+<script src="assets/details.js?v=20261015p"></script>
+<script src="assets/crm.js?v=20261015p"></script>
+</body>
+</html>

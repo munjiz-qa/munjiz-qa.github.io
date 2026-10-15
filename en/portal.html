@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>My account | Munjiz Business Services</title>
+<meta name="description" content="Create an account for your company, or sign in, to request services, follow your requests and transactions, and download your licences and documents.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#7a1e3a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect x='4' y='4' width='72' height='72' rx='18' fill='%237a1e3a'/%3E%3Cpath d='M22 42l12 12 24-28' fill='none' stroke='%23b8923a' stroke-width='8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="../assets/style.css?v=20261015p">
+</head>
+<body class="portal-page">
+<header class="top"><div class="wrap">
+  <a class="brand" href="index.html"><svg width="34" height="34" viewBox="0 0 80 80" aria-hidden="true"><rect x="5" y="5" width="70" height="70" rx="18" fill="none" stroke="#b8923a" stroke-width="5"/><path d="M22 42l12 12 24-28" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>Munjiz Business Services</a>
+  <div class="plainnav"><a href="index.html#services">Services and prices</a><a href="index.html">Home</a><button type="button" class="linkbtn" id="logout" hidden>Sign out</button><a href="../portal.html" class="lang" lang="ar">العربية</a></div>
+</div></header>
+<main class="sec"><div class="wrap portal">
+<div id="noApi" class="pnote" hidden><b>Accounts open once the client system is running</b><p>We are setting up accounts now. Until then, request and follow your services with us on WhatsApp.</p><a class="btn sm pri" href="https://wa.me/97451600498" target="_blank" rel="noopener">Chat on WhatsApp</a></div>
+
+<section id="auth">
+  <h1>My account</h1>
+  <p class="lead sm">Create an account for your company, or sign in, to request services, follow your requests and transactions, and download your licences and documents.</p>
+  <div class="acctype" role="radiogroup" aria-label="Account type"><span>Account type</span>
+    <label><input type="radio" name="acct" value="client" checked> Client</label>
+    <label><input type="radio" name="acct" value="admin"> Management</label></div>
+  <form id="adminF" class="panel" hidden novalidate>
+    <p class="full mute sm">Sign-in for the manager and staff to the management dashboard (Arabic). First manager sign-in: username 123 and password 123; the system then asks you to change both.</p>
+    <label class="full">Username<input id="aUser" autocomplete="username" dir="ltr" required></label>
+    <label class="full">Password<input id="aPass" type="password" autocomplete="current-password" dir="ltr" required></label>
+    <span class="err full" id="aErr" role="alert"></span>
+    <div class="contact full"><button class="btn pri" type="submit">Open the management dashboard</button></div>
+  </form>
+  <div id="clientAuth">
+  <div class="ptabs" role="tablist"><button type="button" role="tab" id="tLogin" aria-selected="true">Sign in</button><button type="button" role="tab" id="tSign" aria-selected="false">Create an account</button></div>
+  <form id="loginF" class="panel" novalidate>
+    <label class="full">Username or mobile number<input id="lUser" autocomplete="username" dir="ltr" required></label>
+    <label class="full">Password<input id="lPass" type="password" autocomplete="current-password" dir="ltr" required></label>
+    <span class="err full" id="lErr" role="alert"></span>
+    <div class="contact full"><button class="btn pri" type="submit">Sign in</button><a class="sm" id="forgot" href="https://wa.me/97451600498" target="_blank" rel="noopener">Forgot your password? Message us on WhatsApp</a></div>
+  </form>
+  <form id="signF" class="panel" hidden novalidate>
+    <h3 class="full">1. Contact person</h3>
+    <label>Full name<input id="sName" autocomplete="name" required></label>
+    <label>Mobile number<input id="sPhone" inputmode="tel" dir="ltr" placeholder="5XXXXXXX" required></label>
+    <label class="full">Email (optional, for confirmations)<input id="sMail" type="email" inputmode="email" autocomplete="email" dir="ltr"></label>
+    <h3 class="full">2. Company details (leave empty if you are an individual)</h3>
+    <label class="full">Company name as on the commercial registration<input id="sCo" autocomplete="organization"></label>
+    <label>Commercial registration no.<input id="sCr" dir="ltr"></label>
+    <label>Establishment card no.<input id="sEst" dir="ltr"></label>
+    <label>Tax number<input id="sTax" dir="ltr"></label>
+    <label>Qatar ID (optional)<input id="sQid" inputmode="numeric" dir="ltr"></label>
+    <label class="full">Address<input id="sAddr" autocomplete="street-address"></label>
+    <h3 class="full">3. Sign-in details</h3>
+    <label class="full">Username<input id="sUser" autocomplete="username" dir="ltr" required><span class="mute sm">4 to 30 English letters or digits; _ and . are allowed</span></label>
+    <label>Password<input id="sPass" type="password" autocomplete="new-password" dir="ltr" required><span class="mute sm">At least 8 characters</span></label>
+    <label>Confirm password<input id="sPass2" type="password" autocomplete="new-password" dir="ltr" required></label>
+    <h3 class="full">4. Agreement and authorization</h3>
+    <div class="legalbox full"><p>By creating the account you accept the following documents, which you can read and print at any time:</p><ul><li>Service agreement and terms of use</li><li>Limitation of liability: we are not responsible for government decisions or delays, or for the results of incorrect information</li><li>Authorization to process the transactions you request on behalf of you or your establishment</li><li>Data and confidentiality: only the responsible staff see your data, and we never sell it</li></ul><a href="legal.html" target="_blank" rel="noopener">Read the full documents</a></div>
+    <label class="agree full"><input type="checkbox" id="sOk"> I have read and accept the documents, and I authorize Munjiz Business Services to process the transactions I request on behalf of me or the establishment I represent.</label>
+    <label class="full">Type your full name as a signature<input id="sSign" autocomplete="name"></label>
+    <input id="sHp" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <span class="err full" id="sErr" role="alert"></span>
+    <div class="contact full"><button class="btn pri" type="submit">Create account</button></div>
+  </form>
+  </div>
+</section>
+
+<section id="dash" hidden>
+  <div class="dhead"><div><h1 id="dName"></h1><p class="mute sm" id="dMeta"></p></div><div class="contact"><button type="button" class="btn sm pri" id="goNew">New service request</button><button type="button" class="btn sm ghost" id="dNewCli">Register a new client</button><button type="button" class="btn sm ghost" id="dOut"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h11"/></svg>Sign out</button></div></div>
+  <nav class="ptabs scroll" id="dTabs" role="tablist">
+    <button type="button" role="tab" data-p="home" aria-selected="true">Overview</button>
+    <button type="button" role="tab" data-p="work" aria-selected="false">Requests and transactions</button>
+    <button type="button" role="tab" data-p="new" aria-selected="false">Request a service</button>
+    <button type="button" role="tab" data-p="files" aria-selected="false">Files and licences</button>
+    <button type="button" role="tab" data-p="msgs" aria-selected="false">Messages</button>
+    <button type="button" role="tab" data-p="profile" aria-selected="false">Company details</button>
+    <button type="button" role="tab" data-p="creds" aria-selected="false">Portal logins</button>
+    <button type="button" role="tab" data-p="security" aria-selected="false">Password and consents</button>
+  </nav>
+  <div class="ppanel" id="p-home"><div class="kpis" id="kpis"></div><h3>Documents expiring soon</h3><div id="soon"></div><h3>Latest transactions</h3><div id="latest"></div></div>
+  <div class="ppanel" id="p-work" hidden><h3>My transactions</h3><div id="txList"></div><h3>My requests</h3><div id="reqList"></div></div>
+  <div class="ppanel" id="p-new" hidden>
+    <form id="newF" class="panel" novalidate>
+      <p class="full mute sm">Choose the services you need. We will review the request and contact you with the document list and the final price.</p>
+      <label class="full">Add a service<select id="nPick"><option value="">Choose a service from the list</option></select></label>
+      <div class="full" id="nCart"></div>
+      <label class="full">Notes (optional)<textarea id="nNotes" placeholder="For example: the registration expires at the end of the month, or the number of employees"></textarea></label>
+      <span class="err full" id="nErr" role="alert"></span>
+      <div class="contact full"><button class="btn pri" type="submit">Send request</button><span class="mute sm">Please do not send documents until we ask for them.</span></div>
+    </form>
+  </div>
+  <div class="ppanel" id="p-files" hidden><p class="mute sm">Licences, certificates and receipts we upload for you after completing your transactions appear here.</p><div id="fileList"></div></div>
+  <div class="ppanel" id="p-msgs" hidden>
+    <p class="mute sm">Message our team here about your requests and transactions. Replies appear in your account and in your email if you added one.</p>
+    <div class="thread" id="msgList"></div>
+    <form id="msgF" class="panel" novalidate>
+      <label class="full">New message<textarea id="mBody" placeholder="Write your question or what you need"></textarea></label>
+      <span class="err full" id="mErr" role="alert"></span>
+      <div class="contact full"><button class="btn pri" type="submit">Send</button></div>
+    </form>
+  </div>
+  <div class="ppanel" id="p-profile" hidden>
+    <form id="profF" class="panel" novalidate>
+      <label>Company or personal name<input name="name" required></label>
+      <label>Type<select name="type"><option value="منشأة">Establishment</option><option value="فرد">Individual</option></select></label>
+      <label>Mobile number<input name="phone" dir="ltr" readonly><span class="mute sm">To change the number, message us on WhatsApp</span></label>
+      <label>Email<input name="email" type="email" dir="ltr"></label>
+      <label>Commercial registration no.<input name="cr" dir="ltr"></label>
+      <label>Establishment card no.<input name="estCard" dir="ltr"></label>
+      <label>Tax number<input name="taxNo" dir="ltr"></label>
+      <label>Qatar ID (optional)<input name="qid" dir="ltr"></label>
+      <label class="full">Address<input name="address"></label>
+      <div class="contact full"><button class="btn pri" type="submit">Save details</button></div>
+    </form>
+  </div>
+  <div class="ppanel" id="p-creds" hidden>
+    <div class="pnote"><b>Best option: add us as a delegate on the portal</b><p>Many portals (such as Metrash2 and the Single Window) let you add a representative or authorized user with limited permissions, which is safer than sharing your password. If that is not available, add the login here: it is stored encrypted, only the responsible staff member sees it when needed, every view is logged, and you can delete it at any time.</p></div>
+    <div id="credList"></div>
+    <form id="credF" class="panel" novalidate>
+      <h3 class="full">Add a portal login</h3>
+      <label class="full">Portal<input id="cPortal" list="portals" required><datalist id="portals"><option value="Metrash2 / Ministry of Interior"><option value="Single Window / Ministry of Commerce and Industry"><option value="Ministry of Labour portal"><option value="Dhareeba / General Tax Authority"><option value="Ministry of Municipality portal"><option value="Hukoomi (government portal)"></datalist></label>
+      <label>Username on the portal<input id="cUser" dir="ltr" autocomplete="off" required></label>
+      <label>Password on the portal<input id="cPass" type="password" dir="ltr" autocomplete="new-password" required></label>
+      <label class="full">Note (optional)<input id="cNote"></label>
+      <label class="agree full"><input type="checkbox" id="cOk"> I authorize Munjiz Business Services to use these details only to process the services I request, and I accept the “Government portal login details” section of the legal documents.</label>
+      <span class="err full" id="cErr" role="alert"></span>
+      <div class="contact full"><button class="btn pri" type="submit">Save encrypted</button></div>
+    </form>
+  </div>
+  <div class="ppanel" id="p-security" hidden>
+    <form id="pwF" class="panel" novalidate>
+      <label class="full">Current password<input id="oPass" type="password" dir="ltr" autocomplete="current-password"></label>
+      <label>New password<input id="nPass" type="password" dir="ltr" autocomplete="new-password"></label>
+      <label>Confirm password<input id="nPass2" type="password" dir="ltr" autocomplete="new-password"></label>
+      <span class="err full" id="pwErr" role="alert"></span>
+      <div class="contact full"><button class="btn pri" type="submit">Change password</button></div>
+    </form>
+    <div class="panel"><h3>Your acceptance of the legal documents</h3><p id="consent" class="sm"></p><a href="legal.html" target="_blank" rel="noopener">Read the full documents</a></div>
+  </div>
+</section>
+</div></main>
+<footer><div class="wrap fc"><b>Contact us</b><a href="tel:+97451600498" dir="ltr">☎ +974 51600498</a><a href="https://wa.me/97451600498" target="_blank" rel="noopener">WhatsApp</a><a href="mailto:munijizqa@gmail.com" dir="ltr">✉ munijizqa@gmail.com</a></div><div class="wrap"><span>Munjiz Business Services · Doha, Qatar</span><span><a href="legal.html">Legal documents</a> · <a href="privacy.html">Privacy</a></span></div></footer>
+<div class="toast" id="toast" hidden></div>
+<script src="../assets/config.js?v=20261015p"></script>
+<script src="../assets/data.js?v=20261015p"></script>
+<script src="../assets/details.js?v=20261015p"></script>
+<script src="../assets/portal.js?v=20261015p"></script>
+</body>
+</html>
