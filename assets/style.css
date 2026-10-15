@@ -425,3 +425,7 @@ body::before{content:"";position:absolute;top:66px;right:10px;width:104px;height
 :root[data-theme="dark"] body::before{opacity:.28}
 @media (max-width:640px){body::before{width:78px;height:78px;top:62px;right:6px}}
 @media print{body::before{display:none}}
+/* النسخة التجريبية (assets/demo.js) */
+.demobar{background:var(--amber-soft);border:1.5px dashed var(--amber);border-radius:12px;padding:10px 14px;margin:12px 0;font-size:14px;line-height:1.9}
+.demobar code{font-family:var(--mono);background:var(--surface);border-radius:6px;padding:1px 6px;direction:ltr;unicode-bidi:isolate}
+.demobar button{font:inherit;font-size:13px;background:transparent;border:1px solid currentColor;border-radius:8px;padding:1px 10px;margin-inline-start:6px;cursor:pointer;color:inherit}
