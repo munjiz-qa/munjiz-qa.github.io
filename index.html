@@ -9,14 +9,16 @@
 <meta property="og:description" content="من المعاملة إلى الإنجاز. خدمات حكومية مساعدة سريعة وبأسعار مخفضة في الدوحة.">
 <meta name="theme-color" content="#7a1e3a">
 <link rel="canonical" href="https://munjiz-qa.github.io/">
+<link rel="alternate" hreflang="en" href="https://munjiz-qa.github.io/en/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect x='4' y='4' width='72' height='72' rx='18' fill='%237a1e3a'/%3E%3Cpath d='M22 42l12 12 24-28' fill='none' stroke='%23b8923a' stroke-width='8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=20261015m">
+<link rel="stylesheet" href="assets/style.css?v=20261015n">
 </head>
 <body>
 <header class="top"><div class="wrap">
   <a class="brand" href="#home"><svg width="34" height="34" viewBox="0 0 80 80" aria-hidden="true"><rect x="5" y="5" width="70" height="70" rx="18" fill="none" stroke="#b8923a" stroke-width="5"/><path d="M22 42l12 12 24-28" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>منجز لخدمات الأعمال</a>
+  <button class="who" id="who" type="button" hidden title="تعديل بياناتي"></button>
   <button class="burger" id="burger" type="button" aria-expanded="false" aria-controls="nav" aria-label="القائمة"><span></span><span></span><span></span></button>
   <nav id="nav" aria-label="القائمة الرئيسية"><ul class="menu">
     <li class="dd"><button type="button" class="topbtn" aria-expanded="false">الخدمات المساعدة</button><ul class="drop" id="mGov"></ul></li>
@@ -24,6 +26,7 @@
     <li><a href="#how">كيف نعمل</a></li>
     <li><a href="#faq">الأسئلة الشائعة</a></li>
     <li><a href="#request" class="navcta">اطلب خدمة</a></li>
+    <li><a href="en/index.html" lang="en" class="lang">English</a></li>
   </ul></nav>
 </div></header>
 <nav class="crumbs" id="crumbs" aria-label="أنت هنا" hidden><div class="wrap"><button type="button" class="back" id="back">رجوع</button><ol id="crumbList"></ol></div></nav>
@@ -121,9 +124,10 @@
 
 <section class="sec alt" id="request"><div class="wrap">
   <h2>اطلب عرض سعر</h2>
-  <p class="lead">اكتب بياناتك واختر الخدمات، ثم أرسل الطلب على واتساب أو البريد بضغطة واحدة. نراجع الملف ونرسل لك عرض سعر مكتوباً. لا ترسل أي مستندات الآن.</p>
+  <p class="lead">بياناتك معبأة من التسجيل. اختر الخدمات واضغط «جهّز عرض السعر» ليظهر عرض سعر مبدئي باسمك على ورق منجز، ثم أرسله على واتساب أو البريد أو احفظه PDF. لا ترسل أي مستندات الآن.</p>
   <form id="f" novalidate>
-    <label>الاسم أو اسم المنشأة<input id="fName" required autocomplete="name"><span class="err" id="eName"></span></label>
+    <label>الاسم<input id="fName" required autocomplete="name"><span class="err" id="eName"></span></label>
+    <label>اسم الشركة (اختياري)<input id="fCo" autocomplete="organization"></label>
     <label>رقم الجوال<input id="fPhone" inputmode="tel" required placeholder="مثال: 5XXXXXXX"><span class="err" id="ePhone"></span></label>
     <label>البريد الإلكتروني (اختياري، لنرسل لك التأكيد)<input id="fMail" type="email" inputmode="email" autocomplete="email" placeholder="name@example.com" dir="ltr"><span class="err" id="eMail"></span></label>
     <label>وسيلة التواصل المفضلة<select id="fVia"><option>واتساب</option><option>اتصال هاتفي</option><option>البريد الإلكتروني</option></select></label>
@@ -132,11 +136,13 @@
     <label>اختر الخدمات المطلوبة<select id="fPick" aria-label="اختر خدمة لإضافتها إلى الطلب"><option value="">اختر خدمة لإضافتها…</option></select></label>
     <label class="full">الخدمة المطلوبة ووصف مختصر لاحتياجك<textarea id="fSvc" placeholder="اختر من القائمة أعلاه أو من حاسبة التكلفة، ويمكنك الكتابة"></textarea><span class="err" id="eSvc"></span></label>
     <input id="fHp" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-    <label class="full agree"><input type="checkbox" id="fOk"> أوافق على <a href="privacy.html">سياسة الخصوصية</a> واستخدام بياناتي للتواصل معي بشأن هذا الطلب.<span class="err" id="eOk"></span></label>
-    <div class="full contact"><button class="btn pri" type="submit">جهّز رسالة الطلب</button><a class="btn ghost" href="https://wa.me/97451600498" target="_blank" rel="noopener">أو اطلب مباشرة عبر واتساب</a></div>
+    <label class="full agree"><input type="checkbox" id="fOk" checked> أوافق على <a href="privacy.html">سياسة الخصوصية</a> واستخدام بياناتي للتواصل معي بشأن هذا الطلب.<span class="err" id="eOk"></span></label>
+    <div class="full contact"><button class="btn pri" type="submit">جهّز عرض السعر</button><a class="btn ghost" href="https://wa.me/97451600498" target="_blank" rel="noopener">أو اطلب مباشرة عبر واتساب</a></div>
   </form>
-  <div id="outWrap" hidden class="panel"><div id="sendState" hidden class="verdict"></div><b id="outTitle">رسالة طلبك</b><div class="out" id="out"></div>
-    <div class="contact" id="outMsg"><a class="btn sm pri" id="sendWa" href="https://wa.me/97451600498" target="_blank" rel="noopener">إرسال على واتساب</a><a class="btn sm pri" id="sendMail" href="mailto:munijizqa@gmail.com">إرسال بالبريد</a><button class="btn sm ghost" id="copyMsg" type="button">نسخ الرسالة</button><span>أو أرسلها يدوياً إلى</span><span class="phone">+974 51600498</span></div></div>
+  <div id="outWrap" hidden class="panel"><div id="sendState" hidden class="verdict"></div>
+    <div id="qdoc" class="qdoc"></div>
+    <div class="contact" id="outMsg"><a class="btn sm pri" id="sendWa" href="https://wa.me/97451600498" target="_blank" rel="noopener">إرسال على واتساب</a><a class="btn sm pri" id="sendMail" href="mailto:munijizqa@gmail.com">إرسال بالبريد</a><button class="btn sm ghost" id="printQ" type="button">طباعة أو حفظ PDF</button><button class="btn sm ghost" id="copyMsg" type="button">نسخ النص</button></div>
+    <details class="msgtxt"><summary id="outTitle">نص الرسالة</summary><div class="out" id="out"></div></details></div>
   <div class="contact"><span>للتواصل المباشر:</span><span class="phone" id="ph">+974 51600498</span><button class="btn sm ghost" id="copyPh" type="button">نسخ الرقم</button><a class="btn sm ghost" href="https://wa.me/97451600498" target="_blank" rel="noopener">فتح واتساب</a><span>أو البريد</span><a href="mailto:munijizqa@gmail.com" dir="ltr">munijizqa@gmail.com</a></div>
 </div></section>
 
@@ -163,7 +169,7 @@
   </div>
 </div></section>
 
-<footer><div class="wrap fc"><b>للتواصل</b><a href="tel:+97451600498" dir="ltr">☎ +974 51600498</a><a href="https://wa.me/97451600498" target="_blank" rel="noopener">واتساب</a><a href="mailto:munijizqa@gmail.com" dir="ltr">✉ munijizqa@gmail.com</a></div><div class="wrap"><span>منجز لخدمات الأعمال · الدوحة، قطر</span><span><a href="privacy.html">سياسة الخصوصية</a></span><span><a href="#prices">الخدمات والأسعار</a> · <a href="#packages">الباقات</a> · <a href="#about">تعرّف إلى منجز</a></span><span>الأسعار سارية من 2026 وقابلة للمراجعة. القرار النهائي ومدة المعاملة من اختصاص الجهة الحكومية.</span></div></footer>
+<footer><div class="wrap fc"><b>للتواصل</b><a href="tel:+97451600498" dir="ltr">☎ +974 51600498</a><a href="https://wa.me/97451600498" target="_blank" rel="noopener">واتساب</a><a href="mailto:munijizqa@gmail.com" dir="ltr">✉ munijizqa@gmail.com</a></div><div class="wrap"><span>منجز لخدمات الأعمال · الدوحة، قطر</span><span><a href="en/index.html" lang="en">English</a> · <a href="privacy.html">سياسة الخصوصية</a></span><span><a href="#prices">الخدمات والأسعار</a> · <a href="#packages">الباقات</a> · <a href="#about">تعرّف إلى منجز</a></span><span>الأسعار سارية من 2026 وقابلة للمراجعة. القرار النهائي ومدة المعاملة من اختصاص الجهة الحكومية.</span></div></footer>
 
 <dialog id="dlg" aria-labelledby="dlgT"><div class="dlg">
   <button class="x dx" id="dlgX" type="button" aria-label="إغلاق">×</button>
@@ -171,10 +177,19 @@
   <div class="contact"><button class="btn sm pri" id="dlgReq" type="button">اطلب هذه الخدمة</button><button class="btn sm ghost" id="dlgAdd" type="button">أضف إلى الحاسبة</button></div>
 </div></dialog>
 <a class="wa-fab" id="waFab" href="https://wa.me/97451600498" target="_blank" rel="noopener" aria-label="تواصل معنا على واتساب" title="تواصل معنا على واتساب"><svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3zm0 23.6c-2 0-3.9-.5-5.6-1.5l-.4-.2-3.9 1 1-3.8-.3-.4A10.6 10.6 0 1 1 16 26.6zm5.8-7.9c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.2-.2-.3 0-.5.1-.7l.5-.6c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.4 3.6 5.7 5 .8.4 1.4.6 1.9.7.8.3 1.5.2 2.1.1.6-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5-.1-.1-.3-.2-.6-.4z"/></svg></a>
+<dialog id="reg" aria-labelledby="regT"><form class="dlg reg" id="regF" novalidate>
+  <div class="reghead"><svg width="40" height="40" viewBox="0 0 80 80" aria-hidden="true"><rect x="5" y="5" width="70" height="70" rx="18" fill="none" stroke="#b8923a" stroke-width="5"/><path d="M22 42l12 12 24-28" fill="none" stroke="#7a1e3a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg><div><h3 id="regT">أهلاً بك في منجز</h3><p class="mute sm">سجّل بياناتك مرة واحدة لتتصفح الخدمات، ونجهز لك عرض السعر باسمك تلقائياً.</p></div></div>
+  <label>الاسم<input id="rName" required autocomplete="name"><span class="err" id="erName"></span></label>
+  <label>رقم الجوال<input id="rPhone" inputmode="tel" required autocomplete="tel" placeholder="5XXXXXXX" dir="ltr"><span class="err" id="erPhone"></span></label>
+  <label>البريد الإلكتروني (اختياري)<input id="rMail" type="email" inputmode="email" autocomplete="email" placeholder="name@example.com" dir="ltr"><span class="err" id="erMail"></span></label>
+  <label>اسم الشركة (اختياري)<input id="rCo" autocomplete="organization"></label>
+  <label class="agree"><input type="checkbox" id="rOk"> أوافق على <a href="privacy.html" target="_blank">سياسة الخصوصية</a> واستخدام بياناتي للتواصل معي وإعداد عروض الأسعار.<span class="err" id="erOk"></span></label>
+  <button class="btn pri" type="submit">ابدأ التصفح</button>
+</form></dialog>
 <div class="toast" id="toast" hidden></div>
 <script>window.MUNJIZ_CONFIG={API:"",WHATSAPP:"97451600498",EMAIL:"munijizqa@gmail.com"};</script>
-<script src="assets/data.js?v=20261015m"></script>
-<script src="assets/details.js?v=20261015m"></script>
-<script src="assets/app.js?v=20261015m"></script>
+<script src="assets/data.js?v=20261015n"></script>
+<script src="assets/details.js?v=20261015n"></script>
+<script src="assets/app.js?v=20261015n"></script>
 </body>
 </html>

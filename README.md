@@ -1,4 +1,9 @@
-# منجز لخدمات الأعمال
+# منجز لخدمات الأعمال | Munjiz Business Services
 
-موقع منجز، الشركة الشقيقة لبصيرة للمعاملات. ملفات ثابتة تُنشر على GitHub Pages.
-الأسعار والخدمات والباقات في `assets/data.js`، وتفاصيل كل خدمة في `assets/details.js`.
+الموقع الرسمي لمنجز: https://munjiz-qa.github.io (العربية) و https://munjiz-qa.github.io/en/ (English).
+ملفات ثابتة تُنشر تلقائياً على GitHub Pages من الفرع main.
+
+- `assets/data.js`: الخدمات والأسعار والباقات
+- `assets/details.js`: تفاصيل كل خدمة بالعربية والإنجليزية
+- `assets/stamp.svg`: ختم منجز المستخدم في عروض الأسعار
+- رقم واتساب والبريد في `MUNJIZ_CONFIG` آخر كل صفحة
