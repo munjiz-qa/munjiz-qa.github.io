@@ -67,3 +67,6 @@
 @media (max-width:760px){.perms{grid-template-columns:minmax(0,1fr)}}
 html[lang=en] .crm-main :is(a,small,.num,.bub,td,dd){unicode-bidi:isolate}
 .crm .langsw{margin-inline-start:auto}.crm .tabs:not([hidden])+.langsw{margin-inline-start:0}
+.adthumb{width:96px;height:48px;object-fit:cover;border-radius:6px;border:1px solid var(--line,#ddd)}
+.adprev .adthumb{width:200px;height:100px}
+#v-ads .grid2 label{display:flex;flex-direction:column;gap:4px}
