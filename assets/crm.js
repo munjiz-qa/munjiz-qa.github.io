@@ -113,6 +113,10 @@ function go(t,id){tab=t;document.querySelectorAll('.view').forEach(v=>v.hidden=t
   $('tabs').classList.toggle('single',document.querySelectorAll(`#tabs [data-g="${g}"]:not([hidden])`).length<2);window.scrollTo(0,0)}
 // the sections in the header open their first page the signed-in person may use
 $('groups').addEventListener('click',e=>{const b=e.target.closest('[data-grp]');if(!b)return;const f=document.querySelector(`#tabs [data-g="${b.dataset.grp}"]:not([hidden])`);if(f)go(f.dataset.tab)});
+// direct links: crm.html#fin (المالية), #acc, #hr, #set, #work, #home open that section after sign-in
+let hashDone=false;
+function openHash(){const b=document.querySelector(`#groups [data-grp="${location.hash.slice(1)}"]:not([hidden])`);if(b)setTimeout(()=>b.click(),0)}
+addEventListener('hashchange',openHash);
 function renderAll(){renderDash();renderReq();renderCli();renderTx();renderLog();renderMsg();renderSet();renderMyCount();if(VIEWS[tab])VIEWS[tab]();if(tab==='client')renderClient()}
 const table=(head,rows)=>rows.length?`<table><thead><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table>`:'<div class="empty">لا توجد بيانات.</div>';
 const stTag=s=>`<span class="st st-${STATUSES.indexOf(s)}">${esc(s)}</span>`;
@@ -253,6 +257,7 @@ function applyPerms(){const show=(sel,on)=>document.querySelectorAll(sel).forEac
   show('#newCli,#cEdit',can('clients_edit'));show('#cTxn,#newTx',can('transactions'));show('#cMail',can('email'));show('#cMsgP',can('messages'));
   show('#fileF',can('files'));show('#delT,#delC',can('delete'));show('#delC',isAdmin());
   document.querySelectorAll('#groups [data-grp]').forEach(b=>b.hidden=!document.querySelector(`#tabs [data-g="${b.dataset.grp}"]:not([hidden])`));
+  if(!hashDone){hashDone=true;openHash()}
   $('myPerms').textContent=isAdmin()?'مدير: كل الصلاحيات، وإدارة الموظفين وتقاريرهم.':(ME.perms||[]).map(p=>PERM_L[p]).join('، ')||'لا توجد صلاحيات بعد. راجع المدير.'}
 
 // ---- my login ----
