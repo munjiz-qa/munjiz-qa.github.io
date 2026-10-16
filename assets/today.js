@@ -104,11 +104,11 @@ fetch((EN?'../':'')+'data/news.json?d='+PRday,{cache:'no-cache'}).then(r=>r.ok?r
 // ---- market prices (numbers only, refreshed by the same scheduled job) ----
 fetch((EN?'../':'')+'data/markets.json?d='+PRday,{cache:'no-cache'}).then(r=>r.ok?r.json():Promise.reject()).then(j=>{
   const items=((j&&j.items)||[]).filter(x=>x&&typeof x.v==='number'&&isFinite(x.v)).slice(0,10);if(!items.length)return;
-  const nf=new Intl.NumberFormat(EN?'en':'ar-QA',{maximumFractionDigits:3});
+  const nf=new Intl.NumberFormat('en',{maximumFractionDigits:2});
   const row=el('div','mk-row');
-  items.forEach(x=>{const c=el('span','mk');c.append(el('span','mk-n',String(EN?x.en:x.ar).slice(0,40)),el('b','num',nf.format(x.v)),el('small','mute',' '+String(EN?x.uen:x.uar).slice(0,12)));
-    if(typeof x.ch==='number'&&isFinite(x.ch)&&x.ch!==0){const d=el('small',x.ch>0?'up':'dn',(x.ch>0?' ▲':' ▼')+Math.abs(x.ch).toFixed(1)+'%');c.append(d)}row.append(c)});
+  items.forEach(x=>{const c=el('span','mk');c.append(el('span','mk-n',String(EN?x.en:x.ar).slice(0,40)+':'),el('b','num',nf.format(x.v)),el('small','mute',' '+String(EN?x.uen:x.uar).slice(0,12)));
+    if(typeof x.ch==='number'&&isFinite(x.ch)&&x.ch!==0){const d=el('small',x.ch>0?'up':'dn',(x.ch>0?'▲':'▼')+Math.abs(x.ch).toFixed(1)+'%');d.dir='ltr';c.append(d)}row.append(c)});
   const srcs=[...new Set(items.map(x=>String(x.src||'')).filter(Boolean))].join('، ').slice(0,80);
-  mkt.append(el('span','tk-ico',L('أسعار اليوم','Today’s prices')),row,el('small','mute mk-meta',L('أسعار استرشادية','Indicative prices')+(j.updated?' · '+String(j.updated).slice(0,16).replace('T',' '):'')+(srcs?' · '+srcs:'')));mkt.hidden=false;
+  mkt.append(el('span','tk-ico',L('أسعار اليوم','Today’s prices')),row,el('small','mute mk-meta',L('أسعار استرشادية','Indicative prices')+(j.updated&&!isNaN(new Date(j.updated))?' · '+new Intl.DateTimeFormat(EN?'en-GB':'ar-QA',{timeZone:'Asia/Qatar',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',numberingSystem:'latn'}).format(new Date(j.updated)):'')+(srcs?' · '+srcs:'')));mkt.hidden=false;
 }).catch(()=>{});
 })();
