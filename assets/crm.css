@@ -142,3 +142,10 @@ table.mini .num{text-align:end}.jent table.mini th{color:var(--mute);font-weight
 .adthumb{width:96px;height:48px;object-fit:cover;border-radius:6px;border:1px solid var(--line,#ddd)}
 .adprev .adthumb{width:200px;height:100px}
 #v-ads .grid2 label{display:flex;flex-direction:column;gap:4px}
+/* الإعدادات ← نصوص الموقع */
+.sttbl{display:flex;flex-direction:column;gap:8px}
+.sthead,.strow{display:grid;grid-template-columns:minmax(150px,.8fr) minmax(0,1.2fr) minmax(0,1.2fr);gap:10px;align-items:start}
+.sthead b{font-size:13px;color:var(--mute)}.strow label{font-weight:600;font-size:14px;padding-top:8px}
+.strow input,.strow textarea{width:100%;min-width:0;font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+.strow input::placeholder,.strow textarea::placeholder{color:var(--mute);opacity:.75}
+@media (max-width:760px){.sthead{display:none}.strow{grid-template-columns:minmax(0,1fr)}.strow label{padding-top:4px}}
