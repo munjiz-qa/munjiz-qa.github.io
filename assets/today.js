@@ -60,29 +60,31 @@ const MSG=[['ابدأ يومك بابتسامة، فالخير قادم بإذن
 ['الإنجاز الحقيقي أن تكون اليوم أفضل من أمس.','Real achievement is being better today than yesterday.'],
 ['نتمنى لك يوماً هادئاً وإنجازاً سهلاً.','Wishing you a calm day and easy progress.']];
 
-// ---- layout ----
+// ---- layout: one slim strip, a news ticker and today's message; prayer times and all news open on demand ----
 box.replaceChildren();
 const strip=el('div','tstrip');
-const tDate=el('span','tdate'),tClock=el('b','tclock num'),tNext=el('span','tnext');
+const tDate=el('span','tdate'),tClock=el('b','tclock num'),tNext=el('button','tnext');tNext.type='button';tNext.setAttribute('aria-expanded','false');
 strip.append(tDate,tClock,tNext);
-const grid=el('div','tgrid');
-const cPray=el('div','tcard tpray'),cNews=el('div','tcard tnews'),cMsg=el('div','tcard tmsg');
-cPray.append(el('h3',null,L('مواقيت الصلاة في الدوحة','Prayer times in Doha')));const pl=el('ul','plist');cPray.append(pl,el('small','mute',L('محسوبة بطريقة قطر (الفجر 18°، العشاء بعد المغرب بـ 90 دقيقة)، وقد تختلف دقيقة أو دقيقتين عن تقويم الأوقاف.','Calculated with the Qatar method (Fajr 18°, Isha 90 minutes after Maghrib); may differ by a minute or two from the Awqaf calendar.')));
-cNews.append(el('h3',null,L('أخبار الاقتصاد والمال في قطر','Qatar economy and finance news')));const nl=el('ul','nlist');cNews.append(nl);const nMeta=el('small','mute');cNews.append(nMeta);
-cMsg.append(el('h3',null,L('رسالة اليوم','Today\'s message')));const mq=el('p','mtext');cMsg.append(mq);
-grid.append(cPray,cNews,cMsg);
-box.append(strip,grid);box.hidden=false;
+const pPanel=el('div','tpanel');pPanel.hidden=true;const pl=el('ul','plist');
+pPanel.append(pl,el('small','mute',L('بطريقة قطر (الفجر 18°، العشاء بعد المغرب بـ 90 دقيقة)، وقد تختلف دقيقة أو دقيقتين عن تقويم الأوقاف.','Qatar method (Fajr 18°, Isha 90 minutes after Maghrib); may differ by a minute or two from the Awqaf calendar.')));
+tNext.onclick=()=>{pPanel.hidden=!pPanel.hidden;tNext.setAttribute('aria-expanded',!pPanel.hidden)};
+const ticker=el('div','tticker');const tkIco=el('span','tk-ico',L('اقتصاد قطر','Qatar economy'));const tkLine=el('span','tk-line');const tkAll=el('button','tk-all',L('كل الأخبار','All news'));tkAll.type='button';tkAll.setAttribute('aria-expanded','false');tkAll.hidden=true;
+ticker.append(tkIco,tkLine,tkAll);
+const nPanel=el('div','tpanel');nPanel.hidden=true;const nl=el('ul','nlist');const nMeta=el('small','mute');nPanel.append(nl,nMeta);
+tkAll.onclick=()=>{nPanel.hidden=!nPanel.hidden;tkAll.setAttribute('aria-expanded',!nPanel.hidden)};
+const mq=el('p','tmsg');
+box.append(strip,pPanel,ticker,nPanel,mq);box.hidden=false;
 
 let PR=null,PRday='';
 function tick(){const n=dohaNow(),k=n.y+'-'+n.m+'-'+n.d;
   if(k!==PRday){PRday=k;PR=prayers(n.y,n.m,n.d);tDate.textContent=dGreg.format(new Date())+' · '+dHij.format(new Date());
-    mq.textContent=MSG[(Math.floor(Date.UTC(n.y,n.m-1,n.d)/864e5))%MSG.length][EN?1:0];
+    mq.textContent='✨ '+MSG[(Math.floor(Date.UTC(n.y,n.m-1,n.d)/864e5))%MSG.length][EN?1:0];
     pl.replaceChildren(...PR.map(([a,e,v])=>{const li=el('li');li.dataset.t=v;li.append(el('span',null,EN?e:a),el('b','num',hm(v)));return li}))}
   tClock.textContent=dTime.format(new Date());
   const nx=PR.filter(p=>p[1]!=='Sunrise').find(p=>p[2]>n.min)||null;
   pl.querySelectorAll('li').forEach(li=>li.classList.toggle('on',nx&&+li.dataset.t===nx[2]));
-  if(nx){const left=Math.ceil(nx[2]-n.min),h=Math.floor(left/60),m=left%60;tNext.textContent=L(`${nx[0]} بعد ${h?h+' س ':''}${m} د`,`${nx[1]} in ${h?h+'h ':''}${m}m`)}
-  else tNext.textContent=L('الفجر غداً','Fajr tomorrow')}
+  if(nx){const left=Math.ceil(nx[2]-n.min),h=Math.floor(left/60),m=left%60;tNext.textContent=L(`🕌 ${nx[0]} بعد ${h?h+' س ':''}${m} د ▾`,`🕌 ${nx[1]} in ${h?h+'h ':''}${m}m ▾`)}
+  else tNext.textContent=L('🕌 الفجر غداً ▾','🕌 Fajr tomorrow ▾')}
 tick();setInterval(tick,1000);
 
 // ---- news (refreshed by a scheduled job on the site; plain text only, links must be http(s)) ----
@@ -92,6 +94,9 @@ fetch((EN?'../':'')+'data/news.json?d='+PRday,{cache:'no-cache'}).then(r=>r.ok?r
   if(!list.length)throw 0;
   nl.replaceChildren(...list.map(x=>{const li=el('li'),a=el('a',null,String(x.title).slice(0,180));a.href=safe(x.link);a.target='_blank';a.rel='noopener noreferrer nofollow';li.append(a);
     if(x.source||x.date)li.append(el('small','mute',[x.source,x.date].filter(Boolean).join(' · ').slice(0,80)));return li}));
+  const link=x=>{const a=el('a',null,String(x.title).slice(0,180));a.href=safe(x.link);a.target='_blank';a.rel='noopener noreferrer nofollow';return a};
+  let i=0;const show=()=>{const x=list[i%list.length];tkLine.replaceChildren(link(x));if(x.source)tkLine.append(el('small','mute',' · '+String(x.source).slice(0,40)));tkLine.classList.remove('in');void tkLine.offsetWidth;tkLine.classList.add('in');i++};
+  show();tkAll.hidden=false;if(list.length>1&&!matchMedia('(prefers-reduced-motion: reduce)').matches){let t=setInterval(show,6000);ticker.onmouseenter=()=>clearInterval(t);ticker.onmouseleave=()=>{clearInterval(t);t=setInterval(show,6000)}}
   if(j.updated)nMeta.textContent=L('آخر تحديث: ','Updated: ')+String(j.updated).slice(0,16).replace('T',' ')+L(' · المصدر: أخبار Google',' · Source: Google News');
-}).catch(()=>{nl.replaceChildren(el('li','mute',L('تعذر تحميل الأخبار الآن. حاول لاحقاً.','News could not be loaded right now. Please try again later.')))});
+}).catch(()=>{ticker.hidden=true});
 })();
