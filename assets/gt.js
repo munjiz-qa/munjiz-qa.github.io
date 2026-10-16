@@ -10,8 +10,7 @@ function setLang(c){const host=location.hostname,exp=c?'':';expires=Thu, 01 Jan 
 const sel=document.createElement('select');sel.className='gtsel notranslate';sel.translate=false;sel.setAttribute('aria-label',EN?'Other languages (Google Translate)':'لغات أخرى (ترجمة Google)');
 sel.innerHTML=`<option value="">🌐 ${EN?'Other languages':'لغات أخرى'}</option>`+(cur?`<option value="-">↩ ${EN?'Original':'الأصل'}</option>`:'')+LANGS.map(([c,n])=>`<option value="${c}"${c===cur?' selected':''}>${n}</option>`).join('');
 sel.onchange=()=>{const v=sel.value;if(v==='-')setLang('');else if(v)setLang(v)};
-const anchor=document.querySelector('.menu .lang')||document.querySelector('.plainnav .lang');
-if(anchor){const li=anchor.closest('li');if(li){const n=document.createElement('li');n.appendChild(sel);li.after(n)}else anchor.after(sel)}
+const box=document.querySelector('.langsw');if(box)box.after(sel);
 if(cur&&cur!==SRC){const h=document.createElement('div');h.id='gte';h.hidden=true;document.body.appendChild(h);
   window.gtInit=()=>new google.translate.TranslateElement({pageLanguage:SRC,autoDisplay:false},'gte');
   const s=document.createElement('script');s.src='https://translate.google.com/translate_a/element.js?cb=gtInit';s.async=true;document.head.appendChild(s)}

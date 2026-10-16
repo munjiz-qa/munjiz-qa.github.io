@@ -469,3 +469,16 @@ body{top:0!important}
 .tmsg .mtext{font-size:16px;line-height:1.8;margin:0}
 .tmsg{background:linear-gradient(135deg,var(--surface),var(--amber-soft))}
 @media (max-width:900px){.tgrid{grid-template-columns:1fr}.tstrip .tnext{margin-inline-start:0}}
+/* مبدّل اللغة: ظاهر دائماً أعلى كل صفحة */
+.langsw{display:inline-flex;align-items:stretch;border:1px solid rgba(255,255,255,.4);border-radius:999px;overflow:hidden;flex:none;font-size:13.5px;line-height:1}
+.langsw>*{display:inline-flex;align-items:center;justify-content:center;min-width:38px;min-height:32px;padding:0 10px;color:inherit;text-decoration:none;font:inherit;font-weight:700;background:transparent;border:0;cursor:pointer}
+.langsw>a:hover,.langsw>button:not(.cur):hover{background:rgba(255,255,255,.14)}
+.langsw .cur{background:var(--navy-ink);color:var(--navy);cursor:default}
+.top .gtsel{flex:none}
+@media (max-width:980px){
+  .top .wrap>.brand{order:1}.top .wrap>.langsw{order:2;margin-inline-start:auto}.top .wrap>.gtsel{order:3}.top .wrap>.burger{order:4;margin-inline-start:0}.top .wrap>nav{order:5}.top .wrap>.who{order:1}
+  .top .gtsel{max-width:46px;padding:5px 4px;text-overflow:clip}
+}
+@media (max-width:640px){.plainnav{order:7;width:100%;margin:0}}
+@media (max-width:520px){.top .wrap{gap:8px}.top .brand{font-size:15px;gap:7px;min-width:0;flex:1 1 0;line-height:1.2}.top .brand svg{width:28px;height:28px}.langsw>*{min-width:32px;padding:0 8px}.top .gtsel{max-width:40px}}
+@media (max-width:360px){.top .brand{font-size:13.5px}}

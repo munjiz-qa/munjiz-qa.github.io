@@ -66,3 +66,4 @@
 .inl{flex-direction:row;align-items:center;gap:6px}
 @media (max-width:760px){.perms{grid-template-columns:minmax(0,1fr)}}
 html[lang=en] .crm-main :is(a,small,.num,.bub,td,dd){unicode-bidi:isolate}
+.crm .langsw{margin-inline-start:auto}.crm .tabs:not([hidden])+.langsw{margin-inline-start:0}
