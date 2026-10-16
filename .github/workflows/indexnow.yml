@@ -1,0 +1,17 @@
+name: IndexNow (Bing, Yandex, Seznam, Naver)
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for GitHub Pages to publish
+        run: sleep 90
+      - name: Submit sitemap URLs
+        run: |
+          urls=$(curl -fsSL https://munjiz-qa.github.io/sitemap.xml | grep -o '<loc>[^<]*' | sed 's/<loc>//' | jq -R . | jq -sc .)
+          echo "$urls"
+          body=$(jq -nc --argjson u "$urls" '{host:"munjiz-qa.github.io",key:"5c1bfa7c282445393076d0ebcaf644ed",keyLocation:"https://munjiz-qa.github.io/5c1bfa7c282445393076d0ebcaf644ed.txt",urlList:$u}')
+          curl -sS -w '\nHTTP %{http_code}\n' -X POST https://api.indexnow.org/indexnow -H 'Content-Type: application/json; charset=utf-8' -d "$body"
