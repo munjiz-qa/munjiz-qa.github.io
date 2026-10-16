@@ -40,7 +40,7 @@ const Remote={
   async call(body){const r=await fetch(CFG.API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)});const j=await r.json();if(!j.ok){if(j.error==='must_change'){showChg();throw new Error(errText(j.error))}if(j.error==='auth'){logout();throw new Error('انتهت الجلسة، سجّل الدخول مرة أخرى')}throw new Error(j.error||'خطأ')}return j},
   async login(u,pw){const j=await this.call({action:'login',username:u,password:pw});sessionStorage.setItem(TKEY,j.token);return j.me},
   async me(){return (await this.call({action:'staffMe',token:this.tok()})).me},
-  async changeOwn(o){return (await this.call(Object.assign({action:'staffPass',token:this.tok()},o))).me},
+  async changeOwn(o){const j=await this.call(Object.assign({action:'staffPass',token:this.tok()},o));if(j.token)sessionStorage.setItem(TKEY,j.token);return j.me},
   async api(action,body){return this.call(Object.assign({action,token:this.tok()},body))},
   tok(){return sessionStorage.getItem(TKEY)},
   async list(){const j=await this.call({action:'list',token:this.tok()});if(j.me)ME=j.me;return j.data},

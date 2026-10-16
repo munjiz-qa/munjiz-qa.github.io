@@ -168,7 +168,7 @@ $('msgF').addEventListener('submit',e=>{e.preventDefault();submit($('msgF'),$('m
   await api('cmsg',{body:b});$('mBody').value='';toast(T.msgSent);await load();pane('msgs')})});
 $('pwF').addEventListener('submit',e=>{e.preventDefault();submit($('pwF'),$('pwErr'),async()=>{
   if($('nPass').value.length<8)throw new Error(T.err.weak_password);if($('nPass').value!==$('nPass2').value)throw new Error(T.mismatch);
-  await api('cpass',{old:$('oPass').value,password:$('nPass').value});$('pwF').reset();toast(T.pwChanged)})});
+  const j=await api('cpass',{old:$('oPass').value,password:$('nPass').value});if(j&&j.token)setToken(j.token);$('pwF').reset();toast(T.pwChanged)})});
 
 // ---- start ----
 acct();
