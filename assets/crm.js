@@ -168,7 +168,7 @@ const FIELDS={qid:'الرقم الشخصي',cr:'السجل التجاري',estCa
 function renderClient(){const c=cli(curClient);if(!c.id){go('cli');return}
   $('cName').textContent=`${c.name} · ${c.id}`;$('cWa').href='https://wa.me/974'+String(c.phone||'').slice(-8);
   $('cInfo').innerHTML=Object.entries(FIELDS).filter(([k])=>c[k]).map(([k,l])=>`<dt>${l}</dt><dd class="${/qid|cr|estCard|taxNo|phone/.test(k)?'num':''}" ${k==='email'?'dir="ltr"':''}>${esc(c[k])}</dd>`).join('')||'<p class="mute">لا توجد بيانات إضافية.</p>';
-  $('cReq').innerHTML=`<p class="pre">${esc(c.requirements||'لا توجد متطلبات مسجلة.')}</p>${c.notes?`<p class="pre mute">${esc(c.notes)}</p>`:''}`;
+  $('cReq').innerHTML=`<p class="pre">${esc(c.requirements||(window.CRM_T||String)('لا توجد متطلبات مسجلة.'))}</p>${c.notes?`<p class="pre mute">${esc(c.notes)}</p>`:''}`;
   const tx=DB.Transactions.filter(t=>t.clientId===c.id).sort((a,b)=>a.created<b.created?1:-1);
   $('cTx').innerHTML=txTable(tx,false);
   const lg=DB.Log.filter(l=>l.clientId===c.id).sort((a,b)=>a.created<b.created?1:-1);
@@ -273,7 +273,7 @@ $('fS').addEventListener('submit',async e=>{if(e.submitter&&e.submitter.value!==
   try{await S.api('staffSave',body);$('dlgS').close();toast(body.password?`تم الحفظ. أرسل للموظف: ${body.username} / ${body.password}`:'تم الحفظ');loadStaff()}catch(err){$('sErr').textContent=errText(err.message)}});
 async function loadStaff(){try{STAFFL=(await S.api('staffUsers',{})).rows}catch(e){return}
   $('staffL').innerHTML=table(['الاسم','المسمى','اسم المستخدم','الدوام','الصلاحيات','الحالة','آخر دخول',''],STAFFL.map(x=>`<tr><td>${esc(x.name)}</td><td>${esc(x.jobTitle||'')}</td><td dir="ltr">${esc(x.username)}</td><td class="num">${esc(x.shiftStart||'')}${x.shiftEnd?' – '+esc(x.shiftEnd):''}</td>
-    <td><small>${x.role==='admin'?'مدير: كاملة':(x.perms.length===PERMS.length?'كاملة':`جزئية (${x.perms.length} من ${PERMS.length})`)}</small></td><td>${esc(x.status)}${x.mustChange?' · <small class="mute">لم يغيّر كلمة المرور المؤقتة</small>':''}</td><td class="num">${esc(x.lastLogin||'')}</td>
+    <td><small>${x.role==='admin'?'مدير: كاملة':(x.perms.length===PERMS.length?'كاملة':`جزئية (${x.perms.length}/${PERMS.length})`)}</small></td><td>${esc(x.status)}${x.mustChange?' · <small class="mute">لم يغيّر كلمة المرور المؤقتة</small>':''}</td><td class="num">${esc(x.lastLogin||'')}</td>
     <td><button class="btn xs ghost" type="button" data-se="${x.id}">تعديل</button></td></tr>`))}
 $('staffL').onclick=e=>{const b=e.target.closest('[data-se]');if(b)openStaff(STAFFL.find(y=>y.id===b.dataset.se))};
 const dstr=d=>{const p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`};

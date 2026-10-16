@@ -66,7 +66,7 @@ const REG=(()=>{try{return JSON.parse(localStorage.getItem('munjiz_client')||'nu
 function tab(sign){$('tLogin').setAttribute('aria-selected',!sign);$('tSign').setAttribute('aria-selected',sign);$('loginF').hidden=sign;$('signF').hidden=!sign}
 $('tLogin').onclick=()=>tab(false);$('tSign').onclick=()=>tab(true);
 // account type: client (this page) or management (the dashboard in crm.html)
-const CRM=(EN?'../':'')+'crm.html';
+const CRM=(EN?'../':'')+'crm.html?lang='+(EN?'en':'ar');
 function acct(){const admin=document.querySelector('input[name=acct]:checked').value==='admin';$('adminF').hidden=!admin;$('clientAuth').hidden=admin;$('noApi').hidden=admin||!!CFG.API}
 document.querySelectorAll('input[name=acct]').forEach(r=>r.onchange=acct);
 if(location.hash==='#admin'){document.querySelector('input[name=acct][value=admin]').checked=true}

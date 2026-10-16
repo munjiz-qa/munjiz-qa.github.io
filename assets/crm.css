@@ -5,6 +5,9 @@
 .tabs button{font:inherit;font-size:14.5px;background:transparent;color:inherit;border:0;border-radius:8px;padding:6px 12px;cursor:pointer;opacity:.9}
 .tabs button[aria-pressed="true"],.tabs button:hover{background:rgba(255,255,255,.14);opacity:1}
 .tabs .ghostbtn{border:1px solid rgba(255,255,255,.35)}
+.langbtn{font:inherit;font-size:14px;background:transparent;color:inherit;border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:5px 12px;cursor:pointer;margin-inline-start:auto}
+.langbtn:hover{background:rgba(255,255,255,.14)}
+.tabs:not([hidden])+.langbtn{margin-inline-start:0}
 .pill{background:var(--amber);color:var(--amber-ink);border-radius:999px;padding:0 7px;font-size:12px;font-weight:700}
 .pill:empty{display:none}
 .modebar{background:var(--amber-soft);border-radius:12px;padding:10px 14px;font-size:14.5px}
