@@ -8,7 +8,7 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fmt=n=>(Number(n)||0).toLocaleString('en-US');
 const T=EN?{
-  err:{invalid:'Please check the highlighted details.',bad_username:'The username must be 4 to 30 English letters or digits (_ and . allowed).',weak_password:'The password must be at least 8 characters.',
+  err:{exists:'You have already rated this transaction. Thank you.',invalid:'Please check the highlighted details.',bad_username:'The username must be 4 to 30 English letters or digits (_ and . allowed).',weak_password:'The password must be at least 8 characters.',
     username_taken:'This username is taken. Please choose another.',phone_has_account:'This mobile number already has an account. Sign in, or message us on WhatsApp to reset the password.',
     must_accept:'Please accept the documents and type your name as a signature.',wrong_login:'The username or password is incorrect.',rate_limited:'Too many attempts. Please try again in an hour.',
     pending:'Your account is waiting for activation. We will call you to confirm your number.',disabled:'This account is currently suspended. Please get in touch with us.',auth:'Your session has ended. Please sign in again.',
@@ -28,7 +28,7 @@ const T=EN?{
   newer:v=>` A newer version (${v}) is available on the legal documents page.`,
   ST:{'نقداً':'Cash','تحويل بنكي':'Bank transfer','بطاقة':'Card','شيك':'Cheque','أخرى':'Other','جديد':'New','تم التواصل':'Contacted','تحوّل إلى معاملة':'Became a transaction','مغلق':'Closed','جديدة':'New','بانتظار المستندات':'Waiting for documents','قيد التقديم':'Being submitted','قيد المتابعة لدى الجهة':'With the authority','بانتظار العميل':'Waiting for you','منجزة':'Completed','ملغاة':'Cancelled'}
 }:{
-  err:{invalid:'يرجى مراجعة البيانات المظللة.',bad_username:'اسم المستخدم من 4 إلى 30 حرفاً إنجليزياً أو رقماً، ويمكن استخدام _ و .',weak_password:'كلمة المرور 8 أحرف على الأقل.',
+  err:{exists:'قيّمت هذه المعاملة من قبل، شكراً لك.',invalid:'يرجى مراجعة البيانات المظللة.',bad_username:'اسم المستخدم من 4 إلى 30 حرفاً إنجليزياً أو رقماً، ويمكن استخدام _ و .',weak_password:'كلمة المرور 8 أحرف على الأقل.',
     username_taken:'اسم المستخدم هذا محجوز، يرجى اختيار اسم آخر.',phone_has_account:'يوجد حساب مسجّل بهذا الرقم. يمكنك الدخول إليه، أو مراسلتنا على واتساب لإعادة تعيين كلمة المرور.',
     must_accept:'يرجى الموافقة على المستندات وكتابة اسمك كتوقيع.',wrong_login:'اسم المستخدم أو كلمة المرور غير صحيحة.',rate_limited:'تعددت المحاولات، يرجى المحاولة مرة أخرى بعد ساعة.',
     pending:'حسابك بانتظار التفعيل، وسنتصل بك للتأكد من رقمك.',disabled:'هذا الحساب موقوف حالياً، يسعدنا تواصلك معنا.',auth:'انتهت الجلسة، يرجى تسجيل الدخول مرة أخرى.',
@@ -129,6 +129,25 @@ const txCols=[[T.th.no,t=>esc(t.id)],[T.th.svc,t=>esc(t.service)],[T.th.st,t=>st
 const pct=t=>{const n=Number(t.progress);return /منجزة/.test(t.status)?100:(t.progress!==''&&t.progress!=null&&!isNaN(n)?n:0)};
 const progCell=t=>/ملغاة/.test(t.status)?'':`<span class="pprog"><i style="width:${pct(t)}%"></i></span> <small class="num">${pct(t)}%</small>`;
 txCols.splice(3,0,[T.th.prog,progCell]);
+// after a transaction is done the client can rate it once; it appears on the site only if they agree and the office approves
+const RV=EN?{col:'Your rating',rate:'Rate this service',title:'How was our service?',lead:'Your opinion helps us improve. It takes a few seconds.',stars:'Your rating',comment:'Your comment (optional)',pub:'I agree to show my rating and first name on the website',send:'Send',cancel:'Cancel',thanks:'Thank you for your rating.',pick:'Choose from 1 to 5 stars.',of:n=>n+' out of 5'}
+ :{col:'تقييمك',rate:'قيّم الخدمة',title:'كيف وجدت خدمتنا؟',lead:'رأيك يساعدنا على التحسن، ولن يأخذ منك إلا ثوانٍ.',stars:'تقييمك',comment:'تعليقك (اختياري)',pub:'أوافق على عرض تقييمي واسمي الأول في الموقع',send:'إرسال',cancel:'إلغاء',thanks:'شكراً لك على تقييمك.',pick:'اختر من نجمة إلى 5 نجوم.',of:n=>n+' من 5'};
+const myRev=id=>((ME&&ME.reviews)||[]).find(r=>r.txnId===id);
+const starTxt=n=>'★★★★★'.slice(0,n)+'☆☆☆☆☆'.slice(0,5-n);
+txCols.push([RV.col,t=>{const r=myRev(t.id);if(r)return `<span class="pstars" aria-label="${RV.of(+r.stars)}">${starTxt(+r.stars||0)}</span>`;
+  return t.status==='منجزة'?`<button type="button" class="btn sm ghost" data-rv="${esc(t.id)}">${RV.rate}</button>`:''}]);
+function reviewDlg(id){let d=$('rvDlg');
+  if(!d){d=document.createElement('dialog');d.id='rvDlg';d.className='pdlg';
+    d.innerHTML=`<form method="dialog" id="rvF"><h3>${RV.title}</h3><p class="mute">${RV.lead}</p><fieldset class="rvstars"><legend>${RV.stars}</legend>${[5,4,3,2,1].map(n=>`<label><input type="radio" name="stars" value="${n}"><span aria-hidden="true">★</span><span class="sr">${RV.of(n)}</span></label>`).join('')}</fieldset>
+      <label>${RV.comment}<textarea name="comment" rows="3" maxlength="600"></textarea></label><label class="chk"><input type="checkbox" name="publish"> ${RV.pub}</label><p class="err" id="rvErr" role="alert"></p>
+      <div class="row"><button class="btn pri" type="submit" value="send">${RV.send}</button><button class="btn ghost" type="button" id="rvX">${RV.cancel}</button></div></form>`;
+    document.body.appendChild(d);$('rvX').onclick=()=>d.close();
+    $('rvF').addEventListener('submit',async e=>{e.preventDefault();const f=$('rvF'),s=+(f.stars.value||0),b=f.querySelector('[type=submit]');
+      if(!s){$('rvErr').textContent=RV.pick;return}busy(b,true);
+      try{const j=await api('creview',{txnId:d.dataset.id,stars:s,comment:f.comment.value,publish:f.publish.checked});ME.reviews=(ME.reviews||[]).concat(j.review);d.close();render();toast(RV.thanks)}
+      catch(err){$('rvErr').textContent=err.message}finally{busy(b,false)}})}
+  d.dataset.id=id;$('rvF').reset();$('rvErr').textContent='';if(d.showModal)d.showModal();else d.setAttribute('open','')}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-rv]');if(b)reviewDlg(b.dataset.rv)});
 const bal=t=>Math.max(0,(+t.fee||0)+(+t.govFee||0)-(+t.paid||0));
 const money=n=>`${fmt(n)} ${T.cur}`;
 const reqCols=[[T.th.no,r=>esc(r.id)],[T.th.date,r=>esc(String(r.created).slice(0,10))],[T.th.services,r=>esc(r.services).replace(/\n/g,'<br>')],[T.th.st,r=>stTag(r.status)]];

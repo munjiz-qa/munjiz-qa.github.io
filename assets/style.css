@@ -567,3 +567,50 @@ html[dir=ltr] .gcard em::after{content:' →'}
 .lsw a:hover{opacity:1;background:rgba(255,255,255,.12)}
 .lsw a[aria-current]{background:var(--navy-ink);color:var(--navy);opacity:1;font-weight:700}
 .lsw .lfull{display:none}
+
+/* home extras: fees promise, tracking, Qatar auctions, client reviews */
+.fee4{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 18px;width:100%}
+.fee4 li{padding-inline-start:26px;position:relative}.fee4 li::before{content:'✓';position:absolute;inset-inline-start:0;top:0;color:var(--pri);font-weight:700}
+.fee4 b{display:block;font-size:15px}.fee4 span{color:var(--mute);font-size:14px}
+.wrap.narrow{max-width:760px}
+.trk{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) auto;gap:12px;align-items:end;margin-top:8px}
+.trk label{display:flex;flex-direction:column;gap:6px;font-weight:600;font-size:14px}
+.trk input{font:inherit;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);min-width:0}
+.trkres{margin-top:14px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px}
+.trkhead{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline;margin-bottom:14px}.trkhead b{font-family:var(--display);font-size:18px;direction:ltr}.trkhead span{color:var(--mute)}
+.trksteps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:6px;counter-reset:st}
+.trksteps li{counter-increment:st;position:relative;padding-top:38px;text-align:center;font-size:13.5px;color:var(--mute)}
+.trksteps li::before{content:counter(st);position:absolute;top:0;inset-inline-start:50%;transform:translateX(50%);width:28px;height:28px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--line);background:var(--surface);font-weight:700;z-index:1}
+html[dir=ltr] .trksteps li::before{transform:translateX(-50%)}
+.trksteps li::after{content:'';position:absolute;top:13px;inset-inline-start:50%;width:100%;height:2px;background:var(--line)}
+.trksteps li:last-child::after{display:none}
+.trksteps li.done{color:var(--ink)}.trksteps li.done::before{content:'✓';background:var(--pri);border-color:var(--pri);color:#fff}.trksteps li.done::after{background:var(--pri)}
+.trksteps li.now{color:var(--ink);font-weight:700}.trksteps li.now::before{border-color:var(--pri);color:var(--pri);box-shadow:0 0 0 4px var(--chip)}
+.trkmsg{margin:14px 0 0;padding:10px 12px;border-radius:10px;background:var(--amber-soft,#fbf3e0)}.trkmeta{margin:12px 0 0;color:var(--mute);font-size:14px}
+.trknote{color:var(--mute);font-size:14px;margin-top:18px}
+.aucta{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 18px}
+.auc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.auc{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.auc h3{font-size:16px;margin:0}.auc p{margin:0;font-size:14px}.auc .aucacc{color:var(--mute)}.auc a{margin-top:auto;padding-top:6px;font-weight:600;color:var(--pri)}
+.auch{margin:26px 0 8px;font-size:17px}
+.auc-news{list-style:none;margin:0;padding:0;display:grid;gap:8px}.auc-news li{display:flex;flex-wrap:wrap;gap:4px 10px;padding:10px 0;border-bottom:1px solid var(--line)}.auc-news span{color:var(--mute);font-size:13px}
+.aucnote{color:var(--mute);font-size:13.5px;margin-top:18px}
+.revs{margin-top:22px}.revs h3{font-size:18px;margin:0 0 10px}
+.rev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.rev{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.rev .stars{color:var(--amber);letter-spacing:2px}.rev blockquote{margin:0;font-size:14.5px}.rev figcaption{color:var(--mute);font-size:13px}
+@media (max-width:700px){.fee4{grid-template-columns:minmax(0,1fr)}.trk{grid-template-columns:minmax(0,1fr)}.trksteps{grid-template-columns:minmax(0,1fr);gap:0}
+  .trksteps li{text-align:start;padding:6px 0 14px;padding-inline-start:40px}.trksteps li::before{inset-inline-start:0;transform:none}html[dir=ltr] .trksteps li::before{transform:none}
+  .trksteps li::after{top:30px;inset-inline-start:13px;width:2px;height:calc(100% - 26px)}}
+/* «حسابي»: rating a finished transaction */
+.pdlg form{padding:22px;display:flex;flex-direction:column;gap:12px}.pdlg h3{margin:0}.pdlg p{margin:0}
+.pdlg label{display:flex;flex-direction:column;gap:6px;font-weight:600}.pdlg textarea{font:inherit;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
+.pdlg label.chk{flex-direction:row;align-items:center;gap:8px;font-weight:400}.pdlg .row{display:flex;gap:10px;flex-wrap:wrap}
+.rvstars{border:0;padding:0;margin:0;display:flex;flex-direction:row-reverse;justify-content:flex-end;gap:4px}.rvstars legend{font-weight:600;margin-bottom:6px;padding:0}
+.rvstars label{cursor:pointer;font-size:30px;line-height:1;color:var(--line);flex-direction:row}.rvstars input{position:absolute;opacity:0;width:1px;height:1px}
+.rvstars label:hover,.rvstars label:hover~label,.rvstars label:has(input:checked),.rvstars label:has(input:checked)~label{color:var(--amber)}
+.rvstars label:has(input:focus-visible){outline:2px solid var(--pri);outline-offset:2px;border-radius:4px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.pstars{color:var(--amber);letter-spacing:1px;white-space:nowrap}
+#trkErr:empty{display:none}.nw{white-space:nowrap}
+.drop.small{min-width:200px}

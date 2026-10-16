@@ -8,7 +8,7 @@ const fmt=n=>(Number(n)||0).toLocaleString('en-US');
 const STATUSES=['جديدة','بانتظار المستندات','قيد التقديم','قيد المتابعة لدى الجهة','بانتظار العميل','منجزة','ملغاة'];
 const CLOSED=['منجزة','ملغاة'];
 const REQ_ST=['جديد','تم التواصل','تحوّل إلى معاملة','مغلق'];
-const SHEETS=['Clients','Transactions','Requests','Log','Accounts','Files','Consents','Credentials','Messages','Tasks','Payments','Expenses','Coa','Journal','Leaves','Payroll','Evals','Budget'];
+const SHEETS=['Clients','Transactions','Requests','Log','Accounts','Files','Consents','Credentials','Messages','Tasks','Payments','Expenses','Coa','Journal','Leaves','Payroll','Evals','Budget','Reviews'];
 const PREFIX={Clients:'C',Transactions:'T',Requests:'R',Log:'L',Accounts:'A',Files:'F',Consents:'K',Credentials:'P',Messages:'M',Tasks:'J',Payments:'Y',Expenses:'E',Coa:'G',Journal:'V',Leaves:'H',Payroll:'Q',Evals:'U',Budget:'B'};
 const EN=window.CRM_LANG==='en',L=(a,e)=>EN?e:a;   // texts built in code; the static page is translated by crm-i18n.js
 const ERR={no_permission:'ليست لديك صلاحية لهذا الإجراء. راجع المدير.',wrong_password:'اسم المستخدم أو كلمة المرور غير صحيحة.',rate_limited:'محاولات كثيرة، حاول بعد ساعة.',weak_password:'كلمة المرور 8 أحرف على الأقل.',bad_username:'اسم المستخدم غير صالح (3 أحرف على الأقل وبدون مسافات).',
@@ -248,7 +248,7 @@ const PERMS=Object.keys(PERM_L);
 const isAdmin=()=>!ME||ME.role==='admin';
 const can=p=>isAdmin()||((ME.perms||[]).includes(p));
 function applyPerms(){const show=(sel,on)=>document.querySelectorAll(sel).forEach(el=>el.hidden=!on);
-  show('#tabTheme',isAdmin());show('#tabCat',isAdmin());
+  show('#tabTheme',isAdmin());show('#tabCat',isAdmin());show('#tabRev',isAdmin());
   show('#tabs [data-tab=req]',can('requests'));show('#tabWork,#newTask',can('assign'));show('#tabs .pf',can('finance'));show('#tabs .ph',can('hr'));show('#tabMgr',isAdmin());show('#tabs [data-tab=msg]',can('messages'));show('#tabEmp',isAdmin());
   show('#newCli,#cEdit',can('clients_edit'));show('#cTxn,#newTx',can('transactions'));show('#cMail',can('email'));show('#cMsgP',can('messages'));
   show('#fileF',can('files'));show('#delT,#delC',can('delete'));show('#delC',isAdmin());

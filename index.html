@@ -27,8 +27,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=20261016p">
-<script src="assets/theme.js?v=20261016p"></script>
+<link rel="stylesheet" href="assets/style.css?v=20261016q">
+<script src="assets/theme.js?v=20261016q"></script>
 </head>
 <body>
 <header class="top"><div class="wrap">
@@ -38,8 +38,7 @@
   <nav id="nav" aria-label="القائمة الرئيسية"><ul class="menu">
     <li class="dd"><button type="button" class="topbtn" aria-expanded="false">الخدمات المساعدة</button><ul class="drop" id="mGov"></ul></li>
     <li><a href="#packages">الباقات</a></li>
-    <li><a href="#how">كيف نعمل</a></li>
-    <li><a href="#faq">الأسئلة الشائعة</a></li>
+    <li class="dd"><button type="button" class="topbtn" aria-expanded="false">المزيد</button><ul class="drop small"><li><a href="#how">كيف نعمل</a></li><li><a href="#track">تابع معاملتك</a></li><li><a href="#auctions">مزادات قطر</a></li><li><a href="#faq">الأسئلة الشائعة</a></li></ul></li>
     <li><a href="about.html">تعرّف إلى منجز</a></li>
     <li><a href="portal.html" class="acct">حسابي</a></li>
     <li><a href="#request" class="navcta">اطلب خدمة</a></li>
@@ -78,16 +77,19 @@
     <a class="tile" href="#how"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="7" cy="16" r="3"/><circle cx="25" cy="7" r="3"/><circle cx="25" cy="25" r="3"/><path d="M10 15l12-7M10 17l12 7"/></svg><b>كيف نعمل</b><span>أربع خطوات من الطلب إلى الإيصال</span></a>
     <a class="tile" href="about.html"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="11" cy="16" r="7"/><circle cx="21" cy="16" r="7"/></svg><b>تعرّف إلى منجز</b><span>أرقامنا وأخبارنا وحكايات من يومنا</span></a>
     <a class="tile" href="#faq"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13"/><path d="M12 12a4 4 0 1 1 5.5 3.7c-1 .5-1.5 1.2-1.5 2.3v1M16 23v.5"/></svg><b>أسئلة شائعة</b><span>الأسعار والرسوم والدفع</span></a>
+    <a class="tile" href="#track"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="6" cy="16" r="3"/><circle cx="16" cy="16" r="3"/><circle cx="26" cy="16" r="3"/><path d="M9 16h4M19 16h4"/></svg><b>تابع معاملتك</b><span>برقم المعاملة وآخر 4 أرقام من جوالك</span></a>
+    <a class="tile" href="#auctions"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 27h14M8 23h8M12 6l8 8M9 9l8 8M7 11l6-6 8 8-6 6zM17 15l10 10"/></svg><b>مزادات قطر</b><span>دليل المنصات الرسمية ومساعدتك في المشاركة</span></a>
     <a class="tile wa" href="https://wa.me/97451600498" target="_blank" rel="noopener"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3z"/><path d="M11 10c0 6 5 11 11 11l1.5-2.5-3-1.5-1.5 1.5c-2-1-3.5-2.5-4.5-4.5L16 12.5 14.5 9.5z"/></svg><b>تواصل على واتساب</b><span><span dir="ltr">+974 51600498</span></span></a>
   </div>
+  <div class="revs" id="revs" hidden><h3>آراء عملائنا</h3><div id="revList" class="rev-grid"></div></div>
   <a class="acctbar" href="portal.html#signup"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="11" r="6"/><path d="M5 28c1.5-6 5.5-9 11-9s9.5 3 11 9"/></svg><span><b>أنشئ حساب شركتك</b>اطلب الخدمات وتابع طلباتك ونزّل ملفاتك وتراخيصك من مكان واحد.</span><i>حسابي</i></a>
 </div></section>
 
 <section class="sec" id="services"><div class="wrap">
   <h2>الخدمات المساعدة</h2>
   <p class="lead">اضغط اسم أي خدمة لترى وصفها والمستندات المطلوبة والمدة التقديرية، وأضف ما تحتاجه إلى حاسبة التكلفة بزر «أضف».</p>
-  <div class="costbox"><b>تعرّف على التكلفة قبل أن نبدأ</b>
-    <div class="cost3"><div><b>أتعاب منجز</b><span>السعر الموضح بجانب كل خدمة ووحدة تسعيرها، بالريال القطري.</span></div><div><b>الرسوم الحكومية</b><span>تُحتسب منفصلة كما تحددها الجهة المختصة.</span></div><div><b>إيصال الرسوم</b><span>نسلّمك الإيصال الرسمي لكل رسم ندفعه نيابةً عنك.</span></div></div>
+  <div class="costbox fees"><b>وعدنا لك في الرسوم</b>
+    <ul class="fee4"><li><b>السعر مكتوب قبل البدء</b><span>نرسل لك عرض السعر مكتوباً، ولا نبدأ إلا بعد موافقتك.</span></li><li><b>أتعابنا منفصلة عن الرسوم الحكومية</b><span>تُدفع الرسوم الحكومية بقيمتها الرسمية كما تحددها الجهة.</span></li><li><b>لا تكلفة إضافية دون موافقتك</b><span>إذا طلبت الجهة رسماً أو عملاً جديداً نخبرك أولاً، ونكمل بعد موافقتك.</span></li><li><b>إيصال لكل رسم</b><span>نسلّمك الإيصال الرسمي لكل رسم ندفعه نيابةً عنك.</span></li></ul>
     <a class="btn sm ghost" href="#prices">قائمة الأسعار الكاملة</a></div>
   <div class="tools">
     <input id="q" class="search" type="search" placeholder="ابحث عن خدمة، مثل: إقامة، سجل، مرور" aria-label="ابحث عن خدمة">
@@ -167,6 +169,25 @@
   <div class="contact"><span>للتواصل المباشر:</span><span class="phone" id="ph">+974 51600498</span><button class="btn sm ghost" id="copyPh" type="button">نسخ الرقم</button><a class="btn sm ghost" href="https://wa.me/97451600498" target="_blank" rel="noopener">فتح واتساب</a><span>أو البريد</span><a href="mailto:munijizqa@gmail.com" dir="ltr">munijizqa@gmail.com</a></div>
 </div></section>
 
+<section class="sec alt" id="track"><div class="wrap narrow">
+  <h2>تابع معاملتك</h2>
+  <p class="lead">اكتب رقم المعاملة أو الطلب كما وصلك منا، مثل <span class="nw" dir="ltr">T-0012</span> أو <span class="nw" dir="ltr">R-0045</span>، وآخر 4 أرقام من الجوال المسجل لدينا. تظهر لك المرحلة الحالية فقط، دون أي بيانات شخصية.</p>
+  <form class="trk" id="trkF" novalidate><label>رقم المعاملة أو الطلب<input id="trkRef" required autocomplete="off" dir="ltr" placeholder="T-0012" maxlength="12"></label><label>آخر 4 أرقام من الجوال<input id="trkPh" required inputmode="numeric" dir="ltr" maxlength="4" placeholder="1234" autocomplete="off"></label><button class="btn pri" type="submit">اعرض المرحلة</button></form>
+  <p class="err" id="trkErr" role="alert"></p>
+  <div id="trkOut" aria-live="polite"></div>
+  <p class="trknote">لتفاصيل أكثر، مثل الملفات والرسائل والمدفوعات، ادخل إلى <a href="portal.html">حسابي</a> أو <a href="https://wa.me/97451600498" target="_blank" rel="noopener">تواصل معنا عبر واتساب</a>.</p>
+</div></section>
+
+<section class="sec" id="auctions"><div class="wrap">
+  <h2>مزادات قطر</h2>
+  <p class="lead">دليل مختصر بالمنصات الرسمية للمزادات في قطر، وما تعرضه كل منصة وكيف تشارك فيها. وإن رغبت، نساعدك في التسجيل وتجهيز التأمين وإجراءات ما بعد الفوز.</p>
+  <div class="aucta"><a class="btn pri" href="#svc=AU-02">نساعدك في التسجيل والمشاركة</a><a class="btn ghost" href="#ent=AU">خدمات المزادات وأسعارها</a></div>
+  <div id="aucList" class="auc-grid"></div>
+  <h3 class="auch" id="aucNewsH" hidden>آخر أخبار المزادات</h3>
+  <ul id="aucNews" class="auc-news" hidden></ul>
+  <p class="aucnote">المعلومات هنا للاطلاع فقط، والمرجع دائماً هو المنصة الرسمية. لا ننسخ بيانات أي منصة، والروابط تفتح الموقع الأصلي.</p>
+</div></section>
+
 <section class="sec alt" id="about"><div class="wrap">
   <h2>تعرّف إلى منجز</h2>
   <p class="slogan">شريكك لإنجاز أعمالك</p>
@@ -179,6 +200,8 @@
   <div class="faq">
     <details><summary>لماذا أسعار منجز أقل؟</summary><p>لأننا نقدّم الطلبات إلكترونياً، فنوفر المشاوير والوقت وننقل هذا التوفير إليك. وإن طلبت الجهة حضورك لفحص أو بصمة، نخبرك بالموعد والتفاصيل مسبقاً.</p></details>
     <details><summary>هل السعر يشمل الرسوم الحكومية؟</summary><p>السعر المذكور هو أتعاب منجز، أما الرسوم الحكومية فتُدفع كما تحددها الجهة، ونرسل لك إيصالها الرسمي.</p></details>
+    <details><summary>كيف أعرف أين وصلت معاملتي؟</summary><p>من «تابع معاملتك» برقم المعاملة وآخر 4 أرقام من جوالك، أو من «حسابي» حيث تجد التفاصيل والملفات، ونطمئنك كذلك عند كل مرحلة مهمة.</p></details>
+    <details><summary>هل تساعدونني في المزادات الحكومية؟</summary><p>نعم. نساعدك في التسجيل في المنصة وتجهيز التأمين وإجراءات ما بعد الفوز. قرار المزايدة ومبلغها يعودان إليك دائماً، ولا يمكن لأحد أن يضمن الفوز.</p></details>
     <details><summary>ماذا يعني «ضمن الباقات»؟</summary><p>الخدمات المعلَّمة بهذه الكلمة تُخصم من رصيد الباقة الشهري، وكل منها يُحسب خدمة واحدة. باقي الخدمات والحزم تُدفع منفصلة مع خصم الباقة.</p></details>
     <details><summary>كيف أطلب عرض سعر؟</summary><p>املأ نموذج الطلب واضغط «إرسال على واتساب» أو «إرسال بالبريد». نرد عليك بالسعر والمستندات المطلوبة قبل البدء.</p></details>
     <details><summary>هل الموافقة مضمونة؟</summary><p>قرار الموافقة ومدتها يعودان إلى الجهة الحكومية المختصة. ما نلتزم به هو تقديم طلبك بدقة ومتابعته وإبلاغك بالنتيجة أولاً بأول.</p></details>
@@ -205,13 +228,14 @@
   <div class="contact"><button class="btn pri" type="submit">ابدأ التصفح</button><button class="btn ghost sm" type="button" id="rNew" hidden>تسجيل عميل جديد</button><button class="btn ghost sm" type="button" id="rSkip">تصفح بدون تسجيل</button><a href="portal.html" class="sm">لديك حساب؟ ادخل إليه</a></div>
 </form></dialog>
 <div class="toast" id="toast" hidden></div>
-<script src="assets/config.js?v=20261016p"></script>
-<script src="assets/data.js?v=20261016p"></script>
-<script src="assets/details.js?v=20261016p"></script>
-<script src="assets/catalog.js?v=20261016p"></script>
-<script src="assets/app.js?v=20261016p"></script>
-<script src="assets/gt.js?v=20261016p"></script>
-<script src="assets/today.js?v=20261016p"></script>
-<script src="assets/ads.js?v=20261016p"></script>
+<script src="assets/config.js?v=20261016q"></script>
+<script src="assets/data.js?v=20261016q"></script>
+<script src="assets/details.js?v=20261016q"></script>
+<script src="assets/catalog.js?v=20261016q"></script>
+<script src="assets/app.js?v=20261016q"></script>
+<script src="assets/gt.js?v=20261016q"></script>
+<script src="assets/today.js?v=20261016q"></script>
+<script src="assets/ads.js?v=20261016q"></script>
+<script src="assets/extras.js?v=20261016q"></script>
 </body>
 </html>
