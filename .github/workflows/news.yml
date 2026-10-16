@@ -1,7 +1,7 @@
-name: Daily Qatar economy news
+name: Daily Qatar business news and market prices
 on:
   schedule:
-    - cron: '15 3,9,15 * * *'
+    - cron: '15 3,7,11,15 * * *'
   workflow_dispatch:
 permissions:
   contents: write
@@ -15,9 +15,10 @@ jobs:
         with:
           node-version: 20
       - run: node scripts/news.mjs
+      - run: node scripts/markets.mjs
       - name: Commit if changed
         run: |
           git config user.name "munjiz-news-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/news.json
-          git diff --cached --quiet || (git commit -m "تحديث أخبار الاقتصاد" && git push)
+          git add data/*.json
+          git diff --cached --quiet || (git commit -m "تحديث أخبار الأعمال وأسعار السوق" && git push)
