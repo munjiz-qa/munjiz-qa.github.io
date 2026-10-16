@@ -1,4 +1,4 @@
-# منجز لخدمات الأعمال | Munjiz Business Services
+# منجز لخدمات الأعمال ذ.م.م | Munjiz Business Services LLC
 
 الموقع الرسمي لمنجز: https://munjiz-qa.github.io (العربية) و https://munjiz-qa.github.io/en/ (English).
 ملفات ثابتة تُنشر تلقائياً على GitHub Pages من الفرع main.
