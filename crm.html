@@ -11,9 +11,9 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect x='4' y='4' width='72' height='72' rx='18' fill='%237a1e3a'/%3E%3Cpath d='M22 42l12 12 24-28' fill='none' stroke='%23b8923a' stroke-width='8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=20261016s">
-<link rel="stylesheet" href="assets/crm.css?v=20261016s">
-<script src="assets/theme.js?v=20261016s"></script>
+<link rel="stylesheet" href="assets/style.css?v=20261016t">
+<link rel="stylesheet" href="assets/crm.css?v=20261016t">
+<script src="assets/theme.js?v=20261016t"></script>
 </head>
 <body class="crm">
 <header class="top"><div class="wrap">
@@ -219,6 +219,7 @@
   <section id="v-hrf" class="view" hidden>
     <div class="bar"><h2>ملفات الموظفين والعقود</h2><span class="sp"></span><button class="btn sm pri" type="button" id="addEmp2">إضافة موظف</button></div>
     <div class="kpis" id="hrK"></div>
+    <div class="bar"><input id="hrQ" type="search" placeholder="ابحث بالاسم أو التخصص أو المهارة" aria-label="بحث في الموظفين"><select id="hrD" aria-label="القسم"><option value="">كل الأقسام</option></select><span class="sp"></span><button class="btn sm ghost" type="button" id="hrCsv">تصدير Excel</button></div>
     <div class="tbl" id="hrT"></div>
   </section>
   <section id="v-leave" class="view" hidden>
@@ -441,6 +442,39 @@
     <label>نهاية الدوام<input name="shiftEnd" type="time"></label>
     <label class="full">أيام العمل<input name="workDays" placeholder="مثال: الأحد إلى الخميس"></label>
     <label>الجنسية<input name="nationality"></label>
+    <fieldset class="full docs hrx"><legend>البيانات الشخصية</legend><div class="g2">
+      <label>الرقم الوظيفي<input name="empNo" dir="ltr" maxlength="30"></label>
+      <label>تاريخ الميلاد<input name="birthDate" type="date"></label>
+      <label>الجنس<select name="gender"><option value="">—</option><option>ذكر</option><option>أنثى</option></select></label>
+      <label>الحالة الاجتماعية<select name="maritalStatus"><option value="">—</option><option>أعزب</option><option>متزوج</option><option>أخرى</option></select></label>
+      <label class="full">العنوان في قطر<input name="address" maxlength="200"></label>
+    </div></fieldset>
+    <fieldset class="full docs hrx"><legend>الوظيفة والتخصص</legend><div class="g2">
+      <label>القسم<input name="department" list="depts" maxlength="80"></label>
+      <label>التخصص<input name="specialty" maxlength="120" placeholder="مثال: معاملات وزارة الداخلية"></label>
+      <label>المؤهل العلمي<input name="qualification" maxlength="160" placeholder="مثال: بكالوريوس إدارة أعمال"></label>
+      <label>اللغات<input name="languages" maxlength="120" placeholder="العربية، الإنجليزية"></label>
+      <label>المدير المباشر<select name="manager"><option value="">—</option></select></label>
+      <label>مكان العمل<input name="workLocation" maxlength="80" placeholder="المكتب الرئيسي، الدوحة"></label>
+      <label>نهاية فترة التجربة<input name="probationEnd" type="date"></label>
+      <label class="full">المهارات<textarea name="skills" rows="2" maxlength="400" placeholder="مثال: أنظمة مطراش وحكومي، متابعة الشركات، خدمة العملاء"></textarea></label>
+      <label class="full">الخبرات السابقة<textarea name="experience" rows="2" maxlength="400"></textarea></label>
+    </div></fieldset>
+    <fieldset class="full docs hrx"><legend>الوثائق وتواريخ انتهائها</legend><div class="g2">
+      <label>انتهاء البطاقة الشخصية<input name="qidExpiry" type="date"></label>
+      <label>رقم جواز السفر<input name="passportNo" dir="ltr" maxlength="30"></label>
+      <label>انتهاء جواز السفر<input name="passportExpiry" type="date"></label>
+      <label>انتهاء الإقامة / تأشيرة العمل<input name="visaExpiry" type="date"></label>
+      <label>انتهاء البطاقة الصحية<input name="healthCardExpiry" type="date"></label>
+      <label>انتهاء رخصة القيادة<input name="licenseExpiry" type="date"></label>
+    </div><p class="mute sm">تصلك تذكرة في رسالة المتابعة اليومية قبل انتهاء أي وثيقة بـ 30 يوماً.</p></fieldset>
+    <fieldset class="full docs hrx"><legend>جهة الاتصال في الطوارئ والبنك</legend><div class="g2">
+      <label>اسم جهة الطوارئ<input name="emergencyName" maxlength="80"></label>
+      <label>صلة القرابة<input name="emergencyRelation" maxlength="40"></label>
+      <label>جوال الطوارئ<input name="emergencyPhone" inputmode="tel" dir="ltr" maxlength="30"></label>
+      <label>البنك<input name="bankName" maxlength="80"></label>
+      <label class="full">رقم الحساب الدولي (IBAN)<input name="iban" dir="ltr" maxlength="40" placeholder="QA00XXXX000000000000000000000"></label>
+    </div></fieldset>
     <label>نوع العقد<select name="contractType"><option value="">—</option><option>دوام كامل</option><option>دوام جزئي</option><option>مؤقت</option><option>تحت التجربة</option></select></label>
     <label>بداية العقد<input name="contractStart" type="date"></label>
     <label>نهاية العقد<input name="contractEnd" type="date"></label>
@@ -456,6 +490,7 @@
   </div>
   <span class="err" id="sErr"></span>
   <div class="contact"><button class="btn pri" value="save">حفظ</button><button class="btn ghost" value="cancel" formnovalidate>إلغاء</button><button class="btn ghost" type="button" id="sGen">كلمة مرور عشوائية</button></div>
+  <datalist id="depts"><option>العلاقات الحكومية</option><option>خدمة العملاء</option><option>المالية والحسابات</option><option>الخدمات المكتبية</option><option>الإدارة</option></datalist>
   <datalist id="jobs"><option>مدير العلاقات الحكومية</option><option>مندوب</option><option>منسق خدمة العملاء</option><option>محاسب</option><option>مستشار</option></datalist>
 </form></dialog>
 <dialog id="dlgK" aria-labelledby="dlgKT"><form class="dlg crmform" id="fK" method="dialog">
@@ -564,16 +599,16 @@
 </form></dialog>
 <div class="toast" id="toast" hidden></div>
 <script>window.CATALOG_ALL=true</script>
-<script src="assets/config.js?v=20261016s"></script>
-<script src="assets/sitetext.js?v=20261016s"></script>
-<script src="assets/data.js?v=20261016s"></script>
-<script src="assets/details.js?v=20261016s"></script>
-<script src="assets/catalog.js?v=20261016s"></script>
-<script src="assets/crm-i18n.js?v=20261016s"></script>
-<script src="assets/crm.js?v=20261016s"></script>
-<script src="assets/crm-catalog.js?v=20261016s"></script>
-<script src="assets/crm-reviews.js?v=20261016s"></script>
-<script src="assets/crm-ads.js?v=20261016s"></script>
-<script src="assets/crm-site.js?v=20261016s"></script>
+<script src="assets/config.js?v=20261016t"></script>
+<script src="assets/sitetext.js?v=20261016t"></script>
+<script src="assets/data.js?v=20261016t"></script>
+<script src="assets/details.js?v=20261016t"></script>
+<script src="assets/catalog.js?v=20261016t"></script>
+<script src="assets/crm-i18n.js?v=20261016t"></script>
+<script src="assets/crm.js?v=20261016t"></script>
+<script src="assets/crm-catalog.js?v=20261016t"></script>
+<script src="assets/crm-reviews.js?v=20261016t"></script>
+<script src="assets/crm-ads.js?v=20261016t"></script>
+<script src="assets/crm-site.js?v=20261016t"></script>
 </body>
 </html>

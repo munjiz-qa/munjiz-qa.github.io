@@ -274,7 +274,10 @@ $('permAll').onclick=()=>permBoxes().forEach(b=>b.checked=true);$('permNone').on
 $('fS').elements.role.onchange=()=>{$('permBox').hidden=$('fS').elements.role.value==='admin'};
 $('sGen').onclick=()=>{$('fS').elements.password.value=genPw()};
 let editS=null;
+const HRK=['empNo','department','specialty','skills','qualification','experience','languages','birthDate','gender','maritalStatus','address','workLocation','manager','probationEnd','qidExpiry','passportNo','passportExpiry','visaExpiry','healthCardExpiry','licenseExpiry','emergencyName','emergencyRelation','emergencyPhone','bankName','iban'];
 function openStaff(x){editS=x||{};const f=$('fS');f.reset();$('sErr').textContent='';
+  f.elements.manager.innerHTML='<option value="">—</option>'+(STAFFL.length?STAFFL:(DB.Staff||[])).filter(y=>y.username!==editS.username).map(y=>`<option value="${esc(y.username)}">${esc(y.name||y.username)}</option>`).join('');
+  HRK.forEach(k=>f.elements[k].value=editS[k]==null?'':editS[k]);
   ['name','jobTitle','username','phone','email','qid','hireDate','shiftStart','shiftEnd','workDays','notes','nationality','contractType','contractStart','contractEnd','salary','allowance','leaveDays'].forEach(k=>f.elements[k].value=editS[k]==null?'':editS[k]);
   f.elements.role.value=editS.role||'staff';f.elements.status.value=editS.status||'مفعّل';
   const ps=editS.id?(editS.perms||[]):['requests','clients_view','transactions','messages','files'];permBoxes().forEach(b=>b.checked=ps.includes(b.value));
@@ -282,7 +285,7 @@ function openStaff(x){editS=x||{};const f=$('fS');f.reset();$('sErr').textConten
   if(!editS.id)f.elements.password.value=genPw();$('sPwHint').textContent=editS.id?'اتركها فارغة للإبقاء على كلمة مروره.':'أرسلها للموظف، وسيغيّرها عند أول دخول.';$('dlgS').showModal()}
 $('addEmp').onclick=()=>openStaff(null);
 $('fS').addEventListener('submit',async e=>{if(e.submitter&&e.submitter.value!=='save')return;e.preventDefault();const f=$('fS').elements,body={};
-  ['name','jobTitle','username','phone','email','qid','hireDate','shiftStart','shiftEnd','workDays','notes','role','status','nationality','contractType','contractStart','contractEnd','salary','allowance','leaveDays'].forEach(k=>body[k]=f[k].value.trim());
+  ['name','jobTitle','username','phone','email','qid','hireDate','shiftStart','shiftEnd','workDays','notes','role','status','nationality','contractType','contractStart','contractEnd','salary','allowance','leaveDays',...HRK].forEach(k=>body[k]=f[k].value.trim());
   if(f.password.value)body.password=f.password.value;body.perms=permBoxes().filter(b=>b.checked).map(b=>b.value);if(editS.id)body.id=editS.id;
   try{await S.api('staffSave',body);$('dlgS').close();toast(body.password?`تم الحفظ. أرسل للموظف: ${body.username} / ${body.password}`:'تم الحفظ');loadStaff();reload()}catch(err){$('sErr').textContent=errText(err.message)}});
 async function loadStaff(){try{STAFFL=(await S.api('staffUsers',{})).rows}catch(e){return}
@@ -678,7 +681,7 @@ function renderFrep(){if(!can('finance'))return;const ys=[...new Set([iso().slic
   const byG={};DB.Transactions.filter(t=>dOnly(t.created).slice(0,4)===Y&&t.status!=='ملغاة').forEach(t=>{const g=(SVC[t.code]||{}).g||L('أخرى','Other');byG[g]=(byG[g]||0)+(+t.fee||0)});const bg=Math.max(1,...Object.values(byG));
   $('frGrp').innerHTML=Object.keys(byG).length?`<ul class="hbars">${Object.entries(byG).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<li><span>${esc(k)}</span><span class="hb"><i style="width:${v/bg*100}%"></i></span><b class="num">${fmt(v)}</b></li>`).join('')}</ul>`:`<p class="mute">${L('لا يوجد.','Nothing yet.')}</p>`}
 let FREP=[];$('frY').onchange=renderFrep;
-const csvOut=(name,head,rows)=>{const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';download(name,'﻿'+[head.map(q).join(','),...rows.map(r=>r.map(q).join(','))].join('\r\n'),'text/csv;charset=utf-8')};
+const csvOut=(name,head,rows)=>{const q=v=>{v=String(v==null?'':v);if(/^[=+\-@\t\r]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"'};download(name,'﻿'+[head.map(q).join(','),...rows.map(r=>r.map(q).join(','))].join('\r\n'),'text/csv;charset=utf-8')};
 $('frCsv').onclick=()=>csvOut(`munjiz-finance-${$('frY').value}.csv`,[L('الشهر','Month'),L('معاملات جديدة','New transactions'),L('الأتعاب','Fees'),L('الرسوم الحكومية','Government fees'),L('المحصّل','Collected'),L('المصروفات','Expenses'),L('صافي الربح','Net profit')],FREP.map(r=>[r.m,r.n,r.fees,r.gov,r.rev,r.cost,r.rev-r.cost]));
 const printView=(id,title)=>printDoc(title,`<h1>${esc(title)}</h1>`+$(id).innerHTML.replace(/<button[^>]*>.*?<\/button>/g,''));
 $('frPrint').onclick=()=>printView('frM',L('التقرير المالي ','Financial report ')+$('frY').value);
@@ -770,13 +773,37 @@ $('tbD').onchange=renderTb;$('tbPrint').onclick=()=>printView('tbT',L('ميزا�
 const canHR=()=>can('hr');
 const yearOf=()=>iso().slice(0,4);
 const annualUsed=u=>DB.Leaves.filter(l=>l.username===u&&l.type==='سنوية'&&l.status==='موافق عليها'&&String(l.from).slice(0,4)===yearOf()).reduce((a,l)=>a+(+l.days||0),0);
-function renderHrf(){if(!canHR())return;const st=DB.Staff||[],soon=x=>{const d=days(x.contractEnd);return d!==null&&d<=30};
-  $('hrK').innerHTML=kpis([[L('الموظفون','Employees'),st.length],[L('إجمالي الرواتب والبدلات شهرياً','Monthly salaries and allowances'),money(st.reduce((a,x)=>a+(+x.salary||0)+(+x.allowance||0),0))],[L('عقود تنتهي خلال 30 يوماً','Contracts ending within 30 days'),st.filter(soon).length,st.some(soon)?'bad':''],[L('في إجازة اليوم','On leave today'),DB.Leaves.filter(l=>l.status==='موافق عليها'&&l.from<=iso()&&l.to>=iso()).length]]);
-  $('hrT').innerHTML=table([L('الموظف','Employee'),L('الجنسية','Nationality'),L('تاريخ التعيين','Hire date'),L('العقد','Contract'),L('نهاية العقد','Contract end'),L('الراتب','Salary'),L('البدلات','Allowances'),L('رصيد الإجازة','Leave balance'),''],st.map(x=>{const d=days(x.contractEnd),bal=(+x.leaveDays||0)-annualUsed(x.username);
-    return `<tr><td><b>${esc(x.name||x.username)}</b><br><small class="mute">${esc(x.jobTitle||'')} · <span dir="ltr">${esc(x.username)}</span></small></td><td>${esc(x.nationality||'')}</td><td class="num">${esc(x.hireDate||'')}</td><td>${esc(x.contractType||'')}${x.contractStart?`<br><small class="num mute">${esc(x.contractStart)}</small>`:''}</td>
-    <td class="num ${d!==null&&d<=30?'bad':''}">${esc(x.contractEnd||'')}${d!==null&&d<=30?`<br><small>${d<0?L('منتهٍ','Expired'):L('بعد '+d+' يوم','in '+d+' days')}</small>`:''}</td><td class="num">${fmt(x.salary)}</td><td class="num">${fmt(x.allowance)}</td><td class="num">${x.leaveDays?bal+' / '+x.leaveDays:''}</td>
-    <td>${isAdmin()?`<button class="btn xs ghost" type="button" data-hre="${esc(x.username)}">${L('تعديل الملف','Edit file')}</button>`:''}</td></tr>`}))}
-$('hrT').addEventListener('click',async e=>{const b=e.target.closest('[data-hre]');if(!b)return;if(!STAFFL.length)await loadStaff();openStaff(STAFFL.find(y=>y.username===b.dataset.hre))});
+// the documents whose expiry the HR file tracks; one that ended or ends within 30 days is flagged
+const HR_DOCS=[['qidExpiry',L('البطاقة الشخصية','QID')],['passportExpiry',L('جواز السفر','Passport')],['visaExpiry',L('الإقامة / التأشيرة','Residence / visa')],['healthCardExpiry',L('البطاقة الصحية','Health card')],['licenseExpiry',L('رخصة القيادة','Driving licence')],['contractEnd',L('العقد','Contract')]];
+const docAlerts=x=>HR_DOCS.map(([k,n])=>({k,n,d:days(x[k]),v:x[k]})).filter(a=>a.d!==null&&a.d<=30);
+function hrList(){const q=$('hrQ').value.trim().toLowerCase(),dp=$('hrD').value;
+  return (DB.Staff||[]).filter(x=>(!dp||x.department===dp)&&(!q||[x.name,x.username,x.jobTitle,x.department,x.specialty,x.skills,x.qualification,x.languages,x.empNo].join(' ').toLowerCase().includes(q)))}
+function renderHrf(){if(!canHR())return;const st=DB.Staff||[],soon=x=>docAlerts(x).length>0;
+  const deps=[...new Set(st.map(x=>x.department).filter(Boolean))].sort(),cur=$('hrD').value;
+  $('hrD').innerHTML=`<option value="">${L('كل الأقسام','All departments')}</option>`+deps.map(d=>`<option${d===cur?' selected':''}>${esc(d)}</option>`).join('');
+  $('hrK').innerHTML=kpis([[L('الموظفون','Employees'),st.length],[L('الأقسام','Departments'),deps.length],[L('إجمالي الرواتب والبدلات شهرياً','Monthly salaries and allowances'),money(st.reduce((a,x)=>a+(+x.salary||0)+(+x.allowance||0),0))],[L('موظفون لديهم وثيقة تنتهي خلال 30 يوماً','Staff with a document ending within 30 days'),st.filter(soon).length,st.some(soon)?'bad':''],[L('في إجازة اليوم','On leave today'),DB.Leaves.filter(l=>l.status==='موافق عليها'&&l.from<=iso()&&l.to>=iso()).length]]);
+  $('hrT').innerHTML=table([L('الموظف','Employee'),L('القسم والتخصص','Department and specialisation'),L('الجنسية','Nationality'),L('تاريخ التعيين','Hire date'),L('العقد','Contract'),L('تنبيهات الوثائق','Document alerts'),L('الراتب','Salary'),L('البدلات','Allowances'),L('رصيد الإجازة','Leave balance'),''],hrList().map(x=>{const al=docAlerts(x),bal=(+x.leaveDays||0)-annualUsed(x.username);
+    return `<tr><td><b>${esc(x.name||x.username)}</b><br><small class="mute">${esc(x.jobTitle||'')}${x.empNo?' · '+esc(x.empNo):''} · <span dir="ltr">${esc(x.username)}</span></small></td>
+    <td>${esc(x.department||'')}${x.specialty?`<br><small class="mute">${esc(x.specialty)}</small>`:''}</td><td>${esc(x.nationality||'')}</td><td class="num">${esc(x.hireDate||'')}</td><td>${esc(x.contractType||'')}${x.contractEnd?`<br><small class="num mute">${L('حتى ','to ')}${esc(x.contractEnd)}</small>`:''}</td>
+    <td>${al.length?al.map(a=>`<small class="bad">${esc(a.n)}: ${a.d<0?L('منتهية','expired'):L('بعد '+a.d+' يوم','in '+a.d+' days')}</small>`).join('<br>'):`<small class="good">✓</small>`}</td>
+    <td class="num">${fmt(x.salary)}</td><td class="num">${fmt(x.allowance)}</td><td class="num">${x.leaveDays?bal+' / '+x.leaveDays:''}</td>
+    <td><div class="acts"><button class="btn xs ghost" type="button" data-hrv="${esc(x.username)}">${L('الملف الكامل','Full file')}</button>${isAdmin()?`<button class="btn xs ghost" type="button" data-hre="${esc(x.username)}">${L('تعديل الملف','Edit file')}</button>`:''}</div></td></tr>`}))}
+$('hrQ').oninput=renderHrf;$('hrD').onchange=renderHrf;
+// one employee's full file, printable
+function hrProfile(x){const row=(k,v)=>v?`<tr><th>${k}</th><td>${esc(v)}</td></tr>`:'',sec=(t,r)=>r.join('')?`<h2>${t}</h2><table class="pf">${r.join('')}</table>`:'';
+  const evs=DB.Evals.filter(e=>e.username===x.username).sort((a,b)=>a.created<b.created?1:-1),lv=DB.Leaves.filter(l=>l.username===x.username&&l.status==='موافق عليها'&&String(l.from).slice(0,4)===yearOf());
+  return `<h1>${esc(x.name||x.username)}</h1><p>${esc(x.jobTitle||'')}${x.department?' · '+esc(x.department):''}</p>`+
+   sec(L('البيانات الشخصية','Personal details'),[row(L('الرقم الوظيفي','Employee no.'),x.empNo),row(L('الجنسية','Nationality'),x.nationality),row(L('تاريخ الميلاد','Date of birth'),x.birthDate),row(L('الجنس','Gender'),x.gender),row(L('الحالة الاجتماعية','Marital status'),x.maritalStatus),row(L('الرقم الشخصي','QID'),x.qid),row(L('الجوال','Mobile'),x.phone),row(L('البريد','Email'),x.email),row(L('العنوان','Address'),x.address)])+
+   sec(L('الوظيفة والتخصص','Job and specialisation'),[row(L('القسم','Department'),x.department),row(L('التخصص','Specialisation'),x.specialty),row(L('المؤهل العلمي','Qualification'),x.qualification),row(L('اللغات','Languages'),x.languages),row(L('المهارات','Skills'),x.skills),row(L('الخبرات السابقة','Previous experience'),x.experience),row(L('المدير المباشر','Line manager'),x.manager?staffName(x.manager):''),row(L('مكان العمل','Work location'),x.workLocation),row(L('تاريخ التعيين','Hire date'),x.hireDate),row(L('نهاية فترة التجربة','Probation ends'),x.probationEnd),row(L('الدوام','Working hours'),x.shiftStart?x.shiftStart+' – '+(x.shiftEnd||''):'')])+
+   sec(L('العقد والراتب','Contract and pay'),[row(L('نوع العقد','Contract type'),x.contractType),row(L('بداية العقد','Contract start'),x.contractStart),row(L('نهاية العقد','Contract end'),x.contractEnd),row(L('الراتب الأساسي','Basic salary'),x.salary!==''&&x.salary!=null?fmt(x.salary):''),row(L('البدلات','Allowances'),x.allowance!==''&&x.allowance!=null?fmt(x.allowance):''),row(L('البنك','Bank'),x.bankName),row('IBAN',x.iban),row(L('الإجازة السنوية','Annual leave'),x.leaveDays?(+x.leaveDays-annualUsed(x.username))+' / '+x.leaveDays:'')])+
+   sec(L('الوثائق','Documents'),[row(L('رقم جواز السفر','Passport no.'),x.passportNo),...HR_DOCS.filter(([k])=>k!=='contractEnd').map(([k,n])=>row(L('انتهاء ','Expiry: ')+n,x[k]?x[k]+((d=>d!==null&&d<=30?(d<0?L(' (منتهية)',' (expired)'):L(' (بعد '+d+' يوم)',' (in '+d+' days)')):'')(days(x[k]))):''))])+
+   sec(L('الطوارئ','Emergency contact'),[row(L('الاسم','Name'),x.emergencyName),row(L('الصلة','Relation'),x.emergencyRelation),row(L('الجوال','Mobile'),x.emergencyPhone)])+
+   sec(L('الإجازات المعتمدة هذه السنة','Approved leave this year'),lv.map(l=>row(l.type+' · '+l.days+L(' يوم',' days'),l.from+' → '+l.to)))+
+   sec(L('التقييمات','Evaluations'),evs.slice(0,5).map(e=>row(e.period,e.total+' / 100')))}
+$('hrCsv').onclick=()=>csvOut('munjiz-staff.csv',[L('الرقم الوظيفي','Employee no.'),L('الاسم','Name'),L('المسمى','Job title'),L('القسم','Department'),L('التخصص','Specialisation'),L('المؤهل','Qualification'),L('المهارات','Skills'),L('الجنسية','Nationality'),L('الجوال','Mobile'),L('البريد','Email'),L('تاريخ التعيين','Hire date'),L('نوع العقد','Contract'),L('نهاية العقد','Contract end'),L('انتهاء البطاقة','QID expiry'),L('انتهاء الجواز','Passport expiry'),L('انتهاء الإقامة','Residence expiry'),L('انتهاء البطاقة الصحية','Health card expiry'),L('الراتب','Salary'),L('البدلات','Allowances')],
+  hrList().map(x=>[x.empNo,x.name,x.jobTitle,x.department,x.specialty,x.qualification,x.skills,x.nationality,x.phone,x.email,x.hireDate,x.contractType,x.contractEnd,x.qidExpiry,x.passportExpiry,x.visaExpiry,x.healthCardExpiry,x.salary,x.allowance]));
+$('hrT').addEventListener('click',async e=>{const v=e.target.closest('[data-hrv]');if(v){const x=(DB.Staff||[]).find(y=>y.username===v.dataset.hrv);if(x)printDoc(L('ملف الموظف: ','Employee file: ')+(x.name||x.username),hrProfile(x));return}
+  const b=e.target.closest('[data-hre]');if(!b)return;if(!STAFFL.length)await loadStaff();openStaff(STAFFL.find(y=>y.username===b.dataset.hre))});
 $('addEmp2').onclick=()=>openStaff(null);
 // leave
 const LV_ST=['بانتظار الموافقة','موافق عليها','مرفوضة'];
