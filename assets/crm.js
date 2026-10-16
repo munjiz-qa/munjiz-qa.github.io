@@ -14,6 +14,8 @@ const ERR={no_permission:'ليست لديك صلاحية لهذا الإجراء
   username_taken:'اسم المستخدم مستخدم من قبل.',must_change_both:'غيّر اسم المستخدم (ليس 123) وكلمة المرور معاً.',admin_only:'هذا الإجراء للمدير فقط.',last_admin:'لا يمكن إيقاف آخر مدير أو تحويله إلى موظف.',
   too_large:'الملف أكبر من 10 ميجابايت.',not_found:'غير موجود.',invalid:'بيانات غير مكتملة.',read_only:'لا يمكن تعديل هذا السجل مباشرة.',must_change:'غيّر بيانات الدخول أولاً.'};
 const errText=e=>ERR[e]||e;
+// a cell starting with = + - @ runs as a formula in Excel; prefix ' unless it is a plain number
+const csvSafe=v=>/^[=+\-@\t\r]/.test(v)&&!/^-?\d+(\.\d+)?$/.test(v)?"'"+v:v;
 function toast(t){const el=$('toast');el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,2200)}
 const today=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
 const days=s=>{if(!s)return null;const d=new Date(s);return isNaN(d)?null:Math.round((d-today())/864e5)};
@@ -293,7 +295,7 @@ function showRep(id){const x=REP.staff.find(y=>y.id===id);if(!x)return;repSel=id
   $('repD').scrollIntoView({behavior:'smooth',block:'start'})}
 $('repT1').onclick=e=>{const b=e.target.closest('[data-rep]');if(b)showRep(b.dataset.rep)};
 $('repGo').onclick=loadRep;
-$('repCsv').onclick=()=>{if(!REP)return;const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+$('repCsv').onclick=()=>{if(!REP)return;const q=v=>'"'+csvSafe(String(v==null?'':v)).replace(/"/g,'""')+'"';
   const rows=[['الموظف','اسم المستخدم','التاريخ','أول دخول','آخر خروج','مدة العمل','تأخر','الإجراءات (الفترة)','معاملات أضافها','معاملات أنجزها','ردود','ملفات'].map(q).join(',')];
   REP.staff.forEach(x=>{(x.days.length?x.days:[{}]).forEach((d,i)=>rows.push([x.name,x.username,d.date||'',d.first||'',d.open?'':d.last||'',d.date?hm(d.minutes):'',d.late?'نعم':'',i?'':x.actions,i?'':x.txCreated,i?'':x.txDone,i?'':x.replies,i?'':x.files].map(q).join(',')))});
   download(`staff-report-${REP.from}-${REP.to}.csv`,'﻿'+rows.join('\r\n'),'text/csv;charset=utf-8')};
@@ -373,7 +375,7 @@ const COLS={Clients:['id','created','name','type','phone','email','qid','cr','es
   Requests:['id','created','name','phone','email','type','plan','services','codes','lang','status','clientId','mailed','notes','updated'],
   Log:['id','created','clientId','txnId','kind','subject','body','by']};
 function download(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.hidden=true;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000)}
-function exportCsv(sheet){const q=v=>{v=v==null?'':String(v);if(sheet==='Transactions'&&v.startsWith('[{'))v=parseDocs(v).map(d=>(d.ok?'✓ ':'✗ ')+d.t).join(' | ');return '"'+v.replace(/"/g,'""')+'"'};
+function exportCsv(sheet){const q=v=>{v=v==null?'':String(v);if(sheet==='Transactions'&&v.startsWith('[{'))v=parseDocs(v).map(d=>(d.ok?'✓ ':'✗ ')+d.t).join(' | ');return '"'+csvSafe(v).replace(/"/g,'""')+'"'};
   const rows=[HEAD[sheet].map(q).join(','),...DB[sheet].map(r=>COLS[sheet].map(c=>q(c==='phone'||c==='qid'?(r[c]?'‎'+r[c]:''):r[c])).join(','))];
   download(`munjiz-${{Clients:'clients',Transactions:'transactions',Requests:'requests',Log:'log'}[sheet]}-${iso()}.csv`,'﻿'+rows.join('\r\n'),'text/csv;charset=utf-8')}
 $('backup').onclick=()=>download(`munjiz-backup-${iso()}.json`,JSON.stringify(DB,null,1),'application/json');
