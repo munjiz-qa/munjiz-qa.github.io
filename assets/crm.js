@@ -78,9 +78,9 @@ const parseDocs=v=>{if(Array.isArray(v))return v;try{return JSON.parse(v||'[]')}
 
 // ---- login / mode ----
 function showMode(){const m=$('modeBar');m.hidden=false;
-  m.innerHTML=CFG.DEMO?'<b>نسخة تجريبية:</b> بيانات تجريبية في هذا المتصفح فقط ولا تصل إلى منجز، والبريد لا يُرسل فعلياً. الإدارة <code>123</code>/<code>123</code> · الموظف <code>sara</code>/<code>Demo1234</code> · <a href="#" onclick="MUNJIZ_DEMO.reset();return false">إعادة البيانات التجريبية</a> · <a href="?demo=0">إنهاء التجربة</a>':CFG.API?'متصل بخادم المكتب. البيانات محفوظة في Google Sheets ويصل الرد بالبريد للعملاء تلقائياً.'
-  :'<a href="?demo=1"><b>جرّب النسخة التجريبية ببيانات جاهزة</b></a> · <b>وضع محلي:</b> البيانات تُحفظ في هذا المتصفح على هذا الجهاز فقط، والبريد يُفتح في برنامج البريد لديك. لتشغيل الحفظ المركزي والرد التلقائي اتبع ملف «اقرأني - تشغيل نظام العملاء». خذ نسخة احتياطية من قسم السجل بانتظام.';
-  m.className='modebar'+(CFG.API&&!CFG.DEMO?' ok':'')}
+  m.innerHTML=CFG.API?'متصل بخادم المكتب. البيانات محفوظة في Google Sheets ويصل الرد بالبريد للعملاء تلقائياً.'
+  :'<b>وضع محلي:</b> البيانات تُحفظ في هذا المتصفح على هذا الجهاز فقط، والبريد يُفتح في برنامج البريد لديك. لتشغيل الحفظ المركزي والرد التلقائي اتبع ملف «اقرأني - تشغيل نظام العملاء». خذ نسخة احتياطية من قسم السجل بانتظام.';
+  m.className='modebar'+(CFG.API?' ok':'')}
 function hideAll(){$('login').hidden=$('chg').hidden=true;$('tabs').hidden=true;document.querySelectorAll('.view').forEach(v=>v.hidden=true)}
 function showLogin(){hideAll();$('login').hidden=false;
   $('loginHint').textContent='اكتب اسم المستخدم وكلمة المرور الخاصين بك.';

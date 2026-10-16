@@ -7,3 +7,6 @@ window.MUNJIZ_CONFIG = {
   PHONE: "+974 51600498",
   EMAIL: "munijizqa@gmail.com"
 };
+
+// الوضع التجريبي أُلغي: نمسح أي بيانات تجريبية بقيت في متصفح زائر سابق
+try{['munjiz_demo','munjiz_demo_db','munjiz_demo_mail'].forEach(k=>localStorage.removeItem(k))}catch(e){}
