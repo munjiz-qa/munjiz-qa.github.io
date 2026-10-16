@@ -11,28 +11,62 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect x='4' y='4' width='72' height='72' rx='18' fill='%237a1e3a'/%3E%3Cpath d='M22 42l12 12 24-28' fill='none' stroke='%23b8923a' stroke-width='8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=20261016o">
-<link rel="stylesheet" href="assets/crm.css?v=20261016o">
+<link rel="stylesheet" href="assets/style.css?v=20261016p">
+<link rel="stylesheet" href="assets/crm.css?v=20261016p">
+<script src="assets/theme.js?v=20261016p"></script>
 </head>
 <body class="crm">
 <header class="top"><div class="wrap">
   <a class="brand" href="./"><svg width="30" height="30" viewBox="0 0 80 80" aria-hidden="true"><rect x="5" y="5" width="70" height="70" rx="18" fill="none" stroke="#b8923a" stroke-width="5"/><path d="M22 42l12 12 24-28" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>لوحة الإدارة</a>
-  <nav class="tabs" id="tabs" hidden aria-label="أقسام لوحة الإدارة">
-    <button type="button" data-tab="dash" aria-pressed="true">لوحة المتابعة</button>
-    <button type="button" data-tab="req">الطلبات <span class="pill num" id="nReq"></span></button>
-    <button type="button" data-tab="cli">العملاء</button>
-    <button type="button" data-tab="txn">المعاملات</button>
-    <button type="button" data-tab="msg">المراسلات <span class="pill num" id="nMsg"></span></button>
-    <button type="button" data-tab="log">السجل</button>
-    <button type="button" data-tab="emp" id="tabEmp" hidden>الموظفون</button>
-    <button type="button" data-tab="set">حسابي</button>
+  <nav class="tabs groups" id="groups" hidden aria-label="أقسام لوحة الإدارة">
+    <button type="button" data-grp="home">الرئيسية</button>
+    <button type="button" data-grp="work">العمل اليومي <span class="pill num" id="nWork"></span></button>
+    <button type="button" data-grp="fin">المالية</button>
+    <button type="button" data-grp="acc">الحسابات</button>
+    <button type="button" data-grp="hr">الموارد البشرية</button>
+    <button type="button" data-grp="set">الإعدادات</button>
     <button type="button" id="logout" class="ghostbtn">خروج</button>
   </nav>
-  <div class="langsw" id="langSw" role="group" aria-label="اللغة · Language" data-notr><button type="button" data-l="ar" lang="ar" title="العربية">ع</button><button type="button" data-l="en" lang="en" title="English">EN</button></div>
 </div></header>
 
 <main class="wrap crm-main">
   <div id="modeBar" class="modebar" hidden></div>
+  <nav class="subnav" id="tabs" hidden aria-label="صفحات القسم">
+    <button type="button" data-tab="mgr" data-g="home" id="tabMgr" hidden>لوحة المدير</button>
+    <button type="button" data-tab="dash" data-g="home">لوحة المتابعة</button>
+    <button type="button" data-tab="my" data-g="work">مهامي <span class="pill num" id="nMy"></span></button>
+    <button type="button" data-tab="req" data-g="work">الطلبات <span class="pill num" id="nReq"></span></button>
+    <button type="button" data-tab="cli" data-g="work">العملاء</button>
+    <button type="button" data-tab="txn" data-g="work">المعاملات</button>
+    <button type="button" data-tab="msg" data-g="work">المراسلات <span class="pill num" id="nMsg"></span></button>
+    <button type="button" data-tab="log" data-g="work">السجل</button>
+    <button type="button" data-tab="fin" data-g="fin" class="pf" hidden>المستحقات والتحصيل</button>
+    <button type="button" data-tab="pays" data-g="fin" class="pf" hidden>سندات القبض</button>
+    <button type="button" data-tab="exps" data-g="fin" class="pf" hidden>المصروفات</button>
+    <button type="button" data-tab="gov" data-g="fin" class="pf" hidden>الرسوم الحكومية</button>
+    <button type="button" data-tab="frep" data-g="fin" class="pf" hidden>التقارير المالية</button>
+    <button type="button" data-tab="coa" data-g="acc" class="pf" hidden>دليل الحسابات</button>
+    <button type="button" data-tab="jrnl" data-g="acc" class="pf" hidden>القيود اليومية</button>
+    <button type="button" data-tab="cbal" data-g="acc" class="pf" hidden>أرصدة العملاء</button>
+    <button type="button" data-tab="pl" data-g="acc" class="pf" hidden>قائمة الدخل</button>
+    <button type="button" data-tab="tb" data-g="acc" class="pf" hidden>ميزان المراجعة</button>
+    <button type="button" data-tab="rep" data-g="acc" class="pf" hidden>التقارير الدورية</button>
+    <button type="button" data-tab="bs" data-g="acc" class="pf" hidden>المركز المالي</button>
+    <button type="button" data-tab="cf" data-g="acc" class="pf" hidden>التدفقات النقدية</button>
+    <button type="button" data-tab="aging" data-g="acc" class="pf" hidden>أعمار الديون</button>
+    <button type="button" data-tab="bud" data-g="acc" class="pf" hidden>الموازنة والفعلي</button>
+    <button type="button" data-tab="close" data-g="acc" class="pf" hidden>الإقفال وسجل التدقيق</button>
+    <button type="button" data-tab="hrf" data-g="hr" class="ph" hidden>ملفات الموظفين والعقود</button>
+    <button type="button" data-tab="emp" data-g="hr" id="tabEmp" hidden>الحضور وحسابات الدخول</button>
+    <button type="button" data-tab="leave" data-g="hr" class="ph" hidden>الإجازات <span class="pill num" id="nLeave"></span></button>
+    <button type="button" data-tab="sal" data-g="hr" class="ph" hidden>الرواتب</button>
+    <button type="button" data-tab="eval" data-g="hr" class="ph" hidden>التقييمات</button>
+    <button type="button" data-tab="work" data-g="hr" id="tabWork" hidden>توزيع المهام</button>
+    <button type="button" data-tab="set" data-g="set">بيانات دخولي</button>
+    <button type="button" data-tab="mine" data-g="set">إجازاتي وراتبي</button>
+    <button type="button" data-tab="cat" data-g="set" id="tabCat" hidden>الخدمات والأسعار</button>
+    <button type="button" data-tab="theme" data-g="set" id="tabTheme" hidden>ألوان الموقع</button>
+  </nav>
 
   <section id="login" class="panel login" hidden>
     <h2>دخول الإدارة والموظفين</h2>
@@ -48,7 +82,7 @@
 
   <section id="chg" class="panel login" hidden>
     <h2>غيّر بيانات الدخول</h2>
-    <p class="mute" id="chgHint">هذا أول دخول. لحماية بيانات العملاء اختر اسم مستخدم وكلمة مرور جديدين بدلاً من بيانات الدخول الأولى.</p>
+    <p class="mute" id="chgHint">هذا أول دخول. لحماية بيانات العملاء اختر اسم مستخدم وكلمة مرور جديدين.</p>
     <form id="chgF" class="stack">
       <label>اسم المستخدم الجديد<input id="cUn" autocomplete="username" dir="ltr" required></label>
       <label>كلمة المرور الجديدة (8 أحرف على الأقل)<input id="cPw" type="password" autocomplete="new-password" dir="ltr" required></label>
@@ -68,6 +102,151 @@
       <div class="panel"><h3>رسائل العملاء التي تنتظر الرد</h3><div id="dMsg"></div></div>
       <div class="panel"><h3>حسابات تنتظر التفعيل</h3><div id="dAcc"></div></div>
     </div>
+  </section>
+
+  <section id="v-mgr" class="view" hidden>
+    <div class="bar"><h2>لوحة المدير</h2><select id="mgP" aria-label="الفترة"><option value="month">هذا الشهر</option><option value="last">الشهر الماضي</option><option value="q">آخر 3 أشهر</option><option value="year">هذه السنة</option><option value="all">كل الفترات</option></select><span class="sp"></span><span class="mute sm" id="mgRange"></span></div>
+    <div class="kpis" id="mgK"></div>
+    <p class="mute sm">الإيراد هو ما حُصّل فعلاً من العملاء في الفترة. التكاليف هي المصروفات المسجلة في قسم «المالية»، ومنها الرسوم الحكومية المدفوعة عن العملاء. صافي الربح = الإيراد − التكاليف.</p>
+    <div class="grid2">
+      <div class="panel"><h3>الإيراد والتكاليف في آخر 6 أشهر</h3><div id="mgM"></div></div>
+      <div class="panel"><h3>المعاملات المفتوحة حسب الحالة</h3><div id="mgSt"></div></div>
+    </div>
+    <div class="panel"><h3>إنجاز الموظفين</h3><div class="tbl" id="mgStaff"></div></div>
+    <div class="grid2">
+      <div class="panel"><h3>أعلى الخدمات أتعاباً في الفترة</h3><div id="mgSvc"></div></div>
+      <div class="panel"><h3>أكبر المبالغ المستحقة على العملاء</h3><div id="mgDue"></div></div>
+    </div>
+  </section>
+
+  <section id="v-my" class="view" hidden>
+    <div class="bar"><h2>مهامي</h2><select id="myF" aria-label="عرض"><option value="open">المفتوحة</option><option value="late">المتأخرة</option><option value="done">المنجزة</option><option value="all">الكل</option></select><span class="sp"></span></div>
+    <div class="kpis" id="myK"></div>
+    <div id="myL" class="wlist"></div>
+  </section>
+
+  <section id="v-work" class="view" hidden>
+    <div class="bar"><h2>توزيع العمل</h2><select id="wkS" aria-label="الموظف"><option value="">كل الموظفين</option><option value="-">غير مكلّف بعد</option></select><select id="wkK" aria-label="النوع"><option value="">كل الأعمال</option><option value="Transactions">المعاملات</option><option value="Tasks">المهام</option><option value="Requests">الطلبات</option></select><span class="sp"></span><button class="btn sm pri" id="newTask" type="button">مهمة جديدة</button></div>
+    <div class="panel"><h3>عبء العمل على كل موظف</h3><div class="tbl" id="wkLoad"></div></div>
+    <div class="tbl" id="wkT"></div>
+  </section>
+
+  <section id="v-fin" class="view" hidden>
+    <div class="bar"><h2>المستحقات والتحصيل</h2><select id="fnP" class="per" aria-label="الفترة"><option value="month">هذا الشهر</option><option value="last">الشهر الماضي</option><option value="q">آخر 3 أشهر</option><option value="year">هذه السنة</option><option value="all">كل الفترات</option></select><span class="sp"></span>
+      <button class="btn sm pri" id="newPay" type="button">تسجيل دفعة</button><button class="btn sm ghost" id="newExp" type="button">إضافة مصروف</button></div>
+    <div class="kpis" id="fnK"></div>
+    <div class="panel"><h3>المستحق على العملاء</h3><div class="tbl" id="fnDue"></div></div>
+  </section>
+  <section id="v-pays" class="view" hidden>
+    <div class="bar"><h2>سندات القبض</h2><select id="pyP" class="per" aria-label="الفترة"><option value="month">هذا الشهر</option><option value="last">الشهر الماضي</option><option value="q">آخر 3 أشهر</option><option value="year">هذه السنة</option><option value="all">كل الفترات</option></select><input id="pyQ" type="search" placeholder="بحث بالعميل أو رقم السند أو المعاملة"><span class="sp"></span><button class="btn sm pri" type="button" data-pay="">تسجيل دفعة</button><button class="btn sm ghost" data-export="Payments" type="button">تصدير Excel</button></div>
+    <div class="kpis" id="pyK"></div>
+    <div class="tbl" id="fnPay"></div>
+  </section>
+  <section id="v-exps" class="view" hidden>
+    <div class="bar"><h2>المصروفات</h2><select id="exP" class="per" aria-label="الفترة"><option value="month">هذا الشهر</option><option value="last">الشهر الماضي</option><option value="q">آخر 3 أشهر</option><option value="year">هذه السنة</option><option value="all">كل الفترات</option></select><select id="exC" aria-label="البند"><option value="">كل البنود</option></select><span class="sp"></span><button class="btn sm pri" type="button" id="newExp2">إضافة مصروف</button><button class="btn sm ghost" data-export="Expenses" type="button">تصدير Excel</button></div>
+    <div class="grid2"><div class="panel"><h3>المصروفات حسب البند</h3><div id="exByC"></div></div><div class="panel"><h3>ملخص</h3><div class="kpis" id="exK"></div></div></div>
+    <div class="tbl" id="fnExp"></div>
+  </section>
+  <section id="v-gov" class="view" hidden>
+    <div class="bar"><h2>الرسوم الحكومية</h2><select id="gvP" class="per" aria-label="الفترة"><option value="month">هذا الشهر</option><option value="last">الشهر الماضي</option><option value="q">آخر 3 أشهر</option><option value="year">هذه السنة</option><option value="all">كل الفترات</option></select><span class="sp"></span></div>
+    <p class="mute sm">لكل معاملة: الرسوم الحكومية المطلوبة من العميل، وما دفعه المكتب فعلاً للجهة (المصروفات من بند «رسوم حكومية مدفوعة عن العميل» المرتبطة بالمعاملة). الفرق الموجب يعني أن على المكتب دفعه للجهة، والسالب أن المكتب دفع أكثر مما طُلب.</p>
+    <div class="kpis" id="gvK"></div>
+    <div class="tbl" id="gvT"></div>
+  </section>
+  <section id="v-frep" class="view" hidden>
+    <div class="bar"><h2>التقارير المالية</h2><select id="frY" aria-label="السنة"></select><span class="sp"></span><button class="btn sm ghost" type="button" id="frCsv">تصدير Excel</button><button class="btn sm ghost" type="button" id="frPrint">طباعة</button></div>
+    <div class="kpis" id="frK"></div>
+    <div class="panel"><h3>الملخص الشهري</h3><div class="tbl" id="frM"></div></div>
+    <div class="grid2"><div class="panel"><h3>التحصيل حسب طريقة الدفع</h3><div id="frMeth"></div></div><div class="panel"><h3>الأتعاب حسب الجهة الحكومية</h3><div id="frGrp"></div></div></div>
+  </section>
+
+  <section id="v-coa" class="view" hidden>
+    <div class="bar"><h2>دليل الحسابات</h2><span class="sp"></span><button class="btn sm pri" type="button" id="newAcc">إضافة حساب</button></div>
+    <p class="mute sm">تُرحَّل الدفعات والمصروفات والرواتب إلى الحسابات تلقائياً. الأرصدة هنا من بداية التشغيل حتى اليوم.</p>
+    <div class="tbl" id="coaT"></div>
+  </section>
+  <section id="v-jrnl" class="view" hidden>
+    <div class="bar"><h2>القيود اليومية</h2><select id="jrP" class="per" aria-label="الفترة"><option value="month">هذا الشهر</option><option value="last">الشهر الماضي</option><option value="q">آخر 3 أشهر</option><option value="year">هذه السنة</option><option value="all">كل الفترات</option></select><select id="jrK" aria-label="النوع"><option value="">كل القيود</option><option value="auto">التلقائية</option><option value="manual">اليدوية</option></select><span class="sp"></span><button class="btn sm pri" type="button" id="newJ">قيد يدوي</button><button class="btn sm ghost" type="button" id="jrCsv">تصدير Excel</button></div>
+    <div id="jrL"></div>
+  </section>
+  <section id="v-cbal" class="view" hidden>
+    <div class="bar"><h2>أرصدة العملاء</h2><input id="cbQ" type="search" placeholder="بحث باسم العميل"><select id="cbF" aria-label="عرض"><option value="due">عليهم مبالغ</option><option value="">كل العملاء</option></select><span class="sp"></span><button class="btn sm ghost" type="button" id="cbCsv">تصدير Excel</button></div>
+    <div class="kpis" id="cbK"></div>
+    <div class="tbl" id="cbT"></div>
+  </section>
+  <section id="v-pl" class="view" hidden>
+    <div class="bar"><h2>قائمة الدخل (الأرباح والخسائر)</h2><select id="plP" class="per" aria-label="الفترة"><option value="month">هذا الشهر</option><option value="last">الشهر الماضي</option><option value="q">آخر 3 أشهر</option><option value="year">هذه السنة</option><option value="all">كل الفترات</option></select><span class="sp"></span><button class="btn sm ghost" type="button" id="plPrint">طباعة</button></div>
+    <div class="panel"><div id="plT"></div></div>
+  </section>
+  <section id="v-tb" class="view" hidden>
+    <div class="bar"><h2>ميزان المراجعة</h2><label class="inl">حتى تاريخ<input type="date" id="tbD"></label><span class="sp"></span><button class="btn sm ghost" type="button" id="tbPrint">طباعة</button></div>
+    <div class="tbl" id="tbT"></div>
+  </section>
+
+  <section id="v-rep" class="view" hidden>
+    <div class="bar"><h2>التقارير الدورية</h2><select id="rpT" aria-label="نوع التقرير"><option value="d">يومي</option><option value="w">أسبوعي</option><option value="m" selected>شهري</option><option value="q">ربع سنوي</option><option value="h">نصف سنوي</option><option value="y">سنوي</option></select><label class="inl">التاريخ<input type="date" id="rpD"></label><button class="btn sm ghost" type="button" id="rpPrev">السابق</button><button class="btn sm ghost" type="button" id="rpNext">التالي</button><span class="sp"></span><button class="btn sm ghost" type="button" id="rpCsv">تصدير Excel</button><button class="btn sm ghost" type="button" id="rpPrint">طباعة أو PDF</button></div>
+    <div id="rpOut" class="stack"></div>
+  </section>
+  <section id="v-bs" class="view" hidden>
+    <div class="bar"><h2>قائمة المركز المالي</h2><label class="inl">في تاريخ<input type="date" id="bsD"></label><span class="sp"></span><button class="btn sm ghost" type="button" id="bsPrint">طباعة أو PDF</button></div>
+    <div class="panel"><div id="bsTbl"></div></div>
+  </section>
+  <section id="v-cf" class="view" hidden>
+    <div class="bar"><h2>قائمة التدفقات النقدية</h2><select id="cfP" class="per" aria-label="الفترة"><option value="month">هذا الشهر</option><option value="last">الشهر الماضي</option><option value="q">آخر 3 أشهر</option><option value="year">هذه السنة</option><option value="all">كل الفترات</option></select><span class="sp"></span><button class="btn sm ghost" type="button" id="cfPrint">طباعة أو PDF</button></div>
+    <div class="panel"><div id="cfT"></div></div>
+  </section>
+  <section id="v-aging" class="view" hidden>
+    <div class="bar"><h2>أعمار الديون على العملاء</h2><span class="sp"></span><button class="btn sm ghost" type="button" id="agCsv">تصدير Excel</button></div>
+    <p class="mute sm">المبالغ غير المحصّلة مصنفة حسب عمر المعاملة من تاريخ إنشائها.</p>
+    <div class="kpis" id="agK"></div>
+    <div class="tbl" id="agT"></div>
+  </section>
+  <section id="v-bud" class="view" hidden>
+    <div class="bar"><h2>الموازنة مقابل الفعلي</h2><select id="bdY" aria-label="السنة"></select><span class="sp"></span><button class="btn sm pri" type="button" id="bdSave">حفظ الموازنة</button></div>
+    <p class="mute sm">اكتب الموازنة السنوية لكل حساب إيرادات أو مصروفات. يُقارن الفعلي من بداية السنة حتى اليوم بالموازنة المتناسبة مع الأشهر المنقضية.</p>
+    <div class="tbl" id="bdT"></div>
+  </section>
+  <section id="v-close" class="view" hidden>
+    <div class="bar"><h2>إقفال الفترات وسجل التدقيق</h2></div>
+    <div class="grid2">
+      <div class="panel"><h3>إقفال الفترة المالية</h3><p class="sm" id="lkNow"></p><p class="mute sm">بعد الإقفال لا يمكن إضافة أو تعديل أو حذف أي دفعة أو مصروف أو قيد بتاريخ يقع في الفترة المقفلة. الإقفال للمدير فقط.</p>
+        <div class="contact"><label class="inl">إقفال حتى<input type="date" id="lkD"></label><button class="btn sm pri" type="button" id="lkGo">إقفال</button><button class="btn sm ghost" type="button" id="lkOpen">فتح كل الفترات</button></div></div>
+      <div class="panel"><h3>ملخص المراجعة</h3><div id="ckL"></div></div>
+    </div>
+    <div class="panel"><div class="bar"><h3>سجل التدقيق المالي</h3><select id="auP" class="per" aria-label="الفترة"><option value="month">هذا الشهر</option><option value="last">الشهر الماضي</option><option value="q">آخر 3 أشهر</option><option value="year">هذه السنة</option><option value="all">كل الفترات</option></select></div><div class="tbl" id="auT"></div></div>
+  </section>
+
+  <section id="v-hrf" class="view" hidden>
+    <div class="bar"><h2>ملفات الموظفين والعقود</h2><span class="sp"></span><button class="btn sm pri" type="button" id="addEmp2">إضافة موظف</button></div>
+    <div class="kpis" id="hrK"></div>
+    <div class="tbl" id="hrT"></div>
+  </section>
+  <section id="v-leave" class="view" hidden>
+    <div class="bar"><h2>الإجازات</h2><select id="lvF" aria-label="الحالة"><option value="بانتظار الموافقة">بانتظار الموافقة</option><option value="">كل الطلبات</option><option value="موافق عليها">موافق عليها</option><option value="مرفوضة">مرفوضة</option></select><span class="sp"></span><button class="btn sm pri" type="button" id="newLv">تسجيل إجازة لموظف</button></div>
+    <div class="panel"><h3>أرصدة الإجازات السنوية لهذه السنة</h3><div class="tbl" id="lvBal"></div></div>
+    <div class="tbl" id="lvT"></div>
+  </section>
+  <section id="v-sal" class="view" hidden>
+    <div class="bar"><h2>الرواتب</h2><label class="inl">الشهر<input type="month" id="slM"></label><span class="sp"></span><button class="btn sm pri" type="button" id="slGen">إعداد رواتب الشهر</button><button class="btn sm ghost" type="button" id="slCsv">تصدير Excel</button></div>
+    <p class="mute sm">يُنشأ لكل موظف مسير بالراتب الأساسي والبدلات من ملفه. عدّل الخصومات ثم اضغط «دفع». الراتب المدفوع يُسجَّل مصروفاً تلقائياً ويُقفل.</p>
+    <div class="kpis" id="slK"></div>
+    <div class="tbl" id="slT"></div>
+  </section>
+  <section id="v-eval" class="view" hidden>
+    <div class="bar"><h2>تقييم الموظفين</h2><span class="sp"></span><button class="btn sm pri" type="button" id="newEv">تقييم جديد</button></div>
+    <div class="tbl" id="evT"></div>
+  </section>
+  <section id="v-mine" class="view" hidden>
+    <div class="bar"><h2>إجازاتي وراتبي</h2></div>
+    <div class="grid2">
+      <div class="panel"><h3>طلب إجازة</h3><form id="myLvF" class="stack">
+        <label>النوع<select name="type"><option>سنوية</option><option>مرضية</option><option>طارئة</option><option>بدون راتب</option><option>أخرى</option></select></label>
+        <div class="g2"><label>من<input type="date" name="from" required></label><label>إلى<input type="date" name="to" required></label></div>
+        <label>ملاحظة<input name="note"></label><span class="err" id="myLvErr"></span><button class="btn sm pri" type="submit">إرسال الطلب</button></form></div>
+      <div class="panel"><h3>رصيدي</h3><div id="myBal"></div></div>
+    </div>
+    <div class="panel"><h3>طلبات إجازاتي</h3><div class="tbl" id="myLv"></div></div>
+    <div class="grid2"><div class="panel"><h3>مسيرات راتبي</h3><div class="tbl" id="mySal"></div></div><div class="panel"><h3>تقييماتي</h3><div id="myEv"></div></div></div>
   </section>
 
   <section id="v-req" class="view" hidden>
@@ -127,6 +306,31 @@
     <div class="tbl" id="msgT"></div>
   </section>
 
+  <section id="v-cat" class="view" hidden>
+    <div class="bar"><h2>الخدمات والأسعار</h2><span class="sp"></span><span class="mute sm" id="ctState"></span>
+      <button class="btn sm pri" type="button" id="ctSave">حفظ ونشر</button><button class="btn sm ghost" type="button" id="ctUndo">تراجع عن التعديلات</button></div>
+    <p class="mute sm">ما تحفظه هنا يظهر لزوار الموقع وفي «حسابي». الخدمة أو الجهة غير المحددة تُخفى عن العملاء وتبقى محفوظة لتعيد إظهارها متى شئت.</p>
+    <div class="panel ctbar"><label>القسم<select id="ctK"><option value="gov">الخدمات المساعدة</option><option value="setup">حزم الخدمات</option><option value="plans">الباقات الشهرية</option></select></label>
+      <label class="grow">بحث<input id="ctQ" type="search" placeholder="اسم الخدمة أو رمزها"></label>
+      <div class="acts"><button class="btn sm ghost" type="button" id="ctAllOn">إظهار كل القسم</button><button class="btn sm ghost" type="button" id="ctAllOff">إخفاء كل القسم</button></div></div>
+    <div class="ctgrid"><div class="panel"><div class="bar"><h3 id="ctGT">الجهات</h3><span class="sp"></span><button class="btn xs pri" type="button" id="ctAddG">إضافة</button></div><ul class="ctgroups" id="ctG"></ul></div>
+      <div class="panel"><div class="bar"><h3 id="ctST"></h3><span class="sp"></span><button class="btn xs ghost" type="button" id="ctGOn">تحديد الكل</button><button class="btn xs ghost" type="button" id="ctGOff">إلغاء الكل</button><button class="btn xs pri" type="button" id="ctAddS">إضافة خدمة</button></div><div class="tbl" id="ctS"></div></div></div>
+    <div class="panel"><h3>نسخة احتياطية</h3><p class="mute sm">احفظ نسخة من القائمة كلها في ملف، أو استرجع نسخة سابقة، أو عد إلى القائمة الأصلية للموقع.</p>
+      <div class="acts"><button class="btn sm ghost" type="button" id="ctExp">تنزيل نسخة (JSON)</button><label class="btn sm ghost">استرجاع نسخة<input type="file" id="ctImp" accept="application/json,.json" hidden></label><button class="btn sm ghost" type="button" id="ctReset">العودة إلى القائمة الأصلية</button></div></div>
+  </section>
+  <section id="v-theme" class="view" hidden>
+    <div class="bar"><h2>ألوان الموقع</h2><span class="sp"></span><span class="mute sm">تظهر الألوان المحفوظة لكل زوار الموقع وفي «حسابي» ولوحة الإدارة.</span></div>
+    <div class="panel"><h3>ألوان جاهزة</h3><div class="swatches" id="thList"></div></div>
+    <div class="grid2">
+      <div class="panel"><h3>ألوان من اختيارك</h3>
+        <div class="stack"><label class="inl">اللون الأساسي (الشريط العلوي والأزرار)<input type="color" id="thP"></label>
+        <label class="inl">لون التمييز (الإبراز والعلامات)<input type="color" id="thA"></label>
+        <p class="sm" id="thCheck"></p></div></div>
+      <div class="panel"><h3>معاينة</h3><div class="thprev" id="thPrev"><div class="thbar"><b>منجز لخدمات الأعمال</b><span>الخدمات · الباقات · حسابي</span></div><div class="thbody"><span class="thbtn">اطلب الخدمة</span><span class="thtag">الأكثر طلباً</span><p>نص تجريبي يوضح شكل الصفحة بالألوان المختارة.</p></div></div></div>
+    </div>
+    <div class="contact"><button class="btn pri" type="button" id="thSave">حفظ الألوان للموقع</button><button class="btn ghost" type="button" id="thReset">الرجوع إلى ألوان منجز الافتراضية</button><span class="err" id="thErr"></span></div>
+  </section>
+
   <section id="v-set" class="view" hidden>
     <div class="grid2">
       <div class="panel"><h3>بيانات دخولي</h3><p class="mute sm" id="meLine"></p>
@@ -180,25 +384,25 @@
     <label class="full">العميل<select name="clientId" required></select></label>
     <label class="full">الخدمة<select name="code" required></select></label>
     <label>الحالة<select name="status"></select></label>
-    <label>المسؤول<input name="assignee" list="assignees"></label>
+    <label>الموظف المسؤول<select name="assignee"></select></label>
     <label>أتعاب منجز (ر.ق)<input name="fee" type="number" min="0"></label>
     <label>الرسوم الحكومية (ر.ق)<input name="govFee" type="number" min="0"></label>
-    <label>المدفوع من العميل (ر.ق)<input name="paid" type="number" min="0"></label>
+    <label>نسبة الإنجاز<span class="prow"><input name="progress" type="range" min="0" max="100" step="5"><output id="tProgV" class="num"></output></span></label>
     <label>رقم الطلب لدى الجهة<input name="govRef"></label>
     <label>تاريخ البدء<input name="startDate" type="date"></label>
     <label>الموعد المتوقع للإنجاز<input name="dueDate" type="date"></label>
     <label>تاريخ انتهاء المستند الناتج (للتذكير بالتجديد)<input name="expiryDate" type="date"></label>
     <label>تاريخ الإغلاق<input name="closed" type="date"></label>
+    <fieldset class="full docs" id="tPayBox"><legend>الرسوم والتحصيل</legend><div id="tPays"></div></fieldset>
     <fieldset class="full docs"><legend>المستندات المطلوبة (علّم ما استُلم)</legend><div id="tDocs"></div><div class="contact"><input id="tDocNew" placeholder="أضف مستنداً آخر"><button class="btn sm ghost" type="button" id="tDocAdd">إضافة</button></div></fieldset>
     <label class="full">ملاحظات<textarea name="notes"></textarea></label>
   </div>
-  <datalist id="assignees"><option>المدير العام</option><option>مدير العلاقات الحكومية</option><option>المندوب</option><option>منسق خدمة العملاء</option></datalist>
   <div class="contact"><button class="btn pri" value="save">حفظ</button><button class="btn ghost" value="cancel" formnovalidate>إلغاء</button><span class="sp"></span><button class="btn ghost danger" type="button" id="delT">حذف المعاملة</button></div>
 </form></dialog>
 
 <dialog id="dlgM" aria-labelledby="dlgMT"><form class="dlg crmform" id="fM" method="dialog">
   <h3 id="dlgMT">إرسال بريد للعميل</h3>
-  <label>القالب<select id="mTpl"></select></label>
+  <div class="g2"><label>القالب<select id="mTpl"></select></label><label>لغة البريد<select id="mLang"><option value="ar">العربية</option><option value="en" lang="en">English</option></select></label></div>
   <label>إلى<input name="to" type="email" dir="ltr" required></label>
   <label>الموضوع<input name="subject" required></label>
   <label>الرسالة<textarea name="body" rows="10" required></textarea></label>
@@ -232,6 +436,13 @@
     <label>بداية الدوام<input name="shiftStart" type="time"></label>
     <label>نهاية الدوام<input name="shiftEnd" type="time"></label>
     <label class="full">أيام العمل<input name="workDays" placeholder="مثال: الأحد إلى الخميس"></label>
+    <label>الجنسية<input name="nationality"></label>
+    <label>نوع العقد<select name="contractType"><option value="">—</option><option>دوام كامل</option><option>دوام جزئي</option><option>مؤقت</option><option>تحت التجربة</option></select></label>
+    <label>بداية العقد<input name="contractStart" type="date"></label>
+    <label>نهاية العقد<input name="contractEnd" type="date"></label>
+    <label>الراتب الأساسي (ر.ق)<input name="salary" type="number" min="0"></label>
+    <label>البدلات الشهرية (ر.ق)<input name="allowance" type="number" min="0"></label>
+    <label>الإجازة السنوية (أيام)<input name="leaveDays" type="number" min="0"></label>
     <label>نوع الحساب<select name="role"><option value="staff">موظف</option><option value="admin">مدير (كل الصلاحيات)</option></select></label>
     <label>الحالة<select name="status"><option>مفعّل</option><option>موقوف</option></select></label>
     <fieldset class="full docs" id="permBox"><legend>الصلاحيات</legend>
@@ -243,12 +454,119 @@
   <div class="contact"><button class="btn pri" value="save">حفظ</button><button class="btn ghost" value="cancel" formnovalidate>إلغاء</button><button class="btn ghost" type="button" id="sGen">كلمة مرور عشوائية</button></div>
   <datalist id="jobs"><option>مدير العلاقات الحكومية</option><option>مندوب</option><option>منسق خدمة العملاء</option><option>محاسب</option><option>مستشار</option></datalist>
 </form></dialog>
+<dialog id="dlgK" aria-labelledby="dlgKT"><form class="dlg crmform" id="fK" method="dialog">
+  <h3 id="dlgKT">مهمة</h3>
+  <div class="g2">
+    <label class="full">المطلوب<input name="title" required placeholder="مثال: استلام أصل السجل من العميل"></label>
+    <label>الموظف المسؤول<select name="assignee" required></select></label>
+    <label>الموعد<input name="due" type="date"></label>
+    <label>العميل (اختياري)<select name="clientId"></select></label>
+    <label>المعاملة (اختياري)<select name="txnId"></select></label>
+    <label>الأولوية<select name="priority"><option>عادية</option><option>عاجلة</option></select></label>
+    <label>الحالة<select name="status"><option>جديدة</option><option>قيد التنفيذ</option><option>منجزة</option><option>ملغاة</option></select></label>
+    <label class="full">نسبة الإنجاز<span class="prow"><input name="progress" type="range" min="0" max="100" step="5"><output id="kProgV" class="num"></output></span></label>
+    <label class="full">التفاصيل والملاحظات<textarea name="notes" rows="3"></textarea></label>
+  </div>
+  <div class="contact"><button class="btn pri" value="save">حفظ</button><button class="btn ghost" value="cancel" formnovalidate>إلغاء</button><span class="sp"></span><button class="btn ghost danger" type="button" id="delK">حذف المهمة</button></div>
+</form></dialog>
+<dialog id="dlgP" aria-labelledby="dlgPT"><form class="dlg crmform" id="fP" method="dialog">
+  <h3 id="dlgPT">تسجيل دفعة من العميل</h3>
+  <div class="g2">
+    <label class="full">المعاملة<select name="txnId" required></select></label>
+    <p class="full sm" id="pBal"></p>
+    <label>المبلغ (ر.ق)<input name="amount" type="number" min="1" step="0.01" required></label>
+    <label>تاريخ الدفع<input name="date" type="date" required></label>
+    <label>طريقة الدفع<select name="method"><option>نقداً</option><option>تحويل بنكي</option><option>بطاقة</option><option>شيك</option><option>أخرى</option></select></label>
+    <label>رقم السند أو المرجع (اختياري)<input name="receiptNo" dir="ltr" placeholder="يُنشأ تلقائياً إن تُرك فارغاً"></label>
+    <label class="full">ملاحظة<input name="note"></label>
+  </div>
+  <span class="err" id="pErr"></span>
+  <div class="contact"><button class="btn pri" value="save">حفظ وطباعة سند القبض</button><button class="btn ghost" value="cancel" formnovalidate>إلغاء</button></div>
+</form></dialog>
+<dialog id="dlgE" aria-labelledby="dlgET"><form class="dlg crmform" id="fE" method="dialog">
+  <h3 id="dlgET">مصروف</h3>
+  <div class="g2">
+    <label>البند<select name="category"><option>رسوم حكومية مدفوعة عن العميل</option><option>رواتب</option><option>إيجار</option><option>مواصلات</option><option>اتصالات وإنترنت</option><option>أدوات ومستلزمات</option><option>تسويق</option><option>أخرى</option></select></label>
+    <label>المبلغ (ر.ق)<input name="amount" type="number" min="1" step="0.01" required></label>
+    <label>التاريخ<input name="date" type="date" required></label>
+    <label>المعاملة المرتبطة (اختياري)<select name="txnId"></select></label>
+    <label>دُفع من<select name="account"><option value="1101">الصندوق (نقداً)</option><option value="1102">البنك</option></select></label>
+    <label class="full">ملاحظة<input name="note"></label>
+  </div>
+  <div class="contact"><button class="btn pri" value="save">حفظ</button><button class="btn ghost" value="cancel" formnovalidate>إلغاء</button><span class="sp"></span><button class="btn ghost danger" type="button" id="delE">حذف</button></div>
+</form></dialog>
+<dialog id="dlgG" aria-labelledby="dlgGT"><form class="dlg crmform" id="fG" method="dialog">
+  <h3 id="dlgGT">حساب في الدليل</h3>
+  <div class="g2"><label>رقم الحساب<input name="code" inputmode="numeric" dir="ltr" required pattern="\d{3,6}"></label><label>النوع<select name="type"><option value="asset">أصول</option><option value="liability">خصوم</option><option value="equity">حقوق الملكية</option><option value="income">إيرادات</option><option value="expense">مصروفات</option></select></label>
+  <label>اسم الحساب بالعربية<input name="name" required></label><label>اسم الحساب بالإنجليزية<input name="nameEn" dir="ltr"></label></div>
+  <span class="err" id="gErr"></span>
+  <div class="contact"><button class="btn pri" value="save">حفظ</button><button class="btn ghost" value="cancel" formnovalidate>إلغاء</button><span class="sp"></span><button class="btn ghost danger" type="button" id="delG">حذف</button></div>
+</form></dialog>
+<dialog id="dlgJ" aria-labelledby="dlgJT"><form class="dlg crmform" id="fJ" method="dialog">
+  <h3 id="dlgJT">قيد يدوي</h3>
+  <div class="g2"><label>التاريخ<input name="date" type="date" required></label><label>المرجع (اختياري)<input name="ref"></label><label class="full">البيان<input name="memo" required placeholder="مثال: إيداع رأس المال في البنك"></label></div>
+  <div class="tbl"><table class="jlines"><thead><tr><th>الحساب</th><th>مدين</th><th>دائن</th><th></th></tr></thead><tbody id="jLines"></tbody><tfoot><tr><th><button class="btn xs ghost" type="button" id="jAdd">إضافة سطر</button></th><th class="num" id="jDr"></th><th class="num" id="jCr"></th><th></th></tr></tfoot></table></div>
+  <span class="err" id="jErr"></span>
+  <div class="contact"><button class="btn pri" value="save">حفظ القيد</button><button class="btn ghost" value="cancel" formnovalidate>إلغاء</button><span class="sp"></span><button class="btn ghost danger" type="button" id="delJ">حذف القيد</button></div>
+</form></dialog>
+<dialog id="dlgL" aria-labelledby="dlgLT"><form class="dlg crmform" id="fL" method="dialog">
+  <h3 id="dlgLT">إجازة</h3>
+  <div class="g2"><label>الموظف<select name="username" required></select></label><label>النوع<select name="type"><option>سنوية</option><option>مرضية</option><option>طارئة</option><option>بدون راتب</option><option>أخرى</option></select></label>
+  <label>من<input name="from" type="date" required></label><label>إلى<input name="to" type="date" required></label>
+  <label>الحالة<select name="status"><option>بانتظار الموافقة</option><option>موافق عليها</option><option>مرفوضة</option></select></label><label>ملاحظة<input name="note"></label></div>
+  <div class="contact"><button class="btn pri" value="save">حفظ</button><button class="btn ghost" value="cancel" formnovalidate>إلغاء</button><span class="sp"></span><button class="btn ghost danger" type="button" id="delL">حذف</button></div>
+</form></dialog>
+<dialog id="dlgSv" aria-labelledby="dlgSvT"><form class="dlg crmform" id="fSv" method="dialog">
+  <h3 id="dlgSvT">خدمة</h3>
+  <div class="grid2"><label>الرمز<input name="c" required pattern="[A-Z]{2}-\d{2}" dir="ltr" placeholder="MC-12"></label><label>الجهة أو المجال<select name="g"></select></label></div>
+  <div class="grid2"><label>الاسم بالعربية<input name="nAr" required></label><label>الاسم بالإنجليزية<input name="nEn" dir="ltr"></label></div>
+  <div class="grid2"><label>السعر (ر.ق)<input name="p" type="number" min="0" step="1" required></label><label class="sv-c">الوحدة بالعربية<input name="uAr" placeholder="للمشروع"></label></div>
+  <div class="grid2 sv-c"><label>الوحدة بالإنجليزية<input name="uEn" dir="ltr" placeholder="per project"></label><label class="chk"><input type="checkbox" name="from"> السعر يبدأ من («من»)</label></div>
+  <div class="grid2"><label class="chk sv-g"><input type="checkbox" name="core"> خدمة رئيسية (ضمن الباقات)</label><label class="chk"><input type="checkbox" name="on" checked> ظاهرة للعملاء</label></div>
+  <div class="grid2"><label>ما نقوم به بالعربية<textarea name="incAr" rows="2"></textarea></label><label>ما نقوم به بالإنجليزية<textarea name="incEn" rows="2" dir="ltr"></textarea></label></div>
+  <div class="grid2"><label>عن الخدمة بالعربية<textarea name="aboutAr" rows="2"></textarea></label><label>عن الخدمة بالإنجليزية<textarea name="aboutEn" rows="2" dir="ltr"></textarea></label></div>
+  <div class="grid2"><label>المستندات المطلوبة بالعربية (سطر لكل مستند)<textarea name="docsAr" rows="4"></textarea></label><label>المستندات المطلوبة بالإنجليزية (سطر لكل مستند)<textarea name="docsEn" rows="4" dir="ltr"></textarea></label></div>
+  <div class="grid2"><label>المدة التقريبية بالعربية<input name="timeAr"></label><label>المدة التقريبية بالإنجليزية<input name="timeEn" dir="ltr"></label></div>
+  <div class="grid2"><label><span class="sv-nl">ملاحظة بالعربية</span><textarea name="noteAr" rows="2"></textarea></label><label><span class="sv-nl">ملاحظة بالإنجليزية</span><textarea name="noteEn" rows="2" dir="ltr"></textarea></label></div>
+  <p class="err" id="svErr"></p>
+  <div class="contact"><button class="btn pri" value="save">حفظ</button><button class="btn ghost" value="cancel" formnovalidate>إلغاء</button><span class="sp"></span><button class="btn ghost danger" type="button" id="svDel">حذف الخدمة</button></div>
+</form></dialog>
+<dialog id="dlgGr" aria-labelledby="dlgGrT"><form class="dlg crmform" id="fGr" method="dialog">
+  <h3 id="dlgGrT">جهة</h3>
+  <div class="grid2"><label>الرمز (حرفان)<input name="code" required pattern="[A-Z]{2}" maxlength="2" dir="ltr" placeholder="MC"></label><label class="chk"><input type="checkbox" name="on" checked> ظاهرة للعملاء</label></div>
+  <div class="grid2"><label>الاسم بالعربية<input name="ar" required></label><label>الاسم بالإنجليزية<input name="en" dir="ltr"></label></div>
+  <div class="grid2 gr-c"><label>نبذة بالعربية<textarea name="aboutAr" rows="2"></textarea></label><label>نبذة بالإنجليزية<textarea name="aboutEn" rows="2" dir="ltr"></textarea></label></div>
+  <p class="err" id="grErr"></p>
+  <div class="contact"><button class="btn pri" value="save">حفظ</button><button class="btn ghost" value="cancel" formnovalidate>إلغاء</button><span class="sp"></span><button class="btn ghost danger" type="button" id="grDel">حذف</button></div>
+</form></dialog>
+<dialog id="dlgPl" aria-labelledby="dlgPlT"><form class="dlg crmform" id="fPl" method="dialog">
+  <h3 id="dlgPlT">باقة شهرية</h3>
+  <div class="grid2"><label>الاسم بالعربية<input name="name" required></label><label>الاسم بالإنجليزية<input name="nameEn" dir="ltr"></label></div>
+  <div class="grid2"><label>عدد الخدمات شهرياً<input name="n" type="number" min="0" required></label><label>السعر الشهري (ر.ق)<input name="m" type="number" min="0" required></label></div>
+  <div class="grid2"><label>السعر السنوي (ر.ق)<input name="y" type="number" min="0" required></label><label>خصم الخدمات الإضافية (%)<input name="extra" type="number" min="0" max="100"></label></div>
+  <div class="grid2"><label>حجم المنشأة بالعربية<input name="staff"></label><label>حجم المنشأة بالإنجليزية<input name="staffEn" dir="ltr"></label></div>
+  <div class="grid2"><label>المزايا بالعربية (سطر لكل ميزة)<textarea name="feat" rows="5"></textarea></label><label>المزايا بالإنجليزية (سطر لكل ميزة)<textarea name="featEn" rows="5" dir="ltr"></textarea></label></div>
+  <div class="grid2"><label class="chk"><input type="checkbox" name="all"> تشمل كل الخدمات الحكومية (لا الرئيسية فقط)</label><label class="chk"><input type="checkbox" name="on" checked> ظاهرة للعملاء</label></div>
+  <p class="err" id="plErr"></p>
+  <div class="contact"><button class="btn pri" value="save">حفظ</button><button class="btn ghost" value="cancel" formnovalidate>إلغاء</button><span class="sp"></span><button class="btn ghost danger" type="button" id="plDel">حذف الباقة</button></div>
+</form></dialog>
+<dialog id="dlgV" aria-labelledby="dlgVT"><form class="dlg crmform" id="fV" method="dialog">
+  <h3 id="dlgVT">تقييم موظف</h3>
+  <div class="g2"><label>الموظف<select name="username" required></select></label><label>الفترة<input name="period" placeholder="مثال: الربع الرابع 2026" required></label></div>
+  <p class="sm mute" id="vAuto"></p>
+  <div class="scores" id="vScores"></div>
+  <label>ملاحظات وتوصيات<textarea name="note" rows="3"></textarea></label>
+  <div class="contact"><button class="btn pri" value="save">حفظ التقييم</button><button class="btn ghost" value="cancel" formnovalidate>إلغاء</button><span class="sp"></span><button class="btn ghost danger" type="button" id="delV">حذف</button></div>
+</form></dialog>
 <div class="toast" id="toast" hidden></div>
-<script src="assets/config.js?v=20261016o"></script>
-<script src="assets/data.js?v=20261016o"></script>
-<script src="assets/details.js?v=20261016o"></script>
-<script src="assets/crm-i18n.js?v=20261016o"></script>
-<script src="assets/crm.js?v=20261016o"></script>
-<script src="assets/crm-ads.js?v=20261016o"></script>
+<script>window.CATALOG_ALL=true</script>
+<script src="assets/config.js?v=20261016p"></script>
+<script src="assets/data.js?v=20261016p"></script>
+<script src="assets/details.js?v=20261016p"></script>
+<script src="assets/catalog.js?v=20261016p"></script>
+<script src="assets/crm-i18n.js?v=20261016p"></script>
+<script src="assets/crm.js?v=20261016p"></script>
+<script src="assets/crm-catalog.js?v=20261016p"></script>
+<script src="assets/crm-ads.js?v=20261016p"></script>
 </body>
 </html>

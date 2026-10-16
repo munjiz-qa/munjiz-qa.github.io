@@ -12,7 +12,8 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect x='4' y='4' width='72' height='72' rx='18' fill='%237a1e3a'/%3E%3Cpath d='M22 42l12 12 24-28' fill='none' stroke='%23b8923a' stroke-width='8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=20261016o">
+<link rel="stylesheet" href="assets/style.css?v=20261016p">
+<script src="assets/theme.js?v=20261016p"></script>
 </head>
 <body class="portal-page">
 <header class="top"><div class="wrap">
@@ -21,28 +22,49 @@
   <div class="langsw" role="group" aria-label="اللغة · Language"><span class="cur" aria-current="true" lang="ar">ع</span><a href="en/portal.html" lang="en" hreflang="en" title="English">EN</a></div>
 </div></header>
 <main class="sec"><div class="wrap portal">
-<div id="noApi" class="pnote" hidden><b>الحسابات تعمل بعد تشغيل نظام العملاء</b><p>نجهّز الآن تشغيل الحسابات. إلى أن يكتمل، اطلب خدماتك وتابعها معنا على واتساب.</p><div class="contact"><a class="btn sm pri" href="https://wa.me/97451600498" target="_blank" rel="noopener">تواصل على واتساب</a></div></div>
+<div id="noApi" class="pnote" hidden><b>الحسابات تعمل بعد تشغيل نظام العملاء</b><p>نعمل حالياً على تجهيز الحسابات، وإلى أن تكتمل يسعدنا استقبال طلباتك ومتابعتها معك على واتساب.</p><div class="pbtns"><a class="btn sm pri" href="https://wa.me/97451600498" target="_blank" rel="noopener">تواصل على واتساب</a></div></div>
 
 <section id="auth">
-  <h2 class="ph1">حسابي</h2>
-  <p class="lead sm">أنشئ حساباً لشركتك أو ادخل إليه لطلب الخدمات ومتابعة طلباتك ومعاملاتك وتنزيل تراخيصك ومستنداتك.</p>
-  <div class="acctype" role="radiogroup" aria-label="نوع الحساب"><span>نوع الحساب</span>
-    <label><input type="radio" name="acct" value="client" checked> عميل</label>
-    <label><input type="radio" name="acct" value="admin"> الإدارة</label></div>
+  <div id="gate">
+  <h1>الدخول إلى منجز</h1>
+  <p class="lead sm">اختر نوع حسابك للمتابعة.</p>
+  <div class="gate">
+    <button type="button" class="gcard" data-gate="client"><svg width="44" height="44" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 21c1-4.5 4.2-7 8-7s7 2.5 8 7" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+      <b>دخول العملاء</b><span>اطلب خدماتك، وتابع معاملاتك ونسبة إنجازها، والرسوم والمدفوعات، وملفاتك وتراخيصك.</span><em>دخول أو إنشاء حساب</em></button>
+    <button type="button" class="gcard staff" data-gate="admin"><svg width="44" height="44" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+      <b>الإدارة والموظفون</b><span>لوحة العمل الداخلية: المهام والمعاملات والمالية والحسابات والموارد البشرية.</span><em>دخول الموظفين</em></button>
+  </div>
+  </div>
+  <div id="gateBack" class="gateback" hidden><button type="button" class="linkbtn" id="gBack">تغيير نوع الحساب</button><b id="gWho"></b></div>
   <form id="adminF" class="panel" hidden novalidate>
-    <p class="full mute sm">دخول المدير والموظفين إلى لوحة الإدارة باسم المستخدم وكلمة المرور الخاصين بكل منهم.</p>
+    <h2 class="full">الإدارة والموظفون</h2>
+    <p class="full mute sm">دخول المدير والموظفين إلى لوحة الإدارة.</p>
     <label class="full">اسم المستخدم<input id="aUser" autocomplete="username" dir="ltr" required></label>
     <label class="full">كلمة المرور<input id="aPass" type="password" autocomplete="current-password" dir="ltr" required></label>
     <span class="err full" id="aErr" role="alert"></span>
     <div class="contact full"><button class="btn pri" type="submit">دخول لوحة الإدارة</button></div>
   </form>
-  <div id="clientAuth">
+  <div id="clientAuth" hidden>
+  <h2>دخول العملاء</h2>
+  <p class="lead sm">أنشئ حساباً لشركتك أو ادخل إليه لطلب الخدمات ومتابعة طلباتك ومعاملاتك وتنزيل تراخيصك ومستنداتك.</p>
   <div class="ptabs" role="tablist"><button type="button" role="tab" id="tLogin" aria-selected="true">دخول</button><button type="button" role="tab" id="tSign" aria-selected="false">إنشاء حساب جديد</button></div>
   <form id="loginF" class="panel" novalidate>
     <label class="full">اسم المستخدم أو رقم الجوال<input id="lUser" autocomplete="username" dir="ltr" required></label>
     <label class="full">كلمة المرور<input id="lPass" type="password" autocomplete="current-password" dir="ltr" required></label>
     <span class="err full" id="lErr" role="alert"></span>
-    <div class="contact full"><button class="btn pri" type="submit">دخول</button><a class="sm" id="forgot" href="https://wa.me/97451600498" target="_blank" rel="noopener">نسيت كلمة المرور؟ راسلنا على واتساب</a></div>
+    <div class="contact full"><button class="btn pri" type="submit">دخول</button><button class="linkbtn sm" type="button" id="forgot">نسيت كلمة المرور؟</button></div>
+  </form>
+  <form id="forgotF" class="panel" hidden novalidate>
+    <h3 class="full">استعادة كلمة المرور</h3>
+    <p class="full mute sm" id="fgP">اكتب اسم المستخدم أو رقم الجوال، وسنرسل رمزاً من 6 أرقام إلى البريد المسجل في حسابك.</p>
+    <label class="full">اسم المستخدم أو رقم الجوال<input id="fUser" autocomplete="username" dir="ltr" required></label>
+    <div class="full g2" id="fgStep2" hidden>
+      <label class="full">الرمز المرسل إلى بريدك<input id="fCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" dir="ltr"></label>
+      <label>كلمة المرور الجديدة<input id="fPass" type="password" autocomplete="new-password" dir="ltr" minlength="8"></label>
+      <label>تأكيد كلمة المرور<input id="fPass2" type="password" autocomplete="new-password" dir="ltr" minlength="8"></label>
+    </div>
+    <span class="err full" id="fErr" role="alert"></span>
+    <div class="contact full"><button class="btn pri" type="submit" id="fBtn">أرسل الرمز</button><button class="linkbtn sm" type="button" id="fBack">رجوع إلى الدخول</button><a class="sm" href="https://wa.me/97451600498" target="_blank" rel="noopener">لا يوجد بريد في حسابك؟ راسلنا على واتساب</a></div>
   </form>
   <form id="signF" class="panel" hidden novalidate>
     <h3 class="full">1. بيانات المسؤول</h3>
@@ -61,8 +83,8 @@
     <label>كلمة المرور<input id="sPass" type="password" autocomplete="new-password" dir="ltr" required><span class="mute sm">8 أحرف على الأقل</span></label>
     <label>تأكيد كلمة المرور<input id="sPass2" type="password" autocomplete="new-password" dir="ltr" required></label>
     <h3 class="full">4. الاتفاقية والتفويض</h3>
-    <div class="legalbox full"><p>بإنشاء الحساب توافق على المستندات التالية، وهي متاحة للقراءة والطباعة في أي وقت:</p><ul><li>اتفاقية الخدمة وشروط الاستخدام</li><li>حدود المسؤولية: لا نتحمل قرارات الجهات الحكومية أو تأخيرها، ولا نتائج البيانات غير الصحيحة</li><li>التفويض بإنجاز المعاملات التي تطلبها نيابة عنك أو عن منشأتك</li><li>البيانات والسرية: لا يطّلع على بياناتك إلا المختص، ولا نبيعها</li></ul><a href="legal.html" target="_blank" rel="noopener">اقرأ المستندات كاملة</a></div>
-    <label class="agree full"><input type="checkbox" id="sOk"> قرأت المستندات وأوافق عليها، وأفوّض منجز لخدمات الأعمال ذ.م.م بإنجاز المعاملات التي أطلبها نيابة عني أو عن المنشأة التي أمثلها.</label>
+    <div class="legalbox full"><p>بإنشاء الحساب توافق على المستندات التالية، وهي متاحة للقراءة والطباعة في أي وقت:</p><ul><li>اتفاقية الخدمة وشروط الاستخدام</li><li>حدود المسؤولية: قرارات الجهات الحكومية ومددها من اختصاصها، ودقة البيانات المقدَّمة مسؤولية مقدّمها</li><li>التفويض بإنجاز المعاملات التي تطلبها نيابة عنك أو عن منشأتك</li><li>البيانات والسرية: بياناتك محفوظة، لا يطّلع عليها إلا الموظف المختص، ولا نبيعها</li></ul><a href="legal.html" target="_blank" rel="noopener">اقرأ المستندات كاملة</a></div>
+    <label class="agree full"><input type="checkbox" id="sOk"><span class="agt">قرأت المستندات وأوافق عليها، وأفوّض منجز لخدمات الأعمال ذ.م.م بإنجاز المعاملات التي أطلبها نيابة عني أو عن المنشأة التي أمثلها.</span></label>
     <label class="full">اكتب اسمك الكامل كتوقيع<input id="sSign" autocomplete="name"></label>
     <input id="sHp" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
     <span class="err full" id="sErr" role="alert"></span>
@@ -72,10 +94,11 @@
 </section>
 
 <section id="dash" hidden>
-  <div class="dhead"><div><h1 id="dName"></h1><p class="mute sm" id="dMeta"></p></div><div class="contact"><button type="button" class="btn sm pri" id="goNew">طلب خدمة جديدة</button><button type="button" class="btn sm ghost" id="dNewCli">تسجيل عميل جديد</button><button type="button" class="btn sm ghost" id="dOut"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h11"/></svg>خروج</button></div></div>
+  <div class="dhead"><div><h2 id="dName" class="h1"></h2><p class="mute sm" id="dMeta"></p></div><div class="contact"><button type="button" class="btn sm pri" id="goNew">طلب خدمة جديدة</button><button type="button" class="btn sm ghost" id="dNewCli">تسجيل عميل جديد</button><button type="button" class="btn sm ghost" id="dOut"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h11"/></svg>خروج</button></div></div>
   <nav class="ptabs scroll" id="dTabs" role="tablist">
     <button type="button" role="tab" data-p="home" aria-selected="true">نظرة عامة</button>
     <button type="button" role="tab" data-p="work" aria-selected="false">طلباتي ومعاملاتي</button>
+    <button type="button" role="tab" data-p="pay" aria-selected="false">الرسوم والمدفوعات</button>
     <button type="button" role="tab" data-p="new" aria-selected="false">طلب خدمة</button>
     <button type="button" role="tab" data-p="files" aria-selected="false">ملفاتي وتراخيصي</button>
     <button type="button" role="tab" data-p="msgs" aria-selected="false">المراسلات</button>
@@ -85,6 +108,7 @@
   </nav>
   <div class="ppanel" id="p-home"><div class="kpis" id="kpis"></div><h3>مستندات تنتهي قريباً</h3><div id="soon"></div><h3>آخر المعاملات</h3><div id="latest"></div></div>
   <div class="ppanel" id="p-work" hidden><h3>معاملاتي</h3><div id="txList"></div><h3>طلباتي</h3><div id="reqList"></div></div>
+  <div class="ppanel" id="p-pay" hidden><div class="kpis" id="payK"></div><h3>الرسوم على معاملاتي</h3><div id="payDue"></div><h3>المدفوعات المسجلة</h3><div id="payList"></div><p class="mute sm">الرسوم الحكومية تُدفع للجهة بإيصالها الرسمي، ونسلّمك أصل الإيصالات مع المستندات. لأي استفسار عن الحساب راسلنا من «المراسلات».</p></div>
   <div class="ppanel" id="p-new" hidden>
     <form id="newF" class="panel" novalidate>
       <p class="full mute sm">اختر الخدمات التي تحتاجها، وسنراجع الطلب ونتواصل معك بقائمة المستندات والسعر النهائي.</p>
@@ -92,7 +116,7 @@
       <div class="full" id="nCart"></div>
       <label class="full">ملاحظات (اختياري)<textarea id="nNotes" placeholder="مثال: السجل ينتهي نهاية الشهر، أو عدد الموظفين"></textarea></label>
       <span class="err full" id="nErr" role="alert"></span>
-      <div class="contact full"><button class="btn pri" type="submit">أرسل الطلب</button><span class="mute sm">لا ترسل مستندات قبل أن نطلبها.</span></div>
+      <div class="contact full"><button class="btn pri" type="submit">أرسل الطلب</button><span class="mute sm">نرجو عدم إرسال أي مستندات حتى نطلبها منك.</span></div>
     </form>
   </div>
   <div class="ppanel" id="p-files" hidden><p class="mute sm">هنا تجد التراخيص والشهادات والإيصالات التي نرفعها لك بعد إنجاز معاملاتك.</p><div id="fileList"></div></div>
@@ -120,7 +144,7 @@
     </form>
   </div>
   <div class="ppanel" id="p-creds" hidden>
-    <div class="pnote"><b>الأفضل: أضفنا مفوَّضاً على البوابة</b><p>كثير من البوابات (مثل مطراش 2 والنافذة الواحدة) تتيح إضافة مندوب أو مستخدم مفوّض بصلاحيات محددة، وهذا أكثر أماناً من مشاركة كلمة المرور. إن لم يكن متاحاً، أضف بيانات الدخول هنا: تُحفظ مشفرة، ولا يراها إلا الموظف المختص عند الحاجة، ويُسجَّل كل اطلاع عليها، ويمكنك حذفها في أي وقت.</p></div>
+    <div class="pnote"><b>الخيار الأفضل: إضافتنا مفوَّضاً على البوابة</b><p>كثير من البوابات (مثل مطراش 2 والنافذة الواحدة) تتيح إضافة مندوب أو مستخدم مفوّض بصلاحيات محددة، وهذا أكثر أماناً من مشاركة كلمة المرور. إن لم يكن متاحاً، أضف بيانات الدخول هنا: تُحفظ مشفرة، ولا يراها إلا الموظف المختص عند الحاجة، ويُسجَّل كل اطلاع عليها، ويمكنك حذفها في أي وقت.</p></div>
     <div id="credList"></div>
     <form id="credF" class="panel" novalidate>
       <h3 class="full">إضافة بيانات دخول بوابة</h3>
@@ -128,7 +152,7 @@
       <label>اسم المستخدم على البوابة<input id="cUser" dir="ltr" autocomplete="off" required></label>
       <label>كلمة المرور على البوابة<input id="cPass" type="password" dir="ltr" autocomplete="new-password" required></label>
       <label class="full">ملاحظة (اختياري)<input id="cNote"></label>
-      <label class="agree full"><input type="checkbox" id="cOk"> أفوّض منجز لخدمات الأعمال ذ.م.م باستخدام هذه البيانات لإنجاز الخدمات التي أطلبها فقط، وأوافق على بند «بيانات الدخول إلى البوابات الحكومية» في المستندات القانونية.</label>
+      <label class="agree full"><input type="checkbox" id="cOk"><span class="agt">أفوّض منجز لخدمات الأعمال ذ.م.م باستخدام هذه البيانات لإنجاز الخدمات التي أطلبها فقط، وأوافق على بند «بيانات الدخول إلى البوابات الحكومية» في المستندات القانونية.</span></label>
       <span class="err full" id="cErr" role="alert"></span>
       <div class="contact full"><button class="btn pri" type="submit">حفظ مشفّراً</button></div>
     </form>
@@ -147,9 +171,10 @@
 </div></main>
 <footer><div class="wrap fc"><b>للتواصل</b><a href="tel:+97451600498" dir="ltr">☎ +974 51600498</a><a href="https://wa.me/97451600498" target="_blank" rel="noopener">واتساب</a><a href="mailto:munijizqa@gmail.com" dir="ltr">✉ munijizqa@gmail.com</a></div><div class="wrap"><span>منجز لخدمات الأعمال ذ.م.م · الدوحة، قطر</span><span><a href="legal.html">المستندات القانونية</a> · <a href="privacy.html">الخصوصية</a></span></div></footer>
 <div class="toast" id="toast" hidden></div>
-<script src="assets/config.js?v=20261016o"></script>
-<script src="assets/data.js?v=20261016o"></script>
-<script src="assets/details.js?v=20261016o"></script>
-<script src="assets/portal.js?v=20261016o"></script>
+<script src="assets/config.js?v=20261016p"></script>
+<script src="assets/data.js?v=20261016p"></script>
+<script src="assets/details.js?v=20261016p"></script>
+<script src="assets/catalog.js?v=20261016p"></script>
+<script src="assets/portal.js?v=20261016p"></script>
 </body>
 </html>

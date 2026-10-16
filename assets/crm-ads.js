@@ -2,8 +2,8 @@
 // تظهر الإعلانات المفعّلة في الصفحة الرئيسية بعلامة «إعلان». الخادم يتحقق من الصلاحية ومن نوع الصورة وحجمها.
 (function(){
 const EN=window.CRM_LANG==='en',L=(a,e)=>EN?e:a,MAXKB=800;
-const tabs=document.getElementById('tabs'),emp=document.getElementById('tabEmp');if(!tabs||!emp)return;
-const btn=document.createElement('button');btn.type='button';btn.dataset.tab='ads';btn.id='tabAds';btn.hidden=true;btn.setAttribute('data-notr','');btn.textContent=L('الإعلانات','Ads');
+const tabs=document.getElementById('tabs'),emp=document.getElementById('tabTheme')||document.getElementById('tabEmp');if(!tabs||!emp)return;
+const btn=document.createElement('button');btn.type='button';btn.dataset.tab='ads';btn.id='tabAds';btn.hidden=true;if(emp.dataset.g)btn.dataset.g=emp.dataset.g;btn.setAttribute('data-notr','');btn.textContent=L('الإعلانات','Ads');
 emp.after(btn);
 new MutationObserver(()=>btn.hidden=emp.hidden).observe(emp,{attributes:true,attributeFilter:['hidden']});btn.hidden=emp.hidden;
 const v=document.createElement('section');v.id='v-ads';v.className='view';v.hidden=true;v.setAttribute('data-notr','');
