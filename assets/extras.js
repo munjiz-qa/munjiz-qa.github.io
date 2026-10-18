@@ -41,9 +41,13 @@ function render(r){const box=el('div','trkres');
 // ---- auctions: official platforms (static file) and news (refreshed twice a day by a GitHub Action) ----
 const list=document.getElementById('aucList');
 if(list){fetch(BASE+'data/auction-platforms.json',{cache:'no-cache'}).then(r=>r.json()).then(d=>{
-    (d.platforms||[]).forEach(p=>{const u=safeUrl(p.url);if(!u)return;const c=el('article','auc');
+    const cats=d.categories||[],seen=new Set();
+    // one heading per category (government, judicial, plates, heritage, markets, tenders, private companies), in the file's order
+    (d.platforms||[]).slice().sort((a,b)=>cats.findIndex(x=>x.id===a.cat)-cats.findIndex(x=>x.id===b.cat)).forEach(p=>{const u=safeUrl(p.url);if(!u)return;
+      const k=cats.find(x=>x.id===p.cat);if(k&&!seen.has(k.id)){seen.add(k.id);list.appendChild(el('h3','auccat',EN?k.en:k.ar))}
+      const c=el('article','auc');
       c.appendChild(el('h3',null,EN?p.en:p.ar));c.appendChild(el('p',null,EN?p.what_en:p.what_ar));
-      c.appendChild(el('p','aucacc',EN?p.access_en:p.access_ar));c.appendChild(extLink(u,L('افتح المنصة الرسمية ↗','Open the official platform ↗')));list.appendChild(c)})}).catch(()=>{});
+      c.appendChild(el('p','aucacc',EN?p.access_en:p.access_ar));c.appendChild(extLink(u,EN?(p.link_en||'Open the official platform ↗'):(p.link_ar||'افتح المنصة الرسمية ↗')));list.appendChild(c)})}).catch(()=>{});
   fetch(BASE+'data/auctions.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(d=>{
     const items=((d&&d[EN?'en':'ar'])||[]).slice(0,8),ul=document.getElementById('aucNews');let n=0;
     items.forEach(x=>{const u=safeUrl(x.url||x.link);if(!u||!x.title)return;const li=el('li');li.appendChild(extLink(u,String(x.title).slice(0,200)));

@@ -1,23 +1,228 @@
 {
- "note": "دليل ثابت بالمنصات الرسمية؛ روابط فقط، دون نسخ أي بيانات من المنصات. راجِع الروابط كل 3 أشهر.",
+ "note": "دليل ثابت بأنواع المزادات في قطر وجهاتها وشركاتها؛ روابط فقط دون نسخ بيانات أي منصة. كل جهة لها رابط خبر يثبتها (src). راجِع الروابط كل 3 أشهر. آخر مراجعة 2026-10-18.",
+ "updated": "2026-10-18",
+ "categories": [
+  {
+   "id": "judicial",
+   "ar": "مزادات قضائية",
+   "en": "Judicial auctions"
+  },
+  {
+   "id": "gov",
+   "ar": "مزادات حكومية",
+   "en": "Government auctions"
+  },
+  {
+   "id": "plates",
+   "ar": "لوحات وأرقام مميزة",
+   "en": "Special plates & numbers"
+  },
+  {
+   "id": "heritage",
+   "ar": "صقور وخيل",
+   "en": "Falcons & horses"
+  },
+  {
+   "id": "markets",
+   "ar": "أسواق الجملة اليومية",
+   "en": "Daily wholesale markets"
+  },
+  {
+   "id": "tenders",
+   "ar": "مناقصات حكومية",
+   "en": "Government tenders"
+  },
+  {
+   "id": "private",
+   "ar": "شركات ومنصات مزادات خاصة",
+   "en": "Private auction companies & platforms"
+  }
+ ],
  "platforms": [
-  {"id":"sjc","ar":"مزادات المجلس الأعلى للقضاء (تطبيق مزادات المحاكم)","en":"Supreme Judiciary Council auctions (Court Mzadat app)",
-   "what_ar":"عقارات وسيارات ومعدات ومجوهرات بأحكام قضائية","what_en":"Court-ordered property, vehicles, equipment and jewellery",
-   "url":"https://www.sjc.gov.qa/","access_ar":"عبر التطبيق، بالبطاقة الشخصية القطرية وتأمين","access_en":"Via the app, with a Qatar ID and a deposit"},
-  {"id":"customs","ar":"مزاد الجمارك (الهيئة العامة للجمارك)","en":"Mazad Al Jomrok (General Authority of Customs)",
-   "what_ar":"بضائع وسيارات وذهب ومصادرات جمركية","what_en":"Customs goods, vehicles, gold and seized items",
-   "url":"https://www.customs.gov.qa/","access_ar":"تطبيق وموقع، بالدخول عبر نظام التوثيق الوطني (توثيق)","access_en":"App and website, login via the National Authentication System"},
-  {"id":"plates","ar":"مزاد أرقام اللوحات المميزة (الإدارة العامة للمرور)","en":"Special number plates (General Directorate of Traffic)",
-   "what_ar":"أرقام لوحات مميزة","what_en":"Special licence plate numbers",
-   "url":"https://portal.moi.gov.qa/","access_ar":"عبر تطبيق مطراش وبوابة وزارة الداخلية في فترات الإعلان","access_en":"Via the Metrash app and MOI portal when announced"},
-  {"id":"municipality","ar":"مزادات السيارات والمعدات المهملة (وزارة البلدية)","en":"Abandoned vehicles and equipment (Ministry of Municipality)",
-   "what_ar":"سيارات ومعدات مهملة","what_en":"Abandoned vehicles and equipment",
-   "url":"https://www.mm.gov.qa/","access_ar":"منصة رقمية بالتعاون مع المجلس الأعلى للقضاء","access_en":"Digital platform run with the Supreme Judiciary Council"},
-  {"id":"monaqasat","ar":"المناقصات الحكومية (منصة مناقصات، وزارة المالية)","en":"Government tenders (Monaqasat, Ministry of Finance)",
-   "what_ar":"مناقصات وممارسات الجهات الحكومية","what_en":"Government tenders and bids",
-   "url":"https://monaqasat.mof.gov.qa/","access_ar":"تسجيل الشركة بسجل تجاري ساري","access_en":"Company registration with a valid CR"},
-  {"id":"mzadqatar","ar":"مزاد قطر (منصة خاصة للإعلانات والمزادات)","en":"Mzad Qatar (private classifieds and auctions)",
-   "what_ar":"سيارات وعقارات وأرقام وسلع بين الأفراد","what_en":"Cars, property, numbers and goods between individuals",
-   "url":"https://mzadqatar.com/","access_ar":"تطبيق وموقع خاص؛ تُتبع شروطه","access_en":"Private app and site; its own terms apply"}
- ]
+  {
+   "id": "sjc",
+   "cat": "judicial",
+   "kind": "gov",
+   "ar": "مزادات المجلس الأعلى للقضاء (تطبيق مزادات المحاكم)",
+   "en": "Supreme Judiciary Council auctions (Court Mzadat app)",
+   "what_ar": "عقارات وسيارات ومعدات ومجوهرات وأرقام لوحات بأحكام قضائية، وبعضها مع النيابة العامة",
+   "what_en": "Court-ordered property, vehicles, equipment, jewellery and plate numbers, some with the Public Prosecution",
+   "url": "https://www.sjc.gov.qa/",
+   "access_ar": "عبر تطبيق مزادات المحاكم، بالبطاقة الشخصية القطرية وتأمين",
+   "access_en": "Via the Court Mzadat app, with a Qatar ID and a deposit",
+   "src": "https://marhaba.qa/seized-gold-jewellery-to-be-auctioned-via-court-mzadat-app-on-22-april-2026/"
+  },
+  {
+   "id": "prosecution",
+   "cat": "judicial",
+   "kind": "gov",
+   "ar": "مزادات المضبوطات (النيابة العامة مع المجلس الأعلى للقضاء)",
+   "en": "Seized items (Public Prosecution with the Supreme Judiciary Council)",
+   "what_ar": "سيارات مصادرة وأرقام لوحات مميزة ومضبوطات",
+   "what_en": "Confiscated vehicles, special plate numbers and seized items",
+   "url": "https://www.sjc.gov.qa/",
+   "access_ar": "عبر تطبيق مزادات، في مواعيد يعلنها المجلس",
+   "access_en": "Via the Mzadat app on announced dates",
+   "src": "https://thepeninsulaqatar.com/article/14/09/2025/vehicles-number-plates-up-for-auction-on-wednesday"
+  },
+  {
+   "id": "customs",
+   "cat": "gov",
+   "kind": "gov",
+   "ar": "مزاد الجمارك (الهيئة العامة للجمارك)",
+   "en": "Mazad Al Jomrok (General Authority of Customs)",
+   "what_ar": "سيارات وأثاث وإلكترونيات وذهب وبضائع جمركية",
+   "what_en": "Cars, furniture, electronics, gold and customs goods",
+   "url": "https://www.customs.gov.qa/",
+   "access_ar": "تطبيق مزاد الجمارك، بالدخول عبر نظام التوثيق الوطني (توثيق) والبطاقة القطرية",
+   "access_en": "Mazad Al Jomrok app, login via the National Authentication System with a Qatar ID",
+   "src": "https://qna.org.qa/en/News-Area/News/2025-7/2/100-lots-of-goods-to-be-auctioned-digitally-via-mazad-al-jomrok-platform"
+  },
+  {
+   "id": "moi-impound",
+   "cat": "gov",
+   "kind": "gov",
+   "ar": "السيارات المحجوزة (الإدارة العامة للمرور، تطبيق سوم)",
+   "en": "Impounded vehicles (Traffic Department, Soum app)",
+   "what_ar": "سيارات محجوزة، مع معاينة في ساحة الحجز بالمنطقة الصناعية",
+   "what_en": "Impounded vehicles, with inspection at the Industrial Area impound yard",
+   "url": "https://portal.moi.gov.qa/",
+   "access_ar": "عبر تطبيق سوم التابع لوزارة الداخلية",
+   "access_en": "Via the Ministry of Interior's Soum app",
+   "src": "https://thepeninsulaqatar.com/article/07/10/2026/qatar-traffic-announces-online-auction-of-impounded-vehicles-via-soum-app"
+  },
+  {
+   "id": "municipality",
+   "cat": "gov",
+   "kind": "gov",
+   "ar": "السيارات والمعدات المهملة (وزارة البلدية)",
+   "en": "Abandoned vehicles and equipment (Ministry of Municipality)",
+   "what_ar": "سيارات ومعدات مهملة تُرفع من الطرق والمناطق",
+   "what_en": "Abandoned vehicles and equipment removed from roads and sites",
+   "url": "https://www.mm.gov.qa/",
+   "access_ar": "عبر تطبيق مزادات المحاكم بالتعاون مع المجلس الأعلى للقضاء",
+   "access_en": "Via the Court Mzadat app with the Supreme Judiciary Council",
+   "src": "https://thepeninsulaqatar.com/article/21/09/2026/abandoned-vehicles-equipment-to-be-auctioned-on-court-mzadat-app"
+  },
+  {
+   "id": "plates",
+   "cat": "plates",
+   "kind": "gov",
+   "ar": "مزاد أرقام اللوحات المميزة (الإدارة العامة للمرور)",
+   "en": "Special number plates (General Directorate of Traffic)",
+   "what_ar": "أرقام لوحات مميزة على فئات، بتأمين حسب الفئة",
+   "what_en": "Special plate numbers in groups, with a deposit by group",
+   "url": "https://portal.moi.gov.qa/",
+   "access_ar": "عبر تطبيق مطراش في فترات الإعلان",
+   "access_en": "Via the Metrash app when announced",
+   "src": "https://thepeninsulaqatar.com/article/23/01/2023/traffic-department-begins-auction-for-special-number-plates"
+  },
+  {
+   "id": "falcons",
+   "cat": "heritage",
+   "kind": "gov",
+   "ar": "مزاد الصقور في معرض سهيل (كتارا)",
+   "en": "Falcon auction at S'hail (Katara)",
+   "what_ar": "صقور نادرة يختارها فريق مختص، مزاد يومي حضوري كل سبتمبر",
+   "what_en": "Rare falcons chosen by a specialist panel, daily in-person bidding each September",
+   "url": "https://www.katara.net/",
+   "access_ar": "حضورياً في كتارا خلال المعرض",
+   "access_en": "In person at Katara during the exhibition",
+   "src": "https://www.gulf-times.com/article/733122/qatar/shail-2026-auction-draws-big-crowds-to-katara"
+  },
+  {
+   "id": "horses",
+   "cat": "heritage",
+   "kind": "gov",
+   "ar": "مزادات الخيل العربية الأصيلة (نادي قطر للسباق والفروسية)",
+   "en": "Purebred Arabian horse auctions (Qatar Racing and Equestrian Club)",
+   "what_ar": "خيل عربية أصيلة للعرض والسباق، عدة مزادات في الموسم بالشقب",
+   "what_en": "Purebred Arabian show and racing horses, several sales each season at Al Shaqab",
+   "url": "https://www.qrec.gov.qa/",
+   "access_ar": "حضورياً في الشقب حسب إعلان النادي",
+   "access_en": "In person at Al Shaqab as announced by the club",
+   "src": "https://s.thepeninsula.qa/article/04/11/2025/qrec-to-organise-auction-for-purebred-arabian-show-horses"
+  },
+  {
+   "id": "fish",
+   "cat": "markets",
+   "kind": "gov",
+   "ar": "مزاد السمك في السوق المركزي بأم صلال",
+   "en": "Fish auction at the Umm Salal central market",
+   "what_ar": "مزاد يومي على صيد الأسماك المحلي بإشراف وزارة التجارة والصناعة",
+   "what_en": "Daily auction of the local catch, supervised by the Ministry of Commerce and Industry",
+   "url": "https://www.moci.gov.qa/",
+   "access_ar": "حضورياً في السوق المركزي",
+   "access_en": "In person at the central market",
+   "src": "https://www.qatar-tribune.com/article/95151/latest-news/fish-auction-at-central-market-in-umm-salal-to-be-conducted-in-evenings"
+  },
+  {
+   "id": "produce",
+   "cat": "markets",
+   "kind": "gov",
+   "ar": "مزاد الخضار والفواكه في سوق السيلية المركزي",
+   "en": "Fruit and vegetable auction at Al Sailiya central market",
+   "what_ar": "مزاد جملة للخضار والفواكه المحلية والمستوردة، تديره أسواق التابعة لحصاد",
+   "what_en": "Wholesale auction of local and imported produce, run by Aswaq (Hassad)",
+   "url": "https://www.hassad.com/",
+   "access_ar": "حضورياً للتجار في السوق",
+   "access_en": "In person for traders at the market",
+   "src": "https://www.qatar-tribune.com/article/180860/BUSINESS/Al-Sailiya-Central-Market--begins-full-fledged-ops"
+  },
+  {
+   "id": "monaqasat",
+   "cat": "tenders",
+   "kind": "gov",
+   "ar": "المناقصات الحكومية (منصة مناقصات، وزارة المالية)",
+   "en": "Government tenders (Monaqasat, Ministry of Finance)",
+   "what_ar": "مناقصات وممارسات الجهات الحكومية",
+   "what_en": "Government tenders and bids",
+   "url": "https://monaqasat.mof.gov.qa/",
+   "access_ar": "تسجيل الشركة بسجل تجاري ساري",
+   "access_en": "Company registration with a valid CR",
+   "src": "https://monaqasat.mof.gov.qa/"
+  },
+  {
+   "id": "platinum",
+   "cat": "private",
+   "kind": "private",
+   "ar": "بلاتينيوم مزادات (شركة مزادات إلكترونية منذ 2019)",
+   "en": "Platinum Mzadat (online auction company since 2019)",
+   "what_ar": "سيارات ومحتويات كراجات وأثاث وأجهزة لجهات حكومية وخاصة",
+   "what_en": "Vehicles, garage contents, furniture and electronics for government and private sellers",
+   "url": "https://www.platinummzadat.com/",
+   "access_ar": "عبر تطبيق الشركة، الدفنة",
+   "access_en": "Via the company app, Dafna",
+   "src": "https://marhaba.qa/cars-furniture-and-more-up-for-auction-on-platinum-mzadat-app/"
+  },
+  {
+   "id": "albahie",
+   "cat": "private",
+   "kind": "private",
+   "ar": "دار البهية للمزادات (كتارا، منذ 1996)",
+   "en": "AlBahie Auction House (Katara, since 1996)",
+   "what_ar": "لوحات وأعمال فنية ومقتنيات ومزادات خيرية، حضورياً وأونلاين",
+   "what_en": "Art, collectibles and charity auctions, in person and online",
+   "url": "https://www.gulf-times.com/article/716801/qatar/qiaf-partners-with-al-bahie-house-for-first-art-auction",
+   "access_ar": "حضورياً في كتارا أو أونلاين حسب المزاد",
+   "access_en": "In person at Katara or online, per sale",
+   "src": "https://www.gulf-times.com/article/716801/qatar/qiaf-partners-with-al-bahie-house-for-first-art-auction",
+   "link_ar": "اقرأ عنها في الخبر ↗",
+   "link_en": "Read about it in the news ↗"
+  },
+  {
+   "id": "mzadqatar",
+   "cat": "private",
+   "kind": "private",
+   "ar": "مزاد قطر (منصة خاصة للإعلانات والمزادات)",
+   "en": "Mzad Qatar (private classifieds and auctions)",
+   "what_ar": "سيارات وعقارات وأرقام وسلع بين الأفراد",
+   "what_en": "Cars, property, numbers and goods between individuals",
+   "url": "https://mzadqatar.com/",
+   "access_ar": "تطبيق وموقع خاص؛ تُتبع شروطه",
+   "access_en": "Private app and site; its own terms apply",
+   "src": "https://apps.apple.com/ae/app/mzad-qatar-%D9%85%D8%B2%D8%A7%D8%AF-%D9%82%D8%B7%D8%B1/id680268461"
+  }
+ ],
+ "not_found": "لم نجد مزادات منظمة منشورة للإبل أو الماشية في قطر؛ تُضاف عند ثبوت مصدر رسمي."
 }
