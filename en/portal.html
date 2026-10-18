@@ -12,8 +12,9 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect x='4' y='4' width='72' height='72' rx='18' fill='%237a1e3a'/%3E%3Cpath d='M22 42l12 12 24-28' fill='none' stroke='%23b8923a' stroke-width='8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="../assets/style.css?v=20261016t">
-<script src="../assets/theme.js?v=20261016t"></script>
+<link rel="stylesheet" href="../assets/style.css?v=20261018w">
+<script src="../assets/theme.js?v=20261018w"></script>
+<script src="../assets/who.js?v=20261018w" defer></script>
 </head>
 <body class="portal-page">
 <header class="top"><div class="wrap">
@@ -25,26 +26,7 @@
 <div id="noApi" class="pnote" hidden><b>Accounts open once the client system is running</b><p>We are still preparing client accounts. In the meantime, we are glad to take your requests and keep you updated on WhatsApp.</p><div class="pbtns"><a class="btn sm pri" href="https://wa.me/97451600498" target="_blank" rel="noopener">Chat on WhatsApp</a></div></div>
 
 <section id="auth">
-  <div id="gate">
-  <h1>Sign in to Munjiz</h1>
-  <p class="lead sm">Choose your account type to continue.</p>
-  <div class="gate">
-    <button type="button" class="gcard" data-gate="client"><svg width="44" height="44" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 21c1-4.5 4.2-7 8-7s7 2.5 8 7" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
-      <b>Client sign-in</b><span>Request services, follow your transactions and their progress, fees and payments, and your files and licences.</span><em>Sign in or create an account</em></button>
-    <button type="button" class="gcard staff" data-gate="admin"><svg width="44" height="44" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
-      <b>Management and staff</b><span>The internal workspace: tasks, transactions, finance, accounting and human resources.</span><em>Staff sign-in</em></button>
-  </div>
-  </div>
-  <div id="gateBack" class="gateback" hidden><button type="button" class="linkbtn" id="gBack">Change account type</button><b id="gWho"></b></div>
-  <form id="adminF" class="panel" hidden novalidate>
-    <h2 class="full">Management and staff</h2>
-    <p class="full mute sm">Sign-in for the manager and staff to the management dashboard.</p>
-    <label class="full">Username<input id="aUser" autocomplete="username" dir="ltr" required></label>
-    <label class="full">Password<input id="aPass" type="password" autocomplete="current-password" dir="ltr" required></label>
-    <span class="err full" id="aErr" role="alert"></span>
-    <div class="contact full"><button class="btn pri" type="submit">Open the management dashboard</button></div>
-  </form>
-  <div id="clientAuth" hidden>
+  <div id="clientAuth">
   <h2>Client sign-in</h2>
   <p class="lead sm">Create an account for your company, or sign in, to request services, follow your requests and transactions, and download your licences and documents.</p>
   <div class="ptabs" role="tablist"><button type="button" role="tab" id="tLogin" aria-selected="true">Sign in</button><button type="button" role="tab" id="tSign" aria-selected="false">Create an account</button></div>
@@ -176,6 +158,6 @@
 <script src="../assets/data.js?v=20261018p"></script>
 <script src="../assets/details.js?v=20261018m"></script>
 <script src="../assets/catalog.js?v=20261018m"></script>
-<script src="../assets/portal.js?v=20261016t"></script>
+<script src="../assets/portal.js?v=20261018w"></script>
 </body>
 </html>

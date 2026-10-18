@@ -171,3 +171,9 @@ td.good{color:var(--ok)}td.warn{color:var(--amber)}td.bad{color:#c0392b}
 .kpiv .hbars li{grid-template-columns:minmax(110px,38%) 1fr auto}.kpiv .hbars b{white-space:nowrap}
 /* style.css has a .rev card (client reviews) that also matched the chart's .rev marks */
 .legend .sw,.pair i{padding:0;border:0;gap:0}.legend .sw{border-radius:3px;margin:0;margin-inline-end:5px}.pair i{border-radius:4px 4px 0 0}
+
+/* the signed-in management account (crm.js showWho) */
+.crmwho{order:1;display:inline-flex;align-items:center;gap:6px;border:1.5px solid currentColor;border-radius:999px;padding:3px 12px;font-size:13.5px;white-space:nowrap;max-width:100%;overflow:hidden}
+.crmwho b{max-width:18ch;overflow:hidden;text-overflow:ellipsis}
+.crmwho small{opacity:.85;font-size:12px}
+.crmwho em{font-style:normal;font-size:11.5px;font-weight:700;background:var(--amber);color:#1d1d1d;border-radius:999px;padding:1px 8px}

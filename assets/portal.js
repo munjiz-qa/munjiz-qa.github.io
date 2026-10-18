@@ -69,19 +69,9 @@ async function submit(form,errEl,fn){const btn=form.querySelector('button[type=s
 const REG=(()=>{try{return JSON.parse(localStorage.getItem('munjiz_client')||'null')}catch(e){return null}})();
 function tab(sign){$('forgotF').hidden=true;$('tLogin').parentElement.hidden=false;$('tLogin').setAttribute('aria-selected',!sign);$('tSign').setAttribute('aria-selected',sign);$('loginF').hidden=sign;$('signF').hidden=!sign}
 $('tLogin').onclick=()=>tab(false);$('tSign').onclick=()=>tab(true);
-// account type: client (this page) or management (the dashboard in crm.html)
-const CRM=EN?'../crm.html?lang=en':'crm.html?lang=ar';
-// first view: two separate entries, clients and management/staff; the choice opens its own sign-in
-let GATE='';
-function acct(g){GATE=g||'';$('gate').hidden=!!GATE;$('gateBack').hidden=!GATE;$('adminF').hidden=GATE!=='admin';$('clientAuth').hidden=GATE!=='client';$('noApi').hidden=GATE!=='client'||!!CFG.API;
-  if(GATE==='admin')$('aUser').focus();else if(GATE==='client'&&!$('loginF').hidden)$('lUser').focus()}
-document.querySelectorAll('[data-gate]').forEach(b=>b.onclick=()=>{acct(b.dataset.gate);history.replaceState(null,'',b.dataset.gate==='admin'?'#admin':'#client')});
-$('gBack').onclick=()=>{acct('');history.replaceState(null,'',location.pathname+location.search)};
-$('adminF').addEventListener('submit',e=>{e.preventDefault();const u=$('aUser').value.trim(),p=$('aPass').value;
-  if(!u||!p){$('aErr').textContent=T.err.wrong_login;return}
-  // hand the sign-in to the dashboard in this tab; it signs in against the server (or this device in local mode) and removes it at once
-  try{sessionStorage.setItem('munjiz_crm_handoff',JSON.stringify({u,p}))}catch(err){}
-  location.href=CRM});
+// this page is for client accounts only; the management and staff sign-in lives apart in crm.html and is never handed over from here
+try{sessionStorage.removeItem('munjiz_crm_handoff')}catch(e){}
+if(!CFG.API)$('noApi').hidden=false;
 if(REG){$('sName').value=REG.name||'';$('sPhone').value=REG.phone||'';$('sMail').value=REG.email||'';$('sCo').value=REG.company||'';$('sSign').value=REG.name||''}
 if(location.hash==='#signup')tab(true);
 const phoneOk=p=>/^(\+?974)?[3567]\d{7}$/.test(p);
@@ -115,10 +105,10 @@ $('forgotF').addEventListener('submit',e=>{e.preventDefault();submit($('forgotF'
   const j=await api('creset',{username:u,code:$('fCode').value.trim(),password:$('fPass').value});
   $('fPass').value=$('fPass2').value=$('fCode').value='';forgotView(false);setToken(j.token);await load();toast(T.fgDone)})});
 function setToken(t){TOKEN=t;try{localStorage.setItem(TKEY,t)}catch(e){}}
-function signOut(){TOKEN=null;ME=null;try{localStorage.removeItem(TKEY)}catch(e){}$('dash').hidden=true;$('auth').hidden=false;$('logout').hidden=true;tab(false);if(GATE!=='client')acct('client')}
+function signOut(){TOKEN=null;ME=null;try{localStorage.removeItem(TKEY)}catch(e){}$('dash').hidden=true;$('auth').hidden=false;$('logout').hidden=true;tab(false);if(window.ACCT_WHO)ACCT_WHO.set(null)}
 $('logout').onclick=$('dOut').onclick=()=>{signOut();toast(T.bye);window.scrollTo(0,0)};
 // a new client (another company, or someone else at this computer) starts from an empty sign-up form
-$('dNewCli').onclick=()=>{signOut();$('signF').reset();tab(true);acct('client');$('sName').focus();window.scrollTo(0,0)};
+$('dNewCli').onclick=()=>{signOut();$('signF').reset();tab(true);$('sName').focus();window.scrollTo(0,0)};
 
 // ---- dashboard ----
 let ME=null;
@@ -168,7 +158,7 @@ function render(){const c=ME.client,closed=t=>/منجزة|ملغاة/.test(t.sta
   $('payDue').innerHTML=table(live.filter(t=>(+t.fee||0)+(+t.govFee||0)>0),[[T.th.no,t=>esc(t.id)],[T.th.svc,t=>esc(t.service)],[T.th.fee,t=>money(t.fee)],[T.th.gov,t=>money(t.govFee)],[T.th.paid,t=>money(t.paid)],[T.th.bal,t=>`<b class="${bal(t)?'late':''}">${money(bal(t))}</b>`]]);
   $('payList').innerHTML=table(pays,[[T.th.date,p=>esc(p.date)],[T.th.rcpt,p=>`<span dir="ltr">${esc(p.receiptNo)}</span>`],[T.th.txn,p=>esc(p.txnId)],[T.th.method,p=>esc(st(p.method))],[T.th.amount,p=>`<b>${money(p.amount)}</b>`]]);
   $('consent').textContent=T.consent(ME.consent)+(ME.consent&&ME.consent.version!==ME.legalVersion?T.newer(ME.legalVersion):'')}
-async function load(){const j=await api('cme');ME=j;$('auth').hidden=true;$('dash').hidden=false;$('logout').hidden=false;render();pane(location.hash.slice(1)||'home',true)}
+async function load(){const j=await api('cme');ME=j;if(window.ACCT_WHO)ACCT_WHO.set({name:(j.client&&j.client.name)||j.username,user:j.username});$('auth').hidden=true;$('dash').hidden=false;$('logout').hidden=false;render();pane(location.hash.slice(1)||'home',true)}
 function pane(p,quiet){if(!$('p-'+p))p='home';document.querySelectorAll('#dTabs [data-p]').forEach(b=>b.setAttribute('aria-selected',b.dataset.p===p));
   document.querySelectorAll('.ppanel').forEach(x=>x.hidden=x.id!=='p-'+p);if(!quiet)history.replaceState(null,'','#'+p)}
 $('dTabs').onclick=e=>{const b=e.target.closest('[data-p]');if(b)pane(b.dataset.p)};
@@ -218,6 +208,5 @@ $('pwF').addEventListener('submit',e=>{e.preventDefault();submit($('pwF'),$('pwE
   const j=await api('cpass',{old:$('oPass').value,password:$('nPass').value});if(j&&j.token)setToken(j.token);$('pwF').reset();toast(T.pwChanged)})});
 
 // ---- start ----
-acct(location.hash==='#admin'?'admin':(/^#(client|signup|login)$/.test(location.hash)||new URLSearchParams(location.search).get('svc')?'client':''));
 if(!CFG.API){document.querySelectorAll('#clientAuth form button[type=submit]').forEach(b=>b.disabled=true)}
 else if(TOKEN)load().catch(()=>signOut());

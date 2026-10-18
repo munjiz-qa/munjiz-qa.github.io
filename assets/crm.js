@@ -94,11 +94,16 @@ $('loginF').onsubmit=async e=>{e.preventDefault();$('loginErr').textContent='';
 $('chgF').onsubmit=async e=>{e.preventDefault();$('chgErr').textContent='';
   if($('cPw').value!==$('cPw2').value){$('chgErr').textContent='كلمتا المرور غير متطابقتين.';return}
   try{ME=await S.changeOwn({old:lastPw,username:$('cUn').value.trim(),password:$('cPw').value});lastPw='';$('chgF').reset();toast('تم حفظ بيانات الدخول الجديدة');await start()}catch(err){$('chgErr').textContent=errText(err.message)}};
-function logout(){sessionStorage.removeItem(TKEY);ME=null;showLogin()}
+// the signed-in management account, always shown in the header (client accounts never sign in here)
+function showWho(){const w=$('crmWho');if(!w)return;w.hidden=!ME;w.textContent='';if(!ME)return;
+  const role=ME.role==='admin'?L('مدير','Admin'):L('موظف','Staff'),mk=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;e.textContent=x;w.append(e)};
+  mk('span','aw-ico','👤');mk('b','',ME.name||ME.username);mk('small','',role+(ME.jobTitle?' · '+ME.jobTitle:''));mk('em','',L('حساب إدارة','Management account'));
+  w.title=L('مسجّل الدخول إلى لوحة الإدارة باسم','Signed in to the admin panel as')+' '+(ME.name||'')+' ('+ME.username+')'}
+function logout(){sessionStorage.removeItem(TKEY);ME=null;showWho();showLogin()}
 // signing out records the end of the working session for attendance
 $('logout').onclick=async()=>{if(CFG.API&&S.tok())await S.api('staffLogout',{}).catch(()=>{});logout()};
-async function start(){hideAll();$('tabs').hidden=$('groups').hidden=false;await reload();go(isAdmin()?'mgr':'my')}
-async function reload(){try{DB=await S.list();SHEETS.forEach(s=>DB[s]=DB[s]||[])}catch(e){toast(e.message)}if(!ME)try{ME=await S.me()}catch(e){}
+async function start(){hideAll();showWho();$('tabs').hidden=$('groups').hidden=false;await reload();go(isAdmin()?'mgr':'my')}
+async function reload(){try{DB=await S.list();SHEETS.forEach(s=>DB[s]=DB[s]||[])}catch(e){toast(e.message)}if(!ME)try{ME=await S.me()}catch(e){}showWho();
   if(!Array.isArray(DB.Staff)||!DB.Staff.length)DB.Staff=ME?[{username:ME.username,name:ME.name||ME.username,role:ME.role}]:[];renderAll()}
 
 // ---- navigation ----
@@ -261,7 +266,7 @@ function applyPerms(){const show=(sel,on)=>document.querySelectorAll(sel).forEac
   $('myPerms').textContent=isAdmin()?'مدير: كل الصلاحيات، وإدارة الموظفين وتقاريرهم.':(ME.perms||[]).map(p=>PERM_L[p]).join('، ')||'لا توجد صلاحيات بعد. راجع المدير.'}
 
 // ---- my login ----
-function renderSet(){if(!ME)return;$('meLine').textContent=`${ME.name||''}${ME.jobTitle?' · '+ME.jobTitle:''} · ${ME.role==='admin'?'مدير':'موظف'}`;if(!$('meUn').value)$('meUn').value=ME.username;applyPerms();if(tab==='emp')renderEmp()}
+function renderSet(){showWho();if(!ME)return;$('meLine').textContent=`${ME.name||''}${ME.jobTitle?' · '+ME.jobTitle:''} · ${ME.role==='admin'?'مدير':'موظف'}`;if(!$('meUn').value)$('meUn').value=ME.username;applyPerms();if(tab==='emp')renderEmp()}
 $('meF').onsubmit=async e=>{e.preventDefault();$('meErr').textContent='';const pw=$('mePw').value;
   if(pw&&pw!==$('mePw2').value){$('meErr').textContent='كلمتا المرور غير متطابقتين.';return}
   try{const o={old:$('meOld').value,username:$('meUn').value.trim()};if(pw)o.password=pw;ME=await S.changeOwn(o);$('meF').reset();$('meUn').value=ME.username;toast('تم الحفظ')}catch(err){$('meErr').textContent=errText(err.message)}};
@@ -957,7 +962,6 @@ $('lkOpen').onclick=async()=>{if(!await ask(L('فتح كل الفترات الم
 const VIEWS={rep:renderRep,bs:renderBs,cf:renderCf,aging:renderAging,bud:renderBud,close:renderClose,my:renderMy,work:renderWork,mgr:renderMgr,fin:renderFin,pays:renderFin,exps:renderFin,gov:renderGov,frep:renderFrep,coa:renderCoa,jrnl:renderJrnl,cbal:renderCbal,pl:renderPl,tb:renderTb,hrf:renderHrf,leave:renderLeave,sal:renderSal,eval:renderEval,mine:renderMine,theme:renderTheme};
 
 showMode();
-// sign-in handed over from the account-type choice on portal.html (same tab, read once and removed)
-let HAND=null;try{HAND=JSON.parse(sessionStorage.getItem('munjiz_crm_handoff')||'null');sessionStorage.removeItem('munjiz_crm_handoff')}catch(e){}
-if(HAND){sessionStorage.removeItem(TKEY);showLogin();$('un').value=HAND.u||'';$('pw').value=HAND.p||'';$('loginF').requestSubmit?$('loginF').requestSubmit():$('loginBtn').click()}
-else if(S.tok())S.me().then(m=>{ME=m;if(m&&m.mustChange){logout();return}start()}).catch(()=>showLogin());else showLogin();
+// the admin panel never takes a sign-in from the client portal: management and client accounts stay apart
+try{sessionStorage.removeItem('munjiz_crm_handoff')}catch(e){}
+if(S.tok())S.me().then(m=>{ME=m;if(m&&m.mustChange){logout();return}start()}).catch(()=>showLogin());else showLogin();
