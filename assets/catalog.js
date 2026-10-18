@@ -21,12 +21,20 @@ function tidy(c){const d=clean(c.data),num=x=>Math.max(0,+x||0);
   d.CONSULT=(d.CONSULT||[]).filter(k=>GCODE.test(k.code)).map(k=>Object.assign(k,{items:(k.items||[]).filter(s=>CODE.test(s.c)).map(s=>Object.assign(s,{p:num(s.p)}))}));
   d.PLANS=(d.PLANS||[]).filter(p=>/^[a-z0-9_-]{1,20}$/i.test(p.key)).map(p=>Object.assign(p,{n:num(p.n),m:num(p.m),y:num(p.y),extra:num(p.extra)}));
   return {ver:c.ver,data:d,details:clean(c.details)}}
-function use(c){if(!c||!c.data||!c.details||!DT)return false;c=tidy(c);const v=window.CATALOG_ALL?c.data:visible(c);
+// groups added to the site after the last save in the admin panel: shown even when a saved list exists, unless hidden there
+const NEW=['AD','MK','EC'];
+function withNew(c){const d=Object.assign({},c.data),b=BUILT.data,has=new Set([...(d.G||[]).map(g=>g[0]),...(d.CONSULT||[]).map(k=>k.code)]);
+  d.G=[...(d.G||[]),...(b.G||[]).filter(g=>NEW.includes(g[0])&&!has.has(g[0]))];
+  d.CONSULT=[...(d.CONSULT||[]),...(b.CONSULT||[]).filter(k=>NEW.includes(k.code)&&!has.has(k.code))];
+  const det=Object.assign({},c.details),bd=BUILT.details;Object.keys(bd).forEach(k=>{if(/^[A-Z]{2}-/.test(k)&&NEW.includes(k.slice(0,2))&&!(k in det))det[k]=bd[k]});
+  if(bd._entities)det._entities=Object.assign({},bd._entities,det._entities);
+  return Object.assign({},c,{data:d,details:det})}
+function use(c){if(!c||!c.data||!c.details||!DT)return false;c=withNew(c);c=tidy(c);const v=window.CATALOG_ALL?c.data:visible(c);
   Object.keys(DT).forEach(k=>delete DT[k]);Object.assign(DT,v);window.DETAILS=c.details;return true}
 let saved=null;try{saved=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
 if(saved)use(saved);
 window.CATALOG={get ver(){return saved?saved.ver:''},use,visible,
-  raw(){return JSON.parse(JSON.stringify(saved?{data:saved.data,details:saved.details}:BUILT))},
+  raw(){return JSON.parse(JSON.stringify(saved?withNew({data:saved.data,details:saved.details}):BUILT))},
   remember(c){saved=c&&c.ver?c:null;try{saved?localStorage.setItem(KEY,JSON.stringify(saved)):localStorage.removeItem(KEY)}catch(e){}}};
 const t0=Date.now();let touched=false;['pointerdown','keydown','input'].forEach(e=>addEventListener(e,()=>{touched=true},{once:true,capture:true}));
 function check(){const api=(window.MUNJIZ_CONFIG||{}).API;if(!api)return;
