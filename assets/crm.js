@@ -253,7 +253,7 @@ const isAdmin=()=>!ME||ME.role==='admin';
 const can=p=>isAdmin()||((ME.perms||[]).includes(p));
 function applyPerms(){const show=(sel,on)=>document.querySelectorAll(sel).forEach(el=>el.hidden=!on);
   show('#tabTheme',isAdmin());show('#tabCat',isAdmin());show('#tabRev',isAdmin());
-  show('#tabs [data-tab=req]',can('requests'));show('#tabWork,#newTask',can('assign'));show('#tabs .pf',can('finance'));show('#tabs .ph',can('hr'));show('#tabMgr',isAdmin());show('#tabs [data-tab=msg]',can('messages'));show('#tabEmp',isAdmin());
+  show('#tabs [data-tab=req]',can('requests'));show('#tabWork,#newTask',can('assign'));show('#tabs .pf',can('finance'));show('#tabs .ph',can('hr'));show('#tabMgr,#tabs .pk',isAdmin());show('#tabs [data-tab=msg]',can('messages'));show('#tabEmp',isAdmin());
   show('#newCli,#cEdit',can('clients_edit'));show('#cTxn,#newTx',can('transactions'));show('#cMail',can('email'));show('#cMsgP',can('messages'));
   show('#fileF',can('files'));show('#delT,#delC',can('delete'));show('#delC',isAdmin());
   document.querySelectorAll('#groups [data-grp]').forEach(b=>b.hidden=!document.querySelector(`#tabs [data-g="${b.dataset.grp}"]:not([hidden])`));

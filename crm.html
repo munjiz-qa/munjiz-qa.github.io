@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="assets/style.css?v=20261016t">
-<link rel="stylesheet" href="assets/crm.css?v=20261016t">
+<link rel="stylesheet" href="assets/crm.css?v=20261018k">
 <script src="assets/theme.js?v=20261016t"></script>
 </head>
 <body class="crm">
@@ -20,6 +20,7 @@
   <a class="brand" href="./"><svg width="30" height="30" viewBox="0 0 80 80" aria-hidden="true"><rect x="5" y="5" width="70" height="70" rx="18" fill="none" stroke="#b8923a" stroke-width="5"/><path d="M22 42l12 12 24-28" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>لوحة الإدارة</a>
   <nav class="tabs groups" id="groups" hidden aria-label="أقسام لوحة الإدارة">
     <button type="button" data-grp="home">الرئيسية</button>
+    <button type="button" data-grp="kpi">المؤشرات</button>
     <button type="button" data-grp="work">العمل اليومي <span class="pill num" id="nWork"></span></button>
     <button type="button" data-grp="fin">المالية</button>
     <button type="button" data-grp="acc">الحسابات</button>
@@ -33,6 +34,12 @@
   <div id="modeBar" class="modebar" hidden></div>
   <nav class="subnav" id="tabs" hidden aria-label="صفحات القسم">
     <button type="button" data-tab="mgr" data-g="home" id="tabMgr" hidden>لوحة المدير</button>
+    <button type="button" data-tab="kpi" data-g="kpi" class="pk" hidden>لوحة المؤشرات</button>
+    <button type="button" data-tab="kpis" data-g="kpi" class="pk" hidden>المبيعات والإيراد</button>
+    <button type="button" data-tab="kpio" data-g="kpi" class="pk" hidden>العمليات والإنجاز</button>
+    <button type="button" data-tab="kpic" data-g="kpi" class="pk" hidden>العملاء والرضا</button>
+    <button type="button" data-tab="kpit" data-g="kpi" class="pk" hidden>أداء الفريق</button>
+    <button type="button" data-tab="kpig" data-g="kpi" class="pk" hidden>الأهداف</button>
     <button type="button" data-tab="dash" data-g="home">لوحة المتابعة</button>
     <button type="button" data-tab="my" data-g="work">مهامي <span class="pill num" id="nMy"></span></button>
     <button type="button" data-tab="req" data-g="work">الطلبات <span class="pill num" id="nReq"></span></button>
@@ -103,6 +110,13 @@
       <div class="panel"><h3>حسابات تنتظر التفعيل</h3><div id="dAcc"></div></div>
     </div>
   </section>
+
+  <section id="v-kpi" class="view kpiv" hidden></section>
+  <section id="v-kpis" class="view kpiv" hidden></section>
+  <section id="v-kpio" class="view kpiv" hidden></section>
+  <section id="v-kpic" class="view kpiv" hidden></section>
+  <section id="v-kpit" class="view kpiv" hidden></section>
+  <section id="v-kpig" class="view kpiv" hidden></section>
 
   <section id="v-mgr" class="view" hidden>
     <div class="bar"><h2>لوحة المدير</h2><select id="mgP" aria-label="الفترة"><option value="month">هذا الشهر</option><option value="last">الشهر الماضي</option><option value="q">آخر 3 أشهر</option><option value="year">هذه السنة</option><option value="all">كل الفترات</option></select><span class="sp"></span><span class="mute sm" id="mgRange"></span></div>
@@ -604,10 +618,11 @@
 <script src="assets/data.js?v=20261016t"></script>
 <script src="assets/details.js?v=20261016t"></script>
 <script src="assets/catalog.js?v=20261016t"></script>
-<script src="assets/crm-i18n.js?v=20261016t"></script>
-<script src="assets/crm.js?v=20261016t"></script>
+<script src="assets/crm-i18n.js?v=20261018k"></script>
+<script src="assets/crm.js?v=20261018k"></script>
 <script src="assets/crm-catalog.js?v=20261016t"></script>
 <script src="assets/crm-reviews.js?v=20261016t"></script>
+<script src="assets/crm-kpi.js?v=20261018k"></script>
 <script src="assets/crm-ads.js?v=20261016t"></script>
 <script src="assets/crm-site.js?v=20261016t"></script>
 </body>

@@ -149,3 +149,25 @@ table.mini .num{text-align:end}.jent table.mini th{color:var(--mute);font-weight
 .strow input,.strow textarea{width:100%;min-width:0;font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
 .strow input::placeholder,.strow textarea::placeholder{color:var(--mute);opacity:.75}
 @media (max-width:760px){.sthead{display:none}.strow{grid-template-columns:minmax(0,1fr)}.strow label{padding-top:4px}}
+/* indicators (المؤشرات): cards with trend, target bar and 12-month line */
+.kpiv>.bar{margin-bottom:8px}.kpiv>.panel,.kpiv>.grid2{margin-top:14px}
+.kg{margin:18px 0 8px;font-size:16px;color:var(--mute)}
+.kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.kcard{background:var(--surface);border:1px solid var(--line);border-inline-start:4px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;color:var(--pri);min-width:0}
+.kcard.good{border-inline-start-color:var(--ok)}.kcard.warn{border-inline-start-color:var(--amber)}.kcard.bad{border-inline-start-color:#c0392b}
+.kcard .kn{color:var(--mute);font-size:13.5px}.kcard b{font-family:var(--display);font-size:22px;color:var(--ink)}
+.kcard .kt{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--mute)}.kcard .kt .prog{width:64px}
+.kcard.bad .kt .prog i{background:#c0392b}.kcard.warn .kt .prog i{background:var(--amber)}
+.kd{font-size:12.5px;font-weight:700;color:var(--mute)}.kd.good{color:var(--ok)}.kd.bad{color:#c0392b}
+.spark{width:100%;height:26px;display:block;margin-top:2px}
+.kins{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:14.5px}
+.kins li{padding:7px 12px;border-radius:10px;background:var(--chip)}.kins li.bad{background:color-mix(in srgb,#c0392b 14%,var(--surface))}.kins li.warn{background:var(--amber-soft)}.kins li.good{background:var(--ok-soft)}
+.khead{margin-bottom:12px}
+.cols.c12{grid-template-columns:repeat(12,1fr);gap:4px}.cols.c12 small{font-size:10.5px}
+td.good{color:var(--ok)}td.warn{color:var(--amber)}td.bad{color:#c0392b}
+#v-kpig input[type=number]{width:120px}
+@media print{.top,.subnav,.modebar,.kpiP,.kpiPrint,#kpiCsv{display:none!important}.kpiv .panel,.kcard{break-inside:avoid}}
+.kpiv .legend span{display:inline-flex;align-items:center}.kpiv .legend .sw{flex:none;width:12px;height:12px;display:inline-block}
+.kpiv .hbars li{grid-template-columns:minmax(110px,38%) 1fr auto}.kpiv .hbars b{white-space:nowrap}
+/* style.css has a .rev card (client reviews) that also matched the chart's .rev marks */
+.legend .sw,.pair i{padding:0;border:0;gap:0}.legend .sw{border-radius:3px;margin:0;margin-inline-end:5px}.pair i{border-radius:4px 4px 0 0}
