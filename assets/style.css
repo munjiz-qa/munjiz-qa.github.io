@@ -641,3 +641,13 @@ body.signed-client #whoLi{display:none!important}
 @media (min-width:521px){.top .gtsel{max-width:62px;padding-inline:6px}}
 @media (min-width:981px){.top .wrap{gap:10px;flex-wrap:nowrap}.top nav{flex:1 1 auto;min-width:0}.menu{flex-wrap:nowrap;justify-content:flex-end}.menu>li>a,.topbtn{padding:6px 8px;white-space:nowrap}.top .brand{white-space:nowrap;flex:none}}
 @media (min-width:981px) and (max-width:1180px){.menu>li>a,.topbtn{font-size:13.5px;padding:6px 6px}.top .brand{font-size:17px}}
+/* clear-UX pass 2 (2026-10-19): skip link, service-first request form, one-row page nav on phones, English About fit */
+.skip{position:absolute;inset-inline-start:12px;top:-60px;z-index:50;background:var(--surface);color:var(--ink);padding:10px 16px;border-radius:10px;font-weight:700;text-decoration:none;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.skip:focus{top:10px}
+main:focus{outline:none}
+.fstep{display:flex;align-items:center;gap:10px;margin:6px 0 0;font-family:var(--display);font-weight:700;font-size:17px}
+.fstep span{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--pri,var(--navy));color:var(--pri-ink,#fff);font-size:14px;flex:none}
+#f .fstep:not(:first-child){border-top:1px solid var(--line);padding-top:14px;margin-top:10px}
+@media (max-width:620px){.plainnav{flex-wrap:nowrap;overflow-x:auto;gap:4px;scrollbar-width:none}.plainnav::-webkit-scrollbar{display:none}.plainnav a,.plainnav button{white-space:nowrap;flex:none}}
+.stories{grid-template-columns:repeat(2,minmax(0,1fr))}@media (max-width:700px){.stories{grid-template-columns:minmax(0,1fr)}}.story{min-width:0;overflow-wrap:anywhere}.story .tag{max-width:100%;white-space:normal}
+#services .costbox.fees{margin-top:22px}

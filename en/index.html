@@ -27,11 +27,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="../assets/style.css?v=20261019ux">
+<link rel="stylesheet" href="../assets/style.css?v=20261019ux2">
 <script src="../assets/theme.js?v=20261018w"></script>
 <script src="../assets/who.js?v=20261018w" defer></script>
 </head>
 <body>
+<a class="skip" href="#main">Skip to main content</a>
 <header class="top"><div class="wrap">
   <a class="brand" href="#home"><svg width="34" height="34" viewBox="0 0 80 80" aria-hidden="true"><rect x="5" y="5" width="70" height="70" rx="18" fill="none" stroke="#b8923a" stroke-width="5"/><path d="M22 42l12 12 24-28" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>Munjiz Business Services</a>
   <button class="who" id="who" type="button" hidden title="Edit my details"></button>
@@ -49,6 +50,7 @@
 </div></header>
 <nav class="crumbs" id="crumbs" aria-label="You are here" hidden><div class="wrap"><button type="button" class="back" id="back">Back</button><ol id="crumbList"></ol></div></nav>
 
+<main id="main" tabindex="-1">
 <section class="hero" id="home"><div class="wrap">
   <div>
     <h1>Your transactions: <em>easier, faster, for less</em></h1>
@@ -90,9 +92,6 @@
 <section class="sec" id="services"><div class="wrap">
   <h2>Supporting services</h2>
   <p class="lead">Press any service name to see what it covers, the documents needed and the usual time. Add what you need to the cost calculator with the "Add" button.</p>
-  <div class="costbox fees"><b>Our promise on fees</b>
-    <ul class="fee4"><li><b>The price in writing before we start</b><span>We send you a written quote and start only once you agree.</span></li><li><b>Our fee is separate from government fees</b><span>Government fees are paid at their official amount, as set by the authority.</span></li><li><b>No extra cost without your approval</b><span>If the authority asks for a new fee or extra work, we tell you first and continue once you agree.</span></li><li><b>A receipt for every fee</b><span>We hand you the official receipt for every fee we pay on your behalf.</span></li></ul>
-    <a class="btn sm ghost" href="#prices">Full price list</a></div>
   <div class="tools">
     <input id="q" class="search" type="search" placeholder="Search a service, e.g. residency, CR, traffic" aria-label="Search services">
     <label class="toggle" style="flex-direction:row"><input id="coreOnly" type="checkbox"> Only services included in packages</label>
@@ -100,6 +99,9 @@
   <div class="chips" id="chips" role="group" aria-label="Filter by authority"></div>
   <div id="entTiles" class="gtiles"></div>
   <div id="catalog" class="ent-wrap"></div>
+  <div class="costbox fees"><b>Our promise on fees</b>
+    <ul class="fee4"><li><b>The price in writing before we start</b><span>We send you a written quote and start only once you agree.</span></li><li><b>Our fee is separate from government fees</b><span>Government fees are paid at their official amount, as set by the authority.</span></li><li><b>No extra cost without your approval</b><span>If the authority asks for a new fee or extra work, we tell you first and continue once you agree.</span></li><li><b>A receipt for every fee</b><span>We hand you the official receipt for every fee we pay on your behalf.</span></li></ul>
+    <a class="btn sm ghost" href="#prices">Full price list</a></div>
 </div></section>
 
 <section class="sec" id="packages"><div class="wrap">
@@ -151,6 +153,10 @@
   <h2>Get a quote</h2>
   <p class="lead">Your details come from your sign-up. Choose services and press "Prepare quote" to get a preliminary quote in your name on Munjiz letterhead, then send it by WhatsApp or email or save it as PDF. There is no need to send any documents now; we will tell you exactly what we need.</p>
   <form id="f" novalidate>
+    <p class="full fstep"><span aria-hidden="true">1</span>What do you need?</p>
+    <label class="full">Choose services<select id="fPick" aria-label="Choose a service to add to the request"><option value="">Choose a service to add…</option></select></label>
+    <label class="full">Service needed and a short description<textarea id="fSvc" placeholder="Pick from the list above or from the calculator, or type here"></textarea><span class="err" id="eSvc"></span></label>
+    <p class="full fstep"><span aria-hidden="true">2</span>Your contact details</p>
     <label>Name<input id="fName" required autocomplete="name"><span class="err" id="eName"></span></label>
     <label>Company (optional)<input id="fCo" autocomplete="organization"></label>
     <label>Mobile<input id="fPhone" inputmode="tel" required autocomplete="tel" placeholder="5XXXXXXX" dir="ltr"><span class="err" id="ePhone"></span></label>
@@ -158,8 +164,6 @@
     <label>Preferred contact<select id="fVia"><option>WhatsApp</option><option>Phone call</option><option>Email</option></select></label>
     <label>Client type<select id="fType"><option value="ind">Individual</option><option value="org">Business</option></select></label>
     <label>Package<select id="fPlan"><option value="">No package (pay per service)</option><option value="منجز بداية">Munjiz Start</option><option value="منجز متابعة">Munjiz Follow-up</option></select></label>
-    <label>Choose services<select id="fPick" aria-label="Choose a service to add to the request"><option value="">Choose a service to add…</option></select></label>
-    <label class="full">Service needed and a short description<textarea id="fSvc" placeholder="Pick from the list above or from the calculator, or type here"></textarea><span class="err" id="eSvc"></span></label>
     <input id="fHp" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
     <label class="full agree"><input type="checkbox" id="fOk" checked> I agree to the <a href="privacy.html">privacy policy</a> and to being contacted about this request.<span class="err" id="eOk"></span></label>
     <div class="full contact"><button class="btn pri" type="submit">Prepare quote</button><a class="btn ghost" href="https://wa.me/97451600498" target="_blank" rel="noopener">Or order directly on WhatsApp</a></div>
@@ -214,6 +218,7 @@
 <section class="today-sec" aria-label="Today in Doha"><div class="wrap" id="today" hidden></div></section>
 <section class="ads-sec" aria-label="Ads"><div class="wrap adgrid" id="ads" hidden></div></section>
 
+</main>
 <footer><div class="wrap fc"><b>Contact</b><a href="tel:+97451600498" dir="ltr">☎ +974 51600498</a><a href="https://wa.me/97451600498" target="_blank" rel="noopener">WhatsApp</a><a href="mailto:munijizqa@gmail.com">✉ munijizqa@gmail.com</a></div><div class="wrap"><span>Munjiz Business Services LLC · Doha, Qatar</span><span><a href="../index.html" lang="ar">العربية</a> · <a href="privacy.html">Privacy policy</a> · <a href="legal.html">Legal documents</a> · <a href="portal.html">My account</a></span><span><a href="#ent=AD">Advertise with us</a> · <a href="#prices">Services and prices</a> · <a href="#packages">Packages</a> · <a href="about.html">About Munjiz</a></span><span>Prices apply for 2026 and may be updated. Final decisions and processing times rest with the government authority.</span></div></footer>
 
 <dialog id="dlg" aria-labelledby="dlgT"><div class="dlg">

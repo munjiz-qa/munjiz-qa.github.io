@@ -27,11 +27,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=20261019ux">
+<link rel="stylesheet" href="assets/style.css?v=20261019ux2">
 <script src="assets/theme.js?v=20261018w"></script>
 <script src="assets/who.js?v=20261018w" defer></script>
 </head>
 <body>
+<a class="skip" href="#main">تخطَّ إلى المحتوى الرئيسي</a>
 <header class="top"><div class="wrap">
   <a class="brand" href="#home"><svg width="34" height="34" viewBox="0 0 80 80" aria-hidden="true"><rect x="5" y="5" width="70" height="70" rx="18" fill="none" stroke="#b8923a" stroke-width="5"/><path d="M22 42l12 12 24-28" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>منجز لخدمات الأعمال</a>
   <button class="who" id="who" type="button" hidden title="تعديل بياناتي"></button>
@@ -49,6 +50,7 @@
 </div></header>
 <nav class="crumbs" id="crumbs" aria-label="أنت هنا" hidden><div class="wrap"><button type="button" class="back" id="back">رجوع</button><ol id="crumbList"></ol></div></nav>
 
+<main id="main" tabindex="-1">
 <section class="hero" id="home"><div class="wrap">
   <div>
     <h1>معاملاتك <em>أسهل، أسرع، أقل</em></h1>
@@ -90,9 +92,6 @@
 <section class="sec" id="services"><div class="wrap">
   <h2>الخدمات المساعدة</h2>
   <p class="lead">اضغط اسم أي خدمة لترى وصفها والمستندات المطلوبة والمدة التقديرية، وأضف ما تحتاجه إلى حاسبة التكلفة بزر «أضف».</p>
-  <div class="costbox fees"><b>وعدنا لك في الرسوم</b>
-    <ul class="fee4"><li><b>السعر مكتوب قبل البدء</b><span>نرسل لك عرض السعر مكتوباً، ولا نبدأ إلا بعد موافقتك.</span></li><li><b>أتعابنا منفصلة عن الرسوم الحكومية</b><span>تُدفع الرسوم الحكومية بقيمتها الرسمية كما تحددها الجهة.</span></li><li><b>لا تكلفة إضافية دون موافقتك</b><span>إذا طلبت الجهة رسماً أو عملاً جديداً نخبرك أولاً، ونكمل بعد موافقتك.</span></li><li><b>إيصال لكل رسم</b><span>نسلّمك الإيصال الرسمي لكل رسم ندفعه نيابةً عنك.</span></li></ul>
-    <a class="btn sm ghost" href="#prices">قائمة الأسعار الكاملة</a></div>
   <div class="tools">
     <input id="q" class="search" type="search" placeholder="ابحث عن خدمة، مثل: إقامة، سجل، مرور" aria-label="ابحث عن خدمة">
     <label class="toggle" style="flex-direction:row"><input id="coreOnly" type="checkbox"> الخدمات المشمولة في الباقات فقط</label>
@@ -100,6 +99,9 @@
   <div class="chips" id="chips" role="group" aria-label="تصفية حسب الجهة"></div>
   <div id="entTiles" class="gtiles"></div>
   <div id="catalog" class="ent-wrap"></div>
+  <div class="costbox fees"><b>وعدنا لك في الرسوم</b>
+    <ul class="fee4"><li><b>السعر مكتوب قبل البدء</b><span>نرسل لك عرض السعر مكتوباً، ولا نبدأ إلا بعد موافقتك.</span></li><li><b>أتعابنا منفصلة عن الرسوم الحكومية</b><span>تُدفع الرسوم الحكومية بقيمتها الرسمية كما تحددها الجهة.</span></li><li><b>لا تكلفة إضافية دون موافقتك</b><span>إذا طلبت الجهة رسماً أو عملاً جديداً نخبرك أولاً، ونكمل بعد موافقتك.</span></li><li><b>إيصال لكل رسم</b><span>نسلّمك الإيصال الرسمي لكل رسم ندفعه نيابةً عنك.</span></li></ul>
+    <a class="btn sm ghost" href="#prices">قائمة الأسعار الكاملة</a></div>
 </div></section>
 
 <section class="sec" id="packages"><div class="wrap">
@@ -151,6 +153,10 @@
   <h2>اطلب عرض سعر</h2>
   <p class="lead">بياناتك معبأة من التسجيل. اختر الخدمات واضغط «جهّز عرض السعر» ليظهر عرض سعر مبدئي باسمك على ورق منجز، ثم أرسله على واتساب أو البريد أو احفظه PDF. لا حاجة لإرسال أي مستندات الآن، وسنخبرك بما نحتاجه تحديداً.</p>
   <form id="f" novalidate>
+    <p class="full fstep"><span aria-hidden="true">1</span>ما الذي تحتاجه؟</p>
+    <label class="full">اختر الخدمات المطلوبة<select id="fPick" aria-label="اختر خدمة لإضافتها إلى الطلب"><option value="">اختر خدمة لإضافتها…</option></select></label>
+    <label class="full">الخدمة المطلوبة ووصف مختصر لاحتياجك<textarea id="fSvc" placeholder="اختر من القائمة أعلاه أو من حاسبة التكلفة، ويمكنك الكتابة"></textarea><span class="err" id="eSvc"></span></label>
+    <p class="full fstep"><span aria-hidden="true">2</span>بيانات التواصل</p>
     <label>الاسم<input id="fName" required autocomplete="name"><span class="err" id="eName"></span></label>
     <label>اسم الشركة (اختياري)<input id="fCo" autocomplete="organization"></label>
     <label>رقم الجوال<input id="fPhone" inputmode="tel" required autocomplete="tel" placeholder="5XXXXXXX" dir="ltr"><span class="err" id="ePhone"></span></label>
@@ -158,8 +164,6 @@
     <label>وسيلة التواصل المفضلة<select id="fVia"><option>واتساب</option><option>اتصال هاتفي</option><option>البريد الإلكتروني</option></select></label>
     <label>نوع العميل<select id="fType"><option value="ind">فرد</option><option value="org">منشأة</option></select></label>
     <label>الباقة<select id="fPlan"><option value="">بدون باقة (دفع لكل خدمة)</option><option value="منجز بداية">منجز بداية</option><option value="منجز متابعة">منجز متابعة</option></select></label>
-    <label>اختر الخدمات المطلوبة<select id="fPick" aria-label="اختر خدمة لإضافتها إلى الطلب"><option value="">اختر خدمة لإضافتها…</option></select></label>
-    <label class="full">الخدمة المطلوبة ووصف مختصر لاحتياجك<textarea id="fSvc" placeholder="اختر من القائمة أعلاه أو من حاسبة التكلفة، ويمكنك الكتابة"></textarea><span class="err" id="eSvc"></span></label>
     <input id="fHp" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
     <label class="full agree"><input type="checkbox" id="fOk" checked> أوافق على <a href="privacy.html">سياسة الخصوصية</a> واستخدام بياناتي للتواصل معي بشأن هذا الطلب.<span class="err" id="eOk"></span></label>
     <div class="full contact"><button class="btn pri" type="submit">جهّز عرض السعر</button><a class="btn ghost" href="https://wa.me/97451600498" target="_blank" rel="noopener">أو اطلب مباشرة عبر واتساب</a></div>
@@ -214,6 +218,7 @@
 <section class="today-sec" aria-label="اليوم في الدوحة"><div class="wrap" id="today" hidden></div></section>
 <section class="ads-sec" aria-label="إعلانات"><div class="wrap adgrid" id="ads" hidden></div></section>
 
+</main>
 <footer><div class="wrap fc"><b>للتواصل</b><a href="tel:+97451600498" dir="ltr">☎ +974 51600498</a><a href="https://wa.me/97451600498" target="_blank" rel="noopener">واتساب</a><a href="mailto:munijizqa@gmail.com" dir="ltr">✉ munijizqa@gmail.com</a></div><div class="wrap"><span>منجز لخدمات الأعمال ذ.م.م · الدوحة، قطر</span><span><a href="en/index.html" lang="en">English</a> · <a href="privacy.html">سياسة الخصوصية</a> · <a href="legal.html">المستندات القانونية</a> · <a href="portal.html">حسابي</a></span><span><a href="#ent=AD">أعلن معنا</a> · <a href="#prices">الخدمات والأسعار</a> · <a href="#packages">الباقات</a> · <a href="about.html">تعرّف إلى منجز</a></span><span>الأسعار سارية لعام 2026 وقد تُحدَّث. القرار النهائي ومدة المعاملة يعودان إلى الجهة الحكومية المختصة.</span></div></footer>
 
 <dialog id="dlg" aria-labelledby="dlgT"><div class="dlg">
