@@ -236,6 +236,7 @@ let cameFrom=null,here=location.hash;
 window.addEventListener('hashchange',e=>{cameFrom=here;here=location.hash});
 function show(v,trail){const home=v==='home';here=location.hash;
   $('home').hidden=!home;$('tiles').hidden=!home;
+  const td=document.querySelector('.today-sec');if(td)td.hidden=!home;
   VIEWS.forEach(k=>secs[k].hidden=k!==v);
   crumbs(home?[]:trail||[[T.sec[v],'#'+v]]);
   document.title=(home?'':T.sec[v]+' | ')+TITLE;
@@ -313,7 +314,7 @@ function buildQuote(c){const d=new Date(),pad=x=>String(x).padStart(2,'0');
   return {no,html,text}}
 $('printQ')&&($('printQ').onclick=()=>window.print());
 
-// ---- registration: every visitor registers once before browsing; kept in this browser ----
+// ---- registration: optional, kept in this browser; the quote form asks for name and mobile ----
 const RKEY='munjiz_client';
 function getClient(){try{return JSON.parse(localStorage.getItem(RKEY)||'null')}catch(e){return null}}
 function saveClient(c){try{localStorage.setItem(RKEY,JSON.stringify(c))}catch(e){}window.__client=c;fillFromClient(c)}
@@ -344,7 +345,8 @@ $('regF').addEventListener('submit',e=>{e.preventDefault();
   if(!ok)return;
   const c={name:n,phone:ph,email:em,company:co,legal:'1.0',at:new Date().toISOString()};saveClient(c);reg.close();toast(L('أهلاً ','Welcome ')+n);
   if(CFG.API)fetch(CFG.API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'register',...c,accept:true,lang:EN?'en':'ar',page:location.href})}).catch(()=>{})});
-(function(){const c=getClient();if(c)fillFromClient(c);else if(!skipped())openReg()})();
+// browsing never waits on sign-up: the welcome form opens only when the visitor asks for it
+(function(){const c=getClient();if(c)fillFromClient(c)})();
 
 $('copyMsg').onclick=()=>copy($('out').textContent,$('out'));
 $('waFab')&&($('waFab').href='https://wa.me/'+WA);

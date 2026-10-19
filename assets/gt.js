@@ -8,7 +8,7 @@ function setLang(c){const host=location.hostname,exp=c?'':';expires=Thu, 01 Jan 
   [host,'.'+host.split('.').slice(-2).join('.')].forEach(d=>{document.cookie='googtrans='+(c?`/${SRC}/${c}`:'')+';path=/;domain='+d+exp});
   document.cookie='googtrans='+(c?`/${SRC}/${c}`:'')+';path=/'+exp;location.reload()}
 const sel=document.createElement('select');sel.className='gtsel notranslate';sel.translate=false;sel.setAttribute('aria-label',EN?'Other languages (Google Translate)':'لغات أخرى (ترجمة Google)');
-sel.innerHTML=`<option value="">🌐 ${EN?'Other languages':'لغات أخرى'}</option>`+(cur?`<option value="-">↩ ${EN?'Original':'الأصل'}</option>`:'')+LANGS.map(([c,n])=>`<option value="${c}"${c===cur?' selected':''}>${n}</option>`).join('');
+sel.innerHTML=`<option value="">🌐</option>`+(cur?`<option value="-">↩ ${EN?'Original':'الأصل'}</option>`:'')+LANGS.map(([c,n])=>`<option value="${c}"${c===cur?' selected':''}>${n}</option>`).join('');
 sel.onchange=()=>{const v=sel.value;if(v==='-')setLang('');else if(v)setLang(v)};
 const box=document.querySelector('.langsw');if(box)box.after(sel);
 if(cur&&cur!==SRC){const h=document.createElement('div');h.id='gte';h.hidden=true;document.body.appendChild(h);

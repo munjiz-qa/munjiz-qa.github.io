@@ -177,3 +177,15 @@ td.good{color:var(--ok)}td.warn{color:var(--amber)}td.bad{color:#c0392b}
 .crmwho b{max-width:18ch;overflow:hidden;text-overflow:ellipsis}
 .crmwho small{opacity:.85;font-size:12px}
 .crmwho em{font-style:normal;font-size:11.5px;font-weight:700;background:var(--amber);color:#1d1d1d;border-radius:999px;padding:1px 8px}
+
+/* phones: section tabs scroll sideways in one row instead of stacking */
+@media (max-width:760px){
+  .crm .top .brand{white-space:nowrap}
+  .crm .top nav.tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+  .crm .top nav.tabs::-webkit-scrollbar,.subnav::-webkit-scrollbar{display:none}
+  .crm .top nav.tabs button,.subnav button{flex:none;white-space:nowrap}
+  .subnav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .crmwho small,.crmwho em{display:none}
+  .crm .top .brand{font-size:16px;flex:none}
+  .crmwho{max-width:42vw;min-width:0}
+}
