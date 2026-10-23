@@ -163,6 +163,11 @@ function pane(p,quiet){if(!$('p-'+p))p='home';document.querySelectorAll('#dTabs 
   document.querySelectorAll('.ppanel').forEach(x=>x.hidden=x.id!=='p-'+p);if(!quiet)history.replaceState(null,'','#'+p)}
 $('dTabs').onclick=e=>{const b=e.target.closest('[data-p]');if(b)pane(b.dataset.p)};
 $('goNew').onclick=()=>pane('new');
+// service contract: this account's company details plus the services in the request basket (or the open transactions)
+$('dContract').onclick=()=>{const c=ME.client||{},open=ME.transactions.filter(t=>!/منجزة|ملغاة/.test(t.status));
+  const items=cart.size?[...cart].map(([k,q])=>({c:k,n:SVC[k].n,q,p:SVC[k].p})):open.map(t=>({c:t.code,n:t.service,q:1,p:+t.fee||0}));
+  try{localStorage.setItem('munjiz_contract',JSON.stringify({at:Date.now(),client:{name:c.name,cr:c.cr,estCard:c.estCard,address:c.address,phone:c.phone,email:c.email,qid:c.qid},items}))}catch(e){}
+  window.open((EN?'../':'')+'contract.html?by=client'+(EN?'&lang=en':''),'_blank')};
 
 // files: Drive files come through the server (only for this account); plain links open directly
 $('fileList').onclick=async e=>{const b=e.target.closest('[data-f]');if(!b)return;busy(b,true);
@@ -180,10 +185,10 @@ GROUPS.push([ent('PK')||'الحزم',DATA.SETUP.map(s=>{const e=(D[s[0]]||{}).en
 (DATA.CONSULT||[]).forEach(cat=>GROUPS.push([EN?cat.en:cat.ar,cat.items.map(i=>({c:i.c,n:(EN?i.en:i.ar).n,p:i.p,from:i.from}))]));
 GROUPS.forEach(([g,l])=>{const og=document.createElement('optgroup');og.label=g;l.forEach(s=>{SVC[s.c]=s;const o=document.createElement('option');o.value=s.c;o.textContent=`${s.n} · ${s.from?T.from+' ':''}${fmt(s.p)} ${T.cur}`;og.appendChild(o)});$('nPick').appendChild(og)});
 const cart=new Map();
-function renderCart(){$('nCart').innerHTML=cart.size?`<ul class="plist">${[...cart].map(([c,q])=>`<li><div><b>${esc(SVC[c].n)}</b><span class="mute sm">${c} · ${SVC[c].from?T.from+' ':''}${fmt(SVC[c].p)} ${T.cur}</span></div><label class="qty">${T.qty}<input type="number" min="1" max="99" value="${q}" data-q="${c}"></label><button type="button" class="btn sm ghost" data-rm="${c}">${T.remove}</button></li>`).join('')}</ul>`:''}
+function renderCart(){$('nCart').innerHTML=cart.size?`<ul class="plist">${[...cart].map(([c,q])=>`<li><div><b>${esc(SVC[c].n)}</b><span class="mute sm">${c} · ${SVC[c].from?T.from+' ':''}${fmt(SVC[c].p)} ${T.cur}</span></div><label class="qty">${T.qty}<input type="number" min="1" max="999" value="${q}" data-q="${c}"></label><button type="button" class="btn sm ghost" data-rm="${c}">${T.remove}</button></li>`).join('')}</ul>`:''}
 $('nPick').onchange=()=>{const c=$('nPick').value;if(c){cart.set(c,(cart.get(c)||0)+1);renderCart()}$('nPick').value=''};
 $('nCart').onclick=e=>{const b=e.target.closest('[data-rm]');if(b){cart.delete(b.dataset.rm);renderCart()}};
-$('nCart').oninput=e=>{const i=e.target.closest('[data-q]');if(i)cart.set(i.dataset.q,Math.max(1,Math.min(99,Number(i.value)||1)))};
+$('nCart').oninput=e=>{const i=e.target.closest('[data-q]');if(i)cart.set(i.dataset.q,Math.max(1,Math.min(999,Number(i.value)||1)))};
 try{const pre=new URLSearchParams(location.search).get('svc');if(pre)pre.split(',').forEach(c=>{if(SVC[c])cart.set(c,1)});renderCart()}catch(e){}
 $('newF').addEventListener('submit',e=>{e.preventDefault();submit($('newF'),$('nErr'),async()=>{
   if(!cart.size)throw new Error(T.pickFirst);

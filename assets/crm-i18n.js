@@ -49,7 +49,7 @@ const W={
 'الطلبات الواردة':'Incoming requests','كل الحالات':'All statuses','بحث بالاسم أو الجوال':'Search by name or mobile','تصدير Excel':'Export to Excel','أُرسل':'Sent','رد بالبريد':'Reply by email','تحويل إلى معاملات':'Convert to transactions',
 'الرقم':'No.','العميل':'Client','الخدمات المطلوبة':'Requested services','الباقة':'Package','التأكيد بالبريد':'Email confirmation','الحالة والإجراء':'Status and action',
 // clients
-'بحث بالاسم أو الجوال أو الرقم الشخصي أو السجل':'Search by name, mobile, QID or CR','عميل جديد':'New client','رجوع إلى العملاء':'Back to clients','تعديل البيانات':'Edit details','معاملة جديدة':'New transaction','إرسال بريد':'Send email','واتساب':'WhatsApp','إضافة ملاحظة':'Add a note',
+'بحث بالاسم أو الجوال أو الرقم الشخصي أو السجل':'Search by name, mobile, QID or CR','عميل جديد':'New client','رجوع إلى العملاء':'Back to clients','تعديل البيانات':'Edit details','معاملة جديدة':'New transaction','إرسال بريد':'Send email','واتساب':'WhatsApp','إضافة ملاحظة':'Add a note','عقد خدمة':'Service contract',
 'البيانات والأرقام':'Details and numbers','المتطلبات والملاحظات':'Requirements and notes','معاملات العميل وأعماله':'Client’s transactions and work','المراسلات مع العميل':'Messages with the client',
 'اكتب ردك على العميل. يظهر في حسابه ويصله بالبريد إن كان مسجلاً.':'Write your reply to the client. It shows in their account and reaches them by email if they have one.','إرسال الرد':'Send reply','إرسال نسخة بالبريد':'Also send by email',
 'حساب العميل على الموقع':'Client’s website account','الملفات والتراخيص المرفوعة للعميل':'Files and licences uploaded for the client','عنوان الملف كما يراه العميل':'File title as the client sees it','مثال: السجل التجاري بعد التجديد':'e.g. Commercial registration after renewal',

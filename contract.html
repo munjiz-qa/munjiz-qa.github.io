@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>عقد تقديم خدمات | منجز لخدمات الأعمال</title>
+<meta name="description" content="عقد تقديم خدمات بين منجز لخدمات الأعمال والعميل، بالعربية والإنجليزية، يُستكمل ويُطبع للتوقيع والختم.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#7a1e3a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect x='4' y='4' width='72' height='72' rx='18' fill='%237a1e3a'/%3E%3Cpath d='M22 42l12 12 24-28' fill='none' stroke='%23b8923a' stroke-width='8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@500;700&family=Tajawal:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="assets/style.css?v=20261019ux2">
+<link rel="stylesheet" href="assets/contract.css?v=20261023a">
+<script src="assets/theme.js?v=20261018w"></script>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="index.html"><svg width="34" height="34" viewBox="0 0 80 80" aria-hidden="true"><rect x="5" y="5" width="70" height="70" rx="18" fill="none" stroke="#b8923a" stroke-width="5"/><path d="M22 42l12 12 24-28" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>منجز لخدمات الأعمال</a>
+  <div class="plainnav"><a href="index.html" data-en="Home">الرئيسية</a><a href="index.html#services" data-en="Services">الخدمات</a><a href="portal.html" class="acct" data-en="My account">حسابي</a><button type="button" class="linkbtn lang" id="uiLang" lang="en">English</button></div>
+</div></header>
+
+<main id="main" class="sec"><div class="wrap ct">
+
+<section class="ctform noprint" aria-labelledby="fT">
+  <h1 id="fT" data-en="Service contract">عقد تقديم خدمات</h1>
+  <p class="mute" data-en="Fill in the details once and the contract below updates in Arabic and English. Then print it or save it as PDF for signature and stamp.">استكمل البيانات مرة واحدة، فيتحدّث العقد أدناه بالعربية والإنجليزية، ثم اطبعه أو احفظه PDF للتوقيع والختم.</p>
+
+  <form id="cf" autocomplete="off" novalidate>
+    <fieldset><legend data-en="Contract">بيانات العقد</legend>
+      <label><span data-en="Contract no.">رقم العقد</span><input name="no" dir="ltr" maxlength="40"></label>
+      <label><span data-en="Contract date">تاريخ العقد</span><input name="date" type="date"></label>
+      <label><span data-en="Expected start">تاريخ البدء المتوقع</span><input name="start" type="date"></label>
+      <label><span data-en="Expected duration (working days)">المدة التقديرية (أيام عمل)</span><input name="days" type="number" min="1" max="720" inputmode="numeric"></label>
+    </fieldset>
+    <fieldset><legend data-en="Client (second party)">بيانات العميل (الطرف الثاني)</legend>
+      <label class="wide"><span data-en="Company name as in the commercial registration">اسم الشركة كما في السجل التجاري</span><input name="cName" maxlength="160" required></label>
+      <label><span data-en="Commercial registration no.">رقم السجل التجاري</span><input name="cCr" dir="ltr" maxlength="40"></label>
+      <label><span data-en="Establishment card no.">رقم بطاقة المنشأة</span><input name="cEst" dir="ltr" maxlength="40"></label>
+      <label class="wide"><span data-en="Address">العنوان</span><input name="cAddr" maxlength="200"></label>
+      <label><span data-en="Authorised representative">اسم الممثل المفوض بالتوقيع</span><input name="cRep" maxlength="120"></label>
+      <label><span data-en="Capacity / title">صفته</span><input name="cRepTitle" maxlength="80"></label>
+      <label><span data-en="Representative QID / passport no.">رقم البطاقة الشخصية أو الجواز للممثل</span><input name="cQid" dir="ltr" maxlength="40"></label>
+      <label><span data-en="Mobile">الجوال</span><input name="cPhone" dir="ltr" inputmode="tel" maxlength="20" placeholder="+974 XXXX XXXX"></label>
+      <label><span data-en="Email">البريد الإلكتروني</span><input name="cEmail" dir="ltr" type="email" maxlength="120"></label>
+    </fieldset>
+
+    <fieldset class="calc"><legend data-en="Item registration calculator">حاسبة تسجيل الأصناف</legend>
+      <p class="mute sm wide" data-en="Item registration certificate (data and price): QAR 50 or more per item, plus QAR 5 for every sales outlet the item is registered in.">شهادة تسجيل الصنف (بياناته وسعره): 50 ر.ق أو أكثر للصنف، ويُضاف 5 ر.ق عن كل منفذ بيع يُسجَّل فيه الصنف.</p>
+      <label><span data-en="Number of items">عدد الأصناف</span><input id="iItems" type="number" min="0" max="100000" value="20" inputmode="numeric"></label>
+      <label><span data-en="Outlets per item">عدد منافذ البيع لكل صنف</span><input id="iOutlets" type="number" min="0" max="1000" value="15" inputmode="numeric"></label>
+      <label><span data-en="Fee per item (QAR, 50 or more)">أتعاب الصنف (ر.ق، 50 أو أكثر)</span><input id="iPrice" type="number" min="50" max="100000" value="50" inputmode="numeric"></label>
+      <div class="wide calcout" id="iOut" aria-live="polite"></div>
+      <div class="wide"><button type="button" class="btn sm pri" id="iAdd" data-en="Add to the services table">أضف إلى جدول الخدمات</button></div>
+    </fieldset>
+
+    <fieldset><legend data-en="Services and fees (Annex 1)">الخدمات والأتعاب (الملحق رقم 1)</legend>
+      <label class="wide"><span data-en="Add a service from the price list">أضف خدمة من قائمة الأسعار</span><select id="pick"><option value="" data-en="Choose a service">اختر خدمة</option></select></label>
+      <div class="wide tblwrap"><table class="rows"><thead><tr><th data-en="Code">الرمز</th><th data-en="Service">الخدمة</th><th data-en="Qty">العدد</th><th data-en="Unit fee">الأتعاب للوحدة</th><th data-en="Total">الإجمالي</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
+      <div class="wide"><button type="button" class="btn sm ghost" id="addRow" data-en="Add a blank line">إضافة سطر فارغ</button></div>
+      <label class="wide"><span data-en="Special terms (optional)">شروط خاصة (اختياري)</span><textarea name="special" rows="3" maxlength="1500"></textarea></label>
+    </fieldset>
+
+    <fieldset class="accept"><legend data-en="Client acceptance">موافقة العميل</legend>
+      <label class="chk wide"><input type="checkbox" id="agree"> <span data-en="I have read the contract and its annex in full and agree to them on behalf of the company named above.">قرأت العقد وملحقه كاملين، وأوافق عليهما نيابة عن الشركة المذكورة أعلاه.</span></label>
+      <label class="wide"><span data-en="Full name of the person agreeing">الاسم الكامل للموافق</span><input id="agreeName" maxlength="120"></label>
+    </fieldset>
+
+    <div class="actions">
+      <button type="button" class="btn pri" id="doPrint" data-en="Print / save as PDF">طباعة أو حفظ PDF</button>
+      <button type="button" class="btn ghost" id="doClear" data-en="Clear the form">مسح البيانات</button>
+    </div>
+    <p class="mute sm" data-en="The data stays in this browser tab only and is not sent anywhere. The printed copy is signed by both parties and stamped with the company stamp.">تبقى البيانات في هذه النافذة فقط ولا تُرسل إلى أي جهة. النسخة المطبوعة يوقعها الطرفان وتُختم بختم الشركة.</p>
+  </form>
+</section>
+
+<article id="doc" class="cdoc" aria-label="نص العقد">
+  <div class="chead">
+    <div class="cbrand"><svg width="46" height="46" viewBox="0 0 80 80" aria-hidden="true"><rect x="5" y="5" width="70" height="70" rx="18" fill="none" stroke="#b8923a" stroke-width="5"/><path d="M22 42l12 12 24-28" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div><b data-co="ar"></b><span dir="ltr" data-co="en"></span></div></div>
+    <div class="cmeta"><span>رقم العقد · Contract no.: <b dir="ltr" data-f="no"></b></span><span>التاريخ · Date: <b dir="ltr" data-f="dateTxt"></b></span></div>
+  </div>
+  <h2 class="ctitle"><span lang="ar">عقد تقديم خدمات أعمال</span><span lang="en" dir="ltr">Services Agreement</span></h2>
+
+  <section class="cl">
+    <div class="ar" lang="ar">
+      <p>إنه في يوم <b data-f="dateTxt"></b>، في مدينة الدوحة، تم الاتفاق بين كل من:</p>
+      <p><b>الطرف الأول:</b> <b data-co="ar"></b>، ومقرها <span data-co="addr_ar"></span>، سجل تجاري رقم <b dir="ltr" data-co="cr"></b>، ويمثلها في التوقيع <b data-co="sign_ar"></b> بصفته <span data-co="title_ar"></span>، الهاتف <span dir="ltr" data-co="phone"></span>، البريد <span dir="ltr" data-co="email"></span>، ويُشار إليها فيما بعد بـ«الشركة».</p>
+      <p><b>الطرف الثاني:</b> <b data-f="cName"></b>، سجل تجاري رقم <b dir="ltr" data-f="cCr"></b>، بطاقة منشأة رقم <span dir="ltr" data-f="cEst"></span>، وعنوانه <span data-f="cAddr"></span>، ويمثله في التوقيع <b data-f="cRep"></b> بصفته <span data-f="cRepTitle"></span>، بطاقة شخصية أو جواز رقم <span dir="ltr" data-f="cQid"></span>، الجوال <span dir="ltr" data-f="cPhone"></span>، البريد <span dir="ltr" data-f="cEmail"></span>، ويُشار إليه فيما بعد بـ«العميل».</p>
+      <p>وحيث إن الشركة تعمل في مجال خدمات الأعمال والمعاملات الإلكترونية والخدمات المرتبطة بها في دولة قطر، ويرغب العميل في الاستعانة بها لإنجاز الخدمات المبينة في الملحق رقم (1)، فقد اتفق الطرفان، وهما بكامل الأهلية المعتبرة قانوناً، على ما يلي:</p>
+    </div>
+    <div class="en" lang="en" dir="ltr">
+      <p>This Agreement is made in Doha on <b data-f="dateTxt"></b> between:</p>
+      <p><b>First Party:</b> <b data-co="en"></b>, located in <span data-co="addr_en"></span>, Commercial Registration no. <b data-co="cr"></b>, represented by <b data-co="sign_en"></b>, <span data-co="title_en"></span>, phone <span data-co="phone"></span>, email <span data-co="email"></span> (the "Company").</p>
+      <p><b>Second Party:</b> <b data-f="cName"></b>, Commercial Registration no. <b data-f="cCr"></b>, Establishment Card no. <span data-f="cEst"></span>, address <span data-f="cAddr"></span>, represented by <b data-f="cRep"></b>, <span data-f="cRepTitle"></span>, QID or passport no. <span data-f="cQid"></span>, mobile <span data-f="cPhone"></span>, email <span data-f="cEmail"></span> (the "Client").</p>
+      <p>Whereas the Company provides business services, online transactions and related services in the State of Qatar, and the Client wishes to engage the Company for the services set out in Annex (1), the parties, having full legal capacity, agree as follows:</p>
+    </div>
+  </section>
+
+  <section class="cl">
+    <div class="ar" lang="ar"><h3>البند 1: التمهيد والملحقات</h3>
+      <p>يُعد التمهيد السابق والملحق رقم (1) (الخدمات والأتعاب وجدول السداد) وأي ملحق يوقعه الطرفان لاحقاً جزءاً لا يتجزأ من هذا العقد. وعند التعارض يُقدَّم نص العقد، ثم الملحق الأحدث تاريخاً.</p></div>
+    <div class="en" lang="en" dir="ltr"><h3>Clause 1: Preamble and annexes</h3>
+      <p>The preamble, Annex (1) (services, fees and payment schedule) and any annex later signed by both parties form an integral part of this Agreement. In case of conflict, this Agreement prevails, followed by the most recent annex.</p></div>
+  </section>
+
+  <section class="cl">
+    <div class="ar" lang="ar"><h3>البند 2: موضوع العقد ونطاق الخدمات</h3>
+      <p>تلتزم الشركة بتقديم الخدمات المحددة في الملحق رقم (1) نيابة عن العميل لدى الجهات الحكومية وشبه الحكومية المختصة في دولة قطر، وتشمل تجهيز الطلبات وتقديمها ومتابعتها حتى صدور القرار أو المستند. وأي عمل غير مذكور في الملحق، أو أي زيادة في عدد الأصناف أو منافذ البيع أو المعاملات، يُتفق عليه كتابياً بملحق أو عرض سعر معتمد من الطرفين.</p></div>
+    <div class="en" lang="en" dir="ltr"><h3>Clause 2: Subject and scope</h3>
+      <p>The Company shall provide the services listed in Annex (1) on the Client's behalf before the competent government and semi-government bodies in Qatar, including preparing, submitting and following up applications until a decision or document is issued. Any work not listed in the Annex, and any increase in the number of items, sales outlets or transactions, shall be agreed in writing by an annex or a quotation approved by both parties.</p></div>
+  </section>
+
+  <section class="cl">
+    <div class="ar" lang="ar"><h3>البند 3: طبيعة التزام الشركة</h3>
+      <p>التزام الشركة التزام ببذل العناية المهنية المعتادة، لا بتحقيق نتيجة. فقرار الموافقة أو الرفض أو طلب الاستيفاء يعود للجهة المختصة وحدها، والمدد المذكورة تقديرية وتتأثر بإجراءات الجهات وأنظمتها الإلكترونية وسرعة استيفاء العميل لما يُطلب منه. ولا تملك الشركة صلاحية إصدار أي ترخيص أو التأثير في قرار أي جهة.</p></div>
+    <div class="en" lang="en" dir="ltr"><h3>Clause 3: Nature of the Company's obligation</h3>
+      <p>The Company's obligation is one of due professional care, not of result. Approval, rejection or requests for further documents rest solely with the competent authority. Stated timeframes are estimates and depend on the authorities' procedures and systems and on how quickly the Client provides what is requested. The Company has no power to issue any licence or to influence any authority's decision.</p></div>
+  </section>
+
+  <section class="cl">
+    <div class="ar" lang="ar"><h3>البند 4: التزامات الشركة</h3>
+      <ul><li>تنفيذ الخدمات بعناية وأمانة ووفق الأنظمة المعمول بها.</li>
+      <li>إبلاغ العميل بالمستندات المطلوبة وبمراحل سير المعاملة عبر حسابه في الموقع أو البريد أو الهاتف.</li>
+      <li>تسليم العميل ما يصدر من شهادات ومستندات وإيصالات رسمية بعد استكمال السداد المستحق.</li>
+      <li>المحافظة على مستندات العميل وبياناته واستخدامها لأغراض الخدمة فقط.</li></ul></div>
+    <div class="en" lang="en" dir="ltr"><h3>Clause 4: Company obligations</h3>
+      <ul><li>Perform the services with care and integrity and in line with applicable rules.</li>
+      <li>Inform the Client of required documents and of each stage through the Client's online account, email or phone.</li>
+      <li>Hand over issued certificates, documents and official receipts once the amounts due are paid.</li>
+      <li>Safeguard the Client's documents and data and use them only for the services.</li></ul></div>
+  </section>
+
+  <section class="cl">
+    <div class="ar" lang="ar"><h3>البند 5: التزامات العميل</h3>
+      <ul><li>تقديم بيانات ومستندات صحيحة وكاملة وسارية، ويتحمل وحده المسؤولية عن صحتها، ومنها بيانات الأصناف وأسعارها وباركوداتها وصورها.</li>
+      <li>تسليم ما تطلبه الشركة خلال خمسة (5) أيام عمل من طلبه، والتوقيع أو الحضور متى اشترطت الجهة ذلك.</li>
+      <li>إصدار التفويض أو التوكيل اللازم للشركة لدى الجهات المختصة.</li>
+      <li>سداد الأتعاب والرسوم في مواعيدها وفق البند 7.</li>
+      <li>إبلاغ الشركة فوراً بأي تغيير في بياناته أو بأي تواصل مباشر مع الجهة بشأن المعاملة نفسها.</li></ul></div>
+    <div class="en" lang="en" dir="ltr"><h3>Clause 5: Client obligations</h3>
+      <ul><li>Provide true, complete and valid data and documents, and bear sole responsibility for their accuracy, including item data, prices, barcodes and photos.</li>
+      <li>Deliver what the Company requests within five (5) working days, and sign or attend in person when an authority requires it.</li>
+      <li>Issue the authorisation or power of attorney the Company needs before the authorities.</li>
+      <li>Pay fees and charges on time under Clause 7.</li>
+      <li>Promptly inform the Company of any change in its details or of any direct contact with the authority on the same transaction.</li></ul></div>
+  </section>
+
+  <section class="cl">
+    <div class="ar" lang="ar"><h3>البند 6: الأتعاب والرسوم الحكومية</h3>
+      <p>الأتعاب المبينة في الملحق رقم (1) هي مقابل عمل الشركة فقط، و<b>لا تشمل الرسوم الحكومية</b> ولا الغرامات ولا رسوم الترجمة والتصديق والفحص والشحن وأي مبالغ تطلبها جهات أخرى. يسددها العميل مباشرة، أو تسددها الشركة نيابة عنه بإيصال رسمي ويردها العميل خلال ثلاثة (3) أيام عمل. ولا تلتزم الشركة بدفع أي مبلغ نيابة عن العميل قبل استلامه. وأي ضريبة تُفرض مستقبلاً على الخدمات تُضاف إلى الأتعاب وفق القانون.</p>
+      <p>تسجيل الأصناف: 50 ر.ق أو أكثر لشهادة تسجيل الصنف الواحد (بياناته وسعره)، ويُضاف 5 ر.ق عن كل منفذ بيع يُسجَّل فيه الصنف، ما لم يحدد الملحق غير ذلك.</p></div>
+    <div class="en" lang="en" dir="ltr"><h3>Clause 6: Fees and government charges</h3>
+      <p>The fees in Annex (1) cover the Company's work only and <b>exclude government fees</b>, fines, translation, attestation, inspection and courier charges, and any amounts required by third parties. The Client pays these directly, or the Company pays them on the Client's behalf against an official receipt and the Client reimburses them within three (3) working days. The Company is not required to pay any amount on the Client's behalf before receiving it. Any tax later imposed on the services is added to the fees as the law provides.</p>
+      <p>Item registration: QAR 50 or more per item registration certificate (data and price), plus QAR 5 for each sales outlet the item is registered in, unless the Annex states otherwise.</p></div>
+  </section>
+
+  <section class="cl">
+    <div class="ar" lang="ar"><h3>البند 7: طريقة السداد</h3>
+      <ol><li><b>دفعة مقدمة 50%</b> من إجمالي الأتعاب عند توقيع العقد، ولا يبدأ العمل إلا بعد استلامها.</li>
+      <li><b>دفعة ثانية 25%</b> عند تقديم الطلبات إلى الجهات المختصة أو إنجاز نصف الأعمال، أيهما أسبق.</li>
+      <li><b>دفعة نهائية 25%</b> عند استكمال الأعمال، وقبل تسليم الشهادات والمستندات النهائية.</li></ol>
+      <p>تُسدد كل دفعة خلال سبعة (7) أيام من إشعار العميل باستحقاقها، بتحويل بنكي إلى حساب الشركة أو بشيك باسمها أو نقداً مقابل إيصال رسمي منها. ولا يُعتد بأي دفعة تُسلَّم لموظف بصفته الشخصية. وللشركة حبس الشهادات والمستندات الصادرة حتى سداد كامل المستحق وفقاً لأحكام القانون المدني القطري.</p></div>
+    <div class="en" lang="en" dir="ltr"><h3>Clause 7: Payment terms</h3>
+      <ol><li><b>Advance payment of 50%</b> of the total fees on signing; work starts only after it is received.</li>
+      <li><b>Second payment of 25%</b> when the applications are submitted to the authorities or half the work is completed, whichever is earlier.</li>
+      <li><b>Final payment of 25%</b> on completion of the work and before final certificates and documents are handed over.</li></ol>
+      <p>Each payment is due within seven (7) days of notice, by bank transfer to the Company's account, by cheque in its name, or in cash against its official receipt. Payments handed to any employee personally are not valid. The Company may retain issued certificates and documents until all amounts due are paid, in accordance with the Qatari Civil Code.</p></div>
+  </section>
+
+  <section class="cl">
+    <div class="ar" lang="ar"><h3>البند 8: التأخر في السداد</h3>
+      <p>إذا تأخر العميل في سداد أي مبلغ مستحق أكثر من سبعة (7) أيام بعد إشعاره، فللشركة إيقاف العمل دون أي مسؤولية عليها، وتمتد المدد بقدر مدة التأخير. ويلتزم العميل بتعويض اتفاقي قدره 1% من المبلغ المتأخر عن كل أسبوع تأخير، بحد أقصى 10% منه، إضافة إلى ما تتحمله الشركة فعلياً من مصاريف التحصيل والمطالبة القضائية وأتعاب المحاماة. وإذا جاوز التأخير ثلاثين (30) يوماً جاز للشركة إنهاء العقد وفق البند 10.</p></div>
+    <div class="en" lang="en" dir="ltr"><h3>Clause 8: Late payment</h3>
+      <p>If the Client is more than seven (7) days late in paying any amount after notice, the Company may suspend work without liability, and all timeframes are extended accordingly. The Client shall pay agreed compensation of 1% of the overdue amount for each week of delay, capped at 10% of that amount, plus the collection, court and legal costs the Company actually incurs. If the delay exceeds thirty (30) days, the Company may terminate this Agreement under Clause 10.</p></div>
+  </section>
+
+  <section class="cl">
+    <div class="ar" lang="ar"><h3>البند 9: مدة العقد</h3>
+      <p>يسري العقد من تاريخ توقيعه حتى إنجاز الخدمات المبينة في الملحق رقم (1) وسداد كامل المستحق، والمدة التقديرية للتنفيذ <b data-f="daysTxt"></b> يوم عمل تبدأ من <b data-f="startTxt"></b> أو من استلام الدفعة المقدمة والمستندات كاملة، أيهما أبعد.</p></div>
+    <div class="en" lang="en" dir="ltr"><h3>Clause 9: Term</h3>
+      <p>This Agreement runs from signing until the services in Annex (1) are completed and all amounts due are paid. The estimated duration is <b data-f="daysTxt"></b> working days from <b data-f="startTxt"></b> or from receipt of the advance payment and complete documents, whichever is later.</p></div>
+  </section>
+
+  <section class="cl">
+    <div class="ar" lang="ar"><h3>البند 10: الإلغاء والإنهاء والاسترداد</h3>
+      <ul><li>للعميل إلغاء العقد بإشعار كتابي. فإذا كان الإلغاء قبل بدء الشركة في أي عمل، رُدَّت الدفعة المقدمة بعد خصم 10% من إجمالي الأتعاب مقابل الدراسة والمصاريف الإدارية.</li>
+      <li>إذا كان الإلغاء بعد بدء العمل، استحقت الشركة أتعاب ما أنجزته وما بدأت فيه من مراحل، ولا يقل المستحق عن الدفعة المقدمة، ويُرد ما زاد على ذلك إن وجد.</li>
+      <li>الرسوم الحكومية المسددة لا تردها الشركة، ويخضع استردادها لأنظمة الجهة المختصة.</li>
+      <li>للشركة إنهاء العقد بإشعار كتابي إذا قدّم العميل بيانات أو مستندات غير صحيحة، أو طلب عملاً مخالفاً للقانون، أو تأخر في السداد أكثر من ثلاثين (30) يوماً، أو أخل بالتزاماته ولم يصحح الإخلال خلال سبعة (7) أيام من إشعاره، وتستحق الشركة عندئذ أتعاب ما أنجزته.</li>
+      <li>يتم أي رد مستحق خلال أربعة عشر (14) يوم عمل من التسوية، بالطريقة التي سُدد بها المبلغ.</li></ul></div>
+    <div class="en" lang="en" dir="ltr"><h3>Clause 10: Cancellation, termination and refunds</h3>
+      <ul><li>The Client may cancel by written notice. If cancellation is before the Company starts any work, the advance is refunded less 10% of the total fees for review and administrative costs.</li>
+      <li>If cancellation is after work has started, the Company is entitled to fees for work completed and for stages already started, not less than the advance payment; any excess is refunded.</li>
+      <li>Government fees paid are not refunded by the Company; their refund is subject to the authority's rules.</li>
+      <li>The Company may terminate by written notice if the Client provides untrue data or documents, requests unlawful work, is more than thirty (30) days late in payment, or breaches its obligations and fails to remedy within seven (7) days of notice. The Company is then entitled to fees for work completed.</li>
+      <li>Any refund due is made within fourteen (14) working days of settlement, by the method used for payment.</li></ul></div>
+  </section>
+
+  <section class="cl">
+    <div class="ar" lang="ar"><h3>البند 11: حدود المسؤولية</h3>
+      <p>لا تُسأل الشركة عن قرارات الجهات المختصة أو تأخرها أو تعطل أنظمتها، ولا عن أي نتيجة تترتب على عدم صحة بيانات العميل أو مستنداته أو تأخره في تسليمها، ولا عن مخالفات أو غرامات سابقة للتعاقد أو ناتجة عن نشاط العميل. ولا تُسأل عن الأضرار غير المباشرة كفوات الربح أو توقف النشاط. وفي جميع الأحوال لا تتجاوز مسؤولية الشركة قيمة الأتعاب التي سددها العميل فعلاً عن الخدمة محل المطالبة، وذلك كله ما لم يثبت غش أو خطأ جسيم من الشركة.</p></div>
+    <div class="en" lang="en" dir="ltr"><h3>Clause 11: Limitation of liability</h3>
+      <p>The Company is not liable for the authorities' decisions, delays or system outages, for any consequence of the Client's inaccurate data or documents or late delivery, or for violations or fines that predate this Agreement or arise from the Client's business. The Company is not liable for indirect damages such as loss of profit or business interruption. In all cases the Company's liability shall not exceed the fees actually paid by the Client for the service concerned, except in case of fraud or gross negligence by the Company.</p></div>
+  </section>
+
+  <section class="cl">
+    <div class="ar" lang="ar"><h3>البند 12: السرية</h3>
+      <p>يلتزم الطرفان بالمحافظة على سرية المعلومات التي يطلع عليها كل منهما بسبب هذا العقد، ومنها الأسعار والبيانات التجارية وشروط التعاقد، وعدم إفشائها لغير المختصين بتنفيذه، ما لم يكن الإفصاح مطلوباً بحكم القانون أو لازماً لتقديم الطلب إلى الجهة المختصة. ويستمر هذا الالتزام سنتين بعد انتهاء العقد.</p></div>
+    <div class="en" lang="en" dir="ltr"><h3>Clause 12: Confidentiality</h3>
+      <p>Each party shall keep confidential all information it receives because of this Agreement, including prices, business data and contract terms, and shall not disclose it except to those involved in performing it, unless disclosure is required by law or needed to submit an application to the competent authority. This obligation survives for two years after the Agreement ends.</p></div>
+  </section>
+
+  <section class="cl">
+    <div class="ar" lang="ar"><h3>البند 13: البيانات والمستندات</h3>
+      <p>تعالج الشركة البيانات الشخصية للعميل وممثليه لأغراض تنفيذ الخدمات فقط، وفقاً للقانون رقم (13) لسنة 2016 بشأن حماية خصوصية البيانات الشخصية. وتُعاد أصول المستندات إلى العميل بعد انتهاء الحاجة إليها، وتحتفظ الشركة بنسخ منها المدة التي يتطلبها القانون. وأي بيانات دخول إلى بوابات حكومية يقدمها العميل تُحفظ بسرية، ويُستحسن أن يغيّر العميل كلمات المرور بعد إنجاز الخدمة.</p></div>
+    <div class="en" lang="en" dir="ltr"><h3>Clause 13: Data and documents</h3>
+      <p>The Company processes the personal data of the Client and its representatives only to perform the services, in accordance with Law No. (13) of 2016 on the Protection of Personal Data Privacy. Original documents are returned once no longer needed, and the Company keeps copies for the period the law requires. Any government portal logins the Client provides are kept confidential, and the Client is advised to change those passwords after the service is completed.</p></div>
+  </section>
+
+  <section class="cl">
+    <div class="ar" lang="ar"><h3>البند 14: التفويض وعدم الاستقطاب</h3>
+      <p>يفوض العميل الشركة في التعامل مع الجهات المختصة في حدود الخدمات المتفق عليها، ويصدر لها ما يلزم من تفويض أو توكيل. ويلتزم العميل بعدم التعاقد المباشر مع موظفي الشركة الذين عملوا على معاملاته، أو استقطابهم، طوال مدة العقد واثني عشر (12) شهراً بعد انتهائه، إلا بموافقة كتابية من الشركة.</p></div>
+    <div class="en" lang="en" dir="ltr"><h3>Clause 14: Authorisation and non-solicitation</h3>
+      <p>The Client authorises the Company to deal with the competent authorities within the agreed services and shall issue any authorisation or power of attorney needed. The Client shall not directly engage or solicit Company employees who worked on its transactions during this Agreement and for twelve (12) months after it ends, without the Company's written consent.</p></div>
+  </section>
+
+  <section class="cl">
+    <div class="ar" lang="ar"><h3>البند 15: القوة القاهرة</h3>
+      <p>لا يُعد أي من الطرفين مخلاً إذا تعذر عليه التنفيذ بسبب قوة قاهرة أو ظرف خارج عن إرادته، كالكوارث أو الأوبئة أو قرارات السلطات العامة أو توقف الأنظمة الحكومية، ويُوقف التنفيذ بقدر مدة الظرف. وإذا استمر أكثر من ستين (60) يوماً جاز لأي طرف إنهاء العقد بإشعار كتابي، مع تسوية أتعاب ما أُنجز.</p></div>
+    <div class="en" lang="en" dir="ltr"><h3>Clause 15: Force majeure</h3>
+      <p>Neither party is in breach if performance is prevented by force majeure or circumstances beyond its control, such as disasters, epidemics, decisions of public authorities or government system outages; performance is suspended for the duration. If this lasts more than sixty (60) days, either party may terminate by written notice, with fees for completed work settled.</p></div>
+  </section>
+
+  <section class="cl">
+    <div class="ar" lang="ar"><h3>البند 16: الإشعارات والتعاقد الإلكتروني</h3>
+      <p>تصح الإشعارات بين الطرفين عبر البريد الإلكتروني ورقم الجوال المذكورين في هذا العقد، أو عبر حساب العميل في موقع الشركة. وتُعد موافقة العميل الإلكترونية على هذا العقد، وكذلك المراسلات الإلكترونية، ملزمة ومنتجة لآثارها وفقاً لقانون المعاملات والتجارة الإلكترونية الصادر بالمرسوم بقانون رقم (16) لسنة 2010.</p></div>
+    <div class="en" lang="en" dir="ltr"><h3>Clause 16: Notices and electronic contracting</h3>
+      <p>Notices are valid when sent to the email and mobile number stated in this Agreement or through the Client's account on the Company's website. The Client's electronic acceptance of this Agreement and electronic correspondence are binding and effective under the Electronic Commerce and Transactions Law issued by Decree-Law No. (16) of 2010.</p></div>
+  </section>
+
+  <section class="cl">
+    <div class="ar" lang="ar"><h3>البند 17: القانون الواجب التطبيق وتسوية النزاعات</h3>
+      <p>يخضع هذا العقد لقوانين دولة قطر ويُفسر وفقاً لها. ويسعى الطرفان إلى تسوية أي خلاف ودياً خلال خمسة عشر (15) يوماً من إشعار أحدهما الآخر به، فإن تعذر ذلك تختص محاكم دولة قطر في الدوحة بالفصل فيه.</p></div>
+    <div class="en" lang="en" dir="ltr"><h3>Clause 17: Governing law and disputes</h3>
+      <p>This Agreement is governed by and construed under the laws of the State of Qatar. The parties shall seek to settle any dispute amicably within fifteen (15) days of notice; failing that, the courts of the State of Qatar in Doha have jurisdiction.</p></div>
+  </section>
+
+  <section class="cl">
+    <div class="ar" lang="ar"><h3>البند 18: أحكام عامة</h3>
+      <ul><li>يمثل هذا العقد وملحقاته كامل الاتفاق بين الطرفين، ولا يُعدل إلا كتابةً بتوقيعهما.</li>
+      <li>بطلان أي بند لا يؤثر في صحة بقية البنود.</li>
+      <li>لا يجوز للعميل التنازل عن العقد للغير دون موافقة الشركة كتابياً، وللشركة الاستعانة بمن تراه لتنفيذ بعض الأعمال تحت مسؤوليتها.</li>
+      <li>حُرر العقد باللغتين العربية والإنجليزية، وعند الاختلاف يُعتد بالنص العربي. ويُوقَّع من نسختين أصليتين بيد كل طرف نسخة.</li></ul></div>
+    <div class="en" lang="en" dir="ltr"><h3>Clause 18: General</h3>
+      <ul><li>This Agreement and its annexes are the entire agreement between the parties and may be amended only in writing signed by both.</li>
+      <li>If any clause is invalid, the remaining clauses stay in force.</li>
+      <li>The Client may not assign this Agreement without the Company's written consent; the Company may engage others to perform parts of the work under its responsibility.</li>
+      <li>This Agreement is made in Arabic and English; the Arabic text prevails in case of difference. It is signed in two originals, one for each party.</li></ul></div>
+  </section>
+
+  <section class="cl special" id="specialWrap" hidden>
+    <div class="ar" lang="ar"><h3>شروط خاصة</h3><p class="pre" data-f="special"></p></div>
+    <div class="en" lang="en" dir="ltr"><h3>Special terms</h3><p class="mute">As stated in the Arabic column.</p></div>
+  </section>
+
+  <section class="annex">
+    <h3><span lang="ar">الملحق رقم (1): الخدمات والأتعاب وجدول السداد</span> · <span lang="en" dir="ltr">Annex (1): Services, fees and payment schedule</span></h3>
+    <div class="tblwrap"><table class="atbl"><thead><tr><th>#</th><th>الرمز<br><small>Code</small></th><th>الخدمة<br><small>Service</small></th><th>العدد<br><small>Qty</small></th><th>الأتعاب للوحدة (ر.ق)<br><small>Unit fee (QAR)</small></th><th>الإجمالي (ر.ق)<br><small>Total (QAR)</small></th></tr></thead>
+      <tbody id="aRows"></tbody>
+      <tfoot><tr><th colspan="5">إجمالي الأتعاب · Total fees</th><th id="aTotal" class="num"></th></tr></tfoot></table></div>
+    <p class="sm"><b>الرسوم الحكومية غير مشمولة</b> وتُدفع منفصلة بإيصالها الرسمي. · <b>Government fees are not included</b> and are paid separately against the official receipt.</p>
+    <div class="tblwrap"><table class="atbl pay"><thead><tr><th>الدفعة<br><small>Payment</small></th><th>الاستحقاق<br><small>Due</small></th><th>النسبة<br><small>Share</small></th><th>المبلغ (ر.ق)<br><small>Amount (QAR)</small></th></tr></thead>
+      <tbody>
+        <tr><td>مقدمة · Advance</td><td>عند التوقيع · On signing</td><td class="num">50%</td><td class="num" id="p1"></td></tr>
+        <tr><td>ثانية · Second</td><td>عند تقديم الطلبات أو إنجاز نصف الأعمال · On submission or half completion</td><td class="num">25%</td><td class="num" id="p2"></td></tr>
+        <tr><td>نهائية · Final</td><td>عند استكمال الأعمال وقبل التسليم · On completion, before hand-over</td><td class="num">25%</td><td class="num" id="p3"></td></tr>
+      </tbody></table></div>
+    <p class="sm mute" id="calcNote"></p>
+  </section>
+
+  <section class="sigs">
+    <div class="sig"><h4>الطرف الأول · First Party</h4><p><b data-co="ar"></b><br><span dir="ltr" data-co="en"></span></p>
+      <p>الاسم · Name: <b data-co="sign_ar"></b> · <span dir="ltr" data-co="sign_en"></span></p><p>الصفة · Title: <span data-co="title_ar"></span> · <span dir="ltr" data-co="title_en"></span></p>
+      <p class="line">التوقيع · Signature</p><p class="stampbox">الختم · Stamp</p></div>
+    <div class="sig"><h4>الطرف الثاني · Second Party</h4><p><b data-f="cName"></b></p>
+      <p>الاسم · Name: <b data-f="cRep"></b></p><p>الصفة · Title: <span data-f="cRepTitle"></span></p>
+      <p class="esign" id="esign" hidden></p>
+      <p class="line">التوقيع · Signature</p><p class="stampbox">الختم · Stamp</p></div>
+  </section>
+  <div class="cfoot"><span data-co="ar"></span> · <span data-co="addr_ar"></span> · <span dir="ltr" data-co="phone"></span> · <span dir="ltr" data-co="email"></span></div>
+</article>
+
+<aside class="lawyer noprint" data-en="Internal note: this contract is a professional draft. We recommend a review by a lawyer licensed in Qatar before it is adopted as the final version.">ملاحظة داخلية: هذا العقد مسودة احترافية، ويُستحسن مراجعته من محامٍ مرخص في دولة قطر قبل اعتماده نسخةً نهائية.</aside>
+</div></main>
+
+<footer class="noprint"><div class="wrap fc"><b>للتواصل</b><a href="tel:+97451600498" dir="ltr">☎ +974 51600498</a><a href="https://wa.me/97451600498" target="_blank" rel="noopener">واتساب</a><a href="mailto:munijizqa@gmail.com" dir="ltr">✉ munijizqa@gmail.com</a></div><div class="wrap"><span>منجز لخدمات الأعمال ذ.م.م · الدوحة، قطر</span><span><a href="index.html">العودة إلى الموقع</a> · <a href="legal.html">المستندات القانونية</a> · <a href="portal.html">حسابي</a></span></div></footer>
+<div class="toast" id="toast" role="status" hidden></div>
+<script src="assets/config.js?v=20261018a"></script>
+<script src="assets/data.js?v=20261023i"></script>
+<script src="assets/details.js?v=20261023i"></script>
+<script src="assets/catalog.js?v=20261023i"></script>
+<script src="assets/contract.js?v=20261023a"></script>
+</body></html>

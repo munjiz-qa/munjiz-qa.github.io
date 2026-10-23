@@ -1,0 +1,73 @@
+/* service contract page (contract.html); --cb / --cg are the brand colours on the printed contract */
+:root{--cb:#7a1e3a;--cg:#b8923a}
+.ct{display:flex;flex-direction:column;gap:22px;max-width:1080px}
+.ctform h1{font-size:clamp(24px,3.6vw,32px);margin:0 0 4px}
+.ctform form{display:flex;flex-direction:column;gap:14px;margin-top:12px}
+.ctform fieldset{border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:var(--surface);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 14px;margin:0;min-width:0}
+.ctform legend{font-weight:700;padding:0 6px;color:var(--pri)}
+.ctform label{display:flex;flex-direction:column;gap:4px;font-size:14.5px;min-width:0}
+.ctform label.chk{flex-direction:row;align-items:flex-start;gap:8px}
+.ctform .wide{grid-column:1/-1}
+.ctform input,.ctform select,.ctform textarea{font:inherit;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);width:100%;min-width:0}
+.ctform input[type=checkbox]{width:auto;margin-top:5px}
+.ctform .actions{display:flex;gap:10px;flex-wrap:wrap}
+.calcout{background:var(--chip);border-radius:10px;padding:10px 12px;font-weight:500;line-height:1.8}
+.tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.rows{width:100%;border-collapse:collapse;font-size:14px;min-width:620px}
+table.rows th,table.rows td{padding:6px 4px;border-bottom:1px solid var(--line);text-align:start;vertical-align:middle}
+table.rows td input{padding:6px 8px}
+table.rows td:nth-child(3) input,table.rows td:nth-child(4) input{max-width:110px}
+.num{font-variant-numeric:tabular-nums}
+.lawyer{border:1px dashed var(--line);border-radius:12px;padding:10px 14px;font-size:14px;color:var(--mute)}
+
+/* the contract */
+.cdoc{background:#fff;color:#1d252c;border:1px solid var(--line);border-radius:14px;padding:28px 30px;font-size:14px;line-height:1.75;display:flex;flex-direction:column;gap:14px;direction:rtl}
+.cdoc .blank{color:#8a939b;letter-spacing:.5px}
+.chead{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;border-bottom:2px solid var(--cg);padding-bottom:12px}
+.cbrand{display:flex;gap:10px;align-items:center;color:var(--cb)}
+.cbrand div{display:flex;flex-direction:column;line-height:1.35}.cbrand b{font-size:17px}.cbrand span{font-size:13px;color:#4b5560}
+.cmeta{display:flex;flex-direction:column;gap:2px;font-size:13px;text-align:end}
+.ctitle{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;font-size:20px;margin:4px 0;color:var(--cb)}
+.ctitle [lang=en]{font-size:16px;color:#4b5560}
+.cl{display:grid;grid-template-columns:1fr 1fr;gap:22px;border-bottom:1px solid #eceff1;padding-bottom:12px;break-inside:avoid}
+.cl .en{text-align:left;direction:ltr;border-inline-start:1px solid #eceff1;padding-inline-start:18px}
+.cl h3{font-size:15px;margin:0 0 4px;color:var(--cb)}
+.cl p{margin:0 0 6px}.cl ul,.cl ol{margin:0;padding-inline-start:20px;display:flex;flex-direction:column;gap:3px}
+.cl .en ul,.cl .en ol{padding-inline-start:0;padding-left:20px}
+.cdoc .pre{white-space:pre-wrap}
+.annex h3{font-size:15px;color:var(--cb);margin:0 0 8px}
+.atbl{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:8px}
+.atbl th,.atbl td{border:1px solid #d9dee2;padding:6px 8px;text-align:start;vertical-align:top}
+.atbl th{background:#f3f6f5;font-weight:700}.atbl th small,.atbl td small{font-weight:400;color:#5b6670}
+.atbl .num,.atbl tfoot th:last-child{text-align:end;white-space:nowrap}
+.sigs{display:grid;grid-template-columns:1fr 1fr;gap:20px;break-inside:avoid;margin-top:6px}
+.sig{border:1px solid #d9dee2;border-radius:10px;padding:12px 14px}
+.sig h4{margin:0 0 6px;font-size:14.5px;color:var(--cb)}.sig p{margin:0 0 4px}
+.sig .line{margin-top:26px;border-top:1px solid #9aa3ab;padding-top:4px;color:#5b6670;font-size:12.5px}
+.sig .stampbox{margin-top:10px;height:78px;border:1px dashed #b9c1c8;border-radius:50%;width:120px;display:flex;align-items:center;justify-content:center;color:#8a939b;font-size:12px}
+.sig .esign{background:#f3f6f5;border-radius:8px;padding:6px 8px;font-size:12.5px}
+.annex #calcNote{white-space:pre-line}
+#calcNote{white-space:pre-line}
+.cfoot{text-align:center;font-size:12px;color:#5b6670;border-top:1px solid #eceff1;padding-top:8px}
+@media (max-width:760px){
+  .ctform fieldset{grid-template-columns:1fr}
+  table.rows{min-width:0}table.rows thead{display:none}
+  table.rows tr{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:8px 0;border-bottom:1px solid var(--line)}
+  table.rows td{border:0;padding:0}table.rows td:nth-child(2){grid-column:1/-1;order:-1}table.rows td input{max-width:none!important}
+  .cdoc{padding:18px 14px}
+  .cl,.sigs{grid-template-columns:1fr;gap:10px}
+  .cl .en{border-inline-start:0;padding-inline-start:0;border-top:1px dashed #eceff1;padding-top:8px}
+  .cmeta{text-align:start}
+}
+@media print{
+  @page{size:A4;margin:12mm 11mm}
+  html,body{background:#fff!important}
+  header.top,footer.noprint,.noprint,.toast,.wa-fab,.basmala{display:none!important}
+  main.sec{padding:0!important}.ct,.ct.wrap{max-width:none!important;width:auto!important;padding:0!important;margin:0!important;gap:0}
+  .cdoc{border:0;border-radius:0;padding:0;font-size:9.6pt;line-height:1.5;gap:8px}
+  .cl{break-inside:auto;padding-bottom:6px}.cl h3{break-after:avoid}.cl li,.cl p{break-inside:avoid}
+  .cl{grid-template-columns:1fr 1fr!important;gap:14px}
+  .cl .en{border-inline-start:1px solid #eceff1!important;padding-inline-start:12px!important;border-top:0!important;padding-top:0!important}
+  .sigs{grid-template-columns:1fr 1fr!important}
+  .annex,.atbl tr{break-inside:avoid}
+}

@@ -170,8 +170,8 @@ function renderCart(){
   cart.forEach((q,code)=>{const s=byCode[code];
     const r=document.createElement('div');r.className='ci';
     r.innerHTML=`<span>${esc(s.n)} <span class="code">${s.c}</span><small class="ent-n">${esc(s.entName)}${isOnce(s)?' · '+T.once:''}</small></span><span class="num lt">${fmt(s.p*q)}</span>`;
-    const i=document.createElement('input');i.type='number';i.min=1;i.max=200;i.value=q;i.id='q-'+code;i.setAttribute('aria-label',T.qtyOf+s.n);
-    i.oninput=()=>{const v=Math.max(1,Math.min(200,parseInt(i.value)||1));cart.set(code,v);r.querySelector('.lt').textContent=fmt(s.p*v);updateTotals()};
+    const i=document.createElement('input');i.type='number';i.min=1;i.max=999;i.value=q;i.id='q-'+code;i.setAttribute('aria-label',T.qtyOf+s.n);
+    i.oninput=()=>{const v=Math.max(1,Math.min(999,parseInt(i.value)||1));cart.set(code,v);r.querySelector('.lt').textContent=fmt(s.p*v);updateTotals()};
     const x=document.createElement('button');x.className='x';x.type='button';x.textContent='×';x.setAttribute('aria-label',T.rmA+s.n);x.onclick=()=>{cart.delete(code);renderCart();render();renderCon()};
     r.append(i,x);c.appendChild(r)});
   updateTotals();
