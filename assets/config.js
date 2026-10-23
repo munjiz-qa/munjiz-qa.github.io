@@ -4,7 +4,7 @@
 window.MUNJIZ_CONFIG = {
   API: "https://script.google.com/macros/s/AKfycbx-GRnFTT0imyz_QO7wr19dXuQm8kk7svgyWkHfnCPkaP9nFT0Y9obVc1szH6uFvND8/exec",
   WHATSAPP: "97451600498",
-  PHONE: "+974 51600498",
+  PHONE: "+974 5160 0498",
   EMAIL: "munijizqa@gmail.com"
 };
 
