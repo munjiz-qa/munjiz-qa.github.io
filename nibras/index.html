@@ -393,7 +393,7 @@ h4{margin:10px 0 4px;font-size:14px}
 <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
-<script src="assets/config.js?v=202610231540"></script>
+<script src="assets/config.js?v=202610231632"></script>
 <script>
 /* منطق الخادم المشترك: يعمل في خادم البيانات وفي الوضع المحلي على الجهاز بالقواعد نفسها */
 var NB_SHA256 = (function () {
@@ -520,6 +520,7 @@ function nbHandle(req, env) {
     var L3 = users(), y3 = L3.filter(function (y) { return y.id === req.id; })[0];
     if (!y3) return err("bad", "المستخدم غير موجود.");
     if (y3.id === u.id) return err("self", "لا يمكن تعديل حسابك من هذه القائمة.");
+    if (y3.id === "u1") return err("main", "حساب المدير الرئيسي محمي من الحذف وتغيير الصلاحية.");
     if (a === "setRole") y3.role = req.role === "admin" ? "admin" : "staff"; else L3 = L3.filter(function (y) { return y.id !== req.id; });
     W("sys/users", L3);
     if (a === "delUser") { var t3 = P("sys/tokens") || {}; Object.keys(t3).forEach(function (k) { if (t3[k].uid === req.id) delete t3[k]; }); W("sys/tokens", t3); }
@@ -1685,7 +1686,7 @@ async function logout() { try { await call("logout"); } catch { } ls.del("nb-tok
 /* ---------- users admin ---------- */
 const tmpPw = () => rand(4) + "-" + rand(4) + String(10 + crypto.getRandomValues(new Uint8Array(1))[0] % 90);
 function usersTable(list) {
-  return `<div class="tbl-wrap"><table><thead><tr><th>الاسم</th><th>اسم المستخدم</th><th>الصلاحية</th><th>الحالة</th><th></th></tr></thead><tbody>${list.map(u => `<tr><td><b>${esc2(u.name)}</b></td><td><span dir="ltr">${esc2(u.user)}</span></td><td>${u.id === me.id ? (u.role === "admin" ? "مدير" : "موظف") : `<select class="inp" data-urole="${u.id}"><option value="staff"${u.role === "staff" ? " selected" : ""}>موظف</option><option value="admin"${u.role === "admin" ? " selected" : ""}>مدير</option></select>`}</td><td>${u.mustChange ? "بانتظار تعيين كلمة المرور" : "نشط"}</td><td>${u.id === me.id ? `<span class="hint">حسابك</span>` : `<button type="button" class="btn sm" data-ureset="${u.id}">كلمة مرور مؤقتة</button> <button type="button" class="btn sm danger" data-udel="${u.id}">حذف</button>`}</td></tr>`).join("")}</tbody></table></div>`;
+  return `<div class="tbl-wrap"><table><thead><tr><th>الاسم</th><th>اسم المستخدم</th><th>الصلاحية</th><th>الحالة</th><th></th></tr></thead><tbody>${list.map(u => `<tr><td><b>${esc2(u.name)}</b></td><td><span dir="ltr">${esc2(u.user)}</span></td><td>${u.id === me.id || u.id === "u1" ? (u.role === "admin" ? "مدير" : "موظف") : `<select class="inp" data-urole="${u.id}"><option value="staff"${u.role === "staff" ? " selected" : ""}>موظف</option><option value="admin"${u.role === "admin" ? " selected" : ""}>مدير</option></select>`}</td><td>${u.mustChange ? "بانتظار تعيين كلمة المرور" : "نشط"}</td><td>${u.id === me.id ? `<span class="hint">حسابك</span>` : u.id === "u1" ? `<button type="button" class="btn sm" data-ureset="${u.id}">كلمة مرور مؤقتة</button> <span class="hint">المدير الرئيسي</span>` : `<button type="button" class="btn sm" data-ureset="${u.id}">كلمة مرور مؤقتة</button> <button type="button" class="btn sm danger" data-udel="${u.id}">حذف</button>`}</td></tr>`).join("")}</tbody></table></div>`;
 }
 async function refreshUsers(list) {
   const box = q("#uList"); if (!box) return;
@@ -2531,7 +2532,7 @@ async function saveData(d, msgEl) {
   const now = new Date().toISOString(), key = `ed-${d.asOf}-${Date.now().toString(36)}`;
   try {
     await S.saveEdition({ key, json: JSON.stringify(d), edition: d.edition, asOf: d.asOf, savedAt: now });
-    msgEl.textContent = "حُفظ الإصدار ونُشر وأُضيف إلى المكتبة."; toast("نُشر إصدار البيانات الجديد لجميع المستخدمين.");
+    (document.getElementById(msgEl.id) || msgEl).textContent = "حُفظ الإصدار ونُشر وأُضيف إلى المكتبة."; toast("نُشر إصدار البيانات الجديد لجميع المستخدمين.");
   } catch { msgEl.textContent = "لم يُحفظ التعديل: صلاحيتك لا تسمح بالكتابة أو البيانات أكبر من الحد المسموح."; }
 }
 function collectAdmin() {

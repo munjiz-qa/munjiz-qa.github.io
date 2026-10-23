@@ -123,6 +123,7 @@ function nbHandle(req, env) {
     var L3 = users(), y3 = L3.filter(function (y) { return y.id === req.id; })[0];
     if (!y3) return err("bad", "المستخدم غير موجود.");
     if (y3.id === u.id) return err("self", "لا يمكن تعديل حسابك من هذه القائمة.");
+    if (y3.id === "u1") return err("main", "حساب المدير الرئيسي محمي من الحذف وتغيير الصلاحية.");
     if (a === "setRole") y3.role = req.role === "admin" ? "admin" : "staff"; else L3 = L3.filter(function (y) { return y.id !== req.id; });
     W("sys/users", L3);
     if (a === "delUser") { var t3 = P("sys/tokens") || {}; Object.keys(t3).forEach(function (k) { if (t3[k].uid === req.id) delete t3[k]; }); W("sys/tokens", t3); }
