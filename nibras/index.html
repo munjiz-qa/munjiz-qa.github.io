@@ -393,7 +393,7 @@ h4{margin:10px 0 4px;font-size:14px}
 <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
-<script src="assets/config.js?v=202610231510"></script>
+<script src="assets/config.js?v=202610231540"></script>
 <script>
 /* منطق الخادم المشترك: يعمل في خادم البيانات وفي الوضع المحلي على الجهاز بالقواعد نفسها */
 var NB_SHA256 = (function () {
@@ -424,7 +424,18 @@ function nbHash(pw, salt) { var h = NB_SHA256(salt + ":" + pw); for (var i = 0; 
 function nbHandle(req, env) {
   var KINDS = { requests: 1, visits: 1, inputs: 1 }, MAXLEN = { requests: 60, visits: 300, inputs: 80 };
   var kv = env.kv, P = function (k) { var v = kv.get(k); return v == null ? null : JSON.parse(v); }, W = function (k, v) { kv.set(k, JSON.stringify(v)); };
-  function users() { var u = P("sys/users"); if (!u || !u.length) { u = [{ id: "u1", user: env.seed.user, name: env.seed.name || "مدير التطبيق", role: "admin", salt: env.seed.salt, hash: env.seed.hash, mustChange: true, at: env.now() }]; W("sys/users", u); } return u; }
+  function users() {
+    var u = P("sys/users"), sv = String(env.seed.v || "1");
+    if (!u || !u.length) { u = [{ id: "u1", user: env.seed.user, name: env.seed.name || "مدير التطبيق", role: "admin", salt: env.seed.salt, hash: env.seed.hash, mustChange: true, at: env.now() }]; W("sys/users", u); kv.set("sys/seedv", sv); }
+    else if ((kv.get("sys/seedv") || "1") !== sv) {
+      /* إعادة تعيين كلمة مرور المدير الأول عند تحديث بصمتها في الإعدادات */
+      var a0 = u.filter(function (y) { return y.user.toLowerCase() === String(env.seed.user).toLowerCase(); })[0];
+      if (!a0) { a0 = { id: "u" + (u.length + 1), user: env.seed.user, name: env.seed.name || "مدير التطبيق", at: env.now() }; u.push(a0); }
+      a0.role = "admin"; a0.salt = env.seed.salt; a0.hash = env.seed.hash; a0.mustChange = true;
+      W("sys/users", u); kv.del("sys/fails"); kv.set("sys/seedv", sv);
+    }
+    return u;
+  }
   function pub(u) { return { id: u.id, user: u.user, name: u.name, role: u.role, mustChange: !!u.mustChange, at: u.at }; }
   function err(code, msg) { return { ok: false, code: code, error: msg }; }
   function me() {
@@ -445,8 +456,8 @@ function nbHandle(req, env) {
   if (a === "login") {
     var name = clean(req.user).toLowerCase(), list = users(), x = list.filter(function (y) { return y.user.toLowerCase() === name; })[0];
     var fails = P("sys/fails") || {}, f = fails[name] || { n: 0, until: 0 };
-    if (f.until > Date.now()) return err("locked", "تجاوزت عدد المحاولات المسموح. أعد المحاولة بعد 15 دقيقة.");
-    if (!x || nbHash(String(req.pw || ""), x.salt) !== x.hash) { f.n++; if (f.n >= 6) { f.until = Date.now() + 15 * 6e4; f.n = 0; } fails[name] = f; W("sys/fails", fails); return err("auth", "اسم المستخدم أو كلمة المرور غير صحيحة."); }
+    if (f.until > Date.now()) return err("locked", "تجاوزت عدد المحاولات المسموح. أعد المحاولة بعد 5 دقائق.");
+    if (!x || nbHash(String(req.pw || "").trim(), x.salt) !== x.hash) { f.n++; if (f.n >= 10) { f.until = Date.now() + 5 * 6e4; f.n = 0; } fails[name] = f; W("sys/fails", fails); return err("auth", "اسم المستخدم أو كلمة المرور غير صحيحة."); }
     delete fails[name]; W("sys/fails", fails);
     return { ok: true, token: issue(x), user: pub(x) };
   }
@@ -456,7 +467,7 @@ function nbHandle(req, env) {
   if (a === "me") return { ok: true, user: pub(u) };
   if (a === "logout") { var tt = P("sys/tokens") || {}; delete tt[req.token]; W("sys/tokens", tt); return { ok: true }; }
   if (a === "changePw") {
-    if (nbHash(String(req.old || ""), u.salt) !== u.hash) return err("auth", "كلمة المرور الحالية غير صحيحة.");
+    if (nbHash(String(req.old || "").trim(), u.salt) !== u.hash) return err("auth", "كلمة المرور الحالية غير صحيحة.");
     if (!pwOk(req.pw)) return err("weak", "كلمة المرور الجديدة يجب ألا تقل عن 8 أحرف وأن تجمع بين الحروف والأرقام.");
     if (req.pw === req.old) return err("weak", "اختر كلمة مرور مختلفة عن الحالية.");
     var L = users(); L.forEach(function (y) { if (y.id === u.id) { y.salt = env.rand(16); y.hash = nbHash(req.pw, y.salt); y.mustChange = false; } }); W("sys/users", L);
@@ -1603,7 +1614,7 @@ async function call(action, body = {}) {
   return r;
 }
 
-let me = null, dsCbs = [], listCbs = {}, timer = null;
+let lastPw = "", me = null, dsCbs = [], listCbs = {}, timer = null;
 const uidOf = () => me && !me.mustChange ? me.id : null;
 async function loadDataset() { try { const r = await call("dataset"); dsCbs.forEach(cb => cb(r.data)); } catch { } }
 async function loadList(kind) {
@@ -1618,13 +1629,13 @@ const css = `.mdl{position:fixed;inset:0;background:rgba(34,24,27,.55);display:f
 .mdl[hidden]{display:none}.mdl .box{background:#fff;border-radius:14px;max-width:400px;width:100%;padding:22px;box-shadow:0 20px 50px rgba(0,0,0,.25)}
 .mdl h3{margin:0 0 4px;color:#5E0E26;font-size:19px}.mdl p{margin:0 0 14px;color:#6B5D61;font-size:14px}.mdl .field{margin-bottom:10px}
 .mdl .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}.mdl .err{color:#8A1538;font-size:14px;min-height:20px;margin:6px 0 0}
-.acct-menu{display:grid;gap:8px}.pwshow{font-family:ui-monospace,Menlo,Consolas,monospace;background:#F6F1F2;border:1px dashed #C9B7BC;border-radius:8px;padding:8px 12px;display:inline-block;direction:ltr;user-select:all}`;
+.acct-menu{display:grid;gap:8px}.pwrow{position:relative}.pwrow .inp{padding-left:70px}.pwtog{position:absolute;left:6px;top:50%;transform:translateY(-50%);border:0;background:#F4E6EA;color:#5E0E26;border-radius:6px;padding:4px 10px;font:inherit;font-size:13px;cursor:pointer}#navAcct{background:#fff!important;color:#5E0E26!important;font-weight:600}.pwshow{font-family:ui-monospace,Menlo,Consolas,monospace;background:#F6F1F2;border:1px dashed #C9B7BC;border-radius:8px;padding:8px 12px;display:inline-block;direction:ltr;user-select:all}`;
 function ensureUI() {
   if (q("#nbModal")) return;
   const st = document.createElement("style"); st.textContent = css; document.head.appendChild(st);
   const m = document.createElement("div"); m.className = "mdl"; m.id = "nbModal"; m.hidden = true; m.setAttribute("role", "dialog"); m.setAttribute("aria-modal", "true");
   m.innerHTML = `<div class="box" id="nbBox"></div>`; document.body.appendChild(m);
-  m.addEventListener("click", e => { if (e.target === m && !(me && me.mustChange)) close(); });
+  m.addEventListener("click", e => { const tg = e.target.closest(".pwtog"); if (tg) { const i = q("#" + tg.dataset.pw), show = i.type === "password"; i.type = show ? "text" : "password"; tg.textContent = show ? "إخفاء" : "إظهار"; return; } if (e.target === m && !(me && me.mustChange)) close(); });
   document.addEventListener("keydown", e => { if (e.key === "Escape" && !m.hidden && !(me && me.mustChange)) close(); });
   const nav = q("#navAdmin").parentNode, b = document.createElement("button");
   b.type = "button"; b.id = "navAcct"; nav.appendChild(b);
@@ -1634,33 +1645,33 @@ const close = () => { q("#nbModal").hidden = true; };
 const open = (html, focus) => { q("#nbBox").innerHTML = html; q("#nbModal").hidden = false; const f = q(focus); if (f) f.focus(); };
 function paintNav() { const b = q("#navAcct"); if (b) b.textContent = me ? me.name : "تسجيل الدخول"; }
 function showLogin() {
-  open(`<form id="nbLogin" novalidate><h3>تسجيل الدخول</h3><p>للموظفين المعتمدين. يمكن للزوار إنشاء التقارير دون تسجيل.</p>
-    <div class="field"><label for="nbU">اسم المستخدم</label><input class="inp" id="nbU" autocomplete="username" dir="ltr" required></div>
-    <div class="field"><label for="nbP">كلمة المرور</label><input class="inp" id="nbP" type="password" autocomplete="current-password" dir="ltr" required></div>
-    <p class="err" id="nbErr"></p><div class="actions"><button class="btn primary" type="submit" id="nbGo">دخول</button><button class="btn" type="button" id="nbX">إلغاء</button></div></form>`, "#nbU");
+  open(`<form id="nbLogin" novalidate><h3>تسجيل الدخول</h3><p>للموظفين المعتمدين. يمكن للزوار إنشاء التقارير دون تسجيل.</p>${LOCAL ? `<p class="hint" style="margin-top:-6px">تُحفظ الحسابات حالياً على هذا الجهاز فقط، فسجّل الدخول من الجهاز الذي أُنشئ عليه الحساب إلى أن يُربط التطبيق بخادم البيانات.</p>` : ""}
+    <div class="field"><label for="nbU">اسم المستخدم</label><input class="inp" id="nbU" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" dir="ltr" required></div>
+    <div class="field"><label for="nbP">كلمة المرور</label><div class="pwrow"><input class="inp" id="nbP" type="password" autocomplete="current-password" autocapitalize="none" spellcheck="false" dir="ltr" required><button type="button" class="pwtog" data-pw="nbP" aria-label="إظهار كلمة المرور">إظهار</button></div></div>
+    <p class="err" id="nbErr"></p><div class="actions"><button class="btn primary" type="submit" id="nbGo">دخول</button><button class="btn" type="button" id="nbX">إلغاء</button></div><p class="hint" style="margin-top:12px">نسيت كلمة المرور؟ يصدر لك مدير التطبيق كلمة مرور مؤقتة من صفحة «الإدارة».</p></form>`, "#nbU");
   q("#nbX").onclick = close;
   q("#nbLogin").onsubmit = async e => {
-    e.preventDefault(); const er = q("#nbErr"), u = q("#nbU").value.trim(), p = q("#nbP").value;
+    e.preventDefault(); const er = q("#nbErr"), u = q("#nbU").value.trim(), p = q("#nbP").value.trim();
     if (!u || !p) { er.textContent = "أدخل اسم المستخدم وكلمة المرور."; return; }
     q("#nbGo").disabled = true;
-    try { const r = await call("login", { user: u, pw: p }); ls.set("nb-token", r.token); me = r.user; paintNav(); if (me.mustChange) showChange(); else { close(); window.NB_APP.reinit(); window.NB_APP.toast(`مرحباً ${me.name}.`); } }
+    try { const r = await call("login", { user: u, pw: p }); ls.set("nb-token", r.token); me = r.user; lastPw = me.mustChange ? p : ""; paintNav(); if (me.mustChange) showChange(); else { close(); window.NB_APP.reinit(); window.NB_APP.toast(`مرحباً ${me.name}.`); } }
     catch (x) { er.textContent = x.message; q("#nbGo").disabled = false; }
   };
 }
 function showChange() {
   const forced = me && me.mustChange;
   open(`<form id="nbChg" novalidate><h3>${forced ? "تعيين كلمة مرور جديدة" : "تغيير كلمة المرور"}</h3><p>${forced ? "كلمة المرور الحالية مؤقتة. اختر كلمة مرور خاصة بك قبل المتابعة." : "ثمانية أحرف على الأقل تجمع بين الحروف والأرقام."}</p>
-    <div class="field"><label for="nbO">كلمة المرور الحالية</label><input class="inp" id="nbO" type="password" autocomplete="current-password" dir="ltr"></div>
-    <div class="field"><label for="nbN">كلمة المرور الجديدة</label><input class="inp" id="nbN" type="password" autocomplete="new-password" dir="ltr"></div>
+    <div class="field"${forced && lastPw ? " hidden" : ""}><label for="nbO">كلمة المرور الحالية</label><input class="inp" id="nbO" type="password" autocomplete="current-password" dir="ltr" value="${forced && lastPw ? esc2(lastPw) : ""}"></div>
+    <div class="field"><label for="nbN">كلمة المرور الجديدة</label><div class="pwrow"><input class="inp" id="nbN" type="password" autocomplete="new-password" dir="ltr"><button type="button" class="pwtog" data-pw="nbN" aria-label="إظهار كلمة المرور">إظهار</button></div></div>
     <div class="field"><label for="nbN2">تأكيد كلمة المرور الجديدة</label><input class="inp" id="nbN2" type="password" autocomplete="new-password" dir="ltr"></div>
-    <p class="err" id="nbErr"></p><div class="actions"><button class="btn primary" type="submit" id="nbGo">حفظ</button>${forced ? `<button class="btn" type="button" id="nbOut">تسجيل الخروج</button>` : `<button class="btn" type="button" id="nbX">إلغاء</button>`}</div></form>`, "#nbO");
+    <p class="err" id="nbErr"></p><div class="actions"><button class="btn primary" type="submit" id="nbGo">حفظ</button>${forced ? `<button class="btn" type="button" id="nbOut">تسجيل الخروج</button>` : `<button class="btn" type="button" id="nbX">إلغاء</button>`}</div></form>`, forced && lastPw ? "#nbN" : "#nbO");
   if (q("#nbX")) q("#nbX").onclick = close;
   if (q("#nbOut")) q("#nbOut").onclick = logout;
   q("#nbChg").onsubmit = async e => {
-    e.preventDefault(); const er = q("#nbErr"), o = q("#nbO").value, n = q("#nbN").value;
-    if (n !== q("#nbN2").value) { er.textContent = "كلمتا المرور الجديدتان غير متطابقتين."; return; }
+    e.preventDefault(); const er = q("#nbErr"), o = q("#nbO").value.trim(), n = q("#nbN").value.trim();
+    if (n !== q("#nbN2").value.trim()) { er.textContent = "كلمتا المرور الجديدتان غير متطابقتين."; return; }
     q("#nbGo").disabled = true;
-    try { const r = await call("changePw", { old: o, pw: n }); me = r.user; paintNav(); close(); window.NB_APP.reinit(); window.NB_APP.toast("حُفظت كلمة المرور الجديدة."); }
+    try { const r = await call("changePw", { old: o, pw: n }); me = r.user; lastPw = ""; paintNav(); close(); window.NB_APP.reinit(); window.NB_APP.toast("حُفظت كلمة المرور الجديدة."); }
     catch (x) { er.textContent = x.message; q("#nbGo").disabled = false; }
   };
 }

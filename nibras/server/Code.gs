@@ -27,7 +27,18 @@ function nbHash(pw, salt) { var h = NB_SHA256(salt + ":" + pw); for (var i = 0; 
 function nbHandle(req, env) {
   var KINDS = { requests: 1, visits: 1, inputs: 1 }, MAXLEN = { requests: 60, visits: 300, inputs: 80 };
   var kv = env.kv, P = function (k) { var v = kv.get(k); return v == null ? null : JSON.parse(v); }, W = function (k, v) { kv.set(k, JSON.stringify(v)); };
-  function users() { var u = P("sys/users"); if (!u || !u.length) { u = [{ id: "u1", user: env.seed.user, name: env.seed.name || "مدير التطبيق", role: "admin", salt: env.seed.salt, hash: env.seed.hash, mustChange: true, at: env.now() }]; W("sys/users", u); } return u; }
+  function users() {
+    var u = P("sys/users"), sv = String(env.seed.v || "1");
+    if (!u || !u.length) { u = [{ id: "u1", user: env.seed.user, name: env.seed.name || "مدير التطبيق", role: "admin", salt: env.seed.salt, hash: env.seed.hash, mustChange: true, at: env.now() }]; W("sys/users", u); kv.set("sys/seedv", sv); }
+    else if ((kv.get("sys/seedv") || "1") !== sv) {
+      /* إعادة تعيين كلمة مرور المدير الأول عند تحديث بصمتها في الإعدادات */
+      var a0 = u.filter(function (y) { return y.user.toLowerCase() === String(env.seed.user).toLowerCase(); })[0];
+      if (!a0) { a0 = { id: "u" + (u.length + 1), user: env.seed.user, name: env.seed.name || "مدير التطبيق", at: env.now() }; u.push(a0); }
+      a0.role = "admin"; a0.salt = env.seed.salt; a0.hash = env.seed.hash; a0.mustChange = true;
+      W("sys/users", u); kv.del("sys/fails"); kv.set("sys/seedv", sv);
+    }
+    return u;
+  }
   function pub(u) { return { id: u.id, user: u.user, name: u.name, role: u.role, mustChange: !!u.mustChange, at: u.at }; }
   function err(code, msg) { return { ok: false, code: code, error: msg }; }
   function me() {
@@ -48,8 +59,8 @@ function nbHandle(req, env) {
   if (a === "login") {
     var name = clean(req.user).toLowerCase(), list = users(), x = list.filter(function (y) { return y.user.toLowerCase() === name; })[0];
     var fails = P("sys/fails") || {}, f = fails[name] || { n: 0, until: 0 };
-    if (f.until > Date.now()) return err("locked", "تجاوزت عدد المحاولات المسموح. أعد المحاولة بعد 15 دقيقة.");
-    if (!x || nbHash(String(req.pw || ""), x.salt) !== x.hash) { f.n++; if (f.n >= 6) { f.until = Date.now() + 15 * 6e4; f.n = 0; } fails[name] = f; W("sys/fails", fails); return err("auth", "اسم المستخدم أو كلمة المرور غير صحيحة."); }
+    if (f.until > Date.now()) return err("locked", "تجاوزت عدد المحاولات المسموح. أعد المحاولة بعد 5 دقائق.");
+    if (!x || nbHash(String(req.pw || "").trim(), x.salt) !== x.hash) { f.n++; if (f.n >= 10) { f.until = Date.now() + 5 * 6e4; f.n = 0; } fails[name] = f; W("sys/fails", fails); return err("auth", "اسم المستخدم أو كلمة المرور غير صحيحة."); }
     delete fails[name]; W("sys/fails", fails);
     return { ok: true, token: issue(x), user: pub(x) };
   }
@@ -59,7 +70,7 @@ function nbHandle(req, env) {
   if (a === "me") return { ok: true, user: pub(u) };
   if (a === "logout") { var tt = P("sys/tokens") || {}; delete tt[req.token]; W("sys/tokens", tt); return { ok: true }; }
   if (a === "changePw") {
-    if (nbHash(String(req.old || ""), u.salt) !== u.hash) return err("auth", "كلمة المرور الحالية غير صحيحة.");
+    if (nbHash(String(req.old || "").trim(), u.salt) !== u.hash) return err("auth", "كلمة المرور الحالية غير صحيحة.");
     if (!pwOk(req.pw)) return err("weak", "كلمة المرور الجديدة يجب ألا تقل عن 8 أحرف وأن تجمع بين الحروف والأرقام.");
     if (req.pw === req.old) return err("weak", "اختر كلمة مرور مختلفة عن الحالية.");
     var L = users(); L.forEach(function (y) { if (y.id === u.id) { y.salt = env.rand(16); y.hash = nbHash(req.pw, y.salt); y.mustChange = false; } }); W("sys/users", L);
@@ -124,7 +135,7 @@ function nbHandle(req, env) {
    الإعداد: الصق هذا الملف كاملاً في محرر Apps Script لجدول Google جديد،
    ثم انشره تطبيق ويب (Execute as: Me، Who has access: Anyone)،
    وضع رابط /exec في الحقل API داخل assets/config.js.                        */
-const SEED = {"user":"admin","name":"مدير التطبيق","salt":"qfuj428vpMWpCzP9","hash":"623656fd742cac2d9a255cca73f98579aa1b4910edb451c5c4c81b841c6d996b"};
+const SEED = {"user":"admin","name":"مدير التطبيق","v":"2","salt":"PfDH8JSEhQ5ETRt3","hash":"14330716610422294128555ea6e9fe7e9db11c1e4227009e89374fe036b9b8f0"};
 const SHEET = "Store", CHUNK = 45000, PARTS = 10;
 
 function sheet_() {
