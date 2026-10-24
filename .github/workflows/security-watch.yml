@@ -1,0 +1,29 @@
+name: Security watch (hourly)
+on:
+  schedule:
+    - cron: '7 * * * *'
+  push:
+    branches: [main]
+  pull_request:
+    paths: ['.github/workflows/security-watch.yml', 'scripts/security-watch.mjs']
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+concurrency: security-watch
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/security-watch.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SITE_URL: https://munjiz-qa.github.io/
+          OWNER_LOGIN: baseeratactions
+          ALERT_TELEGRAM: ${{ vars.ALERT_TELEGRAM || '@mabouelezz2022' }}
+          ALLOWED_EMAILS: ${{ vars.ALLOWED_EMAILS }}
