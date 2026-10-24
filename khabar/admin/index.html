@@ -59,6 +59,7 @@ pre.json{background:var(--bg);border:1px solid var(--line);border-radius:10px;pa
     <h1 style="font-size:1.5rem">دخول مدير «خبر»</h1>
     <div class="field"><label for="u">اسم المستخدم</label><input id="u" autocomplete="username" required></div>
     <div class="field"><label for="p">كلمة المرور</label><input id="p" type="password" autocomplete="current-password" required></div>
+    <p class="msg" id="login-hint" hidden>أول دخول على هذا الجهاز: اكتب اسم المستخدم واختر كلمة مرور للوحة، عشرة أحرف على الأقل. تُحفظ على هذا المتصفح وحده ولا تُنشر في الموقع.</p>
     <p class="msg err" id="login-err" hidden></p>
     <button class="btn" type="submit">دخول</button>
   </form>
@@ -103,7 +104,7 @@ pre.json{background:var(--bg);border:1px solid var(--line);border-radius:10px;pa
       <div class="field">
         <label for="tok">مفتاح النشر على GitHub</label>
         <input id="tok" type="password" dir="ltr" autocomplete="off" placeholder="github_pat_…">
-        <small>مفتاح دقيق الصلاحيات (Fine-grained token) على مستودع munjiz-qa/munjiz-qa.github.io بصلاحية Contents: Read and write. يُحفظ على هذا الجهاز فقط.</small>
+        <small>مفتاح دقيق الصلاحيات (Fine-grained token) على مستودع munjiz-qa/munjiz-qa.github.io بصلاحية Contents: Read and write، ويُفضَّل أن تكون مدته قصيرة. لا يُحفظ حفظاً دائماً: يبقى في هذه الجلسة فقط ويزول بإغلاق المتصفح.</small>
       </div>
       <p class="msg" id="pub-msg" hidden></p>
       <div class="btns">

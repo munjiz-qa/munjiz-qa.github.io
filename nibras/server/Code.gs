@@ -29,8 +29,8 @@ function nbHandle(req, env) {
   var kv = env.kv, P = function (k) { var v = kv.get(k); return v == null ? null : JSON.parse(v); }, W = function (k, v) { kv.set(k, JSON.stringify(v)); };
   function users() {
     var u = P("sys/users"), sv = String(env.seed.v || "1");
-    if (!u || !u.length) { u = [{ id: "u1", user: env.seed.user, name: env.seed.name || "مدير التطبيق", role: "admin", salt: env.seed.salt, hash: env.seed.hash, mustChange: true, at: env.now() }]; W("sys/users", u); kv.set("sys/seedv", sv); }
-    else if ((kv.get("sys/seedv") || "1") !== sv) {
+    if (!u || !u.length) { u = [{ id: "u1", user: env.seed.user || "admin", name: env.seed.name || "مدير التطبيق", role: "admin", setup: true, mustChange: true, at: env.now() }]; W("sys/users", u); kv.set("sys/seedv", sv); }
+    else if (env.seed.hash && (kv.get("sys/seedv") || "1") !== sv) {
       /* إعادة تعيين كلمة مرور المدير الأول عند تحديث بصمتها في الإعدادات */
       var a0 = u.filter(function (y) { return y.user.toLowerCase() === String(env.seed.user).toLowerCase(); })[0];
       if (!a0) { a0 = { id: "u" + (u.length + 1), user: env.seed.user, name: env.seed.name || "مدير التطبيق", at: env.now() }; u.push(a0); }
@@ -60,7 +60,15 @@ function nbHandle(req, env) {
     var name = clean(req.user).toLowerCase(), list = users(), x = list.filter(function (y) { return y.user.toLowerCase() === name; })[0];
     var fails = P("sys/fails") || {}, f = fails[name] || { n: 0, until: 0 };
     if (f.until > Date.now()) return err("locked", "تجاوزت عدد المحاولات المسموح. أعد المحاولة بعد 5 دقائق.");
-    if (!x || nbHash(String(req.pw || "").trim(), x.salt) !== x.hash) { f.n++; if (f.n >= 10) { f.until = Date.now() + 5 * 6e4; f.n = 0; } fails[name] = f; W("sys/fails", fails); return err("auth", "اسم المستخدم أو كلمة المرور غير صحيحة."); }
+    if (x && x.setup) {
+      /* أول دخول: يختار المدير كلمة مروره هنا، فلا تُحفظ أي بصمة في ملفات الموقع العامة. */
+      var np = String(req.pw || "").trim();
+      if (np.length < 8) return err("weak", "أول دخول: اختر كلمة مرور للمدير، ثمانية أحرف على الأقل.");
+      var LS0 = users(); LS0.forEach(function (y) { if (y.id === x.id) { y.salt = env.rand(16); y.hash = nbHash(np, y.salt); y.setup = false; y.mustChange = false; } });
+      W("sys/users", LS0); x = LS0.filter(function (y) { return y.id === x.id; })[0];
+      return { ok: true, token: issue(x), user: pub(x) };
+    }
+    if (!x || !x.hash || nbHash(String(req.pw || "").trim(), x.salt) !== x.hash) { f.n++; if (f.n >= 10) { f.until = Date.now() + 5 * 6e4; f.n = 0; } fails[name] = f; W("sys/fails", fails); return err("auth", "اسم المستخدم أو كلمة المرور غير صحيحة."); }
     delete fails[name]; W("sys/fails", fails);
     return { ok: true, token: issue(x), user: pub(x) };
   }
@@ -136,7 +144,7 @@ function nbHandle(req, env) {
    الإعداد: الصق هذا الملف كاملاً في محرر Apps Script لجدول Google جديد،
    ثم انشره تطبيق ويب (Execute as: Me، Who has access: Anyone)،
    وضع رابط /exec في الحقل API داخل assets/config.js.                        */
-const SEED = {"user":"admin","name":"مدير التطبيق","v":"2","salt":"PfDH8JSEhQ5ETRt3","hash":"14330716610422294128555ea6e9fe7e9db11c1e4227009e89374fe036b9b8f0"};
+const SEED = {"user":"admin","name":"مدير التطبيق"};
 const SHEET = "Store", CHUNK = 45000, PARTS = 10;
 
 function sheet_() {
