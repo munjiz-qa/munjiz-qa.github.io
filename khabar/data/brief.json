@@ -1,23 +1,26 @@
 {
- "id": "2026-10-24-am",
- "edition": "am",
+ "id": "2026-10-24-pm",
+ "edition": "pm",
  "date": "2026-10-24",
- "published": "2026-10-24T06:30:00+03:00",
+ "published": "2026-10-24T17:54:00+03:00",
  "title": {
-  "ar": "خلاصة الصباح",
-  "en": "Morning Brief"
+  "ar": "خلاصة المساء",
+  "en": "Evening Brief"
  },
  "thread": {
-  "ar": "صباح يبدأ على سؤال واحد: هل تضرب واشنطن إيران في عطلة نهاية الأسبوع؟ برنت يغلق عند 116.72 دولاراً، وصواريخ الحوثيين تتواصل على السعودية، وهجمات السفن في هرمز تبلغ رقماً قياسياً، فيما تتمسك الدوحة بالوساطة وتصطف أوروبا ومجموعة الأربع خلف الدبلوماسية، ويستقر الدولار في مصر عند مستواه القياسي.",
-  "en": "A morning that opens on one question: will Washington strike Iran this weekend? Brent settles at $116.72, Houthi missiles keep targeting Saudi Arabia, ship attacks in Hormuz hit a record, Doha holds to its mediation as Europe and the R4 back diplomacy, and the dollar in Egypt holds at its record.",
+  "ar": "مساء على إيقاع الصواريخ والرسائل المتناقضة: الحوثيون يستهدفون الرياض والطائف وينبع في يوم واحد وتدوّي صافرات الإنذار في أربع مدن سعودية، وواشنطن تقلّص موظفي سفارتيها في قطر والإمارات، وطهران تتحدث بلغتين بين دعوة بزشكيان لإحياء الاتفاق ورفض عسكرييها دخول السفن الأميركية الخليج. وبين هذا كله تمضي الدوحة في روزنامتها من «موتو جي بي» إلى الأعوام الثقافية، وتختتم القاهرة منتدى مصر وتستقبل غوتيريش، فيما يبقى الدولار فوق 55 جنيهاً وبرنت فوق 116 دولاراً بانتظار افتتاح الاثنين.",
+  "en": "An evening set to missiles and mixed messages: the Houthis target Riyadh, Taif and Yanbu in one day and alerts sound in four Saudi cities, Washington trims embassy staff in Qatar and the UAE, and Tehran speaks in two voices, with Pezeshkian urging a revived deal while military chiefs bar US ships from the Gulf. Amid it all Doha keeps its calendar from MotoGP to the Years of Culture, Cairo closes the Egypt Forum and hosts Guterres, while the dollar stays above EGP55 and Brent above $116 ahead of Monday's open.",
   "src": [
-   "gv-trump",
-   "aje-istanbul",
-   "asiaone-oil",
-   "toi-23",
-   "gdn-hormuz",
-   "gn-iran",
-   "youm7-usd24"
+   "mm-riyadh",
+   "nob-alerts",
+   "cbs-iran",
+   "brec-pez",
+   "gt-motogp",
+   "pen-culture",
+   "ahram-forum",
+   "youlyou-guterres",
+   "elwatan-usd",
+   "asiaone-oil"
   ]
  },
  "markets": [
@@ -82,7 +85,7 @@
    "id": "goldqa",
    "ar": "ذهب عيار 21 في قطر",
    "en": "21K gold, Qatar",
-   "value": "420.78",
+   "value": "412.19",
    "unit": {
     "ar": "ريال/غرام",
     "en": "QR/g"
@@ -90,31 +93,49 @@
    "chg": "",
    "dir": "flat",
    "note": {
-    "ar": "الجمعة 23 أكتوبر",
-    "en": "Friday 23 October"
+    "ar": "صباح السبت 24 أكتوبر",
+    "en": "Saturday 24 October morning"
    },
    "src": [
-    "cm-goldqa"
+    "banker-gold"
+   ]
+  },
+  {
+   "id": "xau",
+   "ar": "أوقية الذهب",
+   "en": "Gold ounce",
+   "value": "4,016.27",
+   "unit": {
+    "ar": "دولار",
+    "en": "$"
+   },
+   "chg": "",
+   "dir": "flat",
+   "note": {
+    "ar": "وفق تداولات الجمعة 23 أكتوبر",
+    "en": "Based on Friday 23 October trading"
+   },
+   "src": [
+    "banker-gold"
    ]
   },
   {
    "id": "usdegp",
    "ar": "الدولار مقابل الجنيه",
    "en": "USD/EGP",
-   "value": "55.38",
+   "value": "55.35",
    "unit": {
     "ar": "جنيه",
     "en": "EGP"
    },
-   "chg": "قياسي",
-   "chg_en": "record",
-   "dir": "up",
+   "chg": "",
+   "dir": "flat",
    "note": {
-    "ar": "سعر البيع في البنك المركزي، آخر تعاملات الأسبوع",
-    "en": "CBE sell rate, last session of the week"
+    "ar": "سعر البيع في البنك الأهلي وبنك مصر، صباح السبت",
+    "en": "NBE and Banque Misr sell rate, Saturday morning"
    },
    "src": [
-    "youm7-usd24"
+    "elwatan-usd"
    ]
   },
   {
@@ -126,15 +147,16 @@
     "ar": "جنيه/غرام",
     "en": "EGP/g"
    },
-   "chg": "+10",
-   "dir": "up",
+   "chg": "مستقر",
+   "dir": "flat",
    "note": {
     "ar": "السبت 24 أكتوبر",
     "en": "Saturday 24 October"
    },
    "src": [
-    "youm7-gold24"
-   ]
+    "youm7-goldpm"
+   ],
+   "chg_en": "steady"
   },
   {
    "id": "spx",
@@ -167,146 +189,155 @@
     {
      "id": "q1",
      "cat": {
-      "ar": "سياسة",
-      "en": "Politics"
+      "ar": "دبلوماسية",
+      "en": "Diplomacy"
      },
-     "ar": "الرئيس الأميركي ترامب يؤكد أنه لا محادثات جارية مع إيران، فيما تتولى قطر وباكستان الوساطة، وأمين المجلس الأعلى للأمن القومي الإيراني محسن رضائي يشترط تنفيذ سبعة شروط جديدة نُقلت عبر الوسطاء قبل إعادة فتح مضيق هرمز أو العودة إلى التفاوض.",
-     "en": "US President Trump said there are no talks with Iran while Qatar and Pakistan mediate, and Mohsen Rezaei, secretary of Iran's Supreme National Security Council, said seven new conditions passed through mediators must be met before Hormuz reopens or negotiations resume.",
+     "ar": "وزارة الخارجية الأميركية تقلّص عدد موظفي سفاراتها في قطر والإمارات والأردن ولبنان، مؤكدة أن القرار لا يتضمن أمراً بالمغادرة وأن السفارات تبقى مفتوحة، بسبب مخاوف من تصاعد هجمات الحوثيين الصاروخية والمسيّرة. كما حدّثت الوزارة تحذيرات السفر لأربع عشرة دولة في الشرق الأوسط.",
+     "en": "The US State Department is reducing staff at its embassies in Qatar, the UAE, Jordan and Lebanon, stressing there is no order to leave and the embassies remain open, citing concern that Houthi rocket, missile and drone attacks may escalate. It also updated travel advisories for 14 Middle East countries.",
      "src": [
-      "gn-iran"
+      "cbs-iran"
      ]
     },
     {
      "id": "q2",
      "cat": {
-      "ar": "دبلوماسية",
-      "en": "Diplomacy"
+      "ar": "ثقافة",
+      "en": "Culture"
      },
-     "ar": "سفير الاتحاد الأوروبي لدى قطر أنطونينو ماجوري يحدّد أولويات الشراكة: الأمن والدفاع والتجارة والطاقة والتواصل بين الشعبين بما فيه إعفاء القطريين من التأشيرة، ويشير إلى توافق كبير مع الدوحة في ملفات فلسطين وإيران ولبنان واليمن. وفي لندن التقى وزير الدولة البريطاني لشؤون الشرق الأوسط ستيفن داوتي سفيرَ قطر الشيخ عبدالله بن محمد آل ثاني.",
-     "en": "EU Ambassador to Qatar Antonino Maggiore set out partnership priorities: security and defence, trade, energy and people-to-people ties including a visa waiver for Qataris, noting strong alignment with Doha on Palestine, Iran, Lebanon and Yemen. In London, UK Middle East Minister Stephen Doughty met Qatar's Ambassador Sheikh Abdullah bin Mohammed Al-Thani.",
+     "ar": "مبادرة «الأعوام الثقافية» تعلن شركاءها حتى 2030: مصر واليونان في 2027 مع حلول قطر ضيف شرف على معرض القاهرة الدولي للكتاب في يناير 2027، وإيطاليا في 2028 بالتزامن مع افتتاح الجناح الوطني القطري الدائم في حدائق بينالي البندقية، ثم هولندا وسويسرا في 2029، والبرتغال وإسبانيا في 2030.",
+     "en": "The Years of Culture initiative named its partners through 2030: Egypt and Greece in 2027, with Qatar as Guest of Honour at the Cairo International Book Fair in January 2027; Italy in 2028, alongside the opening of Qatar's permanent national pavilion at the Venice Biennale Giardini; the Netherlands and Switzerland in 2029; and Portugal and Spain in 2030.",
      "src": [
-      "pen-eu",
-      "pen-uk"
+      "pen-culture"
      ]
     },
     {
      "id": "q3",
      "cat": {
-      "ar": "اقتصاد",
-      "en": "Economy"
+      "ar": "طقس",
+      "en": "Weather"
      },
-     "ar": "معرض «ميليبول قطر 2026» يختتم دورته السادسة عشرة بأكثر من 16,000 زائر بزيادة 10%، و96 صفقة بقيمة 819.8 مليون ريال، وبمشاركة أكثر من 270 عارضاً، على أن تُعقد الدورة المقبلة من 31 أكتوبر إلى 2 نوفمبر 2028.",
-     "en": "Milipol Qatar 2026 closed its 16th edition with more than 16,000 visitors, up 10%, and 96 deals worth QR819.8mn from over 270 exhibitors; the next edition runs 31 October to 2 November 2028.",
+     "ar": "أمطار رعدية مصحوبة بالبَرَد ورياح قوية مفاجئة شهدتها الدوحة ومناطق أخرى يوم الجمعة، واستمرت الأمطار السبت على بعض المناطق. الأرصاد توقعت عظمى 37 درجة في الدوحة ورياحاً تصل هباتها إلى 25 عقدة مع الرعد، وأمواجاً تبلغ 8 أقدام في عرض البحر، فيما تتابع «أشغال» شبكات التصريف والطرق والأنفاق على مدار الساعة عبر غرفة طوارئ الأمطار.",
+     "en": "Thunderstorms with hail and sudden strong winds hit Doha and other areas on Friday, with rain continuing over parts of the country on Saturday. The Met department forecast a 37°C high in Doha, gusts up to 25 knots in storms and offshore waves up to 8 feet, while Ashghal monitors drainage, roads and tunnels around the clock through its rain emergency room.",
      "src": [
-      "qt-milipol"
+      "raya-rain",
+      "pen-weather"
      ]
     },
     {
      "id": "q4",
      "cat": {
-      "ar": "اقتصاد",
-      "en": "Economy"
+      "ar": "خدمات",
+      "en": "Services"
      },
-     "ar": "معرض «سيتي سكيب قطر 2026» يُعقد من 27 إلى 29 أكتوبر في مركز الدوحة للمعارض والمؤتمرات بأكثر من 400 مشروع وأكثر من 70 مطوّراً، تتقدمهم الديار القطرية وقطيفان للمشاريع وبروة، ويرافقه منتدى قطر العقاري الرابع.",
-     "en": "Cityscape Qatar 2026 runs 27 to 29 October at DECC with more than 400 projects and over 70 developers, led by Qatari Diar, Qetaifan Projects and Barwa, alongside the 4th Qatar Real Estate Forum.",
+     "ar": "وزارة البلدية تدعو السكان بعد الأمطار إلى منع تكاثر البعوض: إزالة المياه الراكدة، والتأكد من عمل التصريف، وفحص المحيط بانتظام، مع إمكانية طلب خدمة مكافحة الحشرات والقوارض عبر تطبيق «عون».",
+     "en": "The Ministry of Municipality urged residents to prevent mosquito breeding after the rain: remove standing water, keep drainage working and check surroundings regularly, with pest and rodent control available on request through the OUN app.",
      "src": [
-      "pen-cityscape"
+      "pen-mosq"
      ]
     },
     {
      "id": "q5",
      "cat": {
-      "ar": "طاقة",
-      "en": "Energy"
+      "ar": "رياضة",
+      "en": "Sport"
      },
-     "ar": "قطر للطاقة توقّع اتفاقيتين طويلتي الأجل مع «تشينير» الأميركية لشراء ما يصل إلى 4 ملايين طن سنوياً من الغاز الطبيعي المسال من منشأتي سابين باس وكوربوس كريستي، تبدأ التسليمات في 2031 وتمتد حتى 2054.",
-     "en": "QatarEnergy signed two long-term deals with US firm Cheniere to buy up to 4 million tonnes a year of LNG from Sabine Pass and Corpus Christi, with deliveries from 2031 through 2054.",
+     "ar": "قطر تقدّم 15 حافلة وشحنة معدات أمنية إلى السنغال دعماً لاستضافة دورة الألعاب الأولمبية للشباب «داكار 2026» من 31 أكتوبر إلى 13 نوفمبر، أول حدث أولمبي على أرض أفريقية. السفير يوسف شعبان إبراهيم السادة قال إن نقل خبرة استضافة البطولات الكبرى من أثمن ما يمكن أن تقدمه قطر.",
+     "en": "Qatar provided 15 buses and a consignment of security equipment to Senegal for the Dakar 2026 Youth Olympic Games, 31 October to 13 November, the first Olympic event on African soil. Ambassador Youssef Shaban Ibrahim Al Sada said sharing the expertise of hosting major events is among the most valuable contributions Qatar can make.",
      "src": [
-      "pen-cheniere"
+      "pen-senegal"
      ]
     },
     {
      "id": "q6",
      "cat": {
-      "ar": "مجتمع",
-      "en": "Society"
+      "ar": "رياضة",
+      "en": "Sport"
      },
-     "ar": "وزارة الأوقاف والشؤون الإسلامية تتلقى أكثر من 12,000 طلب لحج موسم 1448هـ، مقابل حصة قطر البالغة 4,400 حاج، وتُفرز الطلبات وتُعتمد يوم الثلاثاء 27 أكتوبر ويُبلَّغ المقبولون برسائل نصية.",
-     "en": "The Ministry of Awqaf received more than 12,000 Hajj applications for the 1448 AH season against Qatar's quota of 4,400 pilgrims; applications will be screened and approved on Tuesday 27 October, with successful applicants notified by text message.",
+     "ar": "جائزة قطر الكبرى لـ«موتو جي بي» باقية في موعدها من 6 إلى 8 نوفمبر على حلبة لوسيل جولةً عشرين من الموسم، وفق مصدر في البطولة أكد استمرار التحضيرات وأولوية السلامة. خورخي مارتن يتصدر بفارق نقطتين عن مارك ماركيز بعد 17 جولة من 22، وتعتزم «فورمولا 1» إقامة آخر سباقين في قطر وأبوظبي كما هو مقرر.",
+     "en": "The MotoGP Qatar Grand Prix remains set for 6 to 8 November at Lusail as round 20, a series source said, with preparations continuing and safety the priority. Jorge Martin leads Marc Marquez by two points after 17 of 22 rounds, and Formula 1 plans to hold its last two races in Qatar and Abu Dhabi as scheduled.",
      "src": [
-      "pen-hajj"
+      "gt-motogp"
      ]
     },
     {
      "id": "q7",
      "cat": {
-      "ar": "رياضة",
-      "en": "Sport"
+      "ar": "اقتصاد",
+      "en": "Economy"
      },
-     "ar": "السد يعود إلى صدارة دوري نجوم قطر مؤقتاً بـ15 نقطة بعد فوزه على الشحانية 4-0 بهدفين من أكرم عفيف وهدف لكل من فيرمينو ومصطفى مشعل، والأهلي يتعادل مع الغرافة 2-2. وفي رياضة المحركات، تؤكد «موتو جي بي» إقامة جائزة قطر الكبرى على حلبة لوسيل من 6 إلى 8 نوفمبر رغم التوترات الإقليمية.",
-     "en": "Al Sadd provisionally returned to the top of the Qatar Stars League on 15 points after a 4-0 win over Al Shahania, with two goals from Akram Afif and one each from Firmino and Mostafa Meshaal, while Al Ahli drew 2-2 with Al Gharafa. MotoGP confirmed the Qatar Grand Prix at Lusail on 6 to 8 November despite regional tensions.",
+     "ar": "الذهب في قطر صباح السبت: عيار 24 عند 471.08 ريالاً وعيار 21 عند 412.19 ريالاً وعيار 18 عند 353.31 ريالاً، فيما تحوم الأوقية عالمياً قرب 4,016.27 دولاراً بحسب تداولات الجمعة.",
+     "en": "Gold in Qatar on Saturday morning: 24-karat at QR471.08, 21-karat at QR412.19 and 18-karat at QR353.31, with the global ounce near $4,016.27 based on Friday trading.",
      "src": [
-      "pen-sadd",
-      "aje-motogp"
+      "banker-gold"
      ]
     },
     {
      "id": "q8",
      "cat": {
-      "ar": "طقس",
-      "en": "Weather"
+      "ar": "الديوان الأميري",
+      "en": "Amiri Diwan"
      },
-     "ar": "إدارة الأرصاد الجوية توقعت عواصف رعدية مساء الجمعة مع احتمال تساقط البَرَد ورياح تصل إلى 30 عقدة، ودرجات حرارة اليوم السبت بين 27 و37 درجة مع أجواء مغبرة وفرصة لسحب ممطرة محلية بعد الظهر، ونصحت السائقين بخفض السرعة وتجنّب الطرق المغمورة.",
-     "en": "The Meteorology Department forecast Friday afternoon thunderstorms with possible hail and gusts up to 30 knots; Saturday temperatures range from 27°C to 37°C with haze and a chance of local afternoon rain clouds. Drivers were advised to slow down and avoid flooded roads.",
+     "ar": "سمو الأمير الشيخ تميم بن حمد آل ثاني يبعث برقية تعزية إلى الرئيس الصيني شي جين بينغ في ضحايا زلزال إقليم شيتسانغ، وبرقية تهنئة إلى رئيس زامبيا هاكايندي هيشيليما بذكرى استقلال بلاده.",
+     "en": "HH the Amir Sheikh Tamim bin Hamad Al Thani sent a cable of condolences to Chinese President Xi Jinping over the earthquake in the Xizang region, and a congratulatory cable to Zambian President Hakainde Hichilema on his country's Independence Day.",
      "src": [
-      "pen-qmd"
+      "gt-china",
+      "pen-zambia"
+     ]
+    },
+    {
+     "id": "q9",
+     "cat": {
+      "ar": "رياضة",
+      "en": "Sport"
+     },
+     "ar": "الهلال السعودي يستأنف تدريباته في الدمام قبل السفر إلى الدوحة لمواجهة الشمال يوم الثلاثاء 27 أكتوبر على ستاد البيت، في الجولة الثالثة من دوري أبطال آسيا للنخبة.",
+     "en": "Saudi side Al Hilal resumed training in Dammam before flying to Doha to face Al Shamal on Tuesday 27 October at Al Bayt Stadium in matchday 3 of the AFC Champions League Elite.",
+     "src": [
+      "akhbar-hilal"
      ]
     }
    ],
    "analysis": {
-    "ar": "تقف الدوحة في قلب المعادلة الأصعب في المنطقة: وساطة بين واشنطن وطهران في لحظة يلوّح فيها كل طرف بالتصعيد، وشروط إيرانية تربط فتح هرمز بتنازلات كبيرة. هذا الدور يُكسب قطر وزناً سياسياً تعكسه لغة الأوروبيين والبريطانيين، لكن كلفته الاقتصادية واضحة: صادرات الغاز رهينة المضيق، ولذلك تتحرك قطر للطاقة نحو تنويع محفظتها بعقود أميركية طويلة الأجل. وفي الداخل يبدو الاقتصاد غير النفطي متماسكاً، من صفقات ميليبول إلى سيتي سكيب، مع ضغط طبيعي على الخدمات العامة كما يظهر في فارق طلبات الحج عن الحصة.",
-    "en": "Doha sits at the heart of the region's hardest equation: mediating between Washington and Tehran while both threaten escalation, with Iranian conditions that tie reopening Hormuz to major concessions. The role adds political weight, reflected in European and British language, but the economic cost is clear: gas exports depend on the strait, which is why QatarEnergy is diversifying with long-term US contracts. At home the non-oil economy looks steady, from Milipol deals to Cityscape, with natural pressure on public services shown by Hajj demand far above the quota.",
+    "ar": "يوم قطري هادئ في ظاهره، لكنه يحمل إشارتين متعاكستين. الأولى أمنية: تقليص واشنطن موظفي سفارتها في الدوحة، وإن لم يصل إلى أمر بالمغادرة، يعكس تقديراً أميركياً بأن خطر الحوثيين يتسع ليشمل الخليج كله. والثانية واثقة: الدوحة تواصل جدولها كأن الإقليم مستقر، فتمضي «موتو جي بي» في موعدها، وتمدّ مبادرة «الأعوام الثقافية» خطتها حتى 2030، وتصدّر خبرة الاستضافة إلى السنغال. هذا التوازن بين الحذر والاستمرارية هو جوهر الصورة القطرية الآن، فيما تختبر الأمطار جاهزية البنية التحتية والخدمات.",
+    "en": "A calm Qatari day on the surface, carrying two opposite signals. One is security-related: Washington trimming staff at its Doha embassy, though short of an order to leave, reflects a US view that the Houthi threat now spans the Gulf. The other is confident: Doha keeps its calendar as if the region were stable, with MotoGP on schedule, the Years of Culture plan extended to 2030, and hosting know-how exported to Senegal. That balance of caution and continuity is the core of Qatar's picture now, while the rain tests infrastructure and services.",
     "src": [
-     "gn-iran",
-     "pen-eu",
-     "pen-uk",
-     "pen-cheniere",
-     "qt-milipol",
-     "pen-cityscape",
-     "pen-hajj"
+     "cbs-iran",
+     "gt-motogp",
+     "pen-culture",
+     "pen-senegal",
+     "raya-rain"
     ]
    },
    "technical": {
-    "ar": "بورصة قطر في عطلة نهاية الأسبوع بعد إغلاق الخميس عند 8,611.10 نقطة منخفضة 0.37%، ولا يزال المؤشر داخل نطاق 8,600 إلى 8,650 نقطة. صعود برنت 3.14% يوم الجمعة إلى 116.72 دولاراً عامل دعم لأسهم الطاقة عند افتتاح الأحد، ويبقى 8,600 نقطة الدعم الأقرب. ذهب عيار 21 في قطر عند نحو 420.78 ريالاً للغرام وفق آخر سعر منشور يوم الجمعة.",
-    "en": "The Qatar Stock Exchange is on its weekend break after Thursday's close at 8,611.10, down 0.37%, still within the 8,600 to 8,650 band. Brent's 3.14% rise on Friday to $116.72 supports energy stocks into Sunday's open, with 8,600 the nearest support. 21-karat gold in Qatar is about QR420.78 per gram per Friday's latest published price.",
+    "ar": "بورصة قطر مغلقة في عطلة نهاية الأسبوع وآخر إغلاق لها 8,611.10 نقطة يوم الخميس، مع بقاء 8,600 نقطة دعماً قريباً قبل افتتاح الأحد. برنت أغلق الجمعة عند 116.72 دولاراً، وهو عامل دعم لأسهم الطاقة. ذهب عيار 21 عند 412.19 ريالاً، والأوقية قرب 4,016 دولاراً، ومستوى 4,000 دولار هو الدعم النفسي الأهم؛ كسره يعني مزيداً من التراجع محلياً.",
+    "en": "The QSE is closed for the weekend, last at 8,611.10 on Thursday, with 8,600 the nearest support before Sunday's open. Brent settled Friday at $116.72, a supportive factor for energy stocks. 21-karat gold is at QR412.19 and the ounce near $4,016, with $4,000 the key psychological support; a break below would mean further local declines.",
     "src": [
      "alamssar-qse",
-     "alarab-qse",
      "asiaone-oil",
-     "cm-goldqa"
+     "banker-gold"
     ]
    },
    "outlook": [
     {
-     "ar": "يُرجَّح أن تفتتح بورصة قطر جلسة الأحد بميل إيجابي في أسهم الطاقة بعد ارتفاع برنت إلى أعلى إغلاق منذ أواخر أبريل، مع بقاء الحذر الإقليمي عاملاً كابحاً.",
-     "en": "The QSE is likely to open Sunday with a positive tilt in energy stocks after Brent's highest settlement since late April, with regional caution acting as a brake.",
+     "ar": "يُرجَّح أن تفتتح بورصة قطر الأحد بميل إيجابي في أسهم الطاقة بدعم من برنت فوق 116 دولاراً، مع حذر من أي تطور عسكري في عطلة نهاية الأسبوع.",
+     "en": "The QSE is likely to open Sunday with a positive tilt in energy stocks on Brent above $116, tempered by caution over any weekend military development.",
      "src": [
-      "asiaone-oil",
-      "alamssar-qse"
+      "alamssar-qse",
+      "asiaone-oil"
      ]
     },
     {
-     "ar": "سيتي سكيب من 27 إلى 29 أكتوبر مؤشر مهم على ثقة المطوّرين؛ عرض مشاريع بتسليم 2027 و2030 يرجّح استمرار الطلب العقاري رغم التوترات.",
-     "en": "Cityscape on 27 to 29 October is a key gauge of developer confidence; projects due in 2027 and 2030 suggest property demand holding up despite tensions.",
+     "ar": "بقاء «موتو جي بي» على الروزنامة يرجّح استمرار الفعاليات الدولية الكبرى في قطر خلال نوفمبر ما لم تتغير التقديرات الأمنية.",
+     "en": "MotoGP staying on the calendar suggests Qatar's major international events will go ahead in November unless security assessments change.",
      "src": [
-      "pen-cityscape"
+      "gt-motogp"
      ]
     },
     {
-     "ar": "بقاء الوساطة القطرية الباكستانية القناة الوحيدة المعلنة بين واشنطن وطهران يجعل أي انفراج أو تصعيد خلال الأيام المقبلة مروراً بالدوحة.",
-     "en": "With Qatari-Pakistani mediation the only declared channel between Washington and Tehran, any breakthrough or escalation in the coming days is likely to run through Doha.",
+     "ar": "استمرار عدم الاستقرار الجوي حتى نهاية أكتوبر متوقع بحسب الأرصاد، مع تحسّن تدريجي نحو أجواء أكثر اعتدالاً.",
+     "en": "Unsettled weather is expected to persist through late October per forecasters, with a gradual shift to milder conditions.",
      "src": [
-      "gn-iran"
+      "raya-rain"
      ]
     }
    ]
@@ -321,157 +352,164 @@
     {
      "id": "g1",
      "cat": {
-      "ar": "أمن",
-      "en": "Security"
+      "ar": "السعودية",
+      "en": "Saudi Arabia"
      },
-     "ar": "التحالف بقيادة السعودية يعلن اعتراض صاروخ باليستي حوثي أُطلق باتجاه نجران، ثم صاروخ آخر استهدف الرياض، في استمرار لموجة الهجمات على المملكة.",
-     "en": "The Saudi-led coalition said it intercepted a Houthi ballistic missile aimed at Najran and later another targeting Riyadh, as the wave of attacks on the kingdom continues.",
+     "ar": "التحالف بقيادة السعودية يعلن اعتراض صاروخ باليستي أطلقه الحوثيون نحو الرياض فجر السبت، وسمع صحفي لوكالة فرانس برس انفجارين في العاصمة، ثم اعتراض صاروخين باليستيين نحو الطائف وينبع ومسيّرة في المنطقة الشرقية. المتحدث تركي المالكي قال إن الدفاعات الجوية «اعترضت ودمّرت» الصاروخ.",
+     "en": "The Saudi-led coalition said it intercepted a Houthi ballistic missile fired at Riyadh early Saturday, with an AFP journalist hearing two explosions in the capital, then two ballistic missiles aimed at Taif and Yanbu and a drone over the Eastern Province. Spokesman Turki al-Malki said air defences \"intercepted and destroyed\" the missile.",
      "src": [
-      "toi-23",
-      "aje-live24"
+      "mm-riyadh",
+      "gn-live",
+      "cbs-iran"
      ]
     },
     {
      "id": "g2",
      "cat": {
-      "ar": "دبلوماسية",
-      "en": "Diplomacy"
+      "ar": "السعودية",
+      "en": "Saudi Arabia"
      },
-     "ar": "وزراء خارجية مجموعة الأربع (السعودية ومصر وتركيا وباكستان) يلتقون في إسطنبول نظراءهم من بريطانيا وفرنسا وألمانيا وإيطاليا، ويدينون التصعيد الحوثي ويطالبون بالاستئناف الكامل للملاحة الآمنة في هرمز، فيما قال السفير الأميركي لدى تركيا توم باراك إن واشنطن قد تضرب إيران «بالتأكيد» في نهاية هذا الأسبوع.",
-     "en": "Foreign ministers of the R4 (Saudi Arabia, Egypt, Turkiye and Pakistan) met UK, French, German and Italian counterparts in Istanbul, condemning Houthi escalation and calling for full resumption of safe passage through Hormuz, while US Ambassador to Turkiye Tom Barrack said Washington could \"absolutely\" strike Iran this weekend.",
+     "ar": "الدفاع المدني السعودي يفعّل صافرات الإنذار المبكر لفترة وجيزة في مكة المكرمة وجدة وينبع والطائف تحسباً لتهديدات جوية، ثم يعلن زوال الخطر. وفي المقابل أفاد إعلام الحوثيين بمقتل 3 أشخاص في ضربة سعودية على منزل في صنعاء.",
+     "en": "Saudi Civil Defence briefly activated early-warning alerts in Mecca, Jeddah, Yanbu and Taif over possible airborne threats, later announcing the danger had passed. Houthi media said a Saudi strike on a house in Sanaa killed 3 people.",
      "src": [
-      "aje-istanbul"
+      "nob-alerts",
+      "kt-live"
      ]
     },
     {
      "id": "g3",
      "cat": {
-      "ar": "طاقة",
-      "en": "Energy"
+      "ar": "السعودية",
+      "en": "Saudi Arabia"
      },
-     "ar": "الرئيس التنفيذي لأرامكو أمين الناصر يتوقع ارتفاع الطلب العالمي على النفط نحو 3 ملايين برميل يومياً عند عودة الاستقرار، ويعلن خطة لمضاعفة سعة التخزين الخارجية للشركة، خصوصاً في آسيا.",
-     "en": "Aramco CEO Amin Nasser expects global oil demand to rise by about 3 million barrels a day once the region stabilises, and announced plans to double the company's overseas storage capacity, mainly in Asia.",
+     "ar": "السفارة الأميركية في الرياض تصدر تحذير سفر من المستوى الثالث، بعد أمر سابق بمغادرة الموظفين غير الأساسيين وعائلاتهم للمملكة.",
+     "en": "The US Embassy in Riyadh issued a Level 3 travel advisory, after an earlier order for non-essential staff and families to leave the Kingdom.",
      "src": [
-      "gdn-aramco"
+      "kt-live",
+      "gn-flights"
      ]
     },
     {
      "id": "g4",
      "cat": {
-      "ar": "بيئة",
-      "en": "Environment"
+      "ar": "طيران",
+      "en": "Aviation"
      },
-     "ar": "تسرّب نفطي من ناقلة في البحر يغلق مؤقتاً جميع شواطئ أم القيوين وشاطئ الحمرية في الشارقة، ووزارة التغير المناخي والبيئة تبدأ عمليات الاحتواء وتطلب من الصيادين تجنّب المناطق المتأثرة.",
-     "en": "An oil leak from a tanker at sea temporarily closed all beaches in Umm Al Quwain and Al Hamriyah Beach in Sharjah; the Ministry of Climate Change and Environment began containment and urged fishermen to avoid the area.",
+     "ar": "اضطراب واسع في الرحلات إلى السعودية: الاتحاد للطيران تلغي رحلاتها إلى الدمام والرياض وجدة حتى 5 نوفمبر، وفلاي دبي إلى الرياض والدمام وأبها حتى 29 أكتوبر، والقطرية ألغت الرياض والدمام حتى 24 أكتوبر وخفّضت رحلات جدة من سبع إلى أربع يومياً، وإنديغو تمدّد إلغاء الرياض حتى 31 أكتوبر.",
+     "en": "Wide disruption to flights to Saudi Arabia: Etihad has cancelled Dammam, Riyadh and Jeddah through 5 November, flydubai Riyadh, Dammam and Abha until 29 October, Qatar Airways cancelled Riyadh and Dammam through 24 October and cut Jeddah from seven to four daily flights, and IndiGo extended its Riyadh cancellations to 31 October.",
      "src": [
-      "gdn-spill"
+      "gn-flights",
+      "kt-live"
      ]
     },
     {
      "id": "g5",
      "cat": {
-      "ar": "ملاحة",
-      "en": "Shipping"
+      "ar": "الإمارات",
+      "en": "UAE"
      },
-     "ar": "أكتوبر يسجّل أعلى عدد من الهجمات على السفن التجارية في هرمز والممرات المجاورة: 28 هجوماً مؤكداً أو مُبلغاً عنه خلال الشهر و113 منذ 28 فبراير، وتضرر 11 ناقلة نفط عملاقة في أكتوبر وحده وفق المنظمة البحرية الدولية.",
-     "en": "October recorded the most attacks on commercial shipping in and around Hormuz: 28 confirmed or reported this month and 113 since 28 February, with 11 very large crude carriers damaged in October alone, according to the IMO.",
+     "ar": "شواطئ أم القيوين تبقى مغلقة إلى حين اكتمال التقييم بعد تسرّب نفطي من ناقلة، مع تحذير الصيادين من الاقتراب، دون إعلان حجم التسرب. محللون حددوا الناقلة بأنها «جيم نمبر 2»، وأظهرت صور الأقمار الاصطناعية بقعة بنحو 160 كيلومتراً مربعاً.",
+     "en": "Umm Al Quwain beaches stay closed pending assessment after a tanker oil leak, with fishermen told to keep away and no volume disclosed. Analysts identified the tanker as the Gem No. 2, and satellite imagery showed a slick of about 160 sq km.",
      "src": [
-      "gdn-hormuz"
+      "nob-oil",
+      "cbs-iran"
      ]
     },
     {
      "id": "g6",
      "cat": {
-      "ar": "دبلوماسية",
-      "en": "Diplomacy"
+      "ar": "الطاقة",
+      "en": "Energy"
      },
-     "ar": "رئيسة الوزراء الإيطالية جورجيا ميلوني تصل إلى الكويت في زيارة رسمية، وكان في استقبالها رئيس مجلس الوزراء الشيخ أحمد العبدالله الأحمد الصباح.",
-     "en": "Italian Prime Minister Giorgia Meloni arrived in Kuwait on an official visit and was received by Prime Minister Sheikh Ahmad Abdullah Al-Ahmad Al-Sabah.",
+     "ar": "بحرية الحرس الثوري تقول إن ناقلتين عملاقتين تحملان معاً أكثر من 4.5 مليون برميل من الخام اصطدمتا بألغام بحرية أثناء سلوكهما مساراً جنوبياً «غير مصرّح» في مضيق هرمز وهُجرتا. وتفيد وول ستريت جورنال بأن حاملة الطائرات «جورج واشنطن» في بحر العرب تُزوَّد بصواريخ هجوم بري بعيدة المدى وقنابل خارقة للتحصينات.",
+     "en": "The IRGC Navy said two supertankers carrying more than 4.5 million barrels of crude between them hit naval mines on an \"unauthorised\" southern route through Hormuz and were abandoned. The WSJ reports the USS George Washington in the Arabian Sea is being rearmed with standoff land-attack missiles and bunker-buster bombs.",
      "src": [
-      "at-meloni"
+      "gn-live"
      ]
     },
     {
      "id": "g7",
      "cat": {
-      "ar": "دبلوماسية",
-      "en": "Diplomacy"
+      "ar": "الكويت",
+      "en": "Kuwait"
      },
-     "ar": "الكرملين يعلن محادثات ثلاثية روسية أوكرانية أميركية في أبوظبي خلال النصف الأول من نوفمبر، بعد أيام من ترشيح الإمارات رسمياً وزيرة الدولة لانا نسيبة لمنصب الأمين العام للأمم المتحدة.",
-     "en": "The Kremlin announced trilateral Russia-Ukraine-US talks in Abu Dhabi in the first half of November, days after the UAE formally nominated Minister of State Lana Nusseibeh for UN Secretary-General.",
+     "ar": "أمير الكويت الشيخ مشعل الأحمد الجابر الصباح يستقبل رئيسة الوزراء الإيطالية جورجيا ميلوني بحضور ولي العهد ورئيس الوزراء، والبلدان يوقّعان مذكرتي تفاهم وخطاب نوايا في الاستثمار المباشر والتعاون الدفاعي والعسكري والصناعي.",
+     "en": "Kuwait's Amir Sheikh Meshal Al-Ahmad Al-Jaber Al-Sabah received Italian Prime Minister Giorgia Meloni with the Crown Prince and Prime Minister present, and the two countries signed two memorandums of understanding and a letter of intent on direct investment and defence, military and industrial cooperation.",
      "src": [
-      "aje-ruua",
-      "gt-lana"
+      "anews-kuwait"
      ]
     },
     {
      "id": "g8",
      "cat": {
-      "ar": "رياضة",
-      "en": "Sport"
+      "ar": "عُمان",
+      "en": "Oman"
      },
-     "ar": "رئيس الاتحاد الياباني لكرة القدم يشكك في إمكانية إقامة كأس آسيا 2027 في السعودية (7 يناير إلى 5 فبراير) بسبب الوضع الأمني، واللجنة المنظمة السعودية تتمسك بالموعد، بينما سبق لرئيس الاتحاد الآسيوي أن تحدث عن احتمال التأجيل إلى 2028.",
-     "en": "Japan's football chief doubted the 2027 Asian Cup can be held in Saudi Arabia (7 January to 5 February) given security conditions; the Saudi organisers are sticking to the schedule, while the AFC president earlier said a delay to 2028 was possible.",
+     "ar": "حصيلة زيارة السلطان هيثم بن طارق إلى بريطانيا: رفع سقف تمويل الصادرات البريطانية لعُمان 1.6 مليار جنيه إسترليني ليبلغ 7 مليارات، والتحضير لتمرين «السيف السريع 4»، واتفاقية تعاون فضائي، وتأكيد سيادة عُمان على مياهها في مضيق هرمز، مع خطوات نحو اتفاقية التجارة الحرة بين بريطانيا ومجلس التعاون.",
+     "en": "Outcomes of Sultan Haitham bin Tarik's UK visit: UK Export Finance raised its Oman limit by £1.6 billion to £7 billion, preparations for exercise Saif Sareea IV, a space cooperation agreement, affirmation of Oman's sovereignty over its Hormuz waters, and steps toward the UK-GCC free trade agreement.",
      "src": [
-      "aje-asiancup"
+      "tom-ukoman"
      ]
     },
     {
      "id": "g9",
      "cat": {
-      "ar": "أمن",
-      "en": "Security"
+      "ar": "البحرين",
+      "en": "Bahrain"
      },
-     "ar": "«حوار المنامة» ينطلق في 30 أكتوبر بجلسة عن «الدروس السياسية والأمنية من حرب إيران»، ويطلق المعهد الدولي للدراسات الاستراتيجية تقريره «الخليج في حرب».",
-     "en": "The Manama Dialogue opens on 30 October with a session on \"Political and Security Lessons from the Iran War\", and the IISS will launch its report \"The Gulf at War\".",
+     "ar": "مجلس النواب البحريني يصوّت الثلاثاء على حظر صيد القوارب الأجنبية في المياه البحرينية، ورفع منحة الزواج للمستحقات من معاشات الورثة إلى 1,000 دينار على الأقل، ومقترح خفض الحد الأدنى لسداد بطاقات الائتمان من 5% إلى 2.5%، وسط تحفظ حكومي على الكلفة واعتراض جمعية المصارف.",
+     "en": "Bahrain's MPs vote on Tuesday on banning foreign boats from fishing in Bahraini waters, raising marriage grants for women on survivor pensions to at least BD1,000, and a proposal to cut minimum credit card repayments from 5% to 2.5%, amid government cost concerns and objections from the banks association.",
      "src": [
-      "gdn-manama"
+      "nob-fish",
+      "nob-marriage",
+      "nob-credit"
      ]
     }
    ],
    "analysis": {
-    "ar": "الخليج يعيش أسبوعاً تتقاطع فيه ثلاث جبهات: صواريخ الحوثيين على المدن السعودية، وأرقام قياسية لهجمات السفن في هرمز، وتسرّب نفطي يصل إلى شواطئ الإمارات. في المقابل يتسع الحضور الدبلوماسي للمنطقة؛ اجتماع إسطنبول يجمع أوروبا ومجموعة الأربع على رفض ضربة جديدة لإيران، وأبوظبي تستضيف مسار روسيا وأوكرانيا، والكويت تستقبل ميلوني. رهان أرامكو على مضاعفة التخزين في آسيا يكشف قراءة سعودية بأن اضطراب الإمدادات قد يطول، وأن الاستعداد لما بعد الأزمة يبدأ الآن.",
-    "en": "The Gulf faces three converging fronts this week: Houthi missiles on Saudi cities, record attacks on shipping in Hormuz, and an oil spill reaching UAE beaches. At the same time the region's diplomatic reach widens; the Istanbul meeting united Europe and the R4 against a new strike on Iran, Abu Dhabi hosts the Russia-Ukraine track, and Kuwait received Meloni. Aramco's bet on doubling storage in Asia signals a Saudi reading that supply disruption may last, and that preparing for the aftermath starts now.",
+    "ar": "الخليج يعيش يوماً جديداً من الضغط الحوثي المتواصل على السعودية، والجديد أن الاستهداف بات يشمل الرياض والطائف وينبع في يوم واحد، ما يفسّر صافرات الإنذار في أربع مدن وتحذير السفر الأميركي من المستوى الثالث. الكلفة الاقتصادية تظهر بوضوح في قطاع الطيران، حيث تتوالى الإلغاءات حتى نوفمبر، وفي البحر حيث تتراكم حوادث الألغام والتسرب. في المقابل تواصل العواصم الأخرى دبلوماسية التنويع: الكويت مع إيطاليا في الدفاع والاستثمار، وعُمان مع بريطانيا في التمويل والفضاء وتأكيد السيادة على هرمز، والبحرين منشغلة بملفات معيشية داخلية.",
+    "en": "The Gulf is living another day of sustained Houthi pressure on Saudi Arabia, now hitting Riyadh, Taif and Yanbu in a single day, which explains alerts in four cities and the US Level 3 advisory. The economic cost is clearest in aviation, with cancellations running into November, and at sea, where mine and spill incidents pile up. Other capitals pursue diversification diplomacy: Kuwait with Italy on defence and investment, Oman with Britain on finance, space and Hormuz sovereignty, while Bahrain focuses on domestic livelihood issues.",
     "src": [
-     "toi-23",
-     "aje-live24",
-     "gdn-hormuz",
-     "gdn-spill",
-     "aje-istanbul",
-     "aje-ruua",
-     "at-meloni",
-     "gdn-aramco"
+     "mm-riyadh",
+     "nob-alerts",
+     "kt-live",
+     "gn-flights",
+     "gn-live",
+     "anews-kuwait",
+     "tom-ukoman",
+     "nob-marriage"
     ]
    },
    "technical": {
-    "ar": "برنت أغلق الجمعة عند 116.72 دولاراً مرتفعاً 3.14%، وهو أعلى إغلاق منذ 29 أبريل، بمكسب أسبوعي 6%، بينما أغلق خام غرب تكساس عند 103.27 دولارات. تجاوز مستوى 113 دولاراً حوّله إلى دعم قريب، والزخم صاعد ما دامت الهجمات على المنشآت والملاحة مستمرة، مع مقاومة نفسية عند 120 دولاراً.",
-    "en": "Brent settled Friday at $116.72, up 3.14%, its highest close since 29 April and up 6% on the week, while WTI settled at $103.27. Breaking above $113 turns that level into near support; momentum stays upward while attacks on facilities and shipping continue, with psychological resistance at $120.",
+    "ar": "أسواق النفط في عطلة بعد إغلاق برنت الجمعة عند 116.72 دولاراً مرتفعاً 3.14%، وغرب تكساس عند 103.27 دولاراً. الاتجاه القصير صاعد بوضوح منذ تجاوز 112 دولاراً يوم الخميس، والمقاومة التالية قرب 117 دولاراً التي لامسها برنت خلال الجمعة. تقارير الألغام التي أصابت ناقلتين تحملان 4.5 مليون برميل تضيف علاوة مخاطر جديدة عند افتتاح الاثنين.",
+    "en": "Oil markets are on weekend break after Brent settled Friday at $116.72, up 3.14%, and WTI at $103.27. The short-term trend is clearly up since breaking $112 on Thursday, with next resistance near $117, touched intraday Friday. Reports of mines hitting two tankers carrying 4.5 million barrels add a fresh risk premium into Monday's open.",
     "src": [
-     "asiaone-oil"
+     "asiaone-oil",
+     "cbs-iran",
+     "gn-live"
     ]
    },
    "outlook": [
     {
-     "ar": "استمرار الهجمات على السعودية وارتفاع هجمات السفن يرجّحان بقاء برنت فوق 113 دولاراً مطلع الأسبوع، وأي ضربة أميركية لإيران في عطلة نهاية الأسبوع قد تدفعه نحو 120 دولاراً.",
-     "en": "Continued attacks on Saudi Arabia and on shipping make Brent likely to hold above $113 early in the week; a US strike on Iran this weekend could push it towards $120.",
+     "ar": "يُتوقع استمرار الإلغاءات والتعديلات في رحلات المطارات السعودية حتى مطلع نوفمبر على الأقل، بحسب جداول شركات الطيران المعلنة.",
+     "en": "Cancellations and changes to flights to Saudi airports are expected to continue until at least early November, per airlines' published schedules.",
      "src": [
-      "asiaone-oil",
-      "aje-istanbul",
-      "gdn-hormuz"
+      "gn-flights"
      ]
     },
     {
-     "ar": "قرار إقامة كأس آسيا في موعده بات مرتبطاً بتطور الهجمات الحوثية، واحتمال التأجيل إلى 2028 مطروح بوضوح.",
-     "en": "Whether the Asian Cup goes ahead on schedule now hinges on the Houthi attacks, and a delay to 2028 is clearly on the table.",
+     "ar": "يُرجَّح أن يفتتح برنت أسبوعه على ارتفاع ما لم يطرأ انفراج دبلوماسي، بفعل حوادث الألغام وتصاعد الهجمات على السعودية.",
+     "en": "Brent is likely to open the week higher absent a diplomatic breakthrough, driven by mine incidents and escalating attacks on Saudi Arabia.",
      "src": [
-      "aje-asiancup"
+      "gn-live",
+      "asiaone-oil"
      ]
     },
     {
-     "ar": "حوار المنامة في 30 أكتوبر سيكون أول منصة إقليمية واسعة لتقييم دروس حرب إيران، ويُتوقع أن يتصدر أمن الملاحة والدفاع الجوي نقاشاته.",
-     "en": "The Manama Dialogue on 30 October will be the first broad regional forum to assess lessons from the Iran war, with shipping security and air defence likely to dominate.",
+     "ar": "تصويت النواب البحرينيين الثلاثاء قد يمرّر رفع منحة الزواج رغم اعتراض الحكومة، ما يعيد الملف إلى مجلس الشورى.",
+     "en": "Bahrain's Tuesday vote may pass the marriage grant increase despite government objections, sending it back to the Shura Council.",
      "src": [
-      "gdn-manama"
+      "nob-marriage"
      ]
     }
    ]
@@ -486,126 +524,143 @@
     {
      "id": "e1",
      "cat": {
-      "ar": "عملة",
-      "en": "Currency"
+      "ar": "الحكومة",
+      "en": "Government"
      },
-     "ar": "الدولار يستقر في عطلة البنوك عند مستواه القياسي: 55.24 جنيهاً للشراء و55.38 جنيهاً للبيع في البنك المركزي، و55.35 جنيهاً للبيع في البنك الأهلي وCIB، و55.33 جنيهاً في بنك مصر.",
-     "en": "The dollar held at its record during the bank weekend: EGP55.24 buy and EGP55.38 sell at the Central Bank, EGP55.35 sell at NBE and CIB, and EGP55.33 at Banque Misr.",
+     "ar": "رئيس الوزراء مصطفى مدبولي يختتم «منتدى مصر 2026» بكشف حساب 12 عاماً: قدرة الكهرباء ارتفعت من 29 إلى 64 جيجاوات مع استهداف أكثر من 45% طاقة متجددة بنهاية 2028، والتحلية من 84 ألفاً إلى 1.5 مليون متر مكعب يومياً، والسياح من 9.5 إلى نحو 20 مليوناً مع هدف 30 مليوناً. وأعلن أن البرنامج الوطني للتحول الاقتصادي اكتمل وسيُطرح للحوار المجتمعي خلال شهرين.",
+     "en": "Prime Minister Mostafa Madbouly closed Egypt Forum 2026 with a 12-year review: power capacity rose from 29 to 64 GW, with renewables targeted above 45% by end-2028; desalination from 84,000 to 1.5 million m³ a day; tourists from 9.5 million to about 20 million, with 30 million targeted. He said the National Programme for Economic Transformation is finalised and will be put to public dialogue within two months.",
      "src": [
-      "youm7-usd24"
+      "ahram-forum"
      ]
     },
     {
      "id": "e2",
      "cat": {
-      "ar": "أسواق",
-      "en": "Markets"
+      "ar": "دبلوماسية",
+      "en": "Diplomacy"
      },
-     "ar": "الذهب في مصر صباح السبت: عيار 21 عند 6,290 جنيهاً للغرام بعد أن افتتح الجمعة عند 6,280 جنيهاً، وعيار 24 عند 7,189 جنيهاً، والجنيه الذهب عند 50,320 جنيهاً.",
-     "en": "Gold in Egypt on Saturday morning: 21-karat at EGP6,290 per gram after opening Friday at EGP6,280, 24-karat at EGP7,189, and the gold pound at EGP50,320.",
+     "ar": "الأمين العام للأمم المتحدة أنطونيو غوتيريش يبدأ زيارة إلى مصر من 24 إلى 26 أكتوبر بالتزامن مع يوم الأمم المتحدة، يلتقي خلالها وزير الخارجية بدر عبد العاطي والأمين العام للجامعة العربية، ويلقي كلمة في جامعة القاهرة، على أن تتناول المباحثات غزة والسودان والتهدئة بين واشنطن وطهران.",
+     "en": "UN Secretary-General António Guterres began a visit to Egypt from 24 to 26 October, coinciding with UN Day, meeting Foreign Minister Badr Abdelatty and the Arab League Secretary-General and speaking at Cairo University, with talks covering Gaza, Sudan and US-Iran de-escalation.",
      "src": [
-      "youm7-gold24"
+      "youlyou-guterres",
+      "dostor-agenda"
      ]
     },
     {
      "id": "e3",
      "cat": {
-      "ar": "طاقة",
-      "en": "Energy"
+      "ar": "العملة",
+      "en": "Currency"
      },
-     "ar": "مجلس الوزراء يوضح أن رئيس الوزراء مدبولي لم يعلن عودة تخفيف الأحمال لست إلى ثماني ساعات، وأن الحديث كان عن سيناريو من ثلاثة لمواجهة ارتفاع أسعار الطاقة؛ إذ قُدّرت الموازنة على 75 دولاراً للبرميل بينما بلغ السعر 110 دولارات، ودعم المواد البترولية 840 مليار جنيه هذا العام.",
-     "en": "The Cabinet clarified that Prime Minister Madbouly did not announce a return of 6 to 8 hour power cuts; he described one of three scenarios for rising energy costs, as the budget assumed $75 a barrel against an actual $110, with fuel subsidies at EGP840bn this year.",
+     "ar": "الدولار في البنوك المصرية صباح السبت عند 55.25 جنيهاً للشراء و55.35 جنيهاً للبيع في البنك الأهلي وبنك مصر والبنك التجاري الدولي، ويتراوح بين البنوك من 54.60 إلى 55.27 جنيهاً للشراء.",
+     "en": "The dollar in Egyptian banks on Saturday morning stood at EGP55.25 buy and EGP55.35 sell at National Bank of Egypt, Banque Misr and CIB, ranging across banks from EGP54.60 to EGP55.27 buy.",
      "src": [
-      "ahram-power",
-      "watan-energy"
+      "elwatan-usd"
      ]
     },
     {
      "id": "e4",
      "cat": {
-      "ar": "دبلوماسية",
-      "en": "Diplomacy"
+      "ar": "الذهب",
+      "en": "Gold"
      },
-     "ar": "الأمين العام للأمم المتحدة أنطونيو غوتيريش يزور مصر ويصفها بأنها «دولة محورية» لحل أزمات الشرق الأوسط ومن أبرز الوسطاء بين إيران والولايات المتحدة، ويبحث ملفي السودان وليبيا.",
-     "en": "UN Secretary-General António Guterres visited Egypt, calling it a \"key country\" for resolving Middle East crises and a leading mediator between Iran and the US, with Sudan and Libya on the agenda.",
+     "ar": "الذهب يستقر في تعاملات السبت: عيار 21 عند 6,290 جنيهاً للغرام، وعيار 24 عند 7,189 جنيهاً، وعيار 18 عند 5,391 جنيهاً، والجنيه الذهب عند 50,320 جنيهاً، بعد أن لامس عيار 21 مستوى 6,340 جنيهاً يوم الخميس.",
+     "en": "Gold held steady in Saturday trading: 21-karat at EGP6,290 per gram, 24-karat at EGP7,189, 18-karat at EGP5,391 and the gold pound at EGP50,320, after 21-karat touched EGP6,340 on Thursday.",
      "src": [
-      "et-guterres"
+      "youm7-goldpm"
      ]
     },
     {
      "id": "e5",
      "cat": {
-      "ar": "دبلوماسية",
-      "en": "Diplomacy"
+      "ar": "الطاقة",
+      "en": "Energy"
      },
-     "ar": "مصر ضمن بيان مجموعة الأربع في إسطنبول الذي وصف الاحتلال الإسرائيلي بأنه «المصدر الأساسي لعدم الاستقرار في المنطقة»، ودان التصعيد الحوثي وطالب بعودة الملاحة الآمنة في هرمز. وقدّم الرئيس السيسي تعازيه لملك الأردن في ضحايا الهجوم على كنيسة في الكرك.",
-     "en": "Egypt joined the R4 statement in Istanbul describing Israeli occupation as the \"fundamental source of instability in the region\", condemning Houthi escalation and calling for safe passage in Hormuz. President Sisi offered condolences to Jordan's King over the Karak church attack.",
+     "ar": "أسعار الوقود الرسمية ثابتة: بنزين 95 عند 24.00 جنيهاً للتر، و92 عند 22.25 جنيهاً، و80 عند 20.75 جنيهاً، والسولار عند 20.50 جنيهاً، بعد قرار لجنة التسعير التلقائي في 15 أكتوبر الإبقاء على الأسعار.",
+     "en": "Official fuel prices are unchanged: 95-octane at EGP24.00 a litre, 92 at EGP22.25, 80 at EGP20.75 and diesel at EGP20.50, after the automatic pricing committee decided on 15 October to hold prices.",
      "src": [
-      "aje-istanbul",
-      "et-sisi-jordan"
+      "wafd-fuel"
      ]
     },
     {
      "id": "e6",
      "cat": {
-      "ar": "إنساني",
-      "en": "Humanitarian"
+      "ar": "المجتمع",
+      "en": "Society"
      },
-     "ar": "أكثر من 60 سيارة إسعاف في معبر رفح لاستقبال مصابين فلسطينيين بينهم أطفال، ونقلهم إلى مستشفيات شمال سيناء ومدن القناة والقاهرة، مع استمرار توزيع الخبز والدقيق في غزة.",
-     "en": "More than 60 ambulances were stationed at the Rafah crossing to receive injured Palestinians, including children, for transfer to hospitals in North Sinai, the Canal cities and Cairo, as bread and flour distribution continues in Gaza.",
+     "ar": "الهلال الأحمر المصري يطلق حملة «سنابل العطاء» لتجهيز الدقيق والسلال الغذائية لغزة ضمن قوافل «زاد العزة» لمساعدة المخابز على مواجهة نقص الخبز، وتتجاوز المساعدات التي جهّزها وأرسلها مليون طن بمشاركة أكثر من 75,000 متطوع.",
+     "en": "The Egyptian Red Crescent launched the \"Sanabel Al-Ataa\" campaign to prepare flour and food baskets for Gaza under its \"Zad Al-Ezza\" convoys to help bakeries cope with the bread shortage; aid it has prepared and sent exceeds one million tonnes, with more than 75,000 volunteers.",
      "src": [
-      "et-rafah"
+      "elwatan-rc"
      ]
     },
     {
      "id": "e7",
      "cat": {
-      "ar": "ثقافة",
+      "ar": "الرياضة",
+      "en": "Sport"
+     },
+     "ar": "ليلة أفريقية للأندية المصرية في دوري أبطال أفريقيا: الزمالك يستضيف أبر الرواندي في الثامنة مساءً على استاد القاهرة متقدماً 1-0 ذهاباً، وبيراميدز يستقبل المريخ بانتيو من جنوب السودان على استاد الدفاع الجوي متقدماً 1-0، فيما يلعب زد أمام عزام التنزاني في الكونفدرالية بعد تعادل 1-1 ذهاباً.",
+     "en": "An African night for Egyptian clubs in the CAF Champions League: Zamalek host Rwanda's APR at 8 pm at Cairo International Stadium leading 1-0 from the first leg, and Pyramids host South Sudan's Al-Merrikh Bentiu at Air Defence Stadium also leading 1-0, while Zed play Azam in Tanzania in the Confederation Cup after a 1-1 first leg.",
+     "src": [
+      "dostor-agenda",
+      "dostor-sport"
+     ]
+    },
+    {
+     "id": "e8",
+     "cat": {
+      "ar": "الثقافة",
       "en": "Culture"
      },
-     "ar": "الفيلم المصري «خروج آمن» للمخرج محمد حماد يفوز بنجمة الجونة الذهبية في ختام الدورة التاسعة لمهرجان الجونة السينمائي، و«البارح العين ما نامت» يحصد جائزة أفضل فيلم عربي طويل بقيمة 20,000 دولار.",
-     "en": "The Egyptian film \"Safe Exit\" by Mohamed Hammad won the Golden Star as the 9th El Gouna Film Festival closed, and \"Last Night the Eye Did Not Sleep\" took Best Arab Feature, worth $20,000.",
+     "ar": "مصر تستضيف لأول مرة ختام جولة «لونجين العالمية لأبطال القفز» عند سفح أهرامات الجيزة بمشاركة نحو 100 حصان و50 فارساً، فيما يعقد البرلمان العربي جلسة إجرائية في مقر الجامعة العربية بالقاهرة لانتخاب رئيسه ونوابه قبل افتتاح دورته الجديدة يوم الاثنين.",
+     "en": "Egypt hosts the Longines Global Champions Tour finale for the first time, at the foot of the Giza Pyramids with about 100 horses and 50 riders, while the Arab Parliament holds a procedural session at Arab League headquarters in Cairo to elect its president and deputies before its new session opens on Monday.",
      "src": [
-      "ahram-gouna",
-      "ahram-gouna-arab"
+      "dostor-agenda"
      ]
     }
    ],
    "analysis": {
-    "ar": "مصر تدفع ثمن الحرب الإقليمية مرتين: في سعر الصرف حيث يستقر الدولار عند مستوى قياسي، وفي فاتورة الطاقة حيث يتسع الفارق بين سعر الموازنة والسعر الفعلي. توضيح مجلس الوزراء حول تخفيف الأحمال يعكس حساسية الشارع لهذا الملف. في المقابل تكسب القاهرة رصيداً سياسياً: زيارة غوتيريش وحضورها في بيان إسطنبول يثبتان موقعها وسيطاً لا غنى عنه، وهو رصيد قد يتحول إلى دعم مالي إذا طالت الأزمة.",
-    "en": "Egypt pays for the regional war twice: in the exchange rate, with the dollar steady at a record, and in the energy bill, as the gap between the budget price and the actual price widens. The Cabinet's clarification on power cuts shows how sensitive the issue is. Cairo, meanwhile, gains political capital: Guterres's visit and its place in the Istanbul statement confirm its role as an indispensable mediator, capital that could turn into financial support if the crisis lasts.",
+    "ar": "ختام «منتدى مصر» قدّم رواية الحكومة كاملة: أرقام بنية تحتية وطاقة وإسكان كبيرة، مع وعد بنشر خطة السنوات الثلاث وطرح برنامج التحول الاقتصادي للحوار خلال شهرين. الاختبار الحقيقي لهذه الرواية في السوق: الدولار فوق 55 جنيهاً والذهب قرب ذروته، وهما مقياسان يلمسهما المواطن مباشرة أكثر من أي إنجاز معلن. ودبلوماسياً، تؤكد زيارة غوتيريش أن القاهرة طرف في ملفات غزة والسودان والتهدئة الأميركية الإيرانية، وهو دور يعزّزه نشاط الهلال الأحمر على حدود غزة.",
+    "en": "The Egypt Forum close presented the government's full narrative: big numbers in infrastructure, energy and housing, plus a pledge to publish the three-year plan and put the economic transformation programme to dialogue within two months. The real test is the market: the dollar above EGP55 and gold near its peak are measures citizens feel more directly than any announced achievement. Diplomatically, Guterres's visit confirms Cairo as a party to the Gaza, Sudan and US-Iran files, a role reinforced by the Red Crescent's work on the Gaza border.",
     "src": [
-     "youm7-usd24",
-     "ahram-power",
-     "watan-energy",
-     "et-guterres",
-     "aje-istanbul"
+     "ahram-forum",
+     "elwatan-usd",
+     "youm7-goldpm",
+     "youlyou-guterres",
+     "elwatan-rc"
     ]
    },
    "technical": {
-    "ar": "الدولار عند 55.38 جنيهاً للبيع في البنك المركزي، وهو مستوى قياسي ثابت منذ الخميس، و55 جنيهاً أصبحت دعماً قريباً. ذهب عيار 21 عند 6,290 جنيهاً يتحرك تحت مقاومة 6,300 جنيه؛ ارتفاع الدولار يدعم الذهب المحلي حتى مع تذبذب الأوقية عالمياً.",
-    "en": "The dollar is at EGP55.38 sell at the Central Bank, a record unchanged since Thursday, with EGP55 now near support. 21-karat gold at EGP6,290 sits just below EGP6,300 resistance; a firmer dollar supports local gold even as the global ounce fluctuates.",
+    "ar": "الدولار عند 55.35 جنيهاً للبيع في البنوك الكبرى، والفارق الضيق بين البنوك (من 54.60 إلى 55.27 للشراء) يشير إلى استقرار السعر قرب ذروته؛ 55 جنيهاً دعم قريب و55.40 مقاومة. ذهب عيار 21 عند 6,290 جنيهاً تحت قمة الخميس 6,340، ونطاق 6,290 إلى 6,340 هو الحركة الأقرب؛ اختراق القمة يحتاج إلى صعود الأوقية فوق 4,016 دولاراً أو قفزة جديدة للدولار.",
+    "en": "The dollar is at EGP55.35 sell at major banks, and the narrow spread across banks (EGP54.60 to 55.27 buy) points to a price steady near its peak; EGP55 is near support and 55.40 resistance. 21-karat gold at EGP6,290 sits below Thursday's EGP6,340 high, with 6,290 to 6,340 the nearest range; a break higher needs the ounce above $4,016 or a fresh dollar jump.",
     "src": [
-     "youm7-usd24",
-     "youm7-gold24"
+     "elwatan-usd",
+     "youm7-goldpm",
+     "banker-gold"
     ]
    },
    "outlook": [
     {
-     "ar": "مع عودة البنوك للعمل الأحد، يُرجَّح بقاء الدولار قرب 55.40 جنيهاً ما دام برنت فوق 110 دولارات، لأن فاتورة الاستيراد تظل الضغط الأكبر.",
-     "en": "When banks reopen Sunday, the dollar is likely to stay near EGP55.40 while Brent remains above $110, since the import bill is the main pressure.",
+     "ar": "يُرجَّح أن يبقى الدولار قرب 55.35 جنيهاً مع عودة البنوك للعمل الأحد، ما لم تتغير توقعات الفائدة الأميركية قبل اجتماع الفيدرالي في 27 و28 أكتوبر.",
+     "en": "The dollar is likely to stay near EGP55.35 as banks reopen Sunday, unless US rate expectations shift ahead of the Fed meeting on 27 to 28 October.",
      "src": [
-      "youm7-usd24",
-      "asiaone-oil",
-      "watan-energy"
+      "elwatan-usd",
+      "fed-cal"
      ]
     },
     {
-     "ar": "ملف الكهرباء سيبقى في الواجهة؛ أي ارتفاع إضافي للنفط يقرّب سيناريو ترشيد الأحمال الذي نفت الحكومة اتخاذ قرار بشأنه حتى الآن.",
-     "en": "Electricity will stay in focus; any further oil rise brings closer the load-reduction scenario the government says it has not decided on.",
+     "ar": "طرح البرنامج الوطني للتحول الاقتصادي خلال شهرين سيكون المحطة التالية لاختبار وعود منتدى مصر.",
+     "en": "Releasing the National Programme for Economic Transformation within two months will be the next test of the Egypt Forum pledges.",
      "src": [
-      "ahram-power",
-      "asiaone-oil"
+      "ahram-forum"
+     ]
+    },
+    {
+     "ar": "تقدّم الزمالك وبيراميدز بهدف ذهاباً على أرضهما يرجّح تأهلهما إلى دور المجموعات.",
+     "en": "Zamalek and Pyramids' one-goal first-leg leads at home make their progress to the group stage likely.",
+     "src": [
+      "dostor-agenda"
      ]
     }
    ]
@@ -623,155 +678,158 @@
       "ar": "إيران",
       "en": "Iran"
      },
-     "ar": "ترامب يقول إن واشنطن تستطيع إنهاء الحرب مع إيران «بسرعة كبيرة» ويتساءل: «هل نريد إنهاءها أم تركها تذبل؟»، بينما يحذّر الحرس الثوري من استهداف القواعد الأميركية إذا استمرت المرافقة البحرية في «المياه الملغومة» ويعلن تفعيل عقيدة «الدفاع الفسيفسائي اللامركزي».",
-     "en": "Trump said Washington could end the Iran war \"very quickly\", asking \"Do we want to finish it off or just want to let it wither?\", while the IRGC warned of action against US bases if naval escorts continue through \"mined waterways\" and said it had activated a \"decentralised mosaic defence\" doctrine.",
+     "ar": "الرئيس الإيراني مسعود بزشكيان يحمّل الولايات المتحدة مسؤولية فشل الاتفاق المؤقت ويدعو إلى محاولة جديدة: «كنا نتفاوض، والجبناء أفسدوا كل شيء... ما زلت أرى أن علينا أن نمضي ونبرمه».",
+     "en": "Iranian President Masoud Pezeshkian blamed the United States for the failure of the interim deal and urged a new attempt: \"We were having negotiations, the cowards messed everything up... I still think we should go and conclude it.\"",
      "src": [
-      "gv-trump",
-      "gn-iran"
+      "brec-pez"
      ]
     },
     {
      "id": "w2",
      "cat": {
-      "ar": "دبلوماسية",
-      "en": "Diplomacy"
+      "ar": "إيران",
+      "en": "Iran"
      },
-     "ar": "وزير الخارجية التركي هاكان فيدان بعد اجتماع إسطنبول: لا دولة مشاركة تؤيد تدخلاً عسكرياً جديداً ضد إيران، والدبلوماسية هي الطريق الوحيد لإنهاء الحرب، ونظيره الفرنسي جان نويل بارو يحذر من أن التصعيد «لن يصنع إلا خاسرين».",
-     "en": "Turkish Foreign Minister Hakan Fidan said after the Istanbul meeting that no participating country backs a new military intervention against Iran and diplomacy is the only way out, while France's Jean-Noel Barrot warned escalation \"would create nothing but losers\".",
+     "ar": "رئيس الأركان الإيراني علي عبد اللهي يقول إن بلاده «لن تسمح للسفن العسكرية الأميركية بدخول الخليج تحت أي ظرف»، والمتحدث باسم الحرس الثوري حسين محبي يصف التهديدات الأميركية بأنها «للاستهلاك الإعلامي» ويتوعد برد أكبر بأضعاف، فيما يلوّح ترامب بـ«إبيك فيوري صغيرة أخرى». ويلتقي بزشكيان بوتين في موسكو الأسبوع المقبل.",
+     "en": "Iran's armed forces chief Ali Abdollahi said the country \"will not allow US military ships in the Persian Gulf under any circumstances\", IRGC spokesman Hossein Mohebbi called US threats \"largely for media consumption\" and vowed a response several times greater, while Trump floated \"another little Epic Fury\". Pezeshkian meets Putin in Moscow next week.",
      "src": [
-      "aje-istanbul"
+      "cbs-iran",
+      "kt-live"
      ]
     },
     {
      "id": "w3",
      "cat": {
-      "ar": "أسواق",
-      "en": "Markets"
+      "ar": "البرازيل",
+      "en": "Brazil"
      },
-     "ar": "برنت يغلق الجمعة عند 116.72 دولاراً مرتفعاً 3.55 دولارات (3.14%)، في أعلى تسوية منذ 29 أبريل وثالث مكسب أسبوعي على التوالي، وغرب تكساس عند 103.27 دولارات، بفعل الهجمات الحوثية على السعودية وتسرّب نفطي قبالة الإمارات وهجمات الناقلات.",
-     "en": "Brent settled Friday at $116.72, up $3.55 (3.14%), its highest since 29 April and a third straight weekly gain, with WTI at $103.27, driven by Houthi attacks on Saudi Arabia, an oil spill off the UAE and tanker attacks.",
+     "ar": "البرازيل تصوّت غداً في جولة الإعادة الرئاسية وسط تعادل فعلي: آخر استطلاع لداتافولها منح فلافيو بولسونارو ولولا 50% لكل منهما من الأصوات الصحيحة، واستطلاع كوايست في 21 أكتوبر منح بولسونارو 45% ولولا 44%، مع صدور الاستطلاعات النهائية اليوم.",
+     "en": "Brazil votes tomorrow in the presidential runoff in a virtual tie: Datafolha's latest poll gave Flavio Bolsonaro and Lula 50% each of valid votes, and Quaest's 21 October poll had Bolsonaro at 45% and Lula at 44%, with final polls released today.",
      "src": [
-      "asiaone-oil",
-      "yahoo-stocks"
+      "carta-datafolha",
+      "metropoles-quaest"
      ]
     },
     {
      "id": "w4",
      "cat": {
-      "ar": "أسواق",
-      "en": "Markets"
+      "ar": "فرنسا",
+      "en": "France"
      },
-     "ar": "وول ستريت تختم أسبوعاً متقلباً على تراجع: داو جونز عند 52,215.16 نقطة (−1.23%)، وإس آند بي 500 عند 7,623.68 نقطة (−0.52%)، وناسداك عند 25,955.34 نقطة (−0.21%)، بعد يوم من هبوط ناسداك 2.6% بفعل مخاوف كلفة الإنفاق على الذكاء الاصطناعي.",
-     "en": "Wall Street ended a volatile week lower: the Dow at 52,215.16 (−1.23%), the S&P 500 at 7,623.68 (−0.52%) and the Nasdaq at 25,955.34 (−0.21%), a day after the Nasdaq fell 2.6% on worries over the cost of AI spending.",
+     "ar": "فرنسا تنشر نحو 70,000 شرطي ودركي لتأمين احتجاجات وطنية واسعة على تدهور أوضاع المدارس وغلاء المعيشة، مع إغلاق 24 محطة مترو في باريس ومتحفي اللوفر وأورسيه مؤقتاً، تفادياً لتكرار أعمال نهب وتخريب الأسبوع الماضي.",
+     "en": "France deployed about 70,000 police and gendarmes for nationwide protests over school conditions and living costs, closing 24 Paris metro stations and temporarily shutting the Louvre and Musée d'Orsay to avoid a repeat of last weekend's looting and vandalism.",
      "src": [
-      "yahoo-stocks",
-      "aje-tech"
+      "nob-paris"
      ]
     },
     {
      "id": "w5",
      "cat": {
-      "ar": "أمن",
-      "en": "Security"
+      "ar": "كوارث",
+      "en": "Disasters"
      },
-     "ar": "مسلحون ملثمون يقتلون 7 أشخاص ويصيبون 34 في هجوم على جنازة داخل كنيسة للروم الأرثوذكس في بلدة حمود بمحافظة الكرك الأردنية، والملك عبدالله الثاني يتوعد المنفذين بـ«أشد العقوبات».",
-     "en": "Masked gunmen killed seven people and wounded 34 in an attack on a funeral inside a Greek Orthodox church in Hamoud, Karak governorate, Jordan; King Abdullah II vowed \"the harshest penalties\".",
+     "ar": "زلزال بقوة 7 درجات يضرب مقاطعة باكينغ في مدينة ناكشو بإقليم شيتسانغ (التبت) على ارتفاع يتجاوز 4,500 متر، موقعاً 16 قتيلاً على الأقل و76 مصاباً بينهم 11 إصاباتهم خطيرة، وفق وكالة شينخوا.",
+     "en": "A magnitude 7.0 earthquake struck Baqing County in Nagqu, Xizang (Tibet), at over 4,500 metres, killing at least 16 and injuring 76, 11 seriously, according to Xinhua.",
      "src": [
-      "aje-jordan"
+      "mt-tibet",
+      "gt-china"
      ]
     },
     {
      "id": "w6",
      "cat": {
-      "ar": "انتخابات",
-      "en": "Elections"
+      "ar": "كوارث",
+      "en": "Disasters"
      },
-     "ar": "إسرائيل تتوجه إلى انتخابات الكنيست يوم الثلاثاء واستطلاعات الرأي الأخيرة لا تمنح أي كتلة أغلبية، وسط تصعيد في الضفة الغربية بعد هجوم قرب الخليل أدى إلى عملية عسكرية وإغلاق شامل للضفة.",
-     "en": "Israel heads to Knesset elections on Tuesday with final polls giving no bloc a majority, amid escalation in the West Bank after an attack near Hebron led to a military operation and a full lockdown.",
+     "ar": "زلزال بقوة 6.9 درجة قبالة فانواتو على عمق نحو 10 كيلومترات، ومركز التحذير من تسونامي في المحيط الهادئ يحذّر من أمواج خطرة ضمن 300 كيلومتر ثم يعلن زوال التهديد، دون تقارير فورية عن أضرار كبيرة.",
+     "en": "A magnitude 6.9 earthquake struck off Vanuatu at a depth of about 10 km; the Pacific Tsunami Warning Center warned of hazardous waves within 300 km, then said the threat had passed, with no immediate reports of major damage.",
      "src": [
-      "toi-23",
-      "aje-live24"
+      "nob-vanuatu"
      ]
     },
     {
      "id": "w7",
      "cat": {
-      "ar": "انتخابات",
-      "en": "Elections"
+      "ar": "المناخ والصحة",
+      "en": "Climate & Health"
      },
-     "ar": "البرازيل تصوّت غداً الأحد في جولة الإعادة الرئاسية بين لولا دا سيلفا وفلافيو بولسونارو، وآخر استطلاع لـ«داتافولها» يُظهر تعادلاً 50% مقابل 50%، ومتوسط الاستطلاعات 50.9% لبولسونارو مقابل 49.1% للولا.",
-     "en": "Brazil votes tomorrow, Sunday, in the presidential runoff between Lula da Silva and Flávio Bolsonaro; the latest Datafolha poll shows a 50% to 50% tie, and the poll average is 50.9% for Bolsonaro against 49.1% for Lula.",
+     "ar": "مئات الطلاب يتظاهرون في بالانكارايا بإندونيسيا مطالبين بإعلان حرائق الغابات كارثة وطنية، بعد أن التهمت الحرائق أكثر من 1.9 مليون هكتار في تسعة أشهر حتى سبتمبر وفق مرصد «نوسانتارا أطلس»، وأصاب الضباب الدخاني مئات الآلاف ووصل إلى ماليزيا وسنغافورة وتيمور الشرقية.",
+     "en": "Hundreds of students protested in Palangkaraya, Indonesia, demanding that wildfires be declared a national disaster, after fires burned more than 1.9 million hectares in the nine months to September per Nusantara Atlas; the haze has sickened hundreds of thousands and reached Malaysia, Singapore and East Timor.",
      "src": [
-      "rio-polls"
+      "pen-haze"
      ]
     },
     {
      "id": "w8",
      "cat": {
-      "ar": "إنساني",
-      "en": "Humanitarian"
+      "ar": "أوكرانيا",
+      "en": "Ukraine"
      },
-     "ar": "الأمم المتحدة: أكثر من 800,000 شخص في تعز اليمنية معزولون عن المساعدات منذ 20 يوماً بعد حصار الحوثيين، وأكثر من 52,000 طفل يعانون سوء تغذية حاداً.",
-     "en": "The UN says more than 800,000 people in Yemen's Taiz have been cut off from aid for 20 days under a Houthi siege, with more than 52,000 children acutely malnourished.",
+     "ar": "أوكرانيا تعلن أن اتصال «ستارلينك» عاد «مستقراً» بعد خلاف مع واشنطن، إذ اتهم الرئيس زيلينسكي الولايات المتحدة بإبطاء الخدمة، فيما قال إيلون ماسك إن أي انقطاع مسؤولية الحكومة الأميركية لا «سبيس إكس».",
+     "en": "Ukraine said its Starlink connection is \"stable\" again after a row with Washington, in which President Zelensky accused the US of throttling the service, while Elon Musk said any disruption was the US government's responsibility, not SpaceX's.",
      "src": [
-      "aje-taiz"
+      "nob-starlink"
      ]
     },
     {
      "id": "w9",
      "cat": {
-      "ar": "سياسة",
-      "en": "Politics"
+      "ar": "التقنية",
+      "en": "Technology"
      },
-     "ar": "آلاف الفنزويليين يتظاهرون في كراكاس ومدن أخرى للمطالبة بانتخابات حرة، في أول احتجاج وطني منذ نحو عامين بدعوة من حركة ماريا كورينا ماتشادو.",
-     "en": "Thousands of Venezuelans marched in Caracas and other cities demanding free elections, the first nationwide protest in nearly two years, called by María Corina Machado's movement.",
+     "ar": "شركات «وايف» و«ستيلانتيس» و«إنفيديا» والحكومة الفرنسية تعلن تعاوناً لنشر المركبات ذاتية القيادة في فرنسا وتسريع تطويرها في الاتحاد الأوروبي، بدمج سائق «وايف» الذكي مع نظام «هالوس» من إنفيديا ومنصات ستيلانتيس الجاهزة للمستوى الرابع.",
+     "en": "Wayve, Stellantis, NVIDIA and the French government announced a collaboration to deploy autonomous vehicles in France and accelerate development across the EU, combining Wayve's AI Driver with NVIDIA Halos OS and Stellantis L4-ready platforms.",
      "src": [
-      "aje-venez"
+      "wayve-fr"
      ]
     }
    ],
    "analysis": {
-    "ar": "العالم ينتظر قراراً واحداً في البيت الأبيض. ترامب يترك خيار الضربة مفتوحاً، والحرس الثوري يرد بعقيدة هجومية، بينما تصطف أوروبا ومجموعة الأربع خلف الدبلوماسية. الأسواق تسعّر هذا الاحتمال بوضوح: نفط عند أعلى مستوى في ستة أشهر، وأسهم تتراجع تحت ضغط الطاقة ومخاوف الذكاء الاصطناعي معاً. أسبوع الانتخابات المقبل في البرازيل وإسرائيل ثم الولايات المتحدة سيعيد رسم خرائط سياسية تؤثر مباشرة في ملفات المنطقة.",
-    "en": "The world awaits a single decision in the White House. Trump keeps the strike option open, the IRGC answers with an offensive doctrine, and Europe and the R4 line up behind diplomacy. Markets price this clearly: oil at a six-month high, and stocks lower under pressure from energy and AI worries together. The coming run of elections in Brazil, Israel and then the US will redraw political maps that bear directly on the region.",
+    "ar": "المشهد الدولي مساء السبت يتأرجح بين لغتين في طهران: بزشكيان يفتح باب العودة إلى الاتفاق المؤقت، بينما يرفع العسكريون سقف التحدي بمنع السفن الأميركية من الخليج. هذا التباين يمنح الوسطاء مساحة، لكنه يزيد احتمال سوء الحسابات مع تلويح ترامب بضربة جديدة. وخارج الإقليم، يمرّ العالم بعطلة نهاية أسبوع مزدحمة سياسياً: إعادة برازيلية متقاربة غداً، واحتجاجات فرنسية واسعة، وزلزالان في التبت وفانواتو، وأزمة ضباب إندونيسية تتحول إلى ملف سياسي.",
+    "en": "The world picture on Saturday evening swings between two languages in Tehran: Pezeshkian opens the door to reviving the interim deal while military chiefs raise the stakes by barring US ships from the Gulf. The split gives mediators room but raises the risk of miscalculation as Trump floats a new strike. Beyond the region, a politically busy weekend: a tight Brazilian runoff tomorrow, widespread French protests, earthquakes in Tibet and Vanuatu, and an Indonesian haze crisis turning political.",
     "src": [
-     "gv-trump",
-     "gn-iran",
-     "aje-istanbul",
-     "asiaone-oil",
-     "yahoo-stocks",
-     "rio-polls",
-     "toi-23"
+     "brec-pez",
+     "cbs-iran",
+     "kt-live",
+     "carta-datafolha",
+     "nob-paris",
+     "mt-tibet",
+     "nob-vanuatu",
+     "pen-haze"
     ]
    },
    "technical": {
-    "ar": "إس آند بي 500 عند 7,623.68 نقطة بعد أسبوع ثانٍ من التراجع، وناسداك عند 25,955.34 نقطة وكان قد هبط 2.6% يوم الخميس ليصبح نحو 5.8% دون قمته في 6 أكتوبر. قطاع الطاقة وحده بلغ مستوى قياسياً، ما يؤكد أن صعود النفط بات المحرك الأول للأسواق قبل قرار الفيدرالي يوم 28 أكتوبر.",
-    "en": "The S&P 500 is at 7,623.68 after a second weekly decline, and the Nasdaq at 25,955.34 after Thursday's 2.6% drop left it about 5.8% below its 6 October peak. Energy alone hit a record, confirming oil as the main market driver ahead of the Fed decision on 28 October.",
+    "ar": "الأسواق العالمية مغلقة؛ إس آند بي 500 أنهى الجمعة عند 7,623.68 نقطة منخفضاً 0.52% مع صعود النفط، وبقاء المؤشر دون مستوى الأسبوع الماضي يعكس ضغط تكاليف الطاقة. الأوقية قرب 4,016 دولاراً والدعم عند 4,000 دولار. أي ضربة أميركية في عطلة نهاية الأسبوع سترفع النفط والذهب معاً وتضغط على الأسهم عند افتتاح الاثنين.",
+    "en": "Global markets are closed; the S&P 500 ended Friday at 7,623.68, down 0.52% as oil rose, and staying below last week's level reflects energy-cost pressure. The ounce is near $4,016 with support at $4,000. Any US strike over the weekend would lift oil and gold together and weigh on stocks at Monday's open.",
     "src": [
      "yahoo-stocks",
-     "aje-tech"
+     "asiaone-oil",
+     "banker-gold",
+     "cbs-iran"
     ]
    },
    "outlook": [
     {
-     "ar": "تصريح السفير الأميركي في أنقرة يجعل عطلة نهاية الأسبوع حساسة؛ أي ضربة على إيران سترفع النفط وتضغط على الأسهم عند افتتاح الاثنين.",
-     "en": "The US ambassador's remark makes this weekend sensitive; any strike on Iran would lift oil and weigh on stocks at Monday's open.",
+     "ar": "جولة الإعادة البرازيلية غداً مرشحة لفارق ضئيل قد يؤخر قبول النتيجة، في ظل تعادل الاستطلاعات الأخيرة.",
+     "en": "Tomorrow's Brazilian runoff is set for a narrow margin that could delay acceptance of the result, given the tied final polls.",
      "src": [
-      "aje-istanbul",
-      "asiaone-oil"
+      "carta-datafolha",
+      "metropoles-quaest"
      ]
     },
     {
-     "ar": "جولة الإعادة البرازيلية متقاربة جداً، ويُرجَّح أن يُحسم الفارق بأقل من نقطتين مئويتين، مع احتمال طعون في النتيجة.",
-     "en": "Brazil's runoff is extremely close and is likely to be decided by under two points, with possible challenges to the result.",
+     "ar": "دعوة بزشكيان إلى إحياء الاتفاق المؤقت ولقاؤه المرتقب مع بوتين يرجّحان تحركاً دبلوماسياً إيرانياً نشطاً الأسبوع المقبل، حتى مع استمرار التهديدات العسكرية.",
+     "en": "Pezeshkian's call to revive the interim deal and his upcoming meeting with Putin point to active Iranian diplomacy next week, even as military threats continue.",
      "src": [
-      "rio-polls"
+      "brec-pez",
+      "cbs-iran"
      ]
     },
     {
-     "ar": "يُتوقع أن يثبّت الفيدرالي الفائدة يوم 28 أكتوبر، مع تركيز الأسواق على لهجته تجاه التضخم الناتج عن الطاقة.",
-     "en": "The Fed is expected to hold rates on 28 October, with markets focused on its tone on energy-driven inflation.",
+     "ar": "انتخابات الكنيست الثلاثاء واجتماع الفيدرالي الأربعاء محطتان ستحددان مزاج الأسواق في الأسبوع المقبل.",
+     "en": "Tuesday's Knesset election and Wednesday's Fed decision are the two events that will set market mood next week.",
      "src": [
-      "yahoo-stocks",
+      "toi-23",
       "fed-cal"
      ]
     }
@@ -782,16 +840,16 @@
   {
    "date": "2026-10-25",
    "zone": "world",
-   "ar": "جولة الإعادة في الانتخابات الرئاسية البرازيلية بين لولا وفلافيو بولسونارو، والانتخابات البرلمانية في صربيا.",
-   "en": "Brazil's presidential runoff between Lula and Flávio Bolsonaro, and Serbia's parliamentary election.",
+   "ar": "جولة الإعادة في الانتخابات الرئاسية البرازيلية بين لولا وفلافيو بولسونارو.",
+   "en": "Brazil's presidential runoff between Lula and Flavio Bolsonaro.",
    "src": [
-    "rio-polls",
-    "js-23",
-    "dn-23"
+    "carta-datafolha",
+    "metropoles-quaest",
+    "rio-polls"
    ],
    "scn": {
-    "ar": "الاستطلاعات متعادلة تقريباً، والفارق المتوقع أقل من نقطتين؛ وفي صربيا تبقى نسبة المشاركة مؤشراً على أثر الاحتجاجات.",
-    "en": "Polls are near-tied with an expected margin under two points; in Serbia turnout remains the signal of the protests' impact."
+    "ar": "تعادل آخر الاستطلاعات (50% لكل منهما في داتافولها) يرجّح نتيجة متقاربة جداً قد تتأخر معها إعلانات القبول.",
+    "en": "Tied final polls (50% each in Datafolha) point to a very close result that may delay concessions."
    }
   },
   {
@@ -807,6 +865,30 @@
     "ar": "صعود برنت 3.14% يوم الجمعة يرجّح دعماً لأسهم الطاقة، مع بقاء 8,600 نقطة دعماً قريباً.",
     "en": "Brent's 3.14% Friday gain likely supports energy stocks, with 8,600 as near support."
    }
+  },
+  {
+   "date": "2026-10-26",
+   "from": "2026-10-24",
+   "zone": "egypt",
+   "ar": "ختام زيارة الأمين العام للأمم المتحدة أنطونيو غوتيريش إلى مصر.",
+   "en": "UN Secretary-General António Guterres concludes his visit to Egypt.",
+   "src": [
+    "youlyou-guterres"
+   ],
+   "scn": {
+    "ar": "يُتوقع أن تخرج الزيارة بمواقف بشأن غزة والسودان والتهدئة الأميركية الإيرانية تعزّز دور القاهرة الوسيط.",
+    "en": "The visit is expected to produce positions on Gaza, Sudan and US-Iran de-escalation that bolster Cairo's mediating role."
+   }
+  },
+  {
+   "date": "2026-10-26",
+   "zone": "egypt",
+   "ar": "افتتاح الدورة الجديدة للبرلمان العربي في القاهرة.",
+   "en": "The Arab Parliament opens its new session in Cairo.",
+   "src": [
+    "dostor-agenda"
+   ],
+   "scn": null
   },
   {
    "date": "2026-10-27",
@@ -830,6 +912,31 @@
     "ar": "غياب أغلبية لأي كتلة في الاستطلاعات الأخيرة يرجّح مفاوضات ائتلافية طويلة، ونتيجتها ستؤثر في مسار الحرب مع إيران وغزة.",
     "en": "No bloc holding a majority in final polls points to long coalition talks, with the outcome shaping the Iran and Gaza tracks."
    }
+  },
+  {
+   "date": "2026-10-27",
+   "zone": "gulf",
+   "ar": "مجلس النواب البحريني يصوّت على حظر صيد القوارب الأجنبية ورفع منحة الزواج إلى 1,000 دينار وخفض الحد الأدنى لسداد بطاقات الائتمان إلى 2.5%.",
+   "en": "Bahrain's MPs vote on a foreign fishing ban, BD1,000 marriage grants and a 2.5% minimum credit card repayment.",
+   "src": [
+    "nob-fish",
+    "nob-marriage",
+    "nob-credit"
+   ],
+   "scn": {
+    "ar": "تمرير المنحة مرجّح بدعم اللجان رغم اعتراض الحكومة، ومقترح البطاقات قد يُعدّل ليصبح اختيارياً للبنوك.",
+    "en": "The grant is likely to pass with committee backing despite government objections; the card proposal may be amended to be optional for banks."
+   }
+  },
+  {
+   "date": "2026-10-27",
+   "zone": "qatar",
+   "ar": "الشمال يستضيف الهلال السعودي على ستاد البيت في الجولة الثالثة من دوري أبطال آسيا للنخبة.",
+   "en": "Al Shamal host Saudi side Al Hilal at Al Bayt Stadium in AFC Champions League Elite matchday 3.",
+   "src": [
+    "akhbar-hilal"
+   ],
+   "scn": null
   },
   {
    "date": "2026-10-28",
@@ -895,11 +1002,12 @@
    "ar": "جائزة قطر الكبرى لـ«موتو جي بي» على حلبة لوسيل الدولية، الجولة العشرون من الموسم.",
    "en": "MotoGP Qatar Grand Prix at Lusail International Circuit, round 20 of the season.",
    "src": [
+    "gt-motogp",
     "aje-motogp"
    ],
    "scn": {
-    "ar": "السباق قائم ما لم تتغير التقديرات الأمنية، وقد يُحسم فيه جزء كبير من صراع اللقب.",
-    "en": "The race goes ahead unless security assessments change, and could weigh heavily on the title fight."
+    "ar": "السباق قائم وفق مصدر في البطولة، ومارتن يتصدر بفارق نقطتين عن ماركيز، ما يجعل لوسيل محطة حاسمة في صراع اللقب.",
+    "en": "The race is on per a series source, with Martin two points clear of Marquez, making Lusail pivotal in the title fight."
    }
   },
   {
@@ -909,6 +1017,17 @@
    "en": "Egypt host Malawi in matchday 3 of 2027 Africa Cup of Nations qualifying.",
    "src": [
     "raya-malawi"
+   ],
+   "scn": null
+  },
+  {
+   "date": "2026-11-13",
+   "from": "2026-10-31",
+   "zone": "qatar",
+   "ar": "دورة الألعاب الأولمبية للشباب «داكار 2026» في السنغال بدعم قطري من الحافلات والمعدات الأمنية.",
+   "en": "Dakar 2026 Youth Olympic Games in Senegal, with Qatari support in buses and security equipment.",
+   "src": [
+    "pen-senegal"
    ],
    "scn": null
   },
@@ -1010,14 +1129,63 @@
     "ar": "برنت فوق 116 دولاراً يزيد الضغط على المجموعة لرفع الإنتاج.",
     "en": "Brent above $116 adds pressure on the group to raise output."
    }
+  },
+  {
+   "date": null,
+   "zone": "world",
+   "ar": "الرئيس الإيراني مسعود بزشكيان يلتقي الرئيس الروسي فلاديمير بوتين في موسكو الأسبوع المقبل (لم يُحدَّد اليوم بعد).",
+   "en": "Iranian President Masoud Pezeshkian meets Russian President Vladimir Putin in Moscow next week (day not yet set).",
+   "src": [
+    "cbs-iran",
+    "kt-live"
+   ],
+   "scn": {
+    "ar": "يُرجَّح أن يبحث الطرفان دعماً روسياً لمسار التفاوض بعد دعوة بزشكيان لإحياء الاتفاق المؤقت.",
+    "en": "The two are likely to discuss Russian backing for talks after Pezeshkian's call to revive the interim deal."
+   }
+  },
+  {
+   "date": null,
+   "month": "2027-01",
+   "zone": "qatar",
+   "ar": "قطر ضيف شرف معرض القاهرة الدولي للكتاب في يناير 2027 ضمن «العام الثقافي قطر ومصر واليونان».",
+   "en": "Qatar is Guest of Honour at the Cairo International Book Fair in January 2027 under the Years of Culture with Egypt and Greece.",
+   "src": [
+    "pen-culture"
+   ],
+   "scn": null
   }
  ],
  "sources": {
-  "pen-hajj": {
-   "ar": "ذا بننسولا",
-   "en": "The Peninsula",
+  "ahram-forum": {
+   "ar": "بوابة الأهرام",
+   "en": "Al-Ahram Gate",
+   "date": "2026-10-24",
+   "url": "https://gate.ahram.org.eg/News/5971087.aspx"
+  },
+  "aje-asiancup": {
+   "ar": "الجزيرة الإنجليزية",
+   "en": "Al Jazeera English",
    "date": "2026-10-23",
-   "url": "https://thepeninsulaqatar.com/article/23/10/2026/ministry-receives-over-12000-hajj-applications"
+   "url": "https://www.aljazeera.com/sports/2026/10/23/saudi-arabia-security-puts-asian-cup-in-doubt-japan-football-chief"
+  },
+  "aje-motogp": {
+   "ar": "الجزيرة الإنجليزية",
+   "en": "Al Jazeera English",
+   "date": "2026-10-23",
+   "url": "https://www.aljazeera.com/sports/2026/10/23/qatar-moto-gp-to-go-ahead-despite-regional-tensions"
+  },
+  "aje-ruua": {
+   "ar": "الجزيرة الإنجليزية",
+   "en": "Al Jazeera English",
+   "date": "2026-10-23",
+   "url": "https://www.aljazeera.com/news/2026/10/23/russia-ukraine-talks-planned-for-november-in-uae-kremlin"
+  },
+  "akhbar-hilal": {
+   "ar": "أخبار برس",
+   "en": "Akhbar Press",
+   "date": "2026-10-24",
+   "url": "https://www.akhbarperss.com/507633-2/"
   },
   "alamssar-qse": {
    "ar": "العالم الاقتصادي",
@@ -1025,17 +1193,83 @@
    "date": "2026-10-22",
    "url": "https://www.alamssar.com/500305"
   },
-  "alarab-qse": {
-   "ar": "العرب",
-   "en": "Al Arab",
-   "date": "2026-10-21",
-   "url": "https://alarab.qa/article/21/10/2026/%D9%85%D8%A4%D8%B4%D8%B1-%D8%A8%D9%88%D8%B1%D8%B5%D8%A9-%D9%82%D8%B7%D8%B1-%D9%8A%D8%BA%D9%84%D9%82-%D8%AA%D8%AF%D8%A7%D9%88%D9%84%D8%A7%D8%AA%D9%87-%D8%B9%D9%84%D9%89-%D8%A7%D8%B1%D8%AA%D9%81%D8%A7%D8%B9-9"
+  "anews-kuwait": {
+   "ar": "إيه نيوز (الأناضول)",
+   "en": "A News (Anadolu)",
+   "date": "2026-10-24",
+   "url": "https://www.anews.com.tr/world/2026/10/24/kuwaits-emir-italian-premier-discuss-defense-economic-cooperation"
   },
-  "cm-goldqa": {
-   "ar": "القاهرة مباشر",
-   "en": "Cairo Mubasher",
+  "araby-icup": {
+   "ar": "العربي الجديد",
+   "en": "Al-Araby Al-Jadeed",
+   "date": "2026-10-22",
+   "url": "https://www.alaraby.com/news/%D9%82%D8%B7%D8%B1-%D8%AA%D8%B3%D8%AA%D8%B6%D9%8A%D9%81-%D8%A7%D9%84%D9%85%D8%A8%D8%A7%D8%B1%D9%8A%D8%A7%D8%AA-%D8%A7%D9%84%D8%AB%D9%84%D8%A7%D8%AB-%D8%A7%D9%84%D8%A3%D8%AE%D9%8A%D8%B1%D8%A9-%D9%85%D9%86-%D9%83%D8%A3%D8%B3-%D8%A7%D9%84%D9%82%D8%A7%D8%B1%D8%A7%D8%AA-%D9%84%D9%84%D8%A3%D9%86%D8%AF%D9%8A%D8%A9-2026"
+  },
+  "asiaone-oil": {
+   "ar": "رويترز عبر آسيا ون",
+   "en": "Reuters via AsiaOne",
+   "date": "2026-10-24",
+   "url": "https://www.asiaone.com/money/oil-prices-jump-383-houthi-attacks-oil-spill-highest-settlement-april"
+  },
+  "banker-gold": {
+   "ar": "بانكير",
+   "en": "Banker News",
+   "date": "2026-10-24",
+   "url": "https://www.banker.news/157339"
+  },
+  "brec-pez": {
+   "ar": "بزنس ريكوردر (رويترز)",
+   "en": "Business Recorder (Reuters)",
+   "date": "2026-10-24",
+   "url": "https://www.brecorder.com/news/40445758/irans-pezeshkian-blames-us-for-interim-deal-failure-urges-new-try"
+  },
+  "carta-datafolha": {
+   "ar": "كارتا كابيتال",
+   "en": "CartaCapital",
    "date": "2026-10-23",
-   "url": "https://www.cairomubasher.com/245122"
+   "url": "https://www.cartacapital.com.br/politica/os-detalhes-da-ultima-pesquisa-datafolha-sobre-lula-x-flavio-bolsonaro-no-2o-turno/"
+  },
+  "cbs-iran": {
+   "ar": "سي بي إس نيوز",
+   "en": "CBS News",
+   "date": "2026-10-24",
+   "url": "https://www.cbsnews.com/live-updates/iran-war-trump-us-oil-gas-prices-strait-of-hormuz-midterms/"
+  },
+  "daryo-opec": {
+   "ar": "داريو",
+   "en": "Daryo",
+   "date": "2026-10-05",
+   "url": "https://daryo.uz/en/2026/10/05/kazakhstan-opec-partners-agree-to-maintain-november-oil-production-levels/"
+  },
+  "dn-22": {
+   "ar": "ديموكراسي ناو",
+   "en": "Democracy Now!",
+   "date": "2026-10-22",
+   "url": "https://www.democracynow.org/2026/10/22/headlines"
+  },
+  "dostor-agenda": {
+   "ar": "الدستور",
+   "en": "Al-Dostor",
+   "date": "2026-10-23",
+   "url": "https://www.dostor.org/5749561"
+  },
+  "dostor-sport": {
+   "ar": "الدستور",
+   "en": "Al-Dostor",
+   "date": "2026-10-24",
+   "url": "https://www.dostor.org/5749991"
+  },
+  "elwatan-rc": {
+   "ar": "الوطن",
+   "en": "El Watan News",
+   "date": "2026-10-24",
+   "url": "https://www.elwatannews.com/news/details/8383559"
+  },
+  "elwatan-usd": {
+   "ar": "الوطن",
+   "en": "El Watan News",
+   "date": "2026-10-24",
+   "url": "https://www.elwatannews.com/news/details/8383287"
   },
   "fed-cal": {
    "ar": "جدول اجتماعات الفيدرالي (FedRateCalc)",
@@ -1043,23 +1277,209 @@
    "date": "2026-10-23",
    "url": "https://fedratecalc.com/fomc-meeting-schedule/october-2026/"
   },
+  "gdn-manama": {
+   "ar": "غلف ديلي نيوز",
+   "en": "Gulf Daily News",
+   "date": "2026-10-23",
+   "url": "https://www.gdnonline.com/Details/1410564/Manama-Dialogue-set-to-tackle-new-regional-security-realities"
+  },
+  "gn-flights": {
+   "ar": "غلف نيوز",
+   "en": "Gulf News",
+   "date": "2026-10-24",
+   "url": "https://gulfnews.com/business/aviation/uae-flight-updates-oct-24-cancellations-delays-and-saudi-travel-advisories-1.500721707"
+  },
+  "gn-live": {
+   "ar": "غلف نيوز",
+   "en": "Gulf News",
+   "date": "2026-10-24",
+   "url": "https://gulfnews.com/world/mena/middle-east-war-houthi-missile-targets-riyadh-tankers-hit-mines-near-hormuz-1.500721804"
+  },
+  "gt-china": {
+   "ar": "جلف تايمز (قنا)",
+   "en": "Gulf Times (QNA)",
+   "date": "2026-10-24",
+   "url": "https://www.gulf-times.com/article/736525/qatar/hh-the-amir-sends-condolences-to-president-of-china"
+  },
+  "gt-motogp": {
+   "ar": "جلف تايمز (رويترز)",
+   "en": "Gulf Times (Reuters)",
+   "date": "2026-10-24",
+   "url": "https://www.gulf-times.com/article/736506/qatar/qatar-gp-stays-on-course-despite-regional-tensions"
+  },
   "js-23": {
    "ar": "جست سكيوريتي",
    "en": "Just Security",
    "date": "2026-10-23",
    "url": "https://www.justsecurity.org/161891/early-edition-october-23-2026/"
   },
-  "dn-23": {
-   "ar": "ديموكراسي ناو",
-   "en": "Democracy Now!",
-   "date": "2026-10-23",
-   "url": "https://www.democracynow.org/2026/10/23/headlines"
+  "kt-live": {
+   "ar": "خليج تايمز",
+   "en": "Khaleej Times",
+   "date": "2026-10-24",
+   "url": "https://www.khaleejtimes.com/world/mena/us-israel-iran-lebanon-war-live-updates-october-24-2026"
   },
-  "dn-22": {
-   "ar": "ديموكراسي ناو",
-   "en": "Democracy Now!",
+  "metropoles-quaest": {
+   "ar": "متروبوليس",
+   "en": "Metrópoles",
+   "date": "2026-10-24",
+   "url": "https://www.metropoles.com/brasil/quaest-divulga-ultima-pesquisa-presidencial-neste-sabado-24-10"
+  },
+  "mm-riyadh": {
+   "ar": "مالاي ميل (فرانس برس)",
+   "en": "Malay Mail (AFP)",
+   "date": "2026-10-24",
+   "url": "https://www.malaymail.com/news/world/2026/10/24/riyadh-wakes-to-blasts-as-houthis-keep-up-missile-strikes-on-saudi-arabia/240413"
+  },
+  "mt-tibet": {
+   "ar": "مانيلا تايمز (فرانس برس)",
+   "en": "The Manila Times (AFP)",
+   "date": "2026-10-24",
+   "url": "https://www.manilatimes.net/2026/10/24/world/asia-oceania/earthquake-strikes-tibet-leaves-16-dead/2452812"
+  },
+  "nob-alerts": {
+   "ar": "نيوز أوف البحرين",
+   "en": "News of Bahrain",
+   "date": "2026-10-24",
+   "url": "https://www.newsofbahrain.com/en/article/saudi-arabia-activates-emergency-alerts-in-four-cities-over-airborne-threats"
+  },
+  "nob-credit": {
+   "ar": "نيوز أوف البحرين",
+   "en": "News of Bahrain",
+   "date": "2026-10-24",
+   "url": "https://www.newsofbahrain.com/en/article/plan-to-cut-minimum-credit-card-payments-to-25pc"
+  },
+  "nob-fish": {
+   "ar": "نيوز أوف البحرين",
+   "en": "News of Bahrain",
+   "date": "2026-10-24",
+   "url": "https://www.newsofbahrain.com/en/article/foreign-boats-face-fishing-ban-in-bahrain-waters"
+  },
+  "nob-marriage": {
+   "ar": "نيوز أوف البحرين",
+   "en": "News of Bahrain",
+   "date": "2026-10-24",
+   "url": "https://www.newsofbahrain.com/en/article/mps-to-vote-on-bd1000-marriage-grants"
+  },
+  "nob-oil": {
+   "ar": "نيوز أوف البحرين",
+   "en": "News of Bahrain",
+   "date": "2026-10-24",
+   "url": "https://www.newsofbahrain.com/en/article/uae-steps-up-efforts-to-contain-offshore-oil-leak"
+  },
+  "nob-paris": {
+   "ar": "نيوز أوف البحرين",
+   "en": "News of Bahrain",
+   "date": "2026-10-24",
+   "url": "https://www.newsofbahrain.com/en/article/paris-on-high-alert-ahead-of-nationwide-demonstrations-24-metro-stations-closed"
+  },
+  "nob-starlink": {
+   "ar": "نيوز أوف البحرين",
+   "en": "News of Bahrain",
+   "date": "2026-10-24",
+   "url": "https://www.newsofbahrain.com/en/article/ukraine-says-starlink-connection-stable-again"
+  },
+  "nob-vanuatu": {
+   "ar": "نيوز أوف البحرين",
+   "en": "News of Bahrain",
+   "date": "2026-10-24",
+   "url": "https://www.newsofbahrain.com/en/article/powerful-earthquake-strikes-near-vanuatu"
+  },
+  "pen-cityscape": {
+   "ar": "ذا بننسولا",
+   "en": "The Peninsula",
+   "date": "2026-10-23",
+   "url": "https://thepeninsulaqatar.com/article/23/10/2026/cityscape-qatar-2026-reveals-headline-developments-shaping-this-years-showcase"
+  },
+  "pen-culture": {
+   "ar": "ذا بننسولا",
+   "en": "The Peninsula",
+   "date": "2026-10-24",
+   "url": "http://thepeninsulaqatar.com/article/24/10/2026/qatars-years-of-culture-initiative-announces-partner-countries-through-2030"
+  },
+  "pen-hajj": {
+   "ar": "ذا بننسولا",
+   "en": "The Peninsula",
+   "date": "2026-10-23",
+   "url": "https://thepeninsulaqatar.com/article/23/10/2026/ministry-receives-over-12000-hajj-applications"
+  },
+  "pen-haze": {
+   "ar": "ذا بننسولا (فرانس برس)",
+   "en": "The Peninsula (AFP)",
+   "date": "2026-10-24",
+   "url": "http://thepeninsulaqatar.com/article/24/10/2026/how-is-it-possible-students-protest-indonesian-haze"
+  },
+  "pen-mosq": {
+   "ar": "ذا بننسولا",
+   "en": "The Peninsula",
+   "date": "2026-10-24",
+   "url": "http://thepeninsulaqatar.com/article/24/10/2026/municipality-urges-public-to-prevent-mosquito-breeding-after-qatar-rains"
+  },
+  "pen-qiff": {
+   "ar": "ذا بننسولا",
+   "en": "The Peninsula",
    "date": "2026-10-22",
-   "url": "https://www.democracynow.org/2026/10/22/headlines"
+   "url": "https://thepeninsulaqatar.com/article/22/10/2026/qatar-international-food-festival-returns-in-january-2027-at-lusail-stadium"
+  },
+  "pen-senegal": {
+   "ar": "ذا بننسولا",
+   "en": "The Peninsula",
+   "date": "2026-10-24",
+   "url": "https://thepeninsulaqatar.com/article/24/10/2026/qatar-provides-buses-security-equipment-to-senegal-for-dakar-2026-youth-olympics"
+  },
+  "pen-weather": {
+   "ar": "ذا بننسولا (قنا)",
+   "en": "The Peninsula (QNA)",
+   "date": "2026-10-24",
+   "url": "http://thepeninsulaqatar.com/article/24/10/2026/thunderstorms-and-strong-winds-expected-along-coast-qatar-weather"
+  },
+  "pen-zambia": {
+   "ar": "ذا بننسولا (قنا)",
+   "en": "The Peninsula (QNA)",
+   "date": "2026-10-24",
+   "url": "https://thepeninsulaqatar.com/article/24/10/2026/amir-sends-congratulations-to-zambia-president"
+  },
+  "raya-malawi": {
+   "ar": "الراية",
+   "en": "Al Raya",
+   "date": "2026-10-13",
+   "url": "https://www.raya.com/2026/10/13/تحديد-موعدي-مباراتي-مصر-ومالاوي-وطاقمي-التحكيم"
+  },
+  "raya-rain": {
+   "ar": "الراية",
+   "en": "Al Raya",
+   "date": "2026-10-24",
+   "url": "https://www.raya.com/2026/10/24/%D9%85%D8%A8%D8%A7%D8%B1%D9%83-%D8%B9%D9%84%D9%8A%D9%83%D9%85-%D8%A7%D9%84%D8%AD%D9%8A%D8%A7"
+  },
+  "rio-polls": {
+   "ar": "ريو تايمز",
+   "en": "The Rio Times",
+   "date": "2026-10-23",
+   "url": "https://www.riotimesonline.com/brazil-runoff-polls-2026/"
+  },
+  "toi-23": {
+   "ar": "تايمز أوف إسرائيل",
+   "en": "The Times of Israel",
+   "date": "2026-10-23",
+   "url": "https://www.timesofisrael.com/liveblog-october-23-2026/"
+  },
+  "tom-ukoman": {
+   "ar": "تايمز أوف عُمان (العُمانية)",
+   "en": "Times of Oman (ONA)",
+   "date": "2026-10-23",
+   "url": "https://timesofoman.com/article/178310-oman-and-united-kingdom-reaffirm-commitment-to-cooperation-and-economic-prosperity"
+  },
+  "wafd-fuel": {
+   "ar": "الوفد",
+   "en": "Al-Wafd",
+   "date": "2026-10-24",
+   "url": "https://www.alwafd.news/5986837"
+  },
+  "wayve-fr": {
+   "ar": "وايف (بيان صحفي)",
+   "en": "Wayve (press release)",
+   "date": "2026-10-23",
+   "url": "https://wayve.ai/press/wayve-stellantis-nvidia-collaborate-on-deployment-across-france/"
   },
   "wiki-cop31": {
    "ar": "ويكيبيديا: مؤتمر المناخ 2026",
@@ -1073,257 +1493,29 @@
    "date": "2026-10-23",
    "url": "https://en.wikipedia.org/wiki/National_Day_(Qatar)"
   },
-  "araby-icup": {
-   "ar": "العربي الجديد",
-   "en": "Al-Araby Al-Jadeed",
-   "date": "2026-10-22",
-   "url": "https://www.alaraby.com/news/%D9%82%D8%B7%D8%B1-%D8%AA%D8%B3%D8%AA%D8%B6%D9%8A%D9%81-%D8%A7%D9%84%D9%85%D8%A8%D8%A7%D8%B1%D9%8A%D8%A7%D8%AA-%D8%A7%D9%84%D8%AB%D9%84%D8%A7%D8%AB-%D8%A7%D9%84%D8%A3%D8%AE%D9%8A%D8%B1%D8%A9-%D9%85%D9%86-%D9%83%D8%A3%D8%B3-%D8%A7%D9%84%D9%82%D8%A7%D8%B1%D8%A7%D8%AA-%D9%84%D9%84%D8%A3%D9%86%D8%AF%D9%8A%D8%A9-2026"
-  },
-  "youm7-icup": {
-   "ar": "اليوم السابع",
-   "en": "Youm7",
-   "date": "2026-10-22",
-   "url": "https://www.youm7.com/story/2026/10/22/%D8%B1%D8%B3%D9%85%D9%8A%D8%A7-%D9%82%D8%B7%D8%B1-%D8%AA%D8%B3%D8%AA%D8%B6%D9%8A%D9%81-%D9%85%D8%A8%D8%A7%D8%B1%D9%8A%D8%A7%D8%AA-%D9%83%D8%A3%D8%B3-%D8%A5%D9%86%D8%AA%D8%B1%D9%83%D9%88%D9%86%D8%AA%D9%86%D9%86%D8%AA%D8%A7%D9%84/7589948"
-  },
-  "daryo-opec": {
-   "ar": "داريو",
-   "en": "Daryo",
-   "date": "2026-10-05",
-   "url": "https://daryo.uz/en/2026/10/05/kazakhstan-opec-partners-agree-to-maintain-november-oil-production-levels/"
-  },
-  "pen-eu": {
-   "ar": "ذا بننسولا",
-   "en": "The Peninsula",
-   "date": "2026-10-23",
-   "url": "https://thepeninsulaqatar.com/article/23/10/2026/eu-ambassador-highlights-priorities-for-stronger-partnership-with-qatar"
-  },
-  "pen-uk": {
-   "ar": "ذا بننسولا",
-   "en": "The Peninsula",
-   "date": "2026-10-23",
-   "url": "https://thepeninsulaqatar.com/article/23/10/2026/uk-minister-of-state-for-middle-east-meets-qatars-ambassador"
-  },
-  "pen-cityscape": {
-   "ar": "ذا بننسولا",
-   "en": "The Peninsula",
-   "date": "2026-10-23",
-   "url": "https://thepeninsulaqatar.com/article/23/10/2026/cityscape-qatar-2026-reveals-headline-developments-shaping-this-years-showcase"
-  },
-  "pen-sadd": {
-   "ar": "ذا بننسولا",
-   "en": "The Peninsula",
-   "date": "2026-10-23",
-   "url": "https://thepeninsulaqatar.com/article/23/10/2026/afif-stars-as-al-sadd-roar-back-to-end-losing-streak-al-ahli-snatch-draw"
-  },
-  "pen-cheniere": {
-   "ar": "ذا بننسولا",
-   "en": "The Peninsula",
-   "date": "2026-10-22",
-   "url": "https://thepeninsulaqatar.com/article/22/10/2026/qatarenergy-signs-long-term-agreements-to-purchase-4-mtpa-of-us-lng-from-cheniere-through-2054"
-  },
-  "pen-qmd": {
-   "ar": "ذا بننسولا",
-   "en": "The Peninsula",
-   "date": "2026-10-22",
-   "url": "https://thepeninsulaqatar.com/article/22/10/2026/qatar-meteorology-warns-of-possible-hail-issues-advisory-for-motorists"
-  },
-  "pen-qiff": {
-   "ar": "ذا بننسولا",
-   "en": "The Peninsula",
-   "date": "2026-10-22",
-   "url": "https://thepeninsulaqatar.com/article/22/10/2026/qatar-international-food-festival-returns-in-january-2027-at-lusail-stadium"
-  },
-  "qt-milipol": {
-   "ar": "قطر تربيون",
-   "en": "Qatar Tribune",
-   "date": "2026-10-23",
-   "url": "https://www.qatar-tribune.com/article/260696/latest-news/milipol-qatar-2026-attracts-over-16000-visitors-records-qr820-mn-in-deals"
-  },
-  "aje-motogp": {
-   "ar": "الجزيرة الإنجليزية",
-   "en": "Al Jazeera English",
-   "date": "2026-10-23",
-   "url": "https://www.aljazeera.com/sports/2026/10/23/qatar-moto-gp-to-go-ahead-despite-regional-tensions"
-  },
-  "gn-iran": {
-   "ar": "غلف نيوز",
-   "en": "Gulf News",
-   "date": "2026-10-23",
-   "url": "https://gulfnews.com/amp/story/world/mena/trump-hints-at-renewed-action-against-iran-fairly-soon-iran-warns-of-wider-retaliation-1.500720562"
-  },
-  "toi-23": {
-   "ar": "تايمز أوف إسرائيل",
-   "en": "The Times of Israel",
-   "date": "2026-10-23",
-   "url": "https://www.timesofisrael.com/liveblog-october-23-2026/"
-  },
-  "aje-live24": {
-   "ar": "الجزيرة الإنجليزية",
-   "en": "Al Jazeera English",
-   "date": "2026-10-24",
-   "url": "https://www.aljazeera.com/news/liveblog/2026/10/24/iran-war-live-israel-launches-targeted-hebron-operation-after-attack"
-  },
-  "aje-istanbul": {
-   "ar": "الجزيرة الإنجليزية",
-   "en": "Al Jazeera English",
-   "date": "2026-10-23",
-   "url": "https://www.aljazeera.com/news/2026/10/23/european-middle-east-ministers-urge-us-iran-diplomacy-not-new-attacks"
-  },
-  "gdn-aramco": {
-   "ar": "غلف ديلي نيوز",
-   "en": "Gulf Daily News",
-   "date": "2026-10-23",
-   "url": "https://www.gdnonline.com/Details/1410614/Aramco-seeks-to-increase-overseas-strategic-oil-storage-capacity"
-  },
-  "gdn-spill": {
-   "ar": "غلف ديلي نيوز",
-   "en": "Gulf Daily News",
-   "date": "2026-10-24",
-   "url": "https://www.gdnonline.com/Details/1410677/UAE-beaches-closed-due-to-oil-spill"
-  },
-  "gdn-hormuz": {
-   "ar": "غلف ديلي نيوز",
-   "en": "Gulf Daily News",
-   "date": "2026-10-24",
-   "url": "https://www.gdnonline.com/Details/1410688/Hormuz-ship-attacks-hit-record-high-in-October"
-  },
-  "gdn-manama": {
-   "ar": "غلف ديلي نيوز",
-   "en": "Gulf Daily News",
-   "date": "2026-10-23",
-   "url": "https://www.gdnonline.com/Details/1410564/Manama-Dialogue-set-to-tackle-new-regional-security-realities"
-  },
-  "at-meloni": {
-   "ar": "عرب تايمز",
-   "en": "Arab Times",
-   "date": "2026-10-23",
-   "url": "https://www.arabtimesonline.com/news/italian-prime-minister-giorgia-meloni-arrives-in-kuwait-on-official-visit/"
-  },
-  "aje-ruua": {
-   "ar": "الجزيرة الإنجليزية",
-   "en": "Al Jazeera English",
-   "date": "2026-10-23",
-   "url": "https://www.aljazeera.com/news/2026/10/23/russia-ukraine-talks-planned-for-november-in-uae-kremlin"
-  },
-  "gt-lana": {
-   "ar": "غلف توداي",
-   "en": "Gulf Today",
-   "date": "2026-10-22",
-   "url": "https://www.gulftoday.ae/news/2026/10/22/uae-formally-nominates-lana-nusseibeh-for-united-nations-secretary-general"
-  },
-  "aje-asiancup": {
-   "ar": "الجزيرة الإنجليزية",
-   "en": "Al Jazeera English",
-   "date": "2026-10-23",
-   "url": "https://www.aljazeera.com/sports/2026/10/23/saudi-arabia-security-puts-asian-cup-in-doubt-japan-football-chief"
-  },
-  "youm7-usd24": {
-   "ar": "اليوم السابع",
-   "en": "Youm7",
-   "date": "2026-10-24",
-   "url": "https://www.youm7.com/story/2026/10/24/%D9%82%D8%A8%D9%84-%D9%81%D8%AA%D8%AD-%D8%A7%D9%84%D8%A8%D9%86%D9%88%D9%83-%D8%A7%D8%B9%D8%B1%D9%81-%D8%B3%D8%B9%D8%B1-%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A7%D8%B1-%D8%A7%D9%84%D8%B3%D8%A8%D8%AA-24-10-2026/7590178"
-  },
-  "youm7-gold24": {
-   "ar": "اليوم السابع",
-   "en": "Youm7",
-   "date": "2026-10-24",
-   "url": "https://www.youm7.com/story/2026/10/24/%D8%A3%D8%B3%D8%B9%D8%A7%D8%B1-%D8%A7%D9%84%D8%B0%D9%87%D8%A8-%D9%81%D9%8A-%D9%85%D8%B5%D8%B1-%D8%A7%D9%84%D9%8A%D9%88%D9%85-%D8%A7%D9%84%D8%B3%D8%A8%D8%AA-24-%D8%A3%D9%83%D8%AA%D9%88%D8%A8%D8%B1-2026/7590858"
-  },
-  "watan-energy": {
-   "ar": "الوطن",
-   "en": "El Watan News",
-   "date": "2026-10-22",
-   "url": "https://www.elwatannews.com/news/details/8382297"
-  },
-  "ahram-power": {
-   "ar": "الأهرام أونلاين",
-   "en": "Ahram Online",
-   "date": "2026-10-22",
-   "url": "https://english.ahram.org.eg/NewsContent/1/2/580668/Egypt/Society/Cabinet-Media-Centre-says-Madbouly-remarks-on-–-ho.aspx"
-  },
-  "et-guterres": {
-   "ar": "إيجيبت توداي",
-   "en": "Egypt Today",
-   "date": "2026-10-23",
-   "url": "https://www.egypttoday.com/Article/1/150215/Guterres-Egypt-is-a-%E2%80%98key-country%E2%80%99-for-resolving-Middle-East"
-  },
-  "et-rafah": {
-   "ar": "إيجيبت توداي",
-   "en": "Egypt Today",
-   "date": "2026-10-23",
-   "url": "https://www.egypttoday.com/Article/1/150220/Egypt-prepares-more-than-60-ambulances-at-Rafah-crossing-for"
-  },
-  "et-sisi-jordan": {
-   "ar": "إيجيبت توداي",
-   "en": "Egypt Today",
-   "date": "2026-10-23",
-   "url": "https://www.egypttoday.com/Article/1/150219/President-Sisi-offers-condolences-to-Jordanian-King-over-victims-of"
-  },
-  "ahram-gouna": {
-   "ar": "بوابة الأهرام",
-   "en": "Al-Ahram Gate",
-   "date": "2026-10-23",
-   "url": "https://gate.ahram.org.eg/News/5970760.aspx"
-  },
-  "ahram-gouna-arab": {
-   "ar": "بوابة الأهرام",
-   "en": "Al-Ahram Gate",
-   "date": "2026-10-23",
-   "url": "https://gate.ahram.org.eg/News/5970766.aspx"
-  },
-  "raya-malawi": {
-   "ar": "الراية",
-   "en": "Al Raya",
-   "date": "2026-10-13",
-   "url": "https://www.raya.com/2026/10/13/تحديد-موعدي-مباراتي-مصر-ومالاوي-وطاقمي-التحكيم"
-  },
-  "gv-trump": {
-   "ar": "رويترز عبر جي في واير",
-   "en": "Reuters via GV Wire",
-   "date": "2026-10-23",
-   "url": "https://gvwire.com/2026/10/23/trump-weighs-quick-end-to-iran-war-against-letting-conflict-wither/"
-  },
-  "asiaone-oil": {
-   "ar": "رويترز عبر آسيا ون",
-   "en": "Reuters via AsiaOne",
-   "date": "2026-10-24",
-   "url": "https://www.asiaone.com/money/oil-prices-jump-383-houthi-attacks-oil-spill-highest-settlement-april"
-  },
   "yahoo-stocks": {
    "ar": "ياهو فاينانس",
    "en": "Yahoo Finance",
    "date": "2026-10-23",
    "url": "https://finance.yahoo.com/markets/live/stock-market-today-friday-october-23-dow-sp-500-nasdaq-tesla-meta-093000521.html"
   },
-  "aje-tech": {
-   "ar": "الجزيرة الإنجليزية",
-   "en": "Al Jazeera English",
-   "date": "2026-10-23",
-   "url": "https://www.aljazeera.com/economy/2026/10/23/us-tech-stocks-tumble-as-investors-fret-over-ai-spending"
+  "youlyou-guterres": {
+   "ar": "يوليو",
+   "en": "Youlyou",
+   "date": "2026-10-24",
+   "url": "https://www.youlyou.com/78933"
   },
-  "aje-jordan": {
-   "ar": "الجزيرة الإنجليزية",
-   "en": "Al Jazeera English",
-   "date": "2026-10-23",
-   "url": "https://www.aljazeera.com/news/2026/10/23/at-least-seven-killed-after-gunmen-open-fire-at-church-in-jordan"
+  "youm7-goldpm": {
+   "ar": "اليوم السابع",
+   "en": "Youm7",
+   "date": "2026-10-24",
+   "url": "https://www.youm7.com/story/2026/10/24/%D8%A3%D8%B3%D8%B9%D8%A7%D8%B1-%D8%A7%D9%84%D8%B0%D9%87%D8%A8-24-10-2026-%D8%B9%D9%8A%D8%A7%D8%B1-21-%D9%8A%D8%B3%D8%AC%D9%84-6290-%D8%AC%D9%86%D9%8A%D9%87%D9%8B%D8%A7/7590868"
   },
-  "rio-polls": {
-   "ar": "ريو تايمز",
-   "en": "The Rio Times",
-   "date": "2026-10-23",
-   "url": "https://www.riotimesonline.com/brazil-runoff-polls-2026/"
-  },
-  "aje-taiz": {
-   "ar": "الجزيرة الإنجليزية",
-   "en": "Al Jazeera English",
-   "date": "2026-10-23",
-   "url": "https://www.aljazeera.com/news/2026/10/23/time-running-out-to-reach-yemens-taiz-amid-deepening-crisis-un-says"
-  },
-  "aje-venez": {
-   "ar": "الجزيرة الإنجليزية",
-   "en": "Al Jazeera English",
-   "date": "2026-10-23",
-   "url": "https://www.aljazeera.com/news/2026/10/23/venezuelans-demand-elections-in-first-national-protest-in-nearly-two-years"
+  "youm7-icup": {
+   "ar": "اليوم السابع",
+   "en": "Youm7",
+   "date": "2026-10-22",
+   "url": "https://www.youm7.com/story/2026/10/22/%D8%B1%D8%B3%D9%85%D9%8A%D8%A7-%D9%82%D8%B7%D8%B1-%D8%AA%D8%B3%D8%AA%D8%B6%D9%8A%D9%81-%D9%85%D8%A8%D8%A7%D8%B1%D9%8A%D8%A7%D8%AA-%D9%83%D8%A3%D8%B3-%D8%A5%D9%86%D8%AA%D8%B1%D9%83%D9%88%D9%86%D8%AA%D9%86%D9%86%D8%AA%D8%A7%D9%84/7589948"
   }
  }
 }
