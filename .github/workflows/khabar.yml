@@ -1,0 +1,23 @@
+name: Khabar headlines
+on:
+  schedule:
+    - cron: '20 */3 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: khabar
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node khabar/scripts/headlines.mjs
+      - name: Commit if changed
+        run: |
+          git config user.name "khabar-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add khabar/data/headlines.json
+          git diff --cached --quiet || (git commit -m "خبر: تحديث العناوين الآلية" && git pull --rebase -q && git push)
