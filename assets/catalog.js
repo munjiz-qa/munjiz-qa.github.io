@@ -34,7 +34,7 @@ function withUpd(c){if(!c.ver||+c.ver>=UPD_AT)return c;const d=Object.assign({},
   return Object.assign({},c,{data:d,details:det})}
 // 2026-10-24 the management asked to show every service: a list saved before ALL_AT shows everything again (nothing hidden)
 // and gets back any service, authority, field or package of the code that it lacks. A save after ALL_AT decides from then on.
-const ALL_AT=Date.UTC(2026,9,24,9,30);
+const ALL_AT=Date.UTC(2026,9,24,9,20);
 function withAll(c){if(!c.ver||+c.ver>=ALL_AT)return c;const b=BUILT.data,bd=BUILT.details,d=Object.assign({},c.data),det=Object.assign({},c.details);
   const fill=(list,blist,key)=>{list=list.slice();blist.forEach((x,bi)=>{if(list.some(y=>key(y)===key(x)))return;
     const prev=bi>0?list.findIndex(y=>key(y)===key(blist[bi-1])):-1;list.splice(prev<0?list.length:prev+1,0,JSON.parse(JSON.stringify(x)))});return list};
