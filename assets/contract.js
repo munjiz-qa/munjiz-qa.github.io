@@ -8,8 +8,8 @@ const CO={ar:'منجز لخدمات الأعمال ذ.م.م',en:'Munjiz Business
   title_ar:'المدير العام',title_en:'General Manager',addr_ar:'الدوحة، دولة قطر',addr_en:'Doha, State of Qatar',cr:'',
   phone:CFG.PHONE||'+974 5160 0498',email:CFG.EMAIL||'munijizqa@gmail.com',prefix:'MNJ-CT'};
 const KEY='munjiz_contract',DRAFT=KEY+'_draft';
-// item registration: fee per item (50 or more) plus a fee per item in every sales outlet
-const ITEM={code:'MC-06',min:50,outletCode:'MC-07',outlet:5};
+// item registration: fee per item (includes the first 5 sales outlets) plus a fee per item in every extra outlet
+const ITEM={code:'MC-06',min:50,incl:5,outletCode:'MC-07',outlet:5};
 const BLANK='____________';
 const $=id=>document.getElementById(id),f=$('cf'),E=f.elements;
 const fmt=n=>(Math.round((Number(n)||0)*100)/100).toLocaleString('en-US');
@@ -44,10 +44,10 @@ function drawRows(){const tb=$('rows');tb.textContent='';rows.forEach((r,i)=>tb.
 function total(){return rows.reduce((a,r)=>a+r.q*r.p,0)}
 
 function calcItems(){const n=num($('iItems').value,0,100000),o=num($('iOutlets').value,0,1000),p=Math.max(ITEM.min,num($('iPrice').value,0,100000));
-  const a=n*p,b=n*o*ITEM.outlet;return {n,o,p,a,b,t:a+b}}
+  const x=Math.max(0,o-ITEM.incl),a=n*p,b=n*x*ITEM.outlet;return {n,o,x,p,a,b,t:a+b}}
 function showCalc(){const c=calcItems(),el=$('iOut');
-  el.textContent=EN?`${c.n} items × QAR ${fmt(c.p)} = ${fmt(c.a)} · ${c.n} items × ${c.o} outlets × QAR ${ITEM.outlet} = ${fmt(c.b)} · Total fees QAR ${fmt(c.t)} (government fees excluded)`
-    :`${c.n} صنفاً × ${fmt(c.p)} ر.ق = ${fmt(c.a)} · ${c.n} صنفاً × ${c.o} منفذاً × ${ITEM.outlet} ر.ق = ${fmt(c.b)} · إجمالي الأتعاب ${fmt(c.t)} ر.ق (دون الرسوم الحكومية)`}
+  el.textContent=EN?`${c.n} items × QAR ${fmt(c.p)} (first ${ITEM.incl} outlets included) = ${fmt(c.a)} · ${c.n} items × ${c.x} extra outlets × QAR ${ITEM.outlet} = ${fmt(c.b)} · Total fees QAR ${fmt(c.t)} (government fees excluded)`
+    :`${c.n} صنفاً × ${fmt(c.p)} ر.ق (تشمل أول ${ITEM.incl} منافذ) = ${fmt(c.a)} · ${c.n} صنفاً × ${c.x} منفذاً إضافياً × ${ITEM.outlet} ر.ق = ${fmt(c.b)} · إجمالي الأتعاب ${fmt(c.t)} ر.ق (دون الرسوم الحكومية)`}
 
 function vals(){const o={};['no','date','start','days','cName','cCr','cEst','cAddr','cRep','cRepTitle','cQid','cPhone','cEmail','special'].forEach(k=>o[k]=E[k].value.trim());return o}
 function render(){const v=vals(),t=total();
@@ -64,7 +64,7 @@ function render(){const v=vals(),t=total();
   const p1=Math.round(t*0.5*100)/100,p2=Math.round(t*0.25*100)/100;
   $('aTotal').textContent=fmt(t);$('p1').textContent=fmt(p1);$('p2').textContent=fmt(p2);$('p3').textContent=fmt(Math.round((t-p1-p2)*100)/100);
   const ir=rows.find(r=>r.c===ITEM.code),or=rows.find(r=>r.c===ITEM.outletCode);
-  $('calcNote').textContent=ir&&or?`طريقة الحساب: ${fmt(ir.q)} صنفاً × ${fmt(ir.p)} ر.ق + ${fmt(or.q)} تسجيلاً في منافذ البيع × ${fmt(or.p)} ر.ق.\nCalculation: ${fmt(ir.q)} items × QAR ${fmt(ir.p)} + ${fmt(or.q)} outlet registrations × QAR ${fmt(or.p)}.`:'';
+  $('calcNote').textContent=ir&&or?`طريقة الحساب: ${fmt(ir.q)} صنفاً × ${fmt(ir.p)} ر.ق + ${fmt(or.q)} تسجيلاً في منافذ بيع إضافية بعد أول 5 منافذ × ${fmt(or.p)} ر.ق.\nCalculation: ${fmt(ir.q)} items × QAR ${fmt(ir.p)} + ${fmt(or.q)} extra outlet registrations beyond the first 5 × QAR ${fmt(or.p)}.`:'';
   const ok=$('agree').checked&&$('agreeName').value.trim(),es=$('esign');es.hidden=!ok;
   if(ok){const d=new Date();es.textContent=`موافقة إلكترونية · Accepted electronically: ${str($('agreeName').value.trim(),120)} · ${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`}
   save()}
@@ -106,7 +106,7 @@ $('pick').onchange=e=>{const s=SVC[e.target.value];if(s)addRow({c:s.c,n:s.n,en:s
 $('addRow').onclick=()=>{rows.push({c:'',n:'',en:'',q:1,p:0});drawRows();render()};
 $('iAdd').onclick=()=>{const c=calcItems(),it=SVC[ITEM.code]||{},ot=SVC[ITEM.outletCode]||{};if(!c.n){toast(EN?'Enter the number of items':'أدخل عدد الأصناف');return}
   addRow({c:ITEM.code,n:it.n||'شهادة تسجيل صنف: بياناته وسعره (لكل صنف)',en:it.en||'Item Registration Certificate (per item)',q:c.n,p:c.p});
-  if(c.o)addRow({c:ITEM.outletCode,n:ot.n||'تسجيل الصنف في منفذ بيع (لكل صنف في كل منفذ)',en:ot.en||'Item registration at a sales outlet',q:c.n*c.o,p:ITEM.outlet});
+  if(c.x)addRow({c:ITEM.outletCode,n:ot.n||'منفذ بيع إضافي بعد المنافذ الخمسة (لكل صنف في كل منفذ إضافي)',en:ot.en||'Extra sales outlet beyond the first 5',q:c.n*c.x,p:ITEM.outlet});
   else{rows=rows.filter(r=>r.c!==ITEM.outletCode);drawRows();render()}
   toast(EN?'Added to Annex (1)':'أُضيفت إلى الملحق رقم (1)')};
 $('agree').onchange=render;
