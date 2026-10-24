@@ -32,9 +32,23 @@ function withUpd(c){if(!c.ver||+c.ver>=UPD_AT)return c;const d=Object.assign({},
       if(bd[code])det[code]=bd[code]});
     return [g[0],g[1],list]});
   return Object.assign({},c,{data:d,details:det})}
+// 2026-10-24 the management asked to show every service: a list saved before ALL_AT shows everything again (nothing hidden)
+// and gets back any service, authority, field or package of the code that it lacks. A save after ALL_AT decides from then on.
+const ALL_AT=Date.UTC(2026,9,24,9,30);
+function withAll(c){if(!c.ver||+c.ver>=ALL_AT)return c;const b=BUILT.data,bd=BUILT.details,d=Object.assign({},c.data),det=Object.assign({},c.details);
+  const fill=(list,blist,key)=>{list=list.slice();blist.forEach((x,bi)=>{if(list.some(y=>key(y)===key(x)))return;
+    const prev=bi>0?list.findIndex(y=>key(y)===key(blist[bi-1])):-1;list.splice(prev<0?list.length:prev+1,0,JSON.parse(JSON.stringify(x)))});return list};
+  const gk=new Set((d.CONSULT||[]).map(k=>k.code));
+  d.G=fill((d.G||[]).map(g=>{const bg=(b.G||[]).find(x=>x[0]===g[0]);return bg?[g[0],g[1],fill(g[2],bg[2],x=>x[0])]:g}),(b.G||[]).filter(g=>!gk.has(g[0])),g=>g[0]);
+  d.SETUP=fill(d.SETUP||[],b.SETUP||[],x=>x[0]);
+  d.CONSULT=fill((d.CONSULT||[]).map(k=>{const bk=(b.CONSULT||[]).find(x=>x.code===k.code);return bk?Object.assign({},k,{items:fill(k.items||[],bk.items,x=>x.c)}):k}),(b.CONSULT||[]).filter(k=>!(d.G||[]).some(g=>g[0]===k.code)),k=>k.code);
+  d.PLANS=fill(d.PLANS||[],b.PLANS||[],x=>x.key);
+  Object.keys(bd).forEach(k=>{if(!(k in det))det[k]=bd[k]});
+  det._hidden={s:[],g:[],p:[]};
+  return Object.assign({},c,{data:d,details:det})}
 // groups added to the site after the last save in the admin panel: shown even when a saved list exists, unless hidden there
 const NEW=['AD','MK','EC'];
-function withNew(c){c=withUpd(c);const d=Object.assign({},c.data),b=BUILT.data,has=new Set([...(d.G||[]).map(g=>g[0]),...(d.CONSULT||[]).map(k=>k.code)]);
+function withNew(c){c=withUpd(withAll(c));const d=Object.assign({},c.data),b=BUILT.data,has=new Set([...(d.G||[]).map(g=>g[0]),...(d.CONSULT||[]).map(k=>k.code)]);
   d.G=[...(d.G||[]),...(b.G||[]).filter(g=>NEW.includes(g[0])&&!has.has(g[0]))];
   d.CONSULT=[...(d.CONSULT||[]),...(b.CONSULT||[]).filter(k=>NEW.includes(k.code)&&!has.has(k.code))];
   const det=Object.assign({},c.details),bd=BUILT.details;Object.keys(bd).forEach(k=>{if(/^[A-Z]{2}-/.test(k)&&NEW.includes(k.slice(0,2))&&!(k in det))det[k]=bd[k]});
