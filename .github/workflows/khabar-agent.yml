@@ -1,0 +1,61 @@
+name: Khabar agent
+# «خبر»: الوكيل المستقل. يكتب الخلاصتين، ويرصد العاجل، ويفحص كل خلاصة تُنشر ويحدّث سجل الشفافية.
+on:
+  schedule:
+    - cron: '30 2 * * *'    # خلاصة الصباح 5:30 بتوقيت الدوحة
+    - cron: '30 14 * * *'   # خلاصة المساء 17:30 بتوقيت الدوحة
+    - cron: '*/20 * * * *'  # رصد العاجل
+  push:
+    branches: [main]
+    paths: ['khabar/data/brief.json']
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'brief = خلاصة، breaking = عاجل، verify = فحص الخلاصة الحالية'
+        type: choice
+        options: [verify, brief, breaking]
+        default: verify
+permissions:
+  contents: write
+concurrency:
+  group: khabar-agent-${{ github.event.schedule == '*/20 * * * *' && 'breaking' || inputs.mode || github.event_name }}
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      KHABAR_MODEL: ${{ vars.KHABAR_MODEL }}
+      KHABAR_CHECK_MODEL: ${{ vars.KHABAR_CHECK_MODEL }}
+      KHABAR_EFFORT: ${{ vars.KHABAR_EFFORT }}
+      KHABAR_FORCE: ${{ github.event_name == 'workflow_dispatch' && '1' || '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Pick mode
+        id: m
+        env:
+          EV: ${{ github.event_name }}
+          IN: ${{ inputs.mode }}
+          CRON: ${{ github.event.schedule }}
+        run: |
+          if [ "$EV" = workflow_dispatch ]; then M="$IN"; elif [ "$EV" = push ]; then M=verify; elif [ "$CRON" = '*/20 * * * *' ]; then M=breaking; else M=brief; fi
+          if [ "$M" != verify ] && [ -z "$ANTHROPIC_API_KEY" ]; then echo "::notice::لم يُضف مفتاح ANTHROPIC_API_KEY بعد؛ يعمل الفحص فقط."; M=skip; fi
+          echo "mode=$M" >> "$GITHUB_OUTPUT"
+      - if: steps.m.outputs.mode == 'brief' || steps.m.outputs.mode == 'breaking'
+        run: pip install -q 'anthropic==2.3.0'
+      - if: steps.m.outputs.mode == 'brief' || steps.m.outputs.mode == 'breaking'
+        run: python3 khabar/agent/agent.py ${{ steps.m.outputs.mode }}
+      - if: steps.m.outputs.mode == 'verify'
+        run: python3 khabar/agent/verify.py
+      - name: Commit if changed
+        if: steps.m.outputs.mode != 'skip'
+        run: |
+          git config user.name "khabar-agent"
+          git config user.email "actions@users.noreply.github.com"
+          git add khabar/data
+          git diff --cached --quiet && exit 0
+          git commit -q -m "خبر: ${{ steps.m.outputs.mode == 'brief' && 'خلاصة جديدة بقلم الوكيل' || steps.m.outputs.mode == 'breaking' && 'رصد العاجل' || 'سجل الشفافية' }}"
+          for i in 1 2 3; do git pull --rebase -q && git push && exit 0; sleep 5; done; exit 1

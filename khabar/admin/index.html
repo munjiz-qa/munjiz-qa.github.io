@@ -84,6 +84,20 @@ pre.json{background:var(--bg);border:1px solid var(--line);border-radius:10px;pa
     </section>
 
     <section class="panel">
+      <h2>الوكيل الذكي المستقل</h2>
+      <p class="mute" style="font-size:.9rem">يكتب الوكيل خلاصتي الصباح والمساء ويرصد العاجل بنفسه، ولا يُنشر شيء قبل بوابة المصادر والمدقق المستقل. سجلّه الكامل في صفحة <a href="../#ledger">الشفافية</a>.</p>
+      <div class="kpis" id="agent-kpis"></div>
+      <p class="mute" id="agent-last" style="font-size:.88rem"></p>
+      <div class="btns">
+        <button class="btn" type="button" data-run="brief">اكتب خلاصة الآن</button>
+        <button class="btn ghost" type="button" data-run="breaking">ارصد العاجل الآن</button>
+        <button class="btn ghost" type="button" data-run="verify">افحص الخلاصة الحالية</button>
+      </div>
+      <p class="msg" id="run-msg" hidden></p>
+      <small class="mute">التشغيل يستخدم مفتاح النشر أدناه، ويحتاج صلاحية Actions: Read and write إضافة إلى Contents. الكتابة الذاتية تعمل بعد إضافة مفتاح Claude API باسم ANTHROPIC_API_KEY في أسرار المستودع.</small>
+    </section>
+
+    <section class="panel">
       <h2>إخفاء خبر من الخلاصة الحالية</h2>
       <p class="mute" style="font-size:.9rem">ضع علامة على أي خبر لإخفائه عن القرّاء دون حذفه من الأرشيف.</p>
       <ul class="hide-list" id="hide-list"></ul>

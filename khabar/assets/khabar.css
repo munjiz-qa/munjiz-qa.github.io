@@ -180,3 +180,25 @@ mark{background:var(--dawn-soft);color:inherit;border-radius:3px;padding:0 2px;b
   .zone-head h2{font-size:1.4rem}
 }
 @media (prefers-reduced-motion:no-preference){.item,.box{transition:border-color .15s}}
+/* agent features: trust meter, auto breaking, listen, transparency ledger */
+.trust{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:.76rem;color:var(--mute);text-decoration:none;margin-top:2px}
+.trust .meter{display:inline-flex;gap:2px}
+.trust .meter i{width:7px;height:7px;border-radius:50%;background:var(--line)}
+.trust .meter i.on{background:var(--sea)}
+.trust .ok{color:var(--sea);font-weight:500}
+.trust .warn{color:var(--dawn);font-weight:500}
+.trust:hover span{text-decoration:underline}
+.breaking .auto{font-size:.74rem;opacity:.85;border:1px solid rgba(255,255,255,.5);border-radius:6px;padding:0 6px}
+.listen{display:inline-flex;align-items:center;gap:6px;justify-self:start;margin-top:4px;background:none;border:1px solid var(--line);color:inherit;border-radius:999px;padding:5px 12px;font:inherit;font-size:.84rem;cursor:pointer}
+.listen svg{width:14px;height:14px}
+.listen[aria-pressed="true"]{border-color:var(--dawn);color:var(--dawn)}
+.pipeline{list-style:none;padding:0;margin:8px 0 18px;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}
+.pipeline li{border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:4px}
+.pipeline b{font-family:var(--display);color:var(--sea)}
+.pipeline p{margin:0;font-size:.9rem}
+.drops,.runs{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.drops li,.run{border:1px solid var(--line);border-radius:12px;padding:10px 14px;display:grid;gap:4px}
+.drops .stage{font-size:.74rem;font-weight:700;color:var(--urgent)}
+.drops p{margin:0}
+.drops small{color:var(--mute)}
+.run span{font-size:.9rem}
