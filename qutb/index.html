@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0B1220">
+<title>قُطب</title>
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/qutb.css">
+</head>
+<body>
+
+<!-- البوابة: لا تذكر أي علامة قبل الدخول -->
+<main id="gate" class="gate">
+  <form id="gateForm" class="gate-card" autocomplete="on">
+    <svg class="mark big" viewBox="0 0 64 64" aria-hidden="true"><use href="#qmark"/></svg>
+    <h1>قُطب</h1>
+    <p class="muted">منصة تشغيل داخلية. الدخول للمصرّح لهم فقط.</p>
+    <input type="text" name="username" value="owner" autocomplete="username" hidden>
+    <label class="fld"><span>كلمة المرور</span>
+      <input id="gatePass" type="password" autocomplete="current-password" required minlength="12" dir="ltr">
+    </label>
+    <button id="gateBtn" class="btn primary wide" type="submit">دخول</button>
+    <p id="gateMsg" class="msg" role="alert"></p>
+  </form>
+</main>
+
+<div id="app" class="app" hidden>
+  <header class="top">
+    <div class="brand"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><use href="#qmark"/></svg><b>قُطب</b><span class="muted hide-s">لوحة المنصات الموحّدة</span></div>
+    <div class="top-act">
+      <span id="clock" class="muted hide-s"></span>
+      <button id="refresh" class="icon-btn" title="تحديث" aria-label="تحديث"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v5h-5"/></svg></button>
+      <button id="themeBtn" class="icon-btn" title="الوضع الليلي أو النهاري" aria-label="تبديل الوضع"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg></button>
+      <button id="setBtn" class="icon-btn" title="الإعدادات" aria-label="الإعدادات"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+      <button id="lockBtn" class="btn ghost sm">قفل</button>
+    </div>
+  </header>
+
+  <section class="sum" id="sum"></section>
+
+  <nav class="tabs" id="tabs">
+    <button data-tab="platforms" class="on">المنصات</button>
+    <button data-tab="clients">أنظمة العملاء</button>
+    <button data-tab="activity">النشاط</button>
+  </nav>
+
+  <section data-pane="platforms" class="pane">
+    <div id="alertsWrap" class="panel">
+      <h2>يحتاج انتباهك</h2>
+      <ul id="alerts" class="alerts"></ul>
+    </div>
+    <div id="grid" class="grid"></div>
+  </section>
+
+  <section data-pane="clients" class="pane" hidden>
+    <p class="muted lead">ادخل بحساب الإدارة في كل نظام لتظهر أرقامه هنا. الجلسة تبقى في هذه النافذة فقط وتنتهي بإغلاقها أو بعد 12 ساعة.</p>
+    <div id="backends" class="grid two"></div>
+  </section>
+
+  <section data-pane="activity" class="pane" hidden>
+    <div class="panel"><ol id="feed" class="feed"></ol></div>
+  </section>
+
+  <footer class="foot muted">
+    <span id="rate"></span>
+    <span>قُطب · للإدارة فقط، وكل علامة مستقلة أمام جمهورها</span>
+  </footer>
+</div>
+
+<!-- الإعدادات -->
+<dialog id="settings" class="sheet">
+  <form method="dialog" class="sheet-head"><h2>الإعدادات</h2><button class="icon-btn" aria-label="إغلاق"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></form>
+  <div class="sheet-body">
+    <section>
+      <h3>مفاتيح GitHub</h3>
+      <p class="muted">اختيارية. تفعّل أزرار «تشغيل الآن» وتغيير كلمة المرور وإضافة المنصات، وترفع حد القراءة. تُحفظ على هذا الجهاز فقط ولا تُرسل إلا إلى GitHub.</p>
+      <div id="tokens"></div>
+      <button id="saveTokens" class="btn">حفظ المفاتيح</button>
+      <p id="tokMsg" class="msg"></p>
+    </section>
+    <section>
+      <h3>إضافة منصة</h3>
+      <form id="addForm" class="form-grid">
+        <label class="fld"><span>الاسم بالعربية</span><input name="name" required maxlength="40"></label>
+        <label class="fld"><span>الاسم بالإنجليزية</span><input name="en" required maxlength="40" dir="ltr"></label>
+        <label class="fld full"><span>وصف قصير</span><input name="tag" maxlength="90"></label>
+        <label class="fld"><span>رابط الموقع</span><input name="site" type="url" required dir="ltr" placeholder="https://"></label>
+        <label class="fld"><span>رابط لوحة الإدارة</span><input name="admin" type="url" dir="ltr" placeholder="https://"></label>
+        <label class="fld"><span>المستودع (owner/repo)</span><input name="repo" dir="ltr" pattern="[\w.-]+/[\w.-]+" placeholder="owner/repo"></label>
+        <label class="fld"><span>المجلد داخل المستودع</span><input name="path" dir="ltr" placeholder="اتركه فارغاً للجذر"></label>
+        <label class="fld"><span>لون العلامة</span><input name="color" type="color" value="#3a6ea5"></label>
+        <label class="fld"><span>كلمة مرور قُطب الحالية</span><input name="pass" type="password" required minlength="12" dir="ltr" autocomplete="current-password"></label>
+        <button class="btn primary full">إضافة ونشر</button>
+      </form>
+      <p id="addMsg" class="msg"></p>
+    </section>
+    <section>
+      <h3>تغيير كلمة المرور</h3>
+      <form id="passForm" class="form-grid">
+        <label class="fld"><span>الحالية</span><input name="old" type="password" required dir="ltr" autocomplete="current-password"></label>
+        <label class="fld"><span>الجديدة (14 حرفاً على الأقل)</span><input name="new" type="password" required minlength="14" dir="ltr" autocomplete="new-password"></label>
+        <label class="fld"><span>تأكيد الجديدة</span><input name="again" type="password" required minlength="14" dir="ltr" autocomplete="new-password"></label>
+        <button class="btn primary full">تغيير ونشر</button>
+      </form>
+      <p id="passMsg" class="msg"></p>
+    </section>
+  </div>
+</dialog>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="qmark" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="var(--mark-bg)"/><circle cx="32" cy="32" r="21" fill="none" stroke="var(--polar)" stroke-opacity=".5" stroke-width="2" stroke-dasharray="3 5"/><path d="M32 13l3.6 15.4L51 32l-15.4 3.6L32 51l-3.6-15.4L13 32l15.4-3.6z" fill="var(--polar)"/><circle cx="32" cy="32" r="3.2" fill="var(--mark-bg)"/><circle cx="48.8" cy="19.6" r="3.6" fill="var(--brass)"/></symbol>
+</svg>
+<script src="assets/qutb.js"></script>
+</body>
+</html>
