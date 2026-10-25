@@ -34,6 +34,8 @@ const docsFor=c=>((D[c]||{}).ar||{}).docs||(SVC[c]||{}).docs||[];
 
 // ---- storage: remote (Apps Script) or local (this browser) ----
 const LKEY='munjiz_crm_v1',PKEY='munjiz_crm_pw',TKEY='munjiz_crm_token';
+// دخول موحّد من الديوان: ختم الجلسة يصل في الرابط (#sso=...) فيُحفظ ثم يُمسح من شريط العنوان فوراً
+try{const m=/^#sso=([A-Za-z0-9._=-]+)$/.exec(location.hash);if(m){sessionStorage.setItem(TKEY,m[1]);history.replaceState(null,'',location.pathname+location.search)}}catch(e){}
 let ME=null;   // signed-in staff member: {username,name,role,mustChange}
 const Remote={
   async call(body){const r=await fetch(CFG.API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)});const j=await r.json();if(!j.ok){if(j.error==='must_change'){showChg();throw new Error(errText(j.error))}if(j.error==='auth'){logout();throw new Error('انتهت الجلسة، سجّل الدخول مرة أخرى')}throw new Error(j.error||'خطأ')}return j},
