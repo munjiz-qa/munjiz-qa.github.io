@@ -11,6 +11,8 @@ const EN=lang==='en';
 window.CRM_LANG=lang;
 
 const W={
+// «اليوم» page and the «المزيد» menu (crm-today.js builds its own texts in both languages)
+'اليوم':'Today','المزيد':'More','لوحات المتابعة':'Dashboards',
 // header, tabs, sign-in
 'لوحة الإدارة | منجز لخدمات الأعمال':'Admin panel | Munjiz Business Services','الخدمات المساعدة':'Supporting services','حزم الخدمات':'Service bundles','الباقات الشهرية':'Monthly packages','منجز بداية':'Munjiz Start','منجز متابعة':'Munjiz Follow-up','الحزم':'Bundles','لوحة الإدارة':'Admin panel','أقسام لوحة الإدارة':'Admin panel sections',
 'لوحة المتابعة':'Dashboard','الطلبات':'Requests','العملاء':'Clients','المعاملات':'Transactions','المراسلات':'Messages','السجل':'Log','الموظفون':'Staff','حسابي':'My account','خروج':'Sign out',

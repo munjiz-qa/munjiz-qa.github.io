@@ -102,7 +102,7 @@ function showWho(){const w=$('crmWho');if(!w)return;w.hidden=!ME;w.textContent='
 function logout(){sessionStorage.removeItem(TKEY);ME=null;showWho();showLogin()}
 // signing out records the end of the working session for attendance
 $('logout').onclick=async()=>{if(CFG.API&&S.tok())await S.api('staffLogout',{}).catch(()=>{});logout()};
-async function start(){hideAll();showWho();$('tabs').hidden=$('groups').hidden=false;await reload();go(isAdmin()?'mgr':'my')}
+async function start(){hideAll();showWho();$('tabs').hidden=$('groups').hidden=false;await reload();go(VIEWS.today?'today':isAdmin()?'mgr':'my')}
 async function reload(){try{DB=await S.list();SHEETS.forEach(s=>DB[s]=DB[s]||[])}catch(e){toast(e.message)}if(!ME)try{ME=await S.me()}catch(e){}showWho();
   if(!Array.isArray(DB.Staff)||!DB.Staff.length)DB.Staff=ME?[{username:ME.username,name:ME.name||ME.username,role:ME.role}]:[];renderAll()}
 
@@ -114,15 +114,15 @@ function go(t,id){tab=t;document.querySelectorAll('.view').forEach(v=>v.hidden=t
   if(t==='emp')renderEmp();if(t!=='theme'&&window.SITE_THEME){thSel=null;SITE_THEME.apply(SITE_THEME.current)}if(VIEWS[t])VIEWS[t]();
   const cur=t==='client'?'cli':t,btn=document.querySelector(`#tabs [data-tab="${cur}"]`),g=btn?btn.dataset.g:'work';
   document.querySelectorAll('#tabs [data-tab]').forEach(b=>{b.setAttribute('aria-pressed',b.dataset.tab===cur);b.classList.toggle('off',b.dataset.g!==g)});
-  document.querySelectorAll('#groups [data-grp]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.grp===g));
+  document.querySelectorAll('#groups [data-grp]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.grp===g));{const gm=$('gMore');if(gm)gm.classList.toggle('on',!!gm.querySelector(`[data-grp="${g}"]`))}
   $('tabs').classList.toggle('single',document.querySelectorAll(`#tabs [data-g="${g}"]:not([hidden])`).length<2);window.scrollTo(0,0)}
 // the sections in the header open their first page the signed-in person may use
-$('groups').addEventListener('click',e=>{const b=e.target.closest('[data-grp]');if(!b)return;const f=document.querySelector(`#tabs [data-g="${b.dataset.grp}"]:not([hidden])`);if(f)go(f.dataset.tab)});
+$('groups').addEventListener('click',e=>{const b=e.target.closest('[data-grp]');if(!b)return;const gm=$('gMore');if(gm)gm.open=false;const f=document.querySelector(`#tabs [data-g="${b.dataset.grp}"]:not([hidden])`);if(f)go(f.dataset.tab)});
 // direct links: crm.html#fin (المالية), #acc, #hr, #set, #work, #home open that section after sign-in
 let hashDone=false;
 function openHash(){const b=document.querySelector(`#groups [data-grp="${location.hash.slice(1)}"]:not([hidden])`);if(b)setTimeout(()=>b.click(),0)}
 addEventListener('hashchange',openHash);
-function renderAll(){renderDash();renderReq();renderCli();renderTx();renderLog();renderMsg();renderSet();renderMyCount();if(VIEWS[tab])VIEWS[tab]();if(tab==='client')renderClient()}
+function renderAll(){renderDash();renderReq();renderCli();renderTx();renderLog();renderMsg();renderSet();renderMyCount();if(window.todayCount&&tab!=='today')todayCount();if(VIEWS[tab])VIEWS[tab]();if(tab==='client')renderClient()}
 const table=(head,rows)=>rows.length?`<table><thead><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table>`:'<div class="empty">لا توجد بيانات.</div>';
 const stTag=s=>`<span class="st st-${STATUSES.indexOf(s)}">${esc(s)}</span>`;
 const link=(id,txt)=>`<a href="#" data-client="${esc(id)}">${esc(txt||id)}</a>`;
@@ -968,4 +968,6 @@ const VIEWS={rep:renderRep,bs:renderBs,cf:renderCf,aging:renderAging,bud:renderB
 showMode();
 // the admin panel never takes a sign-in from the client portal: management and client accounts stay apart
 try{sessionStorage.removeItem('munjiz_crm_handoff')}catch(e){}
-if(S.tok())S.me().then(m=>{ME=m;if(m&&m.mustChange){logout();return}start()}).catch(()=>showLogin());else showLogin();
+// boot once every panel script (crm-today.js, crm-kpi.js…) has registered its views
+function boot(){if(S.tok())S.me().then(m=>{ME=m;if(m&&m.mustChange){logout();return}start()}).catch(()=>showLogin());else showLogin()}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
