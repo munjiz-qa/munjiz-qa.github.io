@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>سَيْف · منجز</title>
+<style>
+:root{
+  --bg:#f4f1ea;--panel:#fffdf8;--ink:#14232b;--mute:#5d6b70;--line:#e2dccf;
+  --brand:#0f4c5c;--gold:#b8862b;--ok:#1f7a55;--warn:#b7791f;--alert:#b3261e;
+  --okbg:#e5f2ec;--warnbg:#fbf0dc;--alertbg:#f9e3e1;--shadow:0 1px 2px rgba(20,35,43,.06),0 6px 24px rgba(20,35,43,.06)
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0d1619;--panel:#132126;--ink:#e8efef;--mute:#9aabaf;--line:#22353b;
+  --brand:#6fb7c6;--gold:#e0b25c;--ok:#5cc596;--warn:#e7b25a;--alert:#ef7b72;
+  --okbg:#13302a;--warnbg:#33290f;--alertbg:#3a1a18;--shadow:none}}
+:root[data-theme="dark"]{
+  --bg:#0d1619;--panel:#132126;--ink:#e8efef;--mute:#9aabaf;--line:#22353b;
+  --brand:#6fb7c6;--gold:#e0b25c;--ok:#5cc596;--warn:#e7b25a;--alert:#ef7b72;
+  --okbg:#13302a;--warnbg:#33290f;--alertbg:#3a1a18;--shadow:none}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font:15px/1.7 "Segoe UI","Noto Sans Arabic","Geeza Pro",Tahoma,system-ui,sans-serif;-webkit-text-size-adjust:100%}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 16px 48px}
+header{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:12px;flex:1;min-width:220px}
+.brand h1{margin:0;font-size:26px;letter-spacing:.5px;color:var(--brand)}
+.brand p{margin:0;color:var(--mute);font-size:13px}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:10px;padding:7px 12px;cursor:pointer}
+button:hover{border-color:var(--brand)}
+.grid{display:grid;gap:14px}
+.top{grid-template-columns:minmax(0,1.1fr) minmax(0,1.9fr)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow);min-width:0}
+.card h2{margin:0 0 12px;font-size:16px;display:flex;align-items:center;gap:8px}
+.card h2 small{font-weight:400;color:var(--mute);font-size:12px;margin-inline-start:auto}
+.verdict{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.ring{width:132px;height:132px;flex:none}
+.verdict .t{flex:1;min-width:180px}
+.verdict .big{font-size:22px;font-weight:700;margin:0}
+.meta{color:var(--mute);font-size:13px;margin:4px 0 0}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;direction:ltr;unicode-bidi:isolate}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600}
+.ok{background:var(--okbg);color:var(--ok)}.warn{background:var(--warnbg);color:var(--warn)}.alert{background:var(--alertbg);color:var(--alert)}
+.checks{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.chk{border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;background:var(--bg)}
+.chk .dot{width:10px;height:10px;border-radius:50%;margin-top:8px;flex:none}
+.chk b{display:block;font-size:14px}.chk span{color:var(--mute);font-size:13px}
+.d-ok{background:var(--ok)}.d-warn{background:var(--warn)}.d-alert{background:var(--alert)}
+.bars{display:flex;align-items:flex-end;gap:2px;height:90px;border-bottom:1px solid var(--line);padding-bottom:2px;direction:ltr;overflow:hidden}
+.bars i{flex:1;min-width:3px;max-width:14px;border-radius:3px 3px 0 0;opacity:.9}
+.legend{display:flex;justify-content:space-between;color:var(--mute);font-size:12px;margin-top:6px}
+.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:start;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--mute);font-weight:600;font-size:12px}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.empty{color:var(--mute);font-size:13px;padding:10px 0}
+.hub{display:flex;flex-direction:column;align-items:center;gap:2px;background:var(--brand);color:var(--panel);border-radius:14px;padding:12px;margin-bottom:10px}
+.hub span{font-weight:700;font-size:16px}.hub small{opacity:.85}
+.nodes{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.node{display:grid;grid-template-columns:auto 1fr;column-gap:8px;align-items:center;border:1px dashed var(--line);border-radius:10px;padding:8px 10px;background:var(--bg)}
+.node .dot{width:9px;height:9px;border-radius:50%}.node span:last-child{grid-column:2;color:var(--mute);font-size:12px}
+.ext{margin-top:10px;font-size:13px;color:var(--mute)}.ext summary{cursor:pointer}.ext ul{margin:6px 0 0;padding-inline-start:20px}
+.chain{display:flex;flex-direction:column;gap:6px}
+.link{display:flex;gap:10px;align-items:center;font-size:13px;border:1px dashed var(--line);border-radius:10px;padding:6px 10px;flex-wrap:wrap}
+.link .n{font-weight:700;color:var(--gold);min-width:42px}
+.note{font-size:12px;color:var(--mute);margin-top:10px}
+.lock{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ok)}
+.demo{margin:0 0 14px;padding:10px 14px;border-radius:12px;background:var(--warnbg);color:var(--warn);font-size:13px;font-weight:600}
+.contact{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px}.contact a{color:var(--brand);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:5px 12px;background:var(--panel)}
+footer{margin-top:22px;text-align:center;color:var(--mute);font-size:12px}
+@media (max-width:820px){.top,.two{grid-template-columns:minmax(0,1fr)}.ring{width:108px;height:108px}.brand h1{font-size:22px}}
+@media print{.tools{display:none}.card{box-shadow:none;break-inside:avoid}body{background:#fff}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="brand">
+    <svg width="46" height="46" viewBox="0 0 48 48" aria-hidden="true">
+      <path d="M24 3l17 7v12c0 11-7.3 19.6-17 23-9.7-3.4-17-12-17-23V10z" fill="none" stroke="var(--brand)" stroke-width="2.4"/>
+      <path d="M24 10l11 4.6v7.6c0 7.2-4.6 12.9-11 15.3-6.4-2.4-11-8.1-11-15.3v-7.6z" fill="var(--brand)" opacity=".14"/>
+      <circle cx="24" cy="21" r="4.2" fill="none" stroke="var(--gold)" stroke-width="2.4"/>
+      <path d="M24 25.2v7" stroke="var(--gold)" stroke-width="2.4" stroke-linecap="round"/>
+    </svg>
+    <div><h1>سَيْف</h1><p>حارس سرية البيانات والمشاريع · من منجز لخدمات الأعمال</p></div>
+  </div>
+  <div class="tools">
+    <span class="lock" title="سياسة أمان المحتوى تمنع الصفحة من أي اتصال خارجي">
+      <svg width="14" height="14" viewBox="0 0 24 24"><path d="M6 10V8a6 6 0 1112 0v2h1v12H5V10zm2 0h8V8a4 4 0 10-8 0z" fill="currentColor"/></svg>صفحة معزولة عن الشبكة</span>
+    <button id="theme" type="button">تبديل المظهر</button>
+    <button id="print" type="button">طباعة أو حفظ PDF</button>
+  </div>
+</header>
+
+<p class="demo">نسخة عرض توضيحية: جميع الأرقام والتقارير والملفات في هذه الصفحة بيانات تجريبية.</p>
+<section class="grid top">
+  <div class="card"><h2>حكم الفحص الأخير</h2><div class="verdict" id="verdict"></div></div>
+  <div class="card"><h2>بنود الفحص <small id="factsAt"></small></h2><div class="grid checks" id="checks"></div></div>
+</section>
+
+<section class="card" style="margin-top:14px">
+  <h2>مؤشر السرية عبر الوقت <small>آخر 168 فحصاً (7 أيام)</small></h2>
+  <div class="bars" id="bars"></div>
+  <div class="legend"><span id="lFirst"></span><span id="lLast"></span></div>
+</section>
+
+<section class="grid two" style="margin-top:14px">
+  <div class="card flow"><h2>خريطة تدفق البيانات</h2><div id="flow"></div>
+    <p class="note">تُعرض الموصلات المتاحة في حسابك وحالة كل منها، وما يخص مشاريعك الأخرى يظهر للعلم فقط.</p></div>
+  <div class="card"><h2>سلسلة الأختام <small id="integ"></small></h2><div class="chain" id="chain"></div>
+    <p class="note">كل تقرير مختوم ببصمة SHA-256 تشمل بصمة التقرير السابق، فأي حذف أو تعديل لاحق في السجل يكسر السلسلة ويظهر هنا فوراً.</p></div>
+</section>
+
+<section class="grid two" style="margin-top:14px">
+  <div class="card"><h2>البيانات الحساسة المكتشفة <small>تُعرض مقنّعة</small></h2><div class="scroll" id="findings"></div></div>
+  <div class="card"><h2>جرد الملفات وبصماتها <small id="fcount"></small></h2><div class="scroll" id="files"></div></div>
+</section>
+
+<footer id="foot"></footer>
+</div>
+
+<script>
+const D = {"last": {"n": 168, "at": "2026-10-26 08:34", "score": 100, "state": "ok", "seal": "a6624db5d5c8b068e24c8549365cef2d89470706477712fd3ef8b13efdcbef62", "facts_at": "2026-10-26 08:34", "items": [{"key": "visibility", "title": "خصوصية المشروع", "status": "ok", "detail": "مشروع خاص بمالكه وحده"}, {"key": "members", "title": "الأعضاء", "status": "ok", "detail": "لا يوجد عضو غير معتمد"}, {"key": "sharing", "title": "النشر والمشاركة", "status": "ok", "detail": "لا نشر أو مشاركة خارج الحساب"}, {"key": "flows", "title": "تدفق البيانات", "status": "ok", "detail": "لا يخرج أي محتوى إلى خدمة خارجية"}, {"key": "repos", "title": "المستودعات", "status": "ok", "detail": "لا مستودع جديد"}, {"key": "connectors", "title": "الموصلات", "status": "ok", "detail": "لا موصل جديد"}, {"key": "secrets", "title": "البيانات الحساسة", "status": "ok", "detail": "لا بيانات حساسة مكشوفة"}], "findings": [{"file": "عينة/عقد-تجريبي.txt", "type": "رقم هاتف", "sev": "منخفض", "count": 1, "sample": "+974 •••• ••12"}], "files": [{"path": "عينة/تقرير-تجريبي.pdf", "size": 184320, "sha": "f4459f969fb515da9076e6a1cba45fc951e2b8e22826519f0a184d7d93f98514"}, {"path": "عينة/عقد-تجريبي.txt", "size": 2210, "sha": "d6e29f0f86ca4c6f46ab47c6e6ea6e890bd772d953662bcc07ae4ecd1f6c362b"}, {"path": "عينة/جدول-تجريبي.xlsx", "size": 40960, "sha": "a1aec43520b4456abd773c7e7d242c3cc1d7459c8ebb135cca248efd3fe1d698"}], "diff": {"added": [], "changed": []}}, "history": [{"n": 1, "at": "2026-10-19 09:34", "score": 100, "state": "ok", "seal": "46a8142283214bbc68aaf369ed0ffbd742c225319d0e968fa409a7b7df969491"}, {"n": 2, "at": "2026-10-19 10:34", "score": 100, "state": "ok", "seal": "c790e73fc5f59fb4ec81cd361cd0853dd5df1de9c0bb335cb4901a9a0e1d8c82"}, {"n": 3, "at": "2026-10-19 11:34", "score": 100, "state": "ok", "seal": "8efa41307b1528f4f206959edd4e10c0928c08abe318b4bbd8577d3479daf227"}, {"n": 4, "at": "2026-10-19 12:34", "score": 100, "state": "ok", "seal": "57f121b1199f0131db3f3047bf03b78511b39778b2452cb186bfdcb0106b7950"}, {"n": 5, "at": "2026-10-19 13:34", "score": 100, "state": "ok", "seal": "d7fddf393d3db15f976d8a8cc90a0475e15101037c8aec2150838c09b8e5f0c9"}, {"n": 6, "at": "2026-10-19 14:34", "score": 100, "state": "ok", "seal": "95ceb6f690854336224414e9afbe9d04b97b65de3fde70fb2b1452eca8ec73bb"}, {"n": 7, "at": "2026-10-19 15:34", "score": 100, "state": "ok", "seal": "7d9bea37e774fddf9c6fe95652554b2f851cb5044433a3910a25d5cd4f826907"}, {"n": 8, "at": "2026-10-19 16:34", "score": 100, "state": "ok", "seal": "adbbeec178b18c084515940a9267a6193a7677b8efc0fcc53ac2849a085865fc"}, {"n": 9, "at": "2026-10-19 17:34", "score": 100, "state": "ok", "seal": "76225b1f4bcb7ab746bace15b0fffcbcbe9a80d60607532a7234195375c5ac69"}, {"n": 10, "at": "2026-10-19 18:34", "score": 100, "state": "ok", "seal": "4b2ba905704999d65beebdb9aaba8950fe6031db8fb792c7e801b25bbeec62b2"}, {"n": 11, "at": "2026-10-19 19:34", "score": 100, "state": "ok", "seal": "5e27b56a7a465f3e0dddc0b31d493935c9c8f87f2f1b791ac8f812612abcdb44"}, {"n": 12, "at": "2026-10-19 20:34", "score": 100, "state": "ok", "seal": "d1c7adb90da4987edac05140f304e8a2392dd61a9c33410877f2dfba2b034046"}, {"n": 13, "at": "2026-10-19 21:34", "score": 100, "state": "ok", "seal": "a3af96c0143abfaa66785be55c4d713f3d017a985eb40f8b13d81f5c49951f1b"}, {"n": 14, "at": "2026-10-19 22:34", "score": 100, "state": "ok", "seal": "53d841fdd43f03fc8e475edc0d96b0b09280cb0468a413883bfb6c00b74b6102"}, {"n": 15, "at": "2026-10-19 23:34", "score": 100, "state": "ok", "seal": "d75c28d1b1306e4be55a7f162bd7950a204867357e87ccf3e2868c7856289ca6"}, {"n": 16, "at": "2026-10-20 00:34", "score": 100, "state": "ok", "seal": "b9cb1c68d886f606c0a5387d5ee08b7e9d0da449130eed1fa88eebbcb82b8f9a"}, {"n": 17, "at": "2026-10-20 01:34", "score": 100, "state": "ok", "seal": "dbfd811d0bcd869d2bbe7a75bf642c7b0278bfddd6bb4238f9d9b645fecd8b0c"}, {"n": 18, "at": "2026-10-20 02:34", "score": 100, "state": "ok", "seal": "6fbcef7a4249918fe917f35a1f9e06b5b8a58e34263327c6374d99d10a623462"}, {"n": 19, "at": "2026-10-20 03:34", "score": 100, "state": "ok", "seal": "1cf8feab6cc9628f94e0eb53c7ac59922300c1763dff9f462ddf8d8dd61714da"}, {"n": 20, "at": "2026-10-20 04:34", "score": 100, "state": "ok", "seal": "af312870cb7afb8bedfaaeec5a8f90524aa4962577d9e62fc9f96586773ba006"}, {"n": 21, "at": "2026-10-20 05:34", "score": 100, "state": "ok", "seal": "6c2b223414166602994cf00286dceefed87e760ad0581679aacb8176567ce10b"}, {"n": 22, "at": "2026-10-20 06:34", "score": 100, "state": "ok", "seal": "621ce9528479b54ae95dfd670decd0e84a23383997f99954f8b76ea2b23cdf68"}, {"n": 23, "at": "2026-10-20 07:34", "score": 100, "state": "ok", "seal": "fb96b27906dacb198e7cf50b04a4fef814580e543fadc1a4d9e05aee85ffdb59"}, {"n": 24, "at": "2026-10-20 08:34", "score": 100, "state": "ok", "seal": "64891b015cc129bedff672b0fc336e2b28bef58f76790b36b3b150f5a173b6ef"}, {"n": 25, "at": "2026-10-20 09:34", "score": 100, "state": "ok", "seal": "906e893723345de7621dccc46b01f6eb6ed886ed013bfefc01959d629ba807de"}, {"n": 26, "at": "2026-10-20 10:34", "score": 100, "state": "ok", "seal": "3d6fdbf73fab4901ab061a57fa4d0f63365a93ba20b5d969f92c81687aeaa294"}, {"n": 27, "at": "2026-10-20 11:34", "score": 100, "state": "ok", "seal": "b38c17dd49aa21398a15e06cbc9f8da342e8f15932010e45f4da2f4a5192d971"}, {"n": 28, "at": "2026-10-20 12:34", "score": 100, "state": "ok", "seal": "a01ca1911a577f63c336e4b285b64c26d3652d573fdb1a3a7599d30d1e32579e"}, {"n": 29, "at": "2026-10-20 13:34", "score": 100, "state": "ok", "seal": "a278e524a55ed4dfd66e21e17de5ea908b3233f910e028530928fbda0ea7df74"}, {"n": 30, "at": "2026-10-20 14:34", "score": 100, "state": "ok", "seal": "13378e1960b7022cc5631ee9d2ca7455011a7cf9773f8673198f4bf9c6840415"}, {"n": 31, "at": "2026-10-20 15:34", "score": 100, "state": "ok", "seal": "552e436aa630e72336f2ce71a9f9c4dfbe67cc7bfe615f709adf6f51f022c613"}, {"n": 32, "at": "2026-10-20 16:34", "score": 100, "state": "ok", "seal": "b160e06709dba7b401fa1ee2ab831829b55fe72d3f2020bea8bc6e6626a72c7d"}, {"n": 33, "at": "2026-10-20 17:34", "score": 100, "state": "ok", "seal": "8e1b0f8778bc1fda240dd69c679f85809b1c6f66674ce427955bbd959e3bc0d4"}, {"n": 34, "at": "2026-10-20 18:34", "score": 100, "state": "ok", "seal": "2bab424dd0c1acfd911190bf0cdfe7244571cdfaaab3ce69ec27c8150173f66b"}, {"n": 35, "at": "2026-10-20 19:34", "score": 100, "state": "ok", "seal": "b442a13460636713f83a90db620a1e0198fa94e4b20ede1b355db134ab2aed4f"}, {"n": 36, "at": "2026-10-20 20:34", "score": 100, "state": "ok", "seal": "987c7cb7a1c62c715379cf0a9507c28c3bd4e70740719b47a4342844d1ab9d57"}, {"n": 37, "at": "2026-10-20 21:34", "score": 100, "state": "ok", "seal": "2d97c13545705f7752c51616c14ab2366d0dec6a8825b6084f70dd596fa58401"}, {"n": 38, "at": "2026-10-20 22:34", "score": 100, "state": "ok", "seal": "f8e7b9b4d715f3d88f6aa5a0196c0540693706bfbb43da3913ddb5e746570edc"}, {"n": 39, "at": "2026-10-20 23:34", "score": 100, "state": "ok", "seal": "a7c909881b90c92f5f39ea6fc924c48e52d26921873a55c22211a7aa7fab97b3"}, {"n": 40, "at": "2026-10-21 00:34", "score": 100, "state": "ok", "seal": "ffe3ebecb3ec24d1a1bcbccbcca59c3b18b24e93a4f20c142ff861cbdce377e4"}, {"n": 41, "at": "2026-10-21 01:34", "score": 100, "state": "ok", "seal": "11ef730c01d55c2a9f879dd1e97c6552ee43f6edfd4657000ca1ce0e9cd7b549"}, {"n": 42, "at": "2026-10-21 02:34", "score": 100, "state": "ok", "seal": "6f4f13b345dff3682703e1ad743884ddcdd72a73072d28355f60133ffb9b8d6c"}, {"n": 43, "at": "2026-10-21 03:34", "score": 100, "state": "ok", "seal": "71bb3cd732922611898fc7a68d60a2d4550c718e739d1cd3146a7a48592899ea"}, {"n": 44, "at": "2026-10-21 04:34", "score": 100, "state": "ok", "seal": "54ee2b91d6d040af5f47c0c53171d62e42dc4180d4e1d1c18cb38c35451f9fbd"}, {"n": 45, "at": "2026-10-21 05:34", "score": 100, "state": "ok", "seal": "5093555e72461427b4734f8960b2fb510a2c2cce6c1a02345ecd651539765c3f"}, {"n": 46, "at": "2026-10-21 06:34", "score": 100, "state": "ok", "seal": "0901d3db2b182e613d7bbb08d6d26cddd8ae4448a77dfa5e3b28d7c0efc7dd8d"}, {"n": 47, "at": "2026-10-21 07:34", "score": 100, "state": "ok", "seal": "1011e88a329d3d365630226201060d5ed8677c5f912a571cb46172d2b2e7fc31"}, {"n": 48, "at": "2026-10-21 08:34", "score": 100, "state": "ok", "seal": "d38302ad7185d3caed8d594260ca31da895cffa3a3081e6b7f50a83688a758fb"}, {"n": 49, "at": "2026-10-21 09:34", "score": 100, "state": "ok", "seal": "bb3835a6e3bac657b17bc9f9dc8434d741696b1aa5b3cc042c889420e55c2ea4"}, {"n": 50, "at": "2026-10-21 10:34", "score": 100, "state": "ok", "seal": "5794e5e2c38ae43d39cff989723cc7dd3f645ff4556a142d179e4d4f6fce7a2d"}, {"n": 51, "at": "2026-10-21 11:34", "score": 100, "state": "ok", "seal": "1a833e93962d150bc659954bd8671c6c44f18c84345d4450ef9749f77a77f061"}, {"n": 52, "at": "2026-10-21 12:34", "score": 100, "state": "ok", "seal": "fe0afabb1afb1e33576b49859c6c58d1baa83fdff69c209f05028002bde9b1d1"}, {"n": 53, "at": "2026-10-21 13:34", "score": 100, "state": "ok", "seal": "89d873b91b108f6161d513e1af6af5a3b126360d44d7ee399b5370bc05b8e65a"}, {"n": 54, "at": "2026-10-21 14:34", "score": 100, "state": "ok", "seal": "73a4bfd2ff4437fdf2cef6215fb9f12e3a601632cef097776ef0894adf96ac0c"}, {"n": 55, "at": "2026-10-21 15:34", "score": 100, "state": "ok", "seal": "af0c6083b6de3821a6ea78fd1946d192caea7356c5f186f02c9901162eeb78e8"}, {"n": 56, "at": "2026-10-21 16:34", "score": 100, "state": "ok", "seal": "6715f75c10ffba4b846f188e9da65e6baaba820fc8d3f20753ad14fbe25eeae6"}, {"n": 57, "at": "2026-10-21 17:34", "score": 100, "state": "ok", "seal": "8d65a270eae691775de9b3ddbaf5bbaf0748899f6f8ea82b45aa5289415cbb9f"}, {"n": 58, "at": "2026-10-21 18:34", "score": 100, "state": "ok", "seal": "22436e3c812b72449c0d33ba1ba9d577f061d8802e583598d728b23360103fe0"}, {"n": 59, "at": "2026-10-21 19:34", "score": 100, "state": "ok", "seal": "02d8d599a66d99e3f2018396cbc3b04468aecb809d54b2ab5301403ea3be255e"}, {"n": 60, "at": "2026-10-21 20:34", "score": 100, "state": "ok", "seal": "c8353989962c244e1f0b059200aa079a6442dfe24b215fb9c7ca71c20fe21c1f"}, {"n": 61, "at": "2026-10-21 21:34", "score": 70, "state": "alert", "seal": "c8702eab1c2065e51477c0b8efbd1d3c443e08b994f829d898b16548723b3980"}, {"n": 62, "at": "2026-10-21 22:34", "score": 90, "state": "warn", "seal": "51ba96537612e8a1f8e9732c108015706b37ea9808574aea61136602a1b07425"}, {"n": 63, "at": "2026-10-21 23:34", "score": 100, "state": "ok", "seal": "4542847a401c17b7a96ea4d71e417636dba50b3761516dc1bc57bd81ea608cfd"}, {"n": 64, "at": "2026-10-22 00:34", "score": 100, "state": "ok", "seal": "dce9d080240d002937be9f36b212d2633e98a9bdc72bcfe8def47d028f336991"}, {"n": 65, "at": "2026-10-22 01:34", "score": 100, "state": "ok", "seal": "0ae072bf95b1c9a3317e9eee8f1cd53201a55ef5be89d0b0d8c399b6ebb6c6f9"}, {"n": 66, "at": "2026-10-22 02:34", "score": 100, "state": "ok", "seal": "77013caeae086b3bddb4ed8b5f2ee631693dfbc0129c24f44cb6d5437f989393"}, {"n": 67, "at": "2026-10-22 03:34", "score": 100, "state": "ok", "seal": "eb87a97adc8f9ca332476ef4f3a457071c52336ea98ce7b0c0365abd50b8edf4"}, {"n": 68, "at": "2026-10-22 04:34", "score": 100, "state": "ok", "seal": "aa43965c5e2a3a1b99e884523e04c5b15a4ba3013c85fe9354186449341c9887"}, {"n": 69, "at": "2026-10-22 05:34", "score": 100, "state": "ok", "seal": "ffffae3024e377fef71ffdfeb2b1aeb36b36e34345699e7546ae53424fea7610"}, {"n": 70, "at": "2026-10-22 06:34", "score": 100, "state": "ok", "seal": "d51442cb29f39e02caf4ba5d57e3f72f0db0467746be6ed3387e8172145efed2"}, {"n": 71, "at": "2026-10-22 07:34", "score": 100, "state": "ok", "seal": "681c3e603cadaa272232a845803721148a9eeba4ce921071441a2bf3d9099705"}, {"n": 72, "at": "2026-10-22 08:34", "score": 100, "state": "ok", "seal": "548562ebb8ff03e74231f0f731fc4c00eea8c9c7c08fcde8efd0a9299eb1d44a"}, {"n": 73, "at": "2026-10-22 09:34", "score": 100, "state": "ok", "seal": "603919fbb6e2278743f28f70009b5d82688f29f2e413d796e9360f72fd103ce4"}, {"n": 74, "at": "2026-10-22 10:34", "score": 100, "state": "ok", "seal": "c80aac4b6985ace8d365db369d2ac127265ee3e2f2f3131d4fa04895558f1112"}, {"n": 75, "at": "2026-10-22 11:34", "score": 100, "state": "ok", "seal": "e13fdff992548b1e73cf160e4ea22c315b92e4225fe607b61ef8d7dcb2ce699a"}, {"n": 76, "at": "2026-10-22 12:34", "score": 100, "state": "ok", "seal": "9b7739736bf982a2c461eb4b0f1184b207fdf039e54a0c812c88b9f9ab62b2b1"}, {"n": 77, "at": "2026-10-22 13:34", "score": 100, "state": "ok", "seal": "63044d27b358d6a1ae38c9dacc81c98b7f1ba92358ce5c254dcee6651dabc3cc"}, {"n": 78, "at": "2026-10-22 14:34", "score": 100, "state": "ok", "seal": "c2f5845836f2a010f37201ea2feecbf2d0e5d3698944395a9faddb475b3196e7"}, {"n": 79, "at": "2026-10-22 15:34", "score": 100, "state": "ok", "seal": "9567a21b10c69949fadd49aa574a2e67aa91d2c9ced5f9800758877928030ada"}, {"n": 80, "at": "2026-10-22 16:34", "score": 100, "state": "ok", "seal": "943d9089934b387c352589fb5d1c9b325df56c4160cbb893cd67ceddb0a186f6"}, {"n": 81, "at": "2026-10-22 17:34", "score": 100, "state": "ok", "seal": "c7baf1f434a89b596d8af53e82784f7af70fab000a7eabec6ddbaedb9fdd3004"}, {"n": 82, "at": "2026-10-22 18:34", "score": 100, "state": "ok", "seal": "e410cd91e6af98506f88df99ad0a5cf9e7853babcfd57e837329f42058433a0c"}, {"n": 83, "at": "2026-10-22 19:34", "score": 100, "state": "ok", "seal": "dca6756d74cde60d56f27e0c0e29df5b54cbd77d0e6ea2f07be954b9886349a8"}, {"n": 84, "at": "2026-10-22 20:34", "score": 100, "state": "ok", "seal": "4dc66f93e2b2af669581e410c85a286eeb1c3c250230d4bc72318d5b13ca4e9c"}, {"n": 85, "at": "2026-10-22 21:34", "score": 100, "state": "ok", "seal": "391ce6e1fd1da63b5dedd8ab955c474c0f766177d5e0cc5e432e25eb4e7c71a3"}, {"n": 86, "at": "2026-10-22 22:34", "score": 100, "state": "ok", "seal": "4dd8be0619f782312878167239bb28d817cab728df19ccf8a6a4480b5e19aea5"}, {"n": 87, "at": "2026-10-22 23:34", "score": 100, "state": "ok", "seal": "b29d7261b7145c23b9d930766126973338b48807549d41acf751a5ab2e9dbd95"}, {"n": 88, "at": "2026-10-23 00:34", "score": 100, "state": "ok", "seal": "f25c92b6f02552ab18c338772539f12d9ca7a8445a3fa52e970ebb43c3f172d4"}, {"n": 89, "at": "2026-10-23 01:34", "score": 100, "state": "ok", "seal": "72163319a2ec0e21a639d45246b27ad583c8232a3ff86a204f005a091801188d"}, {"n": 90, "at": "2026-10-23 02:34", "score": 100, "state": "ok", "seal": "749dfd3b37f516524a788aa15998cc0b4f5230725dce42b117fd8c3bdc9d7aac"}, {"n": 91, "at": "2026-10-23 03:34", "score": 100, "state": "ok", "seal": "12c8e2e63c541bd18a9e2a9ca698f8d8e79935e5578abda3abda12a1e9ee7b14"}, {"n": 92, "at": "2026-10-23 04:34", "score": 100, "state": "ok", "seal": "f79a5ccd0534dabb27a47f381f0104883ea3fb793fd6f4c31be9e19c00b50233"}, {"n": 93, "at": "2026-10-23 05:34", "score": 100, "state": "ok", "seal": "2c37de44bcc31d676a7452adb2f466d328a957560c3204883d7b3abbe1d59aa5"}, {"n": 94, "at": "2026-10-23 06:34", "score": 100, "state": "ok", "seal": "39e7365463e6f4f77a4ce2c027c31a3879f76d145a08b669d045cb0c05f1ee0e"}, {"n": 95, "at": "2026-10-23 07:34", "score": 100, "state": "ok", "seal": "988fbb748e664a9b99a0cc70894c74a712133fd2eea13771d276c63284ef3390"}, {"n": 96, "at": "2026-10-23 08:34", "score": 100, "state": "ok", "seal": "f862f03f5b0aba6ce51867aa03583418f15c85dbb02c43bd6ad23249a9bb35fc"}, {"n": 97, "at": "2026-10-23 09:34", "score": 100, "state": "ok", "seal": "1f14704153f43b408f673ccf295470a03893e0172a9361de117b2d255bcddd65"}, {"n": 98, "at": "2026-10-23 10:34", "score": 100, "state": "ok", "seal": "879ad2421f9d316552ebedbdc1b7fe07a260518f88f25a4e2d765395ec2b8865"}, {"n": 99, "at": "2026-10-23 11:34", "score": 100, "state": "ok", "seal": "d52f22702224fc90fedf1e495c3ab8f801d9266169d30bcd5f88a38cdb552a5a"}, {"n": 100, "at": "2026-10-23 12:34", "score": 100, "state": "ok", "seal": "bdd7ec0b58b8b0d55408d6014018236262b30341008f6a90c79df936e603f755"}, {"n": 101, "at": "2026-10-23 13:34", "score": 100, "state": "ok", "seal": "7c4e0d2e8fbf73efe19d168237faaeb5d1c105a12894cc1a72bd3fe64a530d42"}, {"n": 102, "at": "2026-10-23 14:34", "score": 100, "state": "ok", "seal": "05aee8b25ac2e321110aa1675a39bf7fabbf197b50e7e9e3a03f0b630fb1ff0d"}, {"n": 103, "at": "2026-10-23 15:34", "score": 100, "state": "ok", "seal": "60f695fd9755f6f483c82e76ba7c63d3afd005ef9bbef488e74c9b38199f28ec"}, {"n": 104, "at": "2026-10-23 16:34", "score": 100, "state": "ok", "seal": "181a80981e572c32419177918b6712c792bcfe677e6ea7b9ede5a76f32c34c05"}, {"n": 105, "at": "2026-10-23 17:34", "score": 100, "state": "ok", "seal": "cbaa758f9981a9be3bf0da29d95a2a9d89513e51fbb92127e17725e14ccf29ed"}, {"n": 106, "at": "2026-10-23 18:34", "score": 100, "state": "ok", "seal": "d77d9b5bf1a4904b33deef50f6da5775285d9d064b168c534f5b04a7b5f35676"}, {"n": 107, "at": "2026-10-23 19:34", "score": 100, "state": "ok", "seal": "7efddabcedab85a99e848d10d0ae1c1eade77ed4241dd9a8a7c363619b7b8382"}, {"n": 108, "at": "2026-10-23 20:34", "score": 100, "state": "ok", "seal": "9fbdb92433a87e652ebf250424e678756b2872e59e76a2185eb2bc137eb03b64"}, {"n": 109, "at": "2026-10-23 21:34", "score": 100, "state": "ok", "seal": "b57d1b6a14b2cc8c609a34eec7770e3fae0387c1b272fd3aea8f1ed2868be92d"}, {"n": 110, "at": "2026-10-23 22:34", "score": 100, "state": "ok", "seal": "773c412a45917191d986e94f9b482e728cea2a2c9e37a5798a75832963013d2d"}, {"n": 111, "at": "2026-10-23 23:34", "score": 100, "state": "ok", "seal": "9036c2215f6c0c84f0fa3a21727e5057620c906ce08e113dd0da426a323a8863"}, {"n": 112, "at": "2026-10-24 00:34", "score": 100, "state": "ok", "seal": "eaea49a3c9428663969e0b2cbc5f47f581f67dd6b5cc1667b909144350129e1f"}, {"n": 113, "at": "2026-10-24 01:34", "score": 100, "state": "ok", "seal": "2ca9f7750d63e1a3e53e7e22fee6f0ed1ba4e9ab7df07065366a9a6e9ce4a0a6"}, {"n": 114, "at": "2026-10-24 02:34", "score": 100, "state": "ok", "seal": "88a344b960b009213a306c3dacc88f1b965da1ef4a131275142a79f3c4e4bf03"}, {"n": 115, "at": "2026-10-24 03:34", "score": 100, "state": "ok", "seal": "de6af8e33dc7a6cf436159bdf88ada0ec93686afb46859e95b94b227e260c7c9"}, {"n": 116, "at": "2026-10-24 04:34", "score": 100, "state": "ok", "seal": "70244903aa2a5d558c13262f86ebb62170cd643f86aa9c2e10cc476f9fdcc57a"}, {"n": 117, "at": "2026-10-24 05:34", "score": 100, "state": "ok", "seal": "1e1f2a3178b7ae54236b420040b6a95d0e7f0393c25b49fc144ea26f4c9e63ac"}, {"n": 118, "at": "2026-10-24 06:34", "score": 100, "state": "ok", "seal": "2fcf0b5a72f6228c6a76de01c3637200faa643451d529ca606868cb21ec86f12"}, {"n": 119, "at": "2026-10-24 07:34", "score": 100, "state": "ok", "seal": "e1bd446341f8723ce56eb93fece9219dc609bc8371904e20f148e64637131bf9"}, {"n": 120, "at": "2026-10-24 08:34", "score": 100, "state": "ok", "seal": "a5842b898456b0bc737750aa6140b8b5636c219f4fa6ac540a7f90389f7af718"}, {"n": 121, "at": "2026-10-24 09:34", "score": 100, "state": "ok", "seal": "788f940192bd0fc26e1b0746403d099b3a8a0cdd1133eb3297f46d347df1d6e9"}, {"n": 122, "at": "2026-10-24 10:34", "score": 100, "state": "ok", "seal": "4174125bba74d89c3a2c7ed4dc3504bf95d4a63b30d090453ef18fbe51ff9de7"}, {"n": 123, "at": "2026-10-24 11:34", "score": 100, "state": "ok", "seal": "7fb15f6db641ee9045fbbcc5b7954b14105b39fdd7f0875eca2ef91b34b22f50"}, {"n": 124, "at": "2026-10-24 12:34", "score": 100, "state": "ok", "seal": "8e9b27ebb443e7036d8a8624734cdcaebbe28666f1247c1f419d1796c51f9940"}, {"n": 125, "at": "2026-10-24 13:34", "score": 100, "state": "ok", "seal": "162b480175fa5e70acf120c026fc7be67182925e9f62df9643255d54471c5fb9"}, {"n": 126, "at": "2026-10-24 14:34", "score": 100, "state": "ok", "seal": "183825f3d22f4eca230f5b0bb1be9852f4d99235dfbe5fedf0a8057747e08ec6"}, {"n": 127, "at": "2026-10-24 15:34", "score": 100, "state": "ok", "seal": "9821b9b5a9f8758363246f3a5d55aa072bfb75fef42d9c79efe77ae8c5eda224"}, {"n": 128, "at": "2026-10-24 16:34", "score": 100, "state": "ok", "seal": "ceb5a0b6c032cbd93f657fdd8f677043c7099844ba5ca3962cd12626acecae49"}, {"n": 129, "at": "2026-10-24 17:34", "score": 100, "state": "ok", "seal": "7e6369f5c82eaa93259f8f8a07684871f26341226c51d2c89824dc57b8961c68"}, {"n": 130, "at": "2026-10-24 18:34", "score": 100, "state": "ok", "seal": "f131aa40add8135b7f7d519d1bba844c9cbdb987b68b5df46f23cdab7c863d21"}, {"n": 131, "at": "2026-10-24 19:34", "score": 100, "state": "ok", "seal": "b0066a8651f508d454750c49d4189535ecfaf2a72f00331197896c3ee24e8c7d"}, {"n": 132, "at": "2026-10-24 20:34", "score": 100, "state": "ok", "seal": "5d05e43b5a110342b0ad50fb6ad16af8401906f026bab9a87a20a04a2c90206a"}, {"n": 133, "at": "2026-10-24 21:34", "score": 100, "state": "ok", "seal": "ae2aed8aef8803447a8c57271cbd263df6b2a1976a3f5773b90cdccf52aa3a78"}, {"n": 134, "at": "2026-10-24 22:34", "score": 100, "state": "ok", "seal": "57750f9196138b28868ee74ff8e2bff2c8b9ae3c59ef791a321f4a785f213f04"}, {"n": 135, "at": "2026-10-24 23:34", "score": 100, "state": "ok", "seal": "a95b0c9322b0e6c84f780acd890d98e6f12f11715dbcc8386a0feb183f70ee0b"}, {"n": 136, "at": "2026-10-25 00:34", "score": 100, "state": "ok", "seal": "93aeab8d8faa4943f1f4c5369a3520f0daaffce7e1a05f2707ef3a7fbd6c60ee"}, {"n": 137, "at": "2026-10-25 01:34", "score": 100, "state": "ok", "seal": "76988fad3630028e7051daff9923d25d3297c01faeb093d73ebde68e8910211e"}, {"n": 138, "at": "2026-10-25 02:34", "score": 100, "state": "ok", "seal": "1b1adc3aa8c2541c67d69f5baf5599d49cf7e6187138b6be8ddec92a517af35b"}, {"n": 139, "at": "2026-10-25 03:34", "score": 100, "state": "ok", "seal": "49aaadb2d3b997dbed6e591b97a2796e72abc30c604a54720c80412a07e36e63"}, {"n": 140, "at": "2026-10-25 04:34", "score": 100, "state": "ok", "seal": "576c9840af93dfcb36d36d830bd8b4d9911d43fdafec423149fb4c0e5eb55a73"}, {"n": 141, "at": "2026-10-25 05:34", "score": 100, "state": "ok", "seal": "d2712f0890f6dcb817a844c660a9def43603fa62eb582d9e3a2cdcf79d84bc77"}, {"n": 142, "at": "2026-10-25 06:34", "score": 100, "state": "ok", "seal": "cea7d063f8de2fa3791ac0c697d5d0bc8bf6e90b35927b82752639cc08598fe8"}, {"n": 143, "at": "2026-10-25 07:34", "score": 100, "state": "ok", "seal": "2512111e9f2352e82b80bc9af36e4d75989056a2069cc22736fac2aac9854cf4"}, {"n": 144, "at": "2026-10-25 08:34", "score": 100, "state": "ok", "seal": "befa90733931f17b3c7d372d51bf6454bd8c635e1fe9d646d22fe16f333bd16e"}, {"n": 145, "at": "2026-10-25 09:34", "score": 100, "state": "ok", "seal": "2ee9b36341805b8a0a9b9177616dbafb732dce61fbd9a14e295f30c5c49599f7"}, {"n": 146, "at": "2026-10-25 10:34", "score": 100, "state": "ok", "seal": "fcd304c25541e429e4ef327cd51c1d84711bec69c65e9d9e99186781fd189129"}, {"n": 147, "at": "2026-10-25 11:34", "score": 100, "state": "ok", "seal": "42a53e8cb8e549c6c7d1a3537125466bee969a7d7139a75fa968fef12a7bf0aa"}, {"n": 148, "at": "2026-10-25 12:34", "score": 100, "state": "ok", "seal": "cdba5389ce4197b2cd5707d92bbb149854497b4150d33fdd5634829268c07e06"}, {"n": 149, "at": "2026-10-25 13:34", "score": 100, "state": "ok", "seal": "190774986a48db6c35cdc50d6526ee80c1221c9f0042885a38faf3ca6d37c4f1"}, {"n": 150, "at": "2026-10-25 14:34", "score": 100, "state": "ok", "seal": "b4f95b711ce6c4d56939aa54830e10ffec37b7a67b7c78e01f4c7ac98a41be32"}, {"n": 151, "at": "2026-10-25 15:34", "score": 100, "state": "ok", "seal": "dcd1e2f2780db1491c3a9fd5626553d66d86ed3949c22e5fae5169dbc736d822"}, {"n": 152, "at": "2026-10-25 16:34", "score": 100, "state": "ok", "seal": "2097915ea0f795a7897755d552e574b63af721c21338385b84c215b916ff77bb"}, {"n": 153, "at": "2026-10-25 17:34", "score": 100, "state": "ok", "seal": "cb28b7dc9b0906958481a3ce904f041bcc490f9753efd572ed5ed6512a1c7593"}, {"n": 154, "at": "2026-10-25 18:34", "score": 100, "state": "ok", "seal": "63becf60ba2a18f8aee844480892b605b98bc704de7d038800c2838539f20c0c"}, {"n": 155, "at": "2026-10-25 19:34", "score": 100, "state": "ok", "seal": "4a1bc4ff614beb84bf8e6113d4a355865d4399385e313a266a3799b7ef91edd6"}, {"n": 156, "at": "2026-10-25 20:34", "score": 100, "state": "ok", "seal": "bad4322940e27f0ffb96531c111ea26b8ccc935b546586a0bcc74d86d65b3cb5"}, {"n": 157, "at": "2026-10-25 21:34", "score": 100, "state": "ok", "seal": "15177aa87e280a2e6d0dc5ebb11c8a256b0b86627527c9d66dee1810f08a7ff5"}, {"n": 158, "at": "2026-10-25 22:34", "score": 100, "state": "ok", "seal": "68e4b933754979a68d68c2977a4ac30916333850dd2ab78542f325cb2241b449"}, {"n": 159, "at": "2026-10-25 23:34", "score": 100, "state": "ok", "seal": "c84c4bfb55e811a39d968a06d18bb0863d6fae053d5a31ca6008248a29677217"}, {"n": 160, "at": "2026-10-26 00:34", "score": 100, "state": "ok", "seal": "ce047d4ef897a6e4120b8931ee8f86a6bf0025a178b9fe93c5ecfd3206dd75d8"}, {"n": 161, "at": "2026-10-26 01:34", "score": 100, "state": "ok", "seal": "bafcb5e7a0e416a8bc09df36d4d4c53b598b42267075f2127e211907ae435d06"}, {"n": 162, "at": "2026-10-26 02:34", "score": 100, "state": "ok", "seal": "5242f6abf53052946dd292f5caef0174ec9f1b1ffb755c4e074d9707fb88dee1"}, {"n": 163, "at": "2026-10-26 03:34", "score": 100, "state": "ok", "seal": "85a84755a566e8eaf82226cab1187332df59a564cacf16cc7b7b1acb8ecd0222"}, {"n": 164, "at": "2026-10-26 04:34", "score": 100, "state": "ok", "seal": "562e2c3d7ef90a9b8050c4029ccbd471eebd9f2ecd9dcd58c79477091e767d8f"}, {"n": 165, "at": "2026-10-26 05:34", "score": 100, "state": "ok", "seal": "138fa5ac5ae13c448a8dadb9cf4c0122bd244b8f6b21f6034c09464f8892ac68"}, {"n": 166, "at": "2026-10-26 06:34", "score": 100, "state": "ok", "seal": "d96394fba0d43d4bf44f5bcefbfc0ce765ac08f69925d3643d5171cfe2087654"}, {"n": 167, "at": "2026-10-26 07:34", "score": 100, "state": "ok", "seal": "240f45644809cf35bee2da32f4d389a66fdd85d63d68e32a1b660c8c617515b7"}, {"n": 168, "at": "2026-10-26 08:34", "score": 100, "state": "ok", "seal": "a6624db5d5c8b068e24c8549365cef2d89470706477712fd3ef8b13efdcbef62"}], "integrity": {"ok": true, "count": 168}, "generated": "نسخة عرض", "facts": {"connectors": [{"name": "خدمة تخزين (مثال)", "connected": true}, {"name": "بريد (مثال)", "connected": false, "note": "غير مفعّل"}, {"name": "نماذج (مثال)", "connected": true}], "external_flows": []}};
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const LABEL = {ok:"ملتزم بالسرية", warn:"يحتاج انتباه", alert:"تنبيه سرية"};
+const COLOR = {ok:"var(--ok)", warn:"var(--warn)", alert:"var(--alert)"};
+const size = b => b < 1024 ? b + " بايت" : b < 1048576 ? (b/1024).toFixed(1) + " ك.ب" : (b/1048576).toFixed(1) + " م.ب";
+
+(function theme(){
+  const r = document.documentElement;
+  try { const t = localStorage.getItem("saif-theme"); if (t) r.dataset.theme = t; } catch(e){}
+  $("theme").onclick = () => {
+    const dark = r.dataset.theme ? r.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+    r.dataset.theme = dark ? "light" : "dark";
+    try { localStorage.setItem("saif-theme", r.dataset.theme); } catch(e){}
+  };
+  $("print").onclick = () => print();
+})();
+
+function render(){
+  if (!D || !D.last){ $("verdict").innerHTML = '<p class="empty">لم يُجرَ أي فحص بعد.</p>'; return; }
+  const L = D.last, st = L.state, sc = L.score, C = 2*Math.PI*52;
+  $("verdict").innerHTML = `
+    <svg class="ring" viewBox="0 0 120 120" role="img" aria-label="درجة السرية ${sc} من 100">
+      <circle cx="60" cy="60" r="52" fill="none" stroke="var(--line)" stroke-width="10"/>
+      <circle cx="60" cy="60" r="52" fill="none" stroke="${COLOR[st]}" stroke-width="10" stroke-linecap="round"
+        stroke-dasharray="${C*sc/100} ${C}" transform="rotate(-90 60 60)"/>
+      <text x="60" y="58" text-anchor="middle" font-size="30" font-weight="700" fill="var(--ink)">${sc}</text>
+      <text x="60" y="80" text-anchor="middle" font-size="12" fill="var(--mute)">من 100</text>
+    </svg>
+    <div class="t">
+      <span class="pill ${st}">${LABEL[st]}</span>
+      <p class="big">${st === "ok" ? "بياناتك ومشاريعك مصونة" : st === "warn" ? "تغيير يحتاج مراجعتك" : "تغيير يمس السرية"}</p>
+      <p class="meta">التقرير رقم ${L.n} · ${esc(L.at)} بتوقيت الدوحة</p>
+      <p class="meta">الختم: <span class="mono">${L.seal.slice(0,16)}…</span></p>
+    </div>`;
+  $("factsAt").textContent = L.facts_at ? "حقائق المنصة: " + L.facts_at : "";
+  $("checks").innerHTML = L.items.map(i => `
+    <div class="chk"><i class="dot d-${i.status}"></i><div><b>${esc(i.title)}</b><span>${esc(i.detail)}</span></div></div>`).join("");
+
+  const H = D.history;
+  $("bars").innerHTML = H.map(h => `<i title="${esc(h.at)}: ${h.score}" style="height:${Math.max(6,h.score)}%;background:${COLOR[h.state]}"></i>`).join("");
+  $("lFirst").textContent = H.length ? H[0].at : ""; $("lLast").textContent = H.length ? H[H.length-1].at : "";
+
+  const I = D.integrity;
+  $("integ").innerHTML = I.ok ? `<span class="pill ok">السلسلة سليمة · ${I.count} تقرير</span>` : `<span class="pill alert">كسر في التقرير ${I.broken_at}</span>`;
+  $("chain").innerHTML = H.slice(-8).reverse().map(h => `
+    <div class="link"><span class="n">#${h.n}</span><span>${esc(h.at)}</span><span class="pill ${h.state}">${h.score}</span><span class="mono">${h.seal.slice(0,20)}…</span></div>`).join("");
+
+  const F = L.findings;
+  $("findings").innerHTML = F.length ? `<table><thead><tr><th>الملف</th><th>النوع</th><th>الخطورة</th><th>العدد</th><th>عينة</th></tr></thead><tbody>${
+    F.map(f => `<tr><td class="mono">${esc(f.file)}</td><td>${esc(f.type)}</td><td><span class="pill ${f.sev==="حرج"||f.sev==="مرتفع"?"alert":f.sev==="متوسط"?"warn":"ok"}">${esc(f.sev)}</span></td><td>${f.count}</td><td class="mono">${esc(f.sample)}</td></tr>`).join("")}</tbody></table>`
+    : '<p class="empty">لا توجد مفاتيح أو كلمات مرور أو أرقام هويات أو حسابات مصرفية مكشوفة في ملفات المشروع.</p>';
+
+  const files = L.files, diff = L.diff;
+  $("fcount").textContent = files.length + " ملف";
+  const tag = p => diff.added.includes(p) ? ' <span class="pill warn">جديد</span>' : diff.changed.includes(p) ? ' <span class="pill warn">معدّل</span>' : "";
+  $("files").innerHTML = files.length ? `<table><thead><tr><th>المسار</th><th>الحجم</th><th>البصمة</th></tr></thead><tbody>${
+    files.map(f => `<tr><td class="mono">${esc(f.path)}${tag(f.path)}</td><td>${size(f.size)}</td><td class="mono">${f.sha.slice(0,12)}</td></tr>`).join("")}</tbody></table>`
+    : '<p class="empty">لا توجد ملفات بيانات في المشروع حالياً سوى ملفات «سَيْف» نفسها.</p>';
+
+  flow();
+  $("foot").innerHTML = `سَيْف · نسخة عرض من <b>منجز لخدمات الأعمال</b> · تعمل دون أي اتصال بالشبكة<div class="contact"><a href="https://munjiz-qa.github.io/">الموقع الرسمي</a><a href="https://wa.me/97451600498">واتساب: <span dir="ltr">+974 5160 0498</span></a><a href="tel:+97451600498">اتصال</a><a href="mailto:munijizqa@gmail.com" dir="ltr">munijizqa@gmail.com</a></div>`;
+}
+
+function flow(){
+  const f = D.facts || {}, conns = f.connectors || [], ext = f.external_flows || [];
+  const row = (name, st, txt) => `<div class="node"><span class="dot d-${st}"></span><b>${esc(name)}</b><span>${esc(txt)}</span></div>`;
+  let h = `<div class="hub"><span>مشروعك</span><small>لا يخرج منه أي محتوى</small></div><div class="nodes">`;
+  h += conns.map(c => row(c.name, c.connected ? "ok" : "warn", c.connected ? "متصل · لم يُرسل إليه شيء من المشروع" : (c.note || "غير متصل"))).join("");
+  h += `</div>`;
+  if (ext.length){
+    const sinks = [...new Set(ext.map(e => e.sink))].join("، ");
+    h += `<details class="ext"><summary>مشاريعك الأخرى: ${ext.length} مهام ترسل تنبيهاتك إلى ${esc(sinks)} بموافقتك</summary><ul>${ext.map(e => `<li>${esc(e.task)}</li>`).join("")}</ul></details>`;
+  }
+  $("flow").innerHTML = h;
+}
+render();
+</script>
+</body>
+</html>
