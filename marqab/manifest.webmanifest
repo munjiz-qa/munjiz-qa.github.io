@@ -1,0 +1,23 @@
+{
+  "name": "مرقب: الذكاء المؤسسي والاستشراف ودعم القرار",
+  "short_name": "مرقب",
+  "description": "منصة داخلية للرصد والإنذار المبكر والاستشراف ودعم متخذ القرار.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#F2F5F4",
+  "theme_color": "#0A3740",
+  "icons": [
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "مركز القيادة", "url": "./#home", "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }] },
+    { "name": "المساعد التحليلي", "url": "./#ask", "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }] },
+    { "name": "بوابة الرصد", "url": "./#submit", "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

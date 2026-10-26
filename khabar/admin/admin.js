@@ -6,7 +6,7 @@ const $=s=>document.querySelector(s);
 const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
 const DEFAULT_HASH='15aebe9681badc802f1853e9061c9e06b13ca2b971a2e744f7013569398b2034';
 const PATH='khabar/data/admin.json';
-let ADMIN=null,BRIEF=null,HEAD=null,NEWHASH=null;
+let ADMIN=null,BRIEF=null,HEAD=null,LEDGER=null,NEWHASH=null;
 async function hash(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('khabar:'+s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
 const getJSON=u=>fetch(u+'?t='+Date.now(),{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(r.status);return r.json()});
 function toast(m){const n=$('#toast');n.textContent=m;n.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>n.hidden=true,2400)}
@@ -15,7 +15,7 @@ const S={get(k){try{return sessionStorage.getItem(k)}catch(e){return null}},set(
 const LS={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 
 async function boot(){
-  try{[ADMIN,BRIEF]=await Promise.all([getJSON('../data/admin.json'),getJSON('../data/brief.json')]);HEAD=await getJSON('../data/headlines.json').catch(()=>null)}
+  try{[ADMIN,BRIEF]=await Promise.all([getJSON('../data/admin.json'),getJSON('../data/brief.json')]);HEAD=await getJSON('../data/headlines.json').catch(()=>null);LEDGER=await getJSON('../data/ledger.json').catch(()=>null)}
   catch(e){$('#login-err').textContent='تعذّر تحميل بيانات التطبيق. أعد تحميل الصفحة.';$('#login-err').hidden=false;return}
   ADMIN.breaking=ADMIN.breaking||{};ADMIN.hidden=ADMIN.hidden||[];ADMIN.auth=ADMIN.auth||{user:'admin',hash:''};
   if(S.get('khabar-admin')===((ADMIN.auth.hash||DEFAULT_HASH)))open();
@@ -41,8 +41,26 @@ function open(){
     const tx=el('span');tx.append(el('span','z',`${z.name.ar} · ${it.cat.ar}`),it.ar);lb.append(cb,tx);li.append(lb);ul.append(li)}));
   ['#b-on','#b-ar','#b-en','#b-src','#b-url','#b-until','#np1','#np2'].forEach(s=>$(s).addEventListener('input',preview));
   $('#tok').value=LS.get('khabar-token')||'';
+  agentPanel();
   preview();
 }
+function agentPanel(){
+  const k=$('#agent-kpis');k.textContent='';const S=(LEDGER&&LEDGER.summary)||{},r=(LEDGER&&LEDGER.runs||[]).find(x=>x.mode==='brief');
+  [[S.multi_source??'—','خبراً من جهتين فأكثر'],[S.numbers_total?`${S.numbers_grounded}/${S.numbers_total}`:'—','رقماً مطابقاً لمصدره'],[(LEDGER&&(LEDGER.agent_dropped||[]).length+(LEDGER.dropped||[]).length)??'—','حُذف قبل النشر'],[r?'$'+Number(r.usd).toFixed(2):'—','كلفة آخر خلاصة']]
+    .forEach(([v,l])=>{const d=el('div');d.append(el('b',null,String(v)),el('small',null,l));k.append(d)});
+  $('#agent-last').textContent=r?`آخر تشغيل للوكيل: ${new Date(r.at).toLocaleString('ar-QA',{timeZone:'Asia/Qatar',numberingSystem:'latn'})} · ${r.model} · نُشر ${r.published} من ${r.proposed}`:
+    (LEDGER?`آخر فحص للخلاصة: ${new Date(LEDGER.checked).toLocaleString('ar-QA',{timeZone:'Asia/Qatar',numberingSystem:'latn'})}. لم يُسجَّل تشغيل للوكيل المستقل بعد.`:'لم يُسجَّل فحص بعد.');
+}
+document.querySelectorAll('[data-run]').forEach(b=>b.onclick=async()=>{
+  const m=$('#run-msg'),say=(t,ok)=>{m.textContent=t;m.className='msg '+(ok?'ok':'err');m.hidden=false};
+  const tok=$('#tok').value.trim();if(!tok){say('أدخل مفتاح النشر على GitHub في قسم «نشر التعديلات» أولاً.',false);return}
+  LS.set('khabar-token',tok);b.disabled=true;say('جارٍ إرسال أمر التشغيل…',true);
+  try{
+    const r=await fetch(`https://api.github.com/repos/${CFG.REPO}/actions/workflows/khabar-agent.yml/dispatches`,{method:'POST',headers:{Authorization:'Bearer '+tok,Accept:'application/vnd.github+json'},body:JSON.stringify({ref:CFG.BRANCH||'main',inputs:{mode:b.dataset.run}})});
+    if(r.status===204)say('بدأ التشغيل. تظهر النتيجة في التطبيق خلال دقائق (الخلاصة الكاملة تستغرق 10 إلى 20 دقيقة).',true);
+    else throw new Error(r.status===401?'المفتاح غير صالح أو منتهي.':r.status===403||r.status===404?'المفتاح لا يملك صلاحية Actions: Read and write على المستودع.':'رفض GitHub الطلب ('+r.status+').');
+  }catch(e){say(e.message,false)}finally{b.disabled=false}
+});
 async function collect(){
   const out=JSON.parse(JSON.stringify(ADMIN));
   const until=$('#b-until').value?new Date($('#b-until').value).toISOString():'';

@@ -1,5 +1,6 @@
 'use strict';
-// «خبر»: يعرض خلاصة اليوم من data/brief.json، والعناوين الآلية من data/headlines.json، والعاجل والإخفاء من data/admin.json.
+// «خبر»: يعرض خلاصة اليوم من data/brief.json، والعناوين الآلية من data/headlines.json، والعاجل والإخفاء من data/admin.json،
+// وميزان الثقة وسجل الشفافية من data/ledger.json، والعاجل الآلي من data/breaking.json.
 (function(){
 const CFG=window.KHABAR_CONFIG||{};
 const $=s=>document.querySelector(s);
@@ -33,7 +34,11 @@ const T={
  read_more:['اقرأ الخلاصة','Read brief'],current:['الحالية','current'],
  contact_email:['البريد','Email'],contact_phone:['الهاتف وواتساب','Phone & WhatsApp'],
  err:['تعذّر تحميل الخلاصة. تحقّق من اتصالك ثم أعد تحميل الصفحة.','The brief could not be loaded. Check your connection and reload the page.'],
- theme_dark:['الوضع الليلي','Dark mode'],theme_light:['الوضع النهاري','Light mode']
+ theme_dark:['الوضع الليلي','Dark mode'],theme_light:['الوضع النهاري','Light mode'],
+ ledger:['الشفافية','Transparency'],listen:['استمع','Listen'],stop:['أوقف','Stop'],
+ auto_breaking:['رصد آلي','Auto-detected'],checked_by:['دقّقه المدقق المستقل','Independently fact-checked'],
+ nums_ok:['الأرقام مطابقة لمصادرها','Figures match their sources'],nums_review:['رقم قيد المراجعة','Figure under review'],
+ trust:['ميزان الثقة','Trust meter']
 };
 const t=k=>(T[k]||[k,k])[LANG==='en'?1:0];
 const ZC={qatar:'var(--dawn)',gulf:'var(--sea)',egypt:'var(--nile)',world:'var(--ink)'};
@@ -44,7 +49,7 @@ function fmtDate(iso,withDay){if(!iso)return '';const [y,m,d]=iso.split('-').map
 function dohaParts(date){const p=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Qatar',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(date).map(x=>[x.type,x.value]));return p}
 function fmtTime(isoDT){const p=dohaParts(new Date(isoDT));const h=+p.hour,m=p.minute;if(LANG==='en')return `${String(h).padStart(2,'0')}:${m} Doha time`;const h12=h%12||12;return `${h12}:${m} ${h<12?'صباحاً':'مساءً'} بتوقيت الدوحة`}
 
-let BRIEF=null,HEAD=null,ADMIN={breaking:null,hidden:[]},ARCH=null;
+let BRIEF=null,HEAD=null,ADMIN={breaking:null,hidden:[]},ARCH=null,LEDGER=null,AUTOB=null;
 let VIEW='today',QUERY='',FILTER={};
 const saved=()=>store.get('khabar-saved',{});
 
@@ -52,8 +57,8 @@ const saved=()=>store.get('khabar-saved',{});
 const getJSON=u=>fetch(u,{cache:'no-cache'}).then(r=>{if(!r.ok)throw new Error(u+' '+r.status);return r.json()});
 async function load(briefId){
   const bu=briefId?`data/archive/${briefId}.json`:'data/brief.json';
-  const [b,h,a,ar]=await Promise.all([getJSON(bu),getJSON('data/headlines.json').catch(()=>null),getJSON('data/admin.json').catch(()=>null),getJSON('data/archive/index.json').catch(()=>null)]);
-  BRIEF=b;HEAD=h;if(a)ADMIN=Object.assign({breaking:null,hidden:[]},a);ARCH=ar;
+  const [b,h,a,ar,lg,ab]=await Promise.all([getJSON(bu),getJSON('data/headlines.json').catch(()=>null),getJSON('data/admin.json').catch(()=>null),getJSON('data/archive/index.json').catch(()=>null),getJSON('data/ledger.json').catch(()=>null),getJSON('data/breaking.json').catch(()=>null)]);
+  BRIEF=b;HEAD=h;if(a)ADMIN=Object.assign({breaking:null,hidden:[]},a);ARCH=ar;LEDGER=lg;AUTOB=ab;
 }
 
 /* ---------- header ---------- */
@@ -67,7 +72,7 @@ function header(){
   $('#theme-btn').setAttribute('aria-label',dark?t('theme_light'):t('theme_dark'));
   document.title=LANG==='en'?'Khabar | Your daily brief from Doha to the world':'خبر | خلاصة يومك من الدوحة إلى العالم';
   const tabs=$('#tabs');tabs.textContent='';
-  [['today'],...ZONES.map(z=>[z,ZC[z]]),['roadmap'],['saved'],['about']].forEach(([id,c])=>{
+  [['today'],...ZONES.map(z=>[z,ZC[z]]),['roadmap'],['ledger'],['saved'],['about']].forEach(([id,c])=>{
     const a=el('a','tab');a.href='#'+id;if(c){const i=el('i');i.style.background=c==='var(--ink)'?'var(--deep-ink)':c;a.append(i)}a.append(t(id));
     if(id===VIEW||(id==='today'&&VIEW.startsWith('b-')))a.setAttribute('aria-current','page');tabs.append(a)});
   const cur=tabs.querySelector('[aria-current]');if(cur)cur.scrollIntoView({block:'nearest',inline:'center'});
@@ -79,6 +84,10 @@ function header(){
   if(b&&b.on&&(!b.until||new Date(b.until)>new Date())&&b.url&&(b.text_ar||b.text_en)){
     br.textContent='';const w=el('div','wrap');w.append(el('b',null,t('breaking')),el('span',null,LANG==='en'?(b.text_en||b.text_ar):(b.text_ar||b.text_en)));
     const a=el('a',null,(t('source'))+': '+(b.source||''));a.href=b.url;a.target='_blank';a.rel='noopener';w.append(a);br.append(w);br.hidden=false;
+  }else if(AUTOB&&AUTOB.on&&AUTOB.until&&new Date(AUTOB.until)>new Date()&&(AUTOB.sources||[]).length>=2){
+    br.textContent='';const w=el('div','wrap');w.append(el('b',null,t('breaking')),el('span',null,LANG==='en'?(AUTOB.text_en||AUTOB.text_ar):AUTOB.text_ar));
+    w.append(el('small','auto',`${t('auto_breaking')} · ${AUTOB.sources.length} ${L('مصادر مستقلة','independent sources')}`));
+    AUTOB.sources.forEach(s=>{const a=el('a',null,s[LANG]||s.ar);a.href=s.url;a.target='_blank';a.rel='noopener';w.append(a)});br.append(w);br.hidden=false;
   }else br.hidden=true;
 }
 
@@ -98,6 +107,8 @@ const ICON={
  save:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>',
  saved:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z" fill="currentColor"/></svg>',
  wa:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>',
+ play:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>',
+ stop:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>',
  copy:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3" fill="none" stroke="currentColor" stroke-width="2"/></svg>'
 };
 function shareText(it){const S=BRIEF.sources;return `${it[LANG]}\n\n${t('sources')}: ${it.src.map(id=>`${S[id][LANG]} (${fmtDate(S[id].date)}) ${S[id].url}`).join('\n')}\n\n${t('brand')}: ${CFG.SITE||location.href}`}
@@ -107,6 +118,7 @@ function fallback(s,done){const ta=el('textarea');ta.value=s;ta.style.position='
 function itemCard(it,zone){
   const li=el('li','item');li.style.setProperty('--zc',ZC[zone]);li.id='i-'+it.id;
   li.append(el('span','cat',it.cat[LANG]));const p=el('p');hl(p,it[LANG]);li.append(p);
+  const tr=trust(it);if(tr)li.append(tr);
   const f=el('div','item-foot');f.append(srcLine(it.src));
   const acts=el('div','acts'),sv=saved(),isS=!!sv[it.id];
   const bs=el('button','act');bs.type='button';bs.setAttribute('aria-pressed',isS);bs.innerHTML=isS?ICON.saved:ICON.save;bs.append(el('span',null,isS?t('saved_t'):t('save')));
@@ -114,6 +126,18 @@ function itemCard(it,zone){
   const bw=el('a','act');bw.innerHTML=ICON.wa;bw.append(el('span',null,t('share')));bw.href='https://wa.me/?text='+encodeURIComponent(shareText(it));bw.target='_blank';bw.rel='noopener';
   const bc=el('button','act');bc.type='button';bc.innerHTML=ICON.copy;bc.setAttribute('aria-label',t('copy'));bc.onclick=()=>copyText(shareText(it));
   acts.append(bs,bw,bc);f.append(acts);li.append(f);return li;
+}
+function outletsLabel(n){if(LANG==='en')return n===1?'1 outlet':`${n} independent outlets`;return n===1?'جهة واحدة':n===2?'جهتان مستقلتان':`${n} جهات مستقلة`}
+function trust(it){
+  const lg=LEDGER&&LEDGER.brief===BRIEF.id&&LEDGER.items?LEDGER.items[it.id]:null;
+  const outlets=lg?lg.outlets:new Set(it.src.map(id=>{try{return new URL(BRIEF.sources[id].url).hostname.replace(/^www\./,'')}catch(e){return id}})).size;
+  const a=el('a','trust');a.href='#ledger';a.setAttribute('aria-label',t('trust'));
+  const lvl=Math.min(3,outlets)+(lg&&lg.status==='verified'?1:0)+(it.check==='supported'?1:0);
+  const m=el('span','meter');for(let i=0;i<5;i++)m.append(el('i',i<lvl?'on':null));a.append(m);
+  a.append(el('span',null,outletsLabel(outlets)));
+  if(lg&&lg.numbers&&lg.numbers.checked&&lg.numbers.total){a.append(el('span',lg.numbers.unseen.length?'warn':'ok',lg.numbers.unseen.length?`${t('nums_review')} (${lg.numbers.grounded}/${lg.numbers.total})`:`${t('nums_ok')} ${lg.numbers.grounded}/${lg.numbers.total}`))}
+  if(it.check==='supported'||it.check==='partial')a.append(el('span','ok',t('checked_by')));
+  return a;
 }
 function boxes(z){
   const out=[];
@@ -152,7 +176,19 @@ function edHead(){
   w.append(el('h1',null,fmtDate(BRIEF.date,true)));
   const m=el('div','ed-meta');const n=BRIEF.zones.reduce((s,z)=>s+z.items.length,0);
   m.append(el('span',null,`${t('published')}: ${fmtTime(BRIEF.published)}`),el('span',null,`${n} ${t('items')}`),el('span',null,`${Object.keys(BRIEF.sources).length} ${L('مصدراً موثّقاً','cited sources')}`));
-  w.append(m);return w;
+  w.append(m);
+  if('speechSynthesis' in window){const b=el('button','listen');b.type='button';const set=on=>{b.textContent='';b.innerHTML=on?ICON.stop:ICON.play;b.append(el('span',null,on?t('stop'):t('listen')));b.setAttribute('aria-pressed',String(on))};set(speaking());
+    b.onclick=()=>{if(speaking()){speechSynthesis.cancel();set(false);return}speak(set)};w.append(b)}
+  return w;
+}
+const speaking=()=>'speechSynthesis' in window&&speechSynthesis.speaking;
+function speak(set){
+  const parts=[BRIEF.thread[LANG]];const hidden=new Set(ADMIN.hidden||[]);
+  BRIEF.zones.filter(z=>VIEW==='today'||VIEW.startsWith('b-')||z.id===VIEW).forEach(z=>{parts.push(z.name[LANG]);z.items.filter(i=>!hidden.has(i.id)).forEach(i=>parts.push(i[LANG]))});
+  const lang=LANG==='en'?'en':'ar',voices=speechSynthesis.getVoices(),v=voices.find(x=>x.lang.toLowerCase().startsWith(lang));
+  speechSynthesis.cancel();
+  parts.forEach((p,i)=>{const u=new SpeechSynthesisUtterance(p);u.lang=lang==='en'?'en-GB':'ar-SA';if(v)u.voice=v;u.rate=1;if(i===parts.length-1)u.onend=()=>set(false);speechSynthesis.speak(u)});
+  set(true);
 }
 function markets(){
   const w=el('section','zone');const h=el('div','zone-head');h.append(el('h2',null,t('markets')));w.append(h);
@@ -198,6 +234,34 @@ function viewRoadmap(){
     li.append(w,what);ol.append(li)});
   main.append(ol);
 }
+function viewLedger(){
+  const h=el('div','ed-head');h.append(el('span','eyebrow',L('كيف يعمل «خبر»','How Khabar works')),el('h1',null,L('سجل الشفافية','Transparency ledger')),
+    el('p','mute',L('يكتب «خبر» وكيل ذكاء مستقل، ولا يُنشر فيه شيء قبل أن يمر ببوابات تحقق برمجية ومدقق مستقل. هنا نعرض ما نشرناه، وما حذفناه ولماذا، وكم كلّف.','Khabar is written by an autonomous AI agent, and nothing is published before it passes programmatic verification gates and an independent fact-checker. Here we show what we published, what we dropped and why, and what it cost.')));main.append(h);
+  const steps=[[L('الكشّاف','Scout'),L('يجمع عناوين الساعات الأخيرة من عشرات المصادر كل 3 ساعات.','Gathers recent headlines from dozens of outlets every 3 hours.')],
+    [L('أربعة مراسلين','Four reporters'),L('يعمل مراسل لكل دائرة بالتوازي: يبحث ويفتح المقالات الأصلية بنفسه، ويسلّم كل خبر مع اقتباس حرفي من مصدره.','One reporter per circle works in parallel: it searches, opens the original articles itself, and files each story with a verbatim quote from its source.')],
+    [L('بوابة المصدر','Source gate'),L('برنامج لا يُقنَع: يرفض أي رابط لم يظهر فعلاً في البحث، وروابط التحويل، والمصادر القديمة، والاقتباس الذي لا يوجد في الصفحة.','Code that cannot be talked round: it rejects any link that never appeared in search, redirect links, stale sources, and quotes not found on the page.')],
+    [L('مطابقة الأرقام','Figure matching'),L('كل رقم في الخبر يُبحث عنه في صفحة مصدره نفسها.','Every figure in a story is looked up on its own source page.')],
+    [L('المدقق المستقل','Independent checker'),L('نموذج آخر يقرأ الخبر واقتباساته فقط، ويحذف ما لا تسنده.','A separate model reads only the story and its quotes, and removes anything they do not support.')],
+    [L('رئيس التحرير','Editor-in-chief'),L('يكتب خيط اليوم من الأخبار الناجية وحدها، ثم تُنشر الخلاصة ويُحدَّث هذا السجل.','Writes the day\'s thread from surviving stories only; then the brief is published and this ledger updated.')]];
+  const ol=el('ol','pipeline');steps.forEach(([a,b],i)=>{const li=el('li');li.append(el('b',null,`${i+1}. ${a}`),el('p',null,b));ol.append(li)});main.append(ol);
+  if(!LEDGER){main.append(el('p','empty',L('يظهر السجل بعد أول فحص آلي للخلاصة.','The ledger appears after the first automatic check of the brief.')));return}
+  const S=LEDGER.summary||{},k=el('div','ticks');
+  [[S.items,L('خبراً منشوراً','stories published')],[S.sources,L('مصدراً موثّقاً','cited sources')],[S.outlets,L('جهة مستقلة','independent outlets')],[S.multi_source,L('خبراً من جهتين فأكثر','multi-outlet stories')],
+   [S.numbers_total?`${S.numbers_grounded}/${S.numbers_total}`:'—',L('رقماً مطابقاً لمصدره','figures matched to source')],[S.reachable+'/'+((S.reachable||0)+(S.blocked||0)+(S.broken||0)),L('رابطاً فُتح آلياً بنجاح','links opened by the checker')]]
+   .forEach(([v,l])=>{const d=el('div','tick');d.append(el('b',null,String(v??'—')),el('small',null,l));k.append(d)});main.append(k);
+  main.append(el('p','basis',`${L('آخر فحص','Last check')}: ${fmtDate(LEDGER.checked.slice(0,10))}، ${fmtTime(LEDGER.checked)} · ${/-am$/.test(LEDGER.brief||'')?t('edition_am'):t('edition_pm')} ${fmtDate((LEDGER.brief||'').slice(0,10))}`.replace('، ',LANG==='en'?', ':'، ')));
+  if(S.blocked)main.append(el('p','mute',L('بعض المواقع تمنع الفحص الآلي لصفحاتها؛ تبقى روابطها منشورة لتتحقق منها بنفسك، ولا يُعدّ ذلك خللاً في المصدر.','Some sites block automated checks; their links stay published for you to verify yourself, and this is not counted as a fault in the source.')));
+  const drops=[...(LEDGER.agent_dropped||[]),...(LEDGER.dropped||[]).map(d=>({stage:L('الفحص النهائي','Final check'),text:d.text,reason:d.reason,zone:d.zone}))];
+  const dh=el('h2',null,L('ما حذفناه قبل النشر ولماذا','What we dropped before publishing, and why'));dh.style.marginTop='18px';main.append(dh);
+  if(!drops.length)main.append(el('p','mute',L('لم يُحذف شيء في هذه الخلاصة: كل ما كُتب اجتاز بوابات التحقق.','Nothing was dropped from this brief: everything written passed the verification gates.')));
+  else{const ul=el('ul','drops');drops.forEach(d=>{const li=el('li');li.append(el('span','stage',d.stage+(d.zone?' · '+t(d.zone):'')),el('p',null,d.text),el('small',null,d.reason));ul.append(li)});main.append(ul)}
+  const rh=el('h2',null,L('سجل تشغيل الوكيل','Agent run log'));rh.style.marginTop='18px';main.append(rh);
+  if(!(LEDGER.runs||[]).length){main.append(el('p','mute',L('لم يُسجَّل تشغيل للوكيل المستقل بعد. الخلاصات الحالية يكتبها المحرر المجدول، وتمر بالبوابة نفسها بعد النشر.','No autonomous agent runs are logged yet. Current briefs are written by the scheduled editor and pass the same gate after publishing.')));return}
+  const tb=el('div','runs');LEDGER.runs.slice(0,10).forEach(r=>{const d=el('div','run');
+    d.append(el('b',null,`${r.mode==='brief'?L('خلاصة','Brief'):L('عاجل','Breaking')} · ${fmtDate(r.at.slice(0,10))}، ${fmtTime(r.at)}`.replace('، ',LANG==='en'?', ':'، ')));
+    d.append(el('span',null,`${L('نُشر','published')} ${r.published}/${r.proposed} · ${L('حُذف','dropped')} ${r.dropped} · ${L('بحث','searches')} ${r.searches} · ${L('صفحات','pages')} ${r.fetches}`));
+    d.append(el('small','mute',`${r.model} · ${Math.round(r.seconds/60)} ${L('دقيقة','min')} · ${L('الكلفة','cost')} $${Number(r.usd).toFixed(2)}`));tb.append(d)});main.append(tb);
+}
 function viewSaved(){
   const h=el('div','ed-head');h.append(el('h1',null,t('saved')));main.append(h);
   const s=Object.values(saved());if(!s.length){main.append(el('p','empty',t('no_saved')));return}
@@ -219,7 +283,7 @@ function viewAbout(){
    [L('الاستقراء','Outlook'),L('نقرأ ما قد يترتب على أخبار اليوم، ونسمّيه توقّعاً لا خبراً، ونربطه بمصادره وبالمواعيد المقررة في خريطة الطريق.','We read what today\'s news may lead to, call it a forecast rather than news, and tie it to its sources and to scheduled dates on the roadmap.')]
   ].forEach(([h,p])=>{const d=el('div','pillar');d.append(el('h3',null,h),el('p',null,p));P.append(d)});w.append(P);
   w.append(el('h2',null,L('كيف نكتب','How we write')));
-  w.append(el('p',null,L('نقرأ المصادر الرسمية والصحف المعتمدة في قطر والخليج ومصر والعالم، ونجمع الخبر الواحد من مصادره المختلفة في فقرة واحدة بصياغتنا الخاصة، ونحيلك إلى المصدر الأصلي لقراءته كاملاً. تُنشر خلاصة الصباح الساعة 6:00 وخلاصة المساء الساعة 6:00 بتوقيت الدوحة، وتُحدَّث العناوين الآلية كل 3 ساعات.','We read official sources and established outlets in Qatar, the Gulf, Egypt and the world, combine each story from its different sources into one paragraph in our own words, and link you to the original to read it in full. The morning brief is published at 6:00 and the evening brief at 18:00 Doha time; automatic headlines refresh every 3 hours.')));
+  w.append(el('p',null,L('يكتب «خبر» وكيل ذكاء مستقل يعمل بإشراف تحريري: نقرأ المصادر الرسمية والصحف المعتمدة في قطر والخليج ومصر والعالم، ونجمع الخبر الواحد من مصادره المختلفة في فقرة واحدة بصياغتنا الخاصة، ونحيلك إلى المصدر الأصلي لقراءته كاملاً. ومسار التحقق كاملاً في صفحة «الشفافية». تُنشر خلاصة الصباح الساعة 6:00 وخلاصة المساء الساعة 6:00 بتوقيت الدوحة، وتُحدَّث العناوين الآلية كل 3 ساعات.','Khabar is written by an autonomous AI agent under editorial rules: we read official sources and established outlets in Qatar, the Gulf, Egypt and the world, combine each story from its different sources into one paragraph in our own words, and link you to the original to read it in full. The full verification trail is on the Transparency page. The morning brief is published at 6:00 and the evening brief at 18:00 Doha time; automatic headlines refresh every 3 hours.')));
   if(ARCH&&ARCH.briefs&&ARCH.briefs.length){w.append(el('h2',null,t('archive')));const ul=el('ul','items');
     ARCH.briefs.slice().reverse().forEach(x=>{const li=el('li','item');const a=el('a',null,`${x.edition==='am'?t('edition_am'):t('edition_pm')} · ${fmtDate(x.date,true)}`);a.href='#b-'+x.id;li.append(a);ul.append(li)});w.append(ul)}
   w.append(el('h2',null,L('تواصل معنا','Contact us')));
@@ -236,6 +300,7 @@ function render(){
   else if(ZONES.includes(VIEW))viewZone(VIEW);
   else if(VIEW==='roadmap')viewRoadmap();
   else if(VIEW==='saved')viewSaved();
+  else if(VIEW==='ledger')viewLedger();
   else if(VIEW==='about')viewAbout();
   else viewToday();
   if(render.keep)scrollTo(0,y);render.keep=true;
