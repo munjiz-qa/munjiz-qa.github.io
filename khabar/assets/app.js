@@ -1,6 +1,6 @@
 'use strict';
 // «خبر»: يعرض خلاصة اليوم من data/brief.json، والعناوين الآلية من data/headlines.json، والعاجل والإخفاء من data/admin.json،
-// وميزان الثقة وسجل الشفافية من data/ledger.json، والعاجل الآلي من data/breaking.json.
+// وميزان الثقة وسجل الشفافية من data/ledger.json، والعاجل الآلي من data/breaking.json، ومرصد المقارنات من data/marsad.json.
 (function(){
 const CFG=window.KHABAR_CONFIG||{};
 const $=s=>document.querySelector(s);
@@ -38,7 +38,15 @@ const T={
  ledger:['الشفافية','Transparency'],listen:['استمع','Listen'],stop:['أوقف','Stop'],
  auto_breaking:['رصد آلي','Auto-detected'],checked_by:['دقّقه المدقق المستقل','Independently fact-checked'],
  nums_ok:['الأرقام مطابقة لمصادرها','Figures match their sources'],nums_review:['رقم قيد المراجعة','Figure under review'],
- trust:['ميزان الثقة','Trust meter']
+ trust:['ميزان الثقة','Trust meter'],
+ marsad:['المرصد','Marsad'],marsad_t:['مرصد خبر','Khabar Marsad'],
+ marsad_intro:['أرقام اليوم بجوار الجلسة السابقة وقبل أسبوع وقبل شهر. كل قراءة بمصدرها، وما لا مصدر له يبقى فارغاً.','Today\'s figures beside the previous session, a week ago and a month ago. Every reading has its source; anything unsourced stays blank.'],
+ m_prev:['السابق','Previous'],m_yday:['أمس','Yesterday'],m_week:['قبل أسبوع','A week ago'],m_month:['قبل شهر','A month ago'],m_lastmonth:['الشهر الماضي','Last month'],
+ m_gap:['لم يُوثَّق','Not documented'],m_est:['تقدير','Estimate'],m_est_week:['تقدير للأسبوع القادم','Estimate for the coming week'],
+ m_tier_a:['الدرجة أ: توقع منشور لجهة معتمدة','Tier A: published forecast by a recognised body'],m_tier_b:['الدرجة ب: نطاق إحصائي من خبر','Tier B: Khabar statistical range'],m_tier_c:['الدرجة ج: لا تقدير','Tier C: no estimate'],
+ m_until:['حتى','until'],m_more:['التحليل والتقدير والمصادر','Analysis, estimate and sources'],m_all:['المرصد كاملاً','Full Marsad'],
+ m_read:['قراءة خبر','Khabar reading'],m_stale:['قراءة قديمة','Stale reading'],m_measure:['المقياس','Measure'],
+ m_record:['سجل صدق التقديرات','Estimate track record'],m_not_advice:['التقديرات اجتهاد حسابي معلن الأساس، وليست نصيحة استثمارية.','Estimates are transparent calculations, not investment advice.']
 };
 const t=k=>(T[k]||[k,k])[LANG==='en'?1:0];
 const ZC={qatar:'var(--dawn)',gulf:'var(--sea)',egypt:'var(--nile)',world:'var(--ink)'};
@@ -49,7 +57,7 @@ function fmtDate(iso,withDay){if(!iso)return '';const [y,m,d]=iso.split('-').map
 function dohaParts(date){const p=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Qatar',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(date).map(x=>[x.type,x.value]));return p}
 function fmtTime(isoDT){const p=dohaParts(new Date(isoDT));const h=+p.hour,m=p.minute;if(LANG==='en')return `${String(h).padStart(2,'0')}:${m} Doha time`;const h12=h%12||12;return `${h12}:${m} ${h<12?'صباحاً':'مساءً'} بتوقيت الدوحة`}
 
-let BRIEF=null,HEAD=null,ADMIN={breaking:null,hidden:[]},ARCH=null,LEDGER=null,AUTOB=null;
+let BRIEF=null,HEAD=null,ADMIN={breaking:null,hidden:[],marsad_hidden:[]},ARCH=null,LEDGER=null,AUTOB=null,MARSAD=null;
 let VIEW='today',QUERY='',FILTER={};
 const saved=()=>store.get('khabar-saved',{});
 
@@ -57,8 +65,8 @@ const saved=()=>store.get('khabar-saved',{});
 const getJSON=u=>fetch(u,{cache:'no-cache'}).then(r=>{if(!r.ok)throw new Error(u+' '+r.status);return r.json()});
 async function load(briefId){
   const bu=briefId?`data/archive/${briefId}.json`:'data/brief.json';
-  const [b,h,a,ar,lg,ab]=await Promise.all([getJSON(bu),getJSON('data/headlines.json').catch(()=>null),getJSON('data/admin.json').catch(()=>null),getJSON('data/archive/index.json').catch(()=>null),getJSON('data/ledger.json').catch(()=>null),getJSON('data/breaking.json').catch(()=>null)]);
-  BRIEF=b;HEAD=h;if(a)ADMIN=Object.assign({breaking:null,hidden:[]},a);ARCH=ar;LEDGER=lg;AUTOB=ab;
+  const [b,h,a,ar,lg,ab,ms]=await Promise.all([getJSON(bu),getJSON('data/headlines.json').catch(()=>null),getJSON('data/admin.json').catch(()=>null),getJSON('data/archive/index.json').catch(()=>null),getJSON('data/ledger.json').catch(()=>null),getJSON('data/breaking.json').catch(()=>null),getJSON('data/marsad.json').catch(()=>null)]);
+  BRIEF=b;HEAD=h;if(a)ADMIN=Object.assign({breaking:null,hidden:[],marsad_hidden:[]},a);ARCH=ar;LEDGER=lg;AUTOB=ab;MARSAD=ms;
 }
 
 /* ---------- header ---------- */
@@ -72,7 +80,7 @@ function header(){
   $('#theme-btn').setAttribute('aria-label',dark?t('theme_light'):t('theme_dark'));
   document.title=LANG==='en'?'Khabar | Your daily brief from Doha to the world':'خبر | خلاصة يومك من الدوحة إلى العالم';
   const tabs=$('#tabs');tabs.textContent='';
-  [['today'],...ZONES.map(z=>[z,ZC[z]]),['roadmap'],['ledger'],['saved'],['about']].forEach(([id,c])=>{
+  [['today'],['marsad'],...ZONES.map(z=>[z,ZC[z]]),['roadmap'],['ledger'],['saved'],['about']].forEach(([id,c])=>{
     const a=el('a','tab');a.href='#'+id;if(c){const i=el('i');i.style.background=c==='var(--ink)'?'var(--deep-ink)':c;a.append(i)}a.append(t(id));
     if(id===VIEW||(id==='today'&&VIEW.startsWith('b-')))a.setAttribute('aria-current','page');tabs.append(a)});
   const cur=tabs.querySelector('[aria-current]');if(cur)cur.scrollIntoView({block:'nearest',inline:'center'});
@@ -197,6 +205,86 @@ function markets(){
     const chg=LANG==='en'&&m.chg_en?m.chg_en:m.chg;const e=el('em',m.dir);if(chg){const bd=el('bdi',null,chg);if(/[0-9]/.test(chg))bd.dir='ltr';e.append(bd,' · ')}e.append(m.note[LANG]);d.append(e,srcLine(m.src));g.append(d)});
   w.append(g);return w;
 }
+
+/* ---------- مرصد خبر ---------- */
+const numFmt=(v,dec)=>Number(v).toLocaleString('en-US',{minimumFractionDigits:dec,maximumFractionDigits:dec});
+const mItems=()=>MARSAD?MARSAD.indicators.filter(i=>!(ADMIN.marsad_hidden||[]).includes(i.id)):[];
+function mSrc(ids,label){const S=MARSAD.sources,box=el('div','src');box.append(el('span','lbl',(label||(ids.length>1?t('sources'):t('source')))+':'));
+  ids.forEach(id=>{const s=S[id];if(!s)return;const a=el('a',null,`${s[LANG]||s.ar} · ${fmtDate(s.date)}`);a.href=s.url;a.target='_blank';a.rel='noopener';box.append(a)});return box}
+function mLabel(i,k){if(k==='prev'){if(!i.prev)return t('m_prev');const d=(Date.parse(i.now.d)-Date.parse(i.prev.d))/864e5;return d===1?t('m_yday'):t('m_prev')}
+  if(k==='month')return i.cadence==='monthly'?t('m_lastmonth'):t('m_month');return t('m_week')}
+function ruler(i){
+  const pts=[['now',t('today')],['prev',mLabel(i,'prev')],['week',t('m_week')],['month',mLabel(i,'month')]].filter(([k])=>i[k]).map(([k,l])=>({k,l,v:i[k].v}));
+  if(pts.length<2)return null;
+  const vs=pts.map(p=>p.v),mn=Math.min(...vs),mx=Math.max(...vs),pad=(mx-mn)*.1||Math.abs(mx)*.01||1,lo=mn-pad,hi=mx+pad;
+  const W=320,L=8,R=W-8,rtl=LANG!=='en',x=v=>{const f=(v-lo)/(hi-lo);return rtl?R-f*(R-L):L+f*(R-L)};
+  const order=pts.slice().sort((a,b)=>x(a.v)-x(b.v)),row=new Map(),lastX=[-1e9,-1e9];
+  order.forEach(p=>{const px=x(p.v);let r=p.k==='now'?(px-lastX[0]>=46?0:px-lastX[1]>=46?1:0):(px-lastX[0]>=46?0:px-lastX[1]>=46?1:-1);if(r>=0){row.set(p,r);lastX[r]=px}});
+  let h=`<line x1="${L}" y1="34" x2="${R}" y2="34" stroke="var(--line)" stroke-width="2"/>`;
+  h+=`<text x="${rtl?R:L}" y="64" text-anchor="${rtl?'end':'start'}" class="end">${numFmt(mn,i.dec)}</text><text x="${rtl?L:R}" y="64" text-anchor="${rtl?'start':'end'}" class="end">${numFmt(mx,i.dec)}</text>`;
+  pts.slice().reverse().forEach(p=>{const cx=x(p.v).toFixed(1),main=p.k==='now';
+    h+=`<circle cx="${cx}" cy="34" r="${main?6.5:4}" fill="${main?'var(--dawn)':'var(--mute)'}"${main?' stroke="var(--surface)" stroke-width="2"':''}/>`;
+    if(row.has(p)){const y=row.get(p)?52:20;h+=`<text x="${cx}" y="${y}" text-anchor="middle"${main?' class="now"':''}>${p.l}</text>`}});
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox',`0 0 ${W} 70`);svg.setAttribute('class','ruler');svg.setAttribute('role','img');
+  svg.setAttribute('aria-label',pts.map(p=>`${p.l} ${numFmt(p.v,i.dec)}`).join('، '));svg.innerHTML=h;return svg;
+}
+function mDelta(i,k){
+  const p=i[k],d=el('div','md'+(p?'':' gap'));d.append(el('small',null,mLabel(i,k)));
+  if(!p){d.append(el('span','v',t('m_gap')));return d}
+  const b=el('bdi','v num',numFmt(p.v,i.dec));d.append(b);
+  const dir=p.pct>0?'up':p.pct<0?'down':'flat',pc=el('bdi','p num '+dir,(p.pct>0?'+':p.pct<0?'−':'±')+numFmt(Math.abs(p.pct),2)+'%');d.append(pc);
+  d.append(el('span','dt',fmtDate(p.d)));d.title=`${t('source')}: ${p.src.map(s=>MARSAD.sources[s]?MARSAD.sources[s][LANG]:s).join('، ')}`;return d;
+}
+function mEst(i){
+  const e=i.est,b=el('div','m-est '+e.tier);const k=el('div','k');k.append(el('span','tag',t('m_est')),t(e.tier==='a'?'m_tier_a':e.tier==='b'?'m_tier_b':'m_tier_c'));b.append(k);
+  if(e.tier==='c'){b.append(el('p',null,e.reason[LANG]));return b}
+  const r=el('p','rng');r.append(el('bdi','num',numFmt(e.lo,i.dec)),` ${L('إلى','to')} `,el('bdi','num',numFmt(e.hi,i.dec)),` ${i.unit[LANG]} · ${t('m_until')} ${fmtDate(e.until)}`);b.append(r,el('p','basis',e.basis[LANG]));
+  if(e.src)b.append(mSrc(e.src));return b;
+}
+function mCard(i,full){
+  const c=el('article','m-card');c.style.setProperty('--zc',ZC[i.zone]);c.id='m-'+i.id;
+  const hd=el('div','m-head');hd.append(el('span','m-name',i[LANG]),el('span','m-zone',t(i.zone)));c.append(hd);
+  const v=el('div','m-now');v.append(el('bdi','num',numFmt(i.now.v,i.dec)),el('span','unit',i.unit[LANG]));c.append(v);
+  const meta=el('p','m-meta');meta.append(`${i.measure[LANG]} · ${fmtDate(i.now.d)}`);if(i.stale)meta.append(el('span','stale',t('m_stale')));c.append(meta);
+  const rl=ruler(i);if(rl)c.append(rl);
+  const ds=el('div','m-deltas');(i.cadence==='monthly'?['month']:['prev','week','month']).forEach(k=>ds.append(mDelta(i,k)));c.append(ds);
+  const body=[];
+  if(i.note){const n=el('div','m-note');n.append(el('b',null,t('m_read')),el('p',null,i.note[LANG]),mSrc(i.note.src,t('basis')));body.push(n)}
+  body.push(mEst(i));
+  const ids=[...new Set(['now','prev','week','month'].filter(k=>i[k]).flatMap(k=>i[k].src))];body.push(mSrc(ids,t('sources')));
+  if(full){body.forEach(b=>c.append(b))}
+  else{const det=el('details','m-more');det.append(el('summary',null,t('m_more')));body.forEach(b=>det.append(b));c.append(det)}
+  return c;
+}
+function marsadHome(){
+  const it=mItems();if(!it.length)return null;
+  const w=el('section','zone marsad');w.id='marsad-home';
+  const h=el('div','zone-head');h.append(el('h2',null,t('marsad_t')));const a=el('a','count',t('m_all')+' ←');a.href='#marsad';if(LANG==='en')a.textContent=t('m_all')+' →';h.append(a);w.append(h);
+  w.append(el('p','mute m-intro',t('marsad_intro')));
+  const g=el('div','m-grid');it.forEach(i=>g.append(mCard(i,false)));w.append(g);return w;
+}
+function viewMarsad(){
+  const h=el('div','ed-head');h.append(el('span','eyebrow',L('مقارنات اليوم','Today\'s comparisons')),el('h1',null,t('marsad_t')),el('p','mute',t('marsad_intro')));
+  if(MARSAD)h.append(el('p','basis',`${t('updated')}: ${fmtDate(MARSAD.updated.slice(0,10))}، ${fmtTime(MARSAD.updated)}`.replace('، ',LANG==='en'?', ':'، ')));main.append(h);
+  const it=mItems();if(!it.length){main.append(el('p','empty',L('لم يُنشر المرصد بعد.','The Marsad has not been published yet.')));return}
+  ZONES.forEach(z=>{const zi=it.filter(i=>i.zone===z);if(!zi.length)return;const sec=el('section','zone');const hd=el('div','zone-head'),dot=el('span','dot');dot.style.background=ZC[z];
+    hd.append(dot,el('h2',null,t(z)));sec.append(hd);const g=el('div','m-grid full');zi.forEach(i=>g.append(mCard(i,true)));sec.append(g);main.append(sec)});
+  const m=el('section','zone');const mh=el('div','zone-head');mh.append(el('h2',null,L('كيف نحسب','How we calculate')));m.append(mh);
+  const ol=el('ol','pipeline');[
+   [L('القراءة الموثّقة','Documented reading'),L('كل رقم يُسجَّل مع اسم مصدره وتاريخ نشره ورابطه الأصلي. الخانة التي لا قراءة موثّقة لها تبقى «لم يُوثَّق».','Every figure is recorded with its outlet, publication date and original link. A slot with no documented reading stays "Not documented".')],
+   [L('المقارنة','Comparison'),L('السابق هو آخر جلسة قبل اليوم، و«قبل أسبوع» أقرب قراءة إلى 7 أيام (بين 4 و10)، و«قبل شهر» أقرب قراءة إلى 30 يوماً (بين 24 و38).','Previous is the last session before today; "a week ago" is the reading closest to 7 days (4 to 10); "a month ago" is closest to 30 days (24 to 38).')],
+   [L('المسطرة','The ruler'),L('تضع النقاط الأربع على مقياس واحد بين أدنى قيمة وأعلاها، فترى أين يقف رقم اليوم.','Places the four points on one scale between the lowest and highest value, so you can see where today stands.')],
+   [L('التقدير','Estimate'),L('نطاق لا رقم واحد. الدرجة ب: متوسط الحركة اليومية المطلقة في آخر 20 جلسة × جذر 5 جلسات حول آخر قيمة، ولا يُحسب قبل 15 جلسة موثّقة.','A range, never a single number. Tier B: average absolute daily move over the last 20 sessions × √5 sessions around the latest value, and only after 15 documented sessions.')],
+   [L('المحاسبة','Accountability'),L('يُحفظ كل تقدير، وعند انقضاء مدته يُقارن بأول قراءة موثّقة بعدها، وتظهر النتيجة هنا.','Every estimate is stored; when its period ends it is compared with the first documented reading after it, and the result appears here.')]
+  ].forEach(([a,b])=>{const li=el('li');li.append(el('b',null,a),el('p',null,b));ol.append(li)});m.append(ol);
+  const R=MARSAD.record||{};const rh=el('h3',null,t('m_record'));m.append(rh);
+  m.append(el('p','mute',R.scored?L(`أصاب ${R.hits} من ${R.scored} تقديراً انقضت مدته نطاقه المعلن.`,`${R.hits} of ${R.scored} matured estimates landed inside their stated range.`):L('لم تنقضِ مدة أي تقدير بعد. أول محاسبة تظهر هنا بعد أسبوع من أول تقدير.','No estimate has matured yet. The first result appears here a week after the first estimate.')));
+  if((R.items||[]).length){const ul=el('ul','drops');R.items.forEach(f=>{const i=MARSAD.indicators.find(x=>x.id===f.id);if(!i)return;const li=el('li');
+    li.append(el('span','stage',f.result?(f.result.hit?L('أصاب','Hit'):L('أخطأ','Missed')):L('قيد الانتظار','Pending')));
+    li.append(el('p',null,`${i[LANG]}: ${numFmt(f.lo,i.dec)} ${L('إلى','to')} ${numFmt(f.hi,i.dec)} · ${L('صدر','issued')} ${fmtDate(f.made)} · ${t('m_until')} ${fmtDate(f.until)}`));
+    if(f.result)li.append(el('small',null,`${L('القراءة الفعلية','Actual')}: ${numFmt(f.result.v,i.dec)} (${fmtDate(f.result.d)})`));ul.append(li)});m.append(ul)}
+  m.append(el('p','basis',t('m_not_advice')));main.append(m);
+}
 function searchBox(){
   const s=el('label','search');s.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
   const i=el('input');i.type='search';i.id='q';i.placeholder=t('search');i.setAttribute('aria-label',t('search'));i.value=QUERY;
@@ -217,6 +305,7 @@ function renderList(){if(!listHost)return;listHost.textContent='';let any=false;
 function viewToday(){
   main.append(edHead());
   const th=el('div','thread');th.append(el('b',null,t('thread')),el('p',null,BRIEF.thread[LANG]),srcLine(BRIEF.thread.src,t('basis')));main.append(th);
+  if(!VIEW.startsWith('b-')){const mh=marsadHome();if(mh)main.append(mh)}
   main.append(markets(),searchBox());
   listHost=el('div');listHost.style.cssText='display:grid;gap:28px';main.append(listHost);renderList();
   main.append(allSources());
@@ -301,6 +390,7 @@ function render(){
   else if(VIEW==='roadmap')viewRoadmap();
   else if(VIEW==='saved')viewSaved();
   else if(VIEW==='ledger')viewLedger();
+  else if(VIEW==='marsad')viewMarsad();
   else if(VIEW==='about')viewAbout();
   else viewToday();
   if(render.keep)scrollTo(0,y);render.keep=true;

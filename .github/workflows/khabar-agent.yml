@@ -1,5 +1,5 @@
 name: Khabar agent
-# «خبر»: الوكيل المستقل. يكتب الخلاصتين، ويرصد العاجل، ويفحص كل خلاصة تُنشر ويحدّث سجل الشفافية.
+# «خبر»: الوكيل المستقل. يكتب الخلاصتين، ويرصد العاجل، ويفحص كل خلاصة تُنشر ويحدّث سجل الشفافية ومرصد المقارنات.
 on:
   schedule:
     - cron: '30 2 * * *'    # خلاصة الصباح 5:30 بتوقيت الدوحة
@@ -7,7 +7,7 @@ on:
     - cron: '*/20 * * * *'  # رصد العاجل
   push:
     branches: [main]
-    paths: ['khabar/data/brief.json']
+    paths: ['khabar/data/brief.json', 'khabar/data/marsad/series.json']
   workflow_dispatch:
     inputs:
       mode:
@@ -50,6 +50,9 @@ jobs:
         run: python3 khabar/agent/agent.py ${{ steps.m.outputs.mode }}
       - if: steps.m.outputs.mode == 'verify'
         run: python3 khabar/agent/verify.py
+      - name: Marsad (مرصد المقارنات)
+        if: steps.m.outputs.mode == 'verify' || steps.m.outputs.mode == 'brief'
+        run: python3 khabar/agent/marsad.py build
       - name: Commit if changed
         if: steps.m.outputs.mode != 'skip'
         run: |
