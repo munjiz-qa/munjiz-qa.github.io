@@ -1,6 +1,6 @@
 'use strict';
-/* أثارة — موسوعة القرآن الذكية. One codebase for the claude.ai build and the installable PWA build. */
-const BUILD = window.ATHARA_BUILD || 'pwa';
+/* مشكاة — موسوعة القرآن الذكية. One codebase for the claude.ai build and the installable PWA build. */
+const BUILD = window.MISHKAT_BUILD || 'pwa';
 const IS_PWA = BUILD === 'pwa';
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
@@ -16,8 +16,8 @@ const plural = (k, one, few, many) => k === 1 ? one : (k >= 3 && k <= 10 ? few :
 
 /* ================= storage: local first, synced to the viewer's private cloud record when available */
 const LS = {
-  get(k, d) { try { const v = localStorage.getItem('athara:' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
-  set(k, v) { try { localStorage.setItem('athara:' + k, JSON.stringify(v)); } catch (e) {} },
+  get(k, d) { try { const v = localStorage.getItem('mishkat:' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('mishkat:' + k, JSON.stringify(v)); } catch (e) {} },
 };
 const ST = { bookmarks: [], last: null, hifz: {}, prefs: { tafsir: 'muyassar', size: 1, theme: 'auto' }, updated: 0 };
 Object.assign(ST, LS.get('state', {}));
@@ -84,7 +84,7 @@ const itemAyat = it => it ? (it.a || (it.r ? it.r.flatMap(([s, e]) => { const o 
 /* ================= navigation */
 const NAV = [
   ['الأساس', [['home','الرئيسية','i-home'],['mushaf','المصحف','i-book'],['stats','الإحصاء العام','i-chart'],['words','المعجم المفهرس','i-abc'],['topics','الموسوعة الموضوعية','i-grid']]],
-  ['الذكاء', [['search','البحث بالمعنى','i-search',1],['ask','اسأل أثارة','i-spark',1]]],
+  ['الذكاء', [['search','البحث بالمعنى','i-search',1],['ask','اسأل مشكاة','i-spark',1]]],
   ['الحفظ والتلاوة', [['hifz','الحفظ والتسميع','i-mic',1],['saved','محفوظاتي','i-bookmark']]],
   ['الاستكشاف', [['map','أطلس القرآن','i-map',1],['timeline','الخط الزمني','i-time',1],['graph','شبكة المعرفة','i-graph',1]]],
   ['التطبيق', [['guide','دليل التطبيق','i-info',1],['settings','الإعدادات','i-gear'],['about','المنهج والمصادر','i-info'],['admin','لوحة الإدارة','i-shield']]],
@@ -128,7 +128,7 @@ function home() {
   const due = dueList();
   const F = [
     ['search','i-search','البحث بالمعنى','اكتب الفكرة بلغتك، فتظهر الآيات ذات الصلة مرتبةً بالأقرب، مع التفسير الميسر.'],
-    ['ask','i-spark','اسأل أثارة', IS_PWA ? 'مساعد بحث يجمع لك الآيات وأقوال المفسرين والمداخل الموضوعية في سؤالك، على جهازك.' : 'مساعد ذكي يجيب من الآيات والتفاسير المعتمدة ويذكر المواضع، ولا يفتي.'],
+    ['ask','i-spark','اسأل مشكاة', IS_PWA ? 'مساعد بحث يجمع لك الآيات وأقوال المفسرين والمداخل الموضوعية في سؤالك، على جهازك.' : 'مساعد ذكي يجيب من الآيات والتفاسير المعتمدة ويذكر المواضع، ولا يفتي.'],
     ['hifz','i-mic','الحفظ والتسميع','إخفاء تدريجي، واختبار بالكتابة، وتسميع بالصوت، وجدول مراجعة يتذكّر مستواك.'],
     ['map','i-map','أطلس القرآن','خريطة تفاعلية للمدن والقرى والأماكن الواردة في القرآن مع آياتها.'],
     ['timeline','i-time','الخط الزمني','الأنبياء على ترتيب المؤرخين، وأحداث السيرة بسنواتها من الآيات.'],
@@ -146,13 +146,13 @@ function home() {
       ${last != null ? `<a class="row" href="#a${Q.ayat[last][0]}-${Q.ayat[last][1]}"><span class="t">أكمل القراءة من <b>${esc(ref(last))}</b></span><span class="n">←</span></a>` : `<p class="muted small" style="margin:0">ابدأ القراءة من <a href="#mushaf">المصحف</a>، وسيحفظ التطبيق موضعك تلقائياً.</p>`}
       <a class="row" href="#hifz"><span class="t">مقاطع للمراجعة اليوم</span><span class="n">${n(due.length)}</span></a>
       <a class="row" href="#saved"><span class="t">الآيات المحفوظة في علاماتك</span><span class="n">${n(ST.bookmarks.length)}</span></a>
-      <div class="pill-row" style="margin-top:4px">${cloud ? '<span class="chip ok">تقدّمك محفوظ في حسابك ويتزامن بين أجهزتك</span>' : '<span class="chip">تقدّمك محفوظ على هذا الجهاز</span>'}${IS_PWA && installEvt ? '<button class="chip acc" id="homeInst">ثبّت أثارة على جهازك</button>' : ''}</div>
+      <div class="pill-row" style="margin-top:4px">${cloud ? '<span class="chip ok">تقدّمك محفوظ في حسابك ويتزامن بين أجهزتك</span>' : '<span class="chip">تقدّمك محفوظ على هذا الجهاز</span>'}${IS_PWA && installEvt ? '<button class="chip acc" id="homeInst">ثبّت مشكاة على جهازك</button>' : ''}</div>
     </section>
   </div>
   <div class="grid tiles">
     ${[['سورة',Q.surahs.length],['آية',Q.ayat.length],['كلمة',W.w.length],['جذراً',W.roots.length],['كتب تفسير',TF.length]].map(([k,v]) => `<div class="tile"><b>${n(v)}</b><span>${k}</span></div>`).join('')}
   </div>
-  <section class="stack tight"><div class="toolbar" style="justify-content:space-between"><h2>ما الجديد في أثارة</h2><a class="btn" href="#guide">دليل التطبيق والمتطلبات</a></div>
+  <section class="stack tight"><div class="toolbar" style="justify-content:space-between"><h2>ما الجديد في مشكاة</h2><a class="btn" href="#guide">دليل التطبيق والمتطلبات</a></div>
     <div class="grid feat">${F.map(([h,ic,t,d]) => `<a class="fcard" href="#${h}"><span class="ic"><svg><use href="#${ic}"/></svg></span><b>${t}</b><p>${d}</p></a>`).join('')}</div></section>
   <section class="stack tight"><h2>الموسوعة الموضوعية</h2>
     <div class="grid cats">${T.slice(0, 8).map(c => `<a class="cat" href="#t-${c.id}"><span class="eyebrow">${n(c.items.length)} مدخلاً</span><h3>${c.title}</h3><p>${esc(c.intro)}</p></a>`).join('')}</div>
@@ -416,7 +416,7 @@ function snippet(text, terms) {
 function search(q0) {
   const q = typeof q0 === 'string' ? q0 : ($('#qinput').value || '');
   const EX = ['الصبر على البلاء','بر الوالدين','آداب الكلام مع الناس','خلق السماوات والأرض','الرزق والتوكل','التوبة والمغفرة','حقوق اليتيم'];
-  V(`<div class="stack"><div><div class="eyebrow">البحث بالمعنى</div><h1>ابحث بالفكرة، لا بالحرف فقط</h1><p class="lead">اكتب ما تريد بلغتك المعتادة. يبحث «أثارة» في نص الآيات وفي معانيها من التفسير الميسر، ويوسّع بحثك بالجذور القرآنية والمترادفات، ثم يرتب الآيات بالأقرب إلى سؤالك. يعمل دون إنترنت.</p></div>
+  V(`<div class="stack"><div><div class="eyebrow">البحث بالمعنى</div><h1>ابحث بالفكرة، لا بالحرف فقط</h1><p class="lead">اكتب ما تريد بلغتك المعتادة. يبحث «مشكاة» في نص الآيات وفي معانيها من التفسير الميسر، ويوسّع بحثك بالجذور القرآنية والمترادفات، ثم يرتب الآيات بالأقرب إلى سؤالك. يعمل دون إنترنت.</p></div>
   <form class="toolbar" id="sform"><input id="sq" type="search" value="${esc(q)}" placeholder="مثال: الصبر على البلاء"><div class="seg" id="smode"><button type="button" aria-pressed="true" data-m="meaning">بالمعنى</button><button type="button" aria-pressed="false" data-m="exact">بالنص الحرفي</button></div><button class="btn pri">بحث</button></form>
   <div class="suggest">${EX.map(x => `<button type="button" data-q="${x}">${x}</button>`).join('')}</div>
   <div id="sres"></div></div>`);
@@ -433,7 +433,7 @@ function search(q0) {
     $('#sres').innerHTML = `<div class="stack"><section class="panel stack tight"><div class="pill-row"><span class="chip acc">${n(r.total)} آية ذات صلة</span>${r.concepts.map(c => `<span class="chip gold">مفهوم: ${esc(c)}</span>`).join('')}${r.roots.slice(0, 8).map(ri => `<a class="chip" href="#root${ri}">الجذر ${rootFmt(W.roots[ri][0])}</a>`).join('')}</div>
       <p class="muted small" style="margin:0">مرتبة بالأقرب. يظهر تحت كل آية معناها من التفسير الميسر، والكلمات التي طابقت بحثك مظللة.</p></section>
       <section class="panel"><div id="shits"></div></section>
-      ${true ? `<section class="panel"><div class="toolbar"><span>${IS_PWA ? 'أتريد الآيات مع أقوال المفسرين والمداخل الموضوعية معاً؟' : 'أتريد جواباً مركّزاً مع الأدلة؟'}</span><a class="btn pri" href="#ask" id="toAsk"><svg><use href="#i-spark"/></svg>اسأل أثارة عن «${esc(raw)}»</a></div></section>` : ''}</div>`;
+      ${true ? `<section class="panel"><div class="toolbar"><span>${IS_PWA ? 'أتريد الآيات مع أقوال المفسرين والمداخل الموضوعية معاً؟' : 'أتريد جواباً مركّزاً مع الأدلة؟'}</span><a class="btn pri" href="#ask" id="toAsk"><svg><use href="#i-spark"/></svg>اسأل مشكاة عن «${esc(raw)}»</a></div></section>` : ''}</div>`;
     const ta = $('#toAsk'); if (ta) ta.onclick = () => { pendingAsk = raw; };
     if (!r.ids.length) { $('#shits').innerHTML = '<p class="muted">لم أجد آيات قريبة. جرّب كلمة أخرى قريبة من المعنى.</p>'; return; }
     renderOcc($('#shits'), r.ids, null, 20, i => `<p class="snip">${snippet((r.mu[Q.ayat[i][0]] || {})[Q.ayat[i][1]] || '', r.terms)}</p><div class="why"><span class="chip">درجة القرب ${n(Math.max(1, Math.round(r.score[i] / top * 100)))}٪</span></div>`);
@@ -454,7 +454,7 @@ function search(q0) {
 /* ================= ask (claude.ai build): Claude answers from the app's own verified texts through page tools */
 let pendingAsk = null, chatTurns = [], askCtl = null;
 const BOOKS = () => TF.map(b => `${b.key}: ${b.title} (${b.author})`).join('، ');
-const RULES = () => `أنت «أثارة»، مساعد بحثي في القرآن الكريم داخل تطبيق يحوي نص مصحف المدينة النبوية (رواية حفص) وثمانية كتب تفسير: ${BOOKS()}، وفهارس موضوعية وإحصاءات صرفية.
+const RULES = () => `أنت «مشكاة»، مساعد بحثي في القرآن الكريم داخل تطبيق يحوي نص مصحف المدينة النبوية (رواية حفص) وثمانية كتب تفسير: ${BOOKS()}، وفهارس موضوعية وإحصاءات صرفية.
 القواعد:
 ١. اكتب بالعربية الفصحى الواضحة، بصياغة علمية مهذبة وموجزة.
 ٢. لا تذكر نص آية من حفظك أبداً؛ استعمل الأدوات لجلب النص، وانقله كما جاء حرفياً في سطر يبدأ بـ «> ».
@@ -506,7 +506,7 @@ function md(text) {
 }
 async function askOffline() {
   const EX = ['الصبر عند المصيبة','الجنة وصفاتها','قصة يوسف','آية الوضوء','الخوف والخشية','حقوق اليتيم'];
-  V(`<div class="stack" style="max-width:900px"><div><div class="eyebrow">مساعد البحث</div><h1>اسأل أثارة</h1><p class="lead">اكتب سؤالك أو موضوعك، فيجمع لك مساعد البحث من داخل التطبيق: أقرب الآيات مع تفسيرها الميسر، والمداخل الموضوعية، وإحصاء الألفاظ، وأقوال المفسرين في الآية الأقرب. يعمل كله على جهازك دون إنترنت ودون أي خدمة خارجية.</p></div>
+  V(`<div class="stack" style="max-width:900px"><div><div class="eyebrow">مساعد البحث</div><h1>اسأل مشكاة</h1><p class="lead">اكتب سؤالك أو موضوعك، فيجمع لك مساعد البحث من داخل التطبيق: أقرب الآيات مع تفسيرها الميسر، والمداخل الموضوعية، وإحصاء الألفاظ، وأقوال المفسرين في الآية الأقرب. يعمل كله على جهازك دون إنترنت ودون أي خدمة خارجية.</p></div>
   <form class="toolbar" id="oform"><input id="oq" type="search" placeholder="مثال: ما الآيات التي تتحدث عن الصبر عند المصيبة؟"><button class="btn pri"><svg><use href="#i-spark"/></svg>ابحث وأجب</button></form>
   <div class="suggest" id="osug">${EX.map(x => `<button type="button" data-q="${esc(x)}">${esc(x)}</button>`).join('')}</div><div id="ores"></div>
   <div class="note">المساعد يجمع النصوص ويرتّبها، ولا يؤلّف جواباً ولا يفتي. اقرأ الآيات في سياقها، وارجع إلى أهل العلم في الأحكام.</div></div>`);
@@ -532,7 +532,7 @@ async function askOffline() {
 }
 async function ask() {
   const EX = ['ما الآيات التي تتحدث عن الصبر عند المصيبة؟ وما معناها؟','كم مرة ورد ذكر الجنة في القرآن، وما أبرز صفاتها؟','لخّص قصة يوسف عليه السلام من القرآن بإيجاز','ما أقوال المفسرين في آية الوضوء؟','ما الفرق بين الخوف والخشية في الاستعمال القرآني؟'];
-  V(`<div class="stack" style="max-width:860px"><div><div class="eyebrow">مساعد ذكي</div><h1>اسأل أثارة</h1><p class="lead">اكتب سؤالك، فيبحث المساعد في نصوص هذا التطبيق نفسها: الآيات، والتفاسير الثمانية، والفهارس الموضوعية، والإحصاءات، ثم يجيب ويذكر مواضع الآيات. اضغط أي مرجع لفتح الآية وتفسيرها.</p></div>
+  V(`<div class="stack" style="max-width:860px"><div><div class="eyebrow">مساعد ذكي</div><h1>اسأل مشكاة</h1><p class="lead">اكتب سؤالك، فيبحث المساعد في نصوص هذا التطبيق نفسها: الآيات، والتفاسير الثمانية، والفهارس الموضوعية، والإحصاءات، ثم يجيب ويذكر مواضع الآيات. اضغط أي مرجع لفتح الآية وتفسيرها.</p></div>
   <div class="note">المساعد أداة للبحث والتدبر، وليس مفتياً. راجع النصوص المذكورة، وارجع إلى أهل العلم في الأحكام.</div>
   <div class="chat" id="chat"></div>
   <div class="suggest" id="asug">${EX.map(x => `<button type="button" data-q="${esc(x)}">${esc(x)}</button>`).join('')}</div>
@@ -820,7 +820,7 @@ async function makeCard(i) {
   const lh = size * 1.9, top = S / 2 - lines.length * lh / 2 + size * .6 - 30;
   lines.forEach((l, k) => x.fillText(l, S / 2, top + k * lh));
   x.font = '34px "Readex Pro", sans-serif'; x.fillStyle = '#e3a440'; x.fillText(`سورة ${Q.surahs[a[0]-1].name} · الآية ${n(a[1])}`, S / 2, S - 170);
-  x.font = '700 44px "Aref Ruqaa", serif'; x.fillStyle = '#f5f2ea'; x.textAlign = 'left'; x.fillText('أثارة', 120, 140);
+  x.font = '700 44px "Aref Ruqaa", serif'; x.fillStyle = '#f5f2ea'; x.textAlign = 'left'; x.fillText('مشكاة', 120, 140);
   return new Promise(r => c.toBlob(r, 'image/png'));
 }
 async function cardDrawer(i) {
@@ -850,9 +850,9 @@ function settings() {
   <section class="panel stack tight"><h3>التثبيت والعمل دون إنترنت</h3>
     ${IS_PWA ? `<p style="margin:0">التطبيق يحفظ نص المصحف والإحصاءات والموسوعة والتفسير الميسر وغريب القرآن تلقائياً، فيعمل دون إنترنت. ولتنزيل التفاسير الكبيرة كلها (نحو ٦٠ ميغابايت) اضغط الزر.</p>
       <div class="toolbar"><button class="btn pri" id="dlAll">تنزيل كل التفاسير للعمل دون إنترنت</button><span id="dlStat" class="muted small"></span></div><div class="meter"><i id="dlBar" style="width:0"></i></div>
-      <div class="toolbar"><button class="btn" id="instBtn" ${installEvt ? '' : 'hidden'}>ثبّت أثارة على هذا الجهاز</button></div>
+      <div class="toolbar"><button class="btn" id="instBtn" ${installEvt ? '' : 'hidden'}>ثبّت مشكاة على هذا الجهاز</button></div>
       <p class="muted small" style="margin:0">على آيفون: افتح الرابط في سفاري، ثم «مشاركة» ثم «إضافة إلى الشاشة الرئيسية». على أندرويد والكمبيوتر: زر التثبيت في المتصفح أو الزر أعلاه.</p>`
-      : `<p style="margin:0">هذه نسخة أثارة على claude.ai. توجد نسخة قابلة للتثبيت على الجوال والكمبيوتر تعمل دون إنترنت وتدعم التسميع بالصوت والاستماع للتلاوة.</p>`}
+      : `<p style="margin:0">هذه نسخة مشكاة على claude.ai. توجد نسخة قابلة للتثبيت على الجوال والكمبيوتر تعمل دون إنترنت وتدعم التسميع بالصوت والاستماع للتلاوة.</p>`}
   </section>
   <section class="panel stack tight"><h3>بياناتك</h3><p class="muted small" style="margin:0">${cloud ? 'تقدّمك محفوظ في حسابك (خاص بك ولا يراه غيرك) ونسخة منه على هذا الجهاز.' : 'تقدّمك محفوظ على هذا الجهاز. انسخ الرمز لنقله إلى جهاز آخر.'}</p>
     <div class="toolbar"><button class="btn" id="expBtn">نسخ رمز النقل</button><button class="btn" id="impBtn">لصق رمز من جهاز آخر</button><button class="btn" id="clrBtn">مسح كل بياناتي</button></div>
@@ -868,7 +868,7 @@ function settings() {
   const ib = $('#instBtn'); if (ib) ib.onclick = async () => { if (!installEvt) return; installEvt.prompt(); await installEvt.userChoice; installEvt = null; ib.hidden = true; };
   const da = $('#dlAll'); if (da) da.onclick = async () => {
     const files = TF.flatMap(b => Array.from({ length: b.chunks }, (_, k) => `data/t/${b.key}/${k}.txt`)); let done = 0; da.disabled = true;
-    const cache = await caches.open('athara-data-v2');
+    const cache = await caches.open('mishkat-data-v1');
     for (const f of files) { try { if (!(await cache.match(f))) { const r = await fetch(f); if (r.ok) await cache.put(f, r); } } catch (e) {} done++; $('#dlBar').style.width = (done / files.length * 100) + '%'; $('#dlStat').textContent = `${n(done)} من ${n(files.length)} ملفاً`; }
     $('#dlStat').textContent = 'اكتمل التنزيل. التفاسير الثمانية متاحة دون إنترنت.'; da.disabled = false;
   };
@@ -880,10 +880,10 @@ function applyPrefs() {
   st.textContent = `.ayah{font-size:calc(1.5rem * ${ST.prefs.size})}@media (max-width:640px){.ayah{font-size:calc(1.32rem * ${ST.prefs.size})}}`;
 }
 
-const CONTACT = `<section class="panel stack tight"><h2>التواصل</h2><p style="margin:0">يصدر تطبيق «أثارة» عن <b>منجز</b>. للملاحظات والاقتراحات وتصحيح أي خطأ:</p><dl class="kv"><dt>البريد</dt><dd><span dir="ltr">munijizqa@gmail.com</span> <button class="btn ghost" data-copy="munijizqa@gmail.com">نسخ</button></dd><dt>الهاتف وواتساب</dt><dd><span dir="ltr">+974 5160 0498</span> <button class="btn ghost" data-copy="+97451600498">نسخ</button></dd></dl></section>`;
+const CONTACT = `<section class="panel stack tight"><h2>التواصل</h2><p style="margin:0">يصدر تطبيق «مشكاة» عن <b>منجز</b>. للملاحظات والاقتراحات وتصحيح أي خطأ:</p><dl class="kv"><dt>البريد</dt><dd><span dir="ltr">munijizqa@gmail.com</span> <button class="btn ghost" data-copy="munijizqa@gmail.com">نسخ</button></dd><dt>الهاتف وواتساب</dt><dd><span dir="ltr">+974 5160 0498</span> <button class="btn ghost" data-copy="+97451600498">نسخ</button></dd></dl></section>`;
 /* ================= about */
 function about() {
-  V(`<div class="stack" style="max-width:860px"><div><div class="eyebrow">المنهج والمصادر</div><h1>كيف بُنيت أثارة</h1></div>
+  V(`<div class="stack" style="max-width:860px"><div><div class="eyebrow">المنهج والمصادر</div><h1>كيف بُنيت مشكاة</h1></div>
   <section class="panel stack"><h2>النص القرآني</h2><p style="margin:0">النص المعروض هو نص مصحف المدينة النبوية برواية حفص عن عاصم، من إصدار مجمع الملك فهد لطباعة المصحف الشريف (الإصدار ١٣). وقد قوبل رسم كل آية بنص مدونة القرآن العربية المبني على نسخة «تنزيل» الموثقة، فتطابقا في ${n(Q.ayat.length - 2)} آية، والفرق في الآيتين الباقيتين فرق في رسم الياء الصغيرة لا في القراءة.</p></section>
   <section class="panel stack"><h2>طريقة العدّ</h2><ul style="margin:0;padding-inline-start:1.2em">
    <li><b>الكلمة:</b> بحسب تقسيم مدونة القرآن الصرفية (${n(W.w.length)} كلمة). وتختلف كتب علوم القرآن في عدد الكلمات لاختلافها في عدّ الحروف المتصلة والمنفصلة.</li>
@@ -892,7 +892,7 @@ function about() {
    <p class="note" style="margin:0">لا يُبنى على هذه الأعداد ما يُسمّى «الإعجاز العددي» دون منهج علمي منضبط، لأن نتائج العدّ تتغير بتغير طريقته.</p></section>
   <section class="panel stack"><h2>المزايا الذكية وحدودها</h2><ul style="margin:0;padding-inline-start:1.2em">
    <li><b>البحث بالمعنى:</b> يعمل على الجهاز نفسه، ويطابق كلماتك مع نص الآيات والتفسير الميسر بعد ردّها إلى أصولها، ويوسّعها بالجذور القرآنية وبقاموس مفاهيم. وهو ترتيب حسابي للقرب لا يغني عن التدبر.</li>
-   <li><b>اسأل أثارة:</b> ${IS_PWA ? 'مساعد بحث يجمع النصوص من داخل التطبيق ويرتبها، ولا يؤلف جواباً. ولا يُعتمد عليه في الفتوى.' : 'يجيب بنموذج Claude من نصوص التطبيق فقط عبر أدوات بحث داخلية، ويذكر المواضع لتتحقق منها. ولا يُعتمد عليه في الفتوى.'}</li>
+   <li><b>اسأل مشكاة:</b> ${IS_PWA ? 'مساعد بحث يجمع النصوص من داخل التطبيق ويرتبها، ولا يؤلف جواباً. ولا يُعتمد عليه في الفتوى.' : 'يجيب بنموذج Claude من نصوص التطبيق فقط عبر أدوات بحث داخلية، ويذكر المواضع لتتحقق منها. ولا يُعتمد عليه في الفتوى.'}</li>
    <li><b>التسميع بالصوت:</b> يعتمد على خدمة التعرف على الكلام في المتصفح، وقد يخطئ في بعض الكلمات، فيُستعمل للمراجعة لا للإجازة.</li>
    <li><b>الأطلس والخط الزمني:</b> تعيين الأماكن غير المقطوع بها وترتيب الأنبياء تقريبيان، ونُبّه على ذلك في مواضعه.</li></ul></section>
   <section class="panel stack"><h2>كتب التفسير والمعاني</h2><div class="list">${TF.map(b => `<div class="row" style="cursor:default"><span class="t"><b>${b.title}</b> <span class="muted">· ${b.author}</span></span><span class="n">${n(b.covered)} آية</span></div>`).join('')}</div></section>
@@ -906,16 +906,16 @@ function about() {
 
 
 /* ================= guide: what the app offers, roles, requirements and roadmap (all in the one link) */
-function athara() { const i = idxOf(46, 4), a = Q.ayat[i]; const ws = []; for (let k = 0; k < a[3]; k++) ws.push(W.w[a[2]+k][0]); const k = ws.findIndex(w => norm(w).replace(/ا/g, '').includes('ثره')); return k > 0 ? ws.slice(k - 1, k + 3).join(' ') : ''; }
+function mishkatAyah() { const i = idxOf(24, 35), a = Q.ayat[i]; const ws = []; for (let k = 0; k < a[3]; k++) ws.push(W.w[a[2]+k][0]); const k = ws.findIndex(w => norm(w).replace(/ا/g, '').includes('مشكو')); return k > 1 ? ws.slice(k - 2, k + 3).join(' ') : ''; }
 function guide() {
   const F = [
-    IS_PWA ? ['اسأل أثارة (مساعد البحث)','تكتب سؤالك فيجمع لك من داخل التطبيق أقرب الآيات مع تفسيرها، وأقوال السعدي وابن كثير والقرطبي في أقربها، والمداخل الموضوعية، وإحصاء الألفاظ. يعمل على جهازك دون إنترنت ودون أي خدمة خارجية.'] : ['اسأل أثارة (مساعد ذكي)','يجيب عن أسئلتك بالعربية من نصوص التطبيق نفسها: يبحث في الآيات، ويقرأ التفاسير الثمانية، ويستخرج الإحصاءات، ثم يكتب جواباً منظماً كل آية فيه رابط إلى موضعها. لا يذكر آية من حفظه، ولا يفتي.'],
+    IS_PWA ? ['اسأل مشكاة (مساعد البحث)','تكتب سؤالك فيجمع لك من داخل التطبيق أقرب الآيات مع تفسيرها، وأقوال السعدي وابن كثير والقرطبي في أقربها، والمداخل الموضوعية، وإحصاء الألفاظ. يعمل على جهازك دون إنترنت ودون أي خدمة خارجية.'] : ['اسأل مشكاة (مساعد ذكي)','يجيب عن أسئلتك بالعربية من نصوص التطبيق نفسها: يبحث في الآيات، ويقرأ التفاسير الثمانية، ويستخرج الإحصاءات، ثم يكتب جواباً منظماً كل آية فيه رابط إلى موضعها. لا يذكر آية من حفظه، ولا يفتي.'],
     ['البحث بالمعنى','تكتب الفكرة بلغتك (مثل: بر الوالدين)، فيبحث في الآيات وفي معانيها من التفسير الميسر، ويوسّع البحث بالجذور القرآنية وقاموس مفاهيم، ويرتب النتائج بالأقرب. يعمل على الجهاز دون خادم.'],
     ['الحفظ والتسميع','خمسة أوضاع: قراءة، وأوائل الكلمات، وإخفاء كامل، وتسميع بالكتابة يصحح كلمةً كلمة، وتسميع بالصوت. وجدول مراجعة بالتكرار المتباعد يحدد موعد مراجعة كل مقطع حسب تقييمك.'],
     ['أطلس القرآن','خريطة تفاعلية مرسومة داخل التطبيق لاثنين وعشرين موضعاً قرآنياً، تفرّق بين الموضع المعروف والمختلف في تعيينه، ومن كل موضع إلى آياته وأقوامه وأنبيائه.'],
     ['الخط الزمني','الأنبياء في عصورهم على ترتيب ابن كثير، وواحد وعشرون حدثاً من السيرة بسنواتها على المشهور مع آياتها.'],
     ['شبكة المعرفة','خريطة علاقات تربط الأنبياء بأقوامهم وديارهم وصلات قرابتهم والسور التي ذُكروا فيها أكثر.'],
-    ['بطاقة الآية','صورة مربعة جاهزة للمشاركة بخط المصحف وهوية أثارة، تُحفظ بضغطة.'],
+    ['بطاقة الآية','صورة مربعة جاهزة للمشاركة بخط المصحف وهوية مشكاة، تُحفظ بضغطة.'],
     IS_PWA ? ['يعمل دون إنترنت ويُثبَّت','بعد أول فتح يعمل التطبيق دون اتصال، ويُثبَّت على الجوال والكمبيوتر كأي تطبيق. ومعه التسميع بالصوت والاستماع إلى تلاوة الشيخ مشاري العفاسي.'] : ['متابعتك محفوظة في حسابك','العلامات وموضع القراءة وجدول الحفظ تُحفظ في حسابك على claude.ai وتتزامن بين الجوال والكمبيوتر، وهي خاصة بك لا يراها غيرك.'],
     ['لوحة الإدارة', IS_PWA ? 'بكلمة مرور: إعلان عام، وآية مختارة للصفحة الرئيسية، وتقرير سلامة البيانات. يُحفظ التعديل في ملف config.json يُرفع إلى الموقع.' : 'لمالك الموسوعة وحده: إعلان عام يظهر لكل الزوار، وآية مختارة للصفحة الرئيسية، وتقرير سلامة البيانات.'],
   ];
@@ -929,13 +929,13 @@ function guide() {
   ];
   const C = IS_PWA ? [
     ['الاستضافة الحالية','مجاناً','GitHub Pages على حساب منجز.'],
-    ['نطاق خاص (مثل athara.app)','نحو ١٠ إلى ٢٠ دولاراً سنوياً','اختياري، ويُربط بالاستضافة نفسها.'],
+    ['نطاق خاص (مثل mishkat.app)','نحو ١٠ إلى ٢٠ دولاراً سنوياً','اختياري، ويُربط بالاستضافة نفسها.'],
     ['متجر Google Play','٢٥ دولاراً مرة واحدة','حساب مطوّر، ثم تحويل هذا التطبيق إلى تطبيق أندرويد بأداة PWABuilder.'],
     ['متجر Apple App Store','٩٩ دولاراً سنوياً','حساب مطوّر أبل وجهاز ماك للبناء ومراجعة أبل. ويمكن الآن تثبيته على آيفون من سفاري دون المتجر.'],
   ] : [
     ['الاستعمال الحالي على claude.ai','بلا تكلفة إضافية','يكفي اشتراكك الحالي. المساعد الذكي يعمل من رصيد Claude لكل مستخدم، ويُستأذن قبل أول استعمال.'],
-    ['نطاق خاص (مثل athara.app)','نحو ١٠ إلى ٢٠ دولاراً سنوياً','اختياري، لو أردت نسخة مستقلة على الإنترنت باسمك.'],
-    ['استضافة نسخة مستقلة','مجاناً','عبر GitHub Pages أو Cloudflare Pages. تحتاج مستودعاً جديداً باسم أثارة في حسابك على GitHub.'],
+    ['نطاق خاص (مثل mishkat.app)','نحو ١٠ إلى ٢٠ دولاراً سنوياً','اختياري، لو أردت نسخة مستقلة على الإنترنت باسمك.'],
+    ['استضافة نسخة مستقلة','مجاناً','عبر GitHub Pages أو Cloudflare Pages. منشورة الآن على موقع منجز: munjiz-qa.github.io/mishkat'],
     ['متجر Google Play','٢٥ دولاراً مرة واحدة','حساب مطوّر، ثم تحويل النسخة المستقلة إلى تطبيق أندرويد بأداة PWABuilder أو Bubblewrap.'],
     ['متجر Apple App Store','٩٩ دولاراً سنوياً','حساب مطوّر أبل، وجهاز ماك للبناء والنشر، ومراجعة أبل.'],
     ['المساعد الذكي في النسخة المستقلة','حسب الاستعمال','يحتاج مفتاح Anthropic API وخادماً صغيراً يحفظ المفتاح. الكلفة تُحسب بعدد الكلمات المعالجة.'],
@@ -948,8 +948,8 @@ function guide() {
     'صور صفحات مصحف المدينة نفسها، والانتقال بين الصفحة والإحصاء.',
     'مجموعات حفظ مشتركة لحلقات التحفيظ: المعلّم يرى تقدّم طلابه ومواعيد مراجعتهم.',
   ];
-  V(`<div class="stack" style="max-width:900px"><div><div class="eyebrow">دليل التطبيق</div><h1>أثارة: ما الذي يقدّمه، ومن يستعمله، وما المطلوب لإطلاقه</h1>
-  <p class="lead">«أثارة» هو الإصدار الثاني من موسوعة إحصاء القرآن الكريم، باسم وهوية مستقلين. والاسم من قوله تعالى: <span style="font-family:var(--f-quran);font-size:1.15em">﴿${athara()}﴾</span> [الأحقاف: ٤]، أي بقية من علم مأثور. يضم كل ما في الإصدار الأول، وتُضاف إليه المزايا الذكية الآتية.</p></div>
+  V(`<div class="stack" style="max-width:900px"><div><div class="eyebrow">دليل التطبيق</div><h1>مشكاة: ما الذي يقدّمه، ومن يستعمله، وما المطلوب لإطلاقه</h1>
+  <p class="lead">«مشكاة» هي الإصدار الثاني من موسوعة إحصاء القرآن الكريم، باسم وهوية مستقلين. والاسم من قوله تعالى: <span style="font-family:var(--f-quran);font-size:1.15em">﴿${mishkatAyah()}﴾</span> [النور: ٣٥]. والمشكاة كُوّة في الجدار يوضع فيها المصباح فتجمع نوره وتردّه، وكذلك يجمع التطبيق نصوص القرآن وعلومه في موضع واحد. يضم كل ما في الإصدار الأول، وتُضاف إليه المزايا الذكية الآتية.</p></div>
   <section class="panel stack tight"><h2>ما بقي من الإصدار الأول</h2><p style="margin:0">نص مصحف المدينة النبوية المتحقَّق منه، وإحصاء ${n(W.w.length)} كلمة و${n(W.roots.length)} جذراً و${n(W.lemmas.length)} لمّة، والمعجم المفهرس، وثمانية كتب تفسير، و${n(T.length)} فهرساً موضوعياً منها الأحكام الفقهية على أبواب الفقه.</p></section>
   <section class="panel stack tight"><h2>الجديد في هذا الإصدار</h2>${F.map(([t, d]) => `<div class="due" style="align-items:flex-start"><b style="min-width:12em">${t}</b><span class="small" style="flex:1;min-width:220px">${d}</span></div>`).join('')}</section>
   <section class="panel stack tight"><h2>الأدوار والصلاحيات</h2>${R.map(([t, d]) => `<div class="due" style="align-items:flex-start"><b style="min-width:12em">${t}</b><span class="small" style="flex:1;min-width:220px">${d}</span></div>`).join('')}
@@ -962,18 +962,18 @@ function guide() {
 
 /* ================= admin (owner of the claude.ai artifact) */
 let adminOK = false;
-const ADMIN_HASH = '7751f381da8bc786a3eb30b66964c7eb3b0d1d1af02c43790a5ed09f67cb43b0';
+const ADMIN_HASH = '6290675f96606fd9db947e773c7f588146e201f64c75a823ddbb9b1c950e16c1';
 async function sha(t) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join(''); }
 function adminLogin() {
   V(`<div class="stack" style="max-width:520px"><div><div class="eyebrow">لوحة الإدارة</div><h1>دخول المدير</h1></div>
   <form class="panel stack tight" id="lform"><label for="lpw">كلمة مرور الإدارة</label><input class="field" id="lpw" type="password" autocomplete="current-password"><button class="btn pri" style="align-self:flex-start">دخول</button><p class="small" id="lmsg" style="margin:0"></p></form></div>`);
-  $('#lform').onsubmit = async e => { e.preventDefault(); if (!crypto?.subtle) { $('#lmsg').textContent = 'افتح التطبيق من رابطه الآمن (https) لتسجيل الدخول.'; return; } if (await sha('athara-admin-v1:' + $('#lpw').value) === ADMIN_HASH) { adminOK = true; admin(); } else $('#lmsg').textContent = 'كلمة المرور غير صحيحة.'; };
+  $('#lform').onsubmit = async e => { e.preventDefault(); if (!crypto?.subtle) { $('#lmsg').textContent = 'افتح التطبيق من رابطه الآمن (https) لتسجيل الدخول.'; return; } if (await sha('mishkat-admin-v1:' + $('#lpw').value) === ADMIN_HASH) { adminOK = true; admin(); } else $('#lmsg').textContent = 'كلمة المرور غير صحيحة.'; };
 }
 async function admin() {
   if (IS_PWA && !adminOK) return adminLogin();
   if (!isOwner && !IS_PWA) { V(`<div class="stack"><h1>لوحة الإدارة</h1><p class="muted">هذه الصفحة لمالك الموسوعة فقط.</p></div>`); return; }
   const tot = T.reduce((s, c) => s + c.items.length, 0);
-  V(`<div class="stack" style="max-width:900px"><div><div class="eyebrow">لوحة الإدارة · ${IS_PWA ? 'دخلت بكلمة مرور الإدارة' : 'تظهر لك وحدك بصفتك مالك الموسوعة'}</div><h1>إدارة أثارة</h1></div>
+  V(`<div class="stack" style="max-width:900px"><div><div class="eyebrow">لوحة الإدارة · ${IS_PWA ? 'دخلت بكلمة مرور الإدارة' : 'تظهر لك وحدك بصفتك مالك الموسوعة'}</div><h1>إدارة مشكاة</h1></div>
   <section class="panel stack tight"><h3>الإعلان العام</h3><p class="muted small" style="margin:0">يظهر شريطاً أعلى الصفحات لكل من يفتح الموسوعة. اتركه فارغاً لإخفائه.</p>
     <input class="field" id="adBanner" type="text" value="${esc(siteCfg.banner || '')}" placeholder="مثال: تمت إضافة فهرس جديد عن الأخلاق" style="width:100%"></section>
   <section class="panel stack tight"><h3>الآية المختارة للصفحة الرئيسية</h3><p class="muted small" style="margin:0">تحل محل «آية اليوم». اتركها فارغة ليعود الاختيار اليومي التلقائي.</p>
@@ -995,7 +995,7 @@ async function admin() {
     if ($('#adS').value && !ok) { $('#adMsg').textContent = 'رقم السورة أو الآية غير صحيح.'; return; }
     const cfg = { banner: $('#adBanner').value.trim(), featured: ok ? { s, a } : null, featuredNote: $('#adNote').value.trim(), updated: Date.now() };
     if (IS_PWA) { siteCfg = cfg; applyCfg(); LS.set('cfgPreview', cfg); const blob = new Blob([JSON.stringify(cfg, null, 2)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'config.json'; a.click();
-      $('#adMsg').innerHTML = 'ظهر التعديل على هذا الجهاز، ونُزّل ملف config.json. لنشره لكل الزوار ارفعه مكان الملف نفسه في مجلد athara على GitHub، أو أرسله إلى فريق منجز.'; return; }
+      $('#adMsg').innerHTML = 'ظهر التعديل على هذا الجهاز، ونُزّل ملف config.json. لنشره لكل الزوار ارفعه مكان الملف نفسه في مجلد mishkat على GitHub، أو أرسله إلى فريق منجز.'; return; }
     try { await db.doc('site/config').set(cfg); siteCfg = cfg; applyCfg(); $('#adMsg').textContent = 'حُفظ ونُشر لكل الزوار.'; } catch (e) { $('#adMsg').textContent = 'لم يُحفظ: ' + (e?.code || 'خطأ غير معروف'); }
   };
 }
@@ -1038,7 +1038,7 @@ function wordDrawer(wi) {
   <section><h3>الآية</h3>${ayahHTML(i, new Set([wi]), false)}<button class="btn" data-ayah="${i}">عرض تفسير الآية</button></section></div>`);
   tafsir('gharib', Q.ayat[i][0]).then(t => { $('#gbody').textContent = t[Q.ayat[i][1]] || 'لم يذكر كتاب «الميسر في غريب القرآن» ألفاظاً غريبة في هذه الآية. اضغط «عرض تفسير الآية» لقراءة التفسير.'; }).catch(() => { $('#gbody').textContent = 'تعذّر التحميل.'; });
 }
-function moreMenu() { openDrawer(`<div class="stack"><a class="brand" href="#home" data-close style="padding:0"><img src="icons/icon-192.png" alt="" style="width:40px;height:40px;border-radius:10px"><span><b>أثارة</b><small>موسوعة القرآن الذكية</small></span></a><nav class="nav">${navHTML()}</nav></div>`); }
+function moreMenu() { openDrawer(`<div class="stack"><a class="brand" href="#home" data-close style="padding:0"><img src="icons/icon-192.png" alt="" style="width:40px;height:40px;border-radius:10px"><span><b>مشكاة</b><small>موسوعة القرآن الذكية</small></span></a><nav class="nav">${navHTML()}</nav></div>`); }
 
 /* ================= global events */
 document.addEventListener('click', e => {
