@@ -1,0 +1,1025 @@
+{
+ "v": 1,
+ "note": "سجل «مرصد خبر»: كل قراءة بمصدرها. يضيف المحرر القراءات الجديدة ثم يشغّل khabar/agent/marsad.py",
+ "indicators": [
+  {
+   "id": "qse",
+   "zone": "qatar",
+   "ar": "المؤشر العام لبورصة قطر",
+   "en": "QE General Index",
+   "unit": {
+    "ar": "نقطة",
+    "en": "pts"
+   },
+   "dec": 2,
+   "cadence": "daily",
+   "measure": {
+    "ar": "إغلاق الجلسة",
+    "en": "Session close"
+   }
+  },
+  {
+   "id": "goldqa",
+   "zone": "qatar",
+   "ar": "جرام الذهب عيار 21 في قطر",
+   "en": "Gold 21K per gram, Qatar",
+   "unit": {
+    "ar": "ريال",
+    "en": "QAR"
+   },
+   "dec": 2,
+   "cadence": "daily",
+   "measure": {
+    "ar": "السعر المعلن صباحاً",
+    "en": "Morning posted price"
+   }
+  },
+  {
+   "id": "fuel95",
+   "zone": "qatar",
+   "ar": "بنزين سوبر 95 في قطر",
+   "en": "Super 95 petrol, Qatar",
+   "unit": {
+    "ar": "ريال/لتر",
+    "en": "QAR/L"
+   },
+   "dec": 2,
+   "cadence": "monthly",
+   "measure": {
+    "ar": "السعر الشهري من قطر للطاقة",
+    "en": "Monthly price set by QatarEnergy"
+   }
+  },
+  {
+   "id": "tasi",
+   "zone": "gulf",
+   "ar": "مؤشر السوق السعودية (تاسي)",
+   "en": "Saudi TASI",
+   "unit": {
+    "ar": "نقطة",
+    "en": "pts"
+   },
+   "dec": 2,
+   "cadence": "daily",
+   "measure": {
+    "ar": "إغلاق الجلسة",
+    "en": "Session close"
+   }
+  },
+  {
+   "id": "dfm",
+   "zone": "gulf",
+   "ar": "المؤشر العام لسوق دبي المالي",
+   "en": "DFM General Index",
+   "unit": {
+    "ar": "نقطة",
+    "en": "pts"
+   },
+   "dec": 2,
+   "cadence": "daily",
+   "measure": {
+    "ar": "إغلاق الجلسة",
+    "en": "Session close"
+   }
+  },
+  {
+   "id": "usdegp",
+   "zone": "egypt",
+   "ar": "الدولار أمام الجنيه المصري",
+   "en": "US dollar in Egyptian pounds",
+   "unit": {
+    "ar": "جنيه",
+    "en": "EGP"
+   },
+   "dec": 2,
+   "cadence": "daily",
+   "measure": {
+    "ar": "سعر البيع في البنك المركزي المصري",
+    "en": "Central Bank of Egypt sell rate"
+   }
+  },
+  {
+   "id": "goldeg",
+   "zone": "egypt",
+   "ar": "جرام الذهب عيار 21 في مصر",
+   "en": "Gold 21K per gram, Egypt",
+   "unit": {
+    "ar": "جنيه",
+    "en": "EGP"
+   },
+   "dec": 0,
+   "cadence": "daily",
+   "measure": {
+    "ar": "السعر المعلن دون مصنعية",
+    "en": "Posted price, excluding workmanship"
+   }
+  },
+  {
+   "id": "egx30",
+   "zone": "egypt",
+   "ar": "مؤشر البورصة المصرية EGX30",
+   "en": "EGX30",
+   "unit": {
+    "ar": "نقطة",
+    "en": "pts"
+   },
+   "dec": 2,
+   "cadence": "daily",
+   "measure": {
+    "ar": "إغلاق الجلسة",
+    "en": "Session close"
+   }
+  },
+  {
+   "id": "brent",
+   "zone": "world",
+   "ar": "خام برنت",
+   "en": "Brent crude",
+   "unit": {
+    "ar": "دولار/برميل",
+    "en": "$/bbl"
+   },
+   "dec": 2,
+   "cadence": "daily",
+   "measure": {
+    "ar": "سعر التسوية للعقود الآجلة",
+    "en": "Futures settlement"
+   }
+  },
+  {
+   "id": "xau",
+   "zone": "world",
+   "ar": "أونصة الذهب",
+   "en": "Gold per ounce",
+   "unit": {
+    "ar": "دولار",
+    "en": "USD"
+   },
+   "dec": 2,
+   "cadence": "daily",
+   "measure": {
+    "ar": "الإغلاق اليومي للسعر الفوري",
+    "en": "Daily spot close"
+   }
+  },
+  {
+   "id": "spx",
+   "zone": "world",
+   "ar": "مؤشر ستاندرد آند بورز 500",
+   "en": "S&P 500",
+   "unit": {
+    "ar": "نقطة",
+    "en": "pts"
+   },
+   "dec": 2,
+   "cadence": "daily",
+   "measure": {
+    "ar": "إغلاق الجلسة",
+    "en": "Session close"
+   }
+  }
+ ],
+ "sources": {
+  "sharq-qse-1025": {
+   "ar": "الشرق",
+   "en": "Al Sharq",
+   "date": "2026-10-25",
+   "url": "https://al-sharq.com/article/25/10/2026/%D9%85%D8%A4%D8%B4%D8%B1-%D8%A8%D9%88%D8%B1%D8%B5%D8%A9-%D9%82%D8%B7%D8%B1-%D9%8A%D8%BA%D9%84%D9%82-%D8%AA%D8%AF%D8%A7%D9%88%D9%84%D8%A7%D8%AA%D9%87-%D9%85%D8%B1%D8%AA%D9%81%D8%B9%D8%A7-77"
+  },
+  "alamssar-qse-1022": {
+   "ar": "الأمصار",
+   "en": "Al Amssar",
+   "date": "2026-10-22",
+   "url": "https://www.alamssar.com/500305"
+  },
+  "sharq-qse-1018": {
+   "ar": "الشرق",
+   "en": "Al Sharq",
+   "date": "2026-10-18",
+   "url": "https://al-sharq.com/article/18/10/2026/%D9%85%D8%A4%D8%B4%D8%B1-%D8%A8%D9%88%D8%B1%D8%B5%D8%A9-%D9%82%D8%B7%D8%B1-%D9%8A%D8%BA%D9%84%D9%82-%D8%AA%D8%AF%D8%A7%D9%88%D9%84%D8%A7%D8%AA%D9%87-%D9%85%D9%86%D8%AE%D9%81%D8%B6%D8%A7-128"
+  },
+  "sharq-qse-0923": {
+   "ar": "الشرق",
+   "en": "Al Sharq",
+   "date": "2026-09-23",
+   "url": "https://al-sharq.com/article/23/09/2026/%D9%85%D8%A4%D8%B4%D8%B1-%D8%A8%D9%88%D8%B1%D8%B5%D8%A9-%D9%82%D8%B7%D8%B1-%D9%8A%D8%BA%D9%84%D9%82-%D8%AA%D8%AF%D8%A7%D9%88%D9%84%D8%A7%D8%AA%D9%87-%D8%B9%D9%84%D9%89-%D8%A7%D8%B1%D8%AA%D9%81%D8%A7%D8%B9-24"
+  },
+  "banker-goldqa-1025": {
+   "ar": "البنكر",
+   "en": "Banker News",
+   "date": "2026-10-25",
+   "url": "https://www.banker.news/157454"
+  },
+  "banker-goldqa-1024": {
+   "ar": "البنكر",
+   "en": "Banker News",
+   "date": "2026-10-24",
+   "url": "https://www.banker.news/157339"
+  },
+  "cmub-goldqa-1018": {
+   "ar": "القاهرة مباشر",
+   "en": "Cairo Mubasher",
+   "date": "2026-10-18",
+   "url": "https://www.cairomubasher.com/242775"
+  },
+  "marsal-fuel-0930": {
+   "ar": "مرسال قطر",
+   "en": "Marsal Qatar",
+   "date": "2026-09-30",
+   "url": "https://marsalqatar.qa/post/91031/%D9%82%D8%B7%D8%B1-%D9%84%D9%84%D8%B7%D8%A7%D9%82%D8%A9-%D8%AA%D8%B9%D9%84%D9%86-%D8%A3%D8%B3%D8%B9%D8%A7%D8%B1-%D8%A7%D9%84%D9%88%D9%82%D9%88%D8%AF-%D9%84"
+  },
+  "dora-tasi-1025": {
+   "ar": "صحيفة درة",
+   "en": "Dora",
+   "date": "2026-10-25",
+   "url": "https://dora.sa/508976/"
+  },
+  "alsaudi-tasi-1022": {
+   "ar": "السعودية الإخبارية",
+   "en": "Alsaudi News",
+   "date": "2026-10-22",
+   "url": "https://alsaudi.news/ecconomy/tadawul/2210/111933"
+  },
+  "slaati-tasi-1018": {
+   "ar": "صحيفة سلطي",
+   "en": "Slaati",
+   "date": "2026-10-18",
+   "url": "https://slaati.com/2026/10/18/p2874218.html"
+  },
+  "madina-tasi-0927": {
+   "ar": "المدينة",
+   "en": "Al Madina",
+   "date": "2026-09-27",
+   "url": "https://www.al-madina.com/article/1006951/%D8%A7%D9%82%D8%AA%D8%B5%D8%A7%D8%AF/%D8%AA%D8%A7%D8%B3%D9%8A-%D9%8A%D8%BA%D9%84%D9%82-%D9%85%D8%B1%D8%AA%D9%81%D8%B9%D8%A7-%D8%B9%D9%86%D8%AF-%D9%85%D8%B3%D8%AA%D9%88%D9%89-10681-%D9%86%D9%82%D8%B7%D8%A9"
+  },
+  "watan-tasi-1024": {
+   "ar": "الوطن السعودية",
+   "en": "Al Watan (Saudi)",
+   "date": "2026-10-24",
+   "url": "https://www.alwatan.com.sa/article/1187811"
+  },
+  "ey-dfm-1024": {
+   "ar": "الإمارات اليوم",
+   "en": "Emarat Al Youm",
+   "date": "2026-10-24",
+   "url": "https://www.emaratalyoum.com/business/local/2026-10-24-1.2095591"
+  },
+  "alain-usd-1026": {
+   "ar": "العين الإخبارية",
+   "en": "Al Ain News",
+   "date": "2026-10-26",
+   "url": "https://al-ain.com/article/dollar-rate-today-in-egypt-monday-26-oct-2026"
+  },
+  "c24-usd-1025": {
+   "ar": "القاهرة 24",
+   "en": "Cairo 24",
+   "date": "2026-10-25",
+   "url": "https://www.cairo24.com/2517920"
+  },
+  "borsaa-usd-1022": {
+   "ar": "البورصة نيوز",
+   "en": "Alborsaa News",
+   "date": "2026-10-22",
+   "url": "https://www.alborsaanews.com/2026/10/22/2001243"
+  },
+  "mig-usd-1019": {
+   "ar": "المصري في الخليج",
+   "en": "Almasry in Gulf",
+   "date": "2026-10-19",
+   "url": "https://www.almasryingulf.com/%D8%B3%D8%B9%D8%B1-%D8%A7%D9%84%D8%AF%D9%88%D9%84%D8%A7%D8%B1-%D9%81%D9%8A-%D9%85%D8%B5%D8%B1-%D8%A7%D9%84%D9%8A%D9%88%D9%85-%D8%A7%D9%84%D8%A5%D8%AB%D9%86%D9%8A%D9%86-19-%D8%A3%D9%83%D8%AA%D9%88/"
+  },
+  "borsaa-usd-0924": {
+   "ar": "البورصة نيوز",
+   "en": "Alborsaa News",
+   "date": "2026-09-24",
+   "url": "https://www.alborsaanews.com/2026/09/24/1994733"
+  },
+  "khf-gold-1026": {
+   "ar": "خلف الحدث",
+   "en": "Khalf Elhadth",
+   "date": "2026-10-26",
+   "url": "https://khalfelhadth.com/148528"
+  },
+  "c24-gold-1025": {
+   "ar": "القاهرة 24",
+   "en": "Cairo 24",
+   "date": "2026-10-25",
+   "url": "https://www.cairo24.com/2517760"
+  },
+  "dostor-gold-1019": {
+   "ar": "الدستور",
+   "en": "Al Dostor",
+   "date": "2026-10-19",
+   "url": "https://www.dostor.org/5744728"
+  },
+  "ahram-gold-0924": {
+   "ar": "بوابة الأهرام",
+   "en": "Al-Ahram Gate",
+   "date": "2026-09-24",
+   "url": "https://gate.ahram.org.eg/News/5933286.aspx"
+  },
+  "c24-egx-1025": {
+   "ar": "القاهرة 24",
+   "en": "Cairo 24",
+   "date": "2026-10-25",
+   "url": "https://www.cairo24.com/2517844"
+  },
+  "c24-egx-1022": {
+   "ar": "القاهرة 24",
+   "en": "Cairo 24",
+   "date": "2026-10-22",
+   "url": "https://www.cairo24.com/2516335"
+  },
+  "youlyou-egx-1019": {
+   "ar": "يوليو",
+   "en": "Youlyou",
+   "date": "2026-10-19",
+   "url": "https://www.youlyou.com/76167"
+  },
+  "youlyou-egx-0924": {
+   "ar": "يوليو",
+   "en": "Youlyou",
+   "date": "2026-09-24",
+   "url": "https://www.youlyou.com/60155"
+  },
+  "asiaone-brent-1023": {
+   "ar": "رويترز عبر آسيا ون",
+   "en": "Reuters via AsiaOne",
+   "date": "2026-10-24",
+   "url": "https://www.asiaone.com/money/oil-prices-jump-383-houthi-attacks-oil-spill-highest-settlement-april"
+  },
+  "profile-brent-1022": {
+   "ar": "بروفايل نيوز (بيانات رويترز)",
+   "en": "Profile News (Reuters data)",
+   "date": "2026-10-23",
+   "url": "https://www.profilenews.com/en/oil-prices-today-2/"
+  },
+  "energynow-brent-1016": {
+   "ar": "إنرجي ناو",
+   "en": "EnergyNow",
+   "date": "2026-10-16",
+   "url": "https://energynow.com/2026/10/oil-surges-as-middle-east-supply-fears-push-brent-near-110-and-wti-above-100-both-post-strong-weekly-gains/"
+  },
+  "pfl-brent-0925": {
+   "ar": "تقرير PFL للبترول",
+   "en": "PFL Petroleum Report",
+   "date": "2026-09-25",
+   "url": "https://pflpetroleum.com/reports/petroleum-daily-report-9-25-2026/"
+  },
+  "mgc-gold-2026-10": {
+   "ar": "ماي جولد كالك، أرشيف أكتوبر",
+   "en": "MyGoldCalc, October archive",
+   "date": "2026-10-25",
+   "url": "https://mygoldcalc.com/gold-price/2026/10"
+  },
+  "mgc-gold-2026-09": {
+   "ar": "ماي جولد كالك، أرشيف سبتمبر",
+   "en": "MyGoldCalc, September archive",
+   "date": "2026-09-30",
+   "url": "https://mygoldcalc.com/gold-price/2026/09"
+  },
+  "yahoo-spx-1023": {
+   "ar": "ياهو فاينانس",
+   "en": "Yahoo Finance",
+   "date": "2026-10-23",
+   "url": "https://finance.yahoo.com/markets/live/stock-market-today-friday-october-23-dow-sp-500-nasdaq-tesla-meta-093000521.html"
+  },
+  "abc-spx-1022": {
+   "ar": "إيه بي سي نيوز (أسوشيتد برس)",
+   "en": "ABC News (AP)",
+   "date": "2026-10-22",
+   "url": "https://abcnews.com/Business/wireStory/major-us-stock-indexes-fared-thursday-10222026-137490327"
+  },
+  "abc-spx-1016": {
+   "ar": "إيه بي سي نيوز (أسوشيتد برس)",
+   "en": "ABC News (AP)",
+   "date": "2026-10-16",
+   "url": "https://abcnews.com/Business/wireStory/major-us-stock-indexes-fared-friday-10162026-137331951"
+  },
+  "krmg-spx-0925": {
+   "ar": "KRMG (أسوشيتد برس)",
+   "en": "KRMG (AP)",
+   "date": "2026-09-25",
+   "url": "https://krmg.com/2026/09/25/how-major-us-stock-indexes-fared-friday-9-25-2026/"
+  }
+ },
+ "obs": {
+  "qse": [
+   {
+    "d": "2026-09-23",
+    "v": 9545.54,
+    "src": [
+     "sharq-qse-0923"
+    ]
+   },
+   {
+    "d": "2026-10-18",
+    "v": 8633.57,
+    "src": [
+     "sharq-qse-1018"
+    ]
+   },
+   {
+    "d": "2026-10-22",
+    "v": 8611.1,
+    "src": [
+     "alamssar-qse-1022"
+    ]
+   },
+   {
+    "d": "2026-10-25",
+    "v": 8615.48,
+    "src": [
+     "sharq-qse-1025"
+    ]
+   }
+  ],
+  "goldqa": [
+   {
+    "d": "2026-10-18",
+    "v": 426.33,
+    "src": [
+     "cmub-goldqa-1018"
+    ]
+   },
+   {
+    "d": "2026-10-24",
+    "v": 412.19,
+    "src": [
+     "banker-goldqa-1024"
+    ]
+   },
+   {
+    "d": "2026-10-25",
+    "v": 409.28,
+    "src": [
+     "banker-goldqa-1025"
+    ]
+   }
+  ],
+  "fuel95": [
+   {
+    "d": "2026-09-01",
+    "v": 2.1,
+    "src": [
+     "marsal-fuel-0930"
+    ],
+    "note": {
+     "ar": "ثابت دون تغيير في أكتوبر وفق المصدر",
+     "en": "Unchanged in October per the source"
+    }
+   },
+   {
+    "d": "2026-10-01",
+    "v": 2.1,
+    "src": [
+     "marsal-fuel-0930"
+    ]
+   }
+  ],
+  "tasi": [
+   {
+    "d": "2026-09-27",
+    "v": 10681.84,
+    "src": [
+     "madina-tasi-0927"
+    ]
+   },
+   {
+    "d": "2026-10-18",
+    "v": 10189.77,
+    "src": [
+     "slaati-tasi-1018"
+    ]
+   },
+   {
+    "d": "2026-10-22",
+    "v": 9695.86,
+    "src": [
+     "alsaudi-tasi-1022"
+    ]
+   },
+   {
+    "d": "2026-10-25",
+    "v": 9438,
+    "src": [
+     "dora-tasi-1025"
+    ]
+   }
+  ],
+  "dfm": [
+   {
+    "d": "2026-10-23",
+    "v": 5734.19,
+    "src": [
+     "ey-dfm-1024"
+    ],
+    "note": {
+     "ar": "إغلاق الأسبوع",
+     "en": "Weekly close"
+    }
+   }
+  ],
+  "usdegp": [
+   {
+    "d": "2026-09-24",
+    "v": 51.49,
+    "src": [
+     "borsaa-usd-0924"
+    ]
+   },
+   {
+    "d": "2026-10-19",
+    "v": 53.6,
+    "src": [
+     "mig-usd-1019"
+    ]
+   },
+   {
+    "d": "2026-10-22",
+    "v": 55.38,
+    "src": [
+     "borsaa-usd-1022"
+    ]
+   },
+   {
+    "d": "2026-10-25",
+    "v": 55.89,
+    "src": [
+     "alain-usd-1026",
+     "c24-usd-1025"
+    ]
+   }
+  ],
+  "goldeg": [
+   {
+    "d": "2026-09-24",
+    "v": 6235,
+    "src": [
+     "ahram-gold-0924"
+    ],
+    "note": {
+     "ar": "سعر الشراء المعلن",
+     "en": "Posted buy price"
+    }
+   },
+   {
+    "d": "2026-10-19",
+    "v": 6270,
+    "src": [
+     "dostor-gold-1019"
+    ]
+   },
+   {
+    "d": "2026-10-25",
+    "v": 6275,
+    "src": [
+     "c24-gold-1025"
+    ]
+   },
+   {
+    "d": "2026-10-26",
+    "v": 6290,
+    "src": [
+     "khf-gold-1026"
+    ]
+   }
+  ],
+  "egx30": [
+   {
+    "d": "2026-09-24",
+    "v": 53776.69,
+    "src": [
+     "youlyou-egx-0924"
+    ]
+   },
+   {
+    "d": "2026-10-19",
+    "v": 51098.83,
+    "src": [
+     "youlyou-egx-1019"
+    ]
+   },
+   {
+    "d": "2026-10-22",
+    "v": 51052,
+    "src": [
+     "c24-egx-1022"
+    ]
+   },
+   {
+    "d": "2026-10-25",
+    "v": 49234,
+    "src": [
+     "c24-egx-1025"
+    ]
+   }
+  ],
+  "brent": [
+   {
+    "d": "2026-09-25",
+    "v": 104.32,
+    "src": [
+     "pfl-brent-0925"
+    ]
+   },
+   {
+    "d": "2026-10-16",
+    "v": 109.86,
+    "src": [
+     "energynow-brent-1016"
+    ]
+   },
+   {
+    "d": "2026-10-22",
+    "v": 113.17,
+    "src": [
+     "profile-brent-1022"
+    ]
+   },
+   {
+    "d": "2026-10-23",
+    "v": 116.72,
+    "src": [
+     "asiaone-brent-1023"
+    ]
+   }
+  ],
+  "spx": [
+   {
+    "d": "2026-09-25",
+    "v": 7743.41,
+    "src": [
+     "krmg-spx-0925"
+    ]
+   },
+   {
+    "d": "2026-10-16",
+    "v": 7659.44,
+    "src": [
+     "abc-spx-1016"
+    ]
+   },
+   {
+    "d": "2026-10-22",
+    "v": 7663.43,
+    "src": [
+     "abc-spx-1022"
+    ]
+   },
+   {
+    "d": "2026-10-23",
+    "v": 7623.68,
+    "src": [
+     "yahoo-spx-1023"
+    ]
+   }
+  ],
+  "xau": [
+   {
+    "d": "2026-09-14",
+    "v": 4328.97,
+    "src": [
+     "mgc-gold-2026-09"
+    ]
+   },
+   {
+    "d": "2026-09-15",
+    "v": 4290.03,
+    "src": [
+     "mgc-gold-2026-09"
+    ]
+   },
+   {
+    "d": "2026-09-16",
+    "v": 4328.04,
+    "src": [
+     "mgc-gold-2026-09"
+    ]
+   },
+   {
+    "d": "2026-09-17",
+    "v": 4309.49,
+    "src": [
+     "mgc-gold-2026-09"
+    ]
+   },
+   {
+    "d": "2026-09-18",
+    "v": 4392.54,
+    "src": [
+     "mgc-gold-2026-09"
+    ]
+   },
+   {
+    "d": "2026-09-19",
+    "v": 4377.92,
+    "src": [
+     "mgc-gold-2026-09"
+    ]
+   },
+   {
+    "d": "2026-09-21",
+    "v": 4353.57,
+    "src": [
+     "mgc-gold-2026-09"
+    ]
+   },
+   {
+    "d": "2026-09-22",
+    "v": 4322.82,
+    "src": [
+     "mgc-gold-2026-09"
+    ]
+   },
+   {
+    "d": "2026-09-23",
+    "v": 4326.6,
+    "src": [
+     "mgc-gold-2026-09"
+    ]
+   },
+   {
+    "d": "2026-09-24",
+    "v": 4284.8,
+    "src": [
+     "mgc-gold-2026-09"
+    ]
+   },
+   {
+    "d": "2026-09-25",
+    "v": 4278.65,
+    "src": [
+     "mgc-gold-2026-09"
+    ]
+   },
+   {
+    "d": "2026-09-26",
+    "v": 4285.29,
+    "src": [
+     "mgc-gold-2026-09"
+    ]
+   },
+   {
+    "d": "2026-09-28",
+    "v": 4155.68,
+    "src": [
+     "mgc-gold-2026-09"
+    ]
+   },
+   {
+    "d": "2026-09-29",
+    "v": 4141.92,
+    "src": [
+     "mgc-gold-2026-09"
+    ]
+   },
+   {
+    "d": "2026-09-30",
+    "v": 4196.89,
+    "src": [
+     "mgc-gold-2026-09"
+    ]
+   },
+   {
+    "d": "2026-10-02",
+    "v": 4183.39,
+    "src": [
+     "mgc-gold-2026-10"
+    ]
+   },
+   {
+    "d": "2026-10-03",
+    "v": 4140.79,
+    "src": [
+     "mgc-gold-2026-10"
+    ]
+   },
+   {
+    "d": "2026-10-05",
+    "v": 4164.14,
+    "src": [
+     "mgc-gold-2026-10"
+    ]
+   },
+   {
+    "d": "2026-10-06",
+    "v": 4155.11,
+    "src": [
+     "mgc-gold-2026-10"
+    ]
+   },
+   {
+    "d": "2026-10-07",
+    "v": 4118.23,
+    "src": [
+     "mgc-gold-2026-10"
+    ]
+   },
+   {
+    "d": "2026-10-08",
+    "v": 4121.39,
+    "src": [
+     "mgc-gold-2026-10"
+    ]
+   },
+   {
+    "d": "2026-10-09",
+    "v": 4185.13,
+    "src": [
+     "mgc-gold-2026-10"
+    ]
+   },
+   {
+    "d": "2026-10-10",
+    "v": 4194.4,
+    "src": [
+     "mgc-gold-2026-10"
+    ]
+   },
+   {
+    "d": "2026-10-12",
+    "v": 4179.74,
+    "src": [
+     "mgc-gold-2026-10"
+    ]
+   },
+   {
+    "d": "2026-10-13",
+    "v": 4183.72,
+    "src": [
+     "mgc-gold-2026-10"
+    ]
+   },
+   {
+    "d": "2026-10-14",
+    "v": 4144.58,
+    "src": [
+     "mgc-gold-2026-10"
+    ]
+   },
+   {
+    "d": "2026-10-15",
+    "v": 4153.59,
+    "src": [
+     "mgc-gold-2026-10"
+    ]
+   },
+   {
+    "d": "2026-10-16",
+    "v": 4173.83,
+    "src": [
+     "mgc-gold-2026-10"
+    ]
+   },
+   {
+    "d": "2026-10-17",
+    "v": 4165.58,
+    "src": [
+     "mgc-gold-2026-10"
+    ]
+   },
+   {
+    "d": "2026-10-19",
+    "v": 4171.46,
+    "src": [
+     "mgc-gold-2026-10"
+    ]
+   },
+   {
+    "d": "2026-10-20",
+    "v": 4121.55,
+    "src": [
+     "mgc-gold-2026-10"
+    ]
+   },
+   {
+    "d": "2026-10-21",
+    "v": 4125.75,
+    "src": [
+     "mgc-gold-2026-10"
+    ]
+   },
+   {
+    "d": "2026-10-22",
+    "v": 4073.75,
+    "src": [
+     "mgc-gold-2026-10"
+    ]
+   },
+   {
+    "d": "2026-10-23",
+    "v": 4028.66,
+    "src": [
+     "mgc-gold-2026-10"
+    ]
+   },
+   {
+    "d": "2026-10-24",
+    "v": 3995.87,
+    "src": [
+     "mgc-gold-2026-10"
+    ]
+   }
+  ]
+ },
+ "notes": {
+  "qse": {
+   "ar": "تحرك المؤشر في نطاق ضيق خلال الأسبوع، لكنه ما زال أدنى بنحو عُشر قيمته مما كان عليه قبل شهر، فالهبوط الكبير وقع قبل منتصف أكتوبر.",
+   "en": "The index moved in a narrow range this week, but it is still about a tenth below its level a month ago: the big drop came before mid-October.",
+   "src": [
+    "sharq-qse-1025",
+    "sharq-qse-1018",
+    "sharq-qse-0923"
+   ],
+   "date": "2026-10-26"
+  },
+  "goldqa": {
+   "ar": "تبع الذهب في قطر الهبوط العالمي، فخسر جرام عيار 21 نحو 4% في أسبوع.",
+   "en": "Gold in Qatar followed the global decline: the 21K gram lost about 4% in a week.",
+   "src": [
+    "banker-goldqa-1025",
+    "cmub-goldqa-1018"
+   ],
+   "date": "2026-10-26"
+  },
+  "fuel95": {
+   "ar": "ثبّتت قطر للطاقة سعر السوبر 95 والديزل لشهر أكتوبر وخفّضت الممتاز 91. وتُعلن أسعار نوفمبر في آخر أيام أكتوبر.",
+   "en": "QatarEnergy held Super 95 and diesel for October and cut Premium 91. November prices are announced at the end of October.",
+   "src": [
+    "marsal-fuel-0930"
+   ],
+   "date": "2026-10-26"
+  },
+  "tasi": {
+   "ar": "فقد المؤشر نحو 411 نقطة في الأسبوع المنتهي يوم الخميس وفق الوطن السعودية، ثم تراجع بقوة مجدداً يوم الأحد.",
+   "en": "The index lost about 411 points in the week to Thursday, according to Al Watan, then fell sharply again on Sunday.",
+   "src": [
+    "watan-tasi-1024",
+    "dora-tasi-1025"
+   ],
+   "date": "2026-10-26"
+  },
+  "dfm": {
+   "ar": "أول قراءة في سجل المرصد لهذا المؤشر، وتكتمل المقارنات مع تسجيل الجلسات القادمة.",
+   "en": "The first reading of this index in the Marsad ledger. Comparisons fill in as new sessions are recorded.",
+   "src": [
+    "ey-dfm-1024"
+   ],
+   "date": "2026-10-26"
+  },
+  "usdegp": {
+   "ar": "بلغ الدولار مستوى قياسياً أمام الجنيه بختام تعاملات الأحد وفق العين الإخبارية، التي تذكر صافي بيع أجانب لأدوات الدين الحكومية بنحو 2.1 مليار دولار الأسبوع الماضي، وهو ما يفسّر جانباً من الضغط على الجنيه.",
+   "en": "The dollar hit a record against the pound at Sunday's close, according to Al Ain News, which reports net foreign selling of about $2.1 billion in government debt last week, a likely part of the pressure on the pound.",
+   "src": [
+    "alain-usd-1026"
+   ],
+   "date": "2026-10-26"
+  },
+  "goldeg": {
+   "ar": "رغم هبوط الأونصة عالمياً خلال الأسبوع، بقي جرام عيار 21 في مصر شبه ثابت، لأن صعود الدولار أمام الجنيه عوّض أثر الهبوط العالمي على السعر المحلي.",
+   "en": "Although the ounce fell globally this week, the 21K gram in Egypt barely moved, because the dollar's rise against the pound offset the global drop in the local price.",
+   "src": [
+    "khf-gold-1026",
+    "mgc-gold-2026-10",
+    "alain-usd-1026"
+   ],
+   "date": "2026-10-26"
+  },
+  "egx30": {
+   "ar": "جاءت خسارة الأسبوع كلها تقريباً في جلستين: الخميس بتراجع 3.41% ثم الأحد بتراجع 3.56%.",
+   "en": "Almost all of the week's loss came in two sessions: Thursday, down 3.41%, then Sunday, down 3.56%.",
+   "src": [
+    "c24-egx-1022",
+    "c24-egx-1025"
+   ],
+   "date": "2026-10-26"
+  },
+  "brent": {
+   "ar": "صعد برنت يوم الجمعة إلى أعلى تسوية منذ 29 أبريل، مع تقارير عن هجمات للحوثيين وتسرب نفطي، وفق رويترز.",
+   "en": "Brent rose on Friday to its highest settlement since 29 April, amid reports of Houthi attacks and an oil spill, according to Reuters.",
+   "src": [
+    "asiaone-brent-1023"
+   ],
+   "date": "2026-10-26"
+  },
+  "xau": {
+   "ar": "ثلاث جلسات تراجع متتالية نزلت بالأونصة دون 4,000 دولار في بيانات المصدر.",
+   "en": "Three straight daily declines took the ounce below $4,000 in the source data.",
+   "src": [
+    "mgc-gold-2026-10"
+   ],
+   "date": "2026-10-26"
+  },
+  "spx": {
+   "ar": "أنهى المؤشر الأسبوع قرب مستواه قبل أسبوع، وهو أدنى قليلاً مما كان عليه قبل شهر.",
+   "en": "The index ended the week close to its level a week earlier, and slightly below where it stood a month ago.",
+   "src": [
+    "yahoo-spx-1023",
+    "abc-spx-1016",
+    "krmg-spx-0925"
+   ],
+   "date": "2026-10-26"
+  }
+ }
+}

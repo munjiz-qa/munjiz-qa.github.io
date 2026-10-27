@@ -179,7 +179,7 @@ async function evalPlatform(p) {
 
 async function khabarStats(p, o, add) {
   const base = p.path ? p.path + '/data/' : 'data/';
-  const [b, l, k] = await Promise.allSettled([raw(p.repo, base + 'brief.json'), raw(p.repo, base + 'ledger.json'), raw(p.repo, base + 'breaking.json')]);
+  const [b, l, k, m] = await Promise.allSettled([raw(p.repo, base + 'brief.json'), raw(p.repo, base + 'ledger.json'), raw(p.repo, base + 'breaking.json'), raw(p.repo, base + 'marsad.json')]);
   if (b.status === 'fulfilled') {
     const br = b.value, items = (br.zones || []).reduce((n, z) => n + (z.items || []).length, 0), srcs = Object.keys(br.sources || {}).length;
     const ls = l.value?.summary;
@@ -188,6 +188,12 @@ async function khabarStats(p, o, add) {
     if (hoursSince(br.published) > 14) add('warn', `${p.name}: الخلاصة لم تتجدد منذ ${ago(br.published).replace('قبل ', '')}`);
     if (ls?.broken) add('warn', `${p.name}: ${plural(ls.broken, 'رابط مصدر معطّل', 'رابطا مصدر معطّلان', 'روابط مصادر معطّلة', 'رابط مصدر معطّلاً')} في الخلاصة`, p.site + '#ledger');
   } else o.rows.unshift(['الخلاصة الحالية', '<span class="skel">تعذّرت القراءة</span>']);
+  if (m.status === 'fulfilled') {
+    const ind = m.value.indicators || [], stale = ind.filter(i => i.stale), rec = m.value.record || {};
+    o.rows.push(['مرصد المقارنات', `${num(ind.length)} مؤشراً · ${ind.filter(i => i.est && i.est.tier !== 'c').length} تقدير · ${rec.scored ? `أصاب ${rec.hits}/${rec.scored}` : 'لا محاسبة بعد'} · ${ago(m.value.updated)}`]);
+    if (stale.length) add('warn', `${p.name}: ${stale.length} من مؤشرات المرصد لم تتجدد قراءتها (${stale.map(i => i.ar).join('، ')})`, p.site + '#marsad');
+    if (hoursSince(m.value.updated) > 30) add('warn', `${p.name}: المرصد لم يُبنَ منذ ${ago(m.value.updated).replace('قبل ', '')}`, p.site + '#marsad');
+  } else o.rows.push(['مرصد المقارنات', '<span class="skel">تعذّرت القراءة</span>']);
   if (k.status === 'fulfilled') {
     o.rows.push(['العاجل', k.value.on ? '<span class="pill bad">منشور الآن</span>' : 'لا عاجل']);
     if (k.value.on) add('info', `${p.name}: خبر عاجل منشور الآن`, p.site);

@@ -6,7 +6,7 @@ const $=s=>document.querySelector(s);
 const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
 const DEFAULT_HASH='15aebe9681badc802f1853e9061c9e06b13ca2b971a2e744f7013569398b2034';
 const PATH='khabar/data/admin.json';
-let ADMIN=null,BRIEF=null,HEAD=null,LEDGER=null,NEWHASH=null;
+let ADMIN=null,BRIEF=null,HEAD=null,LEDGER=null,MARSAD=null,NEWHASH=null;
 async function hash(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('khabar:'+s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
 const getJSON=u=>fetch(u+'?t='+Date.now(),{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(r.status);return r.json()});
 function toast(m){const n=$('#toast');n.textContent=m;n.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>n.hidden=true,2400)}
@@ -15,9 +15,9 @@ const S={get(k){try{return sessionStorage.getItem(k)}catch(e){return null}},set(
 const LS={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 
 async function boot(){
-  try{[ADMIN,BRIEF]=await Promise.all([getJSON('../data/admin.json'),getJSON('../data/brief.json')]);HEAD=await getJSON('../data/headlines.json').catch(()=>null);LEDGER=await getJSON('../data/ledger.json').catch(()=>null)}
+  try{[ADMIN,BRIEF]=await Promise.all([getJSON('../data/admin.json'),getJSON('../data/brief.json')]);HEAD=await getJSON('../data/headlines.json').catch(()=>null);LEDGER=await getJSON('../data/ledger.json').catch(()=>null);MARSAD=await getJSON('../data/marsad.json').catch(()=>null)}
   catch(e){$('#login-err').textContent='تعذّر تحميل بيانات التطبيق. أعد تحميل الصفحة.';$('#login-err').hidden=false;return}
-  ADMIN.breaking=ADMIN.breaking||{};ADMIN.hidden=ADMIN.hidden||[];ADMIN.auth=ADMIN.auth||{user:'admin',hash:''};
+  ADMIN.breaking=ADMIN.breaking||{};ADMIN.hidden=ADMIN.hidden||[];ADMIN.marsad_hidden=ADMIN.marsad_hidden||[];ADMIN.auth=ADMIN.auth||{user:'admin',hash:''};
   if(S.get('khabar-admin')===((ADMIN.auth.hash||DEFAULT_HASH)))open();
 }
 $('#login-form').onsubmit=async e=>{
@@ -41,8 +41,19 @@ function open(){
     const tx=el('span');tx.append(el('span','z',`${z.name.ar} · ${it.cat.ar}`),it.ar);lb.append(cb,tx);li.append(lb);ul.append(li)}));
   ['#b-on','#b-ar','#b-en','#b-src','#b-url','#b-until','#np1','#np2'].forEach(s=>$(s).addEventListener('input',preview));
   $('#tok').value=LS.get('khabar-token')||'';
-  agentPanel();
+  agentPanel();marsadPanel();
   preview();
+}
+function marsadPanel(){
+  const k=$('#marsad-kpis'),ul=$('#marsad-list');k.textContent='';ul.textContent='';
+  if(!MARSAD){$('#marsad-last').textContent='لم يُبنَ المرصد بعد.';return}
+  const I=MARSAD.indicators,R=MARSAD.record||{},stale=I.filter(i=>i.stale).length;
+  [[I.length,'مؤشراً في المرصد'],[Object.keys(MARSAD.sources||{}).length,'مصدراً موثّقاً'],[I.filter(i=>i.est&&i.est.tier!=='c').length,'تقديراً معلناً'],[R.scored?`${R.hits}/${R.scored}`:'—','تقديراً أصاب نطاقه']]
+    .forEach(([v,l])=>{const d=el('div');d.append(el('b',null,String(v)),el('small',null,l));k.append(d)});
+  $('#marsad-last').textContent=`آخر بناء: ${new Date(MARSAD.updated).toLocaleString('ar-QA',{timeZone:'Asia/Qatar',numberingSystem:'latn'})}`+(stale?` · ${stale} مؤشر لم تتجدد قراءته`:' · كل القراءات حديثة');
+  const hid=new Set(ADMIN.marsad_hidden),Z={qatar:'قطر',gulf:'الخليج',egypt:'مصر',world:'العالم'};
+  I.forEach(i=>{const li=el('li'),lb=el('label'),cb=el('input');cb.type='checkbox';cb.value=i.id;cb.checked=hid.has(i.id);cb.onchange=preview;
+    const tx=el('span');tx.append(el('span','z',`${Z[i.zone]} · آخر قراءة ${i.now.d}${i.stale?' · قديمة':''}`),i.ar);lb.append(cb,tx);li.append(lb);ul.append(li)});
 }
 function agentPanel(){
   const k=$('#agent-kpis');k.textContent='';const S=(LEDGER&&LEDGER.summary)||{},r=(LEDGER&&LEDGER.runs||[]).find(x=>x.mode==='brief');
@@ -66,6 +77,7 @@ async function collect(){
   const until=$('#b-until').value?new Date($('#b-until').value).toISOString():'';
   out.breaking={on:$('#b-on').checked,text_ar:$('#b-ar').value.trim(),text_en:$('#b-en').value.trim(),source:$('#b-src').value.trim(),url:$('#b-url').value.trim(),until};
   out.hidden=[...document.querySelectorAll('#hide-list input:checked')].map(x=>x.value);
+  out.marsad_hidden=[...document.querySelectorAll('#marsad-list input:checked')].map(x=>x.value);
   const p1=$('#np1').value,p2=$('#np2').value;
   if(p1||p2){if(p1.length<10)throw new Error('كلمة المرور الجديدة يجب أن تكون 10 أحرف على الأقل.');if(p1!==p2)throw new Error('كلمتا المرور غير متطابقتين.');out.auth.hash=await hash(p1)}
   if(!out.auth.hash)out.auth.hash=DEFAULT_HASH;
