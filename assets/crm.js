@@ -14,7 +14,7 @@ const EN=window.CRM_LANG==='en',L=(a,e)=>EN?e:a;   // texts built in code; the s
 const ERR={no_permission:'ليست لديك صلاحية لهذا الإجراء. راجع المدير.',wrong_password:'اسم المستخدم أو كلمة المرور غير صحيحة.',rate_limited:'محاولات كثيرة، حاول بعد ساعة.',weak_password:'كلمة المرور 8 أحرف على الأقل.',bad_username:'اسم المستخدم غير صالح (3 أحرف على الأقل وبدون مسافات).',
   username_taken:'اسم المستخدم مستخدم من قبل.',must_change_both:'غيّر اسم المستخدم (ليس 123) وكلمة المرور معاً.',admin_only:'هذا الإجراء للمدير فقط.',last_admin:'لا يمكن إيقاف آخر مدير أو تحويله إلى موظف.',
   too_large:'الملف أكبر من 10 ميجابايت.',not_found:'غير موجود.',invalid:'بيانات غير مكتملة.',read_only:'لا يمكن تعديل هذا السجل مباشرة.',must_change:'غيّر بيانات الدخول أولاً.',period_locked:'هذه الفترة المالية مقفلة. لا يمكن التسجيل أو التعديل بتاريخ يقع فيها.',unbalanced:'القيد غير متوازن.'};
-const errText=e=>ERR[e]||e;
+const errText=e=>ERR[e]||(/failed to fetch|networkerror|load failed/i.test(String(e))?'تعذّر الاتصال بالخادم. تحقق من اتصال الإنترنت وحاول مرة أخرى.':e);
 function toast(t){const el=$('toast');el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,2200)}
 const today=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
 const days=s=>{if(!s)return null;const d=new Date(s);return isNaN(d)?null:Math.round((d-today())/864e5)};
