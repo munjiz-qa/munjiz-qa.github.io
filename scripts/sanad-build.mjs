@@ -23,7 +23,7 @@ ar:{
   eyebrow:'خدمة جديدة من منجز لخدمات الأعمال',
   h1:'موظفك الرقمي<br><em>الذي لا يغيب</em>',
   lead:'سند يرد على عملائك في واتساب وموقعك على مدار الساعة، يحجز المواعيد، يسجّل كل عميل محتمل، ويضع تقرير يومك أمامك كل صباح. وأي رد فيه سعر أو التزام لا يُرسل إلا بموافقتك.',
-  cta1:'اطلب عرض سعر',cta2:'تحدّث معنا على واتساب',waHello:'مرحباً، أرغب في معرفة المزيد عن خدمة سند من منجز.',
+  cta1:'اطلب عرض سعر',cta2:'تحدّث معنا على واتساب',cta3:'جرّب التطبيق مباشرة',appHref:'app/',waHello:'مرحباً، أرغب في معرفة المزيد عن خدمة سند من منجز.',
   facts:[['24/7','ردود دون انقطاع'],['3–5 أيام عمل','للتشغيل الكامل'],['عربي وإنجليزي','بلهجة عملائك']],
   thread:{name:'سند · مساعد العيادة',status:'متصل الآن',msgs:[
     ['in','السلام عليكم، عندكم موعد تنظيف أسنان هذا الأسبوع؟','21:42'],
@@ -87,7 +87,7 @@ en:{
   eyebrow:'A new service from Munjiz Business Services',
   h1:'The digital employee<br><em>who never clocks out</em>',
   lead:'Sanad answers your customers on WhatsApp and your website around the clock, books appointments, logs every lead and puts your day in front of you every morning. Any reply that quotes a price or makes a commitment waits for your approval.',
-  cta1:'Request a quote',cta2:'Chat with us on WhatsApp',waHello:'Hello, I would like to know more about Sanad by Munjiz.',
+  cta1:'Request a quote',cta2:'Chat with us on WhatsApp',cta3:'Try the live app',appHref:'../app/',waHello:'Hello, I would like to know more about Sanad by Munjiz.',
   facts:[['24/7','replies without a break'],['3–5 working days','to go live'],['Arabic & English','in your customers\' tone']],
   thread:{name:'Sanad · Clinic assistant',status:'online',msgs:[
     ['in','Hi, do you have a cleaning appointment this week?','21:42'],
@@ -192,7 +192,7 @@ return `<!doctype html>
     <span class="eyebrow">${c.eyebrow}</span>
     <h1>${c.h1}</h1>
     <p class="lead">${c.lead}</p>
-    <div class="cta"><a class="btn btn-main" href="#request">${c.cta1}</a><a class="btn btn-line" data-wa="${c.waHello}" href="https://wa.me/97451600498" target="_blank" rel="noopener">${c.cta2}</a></div>
+    <div class="cta"><a class="btn btn-main" href="#request">${c.cta1}</a><a class="btn btn-line" data-wa="${c.waHello}" href="https://wa.me/97451600498" target="_blank" rel="noopener">${c.cta2}</a><a class="btn btn-line" href="${c.appHref}">${c.cta3}</a></div>
     <div class="facts">${c.facts.map(([b,s])=>`<span><b>${b}</b> ${s}</span>`).join('')}</div>
   </div>
   <div class="thread" aria-label="${L==='ar'?'مثال لمحادثة يديرها سند':'Example conversation handled by Sanad'}">
