@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>لوحة الإدارة · براق BURAQ</title>
+<meta name="description" content="لوحة إدارة براق.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Crect x='1.5' y='1.5' width='27' height='27' rx='8' fill='%23F8FAFA' stroke='%2314202A' stroke-width='2'/%3E%3Cpath d='M19 4.5 10.5 16.8h5.6l-2.3 8.7 9.2-13.1h-5.6Z' fill='%23A9572A'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="acct/acct.css?v=1">
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="./" aria-label="براق: الصفحة الرئيسية">
+    <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><rect x="1.5" y="1.5" width="27" height="27" rx="8" fill="none" stroke="var(--ink)" stroke-width="2"/><path d="M5 12.5h5M4 16.5h4.5M5.5 20.5h3" stroke="var(--copper)" stroke-width="1.8" stroke-linecap="round"/><path d="M19 4.5 10.5 16.8h5.6l-2.3 8.7 9.2-13.1h-5.6Z" fill="var(--copper)"/></svg>
+    <span><b>براق</b> <small>BURAQ · لوحة الإدارة</small></span>
+  </a>
+  <div class="who">
+    <a class="btn sm" href="./">الموقع</a>
+    <span class="nm" id="whoName"></span>
+    <button class="btn sm" id="logout" hidden>تسجيل الخروج</button>
+  </div>
+</div></header>
+
+<main class="wrap">
+  <p class="msg err" id="notReady" hidden style="margin-top:24px">نظام الحسابات غير مفعّل بعد.</p>
+  <div class="loading" id="boot">جارٍ التحميل…</div>
+
+  <section class="auth" id="auth" hidden>
+    <h1 style="text-align:center">دخول الإدارة</h1>
+    <p class="lead" style="text-align:center">للمديرين فقط. العملاء يدخلون من <a href="account.html">صفحة حسابي</a>.</p>
+    <form class="card" id="loginF" novalidate>
+      <p class="msg err" id="loginErr" hidden></p>
+      <label class="f">البريد الإلكتروني<input id="lEmail" type="email" dir="ltr" autocomplete="username" required></label>
+      <label class="f">كلمة المرور<span class="pw"><input id="lPass" type="password" dir="ltr" autocomplete="current-password" required><button type="button" class="btn sm" data-eye="lPass">إظهار</button></span></label>
+      <button class="btn pri block" type="submit">دخول</button>
+    </form>
+  </section>
+
+  <section id="dash" hidden>
+    <h1>لوحة إدارة براق</h1>
+    <p class="lead">صلاحيات كاملة: الطلبات وعروض الأسعار، العملاء والمديرون، الكتالوج والأسعار، ومحتوى الموقع.</p>
+    <div class="tabs" role="tablist" id="dTabs">
+      <button role="tab" aria-selected="true" data-p="ov">نظرة عامة</button>
+      <button role="tab" aria-selected="false" data-p="reqs">الطلبات <span class="n" id="nReq">0</span></button>
+      <button role="tab" aria-selected="false" data-p="users">المستخدمون <span class="n" id="nUsr">0</span></button>
+      <button role="tab" aria-selected="false" data-p="plans">الخطط المحفوظة <span class="n" id="nPlan">0</span></button>
+      <button role="tab" aria-selected="false" data-p="cat">الكتالوج والأسعار</button>
+      <button role="tab" aria-selected="false" data-p="content">محتوى الموقع</button>
+      <button role="tab" aria-selected="false" data-p="me">حسابي</button>
+    </div>
+
+    <div data-pane="ov">
+      <div class="kpis" id="kpis"></div>
+      <h2>أحدث الطلبات</h2>
+      <div class="list" id="latest"></div>
+    </div>
+
+    <div data-pane="reqs" hidden>
+      <div class="toolbar">
+        <input id="rq" type="search" placeholder="بحث برقم الطلب أو الاسم أو الجوال أو السيارة">
+        <select id="rs"><option value="">كل الحالات</option></select>
+        <button class="btn sm" id="csvReq">تصدير CSV</button>
+      </div>
+      <div class="tbl-wrap"><table><thead><tr><th>رقم الطلب</th><th>العميل</th><th>الجوال</th><th>النوع</th><th>السيارة</th><th>الحالة</th><th>عرض السعر</th><th>التاريخ</th><th></th></tr></thead><tbody id="reqRows"></tbody></table></div>
+    </div>
+
+    <div data-pane="users" hidden>
+      <div class="toolbar">
+        <input id="uq" type="search" placeholder="بحث بالاسم أو البريد أو الجوال">
+        <select id="ur"><option value="">كل الأدوار</option><option value="customer">عملاء</option><option value="admin">مديرون</option></select>
+        <button class="btn sm pri" id="addUser">إضافة مستخدم</button>
+      </div>
+      <div class="tbl-wrap"><table><thead><tr><th>الاسم</th><th>البريد</th><th>الجوال</th><th>المدينة</th><th>الدور</th><th>الحالة</th><th>تاريخ التسجيل</th><th></th></tr></thead><tbody id="usrRows"></tbody></table></div>
+    </div>
+
+    <div data-pane="plans" hidden>
+      <div class="list" id="planList"></div>
+    </div>
+
+    <div data-pane="cat" hidden>
+      <p class="mute sm">تظهر البنود المفعّلة في قسم «قائمة الأسعار» على الصفحة الرئيسية مباشرة بعد الحفظ. الأسعار بالدولار الأمريكي.</p>
+      <div class="toolbar"><button class="btn sm pri" id="addItem">إضافة بند</button><button class="btn sm" id="seedCat">استيراد الأسعار الافتراضية لبراق</button></div>
+      <div class="tbl-wrap"><table><thead><tr><th>الترتيب</th><th>الرمز</th><th>البند</th><th>الفئة</th><th>السعر ($)</th><th>نوع السعر</th><th>مفعّل</th><th></th></tr></thead><tbody id="catRows"></tbody></table></div>
+    </div>
+
+    <div data-pane="content" hidden>
+      <form class="card" id="contentF" novalidate>
+        <h2>شريط الإعلان أعلى الموقع</h2>
+        <label class="f">نص الإعلان<textarea id="cAnn" maxlength="300" style="min-height:70px" placeholder="مثال: خصم 10% على طقم BQ-10 حتى نهاية الشهر"></textarea></label>
+        <div class="row">
+          <label class="f">رابط الإعلان (اختياري)<input id="cAnnUrl" dir="ltr" placeholder="#convert"></label>
+          <label class="f">إظهار الإعلان<select id="cAnnOn"><option value="1">ظاهر</option><option value="0">مخفي</option></select></label>
+        </div>
+        <h2 style="margin-top:12px">قسم قائمة الأسعار</h2>
+        <label class="f">عنوان القسم<input id="cPTitle" maxlength="120"></label>
+        <label class="f">نص تمهيدي<textarea id="cPLead" maxlength="600" style="min-height:70px"></textarea></label>
+        <label class="f">إظهار قائمة الأسعار<select id="cPOn"><option value="1">ظاهرة</option><option value="0">مخفية</option></select></label>
+        <button class="btn pri" type="submit">حفظ ونشر المحتوى</button>
+        <p class="mute sm" id="cSaved"></p>
+      </form>
+    </div>
+
+    <div data-pane="me" hidden>
+      <form class="card" id="pwF" novalidate style="max-width:520px">
+        <h2>تغيير كلمة مرور المدير</h2>
+        <label class="f">كلمة المرور الحالية<input id="oPass" type="password" dir="ltr" autocomplete="current-password" required></label>
+        <label class="f">كلمة المرور الجديدة<input id="nPass" type="password" dir="ltr" autocomplete="new-password" minlength="8" required></label>
+        <label class="f">تأكيد كلمة المرور الجديدة<input id="nPass2" type="password" dir="ltr" autocomplete="new-password" minlength="8" required></label>
+        <button class="btn pri" type="submit">تغيير كلمة المرور</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<dialog id="dlg" aria-labelledby="dT"><div class="hd"><h2 id="dT"></h2><button class="btn sm" data-close>إغلاق</button></div><div class="bd" id="dB"></div></dialog>
+
+<footer class="ft"><div class="wrap"><span>براق BURAQ · لوحة الإدارة</span><span>التواريخ بصيغة يوم/شهر/سنة، والهواتف بالصيغة الدولية.</span></div></footer>
+<script type="module" src="acct/admin.js?v=1"></script>
+</body>
+</html>
