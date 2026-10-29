@@ -1,0 +1,23 @@
+name: Mishkat health check
+# يتحقق يومياً وبعد كل تحديث أن «مشكاة» يعمل مستقلاً دون Claude، وأن صفحات العميل والمدير تعمل.
+on:
+  push:
+    branches: [main]
+    paths: ['mishkat/**', 'scripts/mishkat-check.mjs']
+  schedule:
+    - cron: '0 5 * * *'
+  workflow_dispatch:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Wait for GitHub Pages to publish
+        if: github.event_name == 'push'
+        run: sleep 120
+      - run: npm i --no-save --no-package-lock playwright@1.47.2 && npx playwright install --with-deps chromium
+      - run: node scripts/mishkat-check.mjs
