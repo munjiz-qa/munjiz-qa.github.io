@@ -16,8 +16,9 @@
     for (let i = (messages || []).length - 1; i >= 0; i--) {
       const m = messages[i]; if (m.role !== 'user') continue;
       if (typeof m.content === 'string') return m.content;
-      const t = (m.content || []).filter(b => b && b.type === 'text').map(b => b.text).join(' ').trim();
-      if (t) return t;
+      // آخر كتلة نصية فقط: قد يدمج التطبيق تعليماته مع سؤال المستخدم في الرسالة نفسها
+      const t = (m.content || []).filter(b => b && b.type === 'text' && String(b.text).trim()).map(b => b.text);
+      if (t.length) return t[t.length - 1];
     }
     return '';
   }
@@ -33,7 +34,7 @@
     const biz = s.name || 'سند';
     const svc = (s.services || []).map(x => `• ${x.name}: ${x.duration} دقيقة${x.price ? ` · ${x.price}` : ''}`).join('\n');
     const hours = (s.days && s.days.length) ? `${s.days.map(d => DAYS[d]).join('، ')} من ${s.start || '09:00'} إلى ${s.end || '17:00'}` : '';
-    const contact = [s.phone && `الجوال: ${s.phone}`, s.email && `البريد: ${s.email}`, s.city && `المدينة: ${s.city}`].filter(Boolean).join('\n');
+    const contact = [s.phone && `الجوال: \u2066${s.phone}\u2069`, s.email && `البريد: ${s.email}`, s.city && `المدينة: ${s.city}`].filter(Boolean).join('\n');
     const howBook = role === 'client' ? 'افتح تبويب «احجز»، واختر الخدمة واليوم والوقت المتاح، ثم أرسل الطلب. يصلك التأكيد في تبويب «طلباتي».'
       : role === 'admin' ? 'أضف الموعد من تبويب «المواعيد»، وتجد طلبات العملاء الجديدة في «الموافقات» لتأكيدها أو الاعتذار عنها.'
       : 'سجّل الدخول أو أنشئ حساباً مجانياً من زر «حساب جديد»، ثم احجز من تبويب «احجز» في أقل من دقيقة.';

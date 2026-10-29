@@ -46,12 +46,12 @@
       <h2>العملاء والزوار</h2>
       <label class="check"><input type="checkbox" id="vchat"><span>السماح للزوار بسؤال سند <span class="hint">(بالنموذج الأوفر)</span></span></label>
       <label class="check"><input type="checkbox" id="reg"><span>السماح للعملاء بإنشاء حسابات للحجز</span></label>
-      <label>الحد الأقصى للطلبات في الساعة</label>
+      <div id="limits"><label>الحد الأقصى للطلبات في الساعة</label>
       <div class="row" style="flex-wrap:nowrap">
         <div style="flex:1"><span class="small muted">الزائر</span><input id="l-v" type="number" min="0" class="num"></div>
         <div style="flex:1"><span class="small muted">العميل</span><input id="l-c" type="number" min="0" class="num"></div>
         <div style="flex:1"><span class="small muted">المدير</span><input id="l-a" type="number" min="0" class="num"></div>
-      </div>
+      </div></div>
       <button class="btn pri full" type="submit">حفظ</button>
       <div id="m-pub" class="msg" hidden></div>
     </form>
@@ -108,7 +108,7 @@ async function load(){
   const s = await call('GET', 'api/admin/settings');
   $('#keynow').textContent = s.apiKey || 'غير مضبوط'; if(s.apiKeyFromEnv) $('#keynow').textContent += ' (من متغير البيئة)';
   $('#aimode').textContent = s.aiMode==='claude' ? 'Claude مفعّل، والمساعد المدمج احتياطي تلقائي' : 'المساعد المدمج يعمل دون Claude';
-  if(s.local){ $('#keyblock').hidden = true; $('#aihelp').textContent = 'هذه النسخة المنشورة تعمل بالكامل دون Claude ودون خادم: الحسابات والحجوزات والصلاحيات والمحادثة عبر المساعد المدمج. لربط Claude استخدم نسخة الخادم.'; }
+  if(s.local){ $('#keyblock').hidden = true; $('#limits').hidden = true; $('#urls').closest('.card').querySelector('p').textContent = 'افتح هذا الرابط من أي جهاز. كل متصفح يحفظ بياناته على جهازه، ولمشاركة البيانات بين الأجهزة شغّل نسخة الخادم.'; $('#aihelp').textContent = 'هذه النسخة المنشورة تعمل بالكامل دون Claude ودون خادم: الحسابات والحجوزات والصلاحيات والمحادثة عبر المساعد المدمج. لربط Claude استخدم نسخة الخادم.'; }
   $('#pwwarn').hidden = !me.user.defaultPassword;
   $('#opt-admin').hidden = !s.super; if(!s.super) $('#u-role').value = 'client';
   $('#restore').closest('label').hidden = !s.super;
