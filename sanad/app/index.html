@@ -184,6 +184,7 @@ input.i:focus,select.i:focus,textarea.i:focus{border-color:var(--accent);outline
 .toast{position:fixed;inset-inline:0;bottom:calc(76px + env(safe-area-inset-bottom,0px));display:flex;justify-content:center;pointer-events:none;z-index:50;padding-inline:16px}
 .toast div{background:var(--ink);color:var(--bg);border-radius:10px;padding:9px 16px;font-size:14px;box-shadow:var(--shadow);max-width:520px}
 .toast div.bad{background:var(--bad);color:#fff}
+.toast[hidden]{display:none}
 .sheet{position:fixed;inset:0;background:rgba(5,20,18,.45);display:flex;align-items:flex-end;z-index:40}
 .sheet>div{background:var(--surface);width:100%;border-radius:18px 18px 0 0;padding:14px max(16px,env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:grid;gap:4px}
 .sheet button.it{display:flex;gap:12px;align-items:center;border:0;background:none;padding:12px 8px;border-radius:10px;font-size:15px;cursor:pointer;text-align:start}
