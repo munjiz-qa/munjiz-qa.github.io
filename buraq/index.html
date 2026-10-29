@@ -713,9 +713,9 @@ function plan(model,o){
   if(!fit)rating=Math.max(1,rating-1);
   const payloadLeft=T.payload-delta;
   // توزيع الوحدات على الأماكن
-  let left=need;const alloc=[];
-  for(const [z,c] of T.zones){if(left<=0)break;const take=Math.min(c,left);const n=Math.round(take/((o.split?.88:1)*M.eq)*(o.split?2:1));alloc.push([z,n]);left-=take;}
-  let placed=alloc.reduce((a,b)=>a+b[1],0); if(alloc.length&&placed!==nMod){alloc[alloc.length-1][1]+=nMod-placed;}
+  const unit=(o.split?.44:1)*M.eq;let rem=nMod;const alloc=[];
+  for(const [z,c] of T.zones){if(rem<=0)break;const n=Math.min(rem,Math.floor(c/unit+1e-9));if(n>0){alloc.push([z,n]);rem-=n;}}
+  if(rem>0){if(alloc.length)alloc[alloc.length-1][1]+=rem;else alloc.push([T.zones[0][0],rem]);}
   return {kwh,vnom,vmin:C.S*C.vmin,vmax:C.S*C.vmax,cells,nMod,packKg,mass,delta,run,range,t100,vtop,chgH,crate,fit,need,cap:T.cap,lines:L,parts,pub,hrs,labor,total:parts+labor,rating,payloadLeft,alloc,hvLen};
 }
 
