@@ -1,0 +1,60 @@
+rules_version = '2';
+// قواعد أمان براق: عميل يرى بياناته فقط، والمدير يملك كل الصلاحيات.
+service cloud.firestore {
+  match /databases/{db}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function uid() { return request.auth.uid; }
+    function me() { return get(/databases/$(db)/documents/users/$(uid())).data; }
+    function hasProfile() { return signedIn() && exists(/databases/$(db)/documents/users/$(uid())); }
+    function active() { return hasProfile() && me().disabled != true; }
+    function isAdmin() { return active() && me().role == 'admin'; }
+    // المدير المؤسس: أول حساب إدارة، يُنشأ مرة واحدة ثم يرقّي غيره من اللوحة
+    function isFounder() { return signedIn() && request.auth.token.email == 'munijizqa@gmail.com'; }
+    function onlyChanged(keys) { return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys); }
+    function str(v, max) { return v is string && v.size() <= max; }
+
+    match /users/{id} {
+      allow read: if (signedIn() && uid() == id) || isAdmin();
+      allow create: if isAdmin() || (signedIn() && uid() == id
+        && request.resource.data.email == request.auth.token.email
+        && str(request.resource.data.name, 80)
+        && request.resource.data.disabled == false
+        && (request.resource.data.role == 'customer' || (request.resource.data.role == 'admin' && isFounder())));
+      allow update: if isAdmin()
+        || (active() && uid() == id && onlyChanged(['name', 'phone', 'company', 'city', 'updatedAt'])
+            && str(request.resource.data.name, 80));
+      allow delete: if isAdmin() && uid() != id;
+    }
+
+    match /plans/{id} {
+      allow read, delete: if isAdmin() || (active() && resource.data.uid == uid());
+      allow create: if active() && request.resource.data.uid == uid() && request.resource.data.size() < 40;
+      allow update: if isAdmin() || (active() && resource.data.uid == uid() && request.resource.data.uid == uid());
+    }
+
+    match /requests/{id} {
+      allow read: if isAdmin() || (active() && resource.data.uid == uid());
+      allow create: if active() && request.resource.data.uid == uid()
+        && request.resource.data.status == 'new'
+        && !('price' in request.resource.data) && !('adminNote' in request.resource.data);
+      // العميل يستطيع إلغاء طلبه فقط ما دام جديداً أو قيد المراجعة
+      allow update: if isAdmin()
+        || (active() && resource.data.uid == uid() && resource.data.status in ['new', 'reviewing']
+            && request.resource.data.status == 'cancelled' && onlyChanged(['status', 'updatedAt', 'history']));
+      allow delete: if isAdmin();
+
+      match /msgs/{m} {
+        allow read: if isAdmin() || (active() && get(/databases/$(db)/documents/requests/$(id)).data.uid == uid());
+        allow create: if request.resource.data.uid == uid() && str(request.resource.data.text, 2000)
+          && (isAdmin() || (active() && get(/databases/$(db)/documents/requests/$(id)).data.uid == uid()
+              && request.resource.data.fromAdmin == false));
+        allow delete: if isAdmin();
+      }
+    }
+
+    // الكتالوج والأسعار والمحتوى: عامة للقراءة، والكتابة للمدير فقط
+    match /catalog/{id} { allow read: if true; allow write: if isAdmin(); }
+    match /content/{id} { allow read: if true; allow write: if isAdmin(); }
+  }
+}
