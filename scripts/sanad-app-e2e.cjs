@@ -54,6 +54,7 @@ function startStatic() { // يحاكي GitHub Pages: ملفات ثابتة فق�
   const vt = await V.textContent('.main');
   ok('visitor: site opens with business + services (no setup, no Claude)', vt.includes('سند من منجز') && vt.includes('استشارة أولية'), vt.slice(0, 200));
   ok('visitor: Qatar contact unified', vt.includes('+974 5160 0498') || (await V.textContent('body')).includes('+974 5160 0498'));
+  ok('visitor: no empty notification bar', !(await V.isVisible('#toast')));
   ok('visitor: no admin tabs', !(await V.textContent('.rail')).includes('العملاء'));
   await V.screenshot({ path: `${shots}/01-visitor-desktop.png` });
   await tab(V, 'chat'); await ask(V, 'ما الخدمات والأسعار؟');
