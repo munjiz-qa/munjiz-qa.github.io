@@ -326,9 +326,12 @@ tbody tr.row:hover{background:var(--sunk)}
 .toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;z-index:60;font-size:14px;box-shadow:var(--shadow);max-width:calc(100% - 32px)}
 .gate{max-width:520px;margin:40px auto;text-align:center}
 .adm-card{padding:28px;max-width:440px}
-.pw-wrap{position:relative}.pw-wrap .input{padding-inline-end:72px}
-.pw-eye{position:absolute;inset-inline-end:6px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--brand);font-weight:600;font-size:13px;cursor:pointer;padding:6px 8px}
+.pw-wrap{position:relative}.pw-wrap .input{padding-left:76px;padding-right:12px}
+.pw-eye{position:absolute;left:6px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--brand);font-weight:600;font-size:13px;cursor:pointer;padding:6px 8px}
 .ok-msg{color:var(--ok);font-size:13px}.ok-msg:empty,.err:empty{display:none}
+.acct-card{padding:18px;margin-bottom:18px}.acct-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.acct-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;margin-bottom:18px;flex-wrap:wrap}.acct-bar div{display:grid;gap:2px}.acct-bar .muted{font-size:13px}
+@media (max-width:640px){.acct-card .row2{grid-template-columns:1fr}}
 .notice-bar{background:var(--brand);color:#fff;font-size:14px;font-weight:600;text-align:center;padding:9px 0}
 
 /* v3: idea-to-site box, logo studio, quality score, sharing, app shell */
@@ -1437,7 +1440,7 @@ function myOrders(){
 }
 function renderTrack(){
   const list = myOrders();
-  $("#track-root").innerHTML = `<h2 style="font-size:26px">${T("طلباتي","My orders")}</h2><p class="muted" style="margin-top:4px">${T("تابع حالة طلباتك ورسائل فريقنا لحظة بلحظة.","Follow your requests and messages from our team in real time.")}</p>
+  $("#track-root").innerHTML = `${APP && Api.url ? custCard() : ""}<h2 style="font-size:26px">${T("طلباتي","My orders")}</h2><p class="muted" style="margin-top:4px">${T("تابع حالة طلباتك ورسائل فريقنا لحظة بلحظة.","Follow your requests and messages from our team in real time.")}</p>
   <div class="list">${!list.length ? `<div class="empty"><p>${T("لا توجد طلبات بعد. صمّم موقعك في دقائق وسيظهر طلبك هنا مع حالته.","No requests yet. Design your site in minutes and it will appear here.")}</p><button class="btn btn-primary" data-act="go" data-to="build" style="margin-top:12px">${T("ابدأ بناء موقعك","Start building")}</button></div>` :
   list.map(o => { const cat = CAT[o.cfg.cat], st = ST[o.status], open = S.openPreview === o.id, canCancel = o.synced && ["new","review"].includes(o.status);
     return `<article class="order-card"><header><div><b>${esc(o.cfg.name)}</b> <span class="muted">· ${esc(L(cat.label))}</span></div><span class="pill ${st.c}">${esc(L(st.t))}</span></header>
@@ -1481,9 +1484,9 @@ function renderAdmin(){
   }
   root.innerHTML = `<div class="admin-head"><div><p class="eyebrow">${T("لوحة الإدارة","ADMIN")}</p><h2 style="font-size:26px">${T("الطلبات والإيرادات","Requests & revenue")}</h2></div>
     <div class="inline">${Api.url ? `<button class="btn btn-ghost btn-sm" data-act="adm-refresh">${T("تحديث","Refresh")}</button>` : ""}<button class="btn btn-ghost btn-sm" data-act="csv">${T("نسخ الطلبات بصيغة CSV","Copy as CSV")}</button><button class="btn btn-dark btn-sm" data-act="go" data-to="build">${T("تجربة المعالج كعميل","Try the builder")}</button></div></div>
-  <div class="tabs" role="tablist">${[["orders",T("الطلبات","Requests")],["settings",T("الأسعار والإعدادات","Pricing & settings")],["coupons",T("أكواد الخصم","Promo codes")], ...(Api.url ? [["content",T("المحتوى","Content")],["account",T("الحساب","Account")]] : [])].map(([t,l]) => `<button role="tab" data-act="atab" data-v="${t}" aria-selected="${S.adminTab === t}">${l}</button>`).join("")}</div>
+  <div class="tabs" role="tablist">${[["orders",T("الطلبات","Requests")],["settings",T("الأسعار والإعدادات","Pricing & settings")],["coupons",T("أكواد الخصم","Promo codes")], ...(Api.url ? [["customers",T("العملاء","Customers")],["content",T("المحتوى","Content")],["account",T("الحساب","Account")]] : [])].map(([t,l]) => `<button role="tab" data-act="atab" data-v="${t}" aria-selected="${S.adminTab === t}">${l}</button>`).join("")}</div>
   <div id="admin-body"></div>`;
-  if (S.adminTab === "orders") renderAdminOrders(); else if (S.adminTab === "settings") renderSettingsForm(); else if (S.adminTab === "content" && Api.url) renderContent(); else if (S.adminTab === "account" && Api.url) renderAccount(); else renderCoupons();
+  if (S.adminTab === "orders") renderAdminOrders(); else if (S.adminTab === "settings") renderSettingsForm(); else if (S.adminTab === "content" && Api.url) renderContent(); else if (S.adminTab === "customers" && Api.url) renderCustomers(); else if (S.adminTab === "account" && Api.url) renderAccount(); else renderCoupons();
   if (S.openOrder) renderDrawer();
 }
 function renderAdminOrders(){
@@ -1636,7 +1639,7 @@ const ACTIONS = {
     catch { say(T("تعذّر الإلغاء. تواصل معنا.","Couldn't cancel. Please contact us.")); }
     renderTrack();
   },
-  atab: el => { S.adminTab = el.dataset.v; S.ctDraft = null; renderAdmin(); },
+  atab: el => { S.adminTab = el.dataset.v; S.ctDraft = null; S.custList = null; renderAdmin(); },
   open: el => { S.openOrder = el.dataset.key; S.confirm = null; renderDrawer(); },
   "drawer-close": () => closeDrawer(),
   "copy-phone": async el => say(await copyText(el.dataset.v) ? T("تم نسخ الرقم","Number copied") : el.dataset.v),
@@ -2053,6 +2056,8 @@ const API_ERR = {
   bad_login:["البريد أو كلمة المرور غير صحيحة.","Incorrect email or password."], locked:["محاولات دخول كثيرة. أعد المحاولة بعد 15 دقيقة.","Too many attempts. Try again in 15 minutes."],
   weak:["كلمة المرور 10 أحرف على الأقل وتجمع بين حروف وأرقام.","Use at least 10 characters mixing letters and digits."], auth:["انتهت الجلسة. سجّل الدخول من جديد.","Your session expired. Please sign in again."],
   must_change:["غيّر كلمة المرور المؤقتة أولاً.","Change the temporary password first."], busy:["ضغط مرتفع على الخادم، أعد المحاولة بعد دقيقة.","The server is busy. Retry in a minute."],
+  weak_c:["كلمة المرور 8 أحرف على الأقل وتجمع بين حروف وأرقام.","Use at least 8 characters with letters and digits."], exists_c:["هذا البريد مسجّل مسبقاً، سجّل الدخول بدلاً من ذلك.","This email is already registered. Please sign in."],
+  cauth:["انتهت جلستك. سجّل الدخول من جديد.","Your session expired. Please sign in again."], disabled:["هذا الحساب موقوف. تواصل مع فريق بناء بيلدر.","This account is suspended. Please contact us."],
   network:["تعذّر الاتصال بالخادم. تحقق من الإنترنت ثم أعد المحاولة.","Couldn't reach the server. Check your connection and retry."]
 };
 const Api = {
@@ -2062,7 +2067,7 @@ const Api = {
     try {
       const r = await fetch(this.url, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify({action, ...data}), signal:ctl.signal});
       const j = await r.json();
-      if (!j.ok){ if (j.error === "auth" && action !== "login") Admin.drop(); throw {code:j.error, message: API_ERR[j.error] ? L(API_ERR[j.error]) : (j.message || L(API_ERR.network))}; }
+      if (!j.ok){ if (j.error === "auth" && action !== "login") Admin.drop(); if ((j.error === "cauth" || j.error === "disabled") && data.ctoken) Cust.drop(); throw {code:j.error, message: API_ERR[j.error] ? L(API_ERR[j.error]) : (j.message || L(API_ERR.network))}; }
       return j;
     } catch (e) { if (e?.code) throw e; throw {code:"network", message:L(API_ERR.network)}; }
     finally { clearTimeout(t); }
@@ -2078,16 +2083,17 @@ const Admin = {
 const orderKeys = () => store.get("bb.keys", {}) || {};
 const ApiRepo = {
   api:true, uid:"me",
-  async createOrder(order){ const r = await Api.call("create", {order}); store.set("bb.keys", {...orderKeys(), [order.id]: r.key}); if (r.createdAt) order.createdAt = r.createdAt; },
+  async createOrder(order){ const r = await Api.call("create", {order, ctoken:Cust.token || undefined}); store.set("bb.keys", {...orderKeys(), [order.id]: r.key}); if (r.createdAt) order.createdAt = r.createdAt; },
   async patchOrder(uid, oid, patch){
-    if (uid === "me"){ const r = await Api.call("cancel", {id:oid, key:orderKeys()[oid]}); mergeMine([{id:oid, status:r.status, history:r.history}]); return; }
+    if (uid === "me"){ const r = await Api.call("cancel", {id:oid, key:orderKeys()[oid], ctoken:Cust.token || undefined}); mergeMine([{id:oid, status:r.status, history:r.history}]); return; }
     await Api.call("patch", {token:Admin.token, id:oid, patch}); await loadOrders();
   },
   async deleteOrder(uid, oid){ await Api.call("delete", {token:Admin.token, id:oid}); await loadOrders(); },
   async saveSettings(s){ await Api.call("saveSettings", {token:Admin.token, settings:s}); store.set("bb.live", s); }
 };
-function mergeMine(list){
+function mergeMine(list, full){
   const cur = {...(S.myDoc?.orders || {})};
+  for (const o of full || []) cur[o.id] = o;
   for (const r of list || []){ const base = cur[r.id] || S.localOrders.find(o => o.id === r.id); if (!base) continue; cur[r.id] = {...base, status:r.status, history:r.history?.length ? r.history : base.history, customerMessage: r.customerMessage ?? base.customerMessage}; }
   S.myDoc = {orders:cur};
   S.localOrders = S.localOrders.map(o => cur[o.id] ? {...o, status:cur[o.id].status, history:cur[o.id].history, customerMessage:cur[o.id].customerMessage} : o); store.set("mdk.orders", S.localOrders);
@@ -2097,8 +2103,10 @@ let mineAt = 0;
 async function refreshMine(force){
   if (!Api.url || (!force && Date.now() - mineAt < 15000)) return; mineAt = Date.now();
   const keys = orderKeys(), items = S.localOrders.filter(o => keys[o.id]).slice(0, 20).map(o => ({id:o.id, key:keys[o.id]}));
-  if (!items.length) return;
-  try { const r = await Api.call("track", {items}); mergeMine(r.orders); } catch {}
+  const list = [], full = [];
+  if (items.length) try { list.push(...(await Api.call("track", {items})).orders); } catch {}
+  if (Cust.token) try { const r = await Api.call("cme", {ctoken:Cust.token}); Cust.keep({ctoken:Cust.token, profile:r.profile}); full.push(...r.orders); } catch {}
+  if (list.length || full.length) mergeMine(list, full);
 }
 async function loadOrders(){
   if (!Admin.token) return;
@@ -2126,12 +2134,13 @@ async function loadSettings(){
   Api.url = API_RE.test(be?.api || "") ? be.api : "";
   if (!Api.url){ if (live){ try { localStorage.removeItem("bb.live"); } catch {} if (cfg) onSettings(cfg); } if (S.route === "admin") renderAdmin(); return; }
   Object.assign(Repo, ApiRepo);
-  if (S.route === "admin") renderAdmin();
+  if (S.route === "admin") renderAdmin(); if (S.route === "track") renderTrack();
   try {
     const r = await Api.call("settings");
     if (r.settings){ store.set("bb.live", r.settings); onSettings(r.settings); }
     else if (live){ try { localStorage.removeItem("bb.live"); } catch {} if (cfg) onSettings(cfg); }
   } catch {}
+  if (Cust.s) prefillContact(Cust.s.profile);
   refreshMine(true);
   const a = Admin.s; if (a){ try { const me = await Api.call("me", {token:a.token}); await adminEnter({...a, mustChange:me.mustChange}); } catch {} }
 }
@@ -2220,6 +2229,71 @@ document.addEventListener("submit", async e => {
     }
   } catch (x) { if (document.contains(err)) err.textContent = x.message || L(API_ERR.network); }
   finally { if (document.contains(btn)){ btn.disabled = false; if (f.id === "adm-login") btn.textContent = T("دخول","Sign in"); } }
+});
+
+/* customer accounts (hosted app): sign up / sign in, orders follow the customer across devices */
+const Cust = {
+  get s(){ const v = store.get("bb.cust", null); return v && v.ctoken && v.exp > Date.now() ? v : null; },
+  get token(){ return this.s?.ctoken || ""; },
+  keep(v){ store.set("bb.cust", {ctoken:v.ctoken, profile:v.profile, exp: this.s?.ctoken === v.ctoken ? this.s.exp : Date.now() + 24*36e5 - 6e4}); },
+  drop(){ try { localStorage.removeItem("bb.cust"); } catch {} S.myDoc = null; if (S.route === "track") renderTrack(); }
+};
+function prefillContact(p){
+  const k = S.contact; if (!p) return;
+  if (!k.name) k.name = p.name; if (!k.email) k.email = p.email;
+  if (!k.phone){ const m = String(p.phone || "").match(/^(\+\d+) (.+)$/); if (m && COUNTRIES.some(c => c[0] === m[1])){ k.cc = m[1]; k.phone = m[2]; } }
+  saveContact();
+}
+function custCard(){
+  const c = Cust.s;
+  if (c) return `<div class="panel acct-bar"><div><b>${T("مرحباً","Welcome")}، ${esc(c.profile.name.split(" ")[0])}</b><span class="muted ltr num">${esc(c.profile.email)} · ${esc(c.profile.phone)}</span></div><button class="btn btn-ghost btn-sm" data-act="c-logout">${T("تسجيل الخروج","Sign out")}</button></div>`;
+  const reg = S.cMode === "reg";
+  return `<div class="panel acct-card"><div class="acct-head"><div><h3 style="font-size:18px">${T("حسابك في بناء بيلدر","Your Binaa Builder account")}</h3><p class="muted" style="font-size:13px;margin-top:2px">${T("سجّل الدخول لتتابع طلباتك ورسائل فريقنا من أي جهاز.","Sign in to follow your requests and our messages from any device.")}</p></div>
+    <div class="seg" role="group"><button data-act="c-mode" data-v="login" aria-pressed="${!reg}">${T("دخول","Sign in")}</button><button data-act="c-mode" data-v="reg" aria-pressed="${reg}">${T("حساب جديد","Create account")}</button></div></div>
+    ${reg ? `<form id="c-reg" novalidate><div class="row2"><div class="field"><label for="cr-name">${T("الاسم الكامل","Full name")}</label><input class="input" id="cr-name" autocomplete="name" required></div><div class="field"><label for="cr-email">${T("البريد الإلكتروني","Email")}</label><input class="input" id="cr-email" type="email" dir="ltr" autocomplete="email" required></div></div>
+      <div class="row2"><div class="field"><label for="cr-phone">${T("رقم الجوال","Mobile")}</label><div class="phone"><select class="input" id="cr-cc" aria-label="${T("رمز الدولة","Country code")}">${COUNTRIES.map(([cc,n]) => `<option value="${cc}" ${cc === (S.contact.cc || "+974") ? "selected" : ""}>${cc} ${esc(L(n))}</option>`).join("")}</select><input class="input num" id="cr-phone" inputmode="tel" placeholder="5X XXX XXXX" required></div></div>${pwField("cr-pw", T("كلمة المرور","Password"), "new-password")}</div>
+      <p class="help" style="font-size:12px;color:var(--muted);margin-top:6px">${T("8 أحرف على الأقل، تجمع بين حروف وأرقام.","At least 8 characters with letters and digits.")}</p>
+      <p class="err" id="c-err" role="alert"></p><button class="btn btn-primary" type="submit" style="margin-top:12px">${T("إنشاء الحساب","Create account")}</button></form>`
+    : `<form id="c-login" novalidate><div class="row2"><div class="field"><label for="cl-email">${T("البريد الإلكتروني","Email")}</label><input class="input" id="cl-email" type="email" dir="ltr" autocomplete="username" required></div>${pwField("cl-pw", T("كلمة المرور","Password"), "current-password")}</div>
+      <p class="err" id="c-err" role="alert"></p><button class="btn btn-primary" type="submit" style="margin-top:12px">${T("دخول","Sign in")}</button></form>`}</div>`;
+}
+async function renderCustomers(){
+  const body = $("#admin-body"); if (!body) return;
+  if (!S.custList){ body.innerHTML = `<p class="muted" style="margin-top:16px">${T("جارٍ تحميل العملاء…","Loading customers…")}</p>`; try { S.custList = (await Api.call("customers", {token:Admin.token})).customers; } catch (e) { body.innerHTML = `<p class="err" style="margin-top:16px">${esc(e.message)}</p>`; return; } if (S.adminTab !== "customers" || !$("#admin-body")) return; }
+  const list = S.custList;
+  $("#admin-body").innerHTML = `<div class="panel" style="padding:20px;margin-top:14px"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div><h3 style="font-size:18px">${T("حسابات العملاء","Customer accounts")}</h3><p class="muted num" style="font-size:13px">${T(`${list.length} حساب، ${list.filter(c => c.status === "active").length} فعّال`, `${list.length} accounts, ${list.filter(c => c.status === "active").length} active`)}</p></div><button class="btn btn-ghost btn-sm" data-act="cu-reload">${T("تحديث","Refresh")}</button></div>
+    ${list.length ? `<div class="table-wrap" style="margin-top:12px"><table><thead><tr><th>${T("العميل","Customer")}</th><th>${T("البريد","Email")}</th><th>${T("الجوال","Mobile")}</th><th>${T("التسجيل","Joined")}</th><th>${T("الطلبات","Requests")}</th><th>${T("الحالة","Status")}</th><th></th></tr></thead><tbody>
+      ${list.map(c => `<tr><td><b>${esc(c.name)}</b></td><td><span class="ltr">${esc(c.email)}</span></td><td class="num"><span class="ltr">${esc(c.phone)}</span></td><td class="num" style="font-size:13px">${isNaN(Date.parse(c.createdAt)) ? "—" : fmtDate(c.createdAt)}</td><td class="num">${c.orders}</td><td><span class="pill ${c.status === "active" ? "ok" : "bad"}">${c.status === "active" ? T("فعّال","Active") : T("موقوف","Suspended")}</span></td>
+        <td><button class="btn btn-ghost btn-sm" data-act="cu-toggle" data-id="${esc(c.id)}" data-s="${c.status === "active" ? "disabled" : "active"}">${c.status === "active" ? T("إيقاف الحساب","Suspend") : T("تفعيل الحساب","Reactivate")}</button></td></tr>`).join("")}</tbody></table></div>` : `<p class="muted" style="margin-top:12px">${T("لا توجد حسابات بعد.","No accounts yet.")}</p>`}</div>`;
+}
+Object.assign(ACTIONS, {
+  "c-mode": el => { S.cMode = el.dataset.v; renderTrack(); },
+  "c-logout": () => { const t = Cust.token; Cust.drop(); if (t) Api.call("clogout", {ctoken:t}).catch(() => {}); say(T("تم تسجيل الخروج","Signed out")); refreshMine(true); },
+  "cu-reload": () => { S.custList = null; renderCustomers(); },
+  "cu-toggle": async el => { el.disabled = true; try { await Api.call("customerStatus", {token:Admin.token, id:el.dataset.id, status:el.dataset.s}); say(el.dataset.s === "active" ? T("تم تفعيل الحساب","Account reactivated") : T("تم إيقاف الحساب","Account suspended")); S.custList = null; renderCustomers(); } catch (e) { say(e.message); el.disabled = false; } }
+});
+document.addEventListener("submit", async e => {
+  const f = e.target; if (f.id !== "c-login" && f.id !== "c-reg") return; e.preventDefault();
+  const err = $("#c-err"), btn = f.querySelector('button[type="submit"]'); err.textContent = ""; btn.disabled = true;
+  try {
+    let r;
+    if (f.id === "c-login"){
+      const email = $("#cl-email").value.trim().toLowerCase(), password = $("#cl-pw").value;
+      if (!validEmail(email) || !password) throw {message:T("اكتب البريد وكلمة المرور.","Enter your email and password.")};
+      r = await Api.call("clogin", {email, password});
+    } else {
+      const name = clean($("#cr-name").value, 60), email = clean($("#cr-email").value, 120).toLowerCase(), ph = normPhone($("#cr-cc").value, $("#cr-phone").value), password = $("#cr-pw").value;
+      if (name.split(" ").length < 2 || name.length < 5) throw {message:T("اكتب الاسم الأول واسم العائلة.","Enter first and last name.")};
+      if (!validEmail(email)) throw {message:T("صيغة البريد غير صحيحة.","Email format is invalid.")};
+      if (!ph) throw {message:T("اكتب رقم جوال صحيحاً بدون رمز الدولة.","Enter a valid mobile number without the country code.")};
+      if (password.length < 8 || !/\d/.test(password) || !/[A-Za-z؀-ۿ]/.test(password)) throw {message:L(API_ERR.weak_c)};
+      r = await Api.call("register", {name, email, phone:ph.display, password});
+    }
+    Cust.keep(r); prefillContact(r.profile); S.myDoc = null;
+    say(f.id === "c-reg" ? T("تم إنشاء حسابك","Your account is ready") : T("تم تسجيل الدخول","Signed in"));
+    renderTrack(); refreshMine(true);
+  } catch (x) { if (document.contains(err)) err.textContent = x.message || L(API_ERR.network); }
+  finally { if (document.contains(btn)) btn.disabled = false; }
 });
 
 window.MDK = Object.freeze({quote, conv, bestPlan, normPhone, sanitizeOrder, sanitizeSettings, sanitizeCfg, DEFAULT_SETTINGS, parseIdea, siteScore, contrast, drawLogo, b64e, b64d, siteDocument, version:"3.0"});
