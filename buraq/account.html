@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>حسابي · براق BURAQ</title>
+<meta name="description" content="حساب عميل براق: احفظ خطط تحويل سيارتك، واطلب عروض الأسعار، وتابع طلباتك.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Crect x='1.5' y='1.5' width='27' height='27' rx='8' fill='%23F8FAFA' stroke='%2314202A' stroke-width='2'/%3E%3Cpath d='M19 4.5 10.5 16.8h5.6l-2.3 8.7 9.2-13.1h-5.6Z' fill='%23A9572A'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="acct/acct.css?v=1">
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="./" aria-label="براق: الصفحة الرئيسية">
+    <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><rect x="1.5" y="1.5" width="27" height="27" rx="8" fill="none" stroke="var(--ink)" stroke-width="2"/><path d="M5 12.5h5M4 16.5h4.5M5.5 20.5h3" stroke="var(--copper)" stroke-width="1.8" stroke-linecap="round"/><path d="M19 4.5 10.5 16.8h5.6l-2.3 8.7 9.2-13.1h-5.6Z" fill="var(--copper)"/></svg>
+    <span><b>براق</b> <small>BURAQ · حسابي</small></span>
+  </a>
+  <div class="who">
+    <a class="btn sm" href="./#convert">مخطط التحويل</a>
+    <span class="nm" id="whoName"></span>
+    <a class="btn sm" id="toAdmin" href="admin.html" hidden>لوحة الإدارة</a>
+    <button class="btn sm" id="logout" hidden>تسجيل الخروج</button>
+  </div>
+</div></header>
+
+<main class="wrap">
+  <p class="msg err" id="notReady" hidden style="margin-top:24px">نظام الحسابات قيد التفعيل حالياً. للطلبات تواصل معنا عبر واتساب <a href="https://wa.me/97451600498" dir="ltr">+974 5160 0498</a> أو البريد munijizqa@gmail.com.</p>
+  <div class="loading" id="boot">جارٍ التحميل…</div>
+
+  <!-- الدخول والتسجيل -->
+  <section class="auth" id="auth" hidden>
+    <h1 style="text-align:center">مرحباً بك في براق</h1>
+    <p class="lead" style="text-align:center">احفظ خطط تحويل سيارتك، واطلب عروض الأسعار، وتابع كل طلب حتى التسليم.</p>
+    <div class="card">
+      <div class="tabs" role="tablist" style="margin-top:0">
+        <button role="tab" aria-selected="true" data-a="login">تسجيل الدخول</button>
+        <button role="tab" aria-selected="false" data-a="signup">حساب جديد</button>
+      </div>
+      <p class="msg info" id="pendingNote" hidden>سجّل الدخول أو أنشئ حساباً لحفظ خطتك في حسابك.</p>
+      <form id="loginF" novalidate>
+        <p class="msg err" id="loginErr" hidden></p>
+        <label class="f">البريد الإلكتروني<input id="lEmail" type="email" dir="ltr" autocomplete="email" required></label>
+        <label class="f">كلمة المرور<span class="pw"><input id="lPass" type="password" dir="ltr" autocomplete="current-password" required><button type="button" class="btn sm" data-eye="lPass">إظهار</button></span></label>
+        <button class="btn pri block" type="submit">دخول</button>
+        <p style="text-align:center;margin:10px 0 0"><button type="button" class="linkbtn" id="forgot">نسيت كلمة المرور؟</button></p>
+      </form>
+      <form id="signF" novalidate hidden>
+        <p class="msg err" id="signErr" hidden></p>
+        <label class="f">الاسم الكامل<input id="sName" autocomplete="name" maxlength="80" required></label>
+        <div class="row">
+          <label class="f">رقم الجوال<input id="sPhone" type="tel" dir="ltr" autocomplete="tel" placeholder="+974 5000 0000" required></label>
+          <label class="f">المدينة<input id="sCity" autocomplete="address-level2" maxlength="60"></label>
+        </div>
+        <label class="f">الشركة أو الورشة (اختياري)<input id="sCo" autocomplete="organization" maxlength="80"></label>
+        <label class="f">البريد الإلكتروني<input id="sEmail" type="email" dir="ltr" autocomplete="email" required></label>
+        <div class="row">
+          <label class="f">كلمة المرور<input id="sPass" type="password" dir="ltr" autocomplete="new-password" minlength="8" required></label>
+          <label class="f">تأكيد كلمة المرور<input id="sPass2" type="password" dir="ltr" autocomplete="new-password" minlength="8" required></label>
+        </div>
+        <button class="btn pri block" type="submit">إنشاء الحساب</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- لوحة العميل -->
+  <section id="dash" hidden>
+    <h1 id="hello">حسابي</h1>
+    <p class="lead">تابع طلباتك وخططك المحفوظة، وراسل فريق براق مباشرة من داخل كل طلب.</p>
+    <div class="kpis" id="myKpis"></div>
+    <div class="tabs" role="tablist" id="dTabs">
+      <button role="tab" aria-selected="true" data-p="reqs">طلباتي <span class="n" id="nReq">0</span></button>
+      <button role="tab" aria-selected="false" data-p="plans">خططي المحفوظة <span class="n" id="nPlan">0</span></button>
+      <button role="tab" aria-selected="false" data-p="new">طلب جديد</button>
+      <button role="tab" aria-selected="false" data-p="prof">ملفي</button>
+    </div>
+    <div data-pane="reqs"><div class="list" id="reqList"></div></div>
+    <div data-pane="plans" hidden><div class="list" id="planList"></div></div>
+    <div data-pane="new" hidden>
+      <form class="card" id="reqF" novalidate>
+        <h2>طلب عرض سعر أو خدمة</h2>
+        <p class="msg err" id="reqErr" hidden></p>
+        <div class="row">
+          <label class="f">نوع الطلب<select id="rType" required></select></label>
+          <label class="f">ربط بخطة محفوظة<select id="rPlan"><option value="">دون خطة</option></select></label>
+        </div>
+        <div class="row">
+          <label class="f">السيارة (العلامة والموديل)<input id="rCar" maxlength="120" placeholder="مثال: Toyota Corolla"></label>
+          <label class="f">سنة الصنع<input id="rYear" type="number" inputmode="numeric" min="1950" max="2030"></label>
+        </div>
+        <label class="f">تفاصيل الطلب<textarea id="rDetails" maxlength="2000" required placeholder="المدى المطلوب، الميزانية التقريبية، موعد التنفيذ، وأي ملاحظات"></textarea></label>
+        <div class="row">
+          <label class="f">جوال التواصل<input id="rPhone" type="tel" dir="ltr" required></label>
+          <label class="f">المدينة<input id="rCity" maxlength="60"></label>
+        </div>
+        <button class="btn pri" type="submit">إرسال الطلب</button>
+      </form>
+    </div>
+    <div data-pane="prof" hidden>
+      <div class="grid2">
+        <form class="card" id="profF" novalidate>
+          <h2>بياناتي</h2>
+          <label class="f">الاسم الكامل<input id="pName" maxlength="80" required></label>
+          <div class="row">
+            <label class="f">رقم الجوال<input id="pPhone" type="tel" dir="ltr"></label>
+            <label class="f">المدينة<input id="pCity" maxlength="60"></label>
+          </div>
+          <label class="f">الشركة أو الورشة<input id="pCo" maxlength="80"></label>
+          <label class="f">البريد الإلكتروني<input id="pEmail" dir="ltr" disabled></label>
+          <button class="btn pri" type="submit">حفظ البيانات</button>
+        </form>
+        <form class="card" id="pwF" novalidate>
+          <h2>تغيير كلمة المرور</h2>
+          <label class="f">كلمة المرور الحالية<input id="oPass" type="password" dir="ltr" autocomplete="current-password" required></label>
+          <label class="f">كلمة المرور الجديدة<input id="nPass" type="password" dir="ltr" autocomplete="new-password" minlength="8" required></label>
+          <label class="f">تأكيد كلمة المرور الجديدة<input id="nPass2" type="password" dir="ltr" autocomplete="new-password" minlength="8" required></label>
+          <button class="btn pri" type="submit">تغيير كلمة المرور</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<dialog id="reqDlg" aria-labelledby="rdT"><div class="hd"><h2 id="rdT">تفاصيل الطلب</h2><button class="btn sm" data-close>إغلاق</button></div><div class="bd" id="rdB"></div></dialog>
+
+<footer class="ft"><div class="wrap">
+  <span>براق BURAQ · منظومة التحويل الكهربائي</span>
+  <span>واتساب: <a href="https://wa.me/97451600498" dir="ltr">+974 5160 0498</a></span>
+  <span>البريد: <a href="mailto:munijizqa@gmail.com">munijizqa@gmail.com</a></span>
+</div></footer>
+<script type="module" src="acct/account.js?v=1"></script>
+</body>
+</html>
