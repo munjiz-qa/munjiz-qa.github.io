@@ -1,0 +1,26 @@
+{
+ "v": 1,
+ "kdf": "PBKDF2-SHA256",
+ "iter": 150000,
+ "updated": "2026-10-29T10:45:00+03:00",
+ "users": [
+  {
+   "u": "superadmin",
+   "name": "المدير العام",
+   "role": "super",
+   "active": true,
+   "created": "2026-10-29",
+   "salt": "8f9ff502d48c485fe81259c8bf6e4281",
+   "hash": "205323aa99df57cf377b9be95678d69373d42cb03ad72751ba5012c9183abc97"
+  },
+  {
+   "u": "client.demo",
+   "name": "عميل تجريبي",
+   "role": "client",
+   "active": true,
+   "created": "2026-10-29",
+   "salt": "4f71b9f924d94a2ed49de4a3da179469",
+   "hash": "cefda3bbddb38f1bb4d147ae9b41c74a2944233497e6cb39812ed1eaaf5814bb"
+  }
+ ]
+}

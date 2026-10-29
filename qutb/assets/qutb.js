@@ -1,5 +1,6 @@
 /* قُطب: لوحة المنصات الموحّدة.
-   سجل المنصات مشفّر في vault.json (PBKDF2 ثم AES-GCM)، فلا يرى من لا يملك كلمة المرور أي اسم أو رابط.
+   سجل المنصات مشفّر في vault.json بمفتاح بيانات عشوائي (AES-GCM)، ولكل مستخدم خانة تغلّف هذا المفتاح بكلمة مروره (PBKDF2)،
+   فلا يرى من لا يملك حساباً أي اسم أو رابط. الأدوار في السجل المشفّر: super = مدير شامل، viewer = مشاهدة فقط.
    كل الأرقام تُقرأ حيّة: GitHub للنشر والتشغيل الآلي، وملفات البيانات المنشورة، وأنظمة العملاء بحساب الإدارة. */
 (() => {
 'use strict';
@@ -12,6 +13,7 @@ const VAULT_REPO = 'munjiz-qa/munjiz-qa.github.io', VAULT_PATH = 'qutb/vault.jso
 const IDLE_MIN = 30, TZ = 'Asia/Qatar', CLOSED = ['منجزة', 'ملغاة'];
 const MONTHS = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
 
+let ME = null, DK = null; // المستخدم الحالي ومفتاح البيانات (يبقيان في ذاكرة الجلسة فقط)
 let REG = null, RESULTS = {}, BK = {}, rate = null, busy = false, RATE_HIT = false;
 
 // ---------- التاريخ بصيغة موحّدة: 25 أكتوبر 2026، 1:30 م (بتوقيت الدوحة) ----------
@@ -41,15 +43,33 @@ async function derive(pass, salt, iter) {
   const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveKey']);
   return crypto.subtle.deriveKey({name: 'PBKDF2', hash: 'SHA-256', salt, iterations: iter}, base, {name: 'AES-GCM', length: 256}, false, ['encrypt', 'decrypt']);
 }
-async function unseal(v, pass) {
-  const k = await derive(pass, b64d(v.salt), v.iter);
-  return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name: 'AES-GCM', iv: b64d(v.iv)}, k, b64d(v.ct))));
+const sha = async s => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))].map(b => b.toString(16).padStart(2, '0')).join('');
+const slotId = u => sha('qutb-user:' + String(u || 'owner').trim().toLowerCase());
+const dkKey = raw => crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['encrypt', 'decrypt']);
+// يفتح السجل بحساب المستخدم ويعيد {reg, dk} أو يرمي خطأ
+async function unseal(v, pass, user) {
+  if (v.v !== 2) { // الصيغة الأولى: كلمة مرور واحدة دون اسم مستخدم
+    const k = await derive(pass, b64d(v.salt), v.iter);
+    return {reg: JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name: 'AES-GCM', iv: b64d(v.iv)}, k, b64d(v.ct)))), dk: null};
+  }
+  const id = await slotId(user), slot = v.slots.find(x => x.id === id);
+  if (!slot) throw new Error('auth');
+  const kek = await derive(pass, b64d(slot.salt), slot.iter);
+  const dk = new Uint8Array(await crypto.subtle.decrypt({name: 'AES-GCM', iv: b64d(slot.iv)}, kek, b64d(slot.wk)));
+  const reg = JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name: 'AES-GCM', iv: b64d(v.iv)}, await dkKey(dk), b64d(v.ct))));
+  return {reg, dk};
 }
-async function seal(reg, pass) {
+async function makeSlot(user, pass, dk) {
   const salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
-  const ct = await crypto.subtle.encrypt({name: 'AES-GCM', iv}, await derive(pass, salt, ITER), new TextEncoder().encode(JSON.stringify(reg)));
-  return {v: 1, kdf: 'PBKDF2-SHA256', iter: ITER, salt: b64e(salt), iv: b64e(iv), ct: b64e(new Uint8Array(ct))};
+  const wk = await crypto.subtle.encrypt({name: 'AES-GCM', iv}, await derive(pass, salt, ITER), dk);
+  return {id: await slotId(user), iter: ITER, salt: b64e(salt), iv: b64e(iv), wk: b64e(new Uint8Array(wk))};
 }
+async function seal(reg, dk, slots) {
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ct = await crypto.subtle.encrypt({name: 'AES-GCM', iv}, await dkKey(dk), new TextEncoder().encode(JSON.stringify(reg)));
+  return {v: 2, kdf: 'PBKDF2-SHA256', iter: ITER, cipher: 'AES-GCM', slots, iv: b64e(iv), ct: b64e(new Uint8Array(ct))};
+}
+const isSuper = () => !ME || ME.role === 'super';
 const loadVault = async () => { const r = await fetch('vault.json?t=' + Date.now(), {cache: 'no-store'}); if (!r.ok) throw new Error('vault'); return r.json(); };
 
 // ---------- البوابة والجلسة ----------
@@ -58,26 +78,29 @@ function waitLeft() { const f = failState(); if (f.n < 5) return 0; return Math.
 
 $('#gateForm').addEventListener('submit', async e => {
   e.preventDefault();
-  const msg = $('#gateMsg'), btn = $('#gateBtn'), pass = $('#gatePass').value;
+  const msg = $('#gateMsg'), btn = $('#gateBtn'), pass = $('#gatePass').value, user = ($('#gateUser').value.trim() || 'owner').toLowerCase();
   const w = waitLeft(); if (w) { msg.className = 'msg err'; msg.textContent = `محاولات خاطئة متكررة. أعد المحاولة بعد ${Math.ceil(w / 1000)} ثانية.`; return; }
   btn.disabled = true; msg.className = 'msg'; msg.textContent = 'جارٍ التحقق…';
   try {
-    const reg = await unseal(await loadVault(), pass);
+    const {reg, dk} = await unseal(await loadVault(), pass, user);
+    const rec = (reg.users || []).find(x => x.u === user) || {u: user, role: 'super', name: user === 'owner' ? 'المالك' : user};
     LS.del('qutb-fail'); $('#gatePass').value = ''; msg.textContent = '';
+    ME = rec; DK = dk; SS.set('qutb-me', JSON.stringify(rec)); if (dk) SS.set('qutb-dk', b64e(dk));
     start(reg);
   } catch (err) {
     const f = failState(); f.n++; f.t = Date.now(); LS.set('qutb-fail', JSON.stringify(f));
-    msg.className = 'msg err'; msg.textContent = err.message === 'vault' ? 'تعذّر تحميل السجل. تحقق من الاتصال.' : 'كلمة المرور غير صحيحة.';
+    msg.className = 'msg err'; msg.textContent = err.message === 'vault' ? 'تعذّر تحميل السجل. تحقق من الاتصال.' : 'اسم المستخدم أو كلمة المرور غير صحيحة.';
   } finally { btn.disabled = false; }
 });
 
 function start(reg) {
   REG = reg; SS.set('qutb-reg', JSON.stringify(reg)); touch();
   $('#gate').hidden = true; $('#app').hidden = false;
+  $('#setBtn').hidden = !isSuper(); $('#meName').textContent = ME ? `${ME.name || ME.u} · ${ME.role === 'super' ? 'مدير شامل' : 'مشاهدة'}` : '';
   renderShell(); refresh();
 }
 function lock() {
-  ['qutb-reg', 'qutb-seen'].forEach(k => SS.del(k));
+  ['qutb-reg', 'qutb-seen', 'qutb-me', 'qutb-dk'].forEach(k => SS.del(k));
   (REG?.backends || []).forEach(b => SS.del('qutb-crm-' + b.id));
   Object.keys(sessionStorage || {}).filter(k => k.startsWith('qc:')).forEach(k => SS.del(k));
   location.reload();
@@ -387,14 +410,19 @@ $('#saveTokens').addEventListener('click', async () => {
   Object.values(RESULTS).length && REG.platforms.forEach(renderCard); refresh();
 });
 
-async function publishVault(reg, pass, message) {
+// ينشر السجل بعد إعادة تشفيره. edit(slots) يعدّل خانات المستخدمين عند الحاجة.
+async function publishVault(reg, message, edit) {
   if (!tokens()[VAULT_REPO.split('/')[0]]) throw new Error('token');
-  const v = await seal(reg, pass), api = `/repos/${VAULT_REPO}/contents/${VAULT_PATH}`;
+  if (!DK) throw new Error('dk');
+  const cur0 = await loadVault(); let slots = cur0.v === 2 ? cur0.slots.slice() : [];
+  if (edit) slots = await edit(slots);
+  if (!slots.length) throw new Error('noslot');
+  const v = await seal(reg, DK, slots), api = `/repos/${VAULT_REPO}/contents/${VAULT_PATH}`;
   const cur = await gh(api + '?ref=main');
   await gh(api, {method: 'PUT', body: JSON.stringify({message, content: btoa(JSON.stringify(v) + '\n'), sha: cur.sha, branch: 'main'})});
 }
-const verifyPass = async pass => { try { return await unseal(await loadVault(), pass); } catch (e) { return null; } };
-const failMsg = err => err.message === 'token' ? `أضف مفتاح حساب ${VAULT_REPO.split('/')[0]} أولاً.` : 'تعذّر النشر. تحقق من صلاحية المفتاح (Contents: Read and write).';
+const verifyPass = async pass => { try { return (await unseal(await loadVault(), pass, ME?.u)).reg; } catch (e) { return null; } };
+const failMsg = err => err.message === 'token' ? `أضف مفتاح حساب ${VAULT_REPO.split('/')[0]} أولاً.` : err.message === 'dk' ? 'سجّل الخروج ثم ادخل باسم المستخدم وكلمة المرور لتفعيل التعديل.' : 'تعذّر النشر. تحقق من صلاحية المفتاح (Contents: Read and write).';
 
 $('#passForm').addEventListener('submit', async e => {
   e.preventDefault();
@@ -405,7 +433,7 @@ $('#passForm').addEventListener('submit', async e => {
   btn.disabled = true; m.className = 'msg'; m.textContent = 'جارٍ التحقق والتشفير…';
   const reg = await verifyPass(f.old.value);
   if (!reg) { m.className = 'msg err'; m.textContent = 'كلمة المرور الحالية غير صحيحة.'; btn.disabled = false; return; }
-  try { await publishVault(reg, f.new.value, 'قُطب: تغيير كلمة المرور'); f.reset(); m.className = 'msg ok'; m.textContent = 'تغيّرت كلمة المرور. تسري خلال دقيقة أو دقيقتين بعد نشر الموقع.'; }
+  try { const me = ME.u, np = f.new.value; await publishVault(reg, 'قُطب: تغيير كلمة المرور', async slots => { const id = await slotId(me); return [...slots.filter(x => x.id !== id), await makeSlot(me, np, DK)]; }); f.reset(); m.className = 'msg ok'; m.textContent = 'تغيّرت كلمة المرور. تسري خلال دقيقة أو دقيقتين بعد نشر الموقع.'; }
   catch (err) { m.className = 'msg err'; m.textContent = failMsg(err); }
   btn.disabled = false;
 });
@@ -423,17 +451,49 @@ $('#addForm').addEventListener('submit', async e => {
     repo: f.repo.value.trim(), path: f.path.value.trim().replace(/^\/|\/$/g, ''), site, links: [{t: 'الموقع', u: site}], admin, workflows: [], data: [], notes: []});
   reg.updated = dohaDay();
   try {
-    await publishVault(reg, f.pass.value, 'قُطب: إضافة منصة ' + f.en.value.trim());
+    await publishVault(reg, 'قُطب: إضافة منصة ' + f.en.value.trim());
     f.reset(); m.className = 'msg ok'; m.textContent = 'أُضيفت المنصة ونُشرت.';
     REG = reg; SS.set('qutb-reg', JSON.stringify(reg)); RESULTS = {}; renderShell(); refresh();
   } catch (err) { m.className = 'msg err'; m.textContent = failMsg(err); }
   btn.disabled = false;
 });
 
+// ---------- المستخدمون (للمدير الشامل) ----------
+function renderUsers() {
+  const users = REG.users || [];
+  $('#userList').innerHTML = users.map(u => `<li><span><b>${esc(u.name || u.u)}</b> <span dir="ltr" class="muted">${esc(u.u)}</span></span><span class="pill">${u.role === 'super' ? 'مدير شامل' : 'مشاهدة'}</span>${u.u !== ME?.u ? `<button class="run-btn" data-deluser="${esc(u.u)}">حذف</button>` : '<span class="muted">أنت</span>'}</li>`).join('') || '<li class="muted">لا مستخدمين مسجّلين.</li>';
+}
+$('#setBtn').addEventListener('click', renderUsers);
+$('#userList').addEventListener('click', async e => {
+  const b = e.target.closest('[data-deluser]'); if (!b) return;
+  const u = b.dataset.deluser, m = $('#userMsg'); if (!confirm('حذف المستخدم ' + u + '؟')) return;
+  const reg = JSON.parse(JSON.stringify(REG)); reg.users = (reg.users || []).filter(x => x.u !== u); reg.updated = dohaDay();
+  m.className = 'msg'; m.textContent = 'جارٍ النشر…';
+  try { const id = await slotId(u); await publishVault(reg, 'قُطب: حذف مستخدم', async slots => slots.filter(x => x.id !== id));
+    REG = reg; SS.set('qutb-reg', JSON.stringify(reg)); renderUsers(); m.className = 'msg ok'; m.textContent = 'حُذف المستخدم.'; }
+  catch (err) { m.className = 'msg err'; m.textContent = failMsg(err); }
+});
+$('#userForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const f = e.target, m = $('#userMsg'), btn = f.querySelector('button'), u = f.u.value.trim().toLowerCase();
+  m.className = 'msg err';
+  if (!/^[a-z0-9._-]{3,32}$/.test(u)) { m.textContent = 'اسم المستخدم من 3 إلى 32 حرفاً لاتينياً أو رقماً أو (. _ -).'; return; }
+  if ((REG.users || []).some(x => x.u === u)) { m.textContent = 'اسم المستخدم موجود.'; return; }
+  btn.disabled = true; m.className = 'msg'; m.textContent = 'جارٍ التشفير والنشر…';
+  const reg = JSON.parse(JSON.stringify(REG)); reg.users = [...(reg.users || []), {u, name: f.n.value.trim() || u, role: f.r.value, created: dohaDay()}]; reg.updated = dohaDay();
+  try { const pw = f.p.value; await publishVault(reg, 'قُطب: إضافة مستخدم', async slots => [...slots, await makeSlot(u, pw, DK)]);
+    REG = reg; SS.set('qutb-reg', JSON.stringify(reg)); f.reset(); renderUsers(); m.className = 'msg ok'; m.textContent = 'أُضيف المستخدم ونُشر.'; }
+  catch (err) { m.className = 'msg err'; m.textContent = failMsg(err); }
+  btn.disabled = false;
+});
+
 // ---------- الإقلاع: استئناف الجلسة إن كانت حديثة ----------
 try {
   const saved = SS.get('qutb-reg'), seen = Number(SS.get('qutb-seen') || 0);
-  if (saved && Date.now() - seen < IDLE_MIN * 60000) start(JSON.parse(saved));
-  else { SS.del('qutb-reg'); $('#gatePass').focus(); }
-} catch (e) { $('#gatePass').focus(); }
+  if (saved && Date.now() - seen < IDLE_MIN * 60000) {
+    ME = JSON.parse(SS.get('qutb-me') || 'null'); const k = SS.get('qutb-dk'); DK = k ? b64d(k) : null;
+    start(JSON.parse(saved));
+  }
+  else { SS.del('qutb-reg'); $('#gateUser').focus(); }
+} catch (e) { $('#gateUser').focus(); }
 })();

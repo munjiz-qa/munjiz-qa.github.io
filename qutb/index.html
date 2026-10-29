@@ -22,7 +22,9 @@
     <svg class="mark big" viewBox="0 0 64 64" aria-hidden="true"><use href="#qmark"/></svg>
     <h1>قُطب</h1>
     <p class="muted">منصة تشغيل داخلية. الدخول للمصرّح لهم فقط.</p>
-    <input type="text" name="username" value="owner" autocomplete="username" hidden>
+    <label class="fld"><span>اسم المستخدم</span>
+      <input id="gateUser" name="username" type="text" autocomplete="username" dir="ltr" autocapitalize="off" spellcheck="false" placeholder="اتركه فارغاً لحساب المالك">
+    </label>
     <label class="fld"><span>كلمة المرور</span>
       <input id="gatePass" type="password" autocomplete="current-password" required minlength="12" dir="ltr">
     </label>
@@ -35,6 +37,7 @@
   <header class="top">
     <div class="brand"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><use href="#qmark"/></svg><b>قُطب</b><span class="muted hide-s">لوحة المنصات الموحّدة</span></div>
     <div class="top-act">
+      <span id="meName" class="muted hide-s"></span>
       <span id="clock" class="muted hide-s"></span>
       <button id="refresh" class="icon-btn" title="تحديث" aria-label="تحديث"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v5h-5"/></svg></button>
       <button id="themeBtn" class="icon-btn" title="الوضع الليلي أو النهاري" aria-label="تبديل الوضع"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg></button>
@@ -84,6 +87,19 @@
       <div id="tokens"></div>
       <button id="saveTokens" class="btn">حفظ المفاتيح</button>
       <p id="tokMsg" class="msg"></p>
+    </section>
+    <section>
+      <h3>المستخدمون والصلاحيات</h3>
+      <p class="muted">المدير الشامل يملك كل الصلاحيات (الإعدادات، إضافة المنصات، المستخدمين، التشغيل). والمشاهد يرى اللوحة فقط. لكل مستخدم كلمة مرور خاصة تفتح السجل المشفّر.</p>
+      <ul id="userList" class="user-list"></ul>
+      <form id="userForm" class="form-grid">
+        <label class="fld"><span>الاسم</span><input name="n" maxlength="40"></label>
+        <label class="fld"><span>اسم المستخدم</span><input name="u" required maxlength="32" dir="ltr" autocomplete="off"></label>
+        <label class="fld"><span>كلمة المرور (14 حرفاً على الأقل)</span><input name="p" type="password" required minlength="14" dir="ltr" autocomplete="new-password"></label>
+        <label class="fld"><span>الدور</span><select name="r"><option value="viewer">مشاهدة فقط</option><option value="super">مدير شامل</option></select></label>
+        <button class="btn primary full">إضافة ونشر</button>
+      </form>
+      <p id="userMsg" class="msg"></p>
     </section>
     <section>
       <h3>إضافة منصة</h3>

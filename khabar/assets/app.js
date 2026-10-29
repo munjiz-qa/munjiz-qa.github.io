@@ -58,6 +58,8 @@ const getJSON=u=>fetch(u,{cache:'no-cache'}).then(r=>{if(!r.ok)throw new Error(u
 async function load(briefId){
   const bu=briefId?`data/archive/${briefId}.json`:'data/brief.json';
   const [b,h,a,ar,lg,ab]=await Promise.all([getJSON(bu),getJSON('data/headlines.json').catch(()=>null),getJSON('data/admin.json').catch(()=>null),getJSON('data/archive/index.json').catch(()=>null),getJSON('data/ledger.json').catch(()=>null),getJSON('data/breaking.json').catch(()=>null)]);
+  // الخلاصة الآلية تحمل عناوين كل لغة من مصادرها، فلا يظهر في كل لغة إلا ما نُشر بها
+  b.zones.forEach(z=>{z.all=z.all||z.items;z.items=z.all.filter(i=>i[LANG])});
   BRIEF=b;HEAD=h;if(a)ADMIN=Object.assign({breaking:null,hidden:[]},a);ARCH=ar;LEDGER=lg;AUTOB=ab;
 }
 
@@ -177,6 +179,7 @@ function edHead(){
   const m=el('div','ed-meta');const n=BRIEF.zones.reduce((s,z)=>s+z.items.length,0);
   m.append(el('span',null,`${t('published')}: ${fmtTime(BRIEF.published)}`),el('span',null,`${n} ${t('items')}`),el('span',null,`${Object.keys(BRIEF.sources).length} ${L('مصدراً موثّقاً','cited sources')}`));
   w.append(m);
+  if(BRIEF.auto)w.append(el('p','auto-note',L('خلاصة آلية: عناوين المصادر كما نشرتها، لكل خبر جهته وتاريخه ورابطه الأصلي. يُضاف التحليل والاستقراء حين تصدر الخلاصة التحريرية.','Automatic brief: the outlets\' own headlines, each with its outlet, date and original link. Analysis and outlook are added when the editorial brief is published.')));
   if('speechSynthesis' in window){const b=el('button','listen');b.type='button';const set=on=>{b.textContent='';b.innerHTML=on?ICON.stop:ICON.play;b.append(el('span',null,on?t('stop'):t('listen')));b.setAttribute('aria-pressed',String(on))};set(speaking());
     b.onclick=()=>{if(speaking()){speechSynthesis.cancel();set(false);return}speak(set)};w.append(b)}
   return w;
@@ -314,7 +317,7 @@ async function route(){
   render.keep=false;render();if(prev!==VIEW)scrollTo(0,0);
 }
 addEventListener('hashchange',route);
-$('#lang-btn').onclick=()=>{LANG=LANG==='en'?'ar':'en';document.documentElement.lang=LANG;document.documentElement.dir=LANG==='en'?'ltr':'rtl';try{localStorage.setItem('khabar-lang',LANG)}catch(e){}FILTER={};render()};
+$('#lang-btn').onclick=()=>{LANG=LANG==='en'?'ar':'en';document.documentElement.lang=LANG;document.documentElement.dir=LANG==='en'?'ltr':'rtl';try{localStorage.setItem('khabar-lang',LANG)}catch(e){}FILTER={};if(BRIEF)BRIEF.zones.forEach(z=>{z.items=(z.all||z.items).filter(i=>i[LANG])});render()};
 $('#theme-btn').onclick=()=>{const r=document.documentElement;const dark=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=dark?'light':'dark';try{localStorage.setItem('khabar-theme',r.dataset.theme)}catch(e){}header()};
 route();
 if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
