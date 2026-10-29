@@ -33,13 +33,13 @@ const Q = {
 };
 // خلاصات ناشرين مباشرة (روابطها أصلية دون فك): احتياط إذا تعذّر فك روابط أخبار Google
 const DIRECT = {
-  qatar: {ar: [], en: ['https://www.gulf-times.com/rss', 'https://thepeninsulaqatar.com/rss']},
-  gulf: {ar: [], en: ['https://www.arabnews.com/cat/1/rss.xml']},
-  egypt: {ar: ['https://www.youm7.com/rss/SectionRss?SectionID=65'], en: ['https://english.ahram.org.eg/rss/1.aspx']},
-  world: {ar: ['https://feeds.bbci.co.uk/arabic/rss.xml', 'https://www.aljazeera.net/aljazeerarss/a7c186be-1baa-4bd4-9d80-a84db769f779/73d0e1b4-532f-45ef-b135-bfdff8b8cab9'], en: ['https://feeds.bbci.co.uk/news/world/rss.xml', 'https://www.aljazeera.com/xml/rss/all.xml']}
+  qatar: {ar: ['https://www.skynewsarabia.com/web/rss'], en: ['https://www.aljazeera.com/xml/rss/all.xml']},
+  gulf: {ar: ['https://www.skynewsarabia.com/web/rss'], en: ['https://www.aljazeera.com/xml/rss/all.xml']},
+  egypt: {ar: ['https://www.youm7.com/rss/SectionRss?SectionID=65', 'https://www.masrawy.com/rss/feed/25/'], en: ['https://www.aljazeera.com/xml/rss/all.xml']},
+  world: {ar: ['https://feeds.bbci.co.uk/arabic/rss.xml', 'https://www.aljazeera.net/aljazeerarss/a7c186be-1baa-4bd4-9d80-a84db769f779/73d0e1b4-532f-45ef-b135-bfdff8b8cab9', 'https://www.skynewsarabia.com/web/rss'], en: ['https://feeds.bbci.co.uk/news/world/rss.xml', 'https://www.aljazeera.com/xml/rss/all.xml']}
 };
 const PER_ZONE = {ar: 6, en: 5}, MAX_AGE_H = 24;
-const SKIP = /franchis|pizz|testimonial|horoscope|recipe|gymnast|coupon|promo code|lottery|برج|حظك|وصفة|سعر الذهب اليوم .* عيار|مواعيد مباريات اليوم/i;
+const SKIP = /netflix|horror|celebrity|lifestyle|juniors|in video:|franchis|pizz|testimonial|horoscope|recipe|gymnast|coupon|promo code|lottery|برج|حظك|وصفة|سعر الذهب اليوم .* عيار|مواعيد مباريات اليوم/i;
 const ent = s => s.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(+n)).replace(/&amp;/g, '&');
 const text = s => ent(s || '').replace(/<[^>]*>/g, '').replace(/[\u0000-\u001f<>]/g, ' ').replace(/\s+/g, ' ').trim();
 const tag = (x, t) => (x.match(new RegExp(`<${t}[^>]*>([\\s\\S]*?)</${t}>`)) || [])[1] || '';
@@ -166,7 +166,8 @@ async function health(brief) {
   checks.push({name: 'العناوين الآلية حديثة', ok: headAge < 7, detail: `آخر تحديث قبل ${headAge.toFixed(1)} ساعة`});
   const n = (brief.zones || []).reduce((s, z) => s + z.items.length, 0), unsourced = (brief.zones || []).flatMap(z => z.items).filter(i => !(i.src || []).every(s => brief.sources[s]?.url)).length;
   checks.push({name: 'كل خبر بمصدره', ok: n >= 8 && unsourced === 0, detail: `${n} خبراً، ${unsourced} دون مصدر`});
-  return {checked: new Date().toISOString(), ok: checks.every(c => c.ok), brief: {id: brief.id, auto: !!brief.auto, age_h: +briefAge.toFixed(1)},
+  const at = new Date().toISOString();
+  return {checked: at, updated: at, ok: checks.every(c => c.ok), brief: {id: brief.id, auto: !!brief.auto, age_h: +briefAge.toFixed(1)},
     writer: process.env.ANTHROPIC_API_KEY ? 'agent' : 'autopilot', checks};
 }
 
