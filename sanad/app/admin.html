@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B7A63">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="سند">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<title>لوحة التشغيل | سند</title>
+<script src="assistant.js"></script>
+<script src="local-backend.js"></script>
+
+<link rel="stylesheet" href="ui.css">
+</head>
+<body>
+<main class="wrap wide">
+  <div class="top">
+    <div class="brand"><svg aria-hidden="true" width="44" height="44" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" xmlns:c2pa="http://c2pa.org/manifest"><metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTo2YzNhMTY0MC01YmE4LTQ4YjEtYjZlMC0wZmUxNTYyOTdlYzkAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaC8uiBfPnTIKmxjby3wRhikAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDplNWUzNGMyNC0yM2QyLTRiNjEtYmVmZi1hODEzZjc3MjgyN2JscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNoUY1kkODr7kLuxLyDg/YTYgAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFgg3PTQRdHTVHA/GwYhXWKEQ/7duzgKn8H85itbE2asS3WkZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaNE6hQ7YxJ0s9nsbD95/UQEAAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRNAAAAAAAAAAAAAAAAAGRoYXNoWCC9lj7hlsYrbJv63PiZrjLUWEOIBS3tDi/LfhjjbY3wo2RuYW1lbmp1bWJmIG1hbmlmZXN0amV4Y2x1c2lvbnOBomVzdGFydBh7Zmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOjZjM2ExNjQwLTViYTgtNDhiMS1iNmUwLTBmZTE1NjI5N2VjOS9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOmU4NTgxYjkzLWM3ZjgtNGU3ZS04M2UxLTkwYmU5NmNlNzI0MHJjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCDc9NBF0dNUcD8bBiFdYoRD/t27OAqfwfzmK1sTZqxLdaJjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFgg/tLOdMUBCE5qcHEFHx0erEuq5N5+QC9LXdgKkuVcAkaiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFggoT2C1IShXNaQvsWwOQTLa/c9/3+XPviLhPDoFnYfu/90Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQM49UoDl7SQgtkZ2YxHfzFFPid3VjQ7RM9KLgb2EyOiRfhrre1JMN1UR8hQzsy+s+LK2aSP9B4b98o71/kxmWPo=</c2pa:manifest></metadata><rect x="2" y="2" width="44" height="44" rx="13" fill="#0B7A63"/><path d="M12 33h24" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/><path d="M15.5 33V25M22 33V18M28.5 33V22M35 33v-4" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/><circle cx="22" cy="12.5" r="2.4" fill="#E3AA48"/></svg>
+<div><b>لوحة التشغيل</b><small>إعدادات خادم سند والحسابات والنسخ الاحتياطي</small></div></div>
+    <a class="btn" href="./">العودة إلى التطبيق</a>
+  </div>
+  <div id="pwwarn" class="msg bad" hidden style="margin-bottom:16px">تستخدم كلمة المرور الافتراضية. غيّرها الآن من بطاقة «كلمة مرورك» أسفل الصفحة لحماية حسابك.</div>
+  <div class="grid">
+    <form class="card" id="f-ai">
+      <h2>ذكاء سند</h2>
+      <p class="small" style="margin:0 0 10px"><span class="pill ok" id="aimode">المساعد المدمج يعمل</span></p>
+      <p class="muted small" style="margin:0 0 10px" id="aihelp">سند يعمل بالكامل دون Claude: الحسابات والحجوزات والصلاحيات والمحادثة عبر المساعد المدمج. مفتاح Claude اختياري لتفعيل الذكاء الكامل والأدوات.</p>
+      <div id="keyblock">
+      <p class="muted small" style="margin:0">المفتاح الحالي: <span id="keynow" class="num">غير مضبوط</span></p>
+      <label for="key">مفتاح Claude API جديد <span class="hint">(اتركه فارغاً للإبقاء)</span></label>
+      <input id="key" dir="ltr" placeholder="sk-ant-..." autocomplete="off">
+      <label for="model">مستوى الذكاء</label>
+      <select id="model"><option value="sonnet">متوازن (Sonnet)</option><option value="opus">الأقوى (Opus)</option><option value="haiku">الأسرع والأوفر (Haiku)</option></select>
+      <div class="row" style="margin-top:16px"><button class="btn pri" type="submit">حفظ</button><button class="btn" type="button" id="test">اختبار الاتصال</button></div>
+      </div>
+      <div id="m-ai" class="msg" hidden></div>
+    </form>
+    <form class="card" id="f-pub">
+      <h2>العملاء والزوار</h2>
+      <label class="check"><input type="checkbox" id="vchat"><span>السماح للزوار بسؤال سند <span class="hint">(بالنموذج الأوفر)</span></span></label>
+      <label class="check"><input type="checkbox" id="reg"><span>السماح للعملاء بإنشاء حسابات للحجز</span></label>
+      <label>الحد الأقصى للطلبات في الساعة</label>
+      <div class="row" style="flex-wrap:nowrap">
+        <div style="flex:1"><span class="small muted">الزائر</span><input id="l-v" type="number" min="0" class="num"></div>
+        <div style="flex:1"><span class="small muted">العميل</span><input id="l-c" type="number" min="0" class="num"></div>
+        <div style="flex:1"><span class="small muted">المدير</span><input id="l-a" type="number" min="0" class="num"></div>
+      </div>
+      <button class="btn pri full" type="submit">حفظ</button>
+      <div id="m-pub" class="msg" hidden></div>
+    </form>
+  </div>
+
+  <div class="card">
+    <div class="row" style="justify-content:space-between"><h2>الحسابات</h2><span class="small muted" id="ucount"></span></div>
+    <div class="scroll"><table><thead><tr><th>الاسم</th><th>الدور</th><th>الجوال</th><th>البريد</th><th>التسجيل</th><th></th></tr></thead><tbody id="users"></tbody></table></div>
+    <details style="margin-top:14px"><summary style="cursor:pointer;font-weight:500">إضافة حساب (موظف أو عميل)</summary>
+      <form id="f-user" class="grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0 12px">
+        <div><label for="u-name">الاسم</label><input id="u-name" required></div>
+        <div><label for="u-phone">الجوال</label><input id="u-phone" dir="ltr" type="tel"></div>
+        <div><label for="u-email">البريد</label><input id="u-email" dir="ltr" type="email"></div>
+        <div><label for="u-pass">كلمة المرور</label><input id="u-pass" dir="ltr" minlength="8" required></div>
+        <div><label for="u-role">الدور</label><select id="u-role"><option value="client">عميل</option><option value="admin" id="opt-admin">مدير</option></select></div>
+        <div style="align-self:end"><button class="btn pri" type="submit" style="width:100%;margin-top:14px">إضافة</button></div>
+      </form>
+    </details>
+    <div id="m-user" class="msg" hidden></div>
+  </div>
+
+  <div class="grid" style="margin-top:16px">
+    <div class="card">
+      <h2>الوصول من الأجهزة الأخرى</h2>
+      <p class="muted small" style="margin:0 0 8px">افتح أحد هذه العناوين من الجوال أو جهاز آخر على نفس الشبكة، ثم ثبّت سند من المتصفح.</p>
+      <div id="urls"></div>
+      <p class="small muted" id="sys" style="margin-bottom:0"></p>
+    </div>
+    <div class="card">
+      <h2>النسخ الاحتياطي</h2>
+      <p class="muted small" style="margin:0">نسخة كاملة من البيانات والحسابات (دون مفتاح Claude) في ملف واحد، لنقل سند إلى جهاز آخر أو حفظه.</p>
+      <div class="row" style="margin-top:14px"><button class="btn pri" type="button" id="backup">تنزيل نسخة</button><label class="btn" style="margin:0">استعادة نسخة<input type="file" id="restore" accept=".json,application/json" hidden></label></div>
+      <div id="m-bk" class="msg" hidden></div>
+    </div>
+    <form class="card" id="f-pw">
+      <h2>كلمة مرورك</h2>
+      <label for="pw-cur">الحالية</label><input id="pw-cur" type="password" dir="ltr" required autocomplete="current-password">
+      <label for="pw-new">الجديدة</label><input id="pw-new" type="password" dir="ltr" minlength="8" required autocomplete="new-password">
+      <button class="btn pri full" type="submit">تغيير</button>
+      <div id="m-pw" class="msg" hidden></div>
+    </form>
+  </div>
+  <p class="foot" id="ver"></p>
+</main>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+const say = (id, t, kind='ok') => { const m = $(id); m.textContent = t; m.className = 'msg ' + kind; m.hidden = !t; if(kind==='ok') setTimeout(() => m.hidden = true, 4000); };
+async function call(method, url, data){ const r = await fetch(url, { method, headers:data?{ 'content-type':'application/json' }:{}, body:data?JSON.stringify(data):undefined }); const j = await r.json().catch(() => ({})); if(!r.ok) throw new Error(j.message || 'تعذّر إتمام العملية'); return j; }
+const fmtDate = iso => iso ? new Intl.DateTimeFormat('ar-SA-u-ca-gregory-nu-latn', { day:'numeric', month:'long', year:'numeric', timeZone:'Asia/Qatar' }).format(new Date(iso)) : '';
+let me;
+async function load(){
+  me = await call('GET', 'api/me'); if(!me.user || me.role!=='admin'){ location.href = 'login.html'; return; }
+  const s = await call('GET', 'api/admin/settings');
+  $('#keynow').textContent = s.apiKey || 'غير مضبوط'; if(s.apiKeyFromEnv) $('#keynow').textContent += ' (من متغير البيئة)';
+  $('#aimode').textContent = s.aiMode==='claude' ? 'Claude مفعّل، والمساعد المدمج احتياطي تلقائي' : 'المساعد المدمج يعمل دون Claude';
+  if(s.local){ $('#keyblock').hidden = true; $('#aihelp').textContent = 'هذه النسخة المنشورة تعمل بالكامل دون Claude ودون خادم: الحسابات والحجوزات والصلاحيات والمحادثة عبر المساعد المدمج. لربط Claude استخدم نسخة الخادم.'; }
+  $('#pwwarn').hidden = !me.user.defaultPassword;
+  $('#opt-admin').hidden = !s.super; if(!s.super) $('#u-role').value = 'client';
+  $('#restore').closest('label').hidden = !s.super;
+  $('#model').value = s.model; $('#vchat').checked = s.visitorChat; $('#reg').checked = s.registration;
+  $('#l-v').value = s.limits.visitor; $('#l-c').value = s.limits.client; $('#l-a').value = s.limits.admin;
+  $('#urls').innerHTML = s.urls.map(u => `<div class="num" style="padding:4px 0"><a href="${esc(u)}">${esc(u)}</a></div>`).join('');
+  $('#sys').textContent = `النظام: ${s.platform} · Node ${s.node} · البيانات: ${s.dataDir}`;
+  $('#ver').textContent = 'سند ' + s.version;
+  loadUsers();
+}
+async function loadUsers(){
+  const { users } = await call('GET', 'api/admin/users');
+  $('#ucount').textContent = `${users.length} حساب`;
+  $('#users').innerHTML = users.map(u => `<tr><td>${esc(u.name)}</td><td><span class="pill ${u.role==='admin'?'acc':'ok'}">${u.super?'مدير شامل':u.role==='admin'?'مدير':'عميل'}</span></td><td class="num">${esc(u.phone)}</td><td class="num">${esc(u.email)}</td><td class="small">${fmtDate(u.createdAt)}</td><td>${u.id===me.user.id?'<span class="small muted">أنت</span>':u.super?'<span class="small muted">محمي</span>':`<button class="btn bad" data-del="${esc(u.id)}" data-name="${esc(u.name)}" style="padding:3px 10px;font-size:13px">حذف</button>`}</td></tr>`).join('');
+}
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-del]'); if(!b) return;
+  if(!confirm(`حذف حساب «${b.dataset.name}»؟ لا يمكن التراجع.`)) return;
+  try { await call('DELETE', 'api/admin/users/' + encodeURIComponent(b.dataset.del)); say('#m-user','حُذف الحساب'); loadUsers(); } catch(err){ say('#m-user', err.message, 'bad'); }
+});
+$('#f-ai').onsubmit = async e => { e.preventDefault(); try { await call('POST','api/admin/settings',{ apiKey:$('#key').value, model:$('#model').value }); $('#key').value=''; say('#m-ai','حُفظت الإعدادات'); load(); } catch(err){ say('#m-ai', err.message,'bad'); } };
+$('#test').onclick = async () => { say('#m-ai','جارٍ الاختبار…'); try { const r = await call('POST','api/admin/test-ai'); say('#m-ai','الاتصال يعمل. رد Claude: ' + r.reply); } catch(err){ say('#m-ai', err.message,'bad'); } };
+$('#f-pub').onsubmit = async e => { e.preventDefault(); try { await call('POST','api/admin/settings',{ visitorChat:$('#vchat').checked, registration:$('#reg').checked, limits:{ visitor:+$('#l-v').value, client:+$('#l-c').value, admin:+$('#l-a').value } }); say('#m-pub','حُفظت الإعدادات'); } catch(err){ say('#m-pub', err.message,'bad'); } };
+$('#f-user').onsubmit = async e => { e.preventDefault(); try { await call('POST','api/admin/users',{ name:$('#u-name').value, phone:$('#u-phone').value, email:$('#u-email').value, password:$('#u-pass').value, role:$('#u-role').value }); e.target.reset(); say('#m-user','أُضيف الحساب'); loadUsers(); } catch(err){ say('#m-user', err.message,'bad'); } };
+$('#f-pw').onsubmit = async e => { e.preventDefault(); try { await call('POST','api/password',{ current:$('#pw-cur').value, password:$('#pw-new').value }); e.target.reset(); say('#m-pw','تغيّرت كلمة المرور'); } catch(err){ say('#m-pw', err.message,'bad'); } };
+$('#restore').onchange = async e => {
+  const f = e.target.files[0]; if(!f) return;
+  if(!confirm('ستُستبدل كل البيانات والحسابات الحالية بمحتوى النسخة. متابعة؟')) { e.target.value=''; return; }
+  try { const r = await call('POST','api/admin/restore', JSON.parse(await f.text())); say('#m-bk', `استُعيدت النسخة: ${r.docs} سجل و${r.users} حساب`); loadUsers(); } catch(err){ say('#m-bk', err.message || 'ملف غير صالح','bad'); }
+  e.target.value='';
+};
+$('#backup').onclick = async () => {
+  try { const r = await fetch('api/admin/backup'); if(!r.ok) throw new Error('تعذّر تنزيل النسخة'); const blob = new Blob([await r.text()], { type:'application/json' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `sanad-backup-${new Date().toISOString().slice(0,10)}.json`; document.body.appendChild(a); a.click(); a.remove(); say('#m-bk','نُزّلت النسخة'); }
+  catch(err){ say('#m-bk', err.message, 'bad'); }
+};
+$('#f-pw').addEventListener('submit', () => setTimeout(() => call('GET','api/me').then(m => { me = m; $('#pwwarn').hidden = !m.user.defaultPassword; }), 400));
+load();
+</script>
+</body>
+</html>
