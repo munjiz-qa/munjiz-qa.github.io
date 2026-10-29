@@ -1,0 +1,1100 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B7A63">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="سند">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<title>سند</title>
+<script src="assistant.js"></script>
+<script src="local-backend.js"></script>
+<script src="runtime.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: app shell — side rail on desktop, bottom tab bar on phones; content column capped near 70ch for chat, wider for lists */
+:root{
+  --bg:#F1F5F3; --surface:#FFFFFF; --sunk:#E6EDEA; --ink:#0F2F2C; --muted:#56706B; --line:#D2DDD9;
+  --accent:#0B7A63; --accent-ink:#FFFFFF; --accent-soft:#D5EEE6; --amber:#B4741A; --amber-soft:#F6E7CC;
+  --ok:#1D7C4D; --ok-soft:#DCF1E5; --warn:#9E620C; --warn-soft:#F8EBD3; --bad:#B23B3B; --bad-soft:#F6DEDE;
+  --shadow:0 1px 2px rgba(15,47,44,.06),0 6px 24px rgba(15,47,44,.06);
+  --f-display:"Readex Pro","IBM Plex Sans Arabic",Tahoma,sans-serif;
+  --f-body:"IBM Plex Sans Arabic",Tahoma,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:12px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0B1514; --surface:#12201E; --sunk:#0E1A19; --ink:#E1ECE8; --muted:#92A8A3; --line:#233532;
+  --accent:#3CC4A0; --accent-ink:#06231C; --accent-soft:#15352D; --amber:#E3AA48; --amber-soft:#3A2D16;
+  --ok:#4FC98A; --ok-soft:#143322; --warn:#E3AA48; --warn-soft:#3A2D16; --bad:#EE7B7B; --bad-soft:#3A1C1C;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 24px rgba(0,0,0,.25); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B1514; --surface:#12201E; --sunk:#0E1A19; --ink:#E1ECE8; --muted:#92A8A3; --line:#233532;
+  --accent:#3CC4A0; --accent-ink:#06231C; --accent-soft:#15352D; --amber:#E3AA48; --amber-soft:#3A2D16;
+  --ok:#4FC98A; --ok-soft:#143322; --warn:#E3AA48; --warn-soft:#3A2D16; --bad:#EE7B7B; --bad-soft:#3A1C1C;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 24px rgba(0,0,0,.25); color-scheme:dark}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6;direction:rtl}
+*{box-sizing:border-box}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3{font-family:var(--f-display);line-height:1.25;text-wrap:balance;margin:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
+
+/* shell */
+.app{display:grid;grid-template-columns:232px 1fr;height:100%}
+.rail{background:var(--surface);border-inline-start:1px solid var(--line);display:flex;flex-direction:column;gap:4px;padding-block:18px;padding-inline:14px;overflow-y:auto}
+.brand{display:flex;align-items:center;gap:10px;padding:4px 6px 16px}
+.brand b{font-family:var(--f-display);font-size:22px;font-weight:700;letter-spacing:0}
+.brand small{display:block;color:var(--muted);font-size:12px;line-height:1.2}
+.mark{width:36px;height:36px;flex:none}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;padding:9px 10px;border-radius:10px;cursor:pointer;text-align:start;color:var(--muted);font-weight:500}
+.nav button:hover{background:var(--sunk);color:var(--ink)}
+.nav button[aria-current="page"]{background:var(--accent-soft);color:var(--ink)}
+.nav svg{width:19px;height:19px;flex:none}
+.count{margin-inline-start:auto;background:var(--amber);color:#fff;border-radius:99px;font-size:11px;min-width:20px;padding:0 6px;text-align:center;font-family:var(--f-mono)}
+.rail .who{margin-top:auto;border-top:1px solid var(--line);padding-top:12px;font-size:13px;color:var(--muted);display:grid;gap:6px}
+.main{overflow-y:auto;min-width:0}
+.page{max-width:1080px;margin:0 auto;padding-block:22px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.head h1{font-size:26px}
+.head p{margin:2px 0 0;color:var(--muted)}
+.tabbar{display:none}
+.topbar{display:none}
+
+@media (max-width:820px){
+  .app{grid-template-columns:1fr;grid-template-rows:auto 1fr auto}
+  .rail{display:none}
+  .topbar{display:flex;align-items:center;gap:10px;background:var(--surface);border-bottom:1px solid var(--line);padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .topbar b{font-family:var(--f-display);font-size:19px}
+  .topbar .mark{width:30px;height:30px}
+  .topbar .role{margin-inline-start:auto}
+  .tabbar{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+  .tabbar button{border:0;background:none;padding:8px 2px 7px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--muted);position:relative;cursor:pointer}
+  .tabbar button[aria-current="page"]{color:var(--accent)}
+  .tabbar svg{width:21px;height:21px}
+  .tabbar .count{position:absolute;top:3px;inset-inline-start:52%;font-size:10px;min-width:17px}
+  .head h1{font-size:22px}
+}
+
+/* atoms */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 14px;cursor:pointer;font-weight:500;white-space:nowrap}
+.btn:hover{border-color:var(--muted)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.pri:hover{filter:brightness(1.06)}
+.btn.ghost{border-color:transparent;background:none}
+.btn.danger{color:var(--bad)}
+.btn.sm{padding:5px 10px;font-size:13px;border-radius:8px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn svg{width:17px;height:17px}
+.pill{display:inline-flex;align-items:center;gap:5px;border-radius:99px;padding:1px 10px;font-size:12px;font-weight:500;background:var(--sunk);color:var(--muted);white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}.pill.warn{background:var(--warn-soft);color:var(--warn)}.pill.bad{background:var(--bad-soft);color:var(--bad)}.pill.acc{background:var(--accent-soft);color:var(--accent)}
+.role{font-size:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.stat{display:grid;gap:2px}
+.stat b{font-family:var(--f-display);font-size:30px;font-weight:600;line-height:1.1}
+.stat span{color:var(--muted);font-size:13px}
+.sec{display:grid;gap:12px;margin-top:22px}
+.sec>h2{font-size:17px;display:flex;align-items:center;gap:8px}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.empty{border:1px dashed var(--line);border-radius:var(--r);padding:22px;text-align:center;color:var(--muted)}
+.list{display:grid;gap:8px}
+.row{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.row .body{min-width:0;flex:1 1 240px;display:grid;gap:2px}
+.row .acts{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.row h3{font-size:15px;font-family:var(--f-body);font-weight:600}
+.meta{display:flex;flex-wrap:wrap;gap:4px 14px;color:var(--muted);font-size:13px}
+form.f{display:grid;gap:12px}
+.fr{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+label.l{display:grid;gap:4px;font-size:13px;color:var(--muted);font-weight:500}
+input.i,select.i,textarea.i{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:8px 11px;color:var(--ink);font-size:15px}
+textarea.i{resize:vertical;min-height:80px}
+input.i:focus,select.i:focus,textarea.i:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:var(--surface);padding:6px 12px;cursor:pointer;font-size:13px}
+.seg button[aria-pressed="true"]{background:var(--accent-soft);color:var(--ink);font-weight:600}
+.daylabel{font-weight:600;font-size:14px;color:var(--muted);margin-top:6px}
+.time{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-weight:500;background:var(--accent-soft);color:var(--ink);border-radius:8px;padding:2px 8px;direction:ltr;display:inline-block}
+.slots{display:flex;flex-wrap:wrap;gap:6px}
+.slots button{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:5px 10px;font-family:var(--f-mono);cursor:pointer;direction:ltr}
+.slots button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.banner{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--amber-soft);border:1px solid color-mix(in srgb,var(--amber) 35%,transparent);border-radius:var(--r);padding:12px 14px}
+.banner.acc{background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 35%,transparent)}
+.prose{white-space:normal;overflow-wrap:anywhere}
+.prose p{margin:0 0 8px}.prose p:last-child{margin:0}
+.prose ul{margin:4px 0 8px;padding-inline-start:20px}
+.pre{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--sunk);border-radius:9px;padding:10px 12px;font-size:14px;margin:0}
+
+/* chat */
+.chat{display:grid;grid-template-rows:1fr auto;height:100%;max-width:820px;margin:0 auto}
+.chatpage{height:100%;display:flex;flex-direction:column}
+.thread{overflow-y:auto;padding-block:18px 8px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:14px}
+.msg{display:grid;gap:6px;max-width:92%}
+.msg.u{align-self:flex-start;justify-items:start}
+.msg.a{align-self:flex-end;justify-items:start}
+.bub{border-radius:14px;padding:10px 14px;min-width:0;max-width:100%}
+.msg.u .bub{background:var(--accent);color:var(--accent-ink);border-start-start-radius:4px}
+.msg.a .bub{background:var(--surface);border:1px solid var(--line);border-start-end-radius:4px}
+.steps{display:flex;flex-direction:column;gap:4px;width:100%}
+.step{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--muted);background:var(--sunk);border-radius:8px;padding:4px 10px}
+.step i{width:7px;height:7px;border-radius:99px;background:var(--muted);flex:none}
+.step.done i{background:var(--ok)}.step.err i{background:var(--bad)}.step.run i{background:var(--amber);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.3}}
+.plan{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 14px;width:100%}
+.plan b{font-size:13px;color:var(--muted);font-weight:600}
+.plan ol{margin:4px 0 0;padding-inline-start:22px;font-size:14px}
+.plan li.d{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--ok)}
+.msgacts{display:flex;gap:4px}
+.composer{padding-block:10px 12px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:linear-gradient(to top,var(--bg) 70%,transparent)}
+.cbox{display:flex;align-items:flex-end;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:6px;box-shadow:var(--shadow)}
+.cbox textarea{flex:1;border:0;background:none;resize:none;max-height:160px;min-height:40px;padding:8px 8px;outline:none;font-size:15px}
+.icon{width:40px;height:40px;border-radius:12px;border:0;background:none;display:grid;place-items:center;cursor:pointer;color:var(--muted);flex:none}
+.icon:hover{background:var(--sunk);color:var(--ink)}
+.icon.send{background:var(--accent);color:var(--accent-ink)}
+.icon.rec{background:var(--bad);color:#fff}
+.icon svg{width:20px;height:20px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.chips button{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 12px;font-size:13px;cursor:pointer;color:var(--ink)}
+.chips button:hover{border-color:var(--accent)}
+.hello{display:grid;gap:10px;justify-items:center;text-align:center;padding:30px 10px 10px;color:var(--muted)}
+.hello .mark{width:58px;height:58px}
+.hello h2{color:var(--ink);font-size:22px}
+
+/* landing */
+.hero{display:grid;gap:14px;padding:26px 0 8px}
+.hero h1{font-size:clamp(28px,5vw,42px);font-weight:700;max-width:18ch}
+.hero p{font-size:17px;color:var(--muted);max-width:56ch;margin:0}
+.svc{display:grid;gap:4px}
+.svc b{font-size:16px}
+.toast{position:fixed;inset-inline:0;bottom:calc(76px + env(safe-area-inset-bottom,0px));display:flex;justify-content:center;pointer-events:none;z-index:50;padding-inline:16px}
+.toast div{background:var(--ink);color:var(--bg);border-radius:10px;padding:9px 16px;font-size:14px;box-shadow:var(--shadow);max-width:520px}
+.toast div.bad{background:var(--bad);color:#fff}
+.sheet{position:fixed;inset:0;background:rgba(5,20,18,.45);display:flex;align-items:flex-end;z-index:40}
+.sheet>div{background:var(--surface);width:100%;border-radius:18px 18px 0 0;padding:14px max(16px,env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:grid;gap:4px}
+.sheet button.it{display:flex;gap:12px;align-items:center;border:0;background:none;padding:12px 8px;border-radius:10px;font-size:15px;cursor:pointer;text-align:start}
+.sheet button.it:hover{background:var(--sunk)}
+.sheet svg{width:20px;height:20px;color:var(--muted)}
+.skel{display:grid;place-items:center;height:100%;gap:10px;color:var(--muted)}
+.tbl{overflow-x:auto}
+details.card summary{cursor:pointer;font-weight:600}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px}
+.kv dt{color:var(--muted)}.kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
+</style>
+
+<div id="root" class="skel" style="height:100%">
+  <div style="display:grid;justify-items:center;gap:10px">
+    <svg class="mark" viewBox="0 0 48 48" aria-hidden="true" style="width:56px;height:56px"><rect x="2" y="2" width="44" height="44" rx="13" fill="var(--accent)"/><path d="M12 33h24" stroke="var(--accent-ink)" stroke-width="3.2" stroke-linecap="round"/><path d="M15.5 33V25M22 33V18M28.5 33V22M35 33v-4" stroke="var(--accent-ink)" stroke-width="3.2" stroke-linecap="round"/><circle cx="22" cy="12.5" r="2.4" fill="var(--amber)"/></svg>
+    <b style="font-family:var(--f-display);font-size:22px;color:var(--ink)">سند</b>
+    <span>يجهّز مساحة العمل…</span>
+  </div>
+</div>
+<div class="toast" id="toast" hidden><div></div></div>
+<input type="file" id="imgpick" accept="image/png,image/jpeg,image/webp" hidden>
+
+<script>
+(() => {
+"use strict";
+/* ---------- icons ---------- */
+const P = {
+  today:'<path d="M4 6h16M4 6v13a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V6M8 3v4M16 3v4M8 12h3v3H8z"/>',
+  chat:'<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/>',
+  check:'<path d="M5 12.5l4 4L19 7"/>',
+  approvals:'<path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/>',
+  people:'<circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.2c2.4-.3 4.4 1.2 5 4.3"/>',
+  cal:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/><circle cx="12" cy="15" r="1.4"/>',
+  brain:'<path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 3 3h1V4z"/><path d="M15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-3 3h-1V4z"/>',
+  loop:'<path d="M4 12a8 8 0 0 1 14-5.3L20 9"/><path d="M20 4v5h-5"/><path d="M20 12a8 8 0 0 1-14 5.3L4 15"/><path d="M4 20v-5h5"/>',
+  log:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 12h7M9 16h7"/>',
+  gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/>',
+  more:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',
+  home:'<path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-5h4v5"/>',
+  send:'<path d="M20 4L3 11l7 2 2 7z"/><path d="M10 13l4-4"/>',
+  mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/>',
+  img:'<rect x="3.5" y="5" width="17" height="14" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M20.5 16l-5-5-8 8"/>',
+  speak:'<path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/>',
+  stop:'<rect x="7" y="7" width="10" height="10" rx="2"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>',
+  trash:'<path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/>',
+  bag:'<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>',
+  user:'<circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-4 3.6-6 7-6s6.2 2 7 6"/>',
+  spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/>',
+  new:'<path d="M12 20h8M4 20l1-4L16 5l3 3L8 19z"/>'
+};
+const ic = (n, cls='') => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[n]||''}</svg>`;
+const MARK = `<svg class="mark" viewBox="0 0 48 48" aria-hidden="true"><rect x="2" y="2" width="44" height="44" rx="13" fill="var(--accent)"/><path d="M12 33h24" stroke="var(--accent-ink)" stroke-width="3.2" stroke-linecap="round"/><path d="M15.5 33V25M22 33V18M28.5 33V22M35 33v-4" stroke="var(--accent-ink)" stroke-width="3.2" stroke-linecap="round"/><circle cx="22" cy="12.5" r="2.4" fill="var(--amber)"/></svg>`;
+
+/* ---------- formatting (one format everywhere) ---------- */
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const toLatin = s => String(s ?? '').replace(/[٠-٩]/g, d => d.charCodeAt(0)-1632).replace(/[۰-۹]/g, d => d.charCodeAt(0)-1776);
+function normPhone(raw){
+  let d = toLatin(raw).replace(/[^\d+]/g,'');
+  if(!d) return null;
+  if(d.startsWith('00')) d = '+'+d.slice(2);
+  if(d.startsWith('+')) d = d.slice(1);
+  else if(/^05\d{8}$/.test(d)) d = '966'+d.slice(1);
+  else if(/^5\d{8}$/.test(d)) d = '966'+d;
+  else if(/^[3567]\d{7}$/.test(d)) d = '974'+d;
+  if(/^974\d{8}$/.test(d)) return `+974 ${d.slice(3,7)} ${d.slice(7)}`;
+  if(/^9665\d{8}$/.test(d)) return `+966 ${d.slice(3,5)} ${d.slice(5,8)} ${d.slice(8)}`;
+  if(/^966\d{8,9}$/.test(d)) return `+966 ${d.slice(3,5)} ${d.slice(5,8)} ${d.slice(8)}`;
+  if(d.length>=8 && d.length<=15) return '+'+d.replace(/^(\d{1,3})(\d+)$/,'$1 $2');
+  return null;
+}
+const phoneDigits = p => String(p||'').replace(/\D/g,'');
+const normEmail = e => { const v = String(e||'').trim().toLowerCase(); return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? v : null; };
+const normName = n => String(n||'').replace(/\s+/g,' ').trim();
+const TZ = 'Asia/Qatar';
+const LOC = 'ar-SA-u-ca-gregory-nu-latn';
+function riyadhNow(){
+  const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date()).map(x=>[x.type,x.value]));
+  return { date:`${p.year}-${p.month}-${p.day}`, time:`${p.hour}:${p.minute}` };
+}
+const dParts = iso => { const [y,m,d] = iso.split('-').map(Number); return new Date(Date.UTC(y,m-1,d,12)); };
+const fmtDate = iso => { try { return new Intl.DateTimeFormat(LOC,{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(dParts(iso)); } catch { return iso; } };
+const fmtDateShort = iso => { try { return new Intl.DateTimeFormat(LOC,{weekday:'long',day:'numeric',month:'long',timeZone:'UTC'}).format(dParts(iso)); } catch { return iso; } };
+const fmtStamp = ts => { try { return new Intl.DateTimeFormat(LOC,{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit',hourCycle:'h23',timeZone:TZ}).format(new Date(ts)); } catch { return ts; } };
+const weekday = iso => dParts(iso).getUTCDay();
+const addDays = (iso,n) => { const d = dParts(iso); d.setUTCDate(d.getUTCDate()+n); return d.toISOString().slice(0,10); };
+const toMin = t => { const [h,m] = String(t).split(':').map(Number); return h*60+m; };
+const fromMin = m => `${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
+const normDate = s => { const v = toLatin(s).trim(); return /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null; };
+const normTime = s => { const m = toLatin(s).trim().match(/^(\d{1,2}):(\d{2})$/); if(!m) return null; const h=+m[1], mi=+m[2]; return h<24&&mi<60 ? fromMin(h*60+mi) : null; };
+const DAYS = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+const nowISO = () => new Date().toISOString();
+const rid = () => Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const STATUS = { pending:['بانتظار التأكيد','warn'], confirmed:['مؤكد','ok'], declined:['معتذر عنه','bad'], cancelled:['ملغى','bad'], done:['مكتمل','acc'],
+  approved:['معتمد، جاهز للإرسال','ok'], rejected:['مرفوض','bad'], sent:['أُرسل','acc'] };
+const pill = st => { const [t,c] = STATUS[st] || [st,'']; return `<span class="pill ${c}">${esc(t)}</span>`; };
+
+/* ---------- safe calculator (no eval) ---------- */
+function calc(expr){
+  const s = toLatin(expr).replace(/[×x]/g,'*').replace(/÷/g,'/').replace(/,/g,'').replace(/\s+/g,'');
+  let i = 0;
+  const peek = () => s[i];
+  function num(){ const m = s.slice(i).match(/^\d+(\.\d+)?/); if(!m) throw new Error('تعبير غير صالح'); i += m[0].length; let v = parseFloat(m[0]); if(peek()==='%'){ i++; v/=100; } return v; }
+  function atom(){ if(peek()==='('){ i++; const v = add(); if(s[i++]!==')') throw new Error('قوس ناقص'); return v; } if(peek()==='-'){ i++; return -atom(); } if(peek()==='+'){ i++; return atom(); } return num(); }
+  function pow(){ let v = atom(); if(peek()==='^'){ i++; v = Math.pow(v, pow()); } return v; }
+  function mul(){ let v = pow(); while(peek()==='*'||peek()==='/'){ const o = s[i++]; const r = pow(); v = o==='*' ? v*r : v/r; } return v; }
+  function add(){ let v = mul(); while(peek()==='+'||peek()==='-'){ const o = s[i++]; const r = mul(); v = o==='+' ? v+r : v-r; } return v; }
+  const v = add(); if(i < s.length) throw new Error('تعبير غير صالح');
+  if(!isFinite(v)) throw new Error('الناتج غير محدد');
+  return Math.round(v*1e8)/1e8;
+}
+
+/* ---------- state ---------- */
+const S = {
+  role:'loading', realRole:'loading', preview:null, uid:null, owner:false,
+  user:null, db:null, sample:null, mcp:null, toolsMax:12, canImages:false,
+  site:null, busy:[], clients:[], appts:[], approvals:[], memory:[], routines:[], portal:[], myPortal:null, logToday:null,
+  tab:null, sheet:false, chat:[], running:null, rec:null, clientQ:'', apptView:'upcoming', drafts:{}, booking:{}, clientPrefill:null
+};
+const store = {
+  get(k,d){ try{ const v = localStorage.getItem('sanad:'+k); return v ? JSON.parse(v) : d; }catch{ return d; } },
+  set(k,v){ try{ localStorage.setItem('sanad:'+k, JSON.stringify(v)); }catch{} }
+};
+const root = document.getElementById('root');
+let toastT;
+const dirty = new Set();
+function toast(msg, kind=''){ const t = document.getElementById('toast'); t.firstElementChild.textContent = msg; t.firstElementChild.className = kind; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(()=>t.hidden=true, 3200); }
+const errText = e => {
+  const c = e && e.code;
+  if(c==='invalid_argument') return 'لا تملك صلاحية تنفيذ هذا الإجراء.';
+  if(c==='quota_exceeded') return 'امتلأت سعة البيانات. احذف سجلات قديمة ثم أعد المحاولة.';
+  if(c==='resource_exhausted' || c==='rate_limited') return 'طلبات كثيرة في وقت قصير. انتظر لحظات ثم أعد المحاولة.';
+  if(c==='not_configured' || c==='bad_key') return (e && e.message) || 'لم يُضبط مفتاح Claude بعد.';
+  if(c==='offline') return 'لا يوجد اتصال بخادم سند. تحقق من الشبكة.';
+  if(c==='not_granted') return 'لم يُسمح لسند باستخدام Claude في هذا العرض. فعّل الإذن من قائمة الصلاحيات.';
+  if(c==='sampling_disabled') return 'استخدام Claude متوقف لهذا الحساب حالياً.';
+  if(c==='cancelled') return 'أُوقف التنفيذ.';
+  return (e && e.message) ? String(e.message) : 'تعذّر إتمام العملية. أعد المحاولة.';
+};
+
+/* ---------- data paths ---------- */
+const OPS = 'ops/main';
+const col = name => S.db.collection(`${OPS}/${name}`);
+const SITE_DEFAULT = { name:'', tagline:'', city:'', phone:'', email:'', services:[], days:[0,1,2,3,4], start:'09:00', end:'17:00', slot:30, about:'', example:false };
+const site = () => Object.assign({}, SITE_DEFAULT, S.site||{});
+
+const subs = [];
+function watchCol(ref, key, sortFn){
+  subs.push(ref.onSnapshot(snap => { S[key] = snap.docs.map(d => ({ id:d.id, ...d.data() })); if(sortFn) S[key].sort(sortFn); render(); }, e => { console.warn(key, e); }));
+}
+function watchDoc(ref, fn){ subs.push(ref.onSnapshot(snap => { fn(snap.exists ? snap.data() : null); render(); }, e => console.warn(e))); }
+
+let logQ = Promise.resolve();
+function logOp(action, detail, actor){
+  if(S.realRole!=='admin' || !S.db) return;
+  logQ = logQ.then(async () => {
+    const day = riyadhNow().date; const ref = S.db.doc(`${OPS}/log/${day}`);
+    const cur = (S.logToday && S.logToday.day===day) ? S.logToday.entries : ((await ref.get()).data()?.entries || []);
+    const entries = [...cur, { t:nowISO(), actor: actor || 'سند', action, detail:String(detail||'').slice(0,300) }].slice(-300);
+    S.logToday = { day, entries };
+    await ref.set({ day, entries });
+  }).catch(e => console.warn('log', e));
+}
+
+/* ---------- availability ---------- */
+function apptBlocks(){ return S.appts.filter(a => a.status!=='cancelled').map(a => ({ date:a.date, from:toMin(a.time), to:toMin(a.time)+(+a.duration||30) })); }
+function freeSlots(date, duration){
+  const st = site(); const dur = +duration || st.slot || 30;
+  if(!st.days.includes(weekday(date))) return [];
+  const now = riyadhNow();
+  if(date < now.date) return [];
+  const blocks = (S.realRole==='admin' ? apptBlocks() : S.busy.map(b => ({ date:b.d, from:toMin(b.t), to:toMin(b.t)+(+b.m||30) }))).filter(b => b.date===date);
+  const out = [];
+  for(let m = toMin(st.start); m + dur <= toMin(st.end); m += (+st.slot||30)){
+    if(date===now.date && m <= toMin(now.time)) continue;
+    if(blocks.some(b => m < b.to && m+dur > b.from)) continue;
+    out.push(fromMin(m));
+  }
+  return out;
+}
+async function syncBusy(){
+  const today = riyadhNow().date;
+  const slots = S.appts.filter(a => a.status!=='cancelled' && a.date >= today).map(a => ({ d:a.date, t:a.time, m:+a.duration||30 })).slice(0,500);
+  await S.db.doc('public/busy').set({ slots, updatedAt:nowISO() });
+}
+function conflict(date, time, duration, ignoreId){
+  const f = toMin(time), t = f + (+duration||30);
+  return S.appts.find(a => a.id!==ignoreId && a.status!=='cancelled' && a.date===date && f < toMin(a.time)+(+a.duration||30) && t > toMin(a.time));
+}
+function svcDuration(name){ const s = site().services.find(x => x.name===name); return s ? +s.duration : (site().slot||30); }
+
+/* ---------- domain actions (shared by UI and agent tools) ---------- */
+async function addClient({ name, phone, email, need, source, company }){
+  name = normName(name); if(!name) throw new Error('اسم العميل مطلوب');
+  const ph = phone ? normPhone(phone) : null; if(phone && !ph) throw new Error('رقم الهاتف غير صالح');
+  const em = email ? normEmail(email) : null; if(email && !em) throw new Error('البريد الإلكتروني غير صالح');
+  const dup = S.clients.find(c => (ph && c.phone===ph) || (em && c.email===em));
+  if(dup){
+    const patch = {}; if(need && !dup.need) patch.need = need; if(em && !dup.email) patch.email = em; if(ph && !dup.phone) patch.phone = ph; if(company && !dup.company) patch.company = company;
+    if(Object.keys(patch).length) await col('clients').doc(dup.id).update({ ...patch, updatedAt:nowISO() });
+    return { id:dup.id, existed:true, name:dup.name, phone:dup.phone||ph };
+  }
+  const ref = col('clients').doc();
+  const rec = { name, phone:ph||'', email:em||'', company:String(company||'').trim(), need:String(need||'').trim(), source:source||'يدوي', stage:'جديد', createdAt:nowISO() };
+  await ref.set(rec);
+  S.clients = [...S.clients, { id:ref.id, ...rec }];
+  logOp('إضافة عميل', `${name} ${ph||''}`);
+  return { id:ref.id, existed:false, name, phone:ph||'' };
+}
+async function bookAppt({ title, client_name, phone, date, time, duration, note, source, portalUid, bookingId }){
+  date = normDate(date); time = normTime(time);
+  if(!date) throw new Error('التاريخ يجب أن يكون بصيغة YYYY-MM-DD');
+  if(!time) throw new Error('الوقت يجب أن يكون بصيغة HH:MM');
+  duration = Math.max(10, Math.min(480, +duration || svcDuration(title)));
+  const c = conflict(date, time, duration);
+  if(c) throw new Error(`يتعارض مع موعد «${c.title}» الساعة ${c.time}`);
+  const ph = phone ? normPhone(phone) : '';
+  const rec = { title:String(title||'موعد').trim(), clientName:normName(client_name), phone:ph||'', date, time, duration, note:String(note||''), status:'confirmed', source:source||'سند', createdAt:nowISO() };
+  if(portalUid){ rec.portalUid = portalUid; rec.bookingId = bookingId; }
+  const ref = col('appointments').doc(); await ref.set(rec);
+  S.appts = [...S.appts, { id:ref.id, ...rec }];
+  await syncBusy();
+  if(rec.clientName) { try { await addClient({ name:rec.clientName, phone:ph||undefined, need:rec.title, source:source||'حجز' }); } catch {} }
+  logOp('حجز موعد', `${rec.title} · ${rec.clientName} · ${date} ${time}`);
+  return { id:ref.id, ...rec, date_text:fmtDate(date) };
+}
+async function cancelAppt(id){
+  const a = S.appts.find(x => x.id===id); if(!a) throw new Error('الموعد غير موجود');
+  await col('appointments').doc(id).update({ status:'cancelled', updatedAt:nowISO() });
+  a.status = 'cancelled'; await syncBusy();
+  if(a.portalUid){ await setPortalBooking(a.portalUid, a.bookingId, { status:'cancelled' }); }
+  logOp('إلغاء موعد', `${a.title} · ${a.date} ${a.time}`);
+}
+async function createDraft({ channel, to, subject, body, client_name }){
+  channel = channel==='whatsapp' ? 'whatsapp' : 'email';
+  let dest = String(to||'').trim();
+  if(channel==='email'){ dest = normEmail(dest); if(!dest) throw new Error('عنوان البريد غير صالح'); }
+  else { dest = normPhone(dest); if(!dest) throw new Error('رقم واتساب غير صالح'); }
+  const rec = { channel, to:dest, subject:String(subject||'').trim(), body:String(body||'').trim(), clientName:normName(client_name), status:'pending', createdAt:nowISO() };
+  if(!rec.body) throw new Error('نص الرسالة فارغ');
+  const ref = col('approvals').doc(); await ref.set(rec);
+  logOp('مسودة بانتظار الموافقة', `${channel==='email'?'بريد':'واتساب'} إلى ${dest}`);
+  return { id:ref.id, status:'بانتظار موافقة المدير' };
+}
+async function remember(fact){
+  fact = String(fact||'').trim(); if(!fact) throw new Error('لا يوجد ما يُحفظ');
+  if(S.memory.some(m => m.fact===fact)) return 'محفوظ مسبقاً';
+  const ref = col('memory').doc(); await ref.set({ fact, createdAt:nowISO() });
+  S.memory = [...S.memory, { id:ref.id, fact }];
+  logOp('حفظ في الذاكرة', fact);
+  return 'حُفظ في الذاكرة الدائمة';
+}
+async function addRoutine({ title, instruction, time, days }){
+  time = normTime(time) || '07:30';
+  days = Array.isArray(days) && days.length ? days.map(Number).filter(d => d>=0 && d<=6) : [0,1,2,3,4];
+  const rec = { title:String(title||'روتين').trim(), instruction:String(instruction||'').trim(), time, days, lastRun:'', lastResult:'', createdAt:nowISO(), active:true };
+  if(!rec.instruction) throw new Error('تعليمات الروتين مطلوبة');
+  const ref = col('routines').doc(); await ref.set(rec);
+  logOp('إنشاء روتين', `${rec.title} · ${time}`);
+  return { id:ref.id, ...rec };
+}
+async function setPortalBooking(uid, bookingId, patch){
+  const p = S.portal.find(x => x.id===uid); if(!p) return;
+  const bookings = (p.bookings||[]).map(b => b.id===bookingId ? { ...b, ...patch, updatedAt:nowISO() } : b);
+  await S.db.doc(`portal/${uid}`).update({ bookings, updatedAt:nowISO() });
+}
+async function confirmRequest(uid, bookingId){
+  const p = S.portal.find(x => x.id===uid); const b = (p?.bookings||[]).find(x => x.id===bookingId); if(!b) throw new Error('الطلب غير موجود');
+  const a = await bookAppt({ title:b.service, client_name:p.profile?.name, phone:p.profile?.phone, date:b.date, time:b.time, duration:b.duration, note:b.note, source:'بوابة العملاء', portalUid:uid, bookingId });
+  if(p.profile?.email){ try { await addClient({ name:p.profile.name, phone:p.profile.phone, email:p.profile.email, need:b.service, source:'بوابة العملاء' }); } catch {} }
+  await setPortalBooking(uid, bookingId, { status:'confirmed', apptId:a.id });
+  logOp('تأكيد طلب حجز', `${p.profile?.name} · ${b.date} ${b.time}`, 'المدير');
+}
+async function declineRequest(uid, bookingId, reason){
+  await setPortalBooking(uid, bookingId, { status:'declined', reason:String(reason||'') });
+  logOp('اعتذار عن طلب حجز', reason||'', 'المدير');
+}
+/* client side */
+function myDoc(){ return S.myPortal || { profile:{ name:'', phone:'', email:'' }, bookings:[] }; }
+async function saveMyPortal(next){
+  const doc = { profile:next.profile, bookings:next.bookings.slice(-60), updatedAt:nowISO() };
+  await S.db.doc(`portal/${S.uid}`).set(doc); S.myPortal = doc;
+}
+async function saveMyProfile({ name, phone, email }){
+  const cur = myDoc();
+  const n = normName(name ?? cur.profile.name); if(!n) throw new Error('الاسم مطلوب');
+  const ph = normPhone(phone ?? cur.profile.phone); if(!ph) throw new Error('رقم الجوال غير صالح، مثال: +966 55 123 4567');
+  const emRaw = email ?? cur.profile.email; const em = emRaw ? normEmail(emRaw) : '';
+  if(emRaw && !em) throw new Error('البريد الإلكتروني غير صالح');
+  await saveMyPortal({ ...cur, profile:{ name:n, phone:ph, email:em||'' } });
+  return { name:n, phone:ph, email:em||'' };
+}
+async function requestBooking({ service, date, time, note }){
+  const cur = myDoc();
+  if(!cur.profile.name || !cur.profile.phone) throw new Error('أكمل الاسم ورقم الجوال أولاً');
+  date = normDate(date); time = normTime(time);
+  if(!date || !time) throw new Error('حدد التاريخ YYYY-MM-DD والوقت HH:MM');
+  const st = site(); const sv = st.services.find(s => s.name===service) || st.services[0];
+  if(!sv) throw new Error('لا توجد خدمات متاحة للحجز حالياً');
+  const dur = +sv.duration || st.slot;
+  if(!freeSlots(date, dur).includes(time)) throw new Error('هذا الوقت غير متاح. اختر وقتاً آخر من الأوقات المتاحة.');
+  if(cur.bookings.some(b => b.status==='pending' && b.date===date && b.time===time)) throw new Error('لديك طلب بالموعد نفسه');
+  const b = { id:rid(), service:sv.name, duration:dur, date, time, note:String(note||'').slice(0,500), status:'pending', createdAt:nowISO() };
+  await saveMyPortal({ ...cur, bookings:[...cur.bookings, b] });
+  return { ...b, date_text:fmtDate(date), status_text:'بانتظار تأكيد فريق العمل' };
+}
+async function cancelMyBooking(id){
+  const cur = myDoc(); const b = cur.bookings.find(x => x.id===id); if(!b) throw new Error('الطلب غير موجود');
+  if(b.status!=='pending') throw new Error('يمكن إلغاء الطلبات التي لم تُؤكَّد فقط. للمؤكدة تواصل مع النشاط.');
+  await saveMyPortal({ ...cur, bookings:cur.bookings.map(x => x.id===id ? { ...x, status:'cancelled' } : x) });
+}
+
+/* ---------- agent ---------- */
+const TOOL_LABEL = { calculator:'حساب', plan:'وضع خطة', remember:'حفظ في الذاكرة', forget:'حذف من الذاكرة', add_client:'تسجيل عميل', find_clients:'بحث في العملاء',
+  book_appointment:'حجز موعد', list_appointments:'قراءة المواعيد', cancel_appointment:'إلغاء موعد', free_slots:'فحص الأوقات المتاحة', draft_message:'صياغة رسالة للموافقة',
+  create_routine:'إنشاء روتين مجدول', business_info:'بيانات النشاط', status_overview:'قراءة لوحة اليوم', drive_search:'بحث في Google Drive', drive_read:'قراءة ملف من Drive',
+  save_my_profile:'حفظ بيانات العميل', request_booking:'طلب حجز', my_bookings:'قراءة حجوزاتي', cancel_my_booking:'إلغاء طلب' };
+const obj = (props, req=[]) => ({ type:'object', properties:props, required:req });
+const str = d => ({ type:'string', description:d });
+
+function businessInfo(){
+  const st = site();
+  return { name:st.name||'غير مضبوط', tagline:st.tagline, city:st.city, phone:st.phone, email:st.email, about:st.about,
+    services:st.services.map(s => ({ name:s.name, duration_min:+s.duration, price:s.price||'' })),
+    working_days:st.days.map(d => DAYS[d]), hours:`من ${st.start} إلى ${st.end}` };
+}
+function toolsFor(role, msg){
+  const T = [];
+  const add = (name, description, schema, execute) => T.push({ name, description, inputSchema:schema, execute });
+  add('business_info','يعيد بيانات النشاط: الاسم والخدمات ومدتها وأيام وساعات العمل ووسائل التواصل.', obj({}), () => businessInfo());
+  add('free_slots','يعيد الأوقات المتاحة في تاريخ معين (YYYY-MM-DD) لخدمة معينة. استخدمه قبل أي حجز.', obj({ date:str('YYYY-MM-DD'), service:str('اسم الخدمة (اختياري)') },['date']),
+    ({ date, service }) => { const d = normDate(date); if(!d) throw new Error('صيغة التاريخ YYYY-MM-DD'); const sl = freeSlots(d, svcDuration(service)); return { date:d, date_text:fmtDate(d), slots:sl.slice(0,24), note: sl.length ? '' : 'لا أوقات متاحة في هذا اليوم' }; });
+  add('calculator','يحسب تعبيراً حسابياً بدقة (+ - * / ^ % وأقواس). استخدمه لأي حساب أسعار أو نسب.', obj({ expression:str('مثل (1500*12)*0.15') },['expression']), ({ expression }) => ({ result:calc(expression) }));
+  add('plan','للمهام متعددة الخطوات: اعرض خطتك أولاً كخطوات قصيرة، ثم نفّذها بالأدوات بالترتيب.', obj({ steps:{ type:'array', items:{ type:'string' }, description:'3 إلى 7 خطوات' } },['steps']),
+    ({ steps }) => { msg.plan = (Array.isArray(steps)?steps:[]).map(String).slice(0,8); msg.planDone = 0; paintMsg(msg); return 'عُرضت الخطة على المستخدم. نفّذ الخطوات الآن.'; });
+  if(role==='admin'){
+    add('status_overview','يعيد ملخص اليوم: مواعيد اليوم، والموافقات المعلقة، وطلبات الحجز الجديدة، وعدد العملاء، والروتينات المستحقة.', obj({}), () => overview());
+    add('remember','يحفظ حقيقة دائمة في ذاكرة سند الطويلة (تفضيل، سعر، قرار، معلومة عن عميل) لتُستخدم في كل محادثة لاحقة.', obj({ fact:str('جملة واحدة واضحة') },['fact']), ({ fact }) => remember(fact));
+    add('forget','يحذف حقيقة من الذاكرة الدائمة بنصها أو بجزء منه.', obj({ text:str('نص الحقيقة أو جزء منها') },['text']), async ({ text }) => {
+      const m = S.memory.find(x => x.fact.includes(String(text))); if(!m) return 'لم أجد حقيقة مطابقة'; await col('memory').doc(m.id).delete(); logOp('حذف من الذاكرة', m.fact); return 'حُذفت: '+m.fact; });
+    add('add_client','يسجّل عميلاً محتملاً في قاعدة العملاء ويمنع التكرار بالهاتف أو البريد. يوحّد صيغة الهاتف.', obj({ name:str('الاسم'), phone:str('الجوال'), email:str('البريد'), company:str('الجهة'), need:str('الاحتياج'), source:str('المصدر: واتساب، موقع، إحالة...') },['name']), a => addClient(a));
+    add('find_clients','يبحث في العملاء بالاسم أو الهاتف أو الاحتياج. يعيد حتى 10 نتائج.', obj({ query:str('كلمة البحث') },['query']), ({ query }) => {
+      const q = toLatin(query).toLowerCase(); const qd = phoneDigits(q);
+      return S.clients.filter(c => [c.name,c.need,c.company,c.email].join(' ').toLowerCase().includes(q) || (qd.length>3 && phoneDigits(c.phone).includes(qd))).slice(0,10).map(c => ({ name:c.name, phone:c.phone, email:c.email, need:c.need, stage:c.stage, since:fmtStamp(c.createdAt) })); });
+    add('list_appointments','يعيد المواعيد بين تاريخين (YYYY-MM-DD) مرتبة.', obj({ from:str('YYYY-MM-DD'), to:str('YYYY-MM-DD') }), ({ from, to }) => {
+      const f = normDate(from) || riyadhNow().date, t = normDate(to) || addDays(f, 7);
+      return S.appts.filter(a => a.status!=='cancelled' && a.date>=f && a.date<=t).sort(byWhen).map(a => ({ id:a.id, title:a.title, client:a.clientName, phone:a.phone, date_text:fmtDate(a.date), time:a.time, duration_min:a.duration })); });
+    add('book_appointment','يحجز موعداً مؤكداً بعد التحقق من عدم التعارض، ويسجّل العميل تلقائياً.', obj({ title:str('الخدمة أو عنوان الموعد'), client_name:str('اسم العميل'), phone:str('الجوال'), date:str('YYYY-MM-DD'), time:str('HH:MM بنظام 24 ساعة'), duration:{ type:'number', description:'بالدقائق' }, note:str('ملاحظة') },['title','date','time']), a => bookAppt(a));
+    add('cancel_appointment','يلغي موعداً بمعرّفه (من list_appointments).', obj({ id:str('معرّف الموعد') },['id']), async ({ id }) => { await cancelAppt(String(id)); return 'أُلغي الموعد'; });
+    add('draft_message','يصوغ رسالة بريد أو واتساب لعميل ويضعها في قائمة الموافقات. لا يرسل شيئاً: الإرسال بعد موافقة المدير فقط.', obj({ channel:{ type:'string', enum:['email','whatsapp'] }, to:str('البريد أو رقم الجوال'), subject:str('عنوان البريد'), body:str('نص الرسالة كاملاً'), client_name:str('اسم العميل') },['channel','to','body']), a => createDraft(a));
+    add('create_routine','ينشئ روتيناً يتكرر يومياً في وقت محدد (مثل تقرير صباحي أو متابعة العملاء الجدد).', obj({ title:str('اسم الروتين'), instruction:str('ما يفعله سند عند التشغيل'), time:str('HH:MM'), days:{ type:'array', items:{ type:'number' }, description:'أيام الأسبوع 0=الأحد ... 6=السبت' } },['title','instruction','time']), a => addRoutine(a));
+    if(S.mcp && S.owner){
+      add('drive_search','يبحث في ملفات Google Drive الخاصة بالمدير عن كلمة، ويعيد العنوان والمعرّف ومقتطفاً قصيراً.', obj({ query:str('كلمة أو عبارة') },['query']), async ({ query }, ctx) => {
+        const q = String(query).replace(/'/g,"\\'");
+        const r = await S.mcp.callTool('Google Drive','search_files',{ query:`fullText contains '${q}'`, pageSize:5, snippetVerbosity:'BRIEF' },{ signal:ctx?.signal });
+        const files = (r.payload && r.payload.files) || [];
+        return files.map(f => ({ id:f.id, title:f.title, type:f.mimeType, modified:f.modifiedTime ? fmtStamp(f.modifiedTime) : '', snippet:String(f.contentSnippet||f.snippet||'').slice(0,400) })); });
+      add('drive_read','يقرأ نص ملف من Google Drive بمعرّفه (من drive_search). يعيد أول 6000 حرف.', obj({ file_id:str('معرّف الملف') },['file_id']), async ({ file_id }, ctx) => {
+        const r = await S.mcp.callTool('Google Drive','read_file_content',{ fileId:String(file_id) },{ signal:ctx?.signal });
+        const p = r.payload; return (typeof p==='string' ? p : JSON.stringify(p)).slice(0,6000); });
+    }
+  }
+  if(role==='client'){
+    add('save_my_profile','يحفظ بيانات العميل الحالي: الاسم والجوال والبريد. مطلوب قبل طلب الحجز.', obj({ name:str('الاسم الكامل'), phone:str('رقم الجوال'), email:str('البريد (اختياري)') },['name','phone']), a => saveMyProfile(a));
+    add('request_booking','يرسل طلب حجز لفريق النشاط ليؤكده. تحقق من free_slots أولاً.', obj({ service:str('اسم الخدمة كما في business_info'), date:str('YYYY-MM-DD'), time:str('HH:MM'), note:str('ملاحظة') },['service','date','time']), a => requestBooking(a));
+    add('my_bookings','يعيد طلبات وحجوزات العميل الحالي وحالتها.', obj({}), () => myDoc().bookings.map(b => ({ id:b.id, service:b.service, date_text:fmtDate(b.date), time:b.time, status:(STATUS[b.status]||[b.status])[0] })));
+    add('cancel_my_booking','يلغي طلب حجز لم يُؤكَّد بعد.', obj({ id:str('معرّف الطلب') },['id']), async ({ id }) => { await cancelMyBooking(String(id)); return 'أُلغي الطلب'; });
+  }
+  return T.slice(0, S.toolsMax);
+}
+function overview(){
+  const { date } = riyadhNow();
+  const pendReq = pendingRequests();
+  return {
+    today:fmtDate(date),
+    appointments_today:S.appts.filter(a => a.date===date && a.status!=='cancelled').sort(byWhen).map(a => ({ time:a.time, title:a.title, client:a.clientName })),
+    pending_approvals:S.approvals.filter(a => a.status==='pending').map(a => ({ channel:a.channel, to:a.to, subject:a.subject })),
+    booking_requests:pendReq.map(r => ({ client:r.p.profile?.name, service:r.b.service, when:`${fmtDate(r.b.date)} ${r.b.time}` })),
+    clients_total:S.clients.length,
+    new_clients_7d:S.clients.filter(c => c.createdAt && (Date.now()-Date.parse(c.createdAt)) < 7*864e5).length,
+    routines_due:dueRoutines().map(r => r.title)
+  };
+}
+function instructions(role){
+  const st = site(); const now = riyadhNow();
+  const fmt = `الصيغ الموحدة: الهاتف +966 55 123 4567، التاريخ مثل «${fmtDate(now.date)}»، الوقت بنظام 24 ساعة مثل 09:30. عند استدعاء الأدوات استخدم التاريخ YYYY-MM-DD والوقت HH:MM.`;
+  const base = `اليوم ${fmtDate(now.date)} (${now.date})، والساعة ${now.time} بتوقيت الدوحة. ${fmt}\nاكتب بالعربية الفصحى المهنية الراقية، بإيجاز ووضوح، ودون رموز تعبيرية. استخدم Markdown بسيطاً (نقاط وخط عريض) عند الحاجة فقط.`;
+  if(role==='admin'){
+    const mem = S.memory.slice(-60).map(m => '- '+m.fact).join('\n') || '- (لا شيء بعد)';
+    return `أنت «سند»، الوكيل التنفيذي الذكي لمدير «${st.name||'النشاط'}». تنفّذ المهام بالأدوات ولا تكتفي بالشرح.\n${base}\nقواعد العمل:\n1. للمهام التي تحتاج خطوتين أو أكثر استدعِ أداة plan أولاً، ثم نفّذ.\n2. لا ترسل أي رسالة خارجية بنفسك. كل رسالة لعميل تُصاغ بأداة draft_message وتنتظر موافقة المدير.\n3. إذا ذكر المدير معلومة دائمة (تفضيل، سعر، سياسة، قرار) فاحفظها بأداة remember دون أن يطلب.\n4. تحقق بالأدوات قبل الإجابة عن العملاء والمواعيد، ولا تخترع بيانات.\n5. اختم بسطر قصير يلخص ما نُفّذ وما ينتظر المدير.\nالذاكرة الدائمة:\n${mem}`;
+  }
+  if(role==='client') {
+    const me = myDoc().profile;
+    return `أنت «سند»، المساعد الذكي لـ«${st.name||'النشاط'}». تخدم عميلاً مسجلاً: تعرّفه بالخدمات، وتبحث له عن الأوقات المتاحة، وتسجّل بياناته، وترسل طلب الحجز ليؤكده فريق النشاط.\n${base}\nبيانات العميل الحالية: الاسم «${me.name||'غير مسجل'}»، الجوال «${me.phone||'غير مسجل'}».\nقواعد: اسأل عن الناقص فقط. لا تعد بتأكيد نهائي: الطلب يبقى «بانتظار التأكيد» حتى يعتمده الفريق. لا تفصح عن بيانات عملاء آخرين أو عن تفاصيل المواعيد المحجوزة، واكتفِ بالأوقات المتاحة.`;
+  }
+  return `أنت «سند»، المساعد الذكي لـ«${st.name||'النشاط'}» تجيب زائراً عاماً للموقع.\n${base}\nعرّفه بالخدمات وساعات العمل والأوقات المتاحة. الحجز يحتاج حساب عميل: إن أراد الحجز فاطلب منه التواصل عبر ${st.phone||'وسائل التواصل في الصفحة'} للحصول على رابط بوابة العملاء. لا تفصح عن أي بيانات داخلية.`;
+}
+function chatKey(){ return 'chat:'+S.role; }
+function loadChat(){ S.chat = store.get(chatKey(), []); }
+function saveChat(){ store.set(chatKey(), S.chat.slice(-40).map(m => ({ r:m.r, text:m.text, steps:m.steps, plan:m.plan, planDone:m.planDone, t:m.t }))); }
+let ctl = null;
+async function runAgent(text, opts={}){
+  if(!S.sample){ toast('التحدث مع سند غير متاح في هذا العرض.','bad'); return; }
+  if(S.running) return;
+  const role = S.role;
+  const user = { r:'u', text, t:nowISO() };
+  const msg = { r:'a', text:'', steps:[], t:nowISO(), pending:true, brief:!!opts.brief };
+  if(!opts.silent){ S.chat.push(user, msg); }
+  S.running = msg; render(); scrollThread();
+  const turns = [{ role:'user', content:instructions(role) + (opts.extra ? '\n\n'+opts.extra : '') }];
+  if(!opts.silent){
+    const hist = S.chat.slice(0,-2).slice(-14).filter(m => m.text);
+    hist.forEach(m => turns.push({ role:m.r==='u'?'user':'assistant', content:m.text.slice(0,4000) }));
+  }
+  turns.push({ role:'user', content:text });
+  const tools = toolsFor(role, msg).map(t => ({ ...t, execute: async (input, ctx) => {
+    const step = { name:t.name, label:TOOL_LABEL[t.name]||t.name, st:'run' };
+    if(t.name!=='plan') msg.steps.push(step); paintMsg(msg);
+    try{ const r = await t.execute(input||{}, ctx); step.st = 'done';
+      if(t.name!=='plan' && msg.plan) msg.planDone = Math.min(msg.plan.length, (msg.planDone||0)+1);
+      paintMsg(msg); return r; }
+    catch(e){ step.st = 'err'; step.err = errText(e); paintMsg(msg); throw new Error(errText(e)); }
+  }}));
+  ctl = new AbortController();
+  try{
+    const res = await S.sample(turns, { tools, signal:ctl.signal, onText:({ text }) => { msg.text = text; paintMsg(msg); scrollThread(); } });
+    msg.text = res.text; if(msg.plan) msg.planDone = msg.plan.length;
+    if(res.truncated) msg.text += '\n\n(اختُصر الرد لطوله.)';
+  }catch(e){
+    msg.text = (e.text||'') + (e.code==='cancelled' ? '' : `\n\n${errText(e)}`);
+    if(e.code==='tools_unavailable'){ S.toolsMax = 0; }
+  }finally{
+    msg.pending = false; S.running = null; ctl = null;
+    if(!opts.silent) saveChat();
+    render(); scrollThread();
+  }
+  return msg;
+}
+function mdLite(s){
+  const lines = esc(s).split('\n'); let html = '', inList = false;
+  for(const raw of lines){
+    const l = raw.replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');
+    const m = l.match(/^\s*(?:[-•*]|\d+[.)])\s+(.*)/);
+    if(m){ if(!inList){ html += '<ul>'; inList = true; } html += `<li>${m[1]}</li>`; continue; }
+    if(inList){ html += '</ul>'; inList = false; }
+    if(l.trim()==='') continue;
+    html += `<p>${l.replace(/^#{1,4}\s*/,'')}</p>`;
+  }
+  if(inList) html += '</ul>';
+  return html;
+}
+function msgInner(m){
+  const plan = m.plan ? `<div class="plan"><b>الخطة</b><ol>${m.plan.map((s,i) => `<li class="${i < (m.planDone||0) ? 'd':''}">${esc(s)}</li>`).join('')}</ol></div>` : '';
+  const steps = m.steps && m.steps.length ? `<div class="steps">${m.steps.map(s => `<div class="step ${s.st}"><i></i><span>${esc(s.label)}${s.st==='err' ? ' · '+esc(s.err||'تعذّر') : s.st==='run' ? '…' : ''}</span></div>`).join('')}</div>` : '';
+  const body = m.text ? `<div class="bub prose">${mdLite(m.text)}</div>` : (m.pending ? `<div class="bub muted">${m.steps.length ? 'يعمل على المهمة…' : 'يفكر…'}</div>` : '');
+  const acts = !m.pending && m.text ? `<div class="msgacts"><button class="btn ghost sm" data-act="speak" aria-label="استمع للرد">${ic('speak')} استمع</button><button class="btn ghost sm" data-act="copymsg" aria-label="انسخ الرد">${ic('copy')} نسخ</button></div>` : '';
+  return plan + steps + body + acts;
+}
+function paintMsg(m){ const el = document.querySelector(`[data-mid="${S.chat.indexOf(m)}"]`); if(el) el.innerHTML = msgInner(m); }
+function scrollThread(){ const t = document.querySelector('.thread'); if(t) t.scrollTop = t.scrollHeight; }
+
+/* ---------- routines ---------- */
+function dueRoutines(){
+  const { date, time } = riyadhNow(); const wd = weekday(date);
+  return S.routines.filter(r => r.active!==false && (r.days||[]).includes(wd) && time >= r.time && r.lastRun !== date);
+}
+async function runRoutine(id){
+  const r = S.routines.find(x => x.id===id); if(!r) return;
+  toast(`يشغّل «${r.title}»…`);
+  const prev = S.tab;
+  const m = await runAgent(`نفّذ الروتين المجدول «${r.title}» الآن: ${r.instruction}\nاكتب الناتج كتقرير قصير منظم.`, { silent:true });
+  S.tab = prev;
+  if(m && m.text){
+    await col('routines').doc(id).update({ lastRun:riyadhNow().date, lastResult:m.text.slice(0,6000), lastRunAt:nowISO() });
+    logOp('تشغيل روتين', r.title); toast(`اكتمل «${r.title}»`);
+  }
+}
+
+/* ---------- voice ---------- */
+function startVoice(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){ toast('الإدخال الصوتي غير مدعوم في هذا المتصفح. استخدم ميكروفون لوحة المفاتيح في جوالك.'); return; }
+  if(S.rec){ S.rec.stop(); return; }
+  try{
+    const rec = new SR(); rec.lang = 'ar-SA'; rec.interimResults = true; rec.continuous = false;
+    const box = document.getElementById('cin');
+    rec.onresult = e => { box.value = Array.from(e.results).map(r => r[0].transcript).join(' '); };
+    rec.onerror = e => { toast(e.error==='not-allowed' || e.error==='service-not-allowed' ? 'لم يُسمح بالميكروفون في هذا العرض. استخدم ميكروفون لوحة المفاتيح في جوالك.' : 'تعذّر التقاط الصوت.', 'bad'); };
+    rec.onend = () => { S.rec = null; render(); };
+    rec.start(); S.rec = rec; render();
+  }catch{ toast('تعذّر تشغيل الميكروفون في هذا العرض.','bad'); }
+}
+function speak(text){
+  if(!('speechSynthesis' in window)){ toast('القراءة الصوتية غير مدعومة في هذا المتصفح.'); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(String(text).replace(/[*#]/g,'')); u.lang = 'ar-SA'; u.rate = 1;
+  const v = speechSynthesis.getVoices().find(v => v.lang && v.lang.startsWith('ar')); if(v) u.voice = v;
+  speechSynthesis.speak(u);
+}
+
+/* ---------- vision: business card ---------- */
+async function scanCard(file){
+  if(!S.sample || !S.canImages){ toast('قراءة الصور غير متاحة في هذا العرض.','bad'); return; }
+  toast('يقرأ سند البطاقة…');
+  try{
+    const r = await S.sample.json('هذه صورة بطاقة عمل أو لقطة شاشة لبيانات عميل. استخرج البيانات وأعد JSON فقط بالشكل {"name":"","phone":"","email":"","company":"","need":""}. اترك الحقل فارغاً إن لم يظهر.', { images:[file], modelTier:'quick' });
+    S.clientPrefill = { name:r.name||'', phone:normPhone(r.phone)||r.phone||'', email:r.email||'', company:r.company||'', need:r.need||'' };
+    ['cl-name','cl-phone','cl-email','cl-company','cl-need'].forEach(k => dirty.delete(k));
+    S.tab = 'clients'; render(); toast('راجع البيانات المستخرجة ثم احفظ');
+    setTimeout(() => document.getElementById('cl-name')?.focus(), 50);
+  }catch(e){ toast(errText(e),'bad'); }
+}
+
+/* ---------- views ---------- */
+const byWhen = (a,b) => (a.date+a.time).localeCompare(b.date+b.time);
+const byNew = (a,b) => String(b.createdAt||'').localeCompare(String(a.createdAt||''));
+function pendingRequests(){
+  const out = []; for(const p of S.portal) for(const b of (p.bookings||[])) if(b.status==='pending') out.push({ p, b });
+  return out.sort((x,y) => (x.b.date+x.b.time).localeCompare(y.b.date+y.b.time));
+}
+const TABS = {
+  admin:[['today','اليوم','today'],['chat','سند','chat'],['approvals','الموافقات','approvals'],['clients','العملاء','people'],['appts','المواعيد','cal'],['memory','الذاكرة','brain'],['routines','الروتينات','loop'],['log','السجل','log'],['settings','الإعدادات','gear']],
+  client:[['chat','سند','chat'],['book','احجز','cal'],['mine','حجوزاتي','bag'],['profile','بياناتي','user']],
+  visitor:[['home','الرئيسية','home'],['chat','اسأل سند','chat']]
+};
+const MOBILE_MAIN = { admin:['today','chat','approvals','clients'], client:['chat','book','mine','profile'], visitor:['home','chat'] };
+const ROLE_NAME = { admin:'المدير', client:'عميل', visitor:'زائر' };
+function badge(tab){
+  if(S.role!=='admin') return 0;
+  if(tab==='approvals') return S.approvals.filter(a => a.status==='pending').length + pendingRequests().length;
+  if(tab==='routines') return dueRoutines().length;
+  return 0;
+}
+function render(){
+  if(S.role==='loading') return;
+  const focusId = document.activeElement && document.activeElement.id;
+  const selStart = document.activeElement && document.activeElement.selectionStart;
+  const keepScroll = document.querySelector('.main')?.scrollTop || 0;
+  const kept = {}; dirty.forEach(id => { const el = document.getElementById(id); if(el) kept[id] = el.value; });
+  const tabs = TABS[S.role];
+  if(!tabs.some(t => t[0]===S.tab)) S.tab = tabs[0][0];
+  const st = site();
+  const nav = tabs.map(([k,l,i]) => { const n = badge(k); return `<button data-tab="${k}" ${S.tab===k?'aria-current="page"':''}>${ic(i)}<span>${l}</span>${n?`<span class="count">${n}</span>`:''}</button>`; }).join('');
+  const mainTabs = MOBILE_MAIN[S.role];
+  const extra = tabs.filter(t => !mainTabs.includes(t[0]));
+  const moreBadge = extra.reduce((s,t) => s+badge(t[0]),0);
+  const tabbar = tabs.filter(t => mainTabs.includes(t[0])).map(([k,l,i]) => { const n = badge(k); return `<button data-tab="${k}" ${S.tab===k?'aria-current="page"':''}>${ic(i)}<span>${l}</span>${n?`<span class="count">${n}</span>`:''}</button>`; }).join('')
+    + (extra.length ? `<button data-act="more" ${extra.some(t=>t[0]===S.tab)?'aria-current="page"':''}>${ic('more')}<span>المزيد</span>${moreBadge?`<span class="count">${moreBadge}</span>`:''}</button>` : '');
+  const rolePill = `<span class="pill ${S.role==='admin'?'acc':S.role==='client'?'ok':''} role">${ROLE_NAME[S.role]}${S.preview?' (معاينة)':''}</span>`;
+  const isChat = S.tab==='chat';
+  root.className = '';
+  root.innerHTML = `
+  <div class="app">
+    <aside class="rail" aria-label="التنقل">
+      <div class="brand">${MARK}<div><b>سند</b><small>${esc(st.name || 'وكيلك التنفيذي الذكي')}</small></div></div>
+      <nav class="nav">${nav}</nav>
+      <div class="who">${rolePill}${S.preview?`<button class="btn sm" data-act="endpreview">العودة لعرض المدير</button>`:''}<span class="small">${S.role==='admin'?'تعمل بصلاحيات المدير الكاملة.':S.role==='client'?'بوابة العملاء: طلباتك تصل للفريق مباشرة.':'تصفح الخدمات واسأل سند.'}</span></div>
+    </aside>
+    <header class="topbar">${MARK}<b>سند</b><span class="small muted" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0">${esc(st.name||'')}</span>${rolePill}</header>
+    <main class="main" id="main">${isChat ? viewChat() : `<div class="page">${view()}</div>`}</main>
+    <nav class="tabbar" aria-label="التنقل">${tabbar}</nav>
+  </div>
+  ${S.sheet ? `<div class="sheet" data-act="closesheet"><div role="dialog" aria-label="المزيد">${extra.map(([k,l,i]) => `<button class="it" data-tab="${k}">${ic(i)}<span>${l}</span>${badge(k)?`<span class="count">${badge(k)}</span>`:''}</button>`).join('')}${S.preview?`<button class="it" data-act="endpreview">${ic('gear')}<span>العودة لعرض المدير</span></button>`:''}</div></div>` : ''}`;
+  for(const [id,val] of Object.entries(kept)){ const el = document.getElementById(id); if(el && el.value!==val) el.value = val; }
+  if(!isChat) { const mm = document.querySelector('.main'); if(mm) mm.scrollTop = keepScroll; }
+  if(focusId){ const el = document.getElementById(focusId); if(el){ el.focus(); try{ if(selStart!=null) el.setSelectionRange(selStart, selStart); }catch{} } }
+  if(isChat) scrollThread();
+}
+function view(){
+  switch(S.tab){
+    case 'today': return vToday(); case 'approvals': return vApprovals(); case 'clients': return vClients(); case 'appts': return vAppts();
+    case 'memory': return vMemory(); case 'routines': return vRoutines(); case 'log': return vLog(); case 'settings': return vSettings();
+    case 'book': return vBook(); case 'mine': return vMine(); case 'profile': return vProfile(); case 'home': return vHome();
+  }
+  return '';
+}
+function vHead(t, p, right=''){ return `<div class="head"><div><h1>${t}</h1>${p?`<p>${p}</p>`:''}</div>${right?`<div class="toolbar">${right}</div>`:''}</div>`; }
+
+function apptRow(a, admin=true){
+  return `<div class="row"><div class="body"><h3><span class="time">${esc(a.time)}</span> ${esc(a.title)}</h3><div class="meta"><span>${esc(a.clientName||'—')}</span>${a.phone?`<span class="num">${esc(a.phone)}</span>`:''}<span>${a.duration} دقيقة</span><span>${esc(a.source||'')}</span></div>${a.note?`<div class="small muted">${esc(a.note)}</div>`:''}</div>
+  <div class="acts">${pill(a.status)}${admin && a.status==='confirmed' ? `<button class="btn sm danger" data-act="cancelappt" data-id="${a.id}">إلغاء</button>`:''}</div></div>`;
+}
+function vToday(){
+  const { date } = riyadhNow();
+  const todays = S.appts.filter(a => a.date===date && a.status!=='cancelled').sort(byWhen);
+  const pend = S.approvals.filter(a => a.status==='pending').length; const reqs = pendingRequests();
+  const due = dueRoutines(); const st = site();
+  const setup = !S.site || !st.name ? `<div class="banner acc"><div><b>ابدأ بضبط نشاطك</b><div class="small">أضف اسم النشاط والخدمات وساعات العمل ليستخدمها سند مع العملاء والزوار.</div></div><button class="btn pri" data-tab="settings">ضبط النشاط</button></div>` : (st.example ? `<div class="banner acc"><div><b>بيانات النشاط الحالية مثال توضيحي</b><div class="small">استبدلها ببيانات نشاطك الحقيقية من الإعدادات.</div></div><button class="btn" data-tab="settings">تعديل البيانات</button></div>` : '');
+  const dueHtml = due.map(r => `<div class="banner"><div><b>روتين مستحق: ${esc(r.title)}</b><div class="small">موعده ${esc(r.time)}. يعمل عند فتح التطبيق بضغطة واحدة.</div></div><button class="btn pri" data-act="runroutine" data-id="${r.id}" ${S.running?'disabled':''}>${ic('loop')} شغّل الآن</button></div>`).join('');
+  const brief = store.get('brief', null);
+  return vHead('اليوم', fmtDate(date), `<button class="btn pri" data-act="brief" ${S.running||!S.sample?'disabled':''}>${ic('spark')} ملخص ذكي لليوم</button>`)
+  + `<div class="grid" style="gap:10px">${setup}${dueHtml}</div>`
+  + `<div class="grid g4" style="margin-top:14px">
+      <button class="card stat" data-tab="appts" style="text-align:start;cursor:pointer"><b class="num" style="direction:rtl">${todays.length}</b><span>مواعيد اليوم</span></button>
+      <button class="card stat" data-tab="approvals" style="text-align:start;cursor:pointer"><b class="num" style="direction:rtl">${pend}</b><span>رسائل تنتظر موافقتك</span></button>
+      <button class="card stat" data-tab="approvals" style="text-align:start;cursor:pointer"><b class="num" style="direction:rtl">${reqs.length}</b><span>طلبات حجز جديدة</span></button>
+      <button class="card stat" data-tab="clients" style="text-align:start;cursor:pointer"><b class="num" style="direction:rtl">${S.clients.length}</b><span>العملاء المسجلون</span></button>
+    </div>`
+  + (S.running && S.running.brief ? `<div class="sec"><h2>${ic('spark')} الملخص الذكي</h2><div class="card muted">يحلل سند يومك…</div></div>` : brief && brief.date===date ? `<div class="sec"><h2>الملخص الذكي <span class="small muted">${fmtStamp(brief.t)}</span></h2><div class="card prose">${mdLite(brief.text)}</div></div>` : '')
+  + `<div class="sec"><h2>جدول اليوم</h2>${todays.length ? `<div class="list">${todays.map(a => apptRow(a)).join('')}</div>` : `<div class="empty">لا مواعيد اليوم. اطلب من سند: «احجز لأحمد استشارة غداً الساعة 10:00».</div>`}</div>`
+  + (reqs.length ? `<div class="sec"><h2>طلبات تنتظر قرارك</h2><div class="list">${reqs.slice(0,3).map(reqRow).join('')}</div></div>` : '');
+}
+function reqRow({ p, b }){
+  return `<div class="row"><div class="body"><h3>${esc(b.service)} · ${esc(p.profile?.name||'عميل')}</h3><div class="meta"><span>${fmtDate(b.date)}</span><span class="time">${esc(b.time)}</span><span class="num">${esc(p.profile?.phone||'')}</span>${p.profile?.email?`<span>${esc(p.profile.email)}</span>`:''}</div>${b.note?`<div class="small muted">${esc(b.note)}</div>`:''}<div class="small muted">طلب من بوابة العملاء · ${fmtStamp(b.createdAt)}</div></div>
+  <div class="acts"><button class="btn sm pri" data-act="confirmreq" data-uid="${p.id}" data-bid="${b.id}">${ic('check')} تأكيد</button><button class="btn sm danger" data-act="declinereq" data-uid="${p.id}" data-bid="${b.id}">اعتذار</button></div></div>`;
+}
+function sendLinks(a){
+  if(a.channel==='email') return `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(a.to)}&su=${encodeURIComponent(a.subject||'')}&body=${encodeURIComponent(a.body)}`;
+  return `https://wa.me/${phoneDigits(a.to)}?text=${encodeURIComponent(a.body)}`;
+}
+function vApprovals(){
+  const pend = S.approvals.filter(a => a.status==='pending').sort(byNew);
+  const done = S.approvals.filter(a => a.status!=='pending').sort(byNew).slice(0,20);
+  const reqs = pendingRequests();
+  const card = a => {
+    const d = S.drafts[a.id] ?? a.body;
+    const rv = a.review;
+    return `<div class="card grid" style="gap:10px">
+      <div class="toolbar" style="justify-content:space-between"><div class="toolbar"><span class="pill acc">${a.channel==='email'?'بريد':'واتساب'}</span><b>${esc(a.clientName||'')}</b><span class="${a.channel==='email'?'':'num'} small muted">${esc(a.to)}</span></div>${pill(a.status)}</div>
+      ${a.subject?`<div><span class="muted small">العنوان:</span> ${esc(a.subject)}</div>`:''}
+      ${a.status==='pending' ? `<textarea class="i" id="dr-${a.id}" data-draft="${a.id}" rows="5" aria-label="نص الرسالة">${esc(d)}</textarea>` : `<p class="pre">${esc(a.body)}</p>`}
+      ${rv ? `<div class="small" style="background:var(--sunk);border-radius:9px;padding:8px 12px"><b>مراجعة الجودة: ${esc(rv.score)}/10</b>${rv.issues&&rv.issues.length?`<ul style="margin:4px 0 0;padding-inline-start:18px">${rv.issues.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}${rv.improved && a.status==='pending'?`<button class="btn sm" style="margin-top:6px" data-act="useimproved" data-id="${a.id}">اعتمد الصياغة المحسّنة</button>`:''}</div>` : ''}
+      <div class="toolbar">
+        ${a.status==='pending' ? `<button class="btn pri sm" data-act="approve" data-id="${a.id}">${ic('check')} اعتماد</button><button class="btn sm" data-act="review" data-id="${a.id}" ${!S.sample?'disabled':''}>${ic('spark')} راجع بالذكاء</button><button class="btn sm danger" data-act="reject" data-id="${a.id}">رفض</button>` : ''}
+        ${a.status==='approved' ? `<a class="btn pri sm" href="${esc(sendLinks(a))}" target="_blank" rel="noopener">${ic('send')} افتح ${a.channel==='email'?'Gmail':'واتساب'} للإرسال</a><button class="btn sm" data-act="copybody" data-id="${a.id}">${ic('copy')} نسخ النص</button><button class="btn sm" data-act="marksent" data-id="${a.id}">تم الإرسال</button>` : ''}
+        <span class="small muted">${fmtStamp(a.createdAt)}</span>
+      </div></div>`;
+  };
+  return vHead('الموافقات', 'لا يخرج شيء باسمك قبل موافقتك: رسائل سند وطلبات الحجز تنتظر قرارك هنا.')
+   + `<div class="sec" style="margin-top:0"><h2>طلبات الحجز من العملاء <span class="pill">${reqs.length}</span></h2>${reqs.length ? `<div class="list">${reqs.map(reqRow).join('')}</div>` : `<div class="empty">لا طلبات حجز جديدة. يصل هنا كل طلب يرسله عميل من البوابة.</div>`}</div>`
+   + `<div class="sec"><h2>رسائل بانتظار الموافقة <span class="pill">${pend.length}</span></h2>${pend.length ? `<div class="grid">${pend.map(card).join('')}</div>` : `<div class="empty">لا رسائل معلقة. اطلب من سند: «اكتب رسالة ترحيب لآخر عميل مسجل».</div>`}</div>`
+   + (done.length ? `<div class="sec"><h2>قرارات سابقة</h2><div class="grid">${done.map(card).join('')}</div></div>` : '');
+}
+function vClients(){
+  const q = toLatin(S.clientQ).toLowerCase(); const qd = phoneDigits(q);
+  const list = S.clients.filter(c => !q || [c.name,c.need,c.company,c.email].join(' ').toLowerCase().includes(q) || (qd.length>2 && phoneDigits(c.phone).includes(qd))).sort(byNew);
+  const pf = S.clientPrefill || {};
+  return vHead('العملاء', `${S.clients.length} عميل مسجل. الهاتف يُوحّد تلقائياً بصيغة +966 55 123 4567، والتكرار يُمنع.`,
+    `<button class="btn" data-act="scancard" ${!S.canImages?'disabled title="غير متاح في هذا العرض"':''}>${ic('img')} قراءة بطاقة عمل</button>`)
+  + `<details class="card" ${S.clientPrefill?'open':''}><summary>${ic('plus','')} إضافة عميل</summary>
+     <form class="f" id="clform" style="margin-top:12px"><div class="fr">
+      <label class="l">الاسم<input class="i" id="cl-name" name="name" required value="${esc(pf.name||'')}"></label>
+      <label class="l">الجوال<input class="i" id="cl-phone" name="phone" inputmode="tel" placeholder="+974 5XXX XXXX" value="${esc(pf.phone||'')}"></label>
+      <label class="l">البريد<input class="i" id="cl-email" name="email" type="email" value="${esc(pf.email||'')}"></label>
+      <label class="l">الجهة<input class="i" id="cl-company" name="company" value="${esc(pf.company||'')}"></label>
+     </div><label class="l">الاحتياج<input class="i" id="cl-need" name="need" value="${esc(pf.need||'')}"></label>
+     <div class="toolbar"><button class="btn pri" type="submit">حفظ العميل</button>${S.clientPrefill?'<span class="small muted">بيانات مستخرجة من صورة، راجعها قبل الحفظ.</span>':''}</div></form></details>`
+  + `<div class="toolbar" style="margin-top:14px"><input class="i" id="clq" placeholder="ابحث بالاسم أو الجوال أو الاحتياج" value="${esc(S.clientQ)}" style="max-width:420px" aria-label="بحث في العملاء"></div>`
+  + `<div class="list" style="margin-top:10px">${list.length ? list.map(c => `<div class="row"><div class="body"><h3>${esc(c.name)} ${c.company?`<span class="muted small">· ${esc(c.company)}</span>`:''}</h3>
+      <div class="meta">${c.phone?`<span class="num">${esc(c.phone)}</span>`:''}${c.email?`<span>${esc(c.email)}</span>`:''}<span>${esc(c.source||'')}</span><span>${fmtStamp(c.createdAt)}</span></div>${c.need?`<div class="small">${esc(c.need)}</div>`:''}</div>
+      <div class="acts"><select class="i" style="width:auto;padding:4px 8px;font-size:13px" data-stage="${c.id}" aria-label="مرحلة العميل">${['جديد','تواصلنا','عرض سعر','عميل فعلي','مؤجل'].map(s => `<option ${c.stage===s?'selected':''}>${s}</option>`).join('')}</select>
+      <button class="btn sm" data-act="askclient" data-id="${c.id}" ${!S.sample?'disabled':''}>${ic('spark')} رسالة متابعة</button></div></div>`).join('') : `<div class="empty">${q?'لا نتائج مطابقة.':'لا عملاء بعد. أضف أول عميل، أو اطلب من سند: «سجّل عميلاً اسمه خالد، جواله 5512 3456، يريد استشارة».'}</div>`}</div>`;
+}
+function vAppts(){
+  const { date } = riyadhNow(); const st = site();
+  const up = S.appts.filter(a => S.apptView==='upcoming' ? (a.date>=date && a.status!=='cancelled') : (a.date<date || a.status==='cancelled')).sort(byWhen);
+  if(S.apptView!=='upcoming') up.reverse();
+  const groups = {}; up.forEach(a => (groups[a.date] = groups[a.date] || []).push(a));
+  return vHead('المواعيد', `ساعات العمل من ${st.start} إلى ${st.end}، أيام ${st.days.map(d => DAYS[d]).join('، ')}.`,
+    `<div class="seg" role="group" aria-label="عرض المواعيد"><button data-act="apptview" data-v="upcoming" aria-pressed="${S.apptView==='upcoming'}">القادمة</button><button data-act="apptview" data-v="past" aria-pressed="${S.apptView!=='upcoming'}">السابقة والملغاة</button></div>`)
+  + `<details class="card"><summary>${ic('plus')} حجز موعد</summary><form class="f" id="apform" style="margin-top:12px"><div class="fr">
+     <label class="l">الخدمة<select class="i" id="ap-title" name="title">${st.services.map(s => `<option>${esc(s.name)}</option>`).join('')}<option>موعد آخر</option></select></label>
+     <label class="l">اسم العميل<input class="i" id="ap-client" name="client_name" list="clientnames" required></label>
+     <label class="l">الجوال<input class="i" id="ap-phone" name="phone" inputmode="tel" placeholder="+974 5XXX XXXX"></label>
+     <label class="l">التاريخ<input class="i" id="ap-date" name="date" type="date" min="${date}" value="${date}" required></label>
+     <label class="l">الوقت<input class="i" id="ap-time" name="time" type="time" step="300" required></label>
+     <label class="l">المدة (دقيقة)<input class="i" id="ap-dur" name="duration" type="number" min="10" max="480" step="5" placeholder="${st.slot}"></label>
+     </div><datalist id="clientnames">${S.clients.slice(0,200).map(c => `<option value="${esc(c.name)}">`).join('')}</datalist>
+     <div class="toolbar"><button class="btn pri" type="submit">حجز</button><span class="small muted">يُفحص التعارض تلقائياً.</span></div></form></details>`
+  + `<div class="list" style="margin-top:14px">${Object.keys(groups).length ? Object.entries(groups).map(([d, arr]) => `<div class="daylabel">${fmtDate(d)}</div>${arr.map(a => apptRow(a)).join('')}`).join('') : `<div class="empty">${S.apptView==='upcoming'?'لا مواعيد قادمة.':'لا مواعيد سابقة.'}</div>`}</div>`;
+}
+function vMemory(){
+  return vHead('الذاكرة الدائمة', 'ما يتذكره سند عنك وعن نشاطك في كل محادثة. يضيف إليها تلقائياً حين تذكر تفضيلاً أو قراراً، ويمكنك التعديل.')
+  + `<form class="toolbar" id="memform"><input class="i" id="mem-in" name="fact" placeholder="مثال: لا مواعيد قبل 10:00 يوم الأحد" style="flex:1;min-width:220px" required aria-label="حقيقة جديدة"><button class="btn pri" type="submit">${ic('plus')} أضف</button></form>`
+  + `<div class="list" style="margin-top:12px">${S.memory.length ? S.memory.slice().sort(byNew).map(m => `<div class="row"><div class="body"><div>${esc(m.fact)}</div><div class="small muted">${fmtStamp(m.createdAt)}</div></div><div class="acts"><button class="btn sm ghost danger" data-act="delmem" data-id="${m.id}" aria-label="حذف">${ic('trash')}</button></div></div>`).join('') : `<div class="empty">الذاكرة فارغة. قل لسند مثلاً: «تذكّر أن سعر الاستشارة 350 ر.ق».</div>`}</div>`;
+}
+function vRoutines(){
+  return vHead('الروتينات المجدولة', 'مهام يكررها سند يومياً. تعمل بضغطة عند فتح التطبيق، وتعمل تلقائياً في الخلفية بعد ربط خادم n8n.')
+  + `<details class="card" ${S.routines.length?'':'open'}><summary>${ic('plus')} روتين جديد</summary><form class="f" id="roform" style="margin-top:12px"><div class="fr">
+     <label class="l">الاسم<input class="i" id="ro-title" name="title" required placeholder="التقرير الصباحي"></label>
+     <label class="l">الوقت<input class="i" id="ro-time" name="time" type="time" value="07:30" required></label></div>
+     <label class="l">ما يفعله سند<textarea class="i" id="ro-ins" name="instruction" rows="3" required placeholder="لخّص مواعيد اليوم والطلبات المعلقة، واقترح أولوية واحدة، وصُغ رسائل متابعة للعملاء الجدد منذ أمس."></textarea></label>
+     <fieldset style="border:0;padding:0;margin:0"><legend class="small muted">الأيام</legend><div class="toolbar">${DAYS.map((d,i) => `<label class="pill" style="cursor:pointer"><input type="checkbox" name="days" value="${i}" ${i<5?'checked':''}> ${d}</label>`).join('')}</div></fieldset>
+     <div><button class="btn pri" type="submit">حفظ الروتين</button></div></form></details>`
+  + `<div class="grid" style="margin-top:14px">${S.routines.length ? S.routines.slice().sort((a,b)=>a.time.localeCompare(b.time)).map(r => `<div class="card grid" style="gap:8px">
+      <div class="toolbar" style="justify-content:space-between"><div class="toolbar"><span class="time">${esc(r.time)}</span><b>${esc(r.title)}</b>${dueRoutines().includes(r)?'<span class="pill warn">مستحق الآن</span>':''}</div>
+      <div class="toolbar"><button class="btn sm pri" data-act="runroutine" data-id="${r.id}" ${S.running||!S.sample?'disabled':''}>${ic('loop')} شغّل</button><button class="btn sm ghost danger" data-act="delroutine" data-id="${r.id}" aria-label="حذف">${ic('trash')}</button></div></div>
+      <div class="small muted">${(r.days||[]).map(d => DAYS[d]).join('، ')}</div><div class="small">${esc(r.instruction)}</div>
+      ${r.lastResult ? `<details><summary class="small">آخر تشغيل ${r.lastRunAt?fmtStamp(r.lastRunAt):''}</summary><div class="prose small" style="margin-top:6px">${mdLite(r.lastResult)}</div></details>` : '<div class="small muted">لم يُشغَّل بعد.</div>'}
+    </div>`).join('') : ''}</div>`;
+}
+let logDay = null, logOther = null;
+function vLog(){
+  const today = riyadhNow().date; const day = logDay || today;
+  const entries = day===today ? (S.logToday?.entries||[]) : (logOther?.day===day ? logOther.entries : null);
+  if(day!==today && !entries) S.db.doc(`${OPS}/log/${day}`).get().then(s => { logOther = { day, entries:s.data()?.entries||[] }; render(); }, () => { logOther = { day, entries:[] }; render(); });
+  return vHead('سجل العمليات', 'كل ما نفّذه سند والمدير، مؤرخاً بتوقيت الدوحة.', `<input class="i" type="date" id="logday" value="${day}" max="${today}" style="width:auto" aria-label="اليوم">`)
+  + `<div class="list">${entries ? (entries.length ? entries.slice().reverse().map(e => `<div class="row"><div class="body"><h3>${esc(e.action)}</h3><div class="meta"><span>${fmtStamp(e.t)}</span><span>${esc(e.actor)}</span></div>${e.detail?`<div class="small muted">${esc(e.detail)}</div>`:''}</div></div>`).join('') : `<div class="empty">لا عمليات في ${fmtDate(day)}.</div>`) : '<div class="empty">يحمّل…</div>'}</div>`;
+}
+function vSettings(){
+  const st = site();
+  return vHead('الإعدادات', 'بيانات النشاط التي يراها العملاء والزوار ويستخدمها سند.')
+  + `<form class="card f" id="siteform">
+     <div class="fr"><label class="l">اسم النشاط<input class="i" id="st-name" name="name" required value="${esc(st.name)}"></label>
+     <label class="l">الوصف المختصر<input class="i" id="st-tag" name="tagline" value="${esc(st.tagline)}"></label>
+     <label class="l">المدينة<input class="i" id="st-city" name="city" value="${esc(st.city)}"></label>
+     <label class="l">هاتف التواصل<input class="i" id="st-phone" name="phone" inputmode="tel" value="${esc(st.phone)}" placeholder="+974 5XXX XXXX"></label>
+     <label class="l">بريد التواصل<input class="i" id="st-email" name="email" type="email" value="${esc(st.email)}"></label></div>
+     <label class="l">نبذة يعرفها سند عن النشاط<textarea class="i" id="st-about" name="about" rows="3">${esc(st.about)}</textarea></label>
+     <label class="l">الخدمات (سطر لكل خدمة: الاسم | المدة بالدقائق | السعر)<textarea class="i" id="st-svc" name="services" rows="4" placeholder="استشارة أولية | 30 | 250 ر.ق">${esc(st.services.map(s => [s.name,s.duration,s.price||''].join(' | ')).join('\n'))}</textarea></label>
+     <div class="fr"><label class="l">بداية الدوام<input class="i" id="st-start" name="start" type="time" value="${st.start}"></label><label class="l">نهاية الدوام<input class="i" id="st-end" name="end" type="time" value="${st.end}"></label><label class="l">طول الفترة (دقيقة)<input class="i" id="st-slot" name="slot" type="number" min="10" step="5" value="${st.slot}"></label></div>
+     <fieldset style="border:0;padding:0;margin:0"><legend class="small muted">أيام العمل</legend><div class="toolbar">${DAYS.map((d,i) => `<label class="pill" style="cursor:pointer"><input type="checkbox" name="days" value="${i}" ${st.days.includes(i)?'checked':''}> ${d}</label>`).join('')}</div></fieldset>
+     <div><button class="btn pri" type="submit">حفظ بيانات النشاط</button></div></form>`
+  + `<div class="sec"><h2>معاينة الأدوار</h2><div class="card grid" style="gap:10px"><div class="small">اعرض التطبيق كما يراه العميل أو الزائر لتتأكد من التجربة. طلبات الحجز التي ترسلها في وضع العميل تصلك هنا للاختبار.</div>
+     <div class="toolbar"><button class="btn" data-act="preview" data-r="client">${ic('user')} اعرض كعميل</button><button class="btn" data-act="preview" data-r="visitor">${ic('home')} اعرض كزائر</button></div></div></div>`
+  + `<div class="sec"><h2>الاتصالات</h2><div class="list">
+      <div class="row"><div class="body"><h3>Claude</h3><div class="small muted">العقل المشغّل لسند، بأدوات تنفّذ داخل التطبيق.</div></div><div class="acts">${S.sample?'<span class="pill ok">متصل</span>':'<span class="pill bad">غير متاح في هذا العرض</span>'}</div></div>
+      <div class="row"><div class="body"><h3>Google Drive (MCP)</h3><div class="small muted">يبحث سند في ملفاتك ويقرأها ليجيب من مستنداتك. للمالك فقط.</div></div><div class="acts">${S.mcp&&S.owner?'<span class="pill ok">مفعّل</span>':'<span class="pill">غير مفعّل</span>'}</div></div>
+      <div class="row"><div class="body"><h3>قراءة الصور</h3><div class="small muted">يستخرج بيانات العميل من صورة بطاقة عمل أو لقطة شاشة.</div></div><div class="acts">${S.canImages?'<span class="pill ok">متاح</span>':'<span class="pill">غير متاح</span>'}</div></div>
+      <div class="row"><div class="body"><h3>خادم n8n (اختياري)</h3><div class="small muted">لتشغيل الروتينات في الخلفية، والإرسال الآلي للرسائل المعتمدة عبر Gmail وواتساب وتيليجرام. ملفاته جاهزة في مجلد المشروع.</div></div><div class="acts"><span class="pill warn">بانتظار الخادم</span></div></div>
+     </div></div>`;
+}
+/* client + visitor */
+function servicesHtml(){
+  const st = site();
+  return st.services.length ? `<div class="grid g2">${st.services.map(s => `<div class="card svc"><b>${esc(s.name)}</b><span class="small muted">${s.duration} دقيقة${s.price?` · ${esc(s.price)}`:''}</span></div>`).join('')}</div>` : `<div class="empty">لم تُضف الخدمات بعد.</div>`;
+}
+function vHome(){
+  const st = site();
+  if(!S.site) return `<div class="hero">${MARK}<h1>سند يرد ويحجز وينفّذ، وصاحب العمل يوافق.</h1><p>هذه صفحة نشاط يديرها وكيل ذكي. لم تُنشر بيانات النشاط بعد${S.db?'':'، أو تحتاج إلى تسجيل الدخول لعرضها'}.</p></div>`;
+  return `<div class="hero"><span class="pill acc" style="justify-self:start">${esc(st.city||'')}${st.city?' · ':''}يرد سند على مدار الساعة</span><h1>${esc(st.name)}</h1><p>${esc(st.tagline||st.about||'')}</p>
+    <div class="toolbar"><button class="btn pri" data-tab="chat">${ic('chat')} اسأل سند الآن</button></div></div>
+    <div class="sec"><h2>الخدمات</h2>${servicesHtml()}</div>
+    <div class="sec"><h2>ساعات العمل</h2><div class="card"><dl class="kv"><dt>الأيام</dt><dd>${st.days.map(d => DAYS[d]).join('، ')}</dd><dt>الوقت</dt><dd>من ${st.start} إلى ${st.end}</dd>
+    ${st.phone?`<dt>الهاتف</dt><dd><span class="num" style="user-select:all">${esc(st.phone)}</span> <a class="small" href="https://wa.me/${phoneDigits(st.phone)}" target="_blank" rel="noopener">واتساب</a></dd>`:''}${st.email?`<dt>البريد</dt><dd style="user-select:all">${esc(st.email)}</dd>`:''}</dl></div></div>
+    <div class="sec"><h2>الحجز</h2><div class="card small">الحجز متاح لعملائنا عبر رابط بوابة العملاء. تواصل معنا للحصول على الرابط، أو اسأل سند عن الأوقات المتاحة.</div></div>`;
+}
+function vBook(){
+  const st = site(); const b = S.booking; const today = riyadhNow().date;
+  const svc = st.services.find(s => s.name===b.service) || st.services[0];
+  const date = b.date || nextWorkday(today);
+  const slots = svc ? freeSlots(date, svc.duration) : [];
+  const me = myDoc().profile;
+  return vHead('احجز موعداً', 'اختر الخدمة والموعد. يصلك التأكيد بعد مراجعة الفريق.')
+  + (!me.name || !me.phone ? `<div class="banner acc" style="margin-bottom:14px"><div><b>أكمل بياناتك أولاً</b><div class="small">الاسم ورقم الجوال مطلوبان لإرسال الطلب.</div></div><button class="btn pri" data-tab="profile">بياناتي</button></div>` : '')
+  + (st.services.length ? `<form class="card f" id="bkform">
+      <label class="l">الخدمة<select class="i" id="bk-svc" name="service">${st.services.map(s => `<option ${svc&&svc.name===s.name?'selected':''}>${esc(s.name)}</option>`).join('')}</select></label>
+      <label class="l">التاريخ<input class="i" id="bk-date" name="date" type="date" min="${today}" max="${addDays(today,60)}" value="${date}"></label>
+      <div class="small muted">${fmtDate(date)}${st.days.includes(weekday(date))?'':' · ليس يوم عمل'}</div>
+      <div><div class="small muted" style="margin-bottom:6px">الأوقات المتاحة</div>${slots.length ? `<div class="slots">${slots.map(t => `<button type="button" data-act="pickslot" data-t="${t}" aria-pressed="${b.time===t}">${t}</button>`).join('')}</div>` : '<div class="empty">لا أوقات متاحة في هذا اليوم. جرّب يوماً آخر.</div>'}</div>
+      <label class="l">ملاحظة (اختياري)<input class="i" id="bk-note" name="note" value="${esc(b.note||'')}"></label>
+      <div class="toolbar"><button class="btn pri" type="submit" ${!b.time||!slots.includes(b.time)||!me.name||!me.phone?'disabled':''}>إرسال طلب الحجز</button>${b.time&&slots.includes(b.time)?`<span class="small">${fmtDateShort(date)} الساعة <span class="time">${b.time}</span></span>`:''}</div>
+    </form>` : `<div class="empty">لا خدمات متاحة للحجز حالياً.</div>`)
+  + `<div class="sec"><h2>أو اطلب من سند</h2><div class="card small">قل لسند مثلاً: «أريد استشارة يوم الثلاثاء بعد العصر» وسيقترح الأوقات ويرسل الطلب نيابة عنك.<div style="margin-top:8px"><button class="btn sm" data-tab="chat">${ic('chat')} افتح المحادثة</button></div></div></div>`;
+}
+function nextWorkday(d){ const st = site(); for(let i=0;i<14;i++){ const x = addDays(d,i); if(st.days.includes(weekday(x)) && freeSlots(x, st.slot).length) return x; } return d; }
+function vMine(){
+  const list = myDoc().bookings.slice().sort((a,b) => (b.date+b.time).localeCompare(a.date+a.time));
+  return vHead('حجوزاتي', 'حالة كل طلب تتحدث مباشرة عند قرار الفريق.')
+  + `<div class="list">${list.length ? list.map(b => `<div class="row"><div class="body"><h3>${esc(b.service)}</h3><div class="meta"><span>${fmtDate(b.date)}</span><span class="time">${esc(b.time)}</span><span>${b.duration} دقيقة</span></div>${b.reason?`<div class="small muted">${esc(b.reason)}</div>`:''}</div><div class="acts">${pill(b.status)}${b.status==='pending'?`<button class="btn sm danger" data-act="cancelmine" data-id="${b.id}">إلغاء الطلب</button>`:''}</div></div>`).join('') : `<div class="empty">لا طلبات بعد. <button class="btn sm" data-tab="book">احجز موعدك الأول</button></div>`}</div>`;
+}
+function vProfile(){
+  const me = myDoc().profile;
+  return vHead('بياناتي', 'تُستخدم للتواصل معك بخصوص حجوزاتك فقط، ولا يراها غيرك وفريق النشاط.')
+  + `<form class="card f" id="pfform" style="max-width:560px"><label class="l">الاسم الكامل<input class="i" id="pf-name" name="name" required value="${esc(me.name)}"></label>
+     <label class="l">رقم الجوال<input class="i" id="pf-phone" name="phone" inputmode="tel" required placeholder="+974 5XXX XXXX" value="${esc(me.phone)}"></label>
+     <label class="l">البريد الإلكتروني (اختياري)<input class="i" id="pf-email" name="email" type="email" value="${esc(me.email)}"></label>
+     <div><button class="btn pri" type="submit">حفظ</button></div></form>`;
+}
+function viewChat(){
+  const st = site();
+  const chips = S.role==='admin' ? ['ما ملخص يومي؟','سجّل عميلاً اسمه خالد العتيبي، جواله 5512 3456، يريد استشارة أولية','احجز له استشارة غداً في أول وقت متاح، ثم اكتب له رسالة تأكيد على واتساب','تذكّر أن سعر الاستشارة 350 ر.ق','أنشئ روتيناً يومياً 07:30 يلخص مواعيد اليوم والطلبات المعلقة','احسب عرض سعر: 12 جلسة × 350 مع خصم 15%']
+    : S.role==='client' ? ['ما الخدمات المتاحة؟','ما أقرب موعد متاح؟','أريد حجز استشارة','ما حالة حجوزاتي؟'] : ['ما الخدمات التي تقدمونها؟','ما ساعات العمل؟','هل يوجد موعد متاح غداً؟','كيف أحجز؟'];
+  const hello = `<div class="hello">${MARK}<h2>${S.role==='admin'?'سند جاهز للتنفيذ':'مرحباً، أنا سند'}</h2><div>${S.role==='admin'?'يخطط وينفّذ بالأدوات: يسجّل العملاء، ويحجز المواعيد، ويصوغ الرسائل لموافقتك، ويتذكر ما تخبره به.':`المساعد الذكي لـ${esc(st.name||'النشاط')}. اسألني عن الخدمات والمواعيد${S.role==='client'?' وسأرسل طلب حجزك':''}.`}</div></div>`;
+  const msgs = S.chat.map((m,i) => m.r==='u' ? `<div class="msg u"><div class="bub prose">${mdLite(m.text)}</div></div>` : `<div class="msg a" data-mid="${i}">${msgInner(m)}</div>`).join('');
+  const unavailable = !S.sample ? `<div class="banner" style="margin-bottom:8px"><div class="small">المحادثة مع سند غير مفعّلة للزوار حالياً. سجّل الدخول أو أنشئ حساباً لتتحدث معه. ${S.role==='visitor'?'يمكنك تصفح الخدمات من الرئيسية.':''}</div></div>` : '';
+  return `<div class="chatpage"><div class="chat"><div class="thread" aria-live="polite">${S.chat.length ? msgs : hello}</div>
+   <div class="composer">${unavailable}${!S.chat.length && S.sample ? `<div class="chips">${chips.map(c => `<button data-act="chip">${esc(c)}</button>`).join('')}</div>` : ''}
+   <form class="cbox" id="cform">
+     ${S.role==='admin' ? `<button type="button" class="icon" data-act="scancard" aria-label="قراءة بطاقة عمل من صورة" ${!S.canImages?'disabled':''}>${ic('img')}</button>` : ''}
+     <textarea id="cin" rows="1" placeholder="${S.role==='admin'?'اطلب من سند أي مهمة…':'اكتب سؤالك…'}" aria-label="رسالتك" ${!S.sample?'disabled':''}></textarea>
+     <button type="button" class="icon ${S.rec?'rec':''}" data-act="mic" aria-label="إدخال صوتي" ${!S.sample?'disabled':''}>${ic('mic')}</button>
+     ${S.running && !S.running.brief ? `<button type="button" class="icon send" data-act="stop" aria-label="إيقاف">${ic('stop')}</button>` : `<button type="submit" class="icon send" aria-label="إرسال" ${!S.sample||S.running?'disabled':''}>${ic('send')}</button>`}
+   </form>
+   ${S.chat.length ? `<div class="toolbar" style="justify-content:center;margin-top:6px"><button class="btn ghost sm" data-act="newchat">${ic('new')} محادثة جديدة</button></div>` : ''}
+   </div></div></div>`;
+}
+
+/* ---------- events ---------- */
+const clearDirty = f => { if(f) f.querySelectorAll('[id]').forEach(el => dirty.delete(el.id)); };
+async function guarded(fn, ok, form){ try{ await fn(); clearDirty(form); if(ok) toast(ok); }catch(e){ toast(errText(e),'bad'); } finally { render(); } }
+document.addEventListener('click', async e => {
+  const t = e.target.closest('[data-tab],[data-act]'); if(!t) return;
+  if(t.dataset.tab){ S.tab = t.dataset.tab; S.sheet = false; if(t.dataset.tab!=='clients') S.clientPrefill = null; render(); const m = document.querySelector('.main'); if(m && S.tab!=='chat') m.scrollTop = 0; return; }
+  const a = t.dataset.act, id = t.dataset.id;
+  if(a==='closesheet'){ if(e.target===t){ S.sheet = false; render(); } return; }
+  if(a==='more'){ S.sheet = true; render(); return; }
+  if(a==='chip'){ runAgent(t.textContent); return; }
+  if(a==='stop'){ ctl?.abort(); return; }
+  if(a==='newchat'){ S.chat = []; saveChat(); render(); return; }
+  if(a==='mic'){ startVoice(); return; }
+  if(a==='speak'){ const i = +t.closest('[data-mid]').dataset.mid; speak(S.chat[i].text); return; }
+  if(a==='copymsg'){ const i = +t.closest('[data-mid]').dataset.mid; copy(S.chat[i].text); return; }
+  if(a==='scancard'){ document.getElementById('imgpick').click(); return; }
+  if(a==='brief'){
+    const r = await runAgent('اكتب ملخصاً تنفيذياً ليومي: استخدم status_overview، ثم اذكر المواعيد بالترتيب، وما ينتظر قراري، وأولوية واحدة مقترحة، وأي متابعة لازمة للعملاء الجدد. لا تنفّذ إجراءات، اقرأ فقط.', { silent:true, brief:true });
+    if(r && r.text) store.set('brief', { date:riyadhNow().date, text:r.text, t:nowISO() }); render(); return;
+  }
+  if(a==='runroutine'){ runRoutine(id); return; }
+  if(a==='delroutine'){ guarded(() => col('routines').doc(id).delete(), 'حُذف الروتين'); return; }
+  if(a==='delmem'){ const m = S.memory.find(x => x.id===id); guarded(async () => { await col('memory').doc(id).delete(); logOp('حذف من الذاكرة', m?.fact, 'المدير'); }, 'حُذفت من الذاكرة'); return; }
+  if(a==='cancelappt'){ if(t.dataset.sure){ guarded(() => cancelAppt(id), 'أُلغي الموعد'); } else { t.dataset.sure = '1'; t.textContent = 'تأكيد الإلغاء'; } return; }
+  if(a==='confirmreq'){ t.disabled = true; guarded(() => confirmRequest(t.dataset.uid, t.dataset.bid), 'أُكّد الحجز وأُضيف للمواعيد'); return; }
+  if(a==='declinereq'){ guarded(() => declineRequest(t.dataset.uid, t.dataset.bid, 'نعتذر، الموعد غير متاح. نرجو اختيار وقت آخر.'), 'أُبلغ العميل بالاعتذار'); return; }
+  if(a==='approve'){ const body = S.drafts[id]; guarded(async () => { await col('approvals').doc(id).update({ status:'approved', body: body ?? S.approvals.find(x=>x.id===id).body, decidedAt:nowISO() }); delete S.drafts[id]; logOp('اعتماد رسالة', S.approvals.find(x=>x.id===id)?.to, 'المدير'); }, 'اعتُمدت الرسالة. أرسلها بضغطة من البطاقة'); return; }
+  if(a==='reject'){ guarded(async () => { await col('approvals').doc(id).update({ status:'rejected', decidedAt:nowISO() }); logOp('رفض رسالة', S.approvals.find(x=>x.id===id)?.to, 'المدير'); }, 'رُفضت الرسالة'); return; }
+  if(a==='marksent'){ guarded(async () => { await col('approvals').doc(id).update({ status:'sent', sentAt:nowISO() }); logOp('إرسال رسالة معتمدة', S.approvals.find(x=>x.id===id)?.to, 'المدير'); }, 'سُجّلت كمرسلة'); return; }
+  if(a==='copybody'){ copy(S.approvals.find(x => x.id===id)?.body||''); return; }
+  if(a==='useimproved'){ const ap = S.approvals.find(x => x.id===id); S.drafts[id] = ap.review.improved; render(); return; }
+  if(a==='review'){
+    const ap = S.approvals.find(x => x.id===id); const body = S.drafts[id] ?? ap.body;
+    t.disabled = true; t.textContent = 'يراجع…';
+    try{
+      const r = await S.sample.json(`أنت مراجع جودة مستقل لرسائل العملاء في «${site().name}». قيّم الرسالة التالية (${ap.channel==='email'?'بريد':'واتساب'}) من حيث الوضوح واللباقة المهنية والدقة وملاءمة الطول، وابحث عن أي وعد غير مؤكد أو معلومة ناقصة. أعد JSON فقط: {"score":1-10,"issues":["..."],"improved":"صياغة محسّنة كاملة"}\n\nالرسالة:\n${body}`, { modelTier:'quick' });
+      await col('approvals').doc(id).update({ review:{ score:Number(r.score)||0, issues:(r.issues||[]).map(String).slice(0,5), improved:String(r.improved||'') } });
+    }catch(err){ toast(errText(err),'bad'); }
+    render(); return;
+  }
+  if(a==='askclient'){ const c = S.clients.find(x => x.id===id); S.tab = 'chat'; render(); runAgent(`اكتب رسالة متابعة مهنية قصيرة للعميل ${c.name} (${c.phone||c.email}) بخصوص: ${c.need||'اهتمامه بخدماتنا'}. استخدم ${c.phone?'واتساب':'البريد'} وضعها للموافقة.`); return; }
+  if(a==='apptview'){ S.apptView = t.dataset.v; render(); return; }
+  if(a==='pickslot'){ S.booking.time = t.dataset.t; render(); return; }
+  if(a==='cancelmine'){ guarded(() => cancelMyBooking(id), 'أُلغي الطلب'); return; }
+  if(a==='preview'){ S.preview = t.dataset.r; S.role = t.dataset.r; S.tab = null; S.booking = {}; loadChat(); render(); toast(`تعرض التطبيق الآن كـ${ROLE_NAME[S.role]}`); return; }
+  if(a==='endpreview'){ S.preview = null; S.role = 'admin'; S.tab = 'settings'; S.sheet = false; loadChat(); render(); return; }
+});
+function copy(text){ try{ navigator.clipboard.writeText(text).then(() => toast('نُسخ النص'), () => toast('حدد النص وانسخه يدوياً')); }catch{ toast('حدد النص وانسخه يدوياً'); } }
+document.addEventListener('input', e => {
+  const t = e.target;
+  if(t.id && t.id!=='clq' && !t.dataset.draft) dirty.add(t.id);
+  if(t.id==='clq'){ S.clientQ = t.value; render(); }
+  if(t.dataset.draft){ S.drafts[t.dataset.draft] = t.value; }
+  if(t.id==='cin'){ t.style.height = 'auto'; t.style.height = Math.min(160, t.scrollHeight)+'px'; }
+  if(t.id==='bk-note'){ S.booking.note = t.value; }
+});
+document.addEventListener('change', e => {
+  const t = e.target;
+  if(t.id==='bk-svc'){ S.booking.service = t.value; S.booking.time = null; render(); }
+  if(t.id==='bk-date'){ S.booking.date = t.value; S.booking.time = null; render(); }
+  if(t.id==='logday'){ logDay = t.value; render(); }
+  if(t.dataset.stage){ guarded(() => col('clients').doc(t.dataset.stage).update({ stage:t.value, updatedAt:nowISO() }), 'حُدّثت المرحلة'); }
+  if(t.id==='imgpick' && t.files[0]){ const f = t.files[0]; t.value = ''; scanCard(f); }
+});
+document.addEventListener('keydown', e => { if(e.target.id==='cin' && e.key==='Enter' && !e.shiftKey && !e.isComposing){ e.preventDefault(); document.getElementById('cform').requestSubmit(); } });
+document.addEventListener('submit', e => {
+  e.preventDefault(); const f = e.target; const fd = new FormData(f); const v = Object.fromEntries(fd.entries());
+  if(f.id==='cform'){ const box = document.getElementById('cin'); const x = box.value.trim(); if(x){ box.value = ''; dirty.delete('cin'); runAgent(x); } return; }
+  if(f.id==='clform'){ guarded(async () => { const r = await addClient({ ...v, source:S.clientPrefill?'بطاقة عمل':'يدوي' }); S.clientPrefill = null; f.reset(); if(r.existed) throw new Error(`العميل مسجل مسبقاً: ${r.name}`); }, 'سُجّل العميل', f); return; }
+  if(f.id==='apform'){ guarded(async () => { await bookAppt({ ...v, source:'المدير' }); f.reset(); }, 'حُجز الموعد', f); return; }
+  if(f.id==='memform'){ guarded(async () => { await remember(v.fact); f.reset(); }, 'أُضيفت إلى الذاكرة', f); return; }
+  if(f.id==='roform'){ guarded(async () => { await addRoutine({ ...v, days:fd.getAll('days').map(Number) }); f.reset(); }, 'حُفظ الروتين', f); return; }
+  if(f.id==='siteform'){
+    guarded(async () => {
+      const services = String(v.services||'').split('\n').map(l => l.split('|').map(s => s.trim())).filter(p => p[0]).map(p => ({ name:p[0], duration:Math.max(10, +toLatin(p[1])||30), price:p[2]||'' }));
+      const ph = v.phone ? normPhone(v.phone) : ''; if(v.phone && !ph) throw new Error('هاتف التواصل غير صالح');
+      const em = v.email ? normEmail(v.email) : ''; if(v.email && !em) throw new Error('بريد التواصل غير صالح');
+      const days = fd.getAll('days').map(Number); if(!days.length) throw new Error('اختر يوم عمل واحداً على الأقل');
+      if(toMin(v.end) <= toMin(v.start)) throw new Error('نهاية الدوام يجب أن تكون بعد بدايته');
+      const doc = { name:normName(v.name), tagline:v.tagline.trim(), city:v.city.trim(), phone:ph||'', email:em||'', about:v.about.trim(), services, days, start:v.start, end:v.end, slot:Math.max(10, +v.slot||30), example:false, updatedAt:nowISO() };
+      await S.db.doc('public/site').set(doc); S.site = doc; logOp('تحديث بيانات النشاط', doc.name, 'المدير');
+    }, 'حُفظت بيانات النشاط', f); return;
+  }
+  if(f.id==='bkform'){ guarded(async () => { const r = await requestBooking({ service:v.service || site().services[0]?.name, date:S.booking.date || nextWorkday(riyadhNow().date), time:S.booking.time, note:v.note }); S.booking = {}; S.tab = 'mine'; }, 'أُرسل طلبك، وستتحدث حالته عند تأكيد الفريق', f); return; }
+  if(f.id==='pfform'){ guarded(() => saveMyProfile(v), 'حُفظت بياناتك', f); return; }
+});
+
+/* ---------- boot ---------- */
+async function boot(){
+  const C = window.claude;
+  const use = n => (C && C.use ? C.use(n).catch(() => null) : Promise.resolve(null));
+  const [user, db, sample, mcp] = await Promise.all([use('user'), use('db'), use('sample'), use('mcp')]);
+  S.user = user; S.db = db; S.sample = sample;
+  let role = 'visitor';
+  if(user && db){
+    const [uid, edit, owner, w] = await Promise.all([user.id(), user.canEdit(), user.isOwner(), user.can('data.write')]);
+    S.uid = uid; S.owner = owner;
+    if(edit) role = 'admin'; else if(uid && w !== false) role = 'client';
+  }
+  if(role==='admin' && mcp) S.mcp = mcp;
+  if(sample){ try{ const lim = await sample.limits(); S.toolsMax = lim.tools ? lim.tools.maxCount : 0; S.canImages = !!lim.images && role==='admin'; }catch{} }
+  S.role = S.realRole = role;
+  loadChat();
+  if(db){
+    watchDoc(db.doc('public/site'), d => { S.site = d; });
+    watchDoc(db.doc('public/busy'), d => { S.busy = (d && d.slots) || []; });
+    if(role==='admin'){
+      watchCol(col('clients'), 'clients');
+      watchCol(col('appointments'), 'appts', byWhen);
+      watchCol(col('approvals'), 'approvals');
+      watchCol(col('memory'), 'memory');
+      watchCol(col('routines'), 'routines');
+      watchCol(db.collection('portal'), 'portal');
+      watchDoc(db.doc(`${OPS}/log/${riyadhNow().date}`), d => { S.logToday = d ? { day:d.day, entries:d.entries||[] } : { day:riyadhNow().date, entries:[] }; });
+    }
+    if(S.uid && role!=='visitor') watchDoc(db.doc(`portal/${S.uid}`), d => { S.myPortal = d; });
+  }
+  render();
+}
+boot();
+setInterval(() => { if(S.role==='admin' && !document.activeElement?.matches('input,textarea,select')) render(); }, 60000);
+})();
+</script>
+
+</html>
