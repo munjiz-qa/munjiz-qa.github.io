@@ -49,7 +49,10 @@ async function call(action, body) {
 const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
 const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 const p2 = n => String(n).padStart(2, "0");
-function fmt(iso, sec) { if (!iso) return "—"; const d = new Date(iso); if (isNaN(d)) return "—"; return d.getFullYear() + "-" + p2(d.getMonth() + 1) + "-" + p2(d.getDate()) + " " + p2(d.getHours()) + ":" + p2(d.getMinutes()) + (sec ? ":" + p2(d.getSeconds()) : ""); }
+function fmtRaw(iso, sec) { if (!iso) return "—"; const d = new Date(iso); if (isNaN(d)) return "—"; return d.getFullYear() + "-" + p2(d.getMonth() + 1) + "-" + p2(d.getDate()) + " " + p2(d.getHours()) + ":" + p2(d.getMinutes()) + (sec ? ":" + p2(d.getSeconds()) : ""); }
+const ISO = t => "\u2066" + t + "\u2069";
+const fmt = (iso, sec) => ISO(fmtRaw(iso, sec));
+const tm = iso => ISO(fmtRaw(iso, true).slice(11));
 function size(b) { if (b == null) return "—"; if (b < 1024) return b + " بايت"; if (b < 1048576) return (b / 1024).toFixed(1) + " ك.ب"; if (b < 1073741824) return (b / 1048576).toFixed(1) + " م.ب"; return (b / 1073741824).toFixed(2) + " ج.ب"; }
 const STATE = { ok: "سليم", warn: "يحتاج انتباهاً", alert: "تنبيه", na: "غير متاح" };
 const pill = (st, t) => `<span class="pill ${st}">${esc(t || STATE[st])}</span>`;
@@ -122,7 +125,7 @@ async function liveTick() {
   if (!el) return;
   const net = navigator.onLine; ok = ok && (LOCAL || net);
   el.classList.toggle("off", !ok);
-  $("#liveT").textContent = ok ? (LOCAL ? "مباشر" : "متصل") + " · " + fmt(S.lastSync, true).slice(11) : (net ? "تعذّرت المزامنة" : "دون اتصال");
+  $("#liveT").textContent = ok ? (LOCAL ? "مباشر" : "متصل") + " · " + tm(S.lastSync) : (net ? "تعذّرت المزامنة" : "دون اتصال");
 }
 setInterval(() => { if (S.user && document.visibilityState === "visible") liveTick(); }, LOCAL ? 3000 : 8000);
 function onRemoteChange() { const f = REFRESH[S.page]; if (f && !document.querySelector(".modal")) f(); }
@@ -201,7 +204,7 @@ function deviceChecks() {
   add("net", "الاتصال بالإنترنت", net ? "ok" : "alert", net ? "متصل" : "غير متصل", net ? "المتصفح يرى اتصالاً نشطاً" : "المنصة تواصل العمل على الجهاز وتزامن عند عودة الاتصال");
   if (cn) { const et = (cn.effectiveType || "").toUpperCase(); add("conn", "جودة الشبكة", /^(4G)$/.test(et) ? "ok" : et ? "warn" : "na", et || "—", (cn.downlink != null ? "السرعة التقديرية " + cn.downlink + " م.ب/ث" : "") + (cn.rtt != null ? " · زمن الذهاب والعودة " + cn.rtt + " م.ث" : "") + (cn.saveData ? " · وضع توفير البيانات مفعّل" : "")); }
   else add("conn", "جودة الشبكة", "na", "—", "هذا المتصفح لا يتيح قراءة نوع الشبكة");
-  const p = DV.ping; add("ping", "الوصول إلى خادم الموقع", !p ? "na" : !p.ok ? "alert" : p.ms < 800 ? "ok" : "warn", p && p.ok ? p.ms + " م.ث" : p ? "متعذّر" : "جارٍ القياس", p ? "آخر قياس " + fmt(new Date(p.at).toISOString(), true).slice(11) + " · يُعاد كل 10 ثوانٍ" : "");
+  const p = DV.ping; add("ping", "الوصول إلى خادم الموقع", !p ? "na" : !p.ok ? "alert" : p.ms < 800 ? "ok" : "warn", p && p.ok ? p.ms + " م.ث" : p ? "متعذّر" : "جارٍ القياس", p ? "آخر قياس " + tm(new Date(p.at).toISOString()) + " · يُعاد كل 10 ثوانٍ" : "");
   if (DV.bat) { const b = DV.bat, lv = Math.round(b.level * 100); add("bat", "البطارية", lv < 15 && !b.charging ? "alert" : lv < 30 && !b.charging ? "warn" : "ok", lv + "%", b.charging ? "تشحن الآن" + (isFinite(b.chargingTime) && b.chargingTime ? " · تكتمل خلال " + Math.round(b.chargingTime / 60) + " دقيقة" : "") : "تعمل على البطارية" + (isFinite(b.dischargingTime) ? " · تكفي نحو " + Math.round(b.dischargingTime / 60) + " دقيقة" : "")); }
   else add("bat", "البطارية", "na", "—", "هذا المتصفح لا يتيح قراءة البطارية (مثل Safari وFirefox)");
   const st = DV.storage; if (st && st.quota) { const pc = st.usage / st.quota * 100; add("store", "مساحة التخزين المتاحة للمنصة", pc > 90 ? "alert" : pc > 70 ? "warn" : "ok", size(st.quota - st.usage) + " متاحة", "المستخدم " + size(st.usage) + " من " + size(st.quota) + (st.persisted ? " · التخزين محمي من المسح التلقائي" : "")); }
@@ -217,7 +220,7 @@ function deviceChecks() {
   add("sw", "العمل دون اتصال", DV.swOk ? "ok" : "warn", DV.swOk ? "مفعّل" : "غير مفعّل بعد", DV.swOk ? "نسخة من المنصة محفوظة على الجهاز وتفتح حتى دون إنترنت" : "يتفعّل تلقائياً بعد أول زيارة كاملة");
   const ck = DV.clock; add("clock", "دقة ساعة الجهاز", ck == null ? "na" : Math.abs(ck) <= 60 ? "ok" : Math.abs(ck) <= 300 ? "warn" : "alert", ck == null ? "—" : (ck === 0 ? "مطابقة" : (ck > 0 ? "متقدمة " : "متأخرة ") + Math.abs(ck) + " ث"), "مقارنة بساعة خادم الموقع · " + Intl.DateTimeFormat().resolvedOptions().timeZone);
   const u = uaInfo(); add("ua", "الجهاز والمتصفح", "ok", u.type, u.os + " · " + u.br + " · الشاشة " + screen.width + "×" + screen.height + " · كثافة " + (window.devicePixelRatio || 1) + "x · اللغة " + navigator.language);
-  const up = Math.round((Date.now() - DV.started) / 1000); add("up", "مدة الجلسة على هذه الصفحة", "ok", (up >= 3600 ? Math.floor(up / 3600) + " س " : "") + Math.floor(up % 3600 / 60) + " د " + (up % 60) + " ث", "الساعة الآن " + fmt(new Date().toISOString(), true).slice(11));
+  const up = Math.round((Date.now() - DV.started) / 1000); add("up", "مدة الجلسة على هذه الصفحة", "ok", (up >= 3600 ? Math.floor(up / 3600) + " س " : "") + Math.floor(up % 3600 / 60) + " د " + (up % 60) + " ث", "الساعة الآن " + tm(new Date().toISOString()));
   return out;
 }
 const chkHtml = c => `<div class="chk"><span class="dot d-${c.status}"></span><div><b>${esc(c.title)}</b>${c.value != null ? `<span class="v">${esc(c.value)}</span>` : ""}<span>${esc(c.detail || "")}</span></div></div>`;
@@ -229,7 +232,7 @@ function deviceBlock(el) {
       <div class="checks">${cs.map(chkHtml).join("")}</div>
       <div class="grid g2" style="margin-top:14px"><div class="card"><h2>استجابة الجهاز <small>آخر 30 ثانية</small></h2>${spark(DV.lag.slice(-60), 200)}</div>
       <div class="card"><h2>زمن الوصول للموقع <small>آخر ${DV.lat.length} قياس</small></h2>${spark(DV.lat)}</div></div>
-      <div class="card" style="margin-top:14px"><h2>سجل أحداث الجهاز المباشر</h2><div class="log">${DV.events.map(e => `<div><span class="dot d-${e.st}" style="margin-top:7px"></span><span class="num mute">${fmt(e.at, true).slice(11)}</span><span>${esc(e.t)}</span></div>`).join("")}</div></div>`;
+      <div class="card" style="margin-top:14px"><h2>سجل أحداث الجهاز المباشر</h2><div class="log">${DV.events.map(e => `<div><span class="dot d-${e.st}" style="margin-top:7px"></span><span class="num mute">${tm(e.at)}</span><span>${esc(e.t)}</span></div>`).join("")}</div></div>`;
   }
   draw(); every(1000, () => { if (document.visibilityState === "visible" && !document.querySelector(".modal")) draw(); });
 }
@@ -324,7 +327,7 @@ const PAGES = {
       const t = r.all.totals;
       h += `<section class="grid stats">${[["الحسابات", t.users], ["العملاء", t.clients], ["المديرون", t.admins], ["الحسابات النشطة", t.active], ["كل الفحوص", t.scans], ["عملاء في حالة تنبيه", t.alerts], ["سلاسل مكسورة", t.broken]].map(x => `<div class="card stat"><b class="num">${x[1]}</b><span>${x[0]}</span></div>`).join("")}</section>
       <section class="grid g2" style="margin-top:14px"><div class="card"><h2>الحسابات وحالتها <small>تُحدَّث مباشرة</small></h2><div class="scroll"><table><thead><tr><th>الحساب</th><th>الدور</th><th>آخر فحص</th><th>السلسلة</th></tr></thead><tbody>${r.all.rows.map(x => `<tr><td><b>${esc(x.name)}</b><div class="mono mute">${esc(x.user)}</div>${x.active ? "" : pill("alert", "موقوف")}</td><td>${esc(x.roleName)}</td><td>${x.sum.last ? pill(x.sum.last.state, x.sum.last.score) + ` <span class="num mute small">${fmt(x.sum.last.at)}</span>` : '<span class="mute small">لا فحوص</span>'}</td><td>${x.sum.scans ? pill(x.sum.chain.ok ? "ok" : "alert", x.sum.chain.ok ? "سليمة" : "مكسورة") : "—"}${x.sum.scans ? ` <a class="small" href="#reports?uid=${x.id}">التقارير</a>` : ""}</td></tr>`).join("")}</tbody></table></div></div>
-      <div class="card"><h2>آخر النشاط <small><a href="#audit">السجل الكامل</a></small></h2><div class="log">${r.all.recent.map(a => `<div><span class="num mute">${fmt(a.at).slice(5)}</span><span><b>${esc(a.user)}</b> · ${esc(a.act)} <span class="mute">${esc(a.detail)}</span></span></div>`).join("") || '<div class="empty">لا نشاط بعد</div>'}</div></div></section>`;
+      <div class="card"><h2>آخر النشاط <small><a href="#audit">السجل الكامل</a></small></h2><div class="log">${r.all.recent.map(a => `<div><span class="num mute">${ISO(fmtRaw(a.at).slice(5))}</span><span><b>${esc(a.user)}</b> · ${esc(a.act)} <span class="mute">${esc(a.detail)}</span></span></div>`).join("") || '<div class="empty">لا نشاط بعد</div>'}</div></div></section>`;
     }
     h += `<section class="grid g2" style="margin-top:14px"><div class="card"><h2>حكم آخر فحص لملفاتك</h2><div class="verdict">${ring(last ? last.score : null, last ? last.state : "na")}<div><p style="margin:0;font-size:18px;font-weight:700">${last ? STATE[last.state] : "لم تفحص أي ملف بعد"}</p><p class="mute small" style="margin:4px 0 10px">${last ? "تقرير #" + last.n + " · " + fmt(last.at) : "ابدأ بفحص ملفاتك، فلن يغادر محتواها جهازك."}</p><a class="btn pri sm" href="#scan">فحص ملفات الآن</a></div></div></div>
       <div class="card"><h2>ملخص حسابك</h2><div class="grid g3"><div class="stat"><b class="num">${m.scans}</b><span>تقرير مختوم</span></div><div class="stat"><b class="num">${m.files}</b><span>ملف مراقَب</span></div><div class="stat"><b>${m.scans ? pill(m.chain.ok ? "ok" : "alert", m.chain.ok ? "سليمة" : "مكسورة") : "—"}</b><span>سلسلة الأختام</span></div></div>
@@ -415,7 +418,7 @@ const PAGES = {
       out.push({ title: "ملفات المنصة على الموقع المنشور", status: miss.length ? (navigator.onLine ? "alert" : "warn") : "ok", detail: miss.length ? "تعذّر الوصول إلى: " + miss.join("، ") + (navigator.onLine ? "" : " (الجهاز دون اتصال، والنسخة المحفوظة تعمل)") : "كل الملفات الستة متاحة" });
       out.push({ title: "وضع التشغيل", status: "ok", detail: LOCAL ? "مستقل بالكامل: المنطق والبيانات داخل المتصفح، دون أي خادم أو خدمة خارجية" : "متصل بخادم البيانات المشترك" });
       const el = $("#st"); if (!el) return;
-      el.innerHTML = out.map(chkHtml).join(""); $("#stAt").textContent = "آخر فحص " + fmt(new Date().toISOString(), true).slice(11);
+      el.innerHTML = out.map(chkHtml).join(""); $("#stAt").textContent = "آخر فحص " + tm(new Date().toISOString());
     }
     $("#rt").onclick = run; run(); every(30000, run);
     deviceBlock($("#dv"));
@@ -427,7 +430,7 @@ const PAGES = {
       <div class="card"><input id="flt" placeholder="بحث في السجل باسم المستخدم أو العملية" style="margin-bottom:10px"><div class="scroll"><table><thead><tr><th>الوقت</th><th>المستخدم</th><th>العملية</th><th>التفاصيل</th></tr></thead><tbody id="ab"></tbody></table></div></div>`;
     const draw = () => { const q = $("#flt").value.trim().toLowerCase(); $("#ab").innerHTML = r.items.filter(a => !q || (a.user + a.act + a.detail).toLowerCase().indexOf(q) >= 0).slice(0, 400).map(a => `<tr><td class="num">${fmt(a.at, true)}</td><td class="mono">${esc(a.user)}</td><td>${esc(a.act)}</td><td class="mute">${esc(a.detail)}</td></tr>`).join("") || '<tr><td colspan="4" class="empty">لا نتائج</td></tr>'; };
     $("#flt").oninput = draw; draw();
-    $("#ex").onclick = () => download("saif-audit-" + fmt(new Date().toISOString()).slice(0, 10) + ".csv", "﻿الوقت,المستخدم,العملية,التفاصيل\n" + r.items.map(a => [fmt(a.at, true), a.user, a.act, a.detail].map(x => '"' + String(x).replace(/"/g, '""') + '"').join(",")).join("\n"), "text/csv");
+    $("#ex").onclick = () => download("saif-audit-" + fmtRaw(new Date().toISOString()).slice(0, 10) + ".csv", "﻿الوقت,المستخدم,العملية,التفاصيل\n" + r.items.map(a => [fmtRaw(a.at, true), a.user, a.act, a.detail].map(x => '"' + String(x).replace(/"/g, '""') + '"').join(",")).join("\n"), "text/csv");
   },
 
   async settings(v) {
@@ -446,10 +449,10 @@ const PAGES = {
         <p class="small" style="margin-top:0">${LOCAL ? "المنصة الآن <b>مستقلة بالكامل</b>: كل المنطق والحسابات والبيانات تعمل داخل المتصفح على كل جهاز، دون خادم ودون أي خدمة خارجية، وتفتح حتى دون إنترنت بعد أول زيارة. الحسابات الافتراضية موجودة على كل جهاز، أما الحسابات والتقارير الجديدة فتبقى على الجهاز الذي أُنشئت عليه." : "المنصة متصلة بخادم البيانات المشترك، فتظهر الحسابات والتقارير على كل الأجهزة."}</p>
         ${LOCAL ? `<p class="small">لمشاركة الحسابات والتقارير بين كل الأجهزة، يُفعَّل خادم البيانات المشترك على حساب Google الخاص بمنجز مرة واحدة، والخطوات في <a href="https://github.com/munjiz-qa/munjiz-qa.github.io/blob/main/saif/README.md" target="_blank" rel="noopener">دليل التشغيل</a>.</p>` : ""}</div></div>`;
     $("#sf").onsubmit = async e => { e.preventDefault(); const b = $("#sb"), o = {}; new FormData(e.target).forEach((val, k) => o[k] = val); busy(b, true); try { await call("settings", { save: o }); toast("حُفظت الإعدادات."); } catch (er) { toast(er.message); } busy(b, false); };
-    $("#bk").onclick = async () => { try { const r = await call("backup"); download("saif-backup-" + fmt(r.backup.at).replace(/[: ]/g, "-") + ".json", JSON.stringify(r.backup, null, 1)); toast("نُزّلت النسخة الاحتياطية."); } catch (e) { toast(e.message); } };
+    $("#bk").onclick = async () => { try { const r = await call("backup"); download("saif-backup-" + fmtRaw(r.backup.at).replace(/[: ]/g, "-") + ".json", JSON.stringify(r.backup, null, 1)); toast("نُزّلت النسخة الاحتياطية."); } catch (e) { toast(e.message); } };
     $("#rs").onchange = async e => {
       const f = e.target.files[0]; if (!f) return; let b; try { b = JSON.parse(await f.text()); } catch (er) { toast("الملف ليس JSON صالحاً."); return; }
-      const m = modal(`<h2>استعادة نسخة احتياطية</h2><p>ستحل بيانات النسخة (${esc(fmt(b.at))}) محل كل البيانات الحالية. يُنصح بتنزيل نسخة من الوضع الحالي أولاً.</p><div class="row"><button class="pri" id="yr" type="button">استعادة</button><button data-close type="button">إلغاء</button></div>`);
+      const m = modal(`<h2>استعادة نسخة احتياطية</h2><p>ستحل بيانات النسخة (${fmt(b.at)}) محل كل البيانات الحالية. يُنصح بتنزيل نسخة من الوضع الحالي أولاً.</p><div class="row"><button class="pri" id="yr" type="button">استعادة</button><button data-close type="button">إلغاء</button></div>`);
       m.querySelector("#yr").onclick = async ev => { busy(ev.target, true); try { await call("restore", { backup: b }); m.remove(); toast("تمت الاستعادة."); S.user = null; route(); } catch (er) { toast(er.message); busy(ev.target, false); } };
       e.target.value = "";
     };
