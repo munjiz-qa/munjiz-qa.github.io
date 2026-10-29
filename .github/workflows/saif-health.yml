@@ -34,3 +34,24 @@ jobs:
           curl -fsS "$base/core.js" -o /tmp/core.js
           curl -fsS "$base/index.html" | grep -q 'app.js' || { echo "::error::الصفحة المنشورة لا تحمّل التطبيق"; exit 1; }
           cmp -s /tmp/core.js saif/core.js && echo "النواة المنشورة مطابقة للمستودع" || echo "::warning::النواة المنشورة تختلف عن المستودع (قد يكون النشر جارياً)"
+
+  browser:
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: تجهيز متصفح الاختبار
+        run: npm i --no-save --no-package-lock playwright@1.48.2 && npx playwright install --with-deps chromium
+      - name: اختبار الموقع المنشور بكل الأدوار على الكمبيوتر والجوال
+        run: node scripts/saif-e2e.mjs https://munjiz-qa.github.io/saif/ shots
+      - name: حفظ لقطات الشاشة
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: saif-shots
+          path: shots
+          retention-days: 7
