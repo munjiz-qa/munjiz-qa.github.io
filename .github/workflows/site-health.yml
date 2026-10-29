@@ -1,0 +1,27 @@
+name: Site health (hourly)
+on:
+  schedule:
+    - cron: '37 * * * *'
+  pull_request:
+    paths: ['.github/workflows/site-health.yml', 'scripts/site-health.mjs', 'assets/config.js']
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+concurrency: site-health
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/site-health.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SITE_URL: https://munjiz-qa.github.io/
+          OWNER_LOGIN: baseeratactions
+          ALERT_TELEGRAM: ${{ vars.ALERT_TELEGRAM || '@mabouelezz2022' }}
+          CHECK_DEFAULT_ADMIN: ${{ github.event_name != 'schedule' }}
