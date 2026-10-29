@@ -19,14 +19,21 @@ const LS = {
   get(k, d) { try { const v = localStorage.getItem('mishkat:' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
   set(k, v) { try { localStorage.setItem('mishkat:' + k, JSON.stringify(v)); } catch (e) {} },
 };
-const ST = { bookmarks: [], last: null, hifz: {}, prefs: { tafsir: 'muyassar', size: 1, theme: 'auto' }, updated: 0 };
-Object.assign(ST, LS.get('state', {}));
-ST.prefs = Object.assign({ tafsir: 'muyassar', size: 1, theme: 'auto' }, ST.prefs || {});
+/* accounts (standalone build): visitor, client and full admin. Everything runs in the browser; no outside service is called */
+let SESSION = IS_PWA ? LS.get('session', null) : null;
+const stateKey = () => SESSION ? 'state@' + SESSION.u : 'state';
+const ST = {};
+function loadState() {
+  for (const k of Object.keys(ST)) delete ST[k];
+  Object.assign(ST, { bookmarks: [], last: null, hifz: {}, prefs: { tafsir: 'muyassar', size: 1, theme: 'auto' }, updated: 0 }, LS.get(stateKey(), {}));
+  ST.prefs = Object.assign({ tafsir: 'muyassar', size: 1, theme: 'auto' }, ST.prefs || {});
+}
+loadState();
 let cloud = null; // {db, uid}
 let saveTimer = 0;
 function save() {
   ST.updated = Date.now();
-  LS.set('state', ST);
+  LS.set(stateKey(), ST);
   clearTimeout(saveTimer);
   if (cloud) saveTimer = setTimeout(() => {
     cloud.db.doc(`data/users/${cloud.uid}/state/main`).set(JSON.parse(JSON.stringify(ST))).catch(() => {});
@@ -87,16 +94,16 @@ const NAV = [
   ['الذكاء', [['search','البحث بالمعنى','i-search',1],['ask','اسأل مشكاة','i-spark',1]]],
   ['الحفظ والتلاوة', [['hifz','الحفظ والتسميع','i-mic',1],['saved','محفوظاتي','i-bookmark']]],
   ['الاستكشاف', [['map','أطلس القرآن','i-map',1],['timeline','الخط الزمني','i-time',1],['graph','شبكة المعرفة','i-graph',1]]],
-  ['التطبيق', [['guide','دليل التطبيق','i-info',1],['settings','الإعدادات','i-gear'],['about','المنهج والمصادر','i-info'],['admin','لوحة الإدارة','i-shield']]],
+  ['التطبيق', [['guide','دليل التطبيق','i-info',1],['account','حسابي','i-user'],['settings','الإعدادات','i-gear'],['about','المنهج والمصادر','i-info'],['admin','لوحة الإدارة','i-shield']]],
 ];
 let isOwner = false;
 function navHTML() {
-  return NAV.map(([sec, items]) => `<div class="sec">${sec}</div>` + items.filter(([v]) => v !== 'admin' || isOwner || IS_PWA)
+  return NAV.map(([sec, items]) => `<div class="sec">${sec}</div>` + items.filter(([v]) => (v !== 'admin' || (IS_PWA ? isAdmin() : isOwner)) && (v !== 'account' || IS_PWA))
     .map(([v, l, ic, nw]) => `<a href="#${v}" data-v="${v}"><svg><use href="#${ic}"/></svg>${l}${nw ? '<span class="new">جديد</span>' : ''}</a>`).join('')).join('');
 }
 function drawNav() { $('#nav').innerHTML = navHTML(); }
 const V = html => { $('#view').innerHTML = html; };
-const views = { home, mushaf, stats, words, topics, search, ask, hifz, saved, map: atlas, timeline, graph, settings, about, admin, guide };
+const views = { home, mushaf, stats, words, topics, search, ask, hifz, saved, map: atlas, timeline, graph, settings, about, admin, guide, account };
 function route() {
   const h = (location.hash || '#home').slice(1);
   let m, cur;
@@ -146,7 +153,7 @@ function home() {
       ${last != null ? `<a class="row" href="#a${Q.ayat[last][0]}-${Q.ayat[last][1]}"><span class="t">أكمل القراءة من <b>${esc(ref(last))}</b></span><span class="n">←</span></a>` : `<p class="muted small" style="margin:0">ابدأ القراءة من <a href="#mushaf">المصحف</a>، وسيحفظ التطبيق موضعك تلقائياً.</p>`}
       <a class="row" href="#hifz"><span class="t">مقاطع للمراجعة اليوم</span><span class="n">${n(due.length)}</span></a>
       <a class="row" href="#saved"><span class="t">الآيات المحفوظة في علاماتك</span><span class="n">${n(ST.bookmarks.length)}</span></a>
-      <div class="pill-row" style="margin-top:4px">${cloud ? '<span class="chip ok">تقدّمك محفوظ في حسابك ويتزامن بين أجهزتك</span>' : '<span class="chip">تقدّمك محفوظ على هذا الجهاز</span>'}${IS_PWA && installEvt ? '<button class="chip acc" id="homeInst">ثبّت مشكاة على جهازك</button>' : ''}</div>
+      <div class="pill-row" style="margin-top:4px">${cloud ? '<span class="chip ok">تقدّمك محفوظ في حسابك ويتزامن بين أجهزتك</span>' : SESSION ? `<a class="chip ok" href="#account">حسابك: ${esc(SESSION.name)} · ${ROLE[SESSION.role]}</a>` : IS_PWA ? '<span class="chip">تقدّمك محفوظ على هذا الجهاز</span><a class="chip acc" href="#account">ادخل إلى حسابك</a>' : '<span class="chip">تقدّمك محفوظ على هذا الجهاز</span>'}${IS_PWA && installEvt ? '<button class="chip acc" id="homeInst">ثبّت مشكاة على جهازك</button>' : ''}</div>
     </section>
   </div>
   <div class="grid tiles">
@@ -917,11 +924,12 @@ function guide() {
     ['شبكة المعرفة','خريطة علاقات تربط الأنبياء بأقوامهم وديارهم وصلات قرابتهم والسور التي ذُكروا فيها أكثر.'],
     ['بطاقة الآية','صورة مربعة جاهزة للمشاركة بخط المصحف وهوية مشكاة، تُحفظ بضغطة.'],
     IS_PWA ? ['يعمل دون إنترنت ويُثبَّت','بعد أول فتح يعمل التطبيق دون اتصال، ويُثبَّت على الجوال والكمبيوتر كأي تطبيق. ومعه التسميع بالصوت والاستماع إلى تلاوة الشيخ مشاري العفاسي.'] : ['متابعتك محفوظة في حسابك','العلامات وموضع القراءة وجدول الحفظ تُحفظ في حسابك على claude.ai وتتزامن بين الجوال والكمبيوتر، وهي خاصة بك لا يراها غيرك.'],
-    ['لوحة الإدارة', IS_PWA ? 'بكلمة مرور: إعلان عام، وآية مختارة للصفحة الرئيسية، وتقرير سلامة البيانات. يُحفظ التعديل في ملف config.json يُرفع إلى الموقع.' : 'لمالك الموسوعة وحده: إعلان عام يظهر لكل الزوار، وآية مختارة للصفحة الرئيسية، وتقرير سلامة البيانات.'],
+    ['الحسابات ولوحة الإدارة', IS_PWA ? 'ثلاثة أدوار: زائر وعميل ومدير شامل. المدير يدير الإعلان العام والآية المختارة والحسابات كلها، ويُحفظ ذلك في ملف config.json يُرفع إلى الموقع فيعمّ كل الأجهزة. والتطبيق كله يعمل في المتصفح دون أي خدمة خارجية.' : 'لمالك الموسوعة وحده: إعلان عام يظهر لكل الزوار، وآية مختارة للصفحة الرئيسية، وتقرير سلامة البيانات.'],
   ];
   const R = IS_PWA ? [
-    ['المدير','كل الصفحات، ولوحة الإدارة بكلمة المرور. كلمة المرور تحمي شاشة الإدارة، أما تعديل الموقع نفسه فلمن يملك حساب منجز على GitHub.'],
-    ['المستخدم والزائر','كل الصفحات والمزايا دون تسجيل. يُحفظ تقدّمه على جهازه، وينقله إلى جهاز آخر برمز النقل من «الإعدادات».'],
+    ['المدير الشامل', 'كل الصفحات، ولوحة الإدارة: الإعلان العام، والآية المختارة، وإدارة الحسابات (إضافة عميل أو مدير، وتعيين كلمات المرور، والتعطيل والحذف)، وتقرير سلامة البيانات. الدخول باسم مستخدم وكلمة مرور.'],
+    ['العميل', 'كل الصفحات والمزايا، وحساب باسمه تُحفظ فيه العلامات والحفظ وموضع القراءة، ويغيّر كلمة مروره. لا يرى لوحة الإدارة.'],
+    ['الزائر', 'كل الصفحات والمزايا دون تسجيل، ويُحفظ تقدّمه على جهازه وينقله برمز النقل من «الإعدادات».'],
   ] : [
     ['مالك الموسوعة (أنت)','كل الصفحات، ولوحة الإدارة، وتعديل الإعلان والآية المختارة. الدخول بحسابك في claude.ai نفسه، فلا توجد كلمة مرور منفصلة تُحفظ أو تُسرَّب.'],
     ['مستخدم مسجّل ممن تشاركه الرابط','كل الصفحات والمساعد الذكي، ومتابعته محفوظة في حسابه. لا يرى لوحة الإدارة ولا يستطيع تعديل الإعلان (تمنع ذلك قاعدة صلاحيات على الخادم).'],
@@ -961,24 +969,95 @@ function guide() {
 }
 
 /* ================= admin (owner of the claude.ai artifact) */
-let adminOK = false;
-const ADMIN_HASH = '6290675f96606fd9db947e773c7f588146e201f64c75a823ddbb9b1c950e16c1';
 async function sha(t) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join(''); }
-function adminLogin() {
-  V(`<div class="stack" style="max-width:520px"><div><div class="eyebrow">لوحة الإدارة</div><h1>دخول المدير</h1></div>
-  <form class="panel stack tight" id="lform"><label for="lpw">كلمة مرور الإدارة</label><input class="field" id="lpw" type="password" autocomplete="current-password"><button class="btn pri" style="align-self:flex-start">دخول</button><p class="small" id="lmsg" style="margin:0"></p></form></div>`);
-  $('#lform').onsubmit = async e => { e.preventDefault(); if (!crypto?.subtle) { $('#lmsg').textContent = 'افتح التطبيق من رابطه الآمن (https) لتسجيل الدخول.'; return; } if (await sha('mishkat-admin-v1:' + $('#lpw').value) === ADMIN_HASH) { adminOK = true; admin(); } else $('#lmsg').textContent = 'كلمة المرور غير صحيحة.'; };
+const ROLE = { client: 'عميل', admin: 'مدير شامل' };
+const isAdmin = () => SESSION?.role === 'admin';
+const uKey = u => String(u || '').trim().toLowerCase();
+const pwHash = (u, pw) => sha('mishkat-user-v1:' + uKey(u) + ':' + pw);
+function allUsers() { // published accounts (config.json) plus accounts created or changed on this device
+  const m = new Map(); for (const x of (siteCfg.users || [])) m.set(x.u, { ...x, src: 'site' });
+  for (const x of LS.get('users', [])) m.set(x.u, { ...(m.get(x.u) || {}), ...x, src: m.has(x.u) ? 'site' : 'device' });
+  return [...m.values()].filter(x => !x.del);
+}
+function putUser(x) { const L = LS.get('users', []).filter(y => y.u !== x.u); L.push(x); LS.set('users', L); }
+function startSession(x) {
+  const guest = LS.get('state', null), mine = LS.get('state@' + x.u, null);
+  if (!mine && guest && (guest.bookmarks?.length || Object.keys(guest.hifz || {}).length)) LS.set('state@' + x.u, guest); // carry the visitor's progress into the new account
+  SESSION = { u: x.u, name: x.name, role: x.role }; LS.set('session', SESSION); loadState(); applyPrefs(); drawNav();
+}
+function endSession() { SESSION = null; LS.set('session', null); loadState(); applyPrefs(); drawNav(); }
+function checkSession() { if (!SESSION) return; const x = allUsers().find(y => y.u === SESSION.u); if (!x || x.off) endSession(); else if (x.role !== SESSION.role || x.name !== SESSION.name) { SESSION = { u: x.u, name: x.name, role: x.role }; LS.set('session', SESSION); drawNav(); } }
+const PERMS = {
+  visitor: ['قراءة المصحف والتفاسير الثمانية والموسوعة كاملة', 'البحث بالمعنى ومساعد البحث والأطلس والخط الزمني', 'الحفظ والتسميع، ويُحفظ تقدّمه على جهازه'],
+  client: ['كل ما يتاح للزائر', 'حساب شخصي باسمه تُحفظ فيه العلامات والحفظ وموضع القراءة منفصلة عن غيره على الجهاز نفسه', 'تغيير كلمة المرور، ونقل تقدّمه إلى جهاز آخر برمز النقل'],
+  admin: ['كل ما يتاح للعميل', 'لوحة الإدارة: الإعلان العام والآية المختارة', 'إدارة الحسابات: إضافة عميل أو مدير، وتعيين كلمة المرور، والتعطيل والحذف', 'تقرير سلامة البيانات، ونشر الإعدادات للزوار جميعاً'],
+};
+const permList = r => `<ul style="margin:0;padding-inline-start:1.2em">${PERMS[r].map(x => `<li>${x}</li>`).join('')}</ul>`;
+function account(msg = '') {
+  if (!IS_PWA) return settings();
+  if (!SESSION) {
+    V(`<div class="stack" style="max-width:900px"><div><div class="eyebrow">حسابي</div><h1>الدخول إلى مشكاة</h1><p class="lead">التطبيق كله متاح دون تسجيل. والحساب يحفظ تقدّمك باسمك، ويفتح لوحة الإدارة للمدير.</p></div>
+    ${msg ? `<p class="note" style="margin:0">${msg}</p>` : ''}
+    <div class="grid split"><form class="panel stack tight" id="uform"><h2>تسجيل الدخول</h2>
+      <label for="uu">اسم المستخدم</label><input class="field" id="uu" autocomplete="username" dir="ltr" required>
+      <label for="upw">كلمة المرور</label><input class="field" id="upw" type="password" autocomplete="current-password" dir="ltr" required>
+      <button class="btn pri" style="align-self:flex-start">دخول</button><p class="small" id="umsg" style="margin:0"></p></form>
+    <form class="panel stack tight" id="rform"><h2>حساب عميل جديد</h2>
+      <label for="rn">الاسم</label><input class="field" id="rn" autocomplete="name" required>
+      <label for="ru">اسم المستخدم (حروف إنجليزية وأرقام)</label><input class="field" id="ru" autocomplete="username" dir="ltr" required>
+      <label for="rpw">كلمة المرور (٨ أحرف على الأقل)</label><input class="field" id="rpw" type="password" autocomplete="new-password" dir="ltr" required>
+      <button class="btn" style="align-self:flex-start">إنشاء الحساب</button><p class="small" id="rmsg" style="margin:0"></p>
+      <p class="muted small" style="margin:0">يُنشأ الحساب على هذا الجهاز. ولحساب يعمل على كل الأجهزة يضيفه المدير من لوحة الإدارة.</p></form></div>
+    <section class="panel stack tight"><h2>الصلاحيات</h2><dl class="kv"><dt>الزائر</dt><dd>${permList('visitor')}</dd><dt>العميل</dt><dd>${permList('client')}</dd><dt>المدير الشامل</dt><dd>${permList('admin')}</dd></dl></section></div>`);
+    $('#uform').onsubmit = async e => { e.preventDefault(); if (!crypto?.subtle) { $('#umsg').textContent = 'افتح التطبيق من رابطه الآمن (https) لتسجيل الدخول.'; return; }
+      const u = uKey($('#uu').value), x = allUsers().find(y => y.u === u);
+      if (!x || x.h !== await pwHash(u, $('#upw').value)) { $('#umsg').textContent = 'اسم المستخدم أو كلمة المرور غير صحيحة.'; return; }
+      if (x.off) { $('#umsg').textContent = 'هذا الحساب معطّل. تواصل مع إدارة مشكاة.'; return; }
+      startSession(x); toast('أهلاً بك، ' + x.name); if (location.hash === '#admin' && isAdmin()) admin(); else account(); };
+    $('#rform').onsubmit = async e => { e.preventDefault(); const nm = $('#rn').value.trim(), u = uKey($('#ru').value), pw = $('#rpw').value;
+      if (!/^[a-z0-9._-]{3,24}$/.test(u)) { $('#rmsg').textContent = 'اسم المستخدم من ٣ إلى ٢٤ حرفاً إنجليزياً أو رقماً.'; return; }
+      if (pw.length < 8) { $('#rmsg').textContent = 'كلمة المرور ٨ أحرف على الأقل.'; return; }
+      if (allUsers().some(y => y.u === u)) { $('#rmsg').textContent = 'اسم المستخدم مستعمل. اختر غيره.'; return; }
+      const x = { u, name: nm || u, role: 'client', h: await pwHash(u, pw), created: Date.now() }; putUser(x); startSession(x); toast('أُنشئ حسابك'); account(); };
+    return;
+  }
+  const due = Object.values(ST.hifz).filter(h => (h.due || 0) <= Date.now()).length, last = ST.last;
+  V(`<div class="stack" style="max-width:900px"><div><div class="eyebrow">حسابي · ${ROLE[SESSION.role]}</div><h1>${esc(SESSION.name)}</h1><p class="lead">اسم المستخدم: <code dir="ltr">${esc(SESSION.u)}</code></p></div>
+  ${msg ? `<p class="note" style="margin:0">${msg}</p>` : ''}
+  <div class="grid tiles t4"><div class="tile"><b>${n(ST.bookmarks.length)}</b><span>آية في علاماتك</span></div><div class="tile"><b>${n(Object.keys(ST.hifz).length)}</b><span>مقطع في جدول الحفظ</span></div><div class="tile"><b>${n(due)}</b><span>للمراجعة اليوم</span></div><div class="tile"><b>${last != null ? esc(ref(last)) : '—'}</b><span>آخر موضع قراءة</span></div></div>
+  <div class="toolbar">${isAdmin() ? '<a class="btn pri" href="#admin"><svg><use href="#i-shield"/></svg>لوحة الإدارة</a>' : ''}<a class="btn" href="#saved">محفوظاتي</a><a class="btn" href="#hifz">الحفظ والتسميع</a><button class="btn" id="outBtn">تسجيل الخروج</button></div>
+  <section class="panel stack tight"><h2>صلاحياتك</h2>${permList(SESSION.role)}</section>
+  <form class="panel stack tight" id="pwform" style="max-width:520px"><h2>تغيير كلمة المرور</h2>
+    <label for="opw">كلمة المرور الحالية</label><input class="field" id="opw" type="password" autocomplete="current-password" dir="ltr" required>
+    <label for="npw">كلمة المرور الجديدة (٨ أحرف على الأقل)</label><input class="field" id="npw" type="password" autocomplete="new-password" dir="ltr" required>
+    <button class="btn" style="align-self:flex-start">حفظ</button><p class="small" id="pwmsg" style="margin:0"></p></form></div>`);
+  $('#outBtn').onclick = () => { endSession(); toast('سُجّل خروجك'); account(); };
+  $('#pwform').onsubmit = async e => { e.preventDefault(); const x = allUsers().find(y => y.u === SESSION.u), np = $('#npw').value;
+    if (!x || x.h !== await pwHash(x.u, $('#opw').value)) { $('#pwmsg').textContent = 'كلمة المرور الحالية غير صحيحة.'; return; }
+    if (np.length < 8) { $('#pwmsg').textContent = 'كلمة المرور الجديدة ٨ أحرف على الأقل.'; return; }
+    const { src, ...rest } = x; putUser({ ...rest, h: await pwHash(x.u, np) }); $('#pwmsg').textContent = 'تغيّرت كلمة المرور على هذا الجهاز.' + (isAdmin() ? ' ولتعميمها على كل الأجهزة احفظ الإعدادات وانشرها من لوحة الإدارة.' : ''); $('#pwform').reset(); };
 }
 async function admin() {
-  if (IS_PWA && !adminOK) return adminLogin();
+  if (IS_PWA && !SESSION) return account('لوحة الإدارة للمدير الشامل. سجّل الدخول بحساب المدير.');
+  if (IS_PWA && !isAdmin()) { V(`<div class="stack" style="max-width:640px"><div class="eyebrow">لوحة الإدارة</div><h1>هذه الصفحة للمدير الشامل فقط</h1><p class="lead">أنت داخل بحساب ${ROLE[SESSION.role]}. صلاحياتك في <a href="#account">صفحة حسابك</a>.</p></div>`); return; }
   if (!isOwner && !IS_PWA) { V(`<div class="stack"><h1>لوحة الإدارة</h1><p class="muted">هذه الصفحة لمالك الموسوعة فقط.</p></div>`); return; }
   const tot = T.reduce((s, c) => s + c.items.length, 0);
-  V(`<div class="stack" style="max-width:900px"><div><div class="eyebrow">لوحة الإدارة · ${IS_PWA ? 'دخلت بكلمة مرور الإدارة' : 'تظهر لك وحدك بصفتك مالك الموسوعة'}</div><h1>إدارة مشكاة</h1></div>
+  V(`<div class="stack" style="max-width:900px"><div><div class="eyebrow">لوحة الإدارة · ${IS_PWA ? 'مدير شامل: ' + esc(SESSION.name) : 'تظهر لك وحدك بصفتك مالك الموسوعة'}</div><h1>إدارة مشكاة</h1></div>
   <section class="panel stack tight"><h3>الإعلان العام</h3><p class="muted small" style="margin:0">يظهر شريطاً أعلى الصفحات لكل من يفتح الموسوعة. اتركه فارغاً لإخفائه.</p>
     <input class="field" id="adBanner" type="text" value="${esc(siteCfg.banner || '')}" placeholder="مثال: تمت إضافة فهرس جديد عن الأخلاق" style="width:100%"></section>
   <section class="panel stack tight"><h3>الآية المختارة للصفحة الرئيسية</h3><p class="muted small" style="margin:0">تحل محل «آية اليوم». اتركها فارغة ليعود الاختيار اليومي التلقائي.</p>
     <div class="toolbar"><label>السورة <input class="field" id="adS" type="number" min="1" max="114" style="width:6em" value="${siteCfg.featured?.s || ''}"></label><label>الآية <input class="field" id="adA" type="number" min="1" style="width:6em" value="${siteCfg.featured?.a || ''}"></label><span id="adPrev" class="muted small"></span></div>
     <input class="field" id="adNote" type="text" value="${esc(siteCfg.featuredNote || '')}" placeholder="تعليق قصير يظهر تحت الآية (اختياري)" style="width:100%"></section>
+  ${IS_PWA ? `<section class="panel stack tight"><h3>الحسابات</h3><p class="muted small" style="margin:0">الحسابات المنشورة تعمل على كل الأجهزة. وما تضيفه أو تغيّره هنا يعمل فوراً على هذا الجهاز، ويعمّ كل الأجهزة بعد «حفظ ونشر».</p>
+    <div class="tablebox"><table class="wtable" id="uTable"></table></div>
+    <form class="stack tight" id="uaForm"><h4 style="margin:0">إضافة حساب</h4><div class="toolbar">
+      <input class="field" id="naName" placeholder="الاسم" required><input class="field" id="naU" placeholder="اسم المستخدم" dir="ltr" required>
+      <input class="field" id="naPw" placeholder="كلمة المرور" dir="ltr" required><select id="naRole"><option value="client">عميل</option><option value="admin">مدير شامل</option></select>
+      <button class="btn">إضافة</button></div></form>
+    <form class="stack tight" id="ueForm"><h4 style="margin:0">إجراء على حساب</h4><div class="toolbar">
+      <select id="ueU"></select><input class="field" id="uePw" placeholder="كلمة مرور جديدة" dir="ltr">
+      <button class="btn" type="button" id="ueSetPw">تعيين كلمة المرور</button><button class="btn" type="button" id="ueRole">تبديل الدور</button><button class="btn" type="button" id="ueOff">تعطيل أو تفعيل</button><button class="btn" type="button" id="ueDel">حذف</button></div></form>
+    <p class="small" id="uMsg" style="margin:0"></p></section>` : ''}
   <div class="toolbar"><button class="btn pri" id="adSave">حفظ ونشر</button><span id="adMsg" class="small"></span></div>
   <section class="panel stack tight"><h3>تقرير سلامة البيانات</h3><dl class="kv">
     <dt>النص</dt><dd>مصحف المدينة (حفص) · ${n(Q.surahs.length)} سورة · ${n(Q.ayat.length)} آية · ${n(W.w.length)} كلمة</dd>
@@ -989,15 +1068,33 @@ async function admin() {
     <dt>أطلس القرآن</dt><dd>${n(PLACES.length)} موضعاً · ${n(PLACES.filter(p => placeEntries(p).length === p.refs.length).length)} مرتبطة بمداخلها كاملة</dd></dl></section></div>`);
   const prev = () => { const i = idxOf(+$('#adS').value, +$('#adA').value); $('#adPrev').textContent = i >= 0 ? ref(i) : ($('#adS').value ? 'مرجع غير صحيح' : ''); };
   $('#adS').oninput = prev; $('#adA').oninput = prev; prev();
+  if (IS_PWA) usersPanel();
   $('#adSave').onclick = async () => {
     const db = IS_PWA ? null : await claude?.use?.('db').catch(() => null); if (!db && !IS_PWA) { $('#adMsg').textContent = 'تعذّر الاتصال بقاعدة البيانات.'; return; }
     const s = +$('#adS').value, a = +$('#adA').value; const ok = idxOf(s, a) >= 0;
     if ($('#adS').value && !ok) { $('#adMsg').textContent = 'رقم السورة أو الآية غير صحيح.'; return; }
     const cfg = { banner: $('#adBanner').value.trim(), featured: ok ? { s, a } : null, featuredNote: $('#adNote').value.trim(), updated: Date.now() };
+    if (IS_PWA) { cfg.users = allUsers().map(({ src, ...x }) => x); LS.set('users', []); }
     if (IS_PWA) { siteCfg = cfg; applyCfg(); LS.set('cfgPreview', cfg); const blob = new Blob([JSON.stringify(cfg, null, 2)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'config.json'; a.click();
       $('#adMsg').innerHTML = 'ظهر التعديل على هذا الجهاز، ونُزّل ملف config.json. لنشره لكل الزوار ارفعه مكان الملف نفسه في مجلد mishkat على GitHub، أو أرسله إلى فريق منجز.'; return; }
     try { await db.doc('site/config').set(cfg); siteCfg = cfg; applyCfg(); $('#adMsg').textContent = 'حُفظ ونُشر لكل الزوار.'; } catch (e) { $('#adMsg').textContent = 'لم يُحفظ: ' + (e?.code || 'خطأ غير معروف'); }
   };
+}
+function usersPanel() {
+  const L = allUsers(), me = SESSION.u, msg = t => { $('#uMsg').textContent = t; };
+  $('#uTable').innerHTML = `<thead><tr><th>الاسم</th><th>اسم المستخدم</th><th>الدور</th><th>الحالة</th><th>المصدر</th></tr></thead><tbody>${L.map(x => `<tr><td>${esc(x.name)}${x.u === me ? ' <span class="chip">أنت</span>' : ''}</td><td dir="ltr">${esc(x.u)}</td><td>${ROLE[x.role]}</td><td>${x.off ? 'معطّل' : 'فعّال'}</td><td>${x.src === 'site' ? 'منشور' : 'هذا الجهاز'}</td></tr>`).join('')}</tbody>`;
+  $('#ueU').innerHTML = L.map(x => `<option value="${esc(x.u)}">${esc(x.name)} (${esc(x.u)})</option>`).join('');
+  const pick = () => L.find(x => x.u === $('#ueU').value), strip = ({ src, ...x }) => x;
+  const admins = () => allUsers().filter(x => x.role === 'admin' && !x.off).length;
+  $('#uaForm').onsubmit = async e => { e.preventDefault(); const u = uKey($('#naU').value), pw = $('#naPw').value;
+    if (!/^[a-z0-9._-]{3,24}$/.test(u)) return msg('اسم المستخدم من ٣ إلى ٢٤ حرفاً إنجليزياً أو رقماً.');
+    if (pw.length < 8) return msg('كلمة المرور ٨ أحرف على الأقل.'); if (L.some(x => x.u === u)) return msg('اسم المستخدم مستعمل.');
+    putUser({ u, name: $('#naName').value.trim() || u, role: $('#naRole').value, h: await pwHash(u, pw), created: Date.now() }); usersPanel(); msg('أُضيف الحساب على هذا الجهاز. اضغط «حفظ ونشر» لتعميمه.'); $('#uaForm').reset(); };
+  $('#ueSetPw').onclick = async () => { const x = pick(), pw = $('#uePw').value; if (pw.length < 8) return msg('كلمة المرور ٨ أحرف على الأقل.'); putUser({ ...strip(x), h: await pwHash(x.u, pw) }); $('#uePw').value = ''; usersPanel(); msg('عُيّنت كلمة المرور لحساب ' + x.name + '.'); };
+  $('#ueRole').onclick = () => { const x = pick(); if (x.role === 'admin' && admins() < 2) return msg('لا بد من مدير شامل واحد فعّال على الأقل.'); putUser({ ...strip(x), role: x.role === 'admin' ? 'client' : 'admin' }); usersPanel(); checkSession(); msg('تغيّر دور ' + x.name + '.'); if (!isAdmin()) admin(); };
+  $('#ueOff').onclick = () => { const x = pick(); if (x.u === me) return msg('لا يمكنك تعطيل حسابك وأنت داخل به.'); if (!x.off && x.role === 'admin' && admins() < 2) return msg('لا بد من مدير شامل واحد فعّال على الأقل.'); putUser({ ...strip(x), off: !x.off }); usersPanel(); msg((x.off ? 'فُعّل' : 'عُطّل') + ' حساب ' + x.name + '.'); };
+  $('#ueDel').onclick = () => { const x = pick(); if (x.u === me) return msg('لا يمكنك حذف حسابك وأنت داخل به.'); if (x.role === 'admin' && admins() < 2) return msg('لا بد من مدير شامل واحد فعّال على الأقل.');
+    if (x.src === 'site') { putUser({ ...strip(x), off: true, del: true }); } else LS.set('users', LS.get('users', []).filter(y => y.u !== x.u)); usersPanel(); msg('حُذف حساب ' + x.name + '.'); };
 }
 function applyCfg() { const b = $('#banner'); if (siteCfg.banner) { $('#bannerText').textContent = siteCfg.banner; b.hidden = false; } else b.hidden = true; }
 
@@ -1018,7 +1115,7 @@ function ayahDrawer(i) {
   $('#bmBtn').onclick = () => { const k = ST.bookmarks.indexOf(i); if (k >= 0) ST.bookmarks.splice(k, 1); else ST.bookmarks.unshift(i); save(); ayahDrawer(i); toast(k >= 0 ? 'أُزيلت من العلامات' : 'أُضيفت إلى العلامات'); };
   $('#cpBtn').onclick = () => copyText(`${ayahText(i)} ﴿${Q.surahs[a[0]-1].name}: ${a[1]}﴾`);
   const pl = $('#plBtn'); if (pl) pl.onclick = () => { const au = new Audio(audioUrl(i)); au.play().catch(() => toast('تعذّر تشغيل التلاوة، تحقق من الاتصال')); };
-  const load = async () => { const key = $('#tsel').value; ST.prefs.tafsir = key; LS.set('state', ST);
+  const load = async () => { const key = $('#tsel').value; ST.prefs.tafsir = key; LS.set(stateKey(), ST);
     $('#tbody').textContent = 'جارٍ التحميل…';
     try { const t = await tafsir(key, a[0]); $('#tbody').textContent = t[a[1]] || (key === 'gharib' ? 'لا توجد ألفاظ غريبة مفسَّرة في هذه الآية في كتاب «الميسر في غريب القرآن».' : 'يُنظر تفسير هذه الآية ضمن الآيات السابقة لها.'); }
     catch (e) { $('#tbody').textContent = 'تعذّر تحميل التفسير. تحقق من الاتصال ثم أعد المحاولة، أو نزّل التفاسير من الإعدادات للعمل دون إنترنت.'; } };
@@ -1077,17 +1174,17 @@ async function connectCloud() {
     cloud = { db, uid };
     const snap = await db.doc(`data/users/${uid}/state/main`).get().catch(() => null);
     const remote = snap ? (typeof snap.data === 'function' ? snap.data() : snap.data) : null;
-    if (remote && remote.updated > (ST.updated || 0)) { Object.assign(ST, remote); LS.set('state', ST); applyPrefs(); }
+    if (remote && remote.updated > (ST.updated || 0)) { Object.assign(ST, remote); LS.set(stateKey(), ST); applyPrefs(); }
     else if (ST.updated) save();
     const h = (location.hash || '#home').slice(1); if (['home', 'saved', 'settings', 'hifz'].includes(h)) route();
   } catch (e) {}
 }
-applyPrefs(); drawNav();
+applyPrefs(); drawNav(); if (IS_PWA) $('#acctBtn').hidden = false;
 (async () => {
   try {
     [Q, W, T, TF, GEO] = await Promise.all([gz('data/quran.txt'), gz('data/words.txt'), gz('data/topics.txt'), getJSON('data/tafsir.json'), getJSON('data/geo.json')]);
     prep();
-    if (IS_PWA) { try { const base = await getJSON('config.json').catch(() => ({})), pv = LS.get('cfgPreview', null); siteCfg = pv && (pv.updated || 0) > (base.updated || 0) ? pv : base; applyCfg(); } catch (e) {} }
+    if (IS_PWA) { try { const base = await getJSON('config.json').catch(() => ({})), pv = LS.get('cfgPreview', null); siteCfg = pv && (pv.updated || 0) > (base.updated || 0) ? pv : base; applyCfg(); } catch (e) {} checkSession(); }
     route(); connectCloud();
   } catch (err) { V(`<p class="loading">تعذّر تحميل البيانات. يتطلب التطبيق متصفحاً حديثاً (كروم أو سفاري أو فايرفوكس أو إيدج). ${esc(err.message)}</p>`); }
 })();

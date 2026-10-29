@@ -59,6 +59,7 @@ main{padding-block:26px 70px}
 .searchbar form{display:flex;gap:8px;flex:1;min-width:0}
 .searchbar input{flex:1;min-width:0;border:1px solid var(--line);background:var(--sheet);border-radius:999px;padding:8px 16px}
 .iconbtn{border:1px solid var(--line);background:var(--sheet);border-radius:999px;width:40px;height:40px;display:inline-grid;place-items:center;cursor:pointer;flex:none}
+.iconbtn[hidden]{display:none}a.iconbtn{color:inherit}
 .iconbtn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .tabbar{display:none}
 .banner{background:var(--saffron-soft);color:var(--ink);border-bottom:1px solid var(--line)}
@@ -111,7 +112,8 @@ textarea.field{width:100%;resize:vertical;min-height:90px;line-height:1.7}
 .seg button{border:0;background:var(--sheet);padding:7px 13px;cursor:pointer}
 .seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
 .tiles{grid-template-columns:repeat(5,1fr)}
-@media (max-width:760px){.tiles{grid-template-columns:repeat(2,1fr)}}
+.tiles.t4{grid-template-columns:repeat(4,1fr)}
+@media (max-width:760px){.tiles,.tiles.t4{grid-template-columns:repeat(2,1fr)}}
 .tile{background:var(--sheet);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
 .tile b{display:block;font-size:1.6rem;font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.25}
 .tile span{color:var(--muted);font-size:.86rem}
