@@ -1,5 +1,5 @@
 /* يتيح فتح نبراس دون اتصال بعد أول زيارة، ويحدّث الملفات تلقائياً */
-const CACHE = "nibras-202610231632", CORE = ["./", "index.html", "manifest.webmanifest", "assets/icon.svg", "assets/icon-192.png"];
+const CACHE = "nibras-202610290725", CORE = ["./", "index.html", "manifest.webmanifest", "assets/icon.svg", "assets/icon-192.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener("fetch", e => {

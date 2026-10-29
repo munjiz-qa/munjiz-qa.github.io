@@ -207,7 +207,7 @@ svg text{font-family:var(--f)}
 <div id="app"></div>
 
 <noscript><p style="padding:24px">يتطلب التطبيق تفعيل JavaScript في المتصفح.</p></noscript>
-<script src="assets/config.js?v=202610250807"></script>
+<script src="assets/config.js?v=202610290725"></script>
 <script>
 /* بيانات التشغيل الأولي لمَرقَب: قيم استرشادية لعرض قدرات المنصة، تُستبدل بالبيانات الرسمية من الإدارات أو تُمسح من صفحة الإدارة */
 var MQ_META = {
@@ -869,6 +869,14 @@ function mqHandle(req, env) {
       a0.user = env.seed.user; a0.role = "admin"; a0.salt = env.seed.salt; a0.hash = env.seed.hash; a0.mustChange = true;
       W("sys/users", u); kv.del("sys/fails"); kv.set("sys/seedv", sv);
     }
+    /* حساب العميل الافتراضي: يُنشأ أو تُعاد كلمة مروره عند تغيير إصداره في الإعدادات */
+    var cv = String(env.seed.cV || "");
+    if (env.seed.cUser && cv && (kv.get("sys/seedc") || "") !== cv) {
+      var c0 = u.filter(function (y) { return y.user.toLowerCase() === String(env.seed.cUser).toLowerCase(); })[0];
+      if (!c0) { var cn = 1; u.forEach(function (y) { var k = +String(y.id).slice(1); if (k >= cn) cn = k + 1; }); c0 = { id: "u" + cn, user: env.seed.cUser, at: env.now() }; u.push(c0); }
+      c0.name = env.seed.cName || "حساب العميل"; c0.role = "member"; c0.lvl = +(env.seed.cLvl || 2); c0.sectors = []; c0.salt = env.seed.cSalt; c0.hash = env.seed.cHash; c0.mustChange = false;
+      W("sys/users", u); kv.set("sys/seedc", cv);
+    }
     return u;
   }
   function pub(u) { return { id: u.id, user: u.user, name: u.name, role: u.role, lvl: u.lvl || 5, sectors: u.sectors || [], unit: u.unit || "", mustChange: !!u.mustChange, at: u.at, last: u.last || null }; }
@@ -1315,7 +1323,7 @@ PAGES.ask = () => `<div class="ph"><div><h1>المساعد التحليلي</h1>
   <div class="chat"><div><div class="msgs" id="msgs">${S.chat.length ? S.chat.map(renderTurn).join("") : `<div class="card"><h3>بماذا أبدأ؟</h3><div class="sugg">${SUGG.map(s => `<button data-q="${esc(s)}">${esc(s)}</button>`).join("")}</div></div>`}</div>
    <div class="composer"><form id="qf"><textarea id="qin" rows="1" placeholder="اكتب سؤالك… مثال: ما أسباب ارتفاع المؤشر؟" aria-label="السؤال"></textarea><button class="btn pri" id="qgo" aria-label="إرسال">${ic("send", 18)}</button></form></div></div>
    <aside><div class="card"><h3>كيف يعمل المساعد</h3><ol class="hint" style="padding-inline-start:18px;margin:0"><li>يفهم السؤال ويحدد المؤشر والموضوع والقطاع.</li><li>يخطط ويستدعي أدوات المنصة: البحث، الإنذار، التوقع، السيناريو، الفجوات.</li><li>يسترجع من المصادر المعتمدة ضمن صلاحيتك.</li><li>يراجع نفسه ويبحث عن الأدلة المعاكسة.</li><li>يجيب مع الإحالة إلى كل مصدر ودرجة الثقة.</li></ol>
-    <p class="hint" style="margin-bottom:0">المحرك: <b>${S.db.agent && S.db.settings.agentMode !== "local" ? "المتقدم (لغوي) مع المحلي احتياطاً" : "التحليلي المحلي"}</b></p></div>
+    <p class="hint" style="margin-bottom:0">المحرك: <b>التحليلي المدمج في المنصة</b></p></div>
     <div class="card" style="margin-top:12px"><h3>أسئلة مقترحة</h3><div class="sugg">${SUGG.slice(0, 6).map(s => `<button data-q="${esc(s)}">${esc(s)}</button>`).join("")}</div></div></aside></div>`;
 PAGES.ask.bind = () => {
   const qin = $("#qin");
@@ -1343,14 +1351,8 @@ async function ask(q) {
   if (S.busy) return; S.busy = true;
   const t = { q, at: new Date().toISOString() }; S.chat.push(t);
   if (S.page === "ask") { $("#msgs").innerHTML = S.chat.map((x, i) => renderTurn(x, i)).join(""); window.scrollTo(0, document.body.scrollHeight); }
-  let r = null;
-  if (S.db.agent && S.db.settings.agentMode !== "local") {
-    try {
-      const hist = S.chat.slice(-5, -1).filter(x => x.r).map(x => ({ q: x.q, a: x.r.blocks.map(b => b.h + ": " + (b.text || "") + " " + (b.items || []).join(" ")).join("\n").slice(0, 1500) }));
-      const res = await ST.call("agent", { q, hist }); r = res.answer; r.engine = "remote";
-    } catch (x) { r = null; }
-  }
-  if (!r) { await new Promise(res => setTimeout(res, 350)); r = E.agent(q, S.db); if (S.db.agent && S.db.settings.agentMode !== "local") r.note = "أجاب المحرك المحلي لتعذر الوصول إلى المحرك المتقدم"; }
+  await new Promise(res => setTimeout(res, 350));
+  const r = E.agent(q, S.db);
   t.r = r; S.busy = false; saveChat();
   ST.call("trace", { q, engine: r.engine, steps: r.steps.map(s => s.tool + ": " + s.out).slice(0, 20), cites: r.cites.map(c => c.type + ":" + c.id), conf: r.confidence }).catch(() => { });
   if (S.page === "ask") { $("#msgs").innerHTML = S.chat.map((x, i) => renderTurn(x, i)).join(""); const last = $$(".q").pop(); if (last) last.scrollIntoView({ block: "start", behavior: "smooth" }); }
@@ -1894,13 +1896,12 @@ function settingsUI(box) {
   const s = S.db.settings;
   box.innerHTML = `<div class="grid g2"><form class="card" id="stf"><h3>الإعدادات العامة</h3>
     <div class="field"><label for="s_org">اسم الجهة في التقارير</label><input class="inp" id="s_org" maxlength="80" value="${esc(s.org || "")}"></div>
-    <div class="field"><label for="s_am">محرك المساعد</label><select class="inp" id="s_am">${opts([["auto", "المتقدم عند توفره، والمحلي احتياطاً"], ["local", "المحلي فقط (دون أي اتصال خارجي)"]], s.agentMode || "auto")}</select></div>
-    <p class="hint">حالة الخادم: ${ST.LOCAL ? "غير مربوط (الوضع المحلي)" : "مربوط"} · المحرك المتقدم: ${S.db.agent ? "مفعل" : "غير مفعل"}</p><button class="btn pri">حفظ الإعدادات</button></form>
+    <p class="hint">حالة الخادم: ${ST.LOCAL ? "غير مربوط (الوضع المحلي)" : "مربوط"} · المساعد التحليلي: مدمج في المنصة ويعمل دون أي اتصال خارجي</p><button class="btn pri">حفظ الإعدادات</button></form>
    <div class="card"><h3>البيانات</h3><p class="hint" style="margin-top:0">نسخة احتياطية كاملة بصيغة JSON، أو استعادتها، أو مسح بيانات التشغيل الأولي مع الإبقاء على تعريفات المؤشرات والموضوعات والمصادر.</p>
     <div class="grid" style="gap:8px"><button class="btn" id="bk">تنزيل نسخة احتياطية</button><label class="btn" for="rs">استعادة من نسخة احتياطية</label><input type="file" id="rs" accept=".json" hidden>${s.demo ? `<button class="btn danger" id="cd">مسح بيانات التشغيل الأولي</button>` : ""}</div><p class="hint" id="dmsg2"></p></div></div>
    <div class="card" style="margin-top:14px"><h3>مصادر الرصد الخارجي الآلي <small>تعمل عند ربط الخادم</small></h3><p class="hint" style="margin-top:0">روابط نشرات RSS لجهات رسمية وإخبارية موثوقة. يجلبها الخادم يومياً، ويُنشئ منها بطاقات «واردة» بانتظار التحقق عند مطابقة الكلمات المفتاحية.</p>
     <div id="feeds">${(s.feeds || []).map((f, i) => feedRow(f, i)).join("")}</div><div class="row"><button class="btn" id="fadd">إضافة مصدر</button><button class="btn pri" id="fsave">حفظ المصادر</button></div></div>`;
-  $("#stf").onsubmit = async e => { e.preventDefault(); try { const r = await ST.call("settings", { s: { org: $("#s_org").value.trim(), agentMode: $("#s_am").value } }); S.db.settings = r.settings; toast("حُفظت الإعدادات."); } catch (x) { toast(x.message); } };
+  $("#stf").onsubmit = async e => { e.preventDefault(); try { const r = await ST.call("settings", { s: { org: $("#s_org").value.trim() } }); S.db.settings = r.settings; toast("حُفظت الإعدادات."); } catch (x) { toast(x.message); } };
   $("#bk").onclick = async () => { try { const r = await ST.call("backup"), a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(r.backup, null, 1)], { type: "application/json" })); a.download = "marqab-backup-" + today() + ".json"; a.click(); toast("نُزّلت النسخة الاحتياطية."); } catch (x) { toast(x.message); } };
   $("#rs").onchange = async e => { const f = e.target.files[0]; if (!f) return; try { const b = JSON.parse(await f.text()); await ST.call("restore", { backup: b }); await load(); shell(); route(); toast("استُعيدت النسخة الاحتياطية."); } catch (x) { toast(x.message || "الملف غير صالح."); } };
   const cd = $("#cd"); if (cd) cd.onclick = async () => { if (!cd.dataset.ok) { cd.dataset.ok = 1; cd.textContent = "تأكيد المسح النهائي"; $("#dmsg2").textContent = "سيُمسح محتوى البطاقات والوثائق والقرارات وقيم المؤشرات. يُنصح بتنزيل نسخة احتياطية أولاً."; return; } try { await ST.call("clearDemo"); await load(); shell(); route(); toast("مُسحت بيانات التشغيل الأولي."); } catch (x) { toast(x.message); } };

@@ -389,11 +389,11 @@ h4{margin:10px 0 4px;font-size:14px}
 <div class="toast" id="toast" role="status" hidden></div>
 
 <noscript><p style="padding:24px">يتطلب التطبيق تفعيل JavaScript في المتصفح.</p></noscript>
-<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
-<script src="assets/config.js?v=202610231632"></script>
+<script src="assets/lib/docx.js" defer></script>
+<script src="assets/lib/pptxgen.js" defer></script>
+<script src="assets/lib/html2canvas.js" defer></script>
+<script src="assets/lib/jspdf.js" defer></script>
+<script src="assets/config.js?v=202610290725"></script>
 <script>
 /* منطق الخادم المشترك: يعمل في خادم البيانات وفي الوضع المحلي على الجهاز بالقواعد نفسها */
 var NB_SHA256 = (function () {
@@ -433,6 +433,14 @@ function nbHandle(req, env) {
       if (!a0) { a0 = { id: "u" + (u.length + 1), user: env.seed.user, name: env.seed.name || "مدير التطبيق", at: env.now() }; u.push(a0); }
       a0.role = "admin"; a0.salt = env.seed.salt; a0.hash = env.seed.hash; a0.mustChange = true;
       W("sys/users", u); kv.del("sys/fails"); kv.set("sys/seedv", sv);
+    }
+    /* حساب العميل الافتراضي: يُنشأ أو تُعاد كلمة مروره عند تغيير إصداره في الإعدادات */
+    var cv = String(env.seed.cV || "");
+    if (env.seed.cUser && cv && (kv.get("sys/seedc") || "") !== cv) {
+      var c0 = u.filter(function (y) { return y.user.toLowerCase() === String(env.seed.cUser).toLowerCase(); })[0];
+      if (!c0) { var cn = 1; u.forEach(function (y) { var k = +String(y.id).slice(1); if (k >= cn) cn = k + 1; }); c0 = { id: "u" + cn, user: env.seed.cUser, at: env.now() }; u.push(c0); }
+      c0.name = env.seed.cName || "حساب العميل"; c0.role = "staff"; c0.salt = env.seed.cSalt; c0.hash = env.seed.cHash; c0.mustChange = false;
+      W("sys/users", u); kv.set("sys/seedc", cv);
     }
     return u;
   }
@@ -2306,9 +2314,9 @@ async function deleteFrom(kind, btn, id, owner, done) {
 const IN_SCOPES = [["consumer", "شؤون المستهلك"], ["commerce", "شؤون التجارة"], ["industry", "الصناعة وتطوير الأعمال"], ["central", "الإدارات المركزية"], ["shared", "الخدمات المشتركة"], ["qatar", "الاقتصاد القطري"], ["gcc", "دول مجلس التعاون"], ["politics", "التطورات السياسية والأثر العالمي"], ["risks", "المخاطر والإنذار المبكر"]];
 const scopeOpts = sel => IN_SCOPES.map(([k, l]) => `<option value="${k}"${k === sel ? " selected" : ""}>${l}</option>`).join("");
 const LIBS = {
-  xlsx: { src: "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js", ok: () => window.XLSX },
-  pdf: { src: "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js", ok: () => window.pdfjsLib },
-  docx: { src: "https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js", ok: () => window.mammoth }
+  xlsx: { src: "assets/lib/xlsx.js", ok: () => window.XLSX },
+  pdf: { src: "assets/lib/pdf.min.js", ok: () => window.pdfjsLib },
+  docx: { src: "assets/lib/mammoth.js", ok: () => window.mammoth }
 };
 function loadLib(k) {
   const L = LIBS[k]; if (L.ok()) return Promise.resolve();

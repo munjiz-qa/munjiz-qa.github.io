@@ -37,6 +37,14 @@ function nbHandle(req, env) {
       a0.role = "admin"; a0.salt = env.seed.salt; a0.hash = env.seed.hash; a0.mustChange = true;
       W("sys/users", u); kv.del("sys/fails"); kv.set("sys/seedv", sv);
     }
+    /* حساب العميل الافتراضي: يُنشأ أو تُعاد كلمة مروره عند تغيير إصداره في الإعدادات */
+    var cv = String(env.seed.cV || "");
+    if (env.seed.cUser && cv && (kv.get("sys/seedc") || "") !== cv) {
+      var c0 = u.filter(function (y) { return y.user.toLowerCase() === String(env.seed.cUser).toLowerCase(); })[0];
+      if (!c0) { var cn = 1; u.forEach(function (y) { var k = +String(y.id).slice(1); if (k >= cn) cn = k + 1; }); c0 = { id: "u" + cn, user: env.seed.cUser, at: env.now() }; u.push(c0); }
+      c0.name = env.seed.cName || "حساب العميل"; c0.role = "staff"; c0.salt = env.seed.cSalt; c0.hash = env.seed.cHash; c0.mustChange = false;
+      W("sys/users", u); kv.set("sys/seedc", cv);
+    }
     return u;
   }
   function pub(u) { return { id: u.id, user: u.user, name: u.name, role: u.role, mustChange: !!u.mustChange, at: u.at }; }
@@ -136,7 +144,7 @@ function nbHandle(req, env) {
    الإعداد: الصق هذا الملف كاملاً في محرر Apps Script لجدول Google جديد،
    ثم انشره تطبيق ويب (Execute as: Me، Who has access: Anyone)،
    وضع رابط /exec في الحقل API داخل assets/config.js.                        */
-const SEED = {"user":"admin","name":"مدير التطبيق","v":"2","salt":"PfDH8JSEhQ5ETRt3","hash":"14330716610422294128555ea6e9fe7e9db11c1e4227009e89374fe036b9b8f0"};
+const SEED = {"user":"admin","name":"مدير التطبيق","v":"3","salt":"FaGabcwhhatD6R2c","hash":"1c3a3bf7f31ef810fbff3176bd87ab89860bd55810bf03f7b175f37837abc5e6","cUser":"client","cName":"حساب العميل","cV":"1","cSalt":"7bknNtzgK3TUh8aZ","cHash":"72f699041c13a49f88f7f1632c4751086184c7eac5680862bf511747a389b153"};
 const SHEET = "Store", CHUNK = 45000, PARTS = 10;
 
 function sheet_() {
