@@ -1,11 +1,11 @@
 {
- "checked": "2026-10-30T10:14:10.570Z",
- "updated": "2026-10-30T10:14:10.570Z",
- "ok": true,
+ "checked": "2026-10-30T15:15:40.193Z",
+ "updated": "2026-10-30T15:15:40.193Z",
+ "ok": false,
  "brief": {
-  "id": "2026-10-30-am",
+  "id": "2026-10-30-pm",
   "auto": false,
-  "age_h": 6.5
+  "age_h": 0.4
  },
  "writer": "autopilot",
  "checks": [
@@ -14,45 +14,45 @@
    "url": "https://munjiz-qa.github.io/khabar/",
    "ok": true,
    "code": 200,
-   "ms": 173
+   "ms": 181
   },
   {
    "name": "خبر: لوحة الإدارة",
    "url": "https://munjiz-qa.github.io/khabar/admin/",
    "ok": true,
    "code": 200,
-   "ms": 80
+   "ms": 97
   },
   {
    "name": "خبر: حساب العميل",
    "url": "https://munjiz-qa.github.io/khabar/account/",
    "ok": true,
    "code": 200,
-   "ms": 53
+   "ms": 87
   },
   {
    "name": "خبر: الخلاصة المنشورة",
    "url": "https://munjiz-qa.github.io/khabar/data/brief.json",
    "ok": true,
    "code": 200,
-   "ms": 63
+   "ms": 61
   },
   {
    "name": "قُطب: لوحة الإدارة الموحّدة",
    "url": "https://munjiz-qa.github.io/qutb/",
    "ok": true,
    "code": 200,
-   "ms": 60
+   "ms": 107
   },
   {
    "name": "الخلاصة في موعدها",
-   "ok": true,
-   "detail": "2026-10-30-am، المتوقع 2026-10-30-am"
+   "ok": false,
+   "detail": "2026-10-30-pm، المتوقع 2026-10-30-am"
   },
   {
    "name": "العناوين الآلية حديثة",
    "ok": true,
-   "detail": "آخر تحديث قبل 0.1 ساعة"
+   "detail": "آخر تحديث قبل 2.0 ساعة"
   },
   {
    "name": "كل خبر بمصدره",
