@@ -48,7 +48,7 @@ const DOCX = mkZip([["[Content_Types].xml", "<Types/>"], ["word/document.xml", "
     await p.goto(BASE + "#scan"); await p.click("#demo"); await p.waitForSelector("text=نتيجة الفحص", { timeout: 10000 });
     const res = await p.textContent("#res"); ok(res.includes("كلمة مرور مكتوبة") && res.includes("IBAN") && res.includes("بطاقة شخصية") && res.includes("بريد"), "الفحص اكتشف البيانات الحساسة في ملف الاختبار"); ok(!res.includes("Test-Only-123"), "القيم الحساسة مقنّعة"); await shot("client-scan");
     await p.setInputFiles("#fi", { name: "عرض.docx", mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", buffer: DOCX });
-    await p.waitForFunction(() => document.querySelector("#res") && document.querySelector("#res").textContent.includes("#2"), null, { timeout: 10000 });
+    await p.waitForSelector("#res:has-text('#2')", { timeout: 10000 });
     ok((await p.textContent("#res")).includes("بريد"), "فحص محتوى ملف Word");
     await p.goto(BASE + "#reports"); await p.waitForSelector(".banner"); ok((await p.textContent(".banner")).includes("سليمة"), "سلسلة الأختام سليمة"); await shot("client-reports");
     for (const h of ["users", "audit", "settings", "health"]) { await p.goto(BASE + "#" + h); await p.waitForTimeout(300); ok(!(await p.isVisible("h1:has-text('" + ({ users: "الحسابات", audit: "سجل التدقيق", settings: "الإعدادات", health: "صحة المنصة" })[h] + "')")), "العميل محجوب عن #" + h); }
