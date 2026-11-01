@@ -12,6 +12,7 @@ for (const f of ['', 'app.js', 'app.css', 'sw.js', 'manifest.webmanifest', 'conf
 const cfg = await (await p.request.get(B + 'config.json')).json();
 ok(['client', 'admin'].every(u => cfg.users?.some(x => x.u === u && !x.off)), 'الحسابان الافتراضيان (client و admin) موجودان ومفعّلان');
 await p.goto(B + '#home'); await p.waitForSelector('.daily', { timeout: 30000 });
+ok((await p.$$('.path')).length === 4 && (await p.$$('.path .scard')).length === 15, 'الرئيسية الجديدة: أربعة مسارات و١٥ بطاقة قسم');
 ok(await p.evaluate(() => typeof window.claude === 'undefined'), 'لا يوجد أي مكوّن من Claude في الصفحة');
 for (const v of ['account', 'admin', 'search', 'hifz', 'map', 'awwalin', 'ijaz', 'research']) {
   await p.evaluate(v => location.hash = v, v); await p.waitForTimeout(700);
