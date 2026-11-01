@@ -136,6 +136,9 @@ tr.clk{cursor:pointer} tr.clk:hover td{background:var(--accent-soft)}
 .hbar{display:grid;grid-template-columns:3.4em 1fr 5em;align-items:center;gap:8px;font-variant-numeric:tabular-nums;font-size:.9rem}
 .hbar i{display:block;height:12px;border-radius:3px;background:var(--accent);opacity:.85}
 .hbar em{font-style:normal;color:var(--muted);text-align:left}
+.hbars.wide .hbar{grid-template-columns:minmax(6.5em,12em) minmax(0,1fr) 3.6em;color:inherit;text-decoration:none}
+.hbars.wide .hbar[data-open]{cursor:pointer}.hbars.wide .hbar[data-open]:hover .k{color:var(--accent)}
+.hbars.wide .hbar .k{font-family:var(--f-body);font-size:.88rem;text-align:start;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hbar .k{font-family:var(--f-quran);font-size:1.15rem;text-align:center}
 .dist{display:flex;align-items:flex-end;gap:1px;height:60px;direction:rtl}
 .dist i{flex:1;background:var(--accent);opacity:.8;min-height:1px;border-radius:1px 1px 0 0}

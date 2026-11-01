@@ -93,6 +93,7 @@ const NAV = [
   ['الأساس', [['home','الرئيسية','i-home'],['mushaf','المصحف','i-book'],['stats','الإحصاء العام','i-chart'],['words','المعجم المفهرس','i-abc'],['topics','الموسوعة الموضوعية','i-grid']]],
   ['الذكاء', [['search','البحث بالمعنى','i-search',1],['ask','اسأل مشكاة','i-spark',1]]],
   ['الحفظ والتلاوة', [['hifz','الحفظ والتسميع','i-mic',1],['saved','محفوظاتي','i-bookmark']]],
+  ['التحليل', [['awwalin','أخبار الأولين والآخرين','i-scroll',1],['ijaz','الإعجاز العلمي','i-atom',1]]],
   ['الاستكشاف', [['map','أطلس القرآن','i-map',1],['timeline','الخط الزمني','i-time',1],['graph','شبكة المعرفة','i-graph',1]]],
   ['التطبيق', [['guide','دليل التطبيق','i-info',1],['account','حسابي','i-user'],['settings','الإعدادات','i-gear'],['about','المنهج والمصادر','i-info'],['admin','لوحة الإدارة','i-shield']]],
 ];
@@ -103,7 +104,7 @@ function navHTML() {
 }
 function drawNav() { $('#nav').innerHTML = navHTML(); }
 const V = html => { $('#view').innerHTML = html; };
-const views = { home, mushaf, stats, words, topics, search, ask, hifz, saved, map: atlas, timeline, graph, settings, about, admin, guide, account };
+const views = { home, mushaf, stats, words, topics, search, ask, hifz, saved, map: atlas, timeline, graph, settings, about, admin, guide, account, awwalin, ijaz };
 function route() {
   const h = (location.hash || '#home').slice(1);
   let m, cur;
@@ -912,6 +913,114 @@ function about() {
 }
 
 
+/* ================= أخبار الأولين والآخرين: analysis built from the topical encyclopedia (stories, nations, prophets, sira, unseen) */
+const uniqAyat = items => [...new Set(items.flatMap(it => itemAyat(it)))];
+const notLex = it => !it.n.startsWith('لفظ');
+const barsHTML = (rows, cat) => { const mx = Math.max(...rows.map(r => r[1]), 1); return `<div class="hbars wide">${rows.map(([nm, v, label]) => `<a class="hbar" ${cat ? `data-open="${esc(cat)}|${esc(nm)}"` : ''}><span class="k">${esc(label || nm)}</span><i style="width:${(v / mx * 100).toFixed(1)}%"></i><em>${n(v)}</em></a>`).join('')}</div>`; };
+const ayahQuote = (s, a, b = a) => { const i = idxOf(s, a), j = idxOf(s, b); const t = []; for (let k = i; k <= j; k++) t.push(ayahText(k)); return `<p class="ayah" style="margin:0">${esc(t.join(' ۝ '))} <a data-ayah="${i}" class="small">﴿${esc(Q.surahs[s-1].name)}: ${n(a)}${b > a ? '–' + n(b) : ''}﴾</a></p>`; };
+const FATES = [
+  ['قوم نوح', 'تكذيب نوح عليه السلام ألف سنة إلا خمسين عاماً', 'الطوفان والغرق', 29, 14],
+  ['عاد', 'الاستكبار في الأرض والبطش', 'الريح الصرصر العاتية', 69, 6],
+  ['ثمود', 'عقر الناقة وتكذيب صالح', 'الصيحة', 11, 67],
+  ['قوم لوط', 'إتيان الفاحشة', 'قلب القرى والحجارة من سجيل', 11, 82],
+  ['أصحاب مدين', 'التطفيف في الكيل والميزان', 'عذاب يوم الظلة', 26, 189],
+  ['فرعون وجنوده', 'العلو والطغيان واستعباد بني إسرائيل', 'الغرق في اليم', 28, 40],
+  ['قارون', 'البغي والاغترار بالمال', 'الخسف به وبداره', 28, 81],
+  ['أصحاب الفيل', 'قصد هدم الكعبة', 'طير أبابيل ترميهم بحجارة من سجيل', 105, 4],
+];
+const FUT = {
+  'نبوءات أخبر بها القرآن فتحققت': ['غلبة الروم بعد هزيمتهم', 'دخول المسجد الحرام آمنين', 'هزيمة جمع المشركين', 'مصير أبي لهب', 'حفظ القرآن', 'عصمة النبي ﷺ من الناس', 'ظهور الدين والاستخلاف في الأرض', 'العجز عن الإتيان بمثله'],
+  'أشراط الساعة وعلاماتها': ['اقتراب الساعة', 'الدخان', 'دابة الأرض', 'يأجوج ومأجوج', 'نزول عيسى عليه السلام', 'طلوع بعض آيات الرب'],
+  'مشاهد يوم القيامة': ['النفخ في الصور', 'زلزلة الساعة', 'تكوير الشمس وانفطار السماء وانشقاقها', 'القارعة', 'الحاقة', 'البعث والحشر', 'الميزان والحساب', 'تطاير الصحف', 'الشفاعة', 'الموت والبرزخ'],
+  'المصير': ['صفة الجنة ونعيمها', 'صفة النار وعذابها'],
+};
+function fateLink(q) { const k = q.replace('أصحاب مدين', 'مدين').replace(' وجنوده', ''); for (const c of ['aqwam', 'qasas', 'anbiya']) { const r = topicItem(c, k) || (T.find(x => x.id === c).items.find(it => it.n.includes(k)) && { c: { id: c }, it: T.find(x => x.id === c).items.find(it => it.n.includes(k)) }); if (r) return `<a data-open="${c}|${esc(r.it.n)}">${q}</a>`; } return q; }
+function awwalin() {
+  const cat = id => T.find(c => c.id === id);
+  const qs = cat('qasas').items.filter(notLex), an = cat('anbiya').items, aq = cat('aqwam').items, ak = cat('akhbar').items, mu = cat('mustaqbal').items;
+  const storyAyat = uniqAyat(qs), futAyat = uniqAyat(mu.filter(notLex));
+  const pct = x => (x / Q.ayat.length * 100).toLocaleString('ar-EG', { maximumFractionDigits: 1 });
+  const bySurah = {}; storyAyat.forEach(i => { const s = Q.ayat[i][0]; bySurah[s] = (bySurah[s] || 0) + 1; });
+  const topS = Object.entries(bySurah).sort((a, b) => b[1] - a[1]).slice(0, 10);
+  const mk = storyAyat.filter(i => Q.surahs[Q.ayat[i][0]-1].type === 'مكية').length;
+  const topQ = qs.map(it => [it.n, itemAyat(it).length]).sort((a, b) => b[1] - a[1]).slice(0, 12);
+  const topP = an.filter(it => it.c).map(it => [it.n, it.c, it.n.replace(' عليه السلام', '').replace(' عليهما السلام', '')]).sort((a, b) => b[1] - a[1]).slice(0, 12);
+  const mi = name => mu.find(x => x.n === name);
+  V(`<div class="stack" style="max-width:1000px"><div><div class="eyebrow">تحليل</div><h1>أخبار الأولين والآخرين</h1>
+  <p class="lead">ما قصّه القرآن من أخبار الأمم الماضية، وما أخبر به من أحداث السيرة، وما أنبأ به من المستقبل وأخبار الغيب، محسوباً من الموسوعة الموضوعية في هذا التطبيق، وكل رقم يفتح آياته.</p></div>
+  ${ayahQuote(12, 111)}
+  <div class="grid tiles"><div class="tile"><b>${n(storyAyat.length)}</b><span>آية في القصص (${pct(storyAyat.length)}٪ من المصحف)</span></div><div class="tile"><b>${n(an.length)}</b><span>نبياً ورسولاً في الموسوعة</span></div><div class="tile"><b>${n(aq.length)}</b><span>قوماً وأمة</span></div><div class="tile"><b>${n(ak.length)}</b><span>حدثاً من السيرة</span></div><div class="tile"><b>${n(futAyat.length)}</b><span>آية في أخبار المستقبل والغيب</span></div></div>
+  <h2 style="margin-bottom:0">الأولون</h2>
+  <div class="grid split"><section class="panel stack tight"><h3>أكثر القصص حضوراً (بعدد الآيات)</h3>${barsHTML(topQ, 'qasas')}</section>
+  <section class="panel stack tight"><h3>أكثر الأنبياء ذكراً (بعدد مرات ورود الاسم)</h3>${barsHTML(topP, 'anbiya')}</section></div>
+  <section class="panel stack tight"><h3>أين رُويت القصص؟</h3>
+    <p style="margin:0">${n(mk)} آية من آيات القصص في السور المكية (${(mk / storyAyat.length * 100).toLocaleString('ar-EG', { maximumFractionDigits: 0 })}٪)، و${n(storyAyat.length - mk)} في السور المدنية. فالقصص سمة القرآن المكي في مرحلة الدعوة والتثبيت.</p>
+    <div class="meter"><i style="width:${(mk / storyAyat.length * 100).toFixed(1)}%;background:var(--saffron)"></i></div>
+    <h4 style="margin:6px 0 0">السور الأكثر قصصاً</h4>${barsHTML(topS.map(([s, v]) => [s, v, 'سورة ' + Q.surahs[s-1].name]))}</section>
+  <section class="panel stack tight"><h3>سنن الله في الأمم المكذّبة</h3>${ayahQuote(29, 40)}
+    <div class="tablebox"><table class="wtable"><thead><tr><th>الأمة</th><th>ذنبها</th><th>عاقبتها</th><th>الآية</th></tr></thead><tbody>${FATES.map(([q, d, f, s, a]) => `<tr><td>${fateLink(q)}</td><td>${d}</td><td>${f}</td><td>${refLink(idxOf(s, a))}</td></tr>`).join('')}</tbody></table></div></section>
+  <h2 style="margin-bottom:0">الآخرون</h2>
+  <div class="grid split">${Object.entries(FUT).map(([h, names]) => `<section class="panel stack tight"><h3>${h}</h3><div class="list">${names.map(mi).filter(Boolean).map(it => `<a class="row" data-open="mustaqbal|${esc(it.n)}"><span class="t">${esc(it.n)}${it.d ? ` <span class="muted small">· ${esc(it.d)}</span>` : ''}</span><span class="n">${n(itemAyat(it).length)}</span></a>`).join('')}</div></section>`).join('')}</div>
+  <section class="panel stack tight"><h3>أحداث السيرة التي نزل فيها القرآن</h3>${barsHTML(ak.map(it => [it.n, itemAyat(it).length]).sort((a, b) => b[1] - a[1]).slice(0, 12), 'akhbar')}</section>
+  <div class="toolbar"><a class="btn" href="#timeline"><svg><use href="#i-time"/></svg>الخط الزمني</a><a class="btn" href="#map"><svg><use href="#i-map"/></svg>أطلس القرآن</a><a class="btn" href="#graph"><svg><use href="#i-graph"/></svg>شبكة المعرفة</a><a class="btn" href="#t-qasas">القصص القرآني كاملاً</a></div>
+  <p class="muted small" style="margin:0">المصادر: ${esc(cat('qasas').src || '')} ${esc(cat('mustaqbal').src || '')} ${esc(cat('akhbar').src || '')}</p></div>`);
+}
+
+/* ================= الإعجاز العلمي: cosmic and scientific verses, with the classical tafsir one tap away and the contemporary reading graded honestly */
+const IJ_ALIAS = { 'الجبال أوتاداً': 'الجبال أوتاد ورواسي', 'الشمس تجري لمستقر لها': 'كلٌّ في فلك يسبحون', 'الناصية الكاذبة': 'الناصية الكاذبة الخاطئة', 'ضيق الصدر عند الصعود': 'ضيق الصدر عند الصعود في السماء' };
+const IJ_LEVEL = { z: ['معنى ظاهر متفق عليه', 'ok'], m: ['قراءة معاصرة مشهورة', 'gold'], x: ['اجتهاد محل نقاش', ''] };
+const IJAZ = [
+  ['الكون والفلك', 'الرتق والفتق', [[21, 30]], 'يربطها أصحاب التفسير العلمي بنشأة الكون من حالة واحدة متصلة ثم انفصالها، وهو ما يُعرف بنظرية الانفجار العظيم.', 'x', 'زغلول النجار، «من آيات الإعجاز العلمي: السماء في القرآن الكريم».'],
+  ['الكون والفلك', 'السماء دخان', [[41, 11]], 'الحالة الغازية الأولى للكون قبل تكوّن النجوم والكواكب.', 'x', 'زغلول النجار، «تفسير الآيات الكونية في القرآن الكريم».'],
+  ['الكون والفلك', 'اتساع السماء', [[51, 47]], 'يُستشهد بها على اتساع الكون الذي رصده إدوين هابل سنة ١٩٢٩م. وفسّرها السلف بسعة الخلق وكمال القدرة.', 'm', 'موسوعة الإعجاز العلمي في القرآن والسنة، يوسف الحاج أحمد.'],
+  ['الكون والفلك', 'كلٌّ في فلك يسبحون', [[21, 33], [36, 40]], 'لكلٍّ من الشمس والقمر مدار يجري فيه. وهو معنى ظاهر في الآية قرره المفسرون قديماً.', 'z', 'تفسير ابن كثير؛ التحرير والتنوير لابن عاشور.'],
+  ['الكون والفلك', 'الشمس ضياء والقمر نور', [[10, 5], [25, 61]], 'التفريق بين الشمس مصدراً للضوء والحرارة والقمر نوراً منعكساً.', 'm', 'موريس بوكاي، «التوراة والإنجيل والقرآن والعلم» (١٩٧٦م).'],
+  ['الكون والفلك', 'الشمس تجري لمستقر لها', [[36, 38]], 'يربطها باحثون بحركة الشمس في المجرة. وللمفسرين في «مستقرها» أقوال: منتهى سيرها، أو يوم القيامة.', 'x', 'تفسير القرطبي؛ زغلول النجار، «السماء في القرآن الكريم».'],
+  ['الكون والفلك', 'إنزال الحديد', [[57, 25]], 'يُستشهد بها على أن الحديد يتكوّن في باطن النجوم لا في الأرض. وفسّر كثير من المفسرين «أنزلنا» بمعنى خلقنا وهيّأنا.', 'x', 'زغلول النجار، «الحديد في القرآن الكريم».'],
+  ['الأرض', 'الجبال أوتاداً', [[78, 6], [78, 7]], 'للجبال امتداد في باطن الأرض يثبّت قشرتها، كما يثبّت الوتد الخيمة.', 'x', 'زغلول النجار، «الجبال في القرآن الكريم».'],
+  ['الأرض', 'أدنى الأرض', [[30, 2], [30, 4]], 'وقعت المعركة قرب البحر الميت، وهو أخفض بقعة يابسة على الأرض. وأكثر المفسرين على أن «أدنى» بمعنى أقرب إلى بلاد العرب، والآية من أنباء الغيب التي تحققت.', 'x', 'تفسير ابن كثير؛ موسوعة الإعجاز العلمي، يوسف الحاج أحمد.'],
+  ['البحار والماء', 'البرزخ بين البحرين', [[25, 53], [55, 19], [55, 20]], 'الحاجز بين الكتل المائية المختلفة في الملوحة والكثافة، فلا يطغى بعضها على بعض.', 'm', 'هيئة الإعجاز العلمي في القرآن والسنة، رابطة العالم الإسلامي.'],
+  ['البحار والماء', 'ظلمات البحر والموج', [[24, 40]], 'الظلمة المتدرجة في أعماق البحار، والأمواج الداخلية التي تعلوها أمواج السطح.', 'm', 'هيئة الإعجاز العلمي في القرآن والسنة.'],
+  ['البحار والماء', 'السحاب الركامي والبَرَد', [[24, 43]], 'وصف تكوّن السحب الركامية بتجمعها ثم تراكمها، ونزول البَرَد منها.', 'm', 'موسوعة الإعجاز العلمي في القرآن والسنة.'],
+  ['البحار والماء', 'الرياح لواقح', [[15, 22]], 'تلقيح الرياح للسحاب فينزل المطر، وللنبات بنقل حبوب اللقاح. وقد قال بالمعنيين المفسرون الأوائل.', 'z', 'تفسير الطبري؛ تفسير ابن كثير.'],
+  ['البحار والماء', 'الماء أصل الحياة', [[21, 30]], 'الماء أساس تكوين كل كائن حي. وهو معنى ظاهر في قوله: ﴿وَجَعَلۡنَا مِنَ ٱلۡمَآءِ كُلَّ شَيۡءٍ حَيٍّ﴾.', 'z', 'تفسير ابن كثير؛ التحرير والتنوير.'],
+  ['الإنسان', 'أطوار خلق الجنين', [[23, 12], [23, 14]], 'تطابق مراحل النطفة والعلقة والمضغة والعظام مع ما يصفه علم الأجنة.', 'm', 'Keith L. Moore, The Developing Human, 3rd ed. (1982).'],
+  ['الإنسان', 'ضيق الصدر عند الصعود', [[6, 125]], 'ضيق التنفس في المرتفعات لقلة الضغط والأكسجين. والآية في سياق تشبيه حال من أُضلّ.', 'm', 'موسوعة الإعجاز العلمي في القرآن والسنة.'],
+  ['الإنسان', 'تسوية البنان', [[75, 3], [75, 4]], 'يربطها باحثون بتفرّد بصمات الأصابع. وفسّرها ابن كثير وغيره بالقدرة على جعل الأصابع مستوية كخف البعير.', 'x', 'تفسير ابن كثير؛ موسوعة الإعجاز العلمي.'],
+  ['الإنسان', 'الجلود وموضع الإحساس', [[4, 56]], 'تبديل الجلود ليدوم الألم، ويُستشهد بها على أن نهايات أعصاب الألم في الجلد.', 'x', 'موسوعة الإعجاز العلمي في القرآن والسنة.'],
+  ['الإنسان', 'الناصية الكاذبة', [[96, 15], [96, 16]], 'يربطها باحثون بالفص الجبهي من الدماغ وصلته بالقرار والكذب. والناصية في اللغة مقدَّم الرأس.', 'x', 'هيئة الإعجاز العلمي في القرآن والسنة.'],
+  ['الأحياء', 'النحل وبيوته وشرابه', [[16, 68], [16, 69]], 'خوطبت النحل بصيغة المؤنث (اتخذي، كلي، فاسلكي)، والعاملات في الخلية إناث. وفي شرابها شفاء للناس.', 'm', 'موسوعة الإعجاز العلمي في القرآن والسنة.'],
+  ['الأحياء', 'الزوجية في المخلوقات', [[51, 49]], 'الزوجية في عامة المخلوقات من الأحياء وغيرها.', 'm', 'التحرير والتنوير؛ موسوعة الإعجاز العلمي.'],
+];
+function ijaz() {
+  const groups = [...new Set(IJAZ.map(x => x[0]))]; const cnt = k => IJAZ.filter(x => x[4] === k).length;
+  V(`<div class="stack" style="max-width:1000px"><div><div class="eyebrow">تحليل</div><h1>الإعجاز العلمي في القرآن</h1>
+  <p class="lead">آيات كونية وعلمية يذكرها الباحثون في الإعجاز العلمي. تُعرض كل آية بنصها، ويُفتح تفسيرها المأثور بلمسة، ثم تأتي القراءة المعاصرة مع بيان درجتها ومصدرها.</p></div>
+  ${ayahQuote(41, 53)}
+  <section class="panel stack tight"><h2>الضوابط</h2><ul style="margin:0;padding-inline-start:1.2em">
+    <li>القرآن كتاب هداية، وآياته الكونية دعوة إلى التفكر، وليس كتاب علوم تجريبية.</li>
+    <li>لا يُحمل النص إلا على حقيقة علمية مستقرة، لا على فرضية أو نظرية قابلة للتغير.</li>
+    <li>لا يُخرج اللفظ عن معناه في لغة العرب. ويُعرض الفهم المعاصر مع تفسير السلف، ولا يُقدَّم عليه.</li>
+    <li>إن أخطأ الباحث في الربط، فالخطأ في فهمه لا في النص.</li></ul>
+    <p class="muted small" style="margin:0">في المسألة رأيان معروفان: تحفّظ الشاطبي في «الموافقات» على حمل القرآن على علوم لم تعرفها العرب، وأيده ابن عاشور في المقدمة الرابعة من «التحرير والتنوير» مع تفصيل. وتوسّع آخرون كطنطاوي جوهري في «الجواهر» وزغلول النجار. ولذلك يُبيَّن هنا لكل موضع درجته.</p>
+    <div class="pill-row">${Object.entries(IJ_LEVEL).map(([k, [l, c]]) => `<span class="chip ${c}">${l}: ${n(cnt(k))}</span>`).join('')}</div></section>
+  ${groups.map(g => `<h2 style="margin-bottom:0">${g}</h2><div class="grid split">${IJAZ.filter(x => x[0] === g).map(([, t, refs, read, lv, src]) => { const [ll, lc] = IJ_LEVEL[lv]; const it = topicItem('ilm', IJ_ALIAS[t] || t);
+    return `<section class="panel stack tight"><div class="toolbar" style="justify-content:space-between"><h3 style="margin:0">${esc(t)}</h3><span class="chip ${lc}">${ll}</span></div>
+    ${ayahQuote(refs[0][0], refs[0][1], refs.length > 1 && refs[1][0] === refs[0][0] && refs[1][1] - refs[0][1] <= 3 ? refs[refs.length - 1][1] : refs[0][1])}
+    ${refs.length > 1 && refs[1][0] !== refs[0][0] ? `<p class="small" style="margin:0">وانظر: ${refs.slice(1).map(([s, a]) => refLink(idxOf(s, a))).join('، ')}</p>` : ''}
+    <p style="margin:0"><b>القراءة المعاصرة:</b> ${esc(read)}</p>
+    <div class="toolbar"><button class="btn" data-ayah="${idxOf(refs[0][0], refs[0][1])}">التفسير المأثور</button>${it ? `<a class="btn" data-open="ilm|${esc(it.it.n)}">في الموسوعة</a>` : ''}</div>
+    <p class="muted small" style="margin:0">المصدر: ${esc(src)}</p></section>`; }).join('')}</div>`).join('')}
+  <section class="panel stack tight"><h2>المصادر</h2><ul style="margin:0;padding-inline-start:1.2em;overflow-wrap:anywhere">
+    <li>التفسير المأثور داخل التطبيق: الطبري، وابن كثير، والقرطبي، والبغوي، والسعدي، والميسر.</li>
+    <li>الطاهر ابن عاشور، «التحرير والتنوير»، المقدمة الرابعة. وأبو إسحاق الشاطبي، «الموافقات».</li>
+    <li>زغلول النجار، «تفسير الآيات الكونية في القرآن الكريم»، مكتبة الشروق الدولية.</li>
+    <li>يوسف الحاج أحمد، «موسوعة الإعجاز العلمي في القرآن الكريم والسنة المطهرة».</li>
+    <li>الهيئة العالمية للإعجاز العلمي في القرآن والسنة، رابطة العالم الإسلامي.</li>
+    <li>Keith L. Moore, The Developing Human: Clinically Oriented Embryology, 3rd ed. (1982). وMaurice Bucaille, La Bible, le Coran et la Science (1976).</li></ul>
+    <a class="btn" href="#t-ilm" style="align-self:flex-start;white-space:normal;text-align:start">كل الآيات الكونية والعلمية في الموسوعة (${n(T.find(c => c.id === 'ilm').items.length)} مدخلاً)</a></section></div>`);
+}
+
 /* ================= guide: what the app offers, roles, requirements and roadmap (all in the one link) */
 function mishkatAyah() { const i = idxOf(24, 35), a = Q.ayat[i]; const ws = []; for (let k = 0; k < a[3]; k++) ws.push(W.w[a[2]+k][0]); const k = ws.findIndex(w => norm(w).replace(/ا/g, '').includes('مشكو')); return k > 1 ? ws.slice(k - 2, k + 3).join(' ') : ''; }
 function guide() {
@@ -919,6 +1028,8 @@ function guide() {
     IS_PWA ? ['اسأل مشكاة (مساعد البحث)','تكتب سؤالك فيجمع لك من داخل التطبيق أقرب الآيات مع تفسيرها، وأقوال السعدي وابن كثير والقرطبي في أقربها، والمداخل الموضوعية، وإحصاء الألفاظ. يعمل على جهازك دون إنترنت ودون أي خدمة خارجية.'] : ['اسأل مشكاة (مساعد ذكي)','يجيب عن أسئلتك بالعربية من نصوص التطبيق نفسها: يبحث في الآيات، ويقرأ التفاسير الثمانية، ويستخرج الإحصاءات، ثم يكتب جواباً منظماً كل آية فيه رابط إلى موضعها. لا يذكر آية من حفظه، ولا يفتي.'],
     ['البحث بالمعنى','تكتب الفكرة بلغتك (مثل: بر الوالدين)، فيبحث في الآيات وفي معانيها من التفسير الميسر، ويوسّع البحث بالجذور القرآنية وقاموس مفاهيم، ويرتب النتائج بالأقرب. يعمل على الجهاز دون خادم.'],
     ['الحفظ والتسميع','خمسة أوضاع: قراءة، وأوائل الكلمات، وإخفاء كامل، وتسميع بالكتابة يصحح كلمةً كلمة، وتسميع بالصوت. وجدول مراجعة بالتكرار المتباعد يحدد موعد مراجعة كل مقطع حسب تقييمك.'],
+    ['أخبار الأولين والآخرين','تحليل لما قصّه القرآن من أخبار الأمم الماضية وسنن الله فيها، وأحداث السيرة، والنبوءات التي تحققت، وأشراط الساعة ومشاهد القيامة، برسوم بيانية وكل رقم يفتح آياته.'],
+    ['الإعجاز العلمي','الآيات الكونية والعلمية بنصها، مع التفسير المأثور بلمسة، والقراءة المعاصرة بدرجتها (متفق عليه، أو مشهور، أو محل نقاش) ومصدرها، وضوابط الباب.'],
     ['أطلس القرآن','خريطة تفاعلية مرسومة داخل التطبيق لاثنين وعشرين موضعاً قرآنياً، تفرّق بين الموضع المعروف والمختلف في تعيينه، ومن كل موضع إلى آياته وأقوامه وأنبيائه.'],
     ['الخط الزمني','الأنبياء في عصورهم على ترتيب ابن كثير، وواحد وعشرون حدثاً من السيرة بسنواتها على المشهور مع آياتها.'],
     ['شبكة المعرفة','خريطة علاقات تربط الأنبياء بأقوامهم وديارهم وصلات قرابتهم والسور التي ذُكروا فيها أكثر.'],
@@ -1076,7 +1187,7 @@ async function admin() {
     const cfg = { banner: $('#adBanner').value.trim(), featured: ok ? { s, a } : null, featuredNote: $('#adNote').value.trim(), updated: Date.now() };
     if (IS_PWA) { cfg.users = allUsers().map(({ src, ...x }) => x); LS.set('users', []); }
     if (IS_PWA) { siteCfg = cfg; applyCfg(); LS.set('cfgPreview', cfg); const blob = new Blob([JSON.stringify(cfg, null, 2)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'config.json'; a.click();
-      $('#adMsg').innerHTML = 'ظهر التعديل على هذا الجهاز، ونُزّل ملف config.json. لنشره لكل الزوار ارفعه مكان الملف نفسه في مجلد mishkat على GitHub، أو أرسله إلى فريق منجز.'; return; }
+      $('#adMsg').innerHTML = FILE_MODE ? 'حُفظ على هذا الكمبيوتر وظهر فوراً، ونُزّلت نسخة احتياطية باسم config.json.' : 'ظهر التعديل على هذا الجهاز، ونُزّل ملف config.json. لنشره لكل الزوار ارفعه مكان الملف نفسه في مجلد mishkat على GitHub، أو أرسله إلى فريق منجز.'; return; }
     try { await db.doc('site/config').set(cfg); siteCfg = cfg; applyCfg(); $('#adMsg').textContent = 'حُفظ ونُشر لكل الزوار.'; } catch (e) { $('#adMsg').textContent = 'لم يُحفظ: ' + (e?.code || 'خطأ غير معروف'); }
   };
 }
