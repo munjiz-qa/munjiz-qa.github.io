@@ -25,6 +25,13 @@ await p.fill('#rq', 'الصبر'); await p.click('#rgo');
 await p.waitForSelector('#rdoc #rprint', { timeout: 600000 }).catch(() => {});
 const doc = await p.evaluate(() => document.querySelector('#rdoc')?.innerText || '');
 ok(/الآيات القرآنية/.test(doc) && /أقوال المفسرين/.test(doc) && /السنة النبوية/.test(doc) && /صحيح (البخاري|مسلم)/.test(doc) && /المراجع/.test(doc), 'مختبر الأبحاث يُعدّ بحثاً مؤصّلاً بالقرآن والتفسير والسنة والمراجع');
+{ // القصص القرآني الموسّع: ملخص مجمّع بآياته، ونقول من ابن كثير والطبري والقرطبي، والعبر، ورابط الفيديو
+  await p.evaluate(() => location.hash = 't-qasas'); await p.waitForSelector('#tpanel details', { timeout: 30000 }).catch(() => {});
+  await p.evaluate(() => { const d = [...document.querySelectorAll('#tpanel details')].find(x => x.querySelector('.t')?.textContent === 'يوسف وإخوته'); d?.querySelector('summary').click(); });
+  await p.waitForSelector('#tpanel .qstory .qs-quote', { timeout: 30000 }).catch(() => {});
+  const qs = await p.evaluate(() => { const x = document.querySelector('#tpanel .qstory'); return x ? { s: x.querySelectorAll('.qs-steps li a[data-ayah]').length, q: [...x.querySelectorAll('.qs-quote figcaption b')].map(b => b.textContent).join(), l: x.querySelectorAll('.qs-lesson').length, v: !!x.querySelector('a.qs-video[href*="youtube.com/results"]') } : null; });
+  ok(qs && qs.s >= 5 && qs.q === 'تفسير ابن كثير,تفسير الطبري,تفسير القرطبي' && qs.l >= 3 && qs.v, 'القصص القرآني: قصة يوسف مجمّعة بآياتها، مع نقول ابن كثير والطبري والقرطبي والعبر ورابط الفيديو');
+}
 await p.evaluate(() => location.hash = 'account'); await p.waitForTimeout(700);
 ok(!!(await p.$('#uform')) && !!(await p.$('#rform')), 'صفحة الدخول للعميل والمدير وإنشاء الحساب تعمل');
 { // اللغات ومواقيت الصلاة: الإنجليزية مضمّنة، ومعاني الآيات بالترجمة المعتمدة، والمواقيت تُحسب على الجهاز
