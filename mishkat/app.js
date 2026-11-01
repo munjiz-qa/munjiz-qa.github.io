@@ -1796,10 +1796,10 @@ function prHomeCard() {
 }
 
 /* ================= languages: picker, English UI dictionary, Google Translate for other languages, approved meaning translations */
-const I18N = { dict: null, sur: null, idx: [], mean: null, meanCode: '', miss: new Map(), gt: false };
+const I18N = { dict: null, sur: null, idx: [], mean: null, meanCode: '', miss: new Map(), outs: new Set(), mtOn: false, dictCode: '' };
 const ARX = /[؀-ۿ]/, DIGRX = /[0-9٠-٩][0-9٠-٩٬,.٫]*/g;
 const toLat = s => s.replace(/[٠-٩]/g, d => d.charCodeAt(0) - 1632).replace(/٬/g, ',').replace(/٫/g, '.');
-const GT_CODE = { he: 'iw', jv: 'jw', prs: 'fa', kmr: 'ku', 'zh-CN': 'zh-CN', 'zh-TW': 'zh-TW', tl: 'tl', ber: 'ber' };
+const GT_CODE = { he: 'iw', jv: 'jw', prs: 'fa-AF', kmr: 'ku', ku: 'ckb', 'zh-CN': 'zh-CN', 'zh-TW': 'zh-TW', tl: 'tl', ber: 'ber' };
 const I18N_SKIP = '.ayah,.num,.mean,.notranslate,[translate="no"],script,style,textarea,code,.langlist';
 const langRow = c => I18N.idx.find(r => r[0] === c);
 const isRTL = c => c === 'ar' || !!(langRow(c) || [])[4];
@@ -1829,7 +1829,7 @@ function trLookup(k) {
 }
 function trKey(k) {
   let v = trLookup(k); if (v != null) return v;
-  if (surRx) { const names = []; const k3 = k.replace(surRx, (m, a) => { names.push(I18N.sur[a]); return '@'; }); if (names.length) { v = trLookup(k3); if (v != null) { let q = 0; return v.replace(/@/g, () => names[q++] ?? ''); } } }
+  if (surRx) { const names = []; const k3 = k.replace(surRx, (m, a) => { names.push(I18N.sur[a]); return '@'; }); if (names.length) { v = trLookup(k3); if (v != null) { let q = 0; return v.replace(/@(\d+)?/g, (m, i) => (i ? names[i - 1] : names[q++]) ?? ''); } } }
   for (const sep of [' | ', ' · ', ' — ', '؛ ', '، ', ': ', ' و']) if (k.includes(sep)) { const parts = k.split(sep).map(p => ARX.test(p) ? trKey(p) : p); if (parts.every(p => p != null)) return parts.join(sep === '، ' ? ', ' : sep === '؛ ' ? '; ' : sep === ' و' ? ' and ' : sep); }
   return null;
 }
@@ -1840,21 +1840,58 @@ function trStr(s) {
   if (!k) return null;
   let v = trKey(k);
   if (v == null) { if (!I18N.quiet && k.length < 400 && k.replace(/[\s#]/g, "").length > 2 && !/^[A-Za-z(«]/.test(k) && !/[\u064B-\u0652\u06E1]/.test(k) && !/^(\S )+\S$/.test(k)) I18N.miss.set(k, (I18N.miss.get(k) || 0) + 1); return null; }
-  let j = 0; v = v.replace(/#/g, () => nums[j++] ?? '').replace(/\b1 (verse|time|hadith|form|surah|word|letter|root|passage|result|place|entr|index|node|link)(?:e?s|ies)\b/g, (m, w) => '1 ' + (w === 'entr' ? 'entry' : w === 'index' ? 'index' : w));
+  let j = 0; v = v.replace(/#(\d+)?/g, (m, i) => (i ? nums[i - 1] : nums[j++]) ?? '').replace(/\b1 (verse|time|hadith|form|surah|word|letter|root|passage|result|place|entr|index|node|link)(?:e?s|ies)\b/g, (m, w) => '1 ' + (w === 'entr' ? 'entry' : w === 'index' ? 'index' : w));
   if (document.documentElement.dir === 'ltr') v = v.replace(/[→←]/g, c => c === '→' ? '←' : '→');
   return (/^\s/.test(s) ? ' ' : '') + v + (/\s$/.test(s) ? ' ' : '');
 }
+function trText(t) {
+  const o = t.nodeValue; if (!o || I18N.outs.has(o) || !ARX.test(o)) return;
+  const v = trStr(o); if (v != null) { I18N.outs.add(v); t.nodeValue = v; return; }
+  mtQueue(t);
+}
+/* ترجمة النصوص الطويلة غير الموجودة في القاموس (التفاسير والأحاديث والأخبار) عند الاتصال، مع حفظها على الجهاز */
+const MT = { q: new Map(), t: 0, st: 0, cache: null };
+function mtCache() { if (!MT.cache) { try { MT.cache = JSON.parse(localStorage.getItem('quran-mt-' + LANG) || '{}'); } catch (e) { MT.cache = {}; } } return MT.cache; }
+function mtSave() { clearTimeout(MT.st); MT.st = setTimeout(() => { try { let s = JSON.stringify(MT.cache); if (s.length > 3e6) { MT.cache = {}; s = '{}'; } localStorage.setItem('quran-mt-' + LANG, s); } catch (e) {} }, 1500); }
+function mtApply(nd, src, v) { if (!nd.isConnected || nd.nodeValue !== src) return; const out = (/^\s/.test(src) ? ' ' : '') + v + (/\s$/.test(src) ? ' ' : ''); I18N.outs.add(out); nd.nodeValue = out; }
+function mtQueue(nd) {
+  const src = nd.nodeValue, k = src.replace(/\s+/g, ' ').trim(), bare = k.replace(/[\s\d٠-٩#.,:;()«»﴿﴾،؛-]/g, '');
+  if (bare.length < 3 || /^(\S )+\S$/.test(k) || (k.length < 40 && /[ً-ْٰۡ]/.test(k))) return; // الحروف والجذور وألفاظ المصحف تبقى بالعربية
+  const c = mtCache()[k]; if (c != null) return mtApply(nd, src, c);
+  if (!I18N.mtOn) return;
+  let e = MT.q.get(k); if (!e) MT.q.set(k, e = []); e.push([nd, src]);
+  clearTimeout(MT.t); MT.t = setTimeout(mtFlush, 200);
+}
+function mtSplit(k) { if (k.length <= 4000) return [k]; const out = []; let cur = ''; for (const s of k.split(/(?<=[.!؟?،:])\s+/)) { if (cur && cur.length + s.length > 3800) { out.push(cur); cur = ''; } cur += (cur ? ' ' : '') + s; } if (cur) out.push(cur); return out.flatMap(x => x.length > 4000 ? x.match(/[\s\S]{1,3800}/g) : [x]); }
+async function mtFlush() {
+  const entries = [...MT.q.entries()].map(([k, nodes]) => ({ k, nodes, parts: mtSplit(k), res: [] })); MT.q.clear();
+  const flat = entries.flatMap(e => e.parts.map((p, i) => [e, i, p]));
+  const tl = GT_CODE[LANG] || LANG;
+  for (let i = 0; i < flat.length;) {
+    const b = []; let n = 0; while (i < flat.length && b.length < 60 && (!b.length || n + flat[i][2].length < 4500)) { n += flat[i][2].length; b.push(flat[i++]); }
+    try {
+      const body = new URLSearchParams(); b.forEach(x => body.append('q', x[2]));
+      const r = await fetch(`https://translate.googleapis.com/translate_a/t?client=gtx&sl=ar&tl=${encodeURIComponent(tl)}`, { method: 'POST', body });
+      if (!r.ok) throw new Error(r.status);
+      let j = await r.json(); if (!Array.isArray(j)) j = [j]; if (b.length === 1 && j.length !== 1) j = [j];
+      j = j.map(x => Array.isArray(x) ? x[0] : x);
+      b.forEach(([e, pi], z) => { e.res[pi] = j[z]; });
+    } catch (err) { if (!navigator.onLine) I18N.mtOn = false; }
+  }
+  for (const e of entries) { if (e.res.length !== e.parts.length || e.res.some(x => !x)) continue; const v = e.res.join(' '); MT.cache[e.k] = v; e.nodes.forEach(([nd, src]) => mtApply(nd, src, v)); }
+  mtSave();
+}
 function trNode(root) {
   if (!I18N.dict || !root) return;
-  if (root.nodeType === 3) { const p = root.parentElement; if (p && !p.closest(I18N_SKIP)) { const v = trStr(root.nodeValue); if (v != null) root.nodeValue = v; } return; }
+  if (root.nodeType === 3) { const p = root.parentElement; if (p && !p.closest(I18N_SKIP)) trText(root); return; }
   if (root.nodeType !== 1 || root.closest(I18N_SKIP)) return;
   const tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT, { acceptNode: x => x.nodeType === 1 ? (x.matches(I18N_SKIP) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_SKIP) : NodeFilter.FILTER_ACCEPT });
   let x; const list = []; while (x = tw.nextNode()) list.push(x);
-  for (const t of list) { I18N.quiet = !!t.parentElement?.closest('blockquote,.snip,.tafsir,#tbody,#gbody,.rq,.wtable td:nth-child(2)'); const v = trStr(t.nodeValue); if (v != null) t.nodeValue = v; }
+  for (const t of list) { I18N.quiet = !!t.parentElement?.closest('blockquote,.snip,.tafsir,#tbody,#gbody,.rq,.wtable td:nth-child(2)'); trText(t); }
   I18N.quiet = false;
   for (const el of [root, ...root.querySelectorAll('[placeholder],[title],[aria-label],input[type=button],input[type=submit]')]) {
     if (el.closest(I18N_SKIP)) continue;
-    for (const a of ['placeholder', 'title', 'aria-label']) { const o = el.getAttribute && el.getAttribute(a); if (o && ARX.test(o)) { const v = trStr(o); if (v != null) el.setAttribute(a, v.trim()); } }
+    for (const a of ['placeholder', 'title', 'aria-label']) { const o = el.getAttribute && el.getAttribute(a); if (o && ARX.test(o) && !I18N.outs.has(o)) { const v = trStr(o); if (v != null) { I18N.outs.add(v.trim()); el.setAttribute(a, v.trim()); } } }
     if (el.type === 'button' || el.type === 'submit') { const v = el.value && trStr(el.value); if (v) el.value = v.trim(); }
   }
 }
@@ -1876,32 +1913,18 @@ function addMeanings(root) {
     el.after(box);
   }
 }
-async function gtLoad(code) { // Google Translate للواجهة والنصوص الطويلة؛ يحتاج اتصالاً بالإنترنت
-  const g = GT_CODE[code] || code;
-  if (!navigator.onLine) return false;
-  if (!FILE_MODE) { const dir = location.pathname.replace(/[^/]*$/, ''); document.cookie = `googtrans=/ar/${g};path=${dir}`; }
-  return new Promise(res => {
-    let done = false; const fin = ok => { if (!done) { done = true; res(ok); } };
-    setTimeout(() => fin(false), 12000);
-    const h = document.createElement('div'); h.id = 'gte'; h.hidden = true; document.body.appendChild(h);
-    window.gtInit = () => { try { new google.translate.TranslateElement({ pageLanguage: 'ar', autoDisplay: false }, 'gte'); } catch (e) { return fin(false); }
-      let tries = 0; const pick = () => { const c = document.querySelector('.goog-te-combo');
-        if (c && c.options.length > 1) { if (![...c.options].some(o => o.value === g)) return fin(false); c.value = g; c.dispatchEvent(new Event('change')); setTimeout(() => { c.value = g; c.dispatchEvent(new Event('change')); }, 400); return fin(true); }
-        if (++tries < 60) setTimeout(pick, 150); else fin(false); };
-      pick(); };
-    const sc = document.createElement('script'); sc.src = 'https://translate.google.com/translate_a/element.js?cb=gtInit'; sc.onerror = () => fin(false); document.head.appendChild(sc);
-  });
-}
 function setLang(c) { if (!FILE_MODE) { const dir = location.pathname.replace(/[^/]*$/, ''); document.cookie = `googtrans=;path=${dir};expires=Thu, 01 Jan 1970 00:00:00 GMT`; } try { if (c === 'ar') localStorage.removeItem('quran-lang'); else localStorage.setItem('quran-lang', c); } catch (e) {} location.reload(); }
 function langMenu() {
-  const rows = [['ar', 'العربية', 'اللغة الأصلية للمنصة', '', 1], ['en', 'English', 'Full built-in translation · Saheeh International', '', 0], ...I18N.idx.filter(r => r[0] !== 'en').map(r => [r[0], r[1], r[5] + ' · ' + r[2], '', r[4]])];
-  openDrawer(`<div class="stack langlist notranslate" translate="no"><div><div class="eyebrow">اللغة · Language</div><h2>اختر لغة المنصة</h2>
-  <p class="muted small" style="margin:4px 0 0">العربية والإنجليزية مضمّنتان وتعملان دون إنترنت. بقية اللغات: تُترجم الواجهة والنصوص بترجمة Google عند الاتصال بالإنترنت، أما معاني القرآن الكريم فمن ترجمة معتمدة لكل لغة مضمّنة في التطبيق، والنص القرآني العربي لا يُترجم آلياً أبداً.</p>
-  <p class="muted small" dir="ltr" style="margin:4px 0 0;text-align:left">Arabic and English are built in and work offline. Other languages: the interface is translated by Google Translate when online; the meanings of the Quran come from an approved translation for each language, built in, and the Arabic Quran text is never machine-translated.</p></div>
-  <input type="search" id="langQ" placeholder="ابحث عن لغة · Search language" aria-label="ابحث عن لغة">
-  <div class="langgrid" id="langGrid">${rows.map(([c, nm, sub, , rtl]) => `<button class="langopt${c === LANG ? ' on' : ''}" data-lang="${c}" lang="${c}"><b dir="${rtl ? 'rtl' : 'ltr'}">${esc(nm)}</b><small dir="ltr">${esc(sub)}</small></button>`).join('')}</div>
-  <p class="muted small">${n(rows.length)} لغة · ${n(rows.length)} languages</p></div>`);
-  $('#langGrid').onclick = e => { const b = e.target.closest('[data-lang]'); if (b) setLang(b.dataset.lang); };
+  const opt = (c, nm, sub, rtl, cls = '') => `<button class="langopt${cls}${c === LANG ? ' on' : ''}" data-lang="${c}" lang="${c}" aria-pressed="${c === LANG}"><span class="lang-code" dir="ltr">${esc(c.split('-')[0].toUpperCase())}</span><span class="lang-txt"><b dir="${rtl ? 'rtl' : 'ltr'}">${esc(nm)}</b><small dir="ltr">${esc(sub)}</small></span>${c === LANG ? '<svg class="lang-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>' : ''}</button>`;
+  const rest = I18N.idx.filter(r => r[0] !== 'en');
+  openDrawer(`<div class="stack langlist notranslate" translate="no">
+  <div class="lang-head"><svg class="lang-globe"><use href="#i-globe"/></svg><div><h2>اللغة <span class="lang-sep">·</span> <span dir="ltr">Language</span></h2><p class="muted small">اختر لغة المنصة <span class="lang-sep">·</span> <span dir="ltr">Choose your language</span></p></div></div>
+  <div class="lang-main">${opt('en', 'English', 'Main language', 0, ' big')}${opt('ar', 'العربية', 'اللغة الأساسية', 1, ' big')}</div>
+  <div class="lang-sec"><span>لغات أخرى</span><span dir="ltr">Other languages · ${rest.length}</span></div>
+  <input type="search" id="langQ" placeholder="ابحث عن لغة · Search" aria-label="ابحث عن لغة">
+  <div class="langgrid" id="langGrid">${rest.map(r => opt(r[0], r[1], r[5], r[4])).join('')}</div>
+  <p class="muted small lang-note">النص القرآني يبقى بالعربية دائماً، وتُعرض تحته ترجمة معتمدة لمعانيه بكل لغة. <span dir="ltr">The Arabic Quran text is never machine-translated; an approved translation of its meanings appears below it.</span></p></div>`);
+  $('.langlist').onclick = e => { const b = e.target.closest('[data-lang]'); if (b) setLang(b.dataset.lang); };
   $('#langQ').oninput = e => { const q = e.target.value.trim().toLowerCase(); $$('#langGrid .langopt').forEach(b => { b.hidden = q && !b.textContent.toLowerCase().includes(q) && !b.dataset.lang.startsWith(q); }); };
 }
 async function i18nInit() {
@@ -1910,19 +1933,19 @@ async function i18nInit() {
   if (LANG === 'ar') return;
   const html = document.documentElement, rtl = isRTL(LANG);
   html.lang = LANG; html.dir = rtl ? 'rtl' : 'ltr'; html.classList.add('i18n', rtl ? 'i18n-rtl' : 'i18n-ltr');
-  const loadDict = async () => { if (I18N.dict) return; try { const d = await getJSON('data/i18n/en.json'); I18N.sur = d.__surahs; I18N.rx = (d.__rx || []).map(([a, b]) => [new RegExp('^' + a + '$'), b]); delete d.__surahs; delete d.__rx; I18N.dict = d;
+  const loadDict = async code => { if (I18N.dict) return true; try { const d = await getJSON(`data/i18n/${code}.json`); I18N.sur = d.__surahs; I18N.rx = (d.__rx || []).map(([a, b]) => [new RegExp('^' + a + '$'), b]); delete d.__surahs; delete d.__rx; I18N.dict = d; I18N.dictCode = code;
     const names = Object.keys(I18N.sur).sort((a, b) => b.length - a.length).map(x => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-    surRx = new RegExp(`(?<![\\u0600-\\u06FF])(${names.join('|')})(?=:? #|$|[،؛)﴾]| ←| →)`, 'g'); } catch (e) {} };
+    surRx = new RegExp(`(?<![\\u0600-\\u06FF])(${names.join('|')})(?=:? #|$|[،؛)﴾]| ←| →)`, 'g'); return true; } catch (e) { return false; } };
   // المعاني: لغة الزائر إن وُجدت لها ترجمة معتمدة، وإلا الإنجليزية
   I18N.meanCode = langRow(LANG) ? LANG : 'en';
   const meanP = gz(`data/tr/${I18N.meanCode}.txt`).then(m => { I18N.mean = m; addMeanings(document.body); }).catch(() => {});
-  if (LANG === 'en') await loadDict();
+  // واجهة مترجمة مضمّنة لكل لغة (تعمل دون إنترنت)، والإنجليزية بديلاً إن لم تتوفر
+  if (!(await loadDict(LANG)) && LANG !== 'en') { await loadDict('en'); html.dir = 'ltr'; html.classList.replace('i18n-rtl', 'i18n-ltr'); }
+  I18N.mtOn = navigator.onLine;
+  addEventListener('online', () => { I18N.mtOn = true; trNode(document.body); });
   new MutationObserver(ms => { for (const m of ms) for (const x of m.addedNodes) if (x.nodeType === 1 && !x.closest?.('.mean')) addMeanings(x); }).observe(document.body, { childList: true, subtree: true });
   const obs = new MutationObserver(ms => { for (const m of ms) { if (m.type === 'characterData') { trNode(m.target); continue; } for (const x of m.addedNodes) trNode(x); } });
-  const start = () => { trNode(document.body); document.title = trStr(document.title)?.trim() || document.title; obs.observe(document.body, { childList: true, subtree: true, characterData: true }); };
-  if (LANG === 'en') { start(); if (navigator.onLine) setTimeout(() => gtLoad('en').then(ok => { I18N.gt = ok; }), 1500); } // نصوص التفاسير والأحاديث الطويلة تُترجم عند الاتصال
-  else { gtLoad(LANG).then(async ok => { I18N.gt = ok; if (ok) return; await loadDict(); html.dir = 'ltr'; html.classList.replace('i18n-rtl', 'i18n-ltr'); start();
-    toast(navigator.onLine ? 'Interface shown in English (this language is not available in Google Translate). Quran meanings are shown in your language.' : 'Offline: interface shown in English. Quran meanings in your language work offline.'); }); }
+  trNode(document.body); document.title = trStr(document.title)?.trim() || document.title; obs.observe(document.body, { childList: true, subtree: true, characterData: true });
   return meanP;
 }
 
@@ -1947,7 +1970,7 @@ applyPrefs(); drawNav(); if (IS_PWA) $('#acctBtn').hidden = false;
 const i18nReady = i18nInit().catch(() => {});
 (async () => {
   try {
-    if (LANG === 'en') await Promise.race([i18nReady, new Promise(r => setTimeout(r, 3000))]);
+    if (LANG !== 'ar') await Promise.race([i18nReady, new Promise(r => setTimeout(r, 3000))]);
     [Q, W, T, TF, GEO] = await Promise.all([gz('data/quran.txt'), gz('data/words.txt'), gz('data/topics.txt'), getJSON('data/tafsir.json'), getJSON('data/geo.json')]);
     prep();
     if (IS_PWA) { try { const base = await getJSON('config.json').catch(() => ({})), pv = LS.get('cfgPreview', null); siteCfg = pv && (pv.updated || 0) > (base.updated || 0) ? pv : base; applyCfg(); } catch (e) {} checkSession(); }
