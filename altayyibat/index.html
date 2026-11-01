@@ -234,6 +234,7 @@ label.chip:has(input:checked){background:var(--pine-soft);border-color:var(--pin
 label.chip.red:has(input:checked){background:var(--bad-soft);border-color:var(--bad)}
 .as-form{display:grid;gap:14px}
 input[type=date],input[type=file]{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 12px}
+.crs h3{font-size:1rem;line-height:1.5}.crs .crs-go{justify-self:start;margin-top:4px;text-align:center}@media(max-width:520px){.crs .crs-go{justify-self:stretch}}
 .linkbtn{background:none;border:0;color:var(--pine);cursor:pointer;text-decoration:underline;padding:0 2px;font-size:.85rem}
 .report{display:grid;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-top:8px}
 .report-head{display:flex;gap:14px;align-items:center}
@@ -274,7 +275,7 @@ input[type=date],input[type=file]{width:100%;background:var(--bg);border:1px sol
     <p><b>تنبيه طبي:</b> المعلومات في «الطيبات» للتثقيف والدعم المعرفي، ولا تغني عن الفحص السريري أو استشارة طبيب مختص. في الحالات الطارئة اتصل بالإسعاف فوراً.</p>
     <p>المراجع: منظمة الصحة العالمية (WHO)، المعهد الوطني البريطاني للصحة والرعاية (NICE)، مراكز السيطرة على الأمراض (CDC)، MedlinePlus، Mayo Clinic، التصنيف الدولي للأمراض ICD-11، وإرشادات الجمعيات العلمية المتخصصة.</p>
     <p><b>تواصل معنا:</b> <a href="mailto:munijizqa@gmail.com" dir="ltr">munijizqa@gmail.com</a> · <a href="https://wa.me/97451600498" target="_blank" rel="noopener" dir="ltr">+974 5160 0498</a> (واتساب)</p>
-    <p>آخر مراجعة للمحتوى: <span class="mono">1</span> نوفمبر <span class="mono">2026</span> · الإصدار <span class="mono">1.5</span> · الطيبات © <span class="mono">2026</span> · <a href="#privacy">الخصوصية وشروط الاستخدام</a></p>
+    <p>آخر مراجعة للمحتوى: <span class="mono">1</span> نوفمبر <span class="mono">2026</span> · الإصدار <span class="mono">1.6</span> · الطيبات © <span class="mono">2026</span> · <a href="#privacy">الخصوصية وشروط الاستخدام</a></p>
   </div>
 </footer>
 <div id="drawer"></div>
@@ -1653,6 +1654,42 @@ const LAB_ADV = {
  vitd:"التعرض المعتدل للشمس، ومكمل فيتامين د حسب جرعة الطبيب.",b12:"راجع الطبيب؛ قد يلزم مكمل أو حقن، خاصة مع الميتفورمين.",uric:"قلّل اللحوم الحمراء والمشروبات المحلاة، وراجع الطبيب عند ألم المفاصل.",
 };
 
+// ===== الكورسات الطبية المجانية (روابط تم التحقق منها في 1 نوفمبر 2026) =====
+const CRS_CATS = {basic:"الأساسيات والتشريح",phys:"علم وظائف الأعضاء",neuro:"الأعصاب والدماغ",im:"الباطنة والسكري",cardio:"القلب وتخطيط القلب",radio:"الأشعة",pharm:"الأدوية وعلم الأدوية",clin:"المهارات السريرية",psych:"الصحة النفسية",ph:"الصحة العامة والوبائيات",nutr:"التغذية وصحة الطفل",res:"البحث العلمي",video:"قنوات تعليمية مرئية",ar:"منصات عربية"};
+const CRS_KIND = {course:"كورس",ref:"منصة تعليمية",video:"قناة فيديو"};
+const CRS = [
+ {c:"basic",k:"ref",t:"الصحة والطب",p:"Khan Academy",l:"EN",f:"مجاني بالكامل",d:"دروس مرئية قصيرة تغطي أجهزة الجسم والأمراض الشائعة، مناسبة للبداية.",u:"https://www.khanacademy.org/science/health-and-medicine"},
+ {c:"basic",k:"ref",t:"بيولوجيا الإنسان",p:"Khan Academy",l:"EN",f:"مجاني بالكامل",d:"مدخل منظم لأجهزة الجسم: الدوران والتنفس والهضم والمناعة والأعصاب.",u:"https://www.khanacademy.org/science/biology/human-biology"},
+ {c:"basic",k:"ref",t:"TeachMeAnatomy",p:"TeachMe Series",l:"EN",f:"مجاني",d:"شروح تشريحية مصورة لكل منطقة في الجسم مع ربطها بالتطبيق السريري.",u:"https://teachmeanatomy.info/"},
+ {c:"phys",k:"course",t:"Introductory Human Physiology",p:"Duke University · Coursera",l:"EN",f:"تسجيل مجاني، والشهادة اختيارية مدفوعة",d:"وظائف أجهزة الجسم الرئيسية وتكاملها في الصحة والمرض.",u:"https://www.coursera.org/learn/physiology"},
+ {c:"neuro",k:"course",t:"Medical Neuroscience",p:"Duke University · Coursera",l:"EN",f:"تسجيل مجاني، والشهادة اختيارية مدفوعة",d:"تشريح الجهاز العصبي ووظائفه وأساس الفحص العصبي، بمستوى طلبة الطب.",u:"https://www.coursera.org/learn/medical-neuroscience"},
+ {c:"neuro",k:"course",t:"Understanding the Brain: The Neurobiology of Everyday Life",p:"University of Chicago · Coursera",l:"EN",f:"تسجيل مجاني، والشهادة اختيارية مدفوعة",d:"كيف يعمل الدماغ في الحركة والإحساس والذاكرة، وما يحدث عند المرض.",u:"https://www.coursera.org/learn/neurobiology"},
+ {c:"im",k:"course",t:"Diabetes: a Global Challenge",p:"University of Copenhagen · Coursera",l:"EN",f:"تسجيل مجاني، والشهادة اختيارية مدفوعة",d:"أسباب السكري وتشخيصه وعلاجه ومضاعفاته وعبئه عالمياً.",u:"https://www.coursera.org/learn/diabetes"},
+ {c:"cardio",k:"ref",t:"Life in the Fast Lane (LITFL)",p:"LITFL",l:"EN",f:"مجاني بالكامل",d:"مكتبة تخطيط القلب وحالات الطوارئ والعناية المركزة مع أمثلة حقيقية.",u:"https://litfl.com/"},
+ {c:"radio",k:"ref",t:"Radiopaedia",p:"Radiopaedia.org",l:"EN",f:"مجاني",d:"موسوعة أشعة مفتوحة تضم آلاف الحالات والمقالات المحكمة وحالة يومية.",u:"https://radiopaedia.org/"},
+ {c:"pharm",k:"ref",t:"Pharmacology Education Project",p:"IUPHAR",l:"EN",f:"مجاني بالكامل",d:"أساسيات علم الأدوية والصيدلة السريرية من الاتحاد الدولي لعلم الأدوية.",u:"https://www.pharmacologyeducation.org/"},
+ {c:"pharm",k:"course",t:"Drug Discovery",p:"UC San Diego · Coursera",l:"EN",f:"تسجيل مجاني، والشهادة اختيارية مدفوعة",d:"رحلة الدواء من الاكتشاف إلى التجارب السريرية والاعتماد.",u:"https://www.coursera.org/learn/drug-discovery"},
+ {c:"clin",k:"course",t:"Vital Signs: Understanding What the Body Is Telling Us",p:"University of Pennsylvania · Coursera",l:"EN",f:"تسجيل مجاني، والشهادة اختيارية مدفوعة",d:"قياس العلامات الحيوية وتفسيرها: النبض والضغط والتنفس والحرارة والألم.",u:"https://www.coursera.org/learn/vital-signs"},
+ {c:"clin",k:"ref",t:"Stanford Medicine 25",p:"Stanford School of Medicine",l:"EN",f:"مجاني",d:"مهارات الفحص السريري بجانب السرير بفيديوهات وشروح عملية.",u:"https://stanfordmedicine25.stanford.edu/"},
+ {c:"clin",k:"ref",t:"Geeky Medics",p:"Geeky Medics",l:"EN",f:"مجاني (مع محتوى إضافي مدفوع)",d:"أدلة أخذ التاريخ المرضي والفحص السريري والاستعداد لاختبارات OSCE.",u:"https://geekymedics.com/"},
+ {c:"psych",k:"course",t:"Psychological First Aid",p:"Johns Hopkins University · Coursera",l:"EN",f:"تسجيل مجاني، والشهادة اختيارية مدفوعة",d:"الإسعاف النفسي الأولي للأفراد في الأزمات والكوارث.",u:"https://www.coursera.org/learn/psychological-first-aid"},
+ {c:"psych",k:"course",t:"The Science of Well-Being",p:"Yale University · Coursera",l:"EN",f:"تسجيل مجاني، والشهادة اختيارية مدفوعة",d:"علم السعادة والعادات التي تحسّن الصحة النفسية، مبنية على الأدلة.",u:"https://www.coursera.org/learn/the-science-of-well-being"},
+ {c:"ph",k:"course",t:"Epidemiology: The Basic Science of Public Health",p:"UNC Chapel Hill · Coursera",l:"EN",f:"تسجيل مجاني، والشهادة اختيارية مدفوعة",d:"مبادئ علم الوبائيات وقياس المرض وتصميم الدراسات.",u:"https://www.coursera.org/learn/epidemiology"},
+ {c:"ph",k:"course",t:"Essentials of Global Health",p:"Yale University · Coursera",l:"EN",f:"تسجيل مجاني، والشهادة اختيارية مدفوعة",d:"أهم قضايا الصحة العالمية ومحدداتها وسبل تحسينها.",u:"https://www.coursera.org/learn/essentials-global-health"},
+ {c:"ph",k:"course",t:"Fighting COVID-19 with Epidemiology",p:"Johns Hopkins · Coursera",l:"EN",f:"مجاني بالكامل",d:"تطبيق أدوات الوبائيات على جائحة حقيقية.",u:"https://www.coursera.org/learn/covid19-epidemiology"},
+ {c:"ph",k:"ref",t:"Open Courseware",p:"Johns Hopkins Bloomberg School of Public Health",l:"EN",f:"مجاني بالكامل",d:"مواد أكثر من 100 مقرر في الصحة العامة متاحة للجميع.",u:"https://ocw.jhsph.edu/"},
+ {c:"ph",k:"ref",t:"OpenWHO",p:"منظمة الصحة العالمية",l:"AR/EN",f:"مجاني",d:"دورات منظمة الصحة العالمية في الطوارئ الصحية والأوبئة، وكثير منها بالعربية.",u:"https://openwho.org/courses"},
+ {c:"nutr",k:"course",t:"Stanford Introduction to Food and Health",p:"Stanford · Coursera",l:"EN",f:"تسجيل مجاني، والشهادة اختيارية مدفوعة",d:"أساسيات التغذية الصحية وعلاقتها بالأمراض المزمنة.",u:"https://www.coursera.org/learn/food-and-health"},
+ {c:"nutr",k:"course",t:"Child Nutrition and Cooking",p:"Stanford · Coursera",l:"EN",f:"تسجيل مجاني، والشهادة اختيارية مدفوعة",d:"تغذية الأطفال وبناء عادات غذائية صحية في الأسرة.",u:"https://www.coursera.org/learn/childnutrition"},
+ {c:"res",k:"course",t:"Understanding Clinical Research",p:"University of Cape Town · Coursera",l:"EN",f:"تسجيل مجاني، والشهادة اختيارية مدفوعة",d:"قراءة الأبحاث السريرية وفهم الإحصاء الطبي ونقد الدراسات.",u:"https://www.coursera.org/learn/clinical-research"},
+ {c:"video",k:"video",t:"Ninja Nerd",p:"YouTube",l:"EN",f:"مجاني",d:"محاضرات مفصلة في الفسيولوجيا والتشريح والأمراض والأدوية.",u:"https://www.youtube.com/@NinjaNerdOfficial"},
+ {c:"video",k:"video",t:"Osmosis from Elsevier",p:"YouTube",l:"EN",f:"مجاني",d:"شروح مرئية مختصرة لآلاف الموضوعات الطبية.",u:"https://www.youtube.com/@osmosis"},
+ {c:"video",k:"video",t:"Armando Hasudungan",p:"YouTube",l:"EN",f:"مجاني",d:"رسوم توضيحية يدوية تبسّط الفسيولوجيا والمناعة والأمراض.",u:"https://www.youtube.com/@armandohasudungan"},
+ {c:"video",k:"video",t:"MedCram",p:"YouTube",l:"EN",f:"مجاني",d:"شروح سريرية واضحة لأمراض القلب والرئة والباطنة.",u:"https://www.youtube.com/@MedCram"},
+ {c:"ar",k:"ref",t:"رواق",p:"المنصة العربية للتعليم المفتوح",l:"AR",f:"دورات مجانية",d:"تضم دورات صحية بالعربية، منها التوعية بمرض السكري والرضاعة الطبيعية.",u:"https://www.rwaq.org/"},
+ {c:"ar",k:"ref",t:"إدراك",p:"مؤسسة الملكة رانيا",l:"AR",f:"تسجيل مجاني",d:"منصة عربية للمساقات المفتوحة في مجالات متعددة.",u:"https://www.edraak.org/"}
+];
+
 // ===== أدوات عامة =====
 const $ = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => [...r.querySelectorAll(s)];
@@ -1744,7 +1781,7 @@ R.home = () => `
   </div>
   <div class="aud">
     <a href="#check"><span class="ic">م</span><b>للمرضى والزوار</b><small>فحص الأعراض، وفهم المرض، ومتى تذهب للطوارئ</small></a>
-    <a href="#learn"><span class="ic">ط</span><b>لطلبة الطب</b><small>حالات سريرية، وتشخيص تفريقي، واختبار ذاتي</small></a>
+    <a href="#learn"><span class="ic">ط</span><b>لطلبة الطب</b><small>كورسات مجانية، وحالات سريرية، واختبار ذاتي</small></a>
     <a href="#tools"><span class="ic">س</span><b>للأطباء والاستشاريين</b><small>حاسبات سريرية، وجرعات، وتداخلات دوائية</small></a>
     <a href="#news"><span class="ic">ب</span><b>للباحثين والعلماء</b><small>أحدث الأخبار العلمية والابتكارات والمراجع</small></a>
   </div>
@@ -2097,7 +2134,16 @@ function drawDr(){
 }
 
 // ===== التعليم الطبي =====
-R.learn = () => `<div class="view-head"><h1>التعليم الطبي</h1><p>حالات سريرية تفاعلية مع التشخيص التفريقي، واختبار ذاتي من ${QUIZ.length} سؤالاً، وملخصات للأمراض مرتبطة بالإرشادات الحديثة.</p></div>
+S.crs={q:"",c:""};
+const crsCard = x => `<article class="card crs"><div class="row" style="gap:6px"><span class="tag tp">${CRS_KIND[x.k]}</span><span class="tag">${CRS_CATS[x.c]}</span><span class="tag mono">${x.l}</span></div>
+ <h3>${x.t}</h3><p class="small muted">${x.p}</p><p class="small">${x.d}</p><p class="small"><b>الإتاحة:</b> ${x.f}</p>
+ <a class="btn crs-go" href="${x.u}" target="_blank" rel="noopener" aria-label="تشغيل ${esc(x.t)}">${x.k==="video"?"▶ مشاهدة القناة":x.k==="ref"?"▶ فتح المنصة":"▶ تشغيل الكورس"}</a></article>`;
+R.learn = () => `<div class="view-head"><h1>التعليم الطبي</h1><p>حالات سريرية تفاعلية مع التشخيص التفريقي، واختبار ذاتي من ${QUIZ.length} سؤالاً، وملخصات للأمراض مرتبطة بالإرشادات الحديثة، ومكتبة من ${CRS.length} كورساً ومصدراً مجانياً موثوقاً.</p></div>
+<div class="panel" id="crsPanel"><div class="row" style="justify-content:space-between"><h2>الكورسات الطبية المجانية</h2><span class="tag tp" id="crsCount"></span></div>
+ <p class="small muted">كورسات ومصادر من جامعات ومؤسسات معتمدة، مرتبة حسب فروع الطب. اضغط «تشغيل» لفتح الكورس مباشرة في صفحة جديدة.</p>
+ <div class="search">${searchIcon}<input type="search" id="crsQ" placeholder="ابحث عن كورس، مثل: قلب أو أعصاب أو Duke" aria-label="ابحث في الكورسات" value="${esc(S.crs.q)}"></div>
+ <div class="chips" id="crsCats"><button type="button" class="chip" data-cc="" aria-pressed="${!S.crs.c}">الكل</button>${Object.entries(CRS_CATS).map(([k,v])=>`<button type="button" class="chip" data-cc="${k}" aria-pressed="${S.crs.c===k}">${v}</button>`).join("")}</div>
+ <div id="crsList" class="crs-list"></div></div>
 <div class="panel"><h2>حالات سريرية</h2>${CASES.map((c,i)=>{const a=S.caseAns[i];return `<details ${a!=null?"open":""}><summary>الحالة ${i+1}: ${c.t}</summary><div style="display:grid;gap:8px"><p>${c.v}</p><p><b>${c.q}</b></p>
  ${c.o.map((o,j)=>`<button type="button" class="opt ${a!=null?(j===c.a?"right":j===a?"wrong":""):""}" data-case="${i}" data-o="${j}" ${a!=null?"disabled":""}>${o}</button>`).join("")}
  ${a!=null?`<div class="disclaimer"><b>${a===c.a?"إجابة صحيحة.":"الإجابة الصحيحة: "+c.o[c.a]+"."}</b> ${c.ex}<br><b>التشخيص التفريقي:</b> ${c.ddx}</div>`:""}</div></details>`}).join("")}</div>
@@ -2111,6 +2157,14 @@ R.learn = () => `<div class="view-head"><h1>التعليم الطبي</h1><p>ح�
  <li><a href="https://icd.who.int/browse/2025-01/mms/en" target="_blank" rel="noopener">متصفح التصنيف الدولي للأمراض ICD-11</a></li>
  <li><a href="https://pubmed.ncbi.nlm.nih.gov/" target="_blank" rel="noopener">PubMed</a></li></ul></div>`;
 AFTER.learn = () => {
+  const drawC = () => {
+    const L = CRS.filter(x=>(!S.crs.c||x.c===S.crs.c)&&(!S.crs.q||matchQ([x.t,x.p,x.d,CRS_CATS[x.c],CRS_KIND[x.k]].join(" "),S.crs.q)));
+    $("#crsList").innerHTML = L.length ? `<div class="grid-3">${L.map(crsCard).join("")}</div>` : `<p class="muted">لا توجد كورسات مطابقة.</p>`;
+    $("#crsCount").textContent = `${L.length} من ${CRS.length}`;
+  };
+  $("#crsQ").addEventListener("input",e=>{S.crs.q=e.target.value.trim();drawC()});
+  $("#crsCats").addEventListener("click",e=>{const b=e.target.closest("[data-cc]");if(!b)return;S.crs.c=b.dataset.cc;$$("#crsCats .chip").forEach(c=>c.setAttribute("aria-pressed",c===b));drawC()});
+  drawC();
   $("#main section").addEventListener("click", e=>{
     const b=e.target.closest(".opt"); if(!b) return;
     if(b.dataset.case!=null) S.caseAns[b.dataset.case]=+b.dataset.o; else S.quiz[b.dataset.q]=+b.dataset.o;
