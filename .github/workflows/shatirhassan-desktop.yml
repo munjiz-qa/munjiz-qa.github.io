@@ -66,7 +66,9 @@ jobs:
           echo "foreign requests rejected"
       - uses: actions/upload-artifact@v4
         if: always()
-        with: { name: shots-${{ matrix.os }}, path: shots }
+        with:
+          name: shots-${{ matrix.os }}
+          path: shots
   publish:
     needs: test
     if: github.ref == 'refs/heads/main'
