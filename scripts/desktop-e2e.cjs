@@ -23,7 +23,9 @@ const log = (...a) => console.log(...a);
     const ovf2 = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth); ok(ovf2 <= 1, `[${name}] desktop page no horizontal scroll (${ovf2})`);
     await page.screenshot({ path: `${OUT}/${name}-desktop-page.png`, fullPage: true });
     // service worker
-    await page.reload(); await page.waitForFunction(() => navigator.serviceWorker && navigator.serviceWorker.controller, null, { timeout: 10000 }).catch(()=>{});
+    // wait until the worker is fully active (slower on the Windows fallback engine), then reload so it takes control
+    await page.evaluate(() => navigator.serviceWorker && navigator.serviceWorker.ready).catch(()=>{});
+    await page.reload(); await page.waitForFunction(() => navigator.serviceWorker && navigator.serviceWorker.controller, null, { timeout: 30000 }).catch(()=>{});
     ok(await page.evaluate(() => !!(navigator.serviceWorker && navigator.serviceWorker.controller)), `[${name}] service worker controls page`);
     // admin online
     await page.goto(B + 'crm.html'); await page.waitForSelector('#loginF', { state: 'visible' });
