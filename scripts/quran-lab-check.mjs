@@ -18,7 +18,8 @@ await p.goto(B); await p.waitForSelector('#rform', { timeout: 60000 });
 ok(!!(await p.$('meta[http-equiv="Content-Security-Policy"]')) && await p.evaluate(async () => (await fetch('https://example.com/').then(() => 'open', () => 'blocked')) === 'blocked'), 'سياسة أمان المحتوى (CSP) مفعّلة وتمنع الاتصال بمواقع غريبة');
 ok(/مختبر الأبحاث القرآنية/.test(await p.title()) && await p.evaluate(() => typeof window.claude === 'undefined'), 'يفتح على المختبر باسمه، دون أي مكوّن من Claude');
 await p.fill('#rq', 'اسم الله الأعظم من الكتاب والسنة'); await p.click('#rgo');
-await p.waitForFunction(() => /اكتمل/.test(document.querySelector('#rstat')?.textContent || ''), null, { timeout: 900000 }).catch(() => {});
+// انتظار اكتمال البحث بالاستطلاع عبر evaluate: waitForFunction في بعض إصدارات Playwright يُنشئ دالة بـ eval فتمنعه سياسة أمان المحتوى
+for (const t0 = Date.now(); Date.now() - t0 < 900000;) { if (/اكتمل/.test(await p.evaluate(() => document.querySelector('#rstat')?.textContent || ''))) break; await p.waitForTimeout(1000); }
 const doc = await p.evaluate(() => document.querySelector('#rdoc')?.innerText || '');
 if (!/أبو داود \(١٤٩٦\)/.test(doc)) { console.log('— تشخيص: الحالة =', await p.evaluate(() => document.querySelector('#rstat')?.textContent || '')); console.log('— بداية التقرير:', doc.slice(0, 1500)); console.log('— رسائل المتصفح:', cons.slice(0, 30).join('\n')); console.log('— إصدار المتصفح:', b.version()); }
 ok(/أبو داود \(١٤٩٦\)/.test(doc) && /الترمذي \(٣٤٧٨\)/.test(doc) && /ابن ماجه \(٣٨٥٥\)/.test(doc) && /الألباني: حسن/.test(doc), 'البحث يخرّج حديث أسماء بنت يزيد بأرقامه وحكمه');
