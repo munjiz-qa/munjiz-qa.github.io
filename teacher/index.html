@@ -1,0 +1,1116 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>معلم Teacher | تعلّم Claude في 30 درساً من منجز</title>
+<meta name="description" content="معلم من منجز: منهج عربي مجاني لتعلّم Claude خطوة كل يوم حتى الاحتراف، في 30 درساً مع تمارين واختبارات وشهادة.">
+<meta name="theme-color" content="#0B7A63">
+<link rel="canonical" href="https://munjiz-qa.github.io/teacher/">
+<meta property="og:title" content="معلم Teacher | تعلّم Claude في 30 درساً">
+<meta property="og:description" content="منهج عربي مجاني من منجز لتعلّم Claude حتى الاحتراف.">
+<meta property="og:url" content="https://munjiz-qa.github.io/teacher/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ar_AR">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Reem+Kufi:wght@500;600;700&display=swap">
+<style>
+/* Layout: a single learning column under a sticky header; the home view pairs "today's step" with a progress panel, the path view climbs four weekly flights of steps. */
+:root{
+  --bg:#EDF2F0; --surface:#FFFFFF; --sunk:#E3EBE8; --ink:#0F2620; --muted:#566B65; --line:#D2DDD9;
+  --accent:#0B7A63; --accent-soft:#D6EEE7; --on-accent:#FFFFFF;
+  --gold:#B57A06; --gold-soft:#FAEFD5; --ok:#1E844A; --ok-soft:#DDF1E4; --bad:#AE3F2B; --bad-soft:#F8E1DB;
+  --f-display:"Reem Kufi","IBM Plex Sans Arabic",Tahoma,sans-serif;
+  --f-body:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0A1412; --surface:#111F1C; --sunk:#0D1916; --ink:#E3EDE9; --muted:#93A8A1; --line:#22342F;
+  --accent:#3CC4A0; --accent-soft:#143A31; --on-accent:#052019;
+  --gold:#E8B54C; --gold-soft:#2C2412; --ok:#5DCF8C; --ok-soft:#13301F; --bad:#EF806C; --bad-soft:#3A1C16; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0A1412; --surface:#111F1C; --sunk:#0D1916; --ink:#E3EDE9; --muted:#93A8A1; --line:#22342F;
+  --accent:#3CC4A0; --accent-soft:#143A31; --on-accent:#052019;
+  --gold:#E8B54C; --gold-soft:#2C2412; --ok:#5DCF8C; --ok-soft:#13301F; --bad:#EF806C; --bad-soft:#3A1C16; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.75}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+html,body{min-height:100%}
+.app{direction:rtl;text-align:right;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+.app main{flex:1}
+.fs{flex:none;font:inherit;font-size:.88rem;font-weight:600;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer}
+.fs:hover{background:var(--sunk)}
+.wrap{max-width:1320px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:20px;padding-block:10px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
+.brand b{font-family:var(--f-display);font-size:1.6rem;font-weight:700;line-height:1}
+.brand small{display:block;color:var(--muted);font-size:.72rem;line-height:1.3}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;flex:1;min-width:0;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs a{white-space:nowrap;padding:7px 13px;border-radius:999px;color:var(--muted);text-decoration:none;font-weight:500;font-size:.95rem}
+nav.tabs a:hover{color:var(--ink);background:var(--sunk)}
+nav.tabs a.on{background:var(--accent);color:var(--on-accent)}
+main{padding-block:24px 64px}
+h1,h2,h3{font-family:var(--f-display);font-weight:600;line-height:1.35;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.6rem,4vw,2.3rem)} h2{font-size:1.35rem} h3{font-size:1.1rem}
+p{margin:0}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.stack{display:flex;flex-direction:column;gap:16px}
+.muted{color:var(--muted)}
+.eyebrow{font-size:.8rem;letter-spacing:.04em;color:var(--muted);font-weight:600}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.btn{font:inherit;font-weight:600;border:0;border-radius:10px;padding:10px 18px;cursor:pointer;background:var(--accent);color:var(--on-accent);display:inline-flex;align-items:center;gap:8px;text-decoration:none;line-height:1.4}
+.btn:hover{filter:brightness(1.07)}
+.btn[disabled]{opacity:.45;cursor:not-allowed;filter:none}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.ghost:hover{background:var(--sunk)}
+.btn.gold{background:var(--gold);color:#1F1503}
+.btn.sm{padding:6px 12px;font-size:.88rem}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:600;border-radius:999px;padding:2px 10px;background:var(--sunk);color:var(--muted)}
+.chip.ok{background:var(--ok-soft);color:var(--ok)} .chip.now{background:var(--accent-soft);color:var(--accent)} .chip.gold{background:var(--gold-soft);color:var(--gold)}
+.banner{display:flex;gap:10px;align-items:flex-start;font-size:.9rem;padding:10px 14px;border-radius:10px;background:var(--sunk);color:var(--muted)}
+textarea,input[type=text],input[type=time]{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+textarea{min-height:110px;resize:vertical}
+textarea:focus,input:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
+.num{font-variant-numeric:tabular-nums}
+/* Home */
+.hero{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px}
+.today{position:relative;overflow:hidden;background:var(--accent);color:var(--on-accent);border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:14px;min-height:260px}
+.today .eyebrow{color:inherit;opacity:.85}
+.today h1{max-width:20ch}
+.today .day{position:absolute;inset-inline-start:auto;left:18px;bottom:-30px;font-family:var(--f-display);font-size:11rem;font-weight:700;line-height:1;opacity:.14;pointer-events:none}
+.today .btn{background:var(--on-accent);color:var(--accent);align-self:flex-start}
+.today .meta{opacity:.9;font-size:.92rem}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.stat .v{font-family:var(--f-display);font-size:1.9rem;font-weight:700;line-height:1.2}
+.stat .k{color:var(--muted);font-size:.85rem}
+.stat.wide{grid-column:1/-1;display:flex;align-items:center;gap:16px}
+.ring{flex:none}
+.flights{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.flight{display:flex;flex-direction:column;gap:8px}
+.bar{height:8px;border-radius:99px;background:var(--sunk);overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--accent);border-radius:99px}
+/* Path */
+.week{display:flex;flex-direction:column;gap:12px}
+.week-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.week-head .wn{font-family:var(--f-display);color:var(--accent);font-size:1rem;font-weight:700}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.tile{display:flex;gap:12px;align-items:flex-start;text-align:right;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;text-decoration:none}
+.tile:hover{border-color:var(--accent)}
+.tile .n{flex:none;width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-family:var(--f-display);font-weight:700;font-size:1.1rem;background:var(--sunk);color:var(--muted)}
+.tile.done .n{background:var(--ok-soft);color:var(--ok)}
+.tile.now{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.tile.now .n{background:var(--accent);color:var(--on-accent)}
+.tile.lock{opacity:.55;cursor:not-allowed}
+.tile .tt{font-weight:600;font-size:.95rem;line-height:1.5}
+.tile .ts{font-size:.8rem;color:var(--muted)}
+/* Lesson */
+.lesson{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:20px;align-items:start}
+.lesson article{display:flex;flex-direction:column;gap:18px}
+.lesson article .lead p{max-width:68ch}
+.lesson .lead{display:flex;flex-direction:column;gap:12px}
+.box{border-radius:var(--r);padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.box.try{background:var(--sunk);border:1px dashed var(--line)}
+.box.try pre{margin:0;white-space:pre-wrap;font-family:var(--f-body);font-size:.95rem;line-height:1.8}
+.box.tip{background:var(--gold-soft)} .box.tip .eyebrow{color:var(--gold)}
+.box.task{background:var(--surface);border:1px solid var(--line)}
+.feedback{white-space:pre-wrap;background:var(--accent-soft);border-radius:10px;padding:12px 14px;font-size:.95rem}
+.quiz .q{display:flex;flex-direction:column;gap:8px;padding-block:6px}
+.opt{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer;background:var(--surface)}
+.opt input{accent-color:var(--accent)}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.why{font-size:.88rem;color:var(--muted)}
+aside.side{position:sticky;top:84px;display:flex;flex-direction:column;gap:12px}
+.pager{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+/* Lab */
+.meters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.meter{background:var(--sunk);border-radius:12px;padding:12px}
+.meter .v{font-family:var(--f-display);font-size:1.5rem;font-weight:700}
+.score{font-family:var(--f-display);font-size:3rem;font-weight:700;line-height:1;color:var(--accent)}
+/* Admin */
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{text-align:right;padding:9px 10px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:.82rem}
+.scroll{overflow-x:auto}
+.cols{display:grid;grid-template-columns:repeat(30,minmax(0,1fr));gap:3px;align-items:end;height:120px}
+.cols i{display:block;background:var(--accent);border-radius:3px 3px 0 0;min-height:2px}
+.switch{display:flex;gap:10px;align-items:center;cursor:pointer}
+.switch input{width:20px;height:20px;accent-color:var(--accent)}
+/* Certificate */
+.cert{border:2px solid var(--gold);border-radius:18px;padding:28px;text-align:center;background:var(--surface);display:flex;flex-direction:column;gap:10px;align-items:center}
+.cert .nm{font-family:var(--f-display);font-size:1.8rem;color:var(--gold)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:10px;font-weight:600;z-index:20;direction:rtl}
+@media (max-width:820px){
+  .hero,.lesson{grid-template-columns:1fr}
+  aside.side{position:static}
+  .flights{grid-template-columns:1fr 1fr}
+  .meters{grid-template-columns:1fr 1fr}
+  .today{min-height:0;padding:22px}
+  .today .day{font-size:7rem}
+}
+@media (prefers-reduced-motion:no-preference){.tile,.btn{transition:border-color .15s,filter .15s,background .15s}}
+/* Monjez contact */
+.foot{border-top:1px solid var(--line);background:var(--surface);margin-top:40px;padding:22px 0 calc(22px + env(safe-area-inset-bottom,0px))}
+.foot .wrap{display:flex;flex-wrap:wrap;gap:14px 28px;align-items:center;justify-content:space-between}
+.foot b{font-family:var(--f-display)}
+.foot .ct{display:flex;flex-wrap:wrap;gap:8px 18px}
+.foot a{color:var(--ink);text-decoration:none;font-weight:500}
+.foot a:hover{color:var(--accent)}
+.foot small{color:var(--muted)}
+.ltr{direction:ltr;unicode-bidi:isolate;display:inline-block}
+.wa{position:fixed;left:max(16px,env(safe-area-inset-left,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));width:54px;height:54px;border-radius:50%;background:#1E9E57;color:#fff;display:grid;place-items:center;box-shadow:0 6px 18px rgba(0,0,0,.22);z-index:15}
+.wa:hover{filter:brightness(1.08)}
+.contact{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.contact .card{display:flex;flex-direction:column;gap:6px}
+.contact .v{font-size:1.15rem;font-weight:700;word-break:break-all}
+@media (max-width:640px){header.top .wrap{flex-wrap:wrap;row-gap:6px}header.top nav.tabs{order:3;flex:1 0 100%;padding-bottom:8px}.fs{display:none}}
+.ugrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;align-items:end}
+label{display:flex;flex-direction:column;gap:6px;font-weight:500;font-size:.92rem}
+select{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
+.auth{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px;max-width:860px;margin-inline:auto}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:8px 18px}
+.err{color:var(--bad);min-height:1.2em;margin:0;font-weight:600}
+.pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.8rem;font-weight:600;background:var(--sunk);color:var(--muted);white-space:nowrap}
+.pill.gold{background:var(--gold-soft);color:var(--gold)}.pill.ok{background:var(--ok-soft);color:var(--ok)}.pill.bad{background:var(--bad-soft);color:var(--bad)}
+.btn.danger{color:var(--bad)}
+input:not([type]),input[type=password],input[type=search]{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+td .btn.sm{white-space:nowrap}
+.foot .wrap{padding-left:max(84px,env(safe-area-inset-left,0px))}
+@media (max-width:820px){
+  #uTable thead{display:none}
+  #uTable,#uTable tbody{display:block}
+  #uTable tr{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;padding:14px 0;border-bottom:1px solid var(--line)}
+  #uTable tr[hidden]{display:none}
+  #uTable td{border:0;padding:0;display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+  #uTable td::before{content:attr(data-l);color:var(--muted);font-size:.78rem}
+  #uTable td.nm{grid-column:1/-1;font-weight:700;font-size:1.05rem}
+  #uTable td.nm::before,#uTable td.acts::before{content:none}
+  #uTable td.acts{grid-column:1/-1}
+  #uTable td.acts .row{flex-wrap:wrap!important}
+}
+</style>
+
+</head>
+<body>
+<div class="app" dir="rtl" lang="ar">
+<header class="top"><div class="wrap">
+  <a class="brand" href="#home" aria-label="معلم، الصفحة الرئيسية">
+    <svg width="38" height="38" viewBox="0 0 38 38" aria-hidden="true"><rect width="38" height="38" rx="10" fill="var(--accent)"/><path d="M8 29h7v-6h7v-6h7V9" fill="none" stroke="var(--on-accent)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="29" cy="9" r="3.4" fill="var(--gold)"/></svg>
+    <span><b>معلم <span class="ltr" style="font-family:var(--f-body);font-size:.9rem;font-weight:600;color:var(--accent)">Teacher</span></b><small>درجة كل يوم نحو احتراف Claude</small></span>
+  </a>
+  <nav class="tabs" id="tabs" aria-label="الأقسام"></nav>
+  <button class="fs" id="fsBtn" type="button" hidden>ملء الشاشة</button>
+</div></header>
+<main><div class="wrap" id="view"></div></main>
+<footer class="foot"><div class="wrap">
+  <div><b>معلم من منجز</b><br><small>منجز لخدمات الأعمال، الدوحة، قطر</small></div>
+  <div class="ct">
+    <a href="mailto:munijizqa@gmail.com">✉ <span class="ltr">munijizqa@gmail.com</span></a>
+    <a href="tel:+97451600498">☎ <span class="ltr">+974 5160 0498</span></a>
+    <a href="https://wa.me/97451600498" target="_blank" rel="noopener">واتساب</a>
+    <a href="#contact">تواصل معنا</a>
+  </div>
+</div></footer>
+<a class="wa" href="https://wa.me/97451600498?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%D8%8C%20%D8%A3%D8%B3%D8%AA%D9%81%D8%B3%D8%B1%20%D8%B9%D9%86%20%D9%85%D9%86%D8%B5%D8%A9%20%D9%85%D8%B9%D9%84%D9%85%20Teacher" target="_blank" rel="noopener" aria-label="تواصل مع منجز عبر واتساب"><svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg></a>
+</div>
+
+<script>
+const WEEKS = [
+  {n:1, t:"الأساسيات", s:"كيف تتحدث مع Claude فيفهمك من أول مرة"},
+  {n:2, t:"أدوات claude.ai", s:"المشاريع والأعمال التفاعلية والبحث والذاكرة"},
+  {n:3, t:"الموصلات والمهارات والأتمتة", s:"اجعل Claude يعمل مع أدواتك وأنت غائب"},
+  {n:4, t:"Claude Code والاحتراف", s:"ابنِ أدواتك بنفسك وتحقّق من كل نتيجة"}
+];
+
+const LESSONS = [
+{n:1,w:1,m:6,t:"ما هو Claude؟ وأول محادثة ناجحة",
+p:["Claude مساعد ذكي من شركة Anthropic، يقرأ ويكتب ويحلّل ويبرمج ويبني صفحات وأدوات كاملة. تخيّله زميلاً شديد الذكاء وصل إلى مكتبك للتو: يعرف الكثير عن العالم، ولا يعرف شيئاً عنك بعد.",
+"أول محادثة ناجحة تبدأ بجملة واضحة عن هدفك. اكتب كما تتحدث مع زميل خبير، ولا تقلق من الصياغة؛ Claude يفهم العربية الفصحى والعامية معاً.",
+"تذكّر قاعدة ذهبية: <b>جودة الجواب تتبع وضوح السؤال</b>. كلما أخبرته لماذا تسأل ولمن ستستخدم الجواب، صار الجواب أدق."],
+ex:"أنا طبيب عيون في القاهرة، وأريد أن أفهم كيف يمكن أن تساعدني في عملي اليومي. اقترح عليّ خمسة استخدامات عملية، مع مثال طلب جاهز لكل استخدام.",
+task:"افتح محادثة جديدة في claude.ai وأرسل المثال أعلاه بعد تعديله ليناسب عملك. احتفظ بأفضل استخدامين اقترحهما.",
+tip:"إن لم تفهم شيئاً في الجواب، اكتب ببساطة: اشرح هذه النقطة بمثال من واقعي.",
+q:[["ما أهم ما يرفع جودة جواب Claude؟",["طول الرسالة","وضوح الهدف والسياق","استخدام الإنجليزية"],1,"الوضوح يغلب الطول دائماً، وClaude يفهم العربية جيداً."],
+["Claude يعرف عنك في أول محادثة:",["كل شيء عن عملك","لا شيء إلا ما تخبره به","سجلّك الطبي"],1,"ما لم تخبره أو تضبط تفضيلاتك وذاكرتك، فهو يبدأ من الصفر."]]},
+
+{n:2,w:1,m:7,t:"سرّ الطلب الجيد: الدور والمهمة والسياق والشكل",
+p:["الطلب القوي فيه أربعة عناصر: <b>الدور</b> (تصرّف كخبير تسويق طبي)، <b>المهمة</b> (اكتب منشوراً)، <b>السياق</b> (لعيادة في القاهرة، والجمهور أولياء أمور)، و<b>الشكل</b> (خمسة أسطر مع دعوة للحجز).",
+"قارن بين: \"اكتب منشوراً عن العيون\" وبين الطلب الكامل بعناصره الأربعة. الأول يعطيك نصاً عاماً، والثاني يعطيك نصاً جاهزاً للنشر.",
+"لا يلزم أن يكون الطلب طويلاً، بل كاملاً. أربعة أسطر قصيرة تكفي غالباً."],
+ex:"تصرّف كخبير تسويق طبي. اكتب منشوراً لفيسبوك عن أهمية فحص النظر الدوري للأطفال، لعيادة عيون في القاهرة، والجمهور أولياء أمور. اجعله خمسة أسطر بلغة ودودة، واختمه بدعوة للحجز.",
+task:"اختر مهمة حقيقية من عملك، واكتب لها طلباً بالعناصر الأربعة. جرّبه في مختبر الطلب داخل هذا التطبيق لتعرف درجته.",
+tip:"إذا لم تعجبك النتيجة، لا تبدأ من جديد. قل له ما الذي تريد تغييره بالضبط.",
+q:[["أيّ مما يلي يمثّل عنصر السياق؟",["اكتب مقالاً","الجمهور أولياء أمور في القاهرة","في خمسة أسطر"],1,"السياق يصف الظروف والجمهور، أما الشكل فيصف هيئة الناتج."],
+["\"في جدول من ثلاثة أعمدة\" يمثّل عنصر:",["الدور","المهمة","الشكل"],2,"هيئة الناتج المطلوب هي الشكل."]]},
+
+{n:3,w:1,m:6,t:"علّم Claude بالمثال",
+p:["بدلاً من أن تشرح الأسلوب الذي تريده، أرِ Claude مثالاً منه. المثال الواحد يختصر عشرة أسطر من الشرح.",
+"إذا أردت ردوداً على استفسارات المرضى بأسلوب عيادتك، فالصق رداً كتبته سابقاً واطلب رداً جديداً بالأسلوب نفسه. سيلتقط Claude نبرتك وطول جملك وطريقة ترحيبك وختامك.",
+"مثالان مختلفان أفضل من مثال واحد، لأن Claude يميّز حينها بين ما هو ثابت في أسلوبك وما هو متغيّر."],
+ex:"هذان ردّان كتبتهما سابقاً على استفسارات المرضى:\n[الرد الأول]\n[الرد الثاني]\nاكتب بنفس الأسلوب رداً على هذا الاستفسار: هل الليزك مناسب لمن عمره 45 عاماً؟",
+task:"خذ رسالتين كتبتهما بنفسك وأعجبتاك، وأعطهما لـClaude مثالاً، ثم اطلب نصاً جديداً بالروح نفسها.",
+tip:"ضع الأمثلة بين علامتين واضحتين مثل [بداية المثال] و[نهاية المثال] حتى لا يختلط المثال بالمطلوب.",
+q:[["لماذا يُفضَّل إعطاء مثالين بدل مثال واحد؟",["لأن Claude يرفض المثال الواحد","ليميّز الثابت من المتغيّر في أسلوبك","لزيادة طول الجواب"],1,"المقارنة بين مثالين تكشف النمط الحقيقي لأسلوبك."],
+["المثال الجيد يغني غالباً عن:",["شرح طويل للأسلوب","تحديد المهمة","مراجعة النتيجة"],0,"المثال يختصر وصف الأسلوب، لكنه لا يغني عن المهمة ولا عن المراجعة."]]},
+
+{n:4,w:1,m:7,t:"أعطِ Claude ملفاتك وصورك",
+p:["Claude يقرأ ما ترفقه: ملفات PDF وWord وExcel والصور ولقطات الشاشة. اضغط زر الإرفاق أو اسحب الملف إلى المحادثة.",
+"ارفع بحثاً من 30 صفحة واطلب ملخصاً في خمس نقاط لطبيب مشغول، أو صوّر جدولاً ورقياً واطلب تحويله إلى جدول Excel مرتب.",
+"اطلب دائماً موضع المعلومة: \"في أي صفحة ورد ذلك؟\" لتتحقق بنفسك قبل الاعتماد على أي رقم مهم."],
+ex:"لخّص هذا البحث في خمس نقاط لطبيب مشغول، ثم اذكر أهم نتيجة يمكن تطبيقها في العيادة، مع رقم الصفحة التي وردت فيها.",
+task:"ارفع ملفاً حقيقياً من عملك واطلب شيئين: ملخصاً قصيراً، ثم ثلاثة أسئلة ذكية يجب أن تطرحها حول هذا الملف.",
+tip:"لا ترفع بيانات مرضى تعريفية. احذف الأسماء والأرقام القومية قبل الرفع.",
+q:[["أفضل طريقة للتحقق من معلومة مستخرجة من ملف طويل:",["أن تثق بها مباشرة","أن تسأل عن رقم الصفحة وتراجعها","أن تعيد رفع الملف"],1,"الإحالة إلى الصفحة تجعل التحقق سريعاً."],
+["قبل رفع ملف فيه بيانات مرضى يجب:",["حذف البيانات التعريفية","تحويله إلى صورة","لا شيء"],0,"الخصوصية أولاً، وسنعود إليها في الدرس 20."]]},
+
+{n:5,w:1,m:6,t:"الحوار المتدرّج: حسّن خطوة بخطوة",
+p:["أقوى ما في Claude أنه يتذكّر المحادثة الجارية كلها. لذلك لا تبدأ من جديد إذا لم تعجبك النتيجة؛ ابنِ عليها.",
+"استخدم جملاً قصيرة محددة: \"اجعله أقصر بالنصف\"، \"غيّر النبرة لتكون أكثر رسمية\"، \"احتفظ بالفقرة الثانية كما هي وأعد كتابة الباقي\".",
+"إذا طالت المحادثة جداً وتشعّبت، اطلب ملخصاً لما اتفقتما عليه، ثم افتح محادثة جديدة بهذا الملخص."],
+ex:"ممتاز. احتفظ بالعنوان كما هو، واجعل النص أقصر بالثلث، وأضف سؤالاً في البداية يشدّ القارئ.",
+task:"خذ أي نص من تمرين سابق، وحسّنه بثلاث رسائل متتالية قصيرة، كل رسالة تغيّر شيئاً واحداً فقط.",
+tip:"تعديل واحد في كل رسالة يعطيك تحكّماً أدق من قائمة طويلة من التعديلات دفعة واحدة.",
+q:[["لم تعجبك النتيجة. ما الخطوة الأفضل؟",["فتح محادثة جديدة","تحديد ما تريد تغييره بالضبط في المحادثة نفسها","إعادة إرسال الطلب كما هو"],1,"Claude يبني على ما سبق، فالتعديل المحدد أسرع."],
+["متى يفيد فتح محادثة جديدة؟",["بعد كل رسالتين","عندما تطول المحادثة وتتشعّب كثيراً","لا يفيد أبداً"],1,"لخّص الاتفاقات ثم ابدأ نظيفاً."]]},
+
+{n:6,w:1,m:6,t:"التفضيلات الشخصية: اجعل Claude يعرفك",
+p:["في الإعدادات تجد خانة التفضيلات الشخصية (Personal Preferences). ما تكتبه فيها يقرؤه Claude في كل محادثة جديدة تلقائياً.",
+"اكتب فيها من أنت، وماذا تعمل، وكيف تحب الردود: باللغة العربية، مختصرة، بأمثلة طبية، بلا مقدمات طويلة.",
+"هذه الخانة توفّر عليك تكرار التعريف بنفسك في كل مرة، وهي أول خطوة نحو مساعد يشبهك."],
+ex:"أنا طبيب عيون وصاحب عيادة في القاهرة. أكتب لي بالعربية دائماً، بصياغة مهنية راقية ومختصرة، وابدأ بالجواب مباشرة، واستخدم أمثلة من بيئة العيادات.",
+task:"افتح الإعدادات في claude.ai، واكتب تفضيلاتك الشخصية في ثلاثة إلى خمسة أسطر، ثم افتح محادثة جديدة ولاحظ الفرق.",
+tip:"راجع تفضيلاتك كل شهر. ما تتعلّمه عن طريقتك في العمل يستحق أن يُضاف إليها.",
+q:[["أين تكتب ما تريد أن يعرفه Claude عنك في كل محادثة؟",["في كل رسالة","في التفضيلات الشخصية بالإعدادات","في اسم المحادثة"],1,"التفضيلات تُقرأ تلقائياً مع كل محادثة جديدة."],
+["أي سطر يناسب التفضيلات الشخصية؟",["لخّص هذا الملف","أكتب لي بالعربية دائماً بصياغة مختصرة","ما الطقس اليوم؟"],1,"التفضيلات قواعد دائمة، لا مهام لمرة واحدة."]]},
+
+{n:7,w:1,m:10,t:"مراجعة الأسبوع: تحدٍّ يجمع كل ما سبق",
+p:["أحسنت، أنهيت أسبوع الأساسيات. اليوم تجمع كل ما تعلّمته في مهمة واحدة حقيقية.",
+"التحدي: ارفع ملفاً من عملك (تقرير أو عرض سعر أو بحث)، واكتب طلباً بالعناصر الأربعة، وأرفق مثالاً لأسلوبك، ثم حسّن النتيجة على ثلاث مراحل.",
+"قيّم نفسك: هل وصلت إلى نتيجة قابلة للاستخدام الفعلي في أقل من 15 دقيقة؟ إن نعم، فقد امتلكت الأساس."],
+ex:"تصرّف كمستشار إداري لعيادات. اقرأ تقرير الإيرادات المرفق، واكتب لي رسالة للشركاء بأسلوب هذا المثال: [مثال]. الرسالة في عشرة أسطر، تبدأ بأهم رقم وتنتهي بتوصية واحدة.",
+task:"نفّذ التحدي على مهمة من عملك هذا الأسبوع، واكتب في ملاحظات الدرس ما الذي وفّره لك من وقت.",
+tip:"احفظ أفضل طلباتك في ملف واحد. ستصبح مكتبتك الشخصية من الطلبات الجاهزة.",
+q:[["ما العناصر الأربعة للطلب الجيد؟",["الدور والمهمة والسياق والشكل","العنوان والمقدمة والخاتمة والمراجع","اللغة والطول والخط واللون"],0,"هذه هي الركائز التي يُبنى عليها كل ما بعدها."],
+["لتنقل أسلوبك إلى Claude بأسرع طريقة:",["اشرحه في فقرة طويلة","أعطه مثالاً أو مثالين","اتركه يخمّن"],1,"المثال أقوى من الوصف."],
+["لم تعجبك الفقرة الثانية فقط. ماذا تفعل؟",["تطلب تعديل الفقرة الثانية فقط","تبدأ محادثة جديدة","تقبل النتيجة"],0,"التعديل المحدد في المحادثة نفسها هو الأسرع."]]},
+
+{n:8,w:2,m:7,t:"المشاريع: نظّم عملك وتعليماته",
+p:["المشروع (Project) في claude.ai مساحة عمل لموضوع واحد، مثل: \"تسويق العيادة\" أو \"الأبحاث\". كل محادثة داخله تشترك في تعليماته وملفاته.",
+"تعليمات المشروع تشبه التفضيلات الشخصية، لكنها خاصة بهذا الموضوع: من الجمهور، ما النبرة، ما الممنوع.",
+"بدلاً من شرح السياق في كل محادثة، تشرحه مرة واحدة في المشروع، وكل محادثة جديدة تبدأ وهي تعرفه."],
+ex:"تعليمات المشروع: أنت مسؤول المحتوى لعيادة عيون في القاهرة. الجمهور أسر مصرية من الطبقة المتوسطة. النبرة ودودة وموثوقة. لا تذكر أسعاراً، ولا تقدّم تشخيصاً عبر الإنترنت.",
+task:"أنشئ مشروعاً لأكثر موضوع تكرّره في عملك، واكتب له تعليمات من خمسة أسطر.",
+tip:"اجعل لكل علامة تجارية أو نشاط مستقل مشروعاً مستقلاً، حتى لا تختلط التعليمات والهويات.",
+q:[["ما فائدة تعليمات المشروع؟",["تُطبَّق على كل محادثات المشروع تلقائياً","تحذف المحادثات القديمة","تترجم الردود"],0,"تكتبها مرة وتعمل في كل محادثة داخله."],
+["لديك نشاطان تجاريان مختلفان. الأفضل:",["مشروع واحد للاثنين","مشروع مستقل لكل نشاط","بلا مشاريع"],1,"الفصل يمنع تداخل الهويات والتعليمات."]]},
+
+{n:9,w:2,m:6,t:"ملفات المعرفة في المشروع",
+p:["يمكنك رفع ملفات دائمة إلى المشروع: دليل الخدمات، قائمة الأسئلة الشائعة، نماذج الردود، الهوية البصرية.",
+"كل محادثة في المشروع ترجع إلى هذه الملفات عند الحاجة، فتأتي الإجابات متّسقة مع بياناتك الحقيقية بدلاً من معلومات عامة.",
+"حدّث الملفات عندما تتغيّر بياناتك، واحذف القديم منها حتى لا يخلط Claude بين نسختين."],
+ex:"اعتماداً على ملف الأسئلة الشائعة في المشروع فقط، أجب عن هذا الاستفسار، وإن لم تجد الإجابة في الملف فقل ذلك صراحة: هل تقبلون التأمين الصحي؟",
+task:"ارفع إلى مشروعك ملفاً واحداً على الأقل يصف خدماتك، ثم اسأل سؤالاً لا يُجاب عنه إلا منه.",
+tip:"عبارة \"إن لم تجد الإجابة في الملف فقل ذلك\" تحميك من الإجابات المُخمَّنة.",
+q:[["لماذا ترفع ملفات المعرفة إلى المشروع؟",["لتكون الإجابات مبنية على بياناتك الحقيقية","لتسريع الإنترنت","لتصغير حجم الملفات"],0,"المعرفة الخاصة بك تُغني عن العموميات."],
+["تغيّرت أسعار خدماتك. ماذا تفعل بملف الأسعار القديم؟",["تتركه وتضيف الجديد","تستبدله بالجديد","لا شيء"],1,"نسختان متعارضتان تربكان الإجابات."]]},
+
+{n:10,w:2,m:8,t:"الأعمال الفنية: صفحات وأدوات تفاعلية",
+p:["الأعمال الفنية (Artifacts) صفحات يبنيها Claude لك داخل المحادثة: آلة حاسبة، نموذج حجز، لوحة متابعة، اختبار تفاعلي، وحتى تطبيق كامل مثل هذا الذي تقرؤه الآن.",
+"يمكن للعمل الفني أن يحفظ البيانات، ويُشارك برابط، بل ويستعين بـClaude نفسه من داخله، كما يفعل مختبر الطلب في هذا التطبيق.",
+"اطلبه بوصف ما يجب أن يفعله المستخدم، لا بوصف الكود: \"أداة يُدخل فيها المريض عمره فتعرض له مواعيد الفحص الموصى بها\"."],
+ex:"ابنِ لي أداة تفاعلية بالعربية يُدخل فيها المريض عمره وهل يرتدي نظارة، فتعرض له جدول فحوصات العيون الموصى بها، بتصميم أنيق يعمل على الجوال.",
+task:"اطلب من Claude عملاً فنياً صغيراً يخدم عملك، ثم حسّنه برسالتين، وشارك رابطه مع زميل.",
+tip:"اطلب دائماً أن يعمل على الجوال والكمبيوتر، وجرّبه بنفسك على الاثنين.",
+q:[["كيف تطلب عملاً فنياً بأفضل صورة؟",["بوصف ما يفعله المستخدم به","بكتابة الكود بنفسك","بإرسال صورة فقط"],0,"صف التجربة، وClaude يتولّى التقنية."],
+["هذا التطبيق الذي تتعلّم منه هو مثال على:",["عمل فني (Artifact)","ملف PDF","بريد إلكتروني"],0,"بُني بالكامل كعمل فني."]]},
+
+{n:11,w:2,m:7,t:"المستندات والعروض التقديمية",
+p:["يكتب Claude مستندات كاملة قابلة للتعديل والمشاركة والتصدير إلى Word وPDF، ويبني عروضاً تقديمية بشرائح جاهزة.",
+"اطلب الهيكل أولاً، ثم المحتوى: \"اقترح عناوين عرض من عشر شرائح عن...\"، وبعد موافقتك اطلب ملء الشرائح.",
+"يمكنك التعليق على أي فقرة داخل المستند وطلب تعديلها وحدها، تماماً كما تفعل مع زميل يحرّر معك."],
+ex:"أعدّ عرضاً تقديمياً من ثماني شرائح لمؤتمر طبي عن جراحات تصحيح النظر الحديثة. ابدأ بعناوين الشرائح فقط، وانتظر موافقتي قبل كتابة المحتوى.",
+task:"اطلب مستنداً أو عرضاً تحتاجه هذا الشهر، وابدأ بالهيكل قبل المحتوى.",
+tip:"اطلب ملاحظات المتحدث مع كل شريحة لتكون جاهزاً للإلقاء.",
+q:[["ما الترتيب الأمثل لطلب عرض تقديمي؟",["المحتوى كاملاً دفعة واحدة","الهيكل أولاً ثم المحتوى","التصميم أولاً"],1,"الهيكل المتفق عليه يوفّر إعادة الكتابة."],
+["هل يمكن تصدير مستندات Claude إلى Word؟",["نعم","لا","فقط إلى صورة"],0,"تُصدَّر إلى Word وPDF وغيرهما."]]},
+
+{n:12,w:2,m:7,t:"البحث في الويب والبحث المعمّق",
+p:["يستطيع Claude البحث في الإنترنت للحصول على معلومات حديثة، مع ذكر المصادر.",
+"أما البحث المعمّق (Research) فيقرأ عشرات المصادر ويقارن بينها ثم يكتب تقريراً منظماً، وقد يستغرق دقائق، وهو مناسب للأسئلة الكبيرة.",
+"اطلب دائماً روابط المصادر، وافتح أهمها بنفسك، خاصة في المعلومات الطبية والأرقام."],
+ex:"ابحث في أحدث الإرشادات المنشورة خلال آخر سنتين حول التحكّم في قصر النظر لدى الأطفال، ولخّصها في جدول يضم التوصية ومصدرها ورابطها.",
+task:"اسأل سؤالاً عن تطوّر حديث في مجالك، واطلب المصادر، وافتح مصدرين للتحقق.",
+tip:"حدّد الفترة الزمنية في طلبك، مثل \"خلال آخر 12 شهراً\"، لتحصل على الأحدث فعلاً.",
+q:[["متى تستخدم البحث المعمّق؟",["لسؤال كبير يحتاج مقارنة مصادر كثيرة","لتصحيح خطأ إملائي","لكتابة تهنئة"],0,"هو مخصص للتقارير التي تجمع مصادر متعددة."],
+["أهم عادة عند البحث عن معلومة طبية:",["فتح المصادر والتحقق منها","قبول أول نتيجة","تجاهل التواريخ"],0,"التحقق من المصدر يحميك ويحمي مرضاك."]]},
+
+{n:13,w:2,m:6,t:"الذاكرة: ما يتذكّره Claude وكيف تديره",
+p:["يمكن لـClaude أن يتذكّر معلومات من محادثاتك السابقة ليكمل معك دون تكرار، ويمكنك تفعيل ذلك أو إيقافه من الإعدادات.",
+"تستطيع أن تقول له صراحة: \"تذكّر أن عيادتي تعمل من السبت إلى الخميس\"، أو تسأله: \"ماذا تتذكّر عني؟\" وتطلب حذف ما لا تريده.",
+"الذاكرة في المشاريع منفصلة لكل مشروع، فلا يتسرّب سياق نشاط إلى آخر."],
+ex:"ماذا تتذكّر عني وعن عملي؟ اعرضه في نقاط، وسأخبرك بما يجب تصحيحه أو حذفه.",
+task:"اسأل Claude عمّا يتذكّره عنك، وصحّح معلومة واحدة على الأقل.",
+tip:"اجمع بين التفضيلات الشخصية للقواعد الثابتة، والذاكرة للتفاصيل التي تتراكم مع الوقت.",
+q:[["كيف تعرف ما يتذكّره Claude عنك؟",["تسأله مباشرة","لا يمكن معرفة ذلك","تحذف حسابك"],0,"اسأله واطلب التصحيح أو الحذف."],
+["ذاكرة المشاريع:",["منفصلة لكل مشروع","مشتركة بين كل المشاريع","غير موجودة"],0,"الفصل يحفظ خصوصية كل نشاط."]]},
+
+{n:14,w:2,m:12,t:"مراجعة الأسبوع: مشروع متكامل لعملك",
+p:["اليوم تبني مساحة عمل حقيقية تجمع أدوات الأسبوع كلها.",
+"التحدي: أنشئ مشروعاً لنشاط من أنشطتك، واكتب تعليماته، وارفع ملفين من ملفات المعرفة، ثم اطلب منه عملاً فنياً واحداً ومستنداً واحداً وبحثاً واحداً.",
+"بعد هذا اليوم يصبح لديك مكتب رقمي جاهز لهذا النشاط، يعرف بياناتك وأسلوبك."],
+ex:"اعتماداً على ملفات المشروع، ابحث عن أحدث ثلاثة اتجاهات في تسويق العيادات، ثم اكتب خطة محتوى لشهر في مستند، وابنِ لي تقويماً تفاعلياً للمنشورات.",
+task:"نفّذ التحدي، واكتب في ملاحظاتك أي أداة كانت الأكثر فائدة لك.",
+tip:"سمِّ محادثاتك المهمة بأسماء واضحة لتجدها لاحقاً بسهولة.",
+q:[["أين تضع التعليمات الخاصة بنشاط معيّن؟",["تعليمات المشروع","التفضيلات الشخصية","اسم المحادثة"],0,"التفضيلات للجميع، والتعليمات لكل مشروع."],
+["أداة تفاعلية يفتحها مرضاك برابط هي:",["عمل فني","بحث معمّق","ذاكرة"],0,"الأعمال الفنية تُشارك بروابط."],
+["لتقرير يقارن عشرات المصادر تستخدم:",["البحث المعمّق","التفضيلات","الذاكرة"],0,"البحث المعمّق مصمّم لذلك."]]},
+
+{n:15,w:3,m:7,t:"الموصلات: اربط Gmail وDrive والتقويم",
+p:["الموصلات (Connectors) تربط Claude بالخدمات التي تستخدمها: البريد، Google Drive، التقويم، Canva، وغيرها كثير.",
+"بعد الربط تقول: \"ما أهم خمس رسائل وصلتني هذا الأسبوع؟\" أو \"ابحث في Drive عن عقد المورد وأخبرني بموعد التجديد\".",
+"تُضاف الموصلات من الإعدادات، وتستطيع فصل أي موصل في أي وقت. Claude يطلب موافقتك قبل أي إجراء يغيّر شيئاً، مثل إرسال بريد."],
+ex:"اقرأ بريدي في آخر سبعة أيام، ورتّب الرسائل التي تحتاج رداً مني حسب الأهمية، واقترح مسودة رد قصيرة لكل منها دون إرسال.",
+task:"اربط موصلاً واحداً تستخدمه يومياً، وجرّب عليه طلب قراءة فقط.",
+tip:"ابدأ بطلبات القراءة والتلخيص، ثم انتقل إلى الإجراءات بعد أن تطمئن للنتائج.",
+q:[["ما وظيفة الموصلات؟",["ربط Claude بخدماتك مثل البريد والتقويم","تسريع الجهاز","ترجمة الملفات"],0,"تمنح Claude وصولاً منظّماً إلى أدواتك."],
+["قبل أن يرسل Claude بريداً نيابة عنك:",["يرسله فوراً","يطلب موافقتك","لا يستطيع القراءة أصلاً"],1,"الإجراءات المؤثرة تحتاج إذنك."]]},
+
+{n:16,w:3,m:7,t:"المهارات: ما هي وكيف تستخدمها",
+p:["المهارة (Skill) حزمة تعليمات وأدوات يستدعيها Claude تلقائياً عندما تناسب المهمة، مثل مهارة إنشاء ملفات Excel أو عروض PowerPoint أو ملفات PDF.",
+"الفرق بينها وبين التعليمات العادية أنها تُحمَّل فقط عند الحاجة، فتبقى المحادثة خفيفة، ويتقن Claude المهمة كخبير متخصص.",
+"تجد المهارات المتاحة في الإعدادات، ويمكنك تفعيل ما يناسب عملك منها."],
+ex:"أنشئ لي ملف Excel لمتابعة مواعيد المرضى الأسبوعية، فيه أعمدة للاسم والتاريخ ونوع الفحص والحالة، مع تلوين تلقائي للمواعيد الفائتة.",
+task:"افتح قائمة المهارات في الإعدادات، وفعّل مهارة تخدم عملك، وجرّبها بطلب حقيقي.",
+tip:"لا تحتاج أن تذكر اسم المهارة؛ صف ما تريد، وClaude يختار المهارة المناسبة.",
+q:[["متى يستخدم Claude المهارة؟",["عندما تناسب المهمة","في كل رسالة","عند الطلب بالإنجليزية فقط"],0,"تُستدعى تلقائياً حسب المهمة."],
+["لماذا لا تثقل المهارات المحادثة؟",["لأنها تُحمَّل عند الحاجة فقط","لأنها محذوفة","لأنها صور"],0,"التحميل عند الحاجة يبقي المحادثة خفيفة."]]},
+
+{n:17,w:3,m:9,t:"أنشئ مهارة خاصة بك",
+p:["أي عمل تكرّره بالطريقة نفسها يمكن أن يتحوّل إلى مهارة: كتابة تقرير طبي بقالب معيّن، الرد على شكاوى المرضى، إعداد منشور أسبوعي.",
+"أسهل طريقة: نفّذ المهمة مرة واحدة مع Claude حتى تصل لنتيجة ممتازة، ثم قل له: \"حوّل ما فعلناه الآن إلى مهارة أستطيع استخدامها لاحقاً\".",
+"المهارة الجيدة تذكر متى تُستخدم، وما الخطوات، وما شكل الناتج، ومثالاً واحداً على الأقل."],
+ex:"حوّل طريقتنا في كتابة هذا التقرير إلى مهارة باسم \"تقرير-فحص-العيون\": تُستخدم عند طلب تقرير فحص، وتتبع القالب نفسه، وتكتب بالعربية الرسمية.",
+task:"اختر مهمة تكرّرها أسبوعياً، ونفّذها مع Claude، ثم اطلب تحويلها إلى مهارة.",
+tip:"ابدأ بمهارة صغيرة واحدة متقنة، أفضل من خمس مهارات عامة.",
+q:[["أنسب مهمة لتحويلها إلى مهارة:",["مهمة تتكرّر بالطريقة نفسها","سؤال لمرة واحدة","تحية صباحية"],0,"التكرار هو ما يجعل المهارة مجدية."],
+["ما الذي يجب أن تتضمّنه المهارة الجيدة؟",["متى تُستخدم والخطوات وشكل الناتج","اسم المستخدم فقط","كلمة المرور"],0,"الوضوح في هذه الثلاثة يجعلها موثوقة."]]},
+
+{n:18,w:3,m:7,t:"المهام المجدولة: Claude يعمل وأنت غائب",
+p:["يمكنك أن تطلب من Claude تنفيذ مهمة في وقت محدد أو بشكل متكرر: ملخص بريد كل صباح، تقرير أسبوعي كل خميس، تذكير بمتابعة مريض.",
+"الدروس اليومية التي تصلك في محادثتك كل صباح مثال حي على مهمة مجدولة.",
+"صِغ المهمة المجدولة كأنك تكتبها لمساعد سيعمل وحده: ماذا يفعل، ومن أين يقرأ، وأين يضع النتيجة."],
+ex:"كل يوم أحد الساعة 8 صباحاً، اقرأ تقويمي لهذا الأسبوع، ولخّص المواعيد المهمة، وذكّرني بأي تعارض بين موعدين.",
+task:"حدّد مهمة واحدة تتكرّر كل أسبوع، واطلب جدولتها.",
+tip:"اجعل الناتج قصيراً قابلاً للقراءة في دقيقة، وإلا ستتجاهله مع الوقت.",
+q:[["الدرس اليومي الذي يصلك صباحاً مثال على:",["مهمة مجدولة","موصل","ذاكرة"],0,"يُنفَّذ تلقائياً في وقت محدد."],
+["المهمة المجدولة الجيدة تحدد:",["ماذا يفعل ومن أين يقرأ وأين يضع النتيجة","لون الخط","عدد الكلمات فقط"],0,"المساعد الذي يعمل وحده يحتاج تعليمات كاملة."]]},
+
+{n:19,w:3,m:6,t:"Claude في المتصفح وعلى الجوال",
+p:["تطبيق Claude على الجوال يتيح لك التحدث صوتياً، وتصوير مستند مباشرة، ومتابعة محادثاتك أينما كنت.",
+"وإضافة Claude في متصفح Chrome تجعله يقرأ الصفحة المفتوحة أمامك ويتصفح ويملأ النماذج نيابة عنك بعد موافقتك.",
+"ابدأ عملاً على الكمبيوتر وأكمله على الجوال؛ المحادثات والمشاريع متزامنة."],
+ex:"(صوتياً من الجوال) لخّص لي محادثة الأمس عن خطة التسويق في ثلاث نقاط، وذكّرني بما اتفقنا أن أفعله اليوم.",
+task:"ثبّت تطبيق Claude على جوالك، وجرّب رسالة صوتية واحدة وتصوير مستند واحد.",
+tip:"الوضع الصوتي ممتاز للتفكير بصوت مرتفع أثناء القيادة أو المشي.",
+q:[["ما ميزة إضافة Claude في المتصفح؟",["قراءة الصفحة المفتوحة والتصرف فيها بموافقتك","تسريع الإنترنت","حظر الإعلانات"],0,"تعمل داخل متصفحك مباشرة."],
+["هل محادثاتك متزامنة بين الجوال والكمبيوتر؟",["نعم","لا","فقط المشاريع"],0,"ابدأ في مكان وأكمل في آخر."]]},
+
+{n:20,w:3,m:7,t:"الخصوصية والأمان: ما تشاركه وما لا تشاركه",
+p:["لا تشارك كلمات المرور أو بيانات البطاقات أو البيانات التعريفية للمرضى. استبدل الأسماء برموز مثل \"المريض أ\".",
+"راجع إعدادات الخصوصية في حسابك، واعرف كيف تُستخدم بياناتك، وفعّل أو أوقف الذاكرة حسب حاجتك.",
+"إذا وجدت تعليمات غريبة داخل ملف أو صفحة ويب تطلب من Claude شيئاً، فاعلم أن Claude يعاملها كمحتوى لا كأوامر، ومع ذلك راجع أي إجراء قبل الموافقة عليه."],
+ex:"هذه حالة مجهولة الهوية: المريض أ، ذكر، 52 عاماً، يشكو من ضبابية الرؤية الليلية. اقترح أسئلة إضافية أطرحها عليه في الزيارة القادمة.",
+task:"راجع إعدادات الخصوصية في حسابك، وأعد كتابة طلب سابق لك بعد إزالة أي بيانات حساسة.",
+tip:"قاعدة بسيطة: لا تكتب لـClaude ما لا تكتبه في بريد إلى زميل خارج العيادة.",
+q:[["كيف تعرض حالة مريض بأمان؟",["بإخفاء البيانات التعريفية","بذكر الاسم الكامل","بإرفاق صورة البطاقة"],0,"الرموز تحفظ الخصوصية وتكفي للتحليل."],
+["تعليمات مخفية داخل ملف تطلب إرسال بياناتك:",["تُعامل كمحتوى لا كأوامر","تُنفَّذ تلقائياً","تحذف الملف"],0,"ومع ذلك راجع كل إجراء قبل الموافقة."]]},
+
+{n:21,w:3,m:12,t:"مراجعة الأسبوع: أتمت مهمة متكررة",
+p:["اليوم تجمع الموصلات والمهارات والجدولة في أتمتة حقيقية واحدة.",
+"التحدي: اختر مهمة تأخذ منك أكثر من ساعة أسبوعياً، واربط ما تحتاجه من موصلات، وحوّل طريقتها إلى مهارة، ثم جدولها لتعمل وحدها.",
+"احسب الوقت الذي ستوفّره شهرياً واكتبه في ملاحظاتك. هذا هو العائد الحقيقي لتعلّمك."],
+ex:"كل خميس الساعة 4 عصراً: اقرأ رسائل الحجز في بريدي لهذا الأسبوع، وحدّث جدول المواعيد في Drive، وأرسل لي ملخصاً بعدد الحجوزات وأكثر الخدمات طلباً.",
+task:"نفّذ التحدي، وسجّل في الملاحظات الوقت الموفَّر المتوقع شهرياً.",
+tip:"ابدأ الأتمتة بنسخة تقرأ وتلخّص فقط، وأضف الإجراءات بعد أسبوعين من النتائج الجيدة.",
+q:[["أي ترتيب أكثر أماناً لبناء أتمتة؟",["قراءة وتلخيص أولاً ثم إجراءات","إجراءات كاملة من اليوم الأول","بلا مراجعة"],0,"الثقة تُبنى بالتدرّج."],
+["المهارة + الموصل + الجدولة تعني:",["مهمة تعمل وحدها بطريقتك وعلى بياناتك","ثلاث محادثات منفصلة","إعدادات اللغة"],0,"هذه هي الأتمتة الكاملة."],
+["أين تحفظ قاعدة عامة تريدها في كل محادثاتك؟",["التفضيلات الشخصية","ملف مرفق مرة واحدة","اسم المشروع"],0,"مراجعة من الأسبوع الأول."]]},
+
+{n:22,w:4,m:7,t:"ما هو Claude Code؟ ولماذا يهمّك",
+p:["Claude Code هو Claude وهو يعمل كمطوّر كامل: يكتب ملفات المشروع، ويشغّل الأوامر، ويختبر، وينشر. يعمل في الطرفية، وفي تطبيق سطح المكتب، وعلى الويب من claude.ai/code.",
+"لا تحتاج أن تكون مبرمجاً. أنت تصف ما تريده بالعربية، وهو يبني ويختبر ويشرح لك ما فعل.",
+"الفرق عن المحادثة العادية: Claude Code يعمل على ملفات حقيقية في مستودع، فيبقى عملك محفوظاً ومنظّماً وقابلاً للتطوير."],
+ex:"ابنِ لي موقعاً من صفحة واحدة لعيادتي: نبذة، الخدمات، المواعيد، خريطة الوصول، ونموذج حجز. بالعربية، ويعمل ممتازاً على الجوال.",
+task:"افتح claude.ai/code وتعرّف على الواجهة، واطلب منه أن يشرح لك ما يستطيع فعله في ثلاث نقاط.",
+tip:"صف النتيجة النهائية كما يراها الزائر، واترك التفاصيل التقنية له.",
+q:[["أين يمكن استخدام Claude Code؟",["الطرفية وسطح المكتب والويب","الطابعة فقط","البريد فقط"],0,"متاح في عدة واجهات."],
+["هل تحتاج أن تكون مبرمجاً لاستخدامه؟",["لا، تصف ما تريد بالعربية","نعم دائماً","فقط في الويب"],0,"الوصف الواضح يكفي للبدء."]]},
+
+{n:23,w:4,m:10,t:"أول موقع أو أداة تبنيها مع Claude Code",
+p:["ابدأ بشيء صغير مفيد: صفحة هبوط، حاسبة، نموذج تسجيل. الهدف أن ترى الدورة كاملة: وصف، بناء، تجربة، تحسين، نشر.",
+"اطلب منه بعد البناء أن يشغّل الصفحة ويختبرها بنفسه على مقاس الجوال والكمبيوتر ويريك صورة منها.",
+"كل تعديل بعد ذلك جملة واحدة: \"كبّر زر الحجز\"، \"أضف قسماً للأسئلة الشائعة\"."],
+ex:"ابنِ حاسبة بسيطة يُدخل فيها المريض تاريخ آخر فحص، فتخبره بموعد الفحص القادم ونصيحة قصيرة. اختبرها على الجوال وأرني صورة.",
+task:"ابنِ أداة صغيرة واحدة، واطلب لقطة شاشة منها على الجوال.",
+tip:"اطلب منه أن يشرح لك ما بناه في خمسة أسطر، لتفهم مشروعك وتديره بثقة.",
+q:[["ما الدورة الكاملة لبناء أداة؟",["وصف ثم بناء ثم تجربة ثم تحسين ثم نشر","نشر ثم وصف","بناء فقط"],0,"هذه دورة كل منتج ناجح."],
+["كيف تتأكد أن الأداة تعمل على الجوال؟",["تطلب اختبارها ولقطة شاشة على مقاس الجوال","تفترض ذلك","تسأل صديقاً بعد شهر"],0,"التحقق المرئي هو الأسرع."]]},
+
+{n:24,w:4,m:8,t:"GitHub ببساطة: احفظ عملك وانشره",
+p:["GitHub مكان يحفظ مشاريعك البرمجية بكل نسخها. كل تعديل يُسجَّل، فتستطيع الرجوع لأي نسخة سابقة.",
+"Claude Code يتعامل مع GitHub نيابة عنك: يحفظ التعديلات، ويفتح طلب دمج (Pull Request) لتراجعه قبل اعتماده.",
+"يمكن نشر المواقع مجاناً من GitHub مباشرة، فيصبح لموقعك رابط حقيقي يفتحه أي شخص."],
+ex:"احفظ التعديلات الحالية في GitHub بوصف واضح بالعربية، وافتح طلب دمج أراجعه، واشرح لي ما الذي تغيّر.",
+task:"اربط حسابك في GitHub بـClaude، واطلب حفظ مشروعك الأول فيه.",
+tip:"اطلب دائماً طلب دمج تراجعه بدلاً من الدمج المباشر في المشاريع المهمة.",
+q:[["ما الفائدة الأساسية لـGitHub؟",["حفظ كل نسخ المشروع والرجوع إليها","تحرير الصور","إرسال الرسائل"],0,"سجل كامل لكل تعديل."],
+["طلب الدمج (Pull Request) يعني:",["تعديلات مقترحة تراجعها قبل اعتمادها","حذف المشروع","نسخة احتياطية فقط"],0,"المراجعة قبل الاعتماد."]]},
+
+{n:25,w:4,m:7,t:"ملف CLAUDE.md: تعليمات دائمة لكل مشروع",
+p:["CLAUDE.md ملف يوضع داخل المشروع البرمجي، يقرؤه Claude Code في بداية كل جلسة، مثل تعليمات المشروع في claude.ai.",
+"اكتب فيه: لغة الواجهة، الهوية البصرية، الأوامر المستخدمة، القواعد الممنوعة، وطريقة الاختبار.",
+"كلما اكتشفت قاعدة جديدة أثناء العمل، أضفها إليه. هكذا يتحسّن المساعد مع كل جلسة."],
+ex:"أنشئ ملف CLAUDE.md لهذا المشروع يتضمّن: الواجهة بالعربية من اليمين لليسار، الألوان المعتمدة، اختبار كل صفحة على الجوال قبل النشر، وعدم تغيير بيانات التواصل دون إذن.",
+task:"اطلب إنشاء CLAUDE.md لمشروعك الأول بخمس قواعد على الأقل.",
+tip:"اجعل القواعد قصيرة وقابلة للتحقق: \"اختبر على عرض 400 بكسل\" أفضل من \"اجعله جميلاً\".",
+q:[["متى يقرأ Claude Code ملف CLAUDE.md؟",["في بداية كل جلسة","مرة واحدة فقط","لا يقرؤه"],0,"تعليمات دائمة لكل جلسة."],
+["أي قاعدة أفضل في CLAUDE.md؟",["اختبر كل صفحة على عرض 400 بكسل","اجعله رائعاً","افعل ما تراه"],0,"القاعدة القابلة للتحقق أقوى."]]},
+
+{n:26,w:4,m:8,t:"العملاء الفرعيون وتوزيع العمل الكبير",
+p:["في المهام الكبيرة يستطيع Claude Code أن يوزّع العمل على عملاء فرعيين (Subagents) يعمل كل منهم على جزء بالتوازي، ثم يجمع النتائج.",
+"مثلاً: عميل يراجع النصوص، وآخر يختبر الجوال، وثالث يبحث عن أخطاء، بدلاً من عمل كل ذلك بالتتابع.",
+"استخدم هذا للمهام الكبيرة فعلاً، لأنه يستهلك موارد أكثر. المهام الصغيرة يكفيها Claude وحده."],
+ex:"راجع موقعي بالكامل باستخدام عملاء فرعيين بالتوازي: واحد للنصوص العربية والإملاء، وواحد لتجربة الجوال، وواحد لروابط الصفحات، ثم أعطني تقريراً موحداً.",
+task:"فكّر في مهمة كبيرة في عملك يمكن تقسيمها إلى ثلاثة أجزاء مستقلة، واكتبها في ملاحظاتك.",
+tip:"الأجزاء المستقلة تماماً هي الأنسب للتوزيع؛ ما يعتمد بعضه على بعض يبقى متتابعاً.",
+q:[["متى تستخدم العملاء الفرعيين؟",["لمهمة كبيرة تنقسم إلى أجزاء مستقلة","لتصحيح كلمة واحدة","دائماً"],0,"التوزيع مفيد للمهام الكبيرة المستقلة."],
+["عيب استخدامهم في المهام الصغيرة:",["استهلاك موارد أكثر دون فائدة","لا يوجد عيب","حذف الملفات"],0,"الأداة المناسبة للحجم المناسب."]]},
+
+{n:27,w:4,m:7,t:"أخطاء شائعة وكيف تتجنّبها",
+p:["الخطأ الأول: طلب غامض ثم الإحباط من النتيجة. العلاج: العناصر الأربعة.",
+"الخطأ الثاني: الثقة العمياء في الأرقام والمراجع. العلاج: اطلب المصدر وتحقق. والخطأ الثالث: محادثة واحدة طويلة لكل شيء. العلاج: مشروع لكل موضوع ومحادثة لكل مهمة.",
+"الخطأ الرابع: تكرار الشرح في كل مرة. العلاج: التفضيلات وتعليمات المشروع والمهارات. والخامس: نشر شيء دون تجربته على الجوال."],
+ex:"راجع طلبي هذا قبل أن تنفّذه: [الطلب]. ما الذي ينقصه لتعطيني أفضل نتيجة؟ اسألني ما تحتاجه أولاً.",
+task:"راجع آخر خمس محادثات لك، وحدّد أي خطأ من الخمسة وقعت فيه أكثر، واكتب علاجه في ملاحظاتك.",
+tip:"جملة \"اسألني ما تحتاجه قبل أن تبدأ\" تحوّل الطلب الناقص إلى طلب كامل.",
+q:[["علاج تكرار شرح نفسك في كل محادثة:",["التفضيلات وتعليمات المشروع","كتابة رسائل أطول","تغيير الحساب"],0,"اكتبها مرة واحدة."],
+["قبل نشر صفحة بناها Claude:",["جرّبها على الجوال والكمبيوتر","انشرها فوراً","اطبعها"],0,"التجربة قبل النشر."]]},
+
+{n:28,w:4,m:7,t:"التحقق من النتائج: لا تثق قبل أن تختبر",
+p:["Claude دقيق جداً، لكنه قد يخطئ أحياناً، خاصة في الأرقام الدقيقة والمراجع والمعلومات الحديثة.",
+"اسأله: \"ما مدى ثقتك في هذه المعلومة؟ وما الذي يجب أن أتحقق منه بنفسي؟\"، واطلب منه اختبار ما يبنيه وإثبات أنه يعمل.",
+"في العمل البرمجي، اطلب دائماً تشغيل الاختبارات وعرض النتيجة ولقطة شاشة. في المحتوى، اطلب المصادر وافتح أهمها."],
+ex:"قبل أن أعتمد هذا التقرير: حدّد كل رقم ومعلومة فيه تحتاج تحققاً، وصنّفها حسب الأهمية، واذكر مصدر كل منها.",
+task:"خذ ناتجاً حديثاً من Claude فيه أرقام، واطلب منه تحديد ما يحتاج تحققاً، ثم تحقق من أهم معلومتين.",
+tip:"كلما كانت العواقب أكبر (طبية، مالية، قانونية)، كان التحقق أوجب.",
+q:[["أين يحتاج كلام Claude تحققاً أكثر؟",["الأرقام الدقيقة والمراجع","التحيات","إعادة الصياغة"],0,"التفاصيل الدقيقة تستحق المراجعة."],
+["كيف تتأكد أن أداة برمجية تعمل؟",["تطلب تشغيل الاختبارات ولقطة شاشة","تصدّق الوصف","تنتظر شكوى"],0,"الدليل قبل الثقة."]]},
+
+{n:29,w:4,m:10,t:"ابنِ سير عمل احترافياً متكاملاً",
+p:["سير العمل الاحترافي يربط كل ما تعلّمته: مشروع بتعليمات واضحة، ملفات معرفة، مهارات لمهامك المتكررة، موصلات لأدواتك، مهام مجدولة، وتحقق دائم.",
+"ارسم يومك أو أسبوعك، وحدّد عند كل خطوة: هل يمكن لـClaude أن يقوم بها؟ أو يجهّزها؟ أو يراجعها؟",
+"الهدف ليس أتمتة كل شيء، بل تحرير وقتك لما لا يستطيع غيرك فعله: الحكم المهني والعلاقة الإنسانية."],
+ex:"هذا أسبوعي المعتاد في العيادة: [الوصف]. صمّم لي سير عمل يستخدم المشاريع والمهارات والموصلات والجدولة، في جدول يوضح الخطوة والأداة والوقت الموفَّر.",
+task:"صمّم سير عملك الأسبوعي مع Claude، وطبّق أول خطوتين منه هذا الأسبوع.",
+tip:"قِس قبل وبعد: كم ساعة كانت تأخذ المهمة، وكم أصبحت.",
+q:[["الهدف من سير العمل الاحترافي:",["تحرير وقتك لما لا يستطيعه غيرك","أتمتة كل شيء دون مراجعة","زيادة عدد المحادثات"],0,"الحكم المهني يبقى لك."],
+["ما الذي يقيس نجاح سير العمل؟",["الوقت الموفَّر وجودة النتائج","عدد الأدوات المستخدمة","طول الرسائل"],0,"قِس قبل وبعد."]]},
+
+{n:30,w:4,m:15,t:"مشروع التخرّج: خطتك الشخصية مع Claude",
+p:["وصلت إلى نهاية المنهج. اليوم تكتب خطتك الشخصية لاستخدام Claude في الأشهر الثلاثة القادمة.",
+"الخطة تضم: ثلاثة مشاريع تنشئها، ومهارتين تبنيهما، وأتمتة واحدة كبيرة، وأداة أو موقع واحد تبنيه بـClaude Code، ومؤشراً تقيس به نجاحك.",
+"بعد إتمام هذا الدرس تحصل على شهادة إتمام معلم. والاحتراف الحقيقي يبدأ الآن: درجة جديدة كل يوم."],
+ex:"ساعدني في كتابة خطة من ثلاثة أشهر لاستخدامك في عملي كطبيب وصاحب عيادة: ثلاثة مشاريع، ومهارتان، وأتمتة واحدة، وأداة أبنيها، ومؤشر نجاح لكل منها، في جدول زمني أسبوعي.",
+task:"اكتب خطتك مع Claude، واحفظها في مستند، وضع تاريخاً لمراجعتها بعد شهر.",
+tip:"علّم شخصاً آخر ما تعلّمته؛ التعليم أسرع طريق لتثبيت الاحتراف.",
+q:[["ما أداة حفظ القواعد الدائمة في مشروع برمجي؟",["CLAUDE.md","Gmail","الذاكرة فقط"],0,"تعليمات دائمة يقرؤها Claude Code."],
+["لتنفيذ مهمة أسبوعية وحدها تستخدم:",["مهمة مجدولة","بحثاً معمّقاً","عملاً فنياً"],0,"الجدولة تعمل وأنت غائب."],
+["أهم عادة احترافية مع Claude:",["التحقق من النتائج قبل الاعتماد","قبول كل شيء","تجنّب الأسئلة"],0,"الثقة تُبنى على الدليل."]]}
+];
+
+</script>
+<script src="config.js"></script>
+<script>
+(function(){
+const TOTAL = LESSONS.length;
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const LS_KEY = "teacher-state-v1";
+const fmtDate = d => new Date(d).toLocaleDateString("ar-EG-u-nu-latn",{day:"numeric",month:"long",year:"numeric"});
+const dayKey = (d=new Date()) => d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+
+let S = blank();
+let mode = "local";          // local | cloud
+let sample = null, downloads = null;
+let isAdmin = false, sequential = true, learnersUnsub = null, learners = [];
+const CFG = window.TEACHER_CONFIG || {};
+const TOK_KEY = "teacher-token-v1";
+let token = null, me = null, allowSignup = true, adminTab = "users", adminLog = [];
+let saveTimer = null;
+
+function blank(){ return {done:{}, quiz:{}, ex:{}, notes:{}, reviewed:{}, days:[], remind:"09:00", certName:""}; }
+function loadLocal(){ try{ const raw = localStorage.getItem(LS_KEY); if(raw) S = Object.assign(blank(), JSON.parse(raw)); }catch(e){} }
+function saveLocal(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }catch(e){} }
+
+function merge(a, b){
+  const m = blank();
+  for(const k of ["done","reviewed"]) m[k] = Object.assign({}, b[k], a[k]);
+  for(const k of ["quiz","ex","notes"]) m[k] = Object.assign({}, b[k], a[k]);
+  m.days = [...new Set([...(a.days||[]), ...(b.days||[])])].sort();
+  m.remind = a.remind || b.remind || "09:00";
+  m.certName = a.certName || b.certName || "";
+  m.lab = a.lab || b.lab || "";
+  return m;
+}
+
+function touch(){ const k = dayKey(); if(!S.days.includes(k)){ S.days.push(k); S.days.sort(); } }
+function persist(){
+  saveLocal();
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(pushCloud, 700);
+}
+async function api(action, body){
+  if(!CFG.API) throw new Error("offline");
+  const r = await fetch(CFG.API, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(Object.assign({action, token}, body||{}))});
+  const j = await r.json();
+  if(!j.ok){
+    if(j.error==="auth" && token){ signOut(true); }
+    const e = new Error(j.error||"error"); e.code = j.error; throw e;
+  }
+  return j;
+}
+const ERR = {invalid:"اسم المستخدم أو كلمة المرور غير صحيحة", locked:"محاولات كثيرة غير ناجحة، حاول بعد 15 دقيقة", disabled:"هذا الحساب موقوف، تواصل مع الإدارة",
+  taken:"اسم المستخدم مستخدم من قبل", bad_username:"اسم المستخدم من 3 أحرف على الأقل، بالإنجليزية والأرقام فقط", bad_name:"اكتب الاسم",
+  weak_password:"كلمة المرور 8 أحرف على الأقل", signup_closed:"التسجيل الذاتي مغلق حالياً، تواصل مع الإدارة", self:"لا يمكن تنفيذ هذا الإجراء على حسابك",
+  last_admin:"يجب أن يبقى مدير واحد نشط على الأقل", forbidden:"هذه الصلاحية للإدارة فقط", auth:"انتهت الجلسة، سجّل الدخول مرة أخرى", offline:"نظام الحسابات غير مفعّل بعد"};
+const errMsg = e => ERR[e && e.code] || ERR[e && e.message] || "تعذّر الاتصال بالخادم، حاول مرة أخرى";
+function summary(){ return {done:doneList(), xp:xp(), streak:streak(), quizAvg:quizAvg()}; }
+async function pushCloud(){
+  if(mode !== "cloud" || !token) return;
+  try{ await api("saveProgress", {state:JSON.parse(JSON.stringify(S)), summary:summary()}); }catch(e){}
+}
+function signIn(j){
+  token = j.token; me = j.user; isAdmin = me.role==="admin";
+  if(j.settings){ sequential = j.settings.sequential; allowSignup = j.settings.allowSignup; }
+  try{ localStorage.setItem(TOK_KEY, token); }catch(e){}
+}
+function signOut(expired){
+  token = null; me = null; isAdmin = false; mode = "local"; learners = [];
+  try{ localStorage.removeItem(TOK_KEY); }catch(e){}
+  S = blank(); saveLocal();
+  if(expired) toast(ERR.auth);
+}
+async function loadCloud(){
+  const j = await api("getProgress");
+  if(j.state) S = merge(S, j.state);
+  mode = "cloud"; saveLocal(); await pushCloud();
+}
+
+/* ---------- derived ---------- */
+const doneList = () => Object.keys(S.done).map(Number).filter(n=>S.done[n]).sort((a,b)=>a-b);
+const doneCount = () => doneList().length;
+function quizCorrect(n){ const r = S.quiz[n]; if(!r) return 0; const L = LESSONS[n-1]; return r.filter((v,i)=>v===L.q[i][2]).length; }
+function xp(){ let x=0; for(const n of doneList()) x+=20; for(const k in S.quiz) x+=quizCorrect(+k)*5; for(const k in S.reviewed) if(S.reviewed[k]) x+=5; return x; }
+function quizAvg(){ const ks = Object.keys(S.quiz); if(!ks.length) return 0; let c=0,t=0; for(const k of ks){ c+=quizCorrect(+k); t+=LESSONS[k-1].q.length; } return Math.round(c/t*100); }
+function streak(){
+  const set = new Set(S.days); let d = new Date(); let n = 0;
+  if(!set.has(dayKey(d))){ d.setDate(d.getDate()-1); if(!set.has(dayKey(d))) return 0; }
+  while(set.has(dayKey(d))){ n++; d.setDate(d.getDate()-1); }
+  return n;
+}
+const RANKS = [[0,"الدرجة الأولى","مبتدئ"],[7,"الدرجة الثانية","مستكشف"],[14,"الدرجة الثالثة","ممارس"],[21,"الدرجة الرابعة","متمكّن"],[30,"القمة","محترف"]];
+function rank(){ const d = doneCount(); let r = RANKS[0]; for(const x of RANKS) if(d>=x[0]) r=x; return r; }
+function nextLesson(){ for(const L of LESSONS) if(!S.done[L.n]) return L.n; return TOTAL; }
+function unlocked(n){ return !sequential || n===1 || !!S.done[n-1] || !!S.done[n]; }
+
+/* ---------- routing ---------- */
+function route(){ const h = (location.hash||"#home").slice(1); return h || "home"; }
+function go(h){ if(location.hash === "#"+h) render(); else location.hash = h; window.scrollTo(0,0); }
+window.addEventListener("hashchange", ()=>{ render(); window.scrollTo(0,0); });
+
+function renderTabs(){
+  const r = route();
+  const items = [["home","اليوم"],["path","المسار"],["lab","مختبر الطلب"],["notes","دفتري"],["remind","التذكير"],["contact","تواصل"]];
+  if(isAdmin) items.push(["admin","الإدارة"]);
+  items.push(["account", me ? "حسابي" : "الدخول"]);
+  $("#tabs").innerHTML = items.map(([k,t])=>`<a href="#${k}" class="${(r===k || (k==="path" && /^l\d+$/.test(r)))?"on":""}">${t}</a>`).join("");
+}
+
+function render(){
+  renderTabs();
+  const r = route();
+  const v = $("#view");
+  if(r==="path") v.innerHTML = viewPath();
+  else if(/^l\d+$/.test(r)){ const n = +r.slice(1); if(n>=1 && n<=TOTAL){ v.innerHTML = viewLesson(n); if(unlocked(n)) bindLesson(n); } else v.innerHTML = viewHome(); }
+  else if(r==="lab"){ v.innerHTML = viewLab(); bindLab(); }
+  else if(r==="notes"){ v.innerHTML = viewNotes(); bindNotes(); }
+  else if(r==="remind"){ v.innerHTML = viewRemind(); bindRemind(); }
+  else if(r==="contact"){ v.innerHTML = viewContact(); }
+  else if(r==="admin" && isAdmin){ v.innerHTML = viewAdmin(); bindAdmin(); }
+  else if(r==="account"){ v.innerHTML = viewAccount(); bindAccount(); }
+  else { v.innerHTML = viewHome(); bindHome(); }
+}
+
+function storageBanner(){
+  return mode==="cloud"
+    ? `<div class="banner" role="status"><span aria-hidden="true">●</span><span>مرحباً ${esc(me&&me.name)}، تقدّمك محفوظ في حسابك ويتزامن بين أجهزتك.</span></div>`
+    : `<div class="banner" role="status"><span aria-hidden="true">○</span><span>تتعلّم الآن زائراً، وتقدّمك محفوظ في هذا المتصفح. ${CFG.API?`<a href="#account">سجّل الدخول أو أنشئ حساباً</a> ليُحفظ تقدّمك ويتزامن بين أجهزتك.`:"استخدم الجهاز نفسه لمتابعة رحلتك."}</span></div>`;
+}
+
+function ring(p, size=86){
+  const r = size/2-8, c = 2*Math.PI*r, off = c*(1-p);
+  return `<svg class="ring" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--sunk)" stroke-width="8"/><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--accent)" stroke-width="8" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${off}" transform="rotate(-90 ${size/2} ${size/2})"/></svg>`;
+}
+
+/* ---------- views ---------- */
+function viewContact(){
+  return `<div class="stack"><div class="card stack"><h2>تواصل مع منجز</h2><p class="muted">معلم منهج مجاني تقدّمه منجز لخدمات الأعمال. يسعدنا استقبال استفساراتكم واقتراحاتكم، وطلبات التدريب المخصّص لفرق العمل.</p></div>
+  <div class="contact">
+    <a class="card" href="mailto:munijizqa@gmail.com" style="text-decoration:none;color:inherit"><span class="muted">البريد الإلكتروني</span><span class="v ltr">munijizqa@gmail.com</span></a>
+    <a class="card" href="tel:+97451600498" style="text-decoration:none;color:inherit"><span class="muted">الهاتف</span><span class="v ltr">+974 5160 0498</span></a>
+    <a class="card" href="https://wa.me/97451600498" target="_blank" rel="noopener" style="text-decoration:none;color:inherit"><span class="muted">واتساب</span><span class="v ltr">+974 5160 0498</span></a>
+  </div></div>`;
+}
+function viewHome(){
+  const n = nextLesson(), L = LESSONS[n-1], d = doneCount(), all = d===TOTAL;
+  const W = WEEKS[L.w-1], rk = rank();
+  const flights = WEEKS.map(w=>{ const ls = LESSONS.filter(x=>x.w===w.n); const c = ls.filter(x=>S.done[x.n]).length;
+    return `<div class="flight card"><span class="eyebrow">الأسبوع ${w.n}</span><b>${esc(w.t)}</b><div class="bar"><i style="width:${c/ls.length*100}%"></i></div><span class="muted num" style="font-size:.85rem">${c} من ${ls.length} دروس</span></div>`;}).join("");
+  return `<div class="stack">
+  ${storageBanner()}
+  <section class="hero">
+    <div class="today">
+      <span class="day num" aria-hidden="true">${all?TOTAL:n}</span>
+      <span class="eyebrow">${all?"أتممت المنهج كاملاً":"خطوتك اليوم · الدرس "+n+" من "+TOTAL+" · "+esc(W.t)}</span>
+      <h1>${all?"مبارك، وصلت إلى القمة":esc(L.t)}</h1>
+      <p class="meta">${all?"شهادتك جاهزة أدناه، وكل الدروس متاحة للمراجعة في أي وقت.":"قرابة "+L.m+" دقائق، مع تمرين عملي واختبار قصير."}</p>
+      <a class="btn" href="${all?"#path":"#l"+n}">${all?"راجع المسار":(S.quiz[n]?"أكمل الدرس":"ابدأ الدرس")}</a>
+    </div>
+    <div class="stats">
+      <div class="stat wide">${ring(d/TOTAL)}<div><div class="v num">${d} / ${TOTAL}</div><div class="k">درساً مكتملاً</div><span class="chip gold">${rk[1]} · ${rk[2]}</span></div></div>
+      <div class="stat"><div class="v num">${streak()}</div><div class="k">أيام متتالية</div></div>
+      <div class="stat"><div class="v num">${xp()}</div><div class="k">نقطة خبرة</div></div>
+      <div class="stat"><div class="v num">${quizAvg()}%</div><div class="k">دقة الاختبارات</div></div>
+      <div class="stat"><div class="v num">${S.days.length}</div><div class="k">يوم تعلّم</div></div>
+    </div>
+  </section>
+  <section class="stack"><h2>درجات الرحلة</h2><div class="flights">${flights}</div></section>
+  ${viewCert()}
+  <section class="card stack"><h2>ما الجديد في معلم</h2>
+    <div class="flights" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">
+      <div class="stack" style="gap:4px"><b>مراجعة تمرينك مع Claude</b><span class="muted">اكتب حلّ التمرين داخل الدرس، ويقيّمه Claude ويقترح تحسيناً فورياً.</span></div>
+      <div class="stack" style="gap:4px"><b>مختبر الطلب</b><span class="muted">يقيس طلبك بالعناصر الأربعة من 100 ويعيد صياغته بصورة احترافية.</span></div>
+      <div class="stack" style="gap:4px"><b>تذكير في تقويمك</b><span class="muted">أضف موعد الدرس اليومي إلى تقويم جوالك بضغطة واحدة.</span></div>
+      <div class="stack" style="gap:4px"><b>شهادة إتمام</b><span class="muted">بعد الدرس 30 تحفظ شهادتك باسمك.</span></div>
+    </div>
+  </section>
+  </div>`;
+}
+function bindHome(){ bindCert(); }
+
+function viewCert(){
+  const d = doneCount();
+  if(d<TOTAL) return `<section class="card row" style="justify-content:space-between"><div><h3>شهادة إتمام معلم</h3><span class="muted">تبقّى ${TOTAL-d} ${TOTAL-d===1?"درس":"دروس"} لتحصل على شهادتك.</span></div><span class="chip">مقفلة</span></section>`;
+  return `<section class="cert" id="cert">
+    <span class="eyebrow">شهادة إتمام</span>
+    <h2>أتمّ منهج معلم لاحتراف Claude</h2>
+    <div class="nm">${esc(S.certName||"اكتب اسمك أدناه")}</div>
+    <span class="muted num">30 درساً · ${xp()} نقطة خبرة · ${fmtDate(Date.now())}</span>
+    <div class="row" style="justify-content:center;width:100%;max-width:420px"><input type="text" id="certName" placeholder="الاسم كما تريده على الشهادة" value="${esc(S.certName)}"><button class="btn gold" id="certSave">احفظ الشهادة</button></div>
+  </section>`;
+}
+function bindCert(){
+  const inp = $("#certName"); if(!inp) return;
+  inp.addEventListener("change", ()=>{ S.certName = inp.value.trim(); persist(); render(); });
+  $("#certSave").addEventListener("click", async ()=>{
+    S.certName = inp.value.trim(); persist();
+    const nm = S.certName || "متعلّم معلم";
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="850" viewBox="0 0 1200 850"><rect width="1200" height="850" fill="#FBFAF6"/><rect x="30" y="30" width="1140" height="790" rx="28" fill="none" stroke="#B57A06" stroke-width="4"/><path d="M520 150h40v-34h40v-34h40V48" fill="none" stroke="#0B7A63" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" transform="translate(0,60)"/><circle cx="640" cy="108" r="12" fill="#B57A06"/><text x="600" y="290" text-anchor="middle" font-family="Tahoma" font-size="40" fill="#566B65" direction="rtl">شهادة إتمام</text><text x="600" y="380" text-anchor="middle" font-family="Tahoma" font-size="56" font-weight="bold" fill="#0F2620" direction="rtl">منهج معلم لاحتراف Claude</text><text x="600" y="490" text-anchor="middle" font-family="Tahoma" font-size="64" font-weight="bold" fill="#B57A06" direction="rtl">${esc(nm)}</text><text x="600" y="580" text-anchor="middle" font-family="Tahoma" font-size="30" fill="#566B65" direction="rtl">أتمّ 30 درساً بنجاح وحصد ${xp()} نقطة خبرة</text><text x="600" y="700" text-anchor="middle" font-family="Tahoma" font-size="28" fill="#0B7A63" direction="rtl">${fmtDate(Date.now())}</text></svg>`;
+    await saveFile("Teacher-certificate.svg", svg, "image/svg+xml");
+  });
+}
+
+function viewPath(){
+  const cur = nextLesson();
+  return `<div class="stack">
+    <div class="stack" style="gap:6px"><h1>مسار الاحتراف</h1><p class="muted">ثلاثون درجة في أربعة أسابيع. ${sequential?"يُفتح كل درس بعد إتمام الذي قبله.":"كل الدروس متاحة بالترتيب الذي تختاره."}</p></div>
+    ${WEEKS.map(w=>`<section class="week"><div class="week-head"><span class="wn">الأسبوع ${w.n}</span><h2>${esc(w.t)}</h2><span class="muted">${esc(w.s)}</span></div>
+      <div class="tiles">${LESSONS.filter(l=>l.w===w.n).map(l=>{
+        const done = !!S.done[l.n], open = unlocked(l.n), now = !done && l.n===cur;
+        const cls = done?"done":now?"now":open?"":"lock";
+        const st = done?`<span class="chip ok">مكتمل${S.quiz[l.n]?" · "+quizCorrect(l.n)+"/"+l.q.length:""}</span>`:now?`<span class="chip now">درس اليوم</span>`:open?`<span class="chip">متاح</span>`:`<span class="chip">مقفل</span>`;
+        return open?`<a class="tile ${cls}" href="#l${l.n}"><span class="n num">${l.n}</span><span class="stack" style="gap:4px"><span class="tt">${esc(l.t)}</span><span class="row">${st}<span class="ts num">${l.m} د</span></span></span></a>`
+                   :`<div class="tile lock" aria-disabled="true" title="أتمم الدرس ${l.n-1} أولاً"><span class="n num">${l.n}</span><span class="stack" style="gap:4px"><span class="tt">${esc(l.t)}</span><span class="row">${st}<span class="ts num">${l.m} د</span></span></span></div>`;
+      }).join("")}</div></section>`).join("")}
+  </div>`;
+}
+
+function viewLesson(n){
+  const L = LESSONS[n-1], W = WEEKS[L.w-1];
+  if(!unlocked(n)) return `<div class="card stack"><h2>هذا الدرس مقفل بعد</h2><p class="muted">أتمم الدرس ${n-1} أولاً، فكل درجة تُبنى على التي قبلها.</p><a class="btn" href="#l${n-1}">اذهب إلى الدرس ${n-1}</a></div>`;
+  const ans = S.quiz[n];
+  const quiz = L.q.map((q,i)=>`<fieldset class="q" style="border:0;margin:0;padding:0"><legend style="font-weight:600;padding:0;margin-bottom:6px">${i+1}. ${esc(q[0])}</legend>
+    ${q[1].map((o,j)=>{ let c=""; if(ans){ if(j===q[2]) c="right"; else if(ans[i]===j) c="wrong"; }
+      return `<label class="opt ${c}"><input type="radio" name="q${i}" value="${j}" ${ans&&ans[i]===j?"checked":""} ${ans?"disabled":""}><span>${esc(o)}</span></label>`;}).join("")}
+    ${ans?`<span class="why">${ans[i]===q[2]?"إجابة صحيحة. ":"الإجابة الصحيحة: "+esc(q[1][q[2]])+". "}${esc(q[3])}</span>`:""}</fieldset>`).join("");
+  return `<div class="lesson">
+  <article>
+    <div class="lead">
+      <a href="#path" class="muted" style="font-size:.9rem">→ العودة إلى المسار</a>
+      <span class="eyebrow">الدرس ${n} من ${TOTAL} · الأسبوع ${W.n}: ${esc(W.t)} · ${L.m} دقائق</span>
+      <h1>${esc(L.t)}</h1>
+      ${L.p.map(x=>`<p>${x}</p>`).join("")}
+    </div>
+    <div class="box try"><div class="row" style="justify-content:space-between"><span class="eyebrow">جرّب هذا الطلب في Claude</span><button class="btn ghost sm" id="copyEx">انسخ الطلب</button></div><pre id="exText">${esc(L.ex)}</pre></div>
+    <div class="box task stack">
+      <span class="eyebrow">تمرين اليوم</span><p>${esc(L.task)}</p>
+      <label for="exAns" class="muted" style="font-size:.9rem">اكتب هنا ما نفّذته أو الطلب الذي كتبته، ليراجعه Claude معك:</label>
+      <textarea id="exAns" placeholder="مثال: كتبت هذا الطلب...">${esc(S.ex[n]||"")}</textarea>
+      <div class="row"><button class="btn" id="review">راجع تمريني مع Claude</button><span class="muted" id="revState" style="font-size:.88rem"></span></div>
+      <div class="feedback" id="fb" hidden></div>
+    </div>
+    <div class="box tip"><span class="eyebrow">نصيحة احترافية</span><p>${esc(L.tip)}</p></div>
+    <section class="card quiz stack"><h2>اختبار قصير</h2>${quiz}
+      ${ans?`<div class="row"><span class="chip ${quizCorrect(n)===L.q.length?"ok":"gold"} num">النتيجة ${quizCorrect(n)} من ${L.q.length}</span><button class="btn ghost sm" id="retry">أعد المحاولة</button></div>`:`<button class="btn" id="check">تحقّق من إجاباتي</button>`}
+    </section>
+    <div class="pager">
+      ${n>1?`<a class="btn ghost" href="#l${n-1}">الدرس السابق</a>`:"<span></span>"}
+      ${S.done[n]?`<span class="chip ok">أتممت هذا الدرس في ${fmtDate(S.done[n])}</span>`:`<button class="btn" id="finish" ${ans?"":"disabled"}>أتممت الدرس</button>`}
+      ${n<TOTAL?`<a class="btn ghost" href="#l${n+1}" ${unlocked(n+1)?"":'aria-disabled="true" style="pointer-events:none;opacity:.45"'}>الدرس التالي</a>`:"<span></span>"}
+    </div>
+  </article>
+  <aside class="side">
+    <div class="card stack" style="gap:8px"><span class="eyebrow">ملاحظاتي على الدرس</span><textarea id="note" placeholder="ما الذي ستطبّقه من هذا الدرس؟">${esc(S.notes[n]||"")}</textarea><span class="muted" style="font-size:.8rem">تُحفظ تلقائياً.</span></div>
+    <div class="card row" style="gap:14px">${ring(doneCount()/TOTAL,64)}<div><b class="num">${doneCount()} / ${TOTAL}</b><div class="muted" style="font-size:.85rem">${rank()[1]} · ${rank()[2]}</div></div></div>
+  </aside>
+  </div>`;
+}
+function bindLesson(n){
+  const L = LESSONS[n-1];
+  $("#copyEx").addEventListener("click", ()=>copy(L.ex));
+  const ex = $("#exAns"); ex.addEventListener("input", ()=>{ S.ex[n] = ex.value; persist(); });
+  const note = $("#note"); note.addEventListener("input", ()=>{ S.notes[n] = note.value; persist(); });
+  const chk = $("#check");
+  if(chk) chk.addEventListener("click", ()=>{
+    const a = L.q.map((_,i)=>{ const el = document.querySelector(`input[name=q${i}]:checked`); return el? +el.value : -1; });
+    if(a.includes(-1)){ toast("أجب عن كل الأسئلة أولاً"); return; }
+    S.quiz[n] = a; touch(); persist(); render();
+    toast(quizCorrect(n)===L.q.length?"إجابات صحيحة كلها، أحسنت":"راجع التوضيح تحت كل سؤال");
+  });
+  const rt = $("#retry"); if(rt) rt.addEventListener("click", ()=>{ delete S.quiz[n]; persist(); render(); });
+  const fin = $("#finish"); if(fin) fin.addEventListener("click", ()=>{
+    S.done[n] = Date.now(); touch(); persist();
+    toast(n===TOTAL?"مبارك، أتممت المنهج كاملاً":"أحسنت، صعدت درجة جديدة");
+    go(n<TOTAL?"l"+(n+1):"home");
+  });
+  $("#review").addEventListener("click", ()=>reviewExercise(n));
+}
+
+async function reviewExercise(n){
+  const L = LESSONS[n-1], text = (S.ex[n]||"").trim(), fb = $("#fb"), st = $("#revState");
+  if(text.length < 15){ toast("اكتب إجابتك أولاً في خانة التمرين"); return; }
+  fb.hidden = false;
+  const prompt = `أنت مدرّب يعلّم طبيباً عربياً استخدام Claude باحتراف ضمن منهج من 30 درساً.
+الدرس ${n}: ${L.t}
+التمرين: ${L.task}
+إجابة المتعلّم:
+"""${text}"""
+راجع الإجابة بالعربية الفصحى المهنية الراقية، دون مقدمات، وبهذا الترتيب تماماً:
+التقييم: درجة من 10.
+ما أحسنت فيه: سطر أو سطران.
+تحسين واحد مهم: سطر أو سطران.
+نسخة محسّنة: اكتب الطلب أو الحل بعد التحسين جاهزاً للنسخ.
+لا تستخدم رموز Markdown.`;
+  if(!sample){ fb.textContent = offlineReview(text); st.innerHTML = `مراجعة سريعة على الجهاز · <a href="https://claude.ai/new?q=${encodeURIComponent(prompt)}" target="_blank" rel="noopener">اطلب مراجعة كاملة من Claude</a>`; S.reviewed[n]=true; touch(); persist(); return; }
+  fb.textContent = "يقرأ Claude إجابتك..."; st.textContent = "";
+  try{
+    const r = await sample(prompt, {onText:({text})=>{ fb.textContent = text || "يقرأ Claude إجابتك..."; }});
+    fb.textContent = r.text; S.reviewed[n] = true; touch(); persist(); st.textContent = "راجعها Claude";
+  }catch(e){
+    if(e && e.code==="not_granted"){ sample = null; }
+    fb.textContent = offlineReview(text); st.textContent = "تعذّر الوصول إلى Claude، فعرضنا مراجعة سريعة على الجهاز";
+  }
+}
+
+const CHECKS = [
+  ["الدور", /(تصرّف|تصرف|بصفتك|كأنك|أنت\s+(خبير|مسؤول|مستشار|طبيب|مدرّب|محرر|كاتب|مصمم))/],
+  ["المهمة", /(اكتب|لخّص|لخص|ابن|ابنِ|أعدّ|أعد|اقترح|حلّل|حلل|ترجم|صمّم|صمم|أنشئ|رتّب|رتب|راجع|حوّل|حول|ابحث|قارن|أجب)/],
+  ["السياق", /(الجمهور|لعيادة|لعملاء|للمرضى|لمرضى|لأن|بهدف|في القاهرة|موجّه|موجه|لفريق|لشركة|سياق|المرفق|الملف)/],
+  ["الشكل", /(أسطر|سطر|جدول|نقاط|نقطة|كلمة|فقرة|شرائح|شريحة|بلغة|نبرة|بأسلوب|قائمة|عنوان|مختصر|بالعربية)/]
+];
+function heuristic(t){ return CHECKS.map(([k,re])=>[k, re.test(t)?25:(k==="المهمة"?10:0)]); }
+function offlineReview(t){
+  const h = heuristic(t), miss = h.filter(x=>x[1]<25).map(x=>x[0]);
+  return `التقييم: ${Math.round(h.reduce((a,b)=>a+b[1],0)/10)} من 10.\n` + (miss.length? `ينقص طلبك: ${miss.join("، ")}. أضف ${miss.join(" و")} في سطر قصير لكل عنصر.` : "طلبك يغطي العناصر الأربعة، وهو جاهز للتجربة في Claude.");
+}
+
+function viewLab(){
+  return `<div class="stack">
+    <div class="stack" style="gap:6px"><h1>مختبر الطلب</h1><p class="muted" style="max-width:68ch">اكتب طلباً كما سترسله إلى Claude، وسيقيسه المختبر بالعناصر الأربعة: الدور والمهمة والسياق والشكل، ثم يعيد صياغته في نسخة احترافية.</p></div>
+    <div class="card stack">
+      <label for="labIn" class="eyebrow">طلبك</label>
+      <textarea id="labIn" style="min-height:140px">${esc(S.lab||"اكتب منشوراً عن فحص النظر للأطفال")}</textarea>
+      <div class="row"><button class="btn" id="labGo">قيّم طلبي</button><span class="muted" id="labState" style="font-size:.88rem">المثال أعلاه ناقص عمداً، جرّبه ثم حسّنه.</span></div>
+    </div>
+    <div id="labOut"></div>
+  </div>`;
+}
+function bindLab(){
+  const inp = $("#labIn");
+  inp.addEventListener("input", ()=>{ S.lab = inp.value; persist(); });
+  $("#labGo").addEventListener("click", async ()=>{
+    const t = inp.value.trim(); if(t.length<5){ toast("اكتب طلباً أولاً"); return; }
+    const out = $("#labOut"), st = $("#labState");
+    let res = null;
+    if(sample){
+      st.textContent = "يحلّل Claude طلبك...";
+      try{
+        res = await sample.json(`أنت خبير في كتابة الطلبات لـClaude. قيّم الطلب التالي من حيث أربعة عناصر، لكل عنصر درجة من 0 إلى 25: role (هل حدّد دوراً)، task (هل المهمة واضحة)، context (هل يشرح الجمهور والظروف والهدف)، format (هل حدّد شكل الناتج وطوله ونبرته).
+الطلب: """${t}"""
+أعد JSON فقط بهذا الشكل: {"role":0,"task":0,"context":0,"format":0,"feedback":"ملاحظتان قصيرتان بالعربية المهنية","improved":"نسخة محسّنة كاملة من الطلب بالعربية تحافظ على قصد صاحبه"}`);
+        st.textContent = "حلّله Claude";
+      }catch(e){ if(e && e.code==="not_granted") sample=null; res=null; }
+    }
+    if(!res){
+      const h = heuristic(t); res = {role:h[0][1],task:h[1][1],context:h[2][1],format:h[3][1], feedback: offlineReview(t).split("\n")[1], improved:""};
+      st.innerHTML = `تقييم سريع على الجهاز · <a href="https://claude.ai/new?q=${encodeURIComponent("أنت خبير في كتابة الطلبات لـClaude. قيّم طلبي التالي من حيث الدور والمهمة والسياق والشكل، ثم اقترح نسخة محسّنة:\n\n"+t)}" target="_blank" rel="noopener">اطلب تحليلاً كاملاً من Claude</a>`;
+    }
+    const k = [["الدور",res.role],["المهمة",res.task],["السياق",res.context],["الشكل",res.format]].map(([a,b])=>[a,Math.max(0,Math.min(25,Math.round(+b||0)))]);
+    const total = k.reduce((a,b)=>a+b[1],0);
+    out.innerHTML = `<div class="card stack">
+      <div class="row" style="gap:18px"><span class="score num">${total}</span><span class="muted">من 100<br>${total>=85?"طلب احترافي":total>=60?"طلب جيد يحتاج لمسة":"طلب يحتاج عناصر أساسية"}</span></div>
+      <div class="meters">${k.map(([a,b])=>`<div class="meter"><span class="eyebrow">${a}</span><div class="v num">${b}<small class="muted" style="font-size:.9rem">/25</small></div><div class="bar"><i style="width:${b*4}%"></i></div></div>`).join("")}</div>
+      ${res.feedback?`<p>${esc(res.feedback)}</p>`:""}
+      ${res.improved?`<div class="box try"><div class="row" style="justify-content:space-between"><span class="eyebrow">النسخة المحسّنة</span><button class="btn ghost sm" id="cpImp">انسخها</button></div><pre>${esc(res.improved)}</pre></div>`:""}
+    </div>`;
+    const cp = $("#cpImp"); if(cp) cp.addEventListener("click", ()=>copy(res.improved));
+    touch(); persist();
+  });
+}
+
+function viewNotes(){
+  const rows = LESSONS.filter(l=>(S.notes[l.n]||"").trim()||(S.ex[l.n]||"").trim());
+  return `<div class="stack">
+    <div class="row" style="justify-content:space-between"><div class="stack" style="gap:6px"><h1>دفتري</h1><p class="muted">ملاحظاتك وإجابات تمارينك من كل الدروس في مكان واحد.</p></div>${rows.length?`<button class="btn ghost" id="exportNotes">احفظ الدفتر كملف</button>`:""}</div>
+    ${rows.length? rows.map(l=>`<article class="card stack" style="gap:8px"><a href="#l${l.n}" class="eyebrow" style="text-decoration:none">الدرس ${l.n} · ${esc(l.t)}</a>
+      ${(S.notes[l.n]||"").trim()?`<div><b>ملاحظتي</b><p style="white-space:pre-wrap">${esc(S.notes[l.n])}</p></div>`:""}
+      ${(S.ex[l.n]||"").trim()?`<div><b>تمريني</b><p style="white-space:pre-wrap" class="muted">${esc(S.ex[l.n])}</p></div>`:""}</article>`).join("")
+    : `<div class="card stack"><h3>دفترك فارغ حتى الآن</h3><p class="muted">اكتب ملاحظة في خانة "ملاحظاتي على الدرس" أو حلّ تمرين اليوم، وستظهر هنا تلقائياً.</p><a class="btn" href="#l${nextLesson()}">افتح درس اليوم</a></div>`}
+  </div>`;
+}
+function bindNotes(){
+  const b = $("#exportNotes"); if(!b) return;
+  b.addEventListener("click", ()=>{
+    const txt = "دفتر معلم\n\n" + LESSONS.filter(l=>(S.notes[l.n]||"").trim()||(S.ex[l.n]||"").trim()).map(l=>`## الدرس ${l.n}: ${l.t}\n${S.notes[l.n]?"ملاحظتي: "+S.notes[l.n]+"\n":""}${S.ex[l.n]?"تمريني: "+S.ex[l.n]+"\n":""}`).join("\n");
+    saveFile("Teacher-notes.md", txt, "text/markdown");
+  });
+}
+
+function viewRemind(){
+  return `<div class="stack">
+    <div class="stack" style="gap:6px"><h1>التذكير اليومي</h1><p class="muted" style="max-width:68ch">اختر الوقت الذي يناسبك، وأضف موعداً يومياً متكرراً إلى تقويم جوالك أو حاسوبك، فيذكّرك قبل الدرس بعشر دقائق.</p></div>
+    <div class="card stack">
+      <label for="rt" class="eyebrow">وقت الدرس اليومي</label>
+      <input type="time" id="rt" value="${esc(S.remind)}" style="max-width:180px">
+      <div class="row" id="calLinks"></div>
+      <p class="muted" style="font-size:.9rem">يفتح الرابط تقويمك في صفحة جديدة والموعد معبّأ مسبقاً، متكرراً يومياً لمدة 30 يوماً. اضغط "حفظ" هناك.</p>
+    </div>
+    <div class="banner"><span aria-hidden="true">●</span><span>إلى جانب هذا التذكير، يصلك الدرس الجديد كل صباح قرابة الساعة 9 بتوقيت القاهرة في محادثة "تعلّم Claude يومياً حتى الاحتراف".</span></div>
+  </div>`;
+}
+function bindRemind(){
+  const t = $("#rt"); t.addEventListener("change", ()=>{ S.remind = t.value || "09:00"; persist(); toast("حُفظ الوقت"); });
+  const draw = ()=>{
+    const [hh,mm] = (S.remind||"09:00").split(":"); const d = new Date(); d.setDate(d.getDate()+1);
+    const st = new Date(d.getFullYear(), d.getMonth(), d.getDate(), +hh, +mm), en = new Date(st.getTime()+15*60000);
+    const g = x => dayKey(x).replace(/-/g,"")+"T"+String(x.getHours()).padStart(2,"0")+String(x.getMinutes()).padStart(2,"0")+"00";
+    const title = "درس معلم اليومي", det = "درجة جديدة نحو احتراف Claude. افتح تطبيق معلم وابدأ درس اليوم.";
+    const gUrl = "https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent(title)+"&dates="+g(st)+"/"+g(en)+"&recur="+encodeURIComponent("RRULE:FREQ=DAILY;COUNT=30")+"&details="+encodeURIComponent(det);
+    const oUrl = "https://outlook.live.com/calendar/0/deeplink/compose?subject="+encodeURIComponent(title)+"&body="+encodeURIComponent(det)+"&startdt="+encodeURIComponent(st.toISOString())+"&enddt="+encodeURIComponent(en.toISOString());
+    $("#calLinks").innerHTML = `<a class="btn" href="${gUrl}" target="_blank" rel="noopener">أضف إلى تقويم Google</a><a class="btn ghost" href="${oUrl}" target="_blank" rel="noopener">أضف إلى Outlook</a>`;
+  };
+  draw();
+  t.addEventListener("change", draw);
+}
+
+function viewAdmin(){
+  const ls = learners.filter(x=>x.role==="learner");
+  const avg = ls.length? Math.round(ls.reduce((a,b)=>a+(b.done||[]).length,0)/ls.length) : 0;
+  const per = LESSONS.map(l=>ls.filter(x=>(x.done||[]).includes(l.n)).length);
+  const mx = Math.max(1,...per);
+  const tab = (k,t)=>`<button type="button" class="btn sm ${adminTab===k?"":"ghost"}" data-atab="${k}">${t}</button>`;
+  const role = r => r==="admin" ? `<span class="pill gold">مدير</span>` : `<span class="pill">متعلّم</span>`;
+  let body = "";
+  if(adminTab==="users"){
+    body = `<section class="card stack"><h2>إضافة مستخدم</h2>
+      <form id="newUser" class="ugrid">
+        <label>الاسم<input name="name" required maxlength="60"></label>
+        <label>اسم المستخدم<input name="username" required dir="ltr" autocomplete="off" placeholder="name.surname"></label>
+        <label>كلمة المرور<input name="password" required minlength="8" dir="ltr" autocomplete="new-password"></label>
+        <label>الدور<select name="role"><option value="learner">متعلّم</option><option value="admin">مدير (كل الصلاحيات)</option></select></label>
+        <button class="btn" type="submit">إضافة</button>
+      </form></section>
+    <section class="card stack"><div class="row" style="justify-content:space-between"><h2>المستخدمون (${learners.length})</h2><div class="row"><input id="uFind" type="search" placeholder="بحث بالاسم أو اسم المستخدم" style="max-width:240px"><button class="btn sm ghost" id="csv" type="button">تصدير CSV</button></div></div>
+      <div class="scroll"><table id="uTable"><thead><tr><th>الاسم</th><th>اسم المستخدم</th><th>الدور</th><th>الحالة</th><th>الدروس</th><th>النقاط</th><th>آخر نشاط</th><th>إجراءات</th></tr></thead><tbody>
+      ${learners.slice().sort((a,b)=>(a.role===b.role?0:a.role==="admin"?-1:1)||(b.done||[]).length-(a.done||[]).length).map(x=>`<tr data-q="${esc((x.name+" "+x.username).toLowerCase())}">
+        <td data-l="الاسم" class="nm">${esc(x.name)}${me&&x.id===me.id?' <span class="muted">(أنت)</span>':""}</td><td data-l="اسم المستخدم"><span class="ltr">${esc(x.username)}</span></td><td data-l="الدور">${role(x.role)}</td>
+        <td data-l="الحالة">${x.active?'<span class="pill ok">نشط</span>':'<span class="pill bad">موقوف</span>'}</td>
+        <td data-l="الدروس" class="num">${(x.done||[]).length} / ${TOTAL}</td><td data-l="النقاط" class="num">${x.xp||0}</td><td data-l="آخر نشاط" class="num">${x.last?fmtDate(x.last):(x.lastLogin?fmtDate(x.lastLogin):"-")}</td>
+        <td class="acts"><div class="row" style="gap:6px;flex-wrap:nowrap">
+          <button class="btn sm ghost" data-act="role" data-id="${x.id}" type="button">${x.role==="admin"?"اجعله متعلّماً":"اجعله مديراً"}</button>
+          <button class="btn sm ghost" data-act="active" data-id="${x.id}" type="button">${x.active?"إيقاف":"تفعيل"}</button>
+          <button class="btn sm ghost" data-act="pass" data-id="${x.id}" type="button">كلمة مرور جديدة</button>
+          <button class="btn sm ghost" data-act="progress" data-id="${x.id}" type="button">تصفير التقدّم</button>
+          <button class="btn sm ghost danger" data-act="delete" data-id="${x.id}" type="button">حذف</button>
+        </div></td></tr>`).join("")}
+      </tbody></table></div></section>`;
+  } else if(adminTab==="stats"){
+    body = `<section class="stats" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr))">
+      <div class="stat"><div class="v num">${ls.length}</div><div class="k">متعلّم مسجّل</div></div>
+      <div class="stat"><div class="v num">${avg}</div><div class="k">متوسط الدروس المكتملة</div></div>
+      <div class="stat"><div class="v num">${ls.filter(x=>(x.done||[]).length===TOTAL).length}</div><div class="k">أتمّوا المنهج</div></div>
+      <div class="stat"><div class="v num">${ls.length?Math.round(ls.reduce((a,b)=>a+(b.quizAvg||0),0)/ls.length):0}%</div><div class="k">متوسط دقة الاختبارات</div></div>
+    </section>
+    <section class="card stack"><h2>إتمام كل درس</h2>
+      ${ls.length?`<div class="cols" role="img" aria-label="عدد من أتمّ كل درس">${per.map((c,i)=>`<i title="الدرس ${i+1}: ${c}" style="height:${c/mx*100}%"></i>`).join("")}</div><div class="row muted num" style="justify-content:space-between;font-size:.8rem"><span>الدرس 1</span><span>الدرس ${TOTAL}</span></div>`:`<p class="muted">لم يسجّل أي متعلّم تقدّماً بعد.</p>`}
+    </section>`;
+  } else if(adminTab==="settings"){
+    body = `<section class="card stack"><h2>إعدادات المنصة</h2>
+      <label class="switch"><input type="checkbox" id="seq" ${sequential?"checked":""}><span>فتح الدروس بالتسلسل: لا يُفتح الدرس إلا بعد إتمام الذي قبله</span></label>
+      <label class="switch"><input type="checkbox" id="signup" ${allowSignup?"checked":""}><span>السماح للزوار بإنشاء حساب متعلّم بأنفسهم</span></label>
+      <span class="muted" style="font-size:.88rem">يسري التغيير فوراً على كل المستخدمين.</span></section>`;
+  } else {
+    body = `<section class="card stack"><h2>سجل العمليات</h2>${adminLog.length?`<div class="scroll"><table><thead><tr><th>الوقت</th><th>المستخدم</th><th>العملية</th><th>التفاصيل</th></tr></thead><tbody>${adminLog.map(l=>`<tr><td class="num">${fmtDate(l.time)}</td><td class="ltr">${esc(l.actor)}</td><td>${esc(LOGN[l.action]||l.action)}</td><td class="muted ltr" style="font-size:.85rem">${esc(l.detail)}</td></tr>`).join("")}</tbody></table></div>`:`<p class="muted">لا توجد عمليات بعد.</p>`}</section>`;
+  }
+  return `<div class="stack">
+    <div class="stack" style="gap:6px"><h1>لوحة الإدارة</h1><p class="muted">صلاحيات كاملة: المستخدمون والأدوار وكلمات المرور والإعدادات والسجل.</p></div>
+    <div class="row">${tab("users","المستخدمون")}${tab("stats","الإحصاءات")}${tab("settings","الإعدادات")}${tab("log","السجل")}</div>
+    ${body}
+  </div>`;
+}
+const LOGN = {setup:"تهيئة", login:"دخول", register:"تسجيل حساب", changePassword:"تغيير كلمة المرور", createUser:"إضافة مستخدم", updateUser:"تعديل مستخدم", resetPassword:"تعيين كلمة مرور", deleteUser:"حذف مستخدم", resetProgress:"تصفير تقدّم", setSettings:"تعديل الإعدادات"};
+async function loadAdmin(){
+  try{
+    const [u, l] = await Promise.all([api("listUsers"), api("getLog")]);
+    learners = u.users; adminLog = l.log;
+  }catch(e){ toast(errMsg(e)); }
+  if(route()==="admin"){ $("#view").innerHTML = viewAdmin(); bindAdmin(); }
+}
+function bindAdmin(){
+  document.querySelectorAll("[data-atab]").forEach(b=>b.addEventListener("click", ()=>{ adminTab = b.dataset.atab; $("#view").innerHTML = viewAdmin(); bindAdmin(); }));
+  if(!learnersUnsub){ learnersUnsub = true; loadAdmin(); }
+  const seq = $("#seq"); if(seq) seq.addEventListener("change", async e=>{
+    try{ const j = await api("setSettings", {sequential:e.target.checked}); sequential = j.settings.sequential; toast(sequential?"فُعّل الفتح بالتسلسل":"كل الدروس متاحة الآن"); }
+    catch(err){ e.target.checked = !e.target.checked; toast(errMsg(err)); }
+  });
+  const su = $("#signup"); if(su) su.addEventListener("change", async e=>{
+    try{ const j = await api("setSettings", {allowSignup:e.target.checked}); allowSignup = j.settings.allowSignup; toast(allowSignup?"التسجيل الذاتي مفتوح":"التسجيل الذاتي مغلق"); }
+    catch(err){ e.target.checked = !e.target.checked; toast(errMsg(err)); }
+  });
+  const nu = $("#newUser"); if(nu) nu.addEventListener("submit", async e=>{
+    e.preventDefault(); const f = Object.fromEntries(new FormData(nu));
+    try{ await api("createUser", f); toast("أُضيف المستخدم"); learnersUnsub = null; loadAdmin(); }catch(err){ toast(errMsg(err)); }
+  });
+  const fd = $("#uFind"); if(fd) fd.addEventListener("input", ()=>{ const q = fd.value.trim().toLowerCase(); document.querySelectorAll("#uTable tbody tr").forEach(tr=>{ tr.hidden = q && !tr.dataset.q.includes(q); }); });
+  const cv = $("#csv"); if(cv) cv.addEventListener("click", ()=>{
+    const rows = [["الاسم","اسم المستخدم","الدور","الحالة","الدروس المكتملة","النقاط","أيام متتالية","دقة الاختبارات","آخر نشاط"]].concat(learners.map(x=>[x.name,x.username,x.role==="admin"?"مدير":"متعلّم",x.active?"نشط":"موقوف",(x.done||[]).length,x.xp||0,x.streak||0,(x.quizAvg||0)+"%",x.last||x.lastLogin||""]));
+    saveFile("Teacher-users.csv", "﻿"+rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(",")).join("\n"), "text/csv");
+  });
+  document.querySelectorAll("[data-act]").forEach(b=>b.addEventListener("click", async ()=>{
+    const x = learners.find(u=>u.id===b.dataset.id); if(!x) return;
+    try{
+      if(b.dataset.act==="role"){ await api("updateUser", {id:x.id, role:x.role==="admin"?"learner":"admin"}); toast("تغيّر الدور"); }
+      else if(b.dataset.act==="active"){ await api("updateUser", {id:x.id, active:!x.active}); toast(x.active?"أُوقف الحساب":"فُعّل الحساب"); }
+      else if(b.dataset.act==="pass"){ const pw = prompt("كلمة المرور الجديدة لـ "+x.name+" (8 أحرف على الأقل)"); if(!pw) return; await api("resetPassword", {id:x.id, password:pw}); toast("تغيّرت كلمة المرور"); }
+      else if(b.dataset.act==="progress"){ if(!confirm("تصفير تقدّم "+x.name+"؟ لا يمكن التراجع.")) return; await api("resetProgress", {id:x.id}); toast("صُفّر التقدّم"); }
+      else if(b.dataset.act==="delete"){ if(!confirm("حذف حساب "+x.name+" نهائياً؟")) return; await api("deleteUser", {id:x.id}); toast("حُذف الحساب"); }
+      learnersUnsub = null; loadAdmin();
+    }catch(err){ toast(errMsg(err)); }
+  }));
+}
+
+/* ---------- account ---------- */
+function viewAccount(){
+  if(!CFG.API) return `<div class="card stack" style="max-width:560px;margin-inline:auto"><h1>الحسابات</h1><p class="muted">نظام الحسابات قيد التفعيل. يمكنك التعلّم الآن زائراً، ويُحفظ تقدّمك في هذا المتصفح.</p><a class="btn" href="#home">ابدأ التعلّم</a></div>`;
+  if(me) return `<div class="stack" style="max-width:640px;margin-inline:auto">
+    <div class="card stack"><h1>حسابي</h1>
+      <div class="kv"><span class="muted">الاسم</span><b>${esc(me.name)}</b><span class="muted">اسم المستخدم</span><b class="ltr">${esc(me.username)}</b><span class="muted">الصلاحية</span><b>${me.role==="admin"?"مدير المنصة (كل الصلاحيات)":"متعلّم"}</b><span class="muted">التقدّم</span><b class="num">${doneCount()} / ${TOTAL} درساً</b></div>
+      <div class="row">${me.role==="admin"?`<a class="btn" href="#admin">لوحة الإدارة</a>`:""}<button class="btn ghost" id="out" type="button">تسجيل الخروج</button></div></div>
+    <form class="card stack" id="nameF"><h2>تعديل الاسم</h2><input name="name" required maxlength="60" value="${esc(me.name)}"><button class="btn" type="submit">حفظ</button></form>
+    <form class="card stack" id="pwF"><h2>تغيير كلمة المرور</h2>
+      <label>كلمة المرور الحالية<input name="current" type="password" required dir="ltr" autocomplete="current-password"></label>
+      <label>كلمة المرور الجديدة<input name="password" type="password" required minlength="8" dir="ltr" autocomplete="new-password"></label>
+      <button class="btn" type="submit">تغيير</button></form></div>`;
+  return `<div class="auth">
+    <form class="card stack" id="loginF"><h1>تسجيل الدخول</h1><p class="muted">للمتعلّمين والإدارة.</p>
+      <label>اسم المستخدم<input name="username" required dir="ltr" autocomplete="username"></label>
+      <label>كلمة المرور<input name="password" type="password" required dir="ltr" autocomplete="current-password"></label>
+      <button class="btn" type="submit">دخول</button><p class="err" id="loginE" role="alert"></p></form>
+    ${allowSignup?`<form class="card stack" id="regF"><h2>حساب متعلّم جديد</h2><p class="muted">مجاني، ويحفظ تقدّمك على كل أجهزتك.</p>
+      <label>الاسم<input name="name" required maxlength="60" autocomplete="name"></label>
+      <label>اسم المستخدم<input name="username" required dir="ltr" autocomplete="username" placeholder="بالإنجليزية والأرقام"></label>
+      <label>كلمة المرور<input name="password" type="password" required minlength="8" dir="ltr" autocomplete="new-password" placeholder="8 أحرف على الأقل"></label>
+      <button class="btn gold" type="submit">إنشاء الحساب</button><p class="err" id="regE" role="alert"></p></form>`:""}
+  </div>`;
+}
+function bindAccount(){
+  const busy = (f,on)=>{ const b = f.querySelector("button[type=submit]"); if(b) b.disabled = on; };
+  const lf = $("#loginF"); if(lf) lf.addEventListener("submit", async e=>{
+    e.preventDefault(); busy(lf,true); $("#loginE").textContent = "";
+    try{ signIn(await api("login", Object.fromEntries(new FormData(lf)))); await loadCloud(); toast("أهلاً "+me.name); go(isAdmin?"admin":"home"); }
+    catch(err){ $("#loginE").textContent = errMsg(err); busy(lf,false); }
+  });
+  const rf = $("#regF"); if(rf) rf.addEventListener("submit", async e=>{
+    e.preventDefault(); busy(rf,true); $("#regE").textContent = "";
+    try{ signIn(await api("register", Object.fromEntries(new FormData(rf)))); await loadCloud(); toast("أُنشئ حسابك، أهلاً "+me.name); go("home"); }
+    catch(err){ $("#regE").textContent = errMsg(err); busy(rf,false); }
+  });
+  const o = $("#out"); if(o) o.addEventListener("click", async ()=>{ try{ await api("logout"); }catch(e){} signOut(); learnersUnsub = null; toast("سُجّل الخروج"); go("home"); });
+  const nf = $("#nameF"); if(nf) nf.addEventListener("submit", async e=>{ e.preventDefault(); try{ const j = await api("updateProfile", Object.fromEntries(new FormData(nf))); me = j.user; toast("حُفظ الاسم"); render(); }catch(err){ toast(errMsg(err)); } });
+  const pf = $("#pwF"); if(pf) pf.addEventListener("submit", async e=>{ e.preventDefault(); try{ await api("changePassword", Object.fromEntries(new FormData(pf))); pf.reset(); toast("تغيّرت كلمة المرور"); }catch(err){ toast(errMsg(err)); } });
+}
+
+/* ---------- helpers ---------- */
+function toast(m){ const t = document.createElement("div"); t.className="toast"; t.textContent=m; document.body.appendChild(t); setTimeout(()=>t.remove(),2600); }
+async function copy(text){
+  try{ await navigator.clipboard.writeText(text); toast("نُسخ"); }
+  catch(e){ const ta = document.createElement("textarea"); ta.value=text; ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta); ta.select(); try{ document.execCommand("copy"); toast("نُسخ"); }catch(_){ toast("حدّد النص وانسخه يدوياً"); } ta.remove(); }
+}
+async function saveFile(name, data, type){
+  if(!downloads){ try{ const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([data],{type})); a.download = name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1000); toast("حُفظ الملف"); }catch(e){ toast("لم يُحفظ الملف"); } return; }
+  try{ const r = await downloads.save({filename:name, data:new Blob([data],{type})}); if(r && r.status==="saved") toast("حُفظ الملف"); }
+  catch(e){ if(e && e.code!=="declined") toast("لم يُحفظ الملف"); }
+}
+
+/* ---------- boot ---------- */
+loadLocal();
+(function(){ const b = document.getElementById("fsBtn"); const el = document.documentElement; if(!el.requestFullscreen) return; b.hidden = false;
+  const lbl = ()=>{ b.textContent = document.fullscreenElement ? "الخروج من ملء الشاشة" : "ملء الشاشة"; };
+  b.addEventListener("click", async ()=>{ try{ if(document.fullscreenElement) await document.exitFullscreen(); else await el.requestFullscreen(); }catch(e){ toast("افتح الرابط في المتصفح مباشرة لعرضه بملء الشاشة"); } });
+  document.addEventListener("fullscreenchange", lbl); })();
+render();
+
+(async function connect(){
+  if(!CFG.API) return;
+  try{ token = localStorage.getItem(TOK_KEY); }catch(e){}
+  try{
+    if(token){
+      const j = await api("me"); me = j.user; isAdmin = me.role==="admin";
+      sequential = j.settings.sequential; allowSignup = j.settings.allowSignup;
+      await loadCloud();
+    } else {
+      const j = await api("publicSettings"); sequential = j.settings.sequential; allowSignup = j.settings.allowSignup;
+    }
+  }catch(e){}
+  render();
+})();
+})();
+</script>
+</body>
+</html>
