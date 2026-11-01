@@ -29,3 +29,7 @@ window.ACCT_WHO={refresh,set(w){try{w?localStorage.setItem(B+'_who',JSON.stringi
 window.addEventListener('storage',e=>{if(e.key===B+'_who'||e.key===B+'_portal')refresh()});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',refresh);else refresh();
 })();
+// restaurants/management/partners pages, footer company facts and WhatsApp messages (grow.js), on every page that shows the account
+(function(){try{const me=document.currentScript;if(!me||document.getElementById('growJs'))return;const b=me.src.replace(/who\.js.*$/,'');
+  const c=document.createElement('link');c.rel='stylesheet';c.href=b+'grow.css?v=20261101g';document.head.appendChild(c);
+  const s=document.createElement('script');s.id='growJs';s.src=b+'grow.js?v=20261101g';document.head.appendChild(s)}catch(e){}})();
