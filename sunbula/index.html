@@ -721,7 +721,7 @@ const VIEWS={
   const first=ser[0]||p.total, rch=first?(p.total/first-1)*100:0;
   return `${kycBanner(u)}
   <div class="kpis">
-   <div class="kpi hero"><span>إجمالي قيمة المحفظة</span><b class="num" data-tot>${mTxt(p.total)}</b><small style="color:var(--wheat)" data-pnl>${(p.pnl>=0?'+':'')+mTxt(p.pnl)} (${pTxt(p.pnlPct)})</small></div>
+   <div class="kpi hero"><span>إجمالي قيمة المحفظة</span><b class="num" data-tot>${mTxt(p.total)}</b><small class="num" style="color:var(--wheat)" data-pnl>${(p.pnl>=0?'+':'')+mTxt(p.pnl)} (${pTxt(p.pnlPct)})</small></div>
    <div class="kpi"><span>المستثمر حالياً</span><b class="num" data-inv>${mTxt(p.inv)}</b><small class="muted">التكلفة ${mTxt(p.cost)}</small></div>
    <div class="kpi"><span>الأرباح غير المحققة</span><b class="num ${p.pnl>=0?'gain':'loss'}" data-pnl2>${(p.pnl>=0?'+':'')+mTxt(p.pnl)}</b><small class="${p.pnl>=0?'gain':'loss'}">${pTxt(p.pnlPct)}</small></div>
    <div class="kpi"><span>الرصيد النقدي المتاح</span><b class="num">${mTxt(p.cash)}</b><small class="muted">جاهز للاستثمار</small></div>
