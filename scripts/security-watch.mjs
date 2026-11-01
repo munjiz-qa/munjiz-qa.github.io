@@ -93,10 +93,14 @@ async function checkCommits() {
 function checkSecrets() {
   for (const f of git('ls-files').split('\n')) {
     if (!f || f === 'scripts/security-watch.mjs') continue;
+    // compressed translation packs (base64 of gzip): random text that can look like a key
+    if (/(^|\/)data\/tr\/[^/]+\.txt$/.test(f)) continue;
     try { if (statSync(f).size > 2e6) continue; } catch { continue; }
     const t = readFileSync(f, 'utf8');
     for (const [re, name] of SECRETS) {
       const m = t.match(re);
+      // a Firebase web config key is public by design (protected by Firestore rules and API restrictions)
+      if (m && name === 'مفتاح Google API' && /authDomain:\s*["'][\w-]+\.firebaseapp\.com["']/.test(t) && new RegExp('apiKey:\\s*["\']' + m[0] + '["\']').test(t)) continue;
       if (m) add({ level: 'high', key: 'secret:' + f + ':' + name, title: name + ' مكشوف في الملف ' + f,
         detail: 'وُجد ما يشبه ' + name + ' في ' + f + ' (يبدأ بـ ' + m[0].slice(0, 8) + '…). المستودع عام، فاعتبر المفتاح مكشوفاً: ألغه من مصدره وأنشئ بديلاً، ثم احذفه من الملف.' });
     }
