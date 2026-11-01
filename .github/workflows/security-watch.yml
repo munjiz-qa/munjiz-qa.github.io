@@ -26,4 +26,4 @@ jobs:
           SITE_URL: https://munjiz-qa.github.io/
           OWNER_LOGIN: baseeratactions
           ALERT_TELEGRAM: ${{ vars.ALERT_TELEGRAM || '@mabouelezz2022' }}
-          ALLOWED_EMAILS: ${{ vars.ALLOWED_EMAILS }}
+          ALLOWED_EMAILS: ${{ vars.ALLOWED_EMAILS || 'munjiz-qa@users.noreply.github.com' }}
