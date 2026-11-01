@@ -536,7 +536,7 @@ q:[["ما أداة حفظ القواعد الدائمة في مشروع برمج
 
 </script>
 <script src="config.js"></script>
-<script src="local.js"></script>
+<script src="local.js?v=20261101"></script>
 <script>
 (function(){
 const TOTAL = LESSONS.length;
@@ -592,7 +592,7 @@ async function api(action, body){
 const ERR = {invalid:"اسم المستخدم أو كلمة المرور غير صحيحة", locked:"محاولات كثيرة غير ناجحة، حاول بعد 15 دقيقة", disabled:"هذا الحساب موقوف، تواصل مع الإدارة",
   taken:"اسم المستخدم مستخدم من قبل", bad_username:"اسم المستخدم من 3 أحرف على الأقل، بالإنجليزية والأرقام فقط", bad_name:"اكتب الاسم",
   weak_password:"كلمة المرور 8 أحرف على الأقل", signup_closed:"التسجيل الذاتي مغلق حالياً، تواصل مع الإدارة", self:"لا يمكن تنفيذ هذا الإجراء على حسابك",
-  last_admin:"يجب أن يبقى مدير واحد نشط على الأقل", forbidden:"هذه الصلاحية للإدارة فقط", auth:"انتهت الجلسة، سجّل الدخول مرة أخرى", offline:"نظام الحسابات غير مفعّل بعد", bad_file:"الملف غير صالح أو لا يحوي مديراً نشطاً", storage:"تعذّر الحفظ في المتصفح، تأكد أنه ليس في وضع التصفح الخاص", not_found:"المستخدم غير موجود"};
+  last_admin:"يجب أن يبقى مدير واحد نشط على الأقل", forbidden:"هذه الصلاحية للإدارة فقط", auth:"انتهت الجلسة، سجّل الدخول مرة أخرى", offline:"نظام الحسابات غير مفعّل بعد", bad_file:"الملف غير صالح أو لا يحوي مديراً نشطاً", storage:"تعذّر الحفظ في المتصفح، تأكد أنه ليس في وضع التصفح الخاص", not_found:"المستخدم غير موجود", must_change:"لحماية حسابك، عيّن كلمة مرور جديدة قبل المتابعة", same_password:"اختر كلمة مرور مختلفة عن الحالية"};
 const errMsg = e => ERR[e && e.code] || ERR[e && e.message] || "تعذّر الاتصال بالخادم، حاول مرة أخرى";
 function summary(){ return {done:doneList(), xp:xp(), streak:streak(), quizAvg:quizAvg()}; }
 async function pushCloud(){
@@ -656,6 +656,7 @@ function render(){
   else if(r==="notes"){ v.innerHTML = viewNotes(); bindNotes(); }
   else if(r==="remind"){ v.innerHTML = viewRemind(); bindRemind(); }
   else if(r==="contact"){ v.innerHTML = viewContact(); }
+  else if(me && me.mustChange && r==="admin"){ v.innerHTML = viewAccount(); bindAccount(); }
   else if(r==="admin" && isAdmin){ v.innerHTML = viewAdmin(); bindAdmin(); }
   else if(r==="account"){ v.innerHTML = viewAccount(); bindAccount(); }
   else { v.innerHTML = viewHome(); bindHome(); }
@@ -1055,6 +1056,7 @@ function bindAdmin(){
 /* ---------- account ---------- */
 function viewAccount(){
   if(me) return `<div class="stack" style="max-width:640px;margin-inline:auto">
+    ${me.mustChange?`<div class="banner" role="alert"><span aria-hidden="true">!</span><span>هذا الحساب ما زال على كلمة المرور الافتراضية. عيّن كلمة مرور جديدة الآن لتفعيل ${me.role==="admin"?"لوحة الإدارة":"حسابك"} بأمان.</span></div>`:""}
     <div class="card stack"><h1>حسابي</h1>
       <div class="kv"><span class="muted">الاسم</span><b>${esc(me.name)}</b><span class="muted">اسم المستخدم</span><b class="ltr">${esc(me.username)}</b><span class="muted">الصلاحية</span><b>${me.role==="admin"?"مدير المنصة (كل الصلاحيات)":"متعلّم"}</b><span class="muted">التقدّم</span><b class="num">${doneCount()} / ${TOTAL} درساً</b></div>
       <div class="row">${me.role==="admin"?`<a class="btn" href="#admin">لوحة الإدارة</a>`:""}<button class="btn ghost" id="out" type="button">تسجيل الخروج</button></div></div>
@@ -1079,7 +1081,7 @@ function bindAccount(){
   const busy = (f,on)=>{ const b = f.querySelector("button[type=submit]"); if(b) b.disabled = on; };
   const lf = $("#loginF"); if(lf) lf.addEventListener("submit", async e=>{
     e.preventDefault(); busy(lf,true); $("#loginE").textContent = "";
-    try{ signIn(await api("login", Object.fromEntries(new FormData(lf)))); await loadCloud(); toast("أهلاً "+me.name); go(isAdmin?"admin":"home"); }
+    try{ signIn(await api("login", Object.fromEntries(new FormData(lf)))); await loadCloud(); if(me.mustChange){ toast(ERR.must_change); go("account"); setTimeout(()=>{ const c = document.querySelector('#pwF input[name=current]'); if(c){ c.scrollIntoView({block:"center"}); c.focus(); } }, 60); } else { toast("أهلاً "+me.name); go(isAdmin?"admin":"home"); } }
     catch(err){ $("#loginE").textContent = errMsg(err); busy(lf,false); }
   });
   const rf = $("#regF"); if(rf) rf.addEventListener("submit", async e=>{
@@ -1089,7 +1091,7 @@ function bindAccount(){
   });
   const o = $("#out"); if(o) o.addEventListener("click", async ()=>{ try{ await api("logout"); }catch(e){} signOut(); learnersUnsub = null; toast("سُجّل الخروج"); go("home"); });
   const nf = $("#nameF"); if(nf) nf.addEventListener("submit", async e=>{ e.preventDefault(); try{ const j = await api("updateProfile", Object.fromEntries(new FormData(nf))); me = j.user; toast("حُفظ الاسم"); render(); }catch(err){ toast(errMsg(err)); } });
-  const pf = $("#pwF"); if(pf) pf.addEventListener("submit", async e=>{ e.preventDefault(); try{ await api("changePassword", Object.fromEntries(new FormData(pf))); pf.reset(); toast("تغيّرت كلمة المرور"); }catch(err){ toast(errMsg(err)); } });
+  const pf = $("#pwF"); if(pf) pf.addEventListener("submit", async e=>{ e.preventDefault(); try{ const j = await api("changePassword", Object.fromEntries(new FormData(pf))); pf.reset(); const was = me.mustChange; if(j.user) me = j.user; toast("تغيّرت كلمة المرور"); if(was) go(isAdmin?"admin":"home"); }catch(err){ toast(errMsg(err)); } });
 }
 
 /* ---------- helpers ---------- */
