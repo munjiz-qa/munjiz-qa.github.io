@@ -1,0 +1,61 @@
+name: Khabar autopilot
+# «خبر»: الطيار الآلي. كل ساعة: إن فات موعد الخلاصة يكتب خلاصة آلية موثّقة، ثم يفحص الموقع المنشور ولوحاته.
+# لا يحتاج أي مفتاح أو جلسة محرر. عند العطل يفتح بلاغاً في المستودع فيصل التنبيه إلى بريد المالك.
+on:
+  schedule:
+    - cron: '25 * * * *'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'اكتب خلاصة آلية الآن حتى لو كانت الخلاصة الحالية في موعدها'
+        type: boolean
+        default: false
+permissions:
+  contents: write
+  issues: write
+concurrency: khabar
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Brief and health
+        id: ap
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: node khabar/scripts/autopilot.mjs ${{ inputs.force && '--force' || '' }}
+      - name: Verify the automatic brief
+        if: steps.ap.outputs.wrote == 'true'
+        run: python3 khabar/agent/verify.py --enforce
+      - name: Commit if changed
+        run: |
+          git config user.name "khabar-autopilot"
+          git config user.email "actions@users.noreply.github.com"
+          git add khabar/data
+          git diff --cached --quiet && exit 0
+          git commit -q -m "خبر: ${{ steps.ap.outputs.wrote == 'true' && 'خلاصة آلية في موعدها' || 'تقرير الفحص الدوري' }}"
+          for i in 1 2 3; do git pull --rebase -q && git push && exit 0; sleep 5; done; exit 1
+      - name: Alert on failure
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OK: ${{ steps.ap.outputs.ok }}
+        run: |
+          T="تنبيه تشغيل خبر"
+          N=$(gh issue list --state open --search "$T in:title" --json number -q '.[0].number' || true)
+          if [ "$OK" = "true" ]; then
+            [ -n "$N" ] && gh issue close "$N" -c "عاد التشغيل سليماً: $(date -u +%FT%TZ)" || true
+            exit 0
+          fi
+          B="الفحص الدوري وجد عطلاً. التفاصيل في khabar/data/health.json وسجل التشغيل: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          # بلاغ واحد لكل عطل: لا يتكرر التنبيه كل ساعة ما دام البلاغ مفتوحاً
+          [ -n "$N" ] && exit 0
+          gh issue create -t "$T" -b "$B"
+          exit 1

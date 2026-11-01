@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="شاطر حسن: النموذج العامل للنظام المصرفي الإسلامي. حسابات وتحويلات وتمويل بالمرابحة والإجارة والمشاركة والقرض الحسن واستثمار بالمضاربة وزكاة ووقف.">
+<title>شاطر حسن · الخدمات المصرفية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#f7f8fa;--surface:#fff;--ink:#1f2933;--muted:#5f6b76;--line:#dde2e8;
+  --acc:#1f4e79;--acc-soft:#eef3f8;--acc-ink:#fff;--bad:#9b2c2c;--bad-soft:#f8eded;--ok:#2f6b3f;--ok-soft:#ecf5ee;--warn:#8a5a00;--warn-soft:#fbf3e2;
+  --f:"IBM Plex Sans Arabic","Segoe UI",Tahoma,Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#14181d;--surface:#1b2027;--ink:#e6e9ed;--muted:#a3adb8;--line:#2e3540;--acc:#8ab4e0;--acc-soft:#1f2a37;--acc-ink:#0f1720;
+  --bad:#e39a9a;--bad-soft:#3a2224;--ok:#8fd19e;--ok-soft:#1d2e22;--warn:#e7c27a;--warn-soft:#332a18;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14181d;--surface:#1b2027;--ink:#e6e9ed;--muted:#a3adb8;--line:#2e3540;--acc:#8ab4e0;--acc-soft:#1f2a37;--acc-ink:#0f1720;
+  --bad:#e39a9a;--bad-soft:#3a2224;--ok:#8fd19e;--ok-soft:#1d2e22;--warn:#e7c27a;--warn-soft:#332a18;color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.75 var(--f);direction:rtl;min-height:100vh;display:flex;flex-direction:column}
+[hidden]{display:none!important}
+a{color:var(--acc)}
+h1,h2,h3,h4{margin:0;line-height:1.45;font-weight:700}
+p{margin:0}
+.wrap{width:100%;max-width:1120px;margin-inline:auto;padding-inline:max(16px,env(safe-area-inset-left,0px))}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px;border-radius:4px}
+
+.top{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top .wrap{display:flex;align-items:center;gap:12px;min-height:60px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);flex:none}
+.brand b{font-size:19px}
+.brand small{display:block;font-size:12px;color:var(--muted);font-weight:500;line-height:1.2}
+.top .sp{flex:1}
+.who{font-size:14px;color:var(--muted);text-align:left;line-height:1.4;max-width:40vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tabs{background:var(--surface);border-bottom:1px solid var(--line)}
+.tabs .wrap{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.tabs .wrap::-webkit-scrollbar{display:none}
+.tabs a{flex:none;padding:10px 12px;text-decoration:none;color:var(--muted);font-weight:500;font-size:15px;border-bottom:2px solid transparent;white-space:nowrap}
+.tabs a.on{color:var(--acc);border-bottom-color:var(--acc)}
+.tabs a .n{display:inline-block;min-width:20px;padding:0 6px;margin-inline-start:4px;border-radius:10px;background:var(--bad);color:#fff;font-size:12px;line-height:20px;text-align:center}
+
+main{flex:1;padding-block:24px 48px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:900px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:1fr 1fr}}
+@media (max-width:640px){.g2,.g3{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;min-width:0}
+.card h3{font-size:18px;margin-bottom:8px}
+.card h4{font-size:16px;margin-bottom:4px}
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.head h2{font-size:24px}
+.sub{color:var(--muted);font-size:15px}
+.stack>*+*{margin-top:16px}
+.kpi span{display:block;color:var(--muted);font-size:14px}
+.kpi b{display:block;font-size:22px;margin-top:2px;font-variant-numeric:tabular-nums}
+.kpi small{color:var(--muted);font-size:13px}
+.acct{border-top:4px solid var(--acc)}
+.acct .no{font-size:13px;color:var(--muted);direction:ltr;text-align:right}
+.tag{display:inline-block;padding:1px 10px;border-radius:999px;font-size:13px;font-weight:500;background:var(--acc-soft);color:var(--acc);white-space:nowrap}
+.tag.ok{background:var(--ok-soft);color:var(--ok)}
+.tag.bad{background:var(--bad-soft);color:var(--bad)}
+.tag.warn{background:var(--warn-soft);color:var(--warn)}
+.tag.mute{background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+.note{background:var(--acc-soft);border-radius:10px;padding:12px 16px;font-size:15px}
+.note.warn{background:var(--warn-soft)}
+.note.bad{background:var(--bad-soft)}
+.note b{color:var(--acc)}
+.note.warn b{color:var(--warn)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font:600 15px var(--f);padding:9px 18px;border-radius:9px;border:1px solid var(--acc);background:var(--acc);color:var(--acc-ink);cursor:pointer;text-decoration:none;min-height:42px;white-space:nowrap}
+.btn.ghost{background:transparent;color:var(--acc)}
+.btn.bad{background:transparent;color:var(--bad);border-color:var(--bad)}
+.btn.sm{padding:4px 12px;min-height:34px;font-size:14px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+form .f{display:grid;gap:14px}
+label{display:grid;gap:4px;font-size:14px;color:var(--muted);font-weight:500}
+input,select,textarea{font:16px var(--f);color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:9px 12px;width:100%;min-height:44px}
+textarea{min-height:80px;resize:vertical}
+input:focus,select:focus,textarea:focus{border-color:var(--acc);outline:none;box-shadow:0 0 0 3px var(--acc-soft)}
+input[dir=ltr]{text-align:right}
+.hint{font-size:13px;color:var(--muted);font-weight:400}
+.err{color:var(--bad);font-size:14px;min-height:0}
+
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;color:var(--muted);background:var(--bg);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:left;font-variant-numeric:tabular-nums;white-space:nowrap;direction:ltr}
+.pos{color:var(--ok)}.neg{color:var(--bad)}
+.empty{padding:24px;text-align:center;color:var(--muted)}
+/* tables become stacked cards on phones */
+@media (max-width:640px){
+  .tbl.cards{border:0;background:transparent;overflow:visible}
+  .tbl.cards table,.tbl.cards tbody,.tbl.cards tr,.tbl.cards td{display:block;width:100%}
+  .tbl.cards thead{display:none}
+  .tbl.cards tr{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 12px;margin-bottom:10px}
+  .tbl.cards td{border:0;padding:4px 0;display:flex;justify-content:space-between;gap:12px;text-align:left}
+  .tbl.cards td::before{content:attr(data-l);color:var(--muted);font-size:13px;text-align:right;flex:none}
+  .tbl.cards td.num{direction:rtl}
+  .tbl.cards td.num>span{direction:ltr}
+}
+
+.hero{padding-block:24px 8px}
+.hero h1{font-size:clamp(28px,4.6vw,44px)}
+.hero h1 span{color:var(--acc)}
+.hero .lede{color:var(--muted);font-size:17px;max-width:62ch;margin-top:12px}
+.hero .row{margin-top:20px}
+.prod p{color:var(--muted);font-size:15px}
+.prod .k{font-size:13px;color:var(--acc);font-weight:600}
+.auth{max-width:460px;margin-inline:auto}
+.steps{display:flex;gap:6px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:6px}
+.steps span{padding:2px 8px;border-radius:6px;background:var(--bg);border:1px solid var(--line)}
+.steps span.on{background:var(--acc-soft);color:var(--acc);border-color:transparent;font-weight:600}
+.split{display:flex;justify-content:space-between;gap:12px;align-items:baseline;padding:6px 0;border-bottom:1px dashed var(--line);font-size:15px}
+.split:last-child{border-bottom:0}
+.split b{font-variant-numeric:tabular-nums;direction:ltr}
+.bar{height:8px;border-radius:4px;background:var(--bg);border:1px solid var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--acc)}
+
+footer{border-top:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:13.5px;padding-block:18px calc(18px + env(safe-area-inset-bottom,0px))}
+footer .wrap{display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:space-between}
+footer a{color:var(--muted)}
+#toast{position:fixed;inset-inline:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));margin-inline:auto;max-width:440px;background:var(--ink);color:var(--bg);padding:12px 16px;border-radius:10px;font-size:15px;z-index:50;box-shadow:0 8px 24px rgba(0,0,0,.2);opacity:0;transform:translateY(10px);transition:.2s;pointer-events:none}
+#toast.show{opacity:1;transform:none}
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);padding:0;width:min(520px,calc(100vw - 24px));max-height:90vh}
+dialog::backdrop{background:rgba(10,15,20,.45)}
+dialog .in{padding:20px}
+dialog h3{font-size:19px;margin-bottom:10px}
+@media (max-width:640px){
+  .brand b{font-size:17px}.brand small{display:none}
+  .head h2{font-size:21px}
+  main{padding-block:16px 40px}
+  .who{display:none}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="mark" viewBox="0 0 64 64">
+    <path d="M12 58V30a20 20 0 0 1 40 0v28z" fill="var(--acc)"/>
+    <rect x="8" y="56" width="48" height="5" rx="1.5" fill="var(--acc)"/>
+    <g transform="translate(32 36)" fill="var(--surface)"><rect x="-8" y="-8" width="16" height="16" rx="1.5"/><rect x="-8" y="-8" width="16" height="16" rx="1.5" transform="rotate(45)"/></g>
+    <circle cx="32" cy="36" r="4" fill="var(--acc)"/>
+  </symbol>
+</defs></svg>
+
+<header class="top"><div class="wrap">
+  <a class="brand" href="#/" aria-label="شاطر حسن"><svg width="34" height="34" viewBox="0 0 64 64" aria-hidden="true"><use href="#mark"/></svg><span><b>شاطر حسن</b><small>مالٌ يعمل في الحلال</small></span></a>
+  <span class="sp"></span>
+  <span class="who" id="who"></span>
+  <span class="row" id="authBtns"></span>
+</div></header>
+<nav class="tabs" id="tabs" aria-label="القائمة" hidden><div class="wrap" id="tabsIn"></div></nav>
+<main><div class="wrap" id="view"></div></main>
+<footer><div class="wrap">
+  <span>شاطر حسن · نموذج عامل للتجربة، والبيانات محفوظة في هذا المتصفح فقط</span>
+  <span><a href="../">الوثيقة التأسيسية</a> · <a href="mailto:munijizqa@gmail.com" dir="ltr">munijizqa@gmail.com</a> · <a href="https://wa.me/97451600498" dir="ltr">+974 5160 0498</a></span>
+</div></footer>
+<dialog id="dlg"><div class="in" id="dlgIn"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+/* ---------- storage ---------- */
+const KEY='shatirhassan_db_v1', SKEY='shatirhassan_session';
+const mem={};
+const store={
+  get(k){try{return localStorage.getItem(k)}catch(e){return mem[k]??null}},
+  set(k,v){try{localStorage.setItem(k,v)}catch(e){mem[k]=v}},
+  del(k){try{localStorage.removeItem(k)}catch(e){delete mem[k]}}
+};
+let db=null;
+const save=()=>store.set(KEY,JSON.stringify(db));
+
+/* ---------- formats (unified everywhere) ---------- */
+const CUR='ر.ق';
+const r2=n=>Math.round((+n+Number.EPSILON)*100)/100;
+const money=n=>`${(+n<0?'-':'')}${Math.abs(r2(n)).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})} ${CUR}`;
+const pad=n=>String(n).padStart(2,'0');
+const fdate=iso=>{if(!iso)return '—';const d=new Date(iso);return `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()}`};
+const fdt=iso=>{const d=new Date(iso);return `${fdate(iso)} ${pad(d.getHours())}:${pad(d.getMinutes())}`};
+const phoneDigits=p=>{let d=String(p||'').replace(/\D/g,'');if(d.startsWith('00'))d=d.slice(2);if(d.length===8)d='974'+d;return d};
+const fphone=p=>{const d=phoneDigits(p);return d.length===11&&d.startsWith('974')?`+974 ${d.slice(3,7)} ${d.slice(7)}`:'+'+d};
+const normName=s=>String(s||'').trim().replace(/\s+/g,' ');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const now=()=>new Date().toISOString();
+const addMonths=(iso,m)=>{const d=new Date(iso);d.setMonth(d.getMonth()+m);return d.toISOString()};
+async function hash(pw,salt){
+  const data=new TextEncoder().encode(salt+'|'+pw);
+  if(crypto.subtle){const b=await crypto.subtle.digest('SHA-256',data);return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+  let h=0;for(const c of data)h=(h*31+c)|0;return 'w'+h;
+}
+
+/* ---------- product catalogue ---------- */
+const PRODUCTS={
+  murabaha:{name:'المرابحة للآمر بالشراء',k:'بيع',asset:'السلعة المطلوبة (سيارة، أجهزة، بضاعة...)',desc:'يشتري شاطر حسن السلعة ويتملكها أولاً، ثم يبيعها لك بثمن معلوم يشمل التكلفة وربحاً محدداً، يُسدَّد على أقساط ثابتة لا تزيد بالتأخير.',kind:'sale'},
+  ijara:{name:'الإجارة المنتهية بالتمليك',k:'إجارة',asset:'الأصل المطلوب (مسكن، معدات، مركبة...)',desc:'يملك شاطر حسن الأصل ويؤجره لك بأجرة شهرية معلومة، وتنتقل إليك ملكيته بالهبة بعد آخر قسط بعقد مستقل.',kind:'lease'},
+  musharaka:{name:'المشاركة المتناقصة',k:'شركة',asset:'الأصل المشترك (عقار، مشروع...)',desc:'تشارك شاطر حسن في ملكية الأصل بدفعة أولى، ثم تشتري حصته تدريجياً وتدفع أجرة حصته المتبقية فقط، فيتناقص القسط شهراً بعد شهر.',kind:'share'},
+  mudaraba:{name:'تمويل المضاربة لرواد الأعمال',k:'مضاربة',asset:'وصف النشاط التجاري',desc:'يقدم شاطر حسن رأس المال وتقدم أنت العمل، ويُقسم الربح بنسبة شائعة متفق عليها، والخسارة على رأس المال ما لم يكن تعدٍّ أو تقصير.',kind:'venture'},
+  qard:{name:'القرض الحسن',k:'إرفاق',asset:'الغرض من القرض',desc:'قرض بلا أي زيادة لحاجات الأسر والطلاب والطوارئ، يُرد بقدره على أقساط ميسرة، من صندوق القرض الحسن.',kind:'loan'}
+};
+const ST={pending:['قيد المراجعة','warn'],offer:['بانتظار قبولك','warn'],active:['ساري','ok'],completed:['مكتمل','mute'],rejected:['مرفوض','bad'],cancelled:['ملغى','mute']};
+const stTag=s=>`<span class="tag ${ST[s][1]}">${ST[s][0]}</span>`;
+const USERST={active:['مفعّل','ok'],pending:['بانتظار التحقق','warn'],frozen:['موقوف','bad']};
+const uTag=s=>`<span class="tag ${USERST[s][1]}">${USERST[s][0]}</span>`;
+const ACC={current:'الحساب الجاري',invest:'حساب الاستثمار'};
+const FUNDS={zakat:'صندوق الزكاة',sadaqa:'صندوق الصدقات',waqf:'الوقف النقدي'};
+const MASARIF=['الفقراء','المساكين','العاملون عليها','المؤلفة قلوبهم','في الرقاب','الغارمون','في سبيل الله','ابن السبيل'];
+
+/* ---------- seed ---------- */
+async function seed(){
+  const t0=new Date();t0.setMonth(t0.getMonth()-4);
+  const d=(m,day=5)=>{const x=new Date(t0);x.setMonth(x.getMonth()+m);x.setDate(day);x.setHours(10,30,0,0);return x.toISOString()};
+  db={v:1,seq:1000,users:[],tx:[],reqs:[],cash:[],dist:[],funds:{zakat:0,sadaqa:0,waqf:0,qard:250000},log:[],
+      settings:{murabahaRate:5,ijaraRate:5.5,musharakaRate:5,mudaribShare:30,goldPrice:245,qardMax:20000,minDown:20}};
+  const mk=async(o)=>{const salt=Math.random().toString(36).slice(2);const u={id:uid('u'),acct:'SH-'+(++db.seq)+String(Math.floor(Math.random()*9000+1000)),salt,pass:await hash(o.pw,salt),
+    name:o.name,email:o.email,phone:phoneDigits(o.phone),nid:o.nid||'',role:o.role||'customer',status:o.status||'active',created:o.created||d(0,1),bal:{current:0,invest:0}};delete u.pw;db.users.push(u);return u};
+  await mk({name:'مدير النظام',email:'admin@shatirhassan.qa',phone:'55000001',pw:'Hassan@Admin2026',role:'admin'});
+  const c=await mk({name:'عبدالله محمد الكواري',email:'client@shatirhassan.qa',phone:'55123456',nid:'28763400001',pw:'Client@2026'});
+  const c2=await mk({name:'مريم أحمد السليطي',email:'maryam@shatirhassan.qa',phone:'66234567',nid:'29063400002',pw:'Client@2026'});
+  await mk({name:'يوسف خالد العلي',email:'yousef@shatirhassan.qa',phone:'33456789',nid:'29563400003',pw:'Client@2026',status:'pending',created:d(4,1)});
+  const tx=(u,acc,amt,type,note,at)=>{u.bal[acc]=r2(u.bal[acc]+amt);db.tx.push({id:uid('t'),uid:u.id,acc,amt:r2(amt),type,note,at,bal:u.bal[acc]})};
+  tx(c,'current',45000,'deposit','إيداع تحويل بنكي · مرجع 77120',d(0,3));
+  tx(c,'current',-20000,'move','تحويل إلى حساب الاستثمار',d(0,4));tx(c,'invest',20000,'move','تحويل من الحساب الجاري',d(0,4));
+  tx(c2,'current',30000,'deposit','إيداع نقدي في الفرع',d(0,6));
+  tx(c2,'current',-15000,'move','تحويل إلى حساب الاستثمار',d(0,7));tx(c2,'invest',15000,'move','تحويل من الحساب الجاري',d(0,7));
+  // a profit distribution already done
+  const pool=35000, gross=1050, mud=r2(gross*0.3), net=gross-mud;
+  tx(c,'invest',r2(net*20000/pool),'profit','حصتك من ربح وعاء المضاربة',d(3,1));
+  tx(c2,'invest',r2(net*15000/pool),'profit','حصتك من ربح وعاء المضاربة',d(3,1));
+  db.dist.push({id:uid('p'),at:d(3,1),period:'الربع الثالث',gross,mud,net,pool,by:'مدير النظام'});
+  // active murabaha for demo client
+  const r=newReq(c,'murabaha',{amount:18000,term:24,asset:'سيارة عائلية موديل 2026',purpose:'استخدام شخصي'},d(1,2));
+  makeOffer(r,d(1,4));r.status='active';r.accepted=d(1,5);r.schedule=buildSchedule(r,d(1,5));
+  [0,1,2].forEach(i=>{const s=r.schedule[i];s.paid=true;s.paidAt=s.due;tx(c,'current',-s.amt,'installment',`قسط ${i+1} · ${PRODUCTS.murabaha.name}`,s.due)});
+  // pending requests
+  newReq(c2,'qard',{amount:6000,term:12,asset:'رسوم دراسية جامعية',purpose:'تعليم'},d(4,2));
+  newReq(c,'musharaka',{amount:600000,term:120,down:30,asset:'فيلا سكنية في الوكرة',purpose:'مسكن الأسرة'},d(4,3));
+  db.cash.push({id:uid('c'),uid:c2.id,kind:'deposit',amt:5000,method:'تحويل بنكي',ref:'88412',status:'pending',at:d(4,4)});
+  tx(c,'current',-1000,'zakat','زكاة المال · توكيل بالتوزيع',d(2,10));db.funds.zakat+=1000;
+  logA('تهيئة بيانات التجربة','النظام');
+  save();
+}
+function logA(what,who){db.log.unshift({at:now(),what,who:who||(me()?me().name:'زائر')});db.log=db.log.slice(0,300)}
+function addTx(u,acc,amt,type,note){u.bal[acc]=r2(u.bal[acc]+amt);db.tx.push({id:uid('t'),uid:u.id,acc,amt:r2(amt),type,note,at:now(),bal:u.bal[acc]})}
+function newReq(u,product,f,at){const r={id:'F-'+(++db.seq),uid:u.id,product,amount:r2(f.amount),term:+f.term,down:+(f.down||0),share:+(f.share||0),asset:f.asset,purpose:f.purpose||'',status:'pending',created:at||now(),note:''};db.reqs.push(r);return r}
+function makeOffer(r,at){
+  const s=db.settings;r.status='offer';r.offered=at||now();
+  const yrs=r.term/12;
+  if(r.product==='murabaha'){r.rate=s.murabahaRate;r.profit=r2(r.amount*s.murabahaRate/100*yrs);r.total=r2(r.amount+r.profit)}
+  if(r.product==='ijara'){r.rate=s.ijaraRate;r.profit=r2(r.amount*s.ijaraRate/100*yrs);r.total=r2(r.amount+r.profit)}
+  if(r.product==='musharaka'){r.rate=s.musharakaRate;r.downAmt=r2(r.amount*r.down/100);const bank=r.amount-r.downAmt;let rent=0;for(let i=0;i<r.term;i++)rent+=bank*(1-i/r.term)*s.musharakaRate/100/12;r.profit=r2(rent);r.total=r2(bank+rent)}
+  if(r.product==='qard'){r.rate=0;r.profit=0;r.total=r.amount}
+  if(r.product==='mudaraba'){r.rate=0;r.bankShare=r.share||40;r.total=r.amount}
+}
+function buildSchedule(r,from){
+  const out=[],n=r.term;
+  if(r.product==='mudaraba')return out;
+  if(r.product==='musharaka'){const bank=r.amount-r.downAmt;let paid=0;
+    for(let i=0;i<n;i++){const buy=i===n-1?r2(bank-paid):r2(bank/n);paid=r2(paid+buy);const rent=r2(bank*(1-i/n)*r.rate/100/12);out.push({n:i+1,due:addMonths(from,i+1),amt:r2(buy+rent),buy,rent,paid:false})}return out}
+  const each=r2(r.total/n);let acc=0;
+  for(let i=0;i<n;i++){const a=i===n-1?r2(r.total-acc):each;acc=r2(acc+a);out.push({n:i+1,due:addMonths(from,i+1),amt:a,paid:false})}
+  return out;
+}
+
+/* ---------- session ---------- */
+const me=()=>{const id=store.get(SKEY);return id?db.users.find(u=>u.id===id):null};
+const userById=id=>db.users.find(u=>u.id===id);
+
+/* ---------- ui helpers ---------- */
+const $=s=>document.querySelector(s);
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),3200)}
+function dialog(html){$('#dlgIn').innerHTML=html;const d=$('#dlg');if(d.showModal)d.showModal();else d.setAttribute('open','')}
+function closeDlg(){const d=$('#dlg');d.close?d.close():d.removeAttribute('open')}
+const go=h=>{if(location.hash===h)render();else location.hash=h};
+const table=(cols,rows,empty)=>rows.length?`<div class="tbl cards"><table><thead><tr>${cols.map(c=>`<th class="${c.num?'num':''}">${c.l}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${cols.map((c,i)=>`<td data-l="${c.l}" class="${c.num?'num':''}">${c.num?`<span>${r[i]}</span>`:r[i]}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`:`<div class="card empty">${empty||'لا توجد بيانات بعد.'}</div>`;
+const amtCell=a=>`<span class="${a<0?'neg':'pos'}">${a>0?'+':''}${money(a)}</span>`;
+const nextDue=r=>r.schedule?r.schedule.find(s=>!s.paid):null;
+const remaining=r=>r.schedule?r2(r.schedule.filter(s=>!s.paid).reduce((a,s)=>a+s.amt,0)):(r.status==='active'?r.amount:0);
+const isLate=s=>s&&!s.paid&&new Date(s.due)<new Date();
+const pendingWithdraw=u=>r2(db.cash.filter(c=>c.uid===u.id&&c.kind==='withdraw'&&c.status==='pending').reduce((a,c)=>a+c.amt,0));
+const avail=u=>r2(u.bal.current-pendingWithdraw(u));
+
+/* ---------- routes ---------- */
+const CTABS=[['#/c/home','الرئيسية'],['#/c/accounts','حساباتي'],['#/c/transfer','التحويل'],['#/c/cash','الإيداع والسحب'],['#/c/finance','التمويل'],['#/c/invest','الاستثمار'],['#/c/zakat','الزكاة والخير'],['#/c/profile','ملفي']];
+const ATABS=[['#/a/home','لوحة التحكم'],['#/a/requests','طلبات التمويل','reqs'],['#/a/cash','الإيداع والسحب','cash'],['#/a/users','العملاء','users'],['#/a/profit','توزيع الأرباح'],['#/a/funds','الزكاة والصناديق'],['#/a/settings','الإعدادات'],['#/a/log','سجل العمليات']];
+function render(){
+  const h=location.hash||'#/';const u=me();const [ ,area,page,arg]=h.split('/');
+  // header
+  $('#who').textContent=u?`${u.name} · ${u.role==='admin'?'الإدارة':u.acct}`:'';
+  $('#authBtns').innerHTML=u?`<a class="btn sm ghost" href="${u.role==='admin'?'#/a/home':'#/c/home'}">${u.role==='admin'?'اللوحة':'حسابي'}</a><button class="btn sm ghost" data-act="logout">خروج</button>`
+    :`<a class="btn sm ghost" href="#/login">دخول</a><a class="btn sm" href="#/register">افتح حساباً</a>`;
+  let tabs=null;
+  if(area==='c'){if(!u)return go('#/login');if(u.role!=='customer')return go('#/a/home');tabs=CTABS}
+  else if(area==='a'){if(!u)return go('#/login');if(u.role!=='admin'){toast('هذه الصفحة للإدارة فقط');return go('#/c/home')}tabs=ATABS}
+  else if(u&&(area==='login'||area==='register'))return go(u.role==='admin'?'#/a/home':'#/c/home');
+  const nav=$('#tabs');
+  if(tabs){nav.hidden=false;const cnt={reqs:db.reqs.filter(r=>r.status==='pending').length,cash:db.cash.filter(c=>c.status==='pending').length,users:db.users.filter(x=>x.status==='pending').length};
+    $('#tabsIn').innerHTML=tabs.map(t=>`<a href="${t[0]}" class="${h.startsWith(t[0])?'on':''}">${t[1]}${t[2]&&cnt[t[2]]?`<span class="n">${cnt[t[2]]}</span>`:''}</a>`).join('');
+    const on=$('#tabsIn a.on');if(on)on.scrollIntoView({block:'nearest',inline:'center'});
+  }else nav.hidden=true;
+  const V=$('#view');
+  const map={'':vHome,login:vLogin,register:vRegister};
+  let html;
+  if(area==='c')html=(C[page]||C.home)(u,arg);
+  else if(area==='a')html=(A[page]||A.home)(u,arg);
+  else html=(map[area]||vHome)();
+  V.innerHTML=html;window.scrollTo(0,0);
+  const t={'':'الخدمات المصرفية',login:'الدخول',register:'فتح حساب'}[area]||(tabs&&(tabs.find(x=>h.startsWith(x[0]))||[])[1])||'';
+  document.title=`شاطر حسن · ${t}`;
+  if(area==='c'&&page==='zakat')calcZakat();
+  if(area==='c'&&page==='finance'&&arg==='new')previewFin();
+}
+
+/* ---------- visitor ---------- */
+function vHome(){
+  return `<section class="hero"><h1>شاطر حسن: مالُك يعمل <span>في الحلال</span></h1>
+  <p class="lede">افتح حسابك في دقائق، وحوّل بلا رسوم، واستثمر بالمضاربة فتشارك في الربح الحقيقي، وموّل احتياجاتك بالمرابحة والإجارة والمشاركة، أو اطلب قرضاً حسناً بلا زيادة، وأخرج زكاتك بضغطة.</p>
+  <div class="row"><a class="btn" href="#/register">افتح حساباً الآن</a><a class="btn ghost" href="#/login">لدي حساب</a><a class="btn ghost" href="../">اقرأ الوثيقة التأسيسية</a></div></section>
+  <div class="grid g4" style="margin-top:28px">
+   <div class="card kpi"><span>رسوم التحويل بين العملاء</span><b>0.00 ${CUR}</b></div>
+   <div class="card kpi"><span>فائدة على أي حساب أو تمويل</span><b>لا يوجد</b></div>
+   <div class="card kpi"><span>غرامة تأخير لصالح المؤسسة</span><b>لا يوجد</b></div>
+   <div class="card kpi"><span>نصاب الزكاة اليوم (85 غراماً ذهباً)</span><b>${money(85*db.settings.goldPrice)}</b></div>
+  </div>
+  <h2 style="font-size:22px;margin:32px 0 14px">الحسابات</h2>
+  <div class="grid g3">
+   <div class="card prod"><span class="k">قرض حسن مضمون</span><h4>الحساب الجاري</h4><p>رصيدك مضمون كاملاً ومتاح في أي وقت، ولا يُدفع عليه عائد لأن المضمون لا يربح.</p></div>
+   <div class="card prod"><span class="k">مضاربة</span><h4>حساب الاستثمار</h4><p>يدخل وعاء المضاربة ويُستثمر في الحلال، وتأخذ حصتك من الربح الفعلي بعد حصة المضارب ${db.settings.mudaribShare}%، ويتحمل رأس المال الخسارة إن وقعت.</p></div>
+   <div class="card prod"><span class="k">وكالة وتبرع</span><h4>الزكاة والصدقة والوقف</h4><p>حاسبة زكاة تحسب النصاب بسعر الذهب، وتوكيل بالتوزيع على المصارف الثمانية، ومساهمة في الوقف النقدي.</p></div>
+  </div>
+  <h2 style="font-size:22px;margin:32px 0 14px">التمويل</h2>
+  <div class="grid g3">${Object.values(PRODUCTS).map(p=>`<div class="card prod"><span class="k">${p.k}</span><h4>${p.name}</h4><p>${p.desc}</p></div>`).join('')}
+   <div class="card prod" style="background:var(--acc-soft);border-color:transparent"><span class="k">مسار كل عقد</span><h4>طلب، ثم مراجعة وتملّك، ثم عرض، ثم قبولك</h4><p>لا يُبرم عقد بيع قبل أن يتملك شاطر حسن السلعة، ولا يسري عقد قبل موافقتك على شروطه المكتوبة.</p></div>
+  </div>`;
+}
+function vLogin(){
+  return `<div class="auth card"><h2 style="font-size:22px">الدخول إلى حسابك</h2><p class="sub" style="margin-bottom:16px">للعملاء والإدارة.</p>
+  <form data-form="login"><div class="f">
+   <label>البريد الإلكتروني أو رقم الجوال<input name="id" required autocomplete="username" dir="ltr"></label>
+   <label>كلمة المرور<input name="pw" type="password" required autocomplete="current-password" dir="ltr"></label>
+   <p class="err" id="err"></p>
+   <button class="btn">دخول</button>
+   <p class="sub">ليس لديك حساب؟ <a href="#/register">افتح حساباً</a></p>
+  </div></form>
+  <div class="note" style="margin-top:18px"><b>حساب عميل للتجربة:</b> <span dir="ltr">client@shatirhassan.qa</span> · كلمة المرور <span dir="ltr">Client@2026</span></div></div>`;
+}
+function vRegister(){
+  return `<div class="auth card"><h2 style="font-size:22px">فتح حساب جديد</h2><p class="sub" style="margin-bottom:16px">يُفتح لك الحساب الجاري وحساب الاستثمار فوراً، وتُفعَّل العمليات المالية بعد التحقق من هويتك.</p>
+  <form data-form="register"><div class="f">
+   <label>الاسم الكامل<input name="name" required minlength="6" autocomplete="name"></label>
+   <label>رقم الجوال<input name="phone" required inputmode="tel" dir="ltr" placeholder="+974 5000 0000" autocomplete="tel"></label>
+   <label>البريد الإلكتروني<input name="email" type="email" required dir="ltr" autocomplete="email"></label>
+   <label>رقم الهوية الشخصية<input name="nid" required inputmode="numeric" pattern="[0-9]{8,14}" dir="ltr"><span class="hint">من 8 إلى 14 رقماً</span></label>
+   <label>كلمة المرور<input name="pw" type="password" required minlength="8" dir="ltr" autocomplete="new-password"><span class="hint">8 أحرف على الأقل</span></label>
+   <label style="display:flex;gap:8px;align-items:flex-start;color:var(--ink)"><input type="checkbox" name="agree" required style="width:auto;min-height:0;margin-top:6px">أوافق على أن تكون كل معاملاتي وفق أحكام الشريعة الإسلامية وشروط الخدمة.</label>
+   <p class="err" id="err"></p>
+   <button class="btn">فتح الحساب</button>
+  </div></form></div>`;
+}
+
+/* ---------- customer ---------- */
+const C={};
+const inactiveNote=u=>u.status==='pending'?`<div class="note warn"><b>حسابك بانتظار التحقق من الهوية.</b> يمكنك تصفح الخدمات، وتُفعَّل الإيداعات والتحويلات والتمويل بعد مراجعة الإدارة لبياناتك.</div>`:u.status==='frozen'?`<div class="note bad"><b>حسابك موقوف مؤقتاً.</b> تواصل مع خدمة العملاء لمعرفة السبب.</div>`:'';
+const txRows=(list)=>list.map(t=>[fdt(t.at),esc(t.note),ACC[t.acc],amtCell(t.amt),money(t.bal)]);
+const TXC=[{l:'التاريخ'},{l:'البيان'},{l:'الحساب'},{l:'المبلغ',num:1},{l:'الرصيد بعدها',num:1}];
+C.home=u=>{
+  const my=db.reqs.filter(r=>r.uid===u.id);
+  const due=my.filter(r=>r.status==='active').map(r=>({r,s:nextDue(r)})).filter(x=>x.s);
+  const offers=my.filter(r=>r.status==='offer');
+  const tx=db.tx.filter(t=>t.uid===u.id).slice(-6).reverse();
+  return `<div class="stack">
+  <div class="head"><div><h2>أهلاً، ${esc(u.name.split(' ')[0])}</h2><p class="sub">رقم حسابك <span dir="ltr">${u.acct}</span> · ${uTag(u.status)}</p></div>
+   <div class="row"><a class="btn" href="#/c/transfer">تحويل</a><a class="btn ghost" href="#/c/finance/new">طلب تمويل</a></div></div>
+  ${inactiveNote(u)}
+  ${offers.map(r=>`<div class="note warn"><b>عرض تمويل بانتظار قبولك:</b> ${PRODUCTS[r.product].name} لـ${esc(r.asset)}. <a href="#/c/finance/${r.id}">راجع العرض واقبله</a></div>`).join('')}
+  ${due.filter(x=>isLate(x.s)).map(x=>`<div class="note bad"><b>قسط متأخر:</b> ${money(x.s.amt)} مستحق منذ ${fdate(x.s.due)} على ${PRODUCTS[x.r.product].name}. لا تُضاف أي غرامة، ونرجو السداد عند الاستطاعة. <a href="#/c/finance/${x.r.id}">سدّد الآن</a></div>`).join('')}
+  <div class="grid g3">
+   <div class="card acct kpi"><span>الحساب الجاري</span><b>${money(u.bal.current)}</b><small>المتاح ${money(avail(u))}</small></div>
+   <div class="card acct kpi"><span>حساب الاستثمار (مضاربة)</span><b>${money(u.bal.invest)}</b><small>أرباح محققة ${money(db.tx.filter(t=>t.uid===u.id&&t.type==='profit').reduce((a,t)=>a+t.amt,0))}</small></div>
+   <div class="card acct kpi"><span>المتبقي من التمويل</span><b>${money(my.filter(r=>r.status==='active').reduce((a,r)=>a+remaining(r),0))}</b><small>${due.length?`القسط القادم ${money(due[0].s.amt)} في ${fdate(due[0].s.due)}`:'لا أقساط قائمة'}</small></div>
+  </div>
+  <div class="head" style="margin:8px 0 0"><h3 style="font-size:18px">آخر الحركات</h3><a href="#/c/accounts">كل الحركات</a></div>
+  ${table(TXC,txRows(tx),'لا توجد حركات بعد. ابدأ بطلب إيداع.')}
+  </div>`;
+};
+C.accounts=u=>{
+  const tx=db.tx.filter(t=>t.uid===u.id).slice().reverse();
+  return `<div class="stack"><div class="head"><div><h2>حساباتي</h2><p class="sub">صاحب الحساب ${esc(u.name)} · <span dir="ltr">${u.acct}</span></p></div></div>
+  <div class="grid g2">
+   <div class="card acct"><h3>${ACC.current}</h3><p class="kpi"><b>${money(u.bal.current)}</b></p><p class="sub">قرض حسن مضمون، متاح في أي وقت، بلا عائد وبلا رسوم.</p></div>
+   <div class="card acct"><h3>${ACC.invest}</h3><p class="kpi"><b>${money(u.bal.invest)}</b></p><p class="sub">مضاربة مطلقة: الربح يوزع بنسبة ${100-db.settings.mudaribShare}% للمودعين و${db.settings.mudaribShare}% لشاطر حسن مضارباً، والخسارة على رأس المال.</p></div>
+  </div>
+  <div class="card"><h3>نقل بين حساباتي</h3><form data-form="move"><div class="grid g3" style="align-items:end">
+   <label>من<select name="dir"><option value="ci">الجاري إلى الاستثمار</option><option value="ic">الاستثمار إلى الجاري</option></select></label>
+   <label>المبلغ (${CUR})<input name="amt" type="number" min="1" step="0.01" required inputmode="decimal" dir="ltr"></label>
+   <button class="btn" ${u.status!=='active'?'disabled':''}>نقل</button></div></form></div>
+  <h3 style="font-size:18px">كشف الحساب</h3>${table(TXC,txRows(tx),'لا توجد حركات بعد.')}</div>`;
+};
+C.transfer=u=>{
+  const out=db.tx.filter(t=>t.uid===u.id&&t.type==='transfer').slice().reverse();
+  return `<div class="stack"><div class="head"><div><h2>التحويل إلى عميل آخر</h2><p class="sub">فوري وبلا رسوم بين عملاء شاطر حسن.</p></div></div>
+  ${inactiveNote(u)}
+  <div class="card"><form data-form="transfer"><div class="f">
+   <div class="grid g2"><label>رقم حساب المستفيد أو جواله<input name="to" required dir="ltr" placeholder="SH-1002xxxx أو +974 ..."></label>
+   <label>المبلغ (${CUR})<input name="amt" type="number" min="1" step="0.01" required inputmode="decimal" dir="ltr"><span class="hint">المتاح ${money(avail(u))}</span></label></div>
+   <label>البيان<input name="note" maxlength="80" placeholder="مثال: سداد إيجار"></label>
+   <p class="err" id="err"></p>
+   <div><button class="btn" ${u.status!=='active'?'disabled':''}>متابعة</button></div></div></form></div>
+  <h3 style="font-size:18px">التحويلات السابقة</h3>${table(TXC,txRows(out),'لم تُجرِ أي تحويل بعد.')}</div>`;
+};
+C.cash=u=>{
+  const my=db.cash.filter(c=>c.uid===u.id).slice().reverse();
+  const cs={pending:['قيد التحقق','warn'],done:['منفّذ','ok'],rejected:['مرفوض','bad']};
+  return `<div class="stack"><div class="head"><div><h2>الإيداع والسحب</h2><p class="sub">تتحقق الإدارة من كل طلب قبل تنفيذه.</p></div></div>${inactiveNote(u)}
+  <div class="grid g2">
+   <div class="card"><h3>طلب إيداع</h3><form data-form="cash"><input type="hidden" name="kind" value="deposit"><div class="f">
+    <label>المبلغ (${CUR})<input name="amt" type="number" min="10" step="0.01" required dir="ltr" inputmode="decimal"></label>
+    <label>الطريقة<select name="method"><option>تحويل بنكي</option><option>إيداع نقدي في الفرع</option><option>شيك</option></select></label>
+    <label>رقم المرجع<input name="ref" required maxlength="30" dir="ltr"></label>
+    <button class="btn" ${u.status!=='active'?'disabled':''}>إرسال طلب الإيداع</button></div></form></div>
+   <div class="card"><h3>طلب سحب</h3><form data-form="cash"><input type="hidden" name="kind" value="withdraw"><div class="f">
+    <label>المبلغ (${CUR})<input name="amt" type="number" min="10" step="0.01" required dir="ltr" inputmode="decimal"><span class="hint">المتاح ${money(avail(u))}</span></label>
+    <label>الطريقة<select name="method"><option>تحويل بنكي</option><option>نقداً من الفرع</option></select></label>
+    <label>رقم الحساب المستلم (IBAN) أو ملاحظة<input name="ref" required maxlength="40" dir="ltr"></label>
+    <button class="btn" ${u.status!=='active'?'disabled':''}>إرسال طلب السحب</button></div></form></div>
+  </div>
+  <h3 style="font-size:18px">طلباتي</h3>${table([{l:'التاريخ'},{l:'النوع'},{l:'الطريقة'},{l:'المرجع'},{l:'المبلغ',num:1},{l:'الحالة'}],
+    my.map(c=>[fdt(c.at),c.kind==='deposit'?'إيداع':'سحب',esc(c.method),`<span dir="ltr">${esc(c.ref)}</span>`,money(c.amt),`<span class="tag ${cs[c.status][1]}">${cs[c.status][0]}</span>${c.note?`<br><small class="sub">${esc(c.note)}</small>`:''}`]),'لا توجد طلبات.')}</div>`;
+};
+C.finance=(u,arg)=>{
+  if(arg==='new')return finNew(u);
+  if(arg)return finView(u,db.reqs.find(r=>r.id===arg&&r.uid===u.id));
+  const my=db.reqs.filter(r=>r.uid===u.id).slice().reverse();
+  return `<div class="stack"><div class="head"><div><h2>التمويل</h2><p class="sub">عقودك وطلباتك وأقساطك.</p></div><a class="btn" href="#/c/finance/new">طلب تمويل جديد</a></div>
+  ${table([{l:'الرقم'},{l:'المنتج'},{l:'الأصل أو الغرض'},{l:'المبلغ',num:1},{l:'المتبقي',num:1},{l:'الحالة'},{l:''}],
+   my.map(r=>[`<span dir="ltr">${r.id}</span>`,PRODUCTS[r.product].name,esc(r.asset),money(r.amount),r.status==='active'?money(remaining(r)):'—',stTag(r.status),`<a class="btn sm ghost" href="#/c/finance/${r.id}">التفاصيل</a>`]),'لا توجد طلبات تمويل بعد.')}</div>`;
+};
+function finNew(u){
+  const s=db.settings;
+  return `<div class="stack"><div class="head"><div><h2>طلب تمويل جديد</h2><p class="sub">اختر الصيغة، وسيظهر لك تقدير العقد قبل الإرسال.</p></div><a href="#/c/finance">رجوع</a></div>${inactiveNote(u)}
+  <div class="grid g2" style="align-items:start">
+  <div class="card"><form data-form="fin" id="finForm"><div class="f">
+   <label>صيغة التمويل<select name="product" data-live>${Object.entries(PRODUCTS).map(([k,p])=>`<option value="${k}">${p.name}</option>`).join('')}</select></label>
+   <p class="sub" id="pDesc"></p>
+   <label><span id="lAmt">المبلغ</span> (${CUR})<input name="amount" type="number" min="500" step="1" required value="25000" dir="ltr" inputmode="decimal" data-live></label>
+   <label id="wDown">الدفعة الأولى (حصتك في الأصل %)<input name="down" type="number" min="${s.minDown}" max="90" value="${Math.max(30,s.minDown)}" dir="ltr" data-live></label>
+   <label id="wShare">حصة شاطر حسن من الربح %<input name="share" type="number" min="10" max="70" value="40" dir="ltr" data-live><span class="hint">ولك الباقي مقابل عملك</span></label>
+   <label id="wTerm">المدة بالأشهر<input name="term" type="number" min="3" max="300" value="24" required dir="ltr" data-live></label>
+   <label id="lAsset">الأصل<input name="asset" required maxlength="80"></label>
+   <label>ملاحظات<textarea name="purpose" maxlength="300"></textarea></label>
+   <p class="err" id="err"></p>
+   <button class="btn" ${u.status!=='active'?'disabled':''}>إرسال الطلب</button></div></form></div>
+  <div class="card" id="finPrev"></div></div></div>`;
+}
+function previewFin(){
+  const f=$('#finForm');if(!f)return;const s=db.settings;const p=f.product.value,P=PRODUCTS[p];
+  const A=+f.amount.value||0,n=+f.term.value||1,dn=+f.down.value||0,sh=+f.share.value||0;
+  $('#pDesc').textContent=P.desc;$('#lAsset').firstChild.textContent=P.asset;
+  $('#lAmt').textContent=p==='musharaka'?'قيمة الأصل كاملاً':p==='mudaraba'?'رأس مال المضاربة':p==='qard'?'مبلغ القرض':'تكلفة الأصل';
+  $('#wDown').hidden=p!=='musharaka';$('#wShare').hidden=p!=='mudaraba';$('#wTerm').hidden=false;
+  f.amount.max=p==='qard'?s.qardMax:'';
+  const fake={product:p,amount:A,term:n,down:dn,share:sh};makeOffer(fake);fake.status='pending';
+  const sch=buildSchedule(fake,now());
+  let rows='';
+  if(p==='mudaraba')rows=`<div class="split"><span>رأس المال</span><b>${money(A)}</b></div><div class="split"><span>توزيع الربح</span><b>${100-sh}% لك · ${sh}% لشاطر حسن</b></div><div class="split"><span>مدة المضاربة</span><b>${n} شهراً</b></div><p class="sub" style="margin-top:8px">لا قسط ثابت ولا ربح مضمون. عند التسوية ترد رأس المال وحصة شاطر حسن من الربح الفعلي، وإن خسر المشروع بلا تقصير منك تحمّل شاطر حسن الخسارة.</p>`;
+  else{
+    rows=`${p==='musharaka'?`<div class="split"><span>دفعتك الأولى (${dn}%)</span><b>${money(fake.downAmt)}</b></div>`:''}
+    <div class="split"><span>${p==='qard'?'مبلغ القرض':p==='musharaka'?'حصة شاطر حسن':'التكلفة'}</span><b>${money(p==='musharaka'?A-fake.downAmt:A)}</b></div>
+    <div class="split"><span>${p==='murabaha'?'ربح المرابحة':p==='qard'?'الزيادة':'إجمالي الأجرة'} ${fake.rate?`(${fake.rate}% سنوياً)`:''}</span><b>${money(fake.profit)}</b></div>
+    <div class="split"><span>إجمالي ما تسدده</span><b>${money(fake.total)}</b></div>
+    <div class="split"><span>${p==='musharaka'?'القسط الأول (يتناقص)':'القسط الشهري الثابت'}</span><b>${money(sch[0]?sch[0].amt:0)}</b></div>
+    ${p==='musharaka'?`<div class="split"><span>القسط الأخير</span><b>${money(sch[sch.length-1]?sch[sch.length-1].amt:0)}</b></div>`:''}
+    <p class="sub" style="margin-top:8px">${p==='qard'?`بلا أي زيادة. الحد الأعلى ${money(s.qardMax)}.`:'الثمن ثابت بعد العقد، ولا يزيد بالتأخير أو بتغير الأسعار.'}</p>`;
+  }
+  $('#finPrev').innerHTML=`<h3>تقدير العقد</h3>${rows}<div class="steps"><span class="on">1. الطلب</span><span>2. المراجعة${P.kind==='sale'||P.kind==='lease'?' والتملك':''}</span><span>3. العرض</span><span>4. قبولك</span></div>`;
+}
+function finView(u,r){
+  if(!r)return `<div class="card empty">الطلب غير موجود. <a href="#/c/finance">رجوع</a></div>`;
+  const P=PRODUCTS[r.product];const nd=nextDue(r);
+  const terms=r.status==='pending'||r.status==='rejected'?'':contractBox(r);
+  const paid=r.schedule?r.schedule.filter(s=>s.paid).length:0;
+  return `<div class="stack"><div class="head"><div><h2>${P.name}</h2><p class="sub"><span dir="ltr">${r.id}</span> · ${esc(r.asset)} · ${stTag(r.status)}</p></div><a href="#/c/finance">رجوع</a></div>
+  ${r.status==='pending'?`<div class="note"><b>طلبك قيد المراجعة.</b> قُدّم في ${fdate(r.created)}، وسيصلك عرض العقد هنا بعد اعتماده${P.kind==='sale'||P.kind==='lease'?' وتملك شاطر حسن للأصل':''}.</div>`:''}
+  ${r.status==='rejected'?`<div class="note bad"><b>اعتذرت الإدارة عن الطلب.</b> ${esc(r.note||'')}</div>`:''}
+  ${r.status==='offer'?`<div class="note warn"><b>العرض جاهز.</b> ${P.kind==='sale'||P.kind==='lease'?'تملّك شاطر حسن الأصل، و':''}راجع الشروط أدناه ثم اقبل العقد أو اعتذر عنه.${r.note?' ملاحظة الإدارة: '+esc(r.note):''}</div>`:''}
+  ${terms}
+  ${r.status==='offer'?`<div class="row"><button class="btn" data-act="accept" data-id="${r.id}">أقبل العقد بشروطه</button><button class="btn bad" data-act="decline" data-id="${r.id}">أعتذر عن العرض</button></div>`:''}
+  ${r.status==='active'&&nd?`<div class="card"><div class="row" style="justify-content:space-between"><div><h3 style="margin:0">القسط ${nd.n} من ${r.schedule.length}: ${money(nd.amt)}</h3><p class="sub">مستحق في ${fdate(nd.due)} ${isLate(nd)?'<span class="tag bad">متأخر</span>':''}</p></div><button class="btn" data-act="pay" data-id="${r.id}">سداد القسط</button></div>
+    <div class="bar" style="margin-top:12px"><i style="width:${paid/r.schedule.length*100}%"></i></div><p class="sub" style="margin-top:4px">سُدد ${paid} من ${r.schedule.length} · المتبقي ${money(remaining(r))}</p></div>`:''}
+  ${r.status==='active'&&r.product==='mudaraba'?`<div class="card"><h3>تسوية المضاربة</h3><p class="sub" style="margin-bottom:10px">أدخل صافي الربح الفعلي للمشروع (أو الخسارة بإشارة سالبة). تُرد رأس المال وحصة شاطر حسن ${r.bankShare}% من الربح، وتُخصم الخسارة من رأس المال.</p>
+    <form data-form="settle"><input type="hidden" name="id" value="${r.id}"><div class="grid g2" style="align-items:end"><label>صافي الربح (${CUR})<input name="profit" type="number" step="0.01" required dir="ltr" value="0"></label><button class="btn">تسوية من الحساب الجاري</button></div></form></div>`:''}
+  ${r.status==='completed'?`<div class="note"><b>اكتمل العقد.</b> ${r.product==='ijara'?'انتقلت إليك ملكية الأصل بعقد هبة مستقل.':r.product==='musharaka'?'أصبحت مالكاً للأصل كاملاً.':'شكراً لوفائك.'}</div>`:''}
+  ${r.schedule&&r.schedule.length?`<h3 style="font-size:18px">جدول الأقساط</h3>${table([{l:'القسط'},{l:'تاريخ الاستحقاق'},...(r.product==='musharaka'?[{l:'شراء حصة',num:1},{l:'أجرة',num:1}]:[]),{l:'المبلغ',num:1},{l:'الحالة'}],
+    r.schedule.map(s=>[s.n,fdate(s.due),...(r.product==='musharaka'?[money(s.buy),money(s.rent)]:[]),money(s.amt),s.paid?`<span class="tag ok">مسدد ${fdate(s.paidAt)}</span>`:isLate(s)?'<span class="tag bad">متأخر</span>':'<span class="tag mute">قادم</span>']))}`:''}
+  </div>`;
+}
+function contractBox(r){
+  const P=PRODUCTS[r.product];
+  const lines={
+    murabaha:`يبيع شاطر حسن إلى العميل «${esc(r.asset)}» المملوك له والمقبوض، بثمن إجمالي ${money(r.total)} (التكلفة ${money(r.amount)} وربح ${money(r.profit)})، يُسدد على ${r.term} قسطاً شهرياً. الثمن ثابت لا يزيد بالتأخير.`,
+    ijara:`يؤجر شاطر حسن إلى العميل «${esc(r.asset)}» مدة ${r.term} شهراً بأجرة إجمالية ${money(r.total)}. صيانة الأصل الأساسية وتأمينه التكافلي على المالك، وتنتقل الملكية بالهبة بعد آخر قسط بعقد مستقل.`,
+    musharaka:`يشترك العميل وشاطر حسن في «${esc(r.asset)}» بقيمة ${money(r.amount)}، حصة العميل ${r.down}% (${money(r.downAmt)} تُخصم عند القبول). يشتري العميل حصة شاطر حسن على ${r.term} شهراً، ويدفع أجرة الحصة المتبقية بمعدل ${r.rate}% سنوياً. إجمالي المدفوع بعد الدفعة الأولى ${money(r.total)}.`,
+    mudaraba:`يدفع شاطر حسن رأس مال ${money(r.amount)} للعميل مضارباً في «${esc(r.asset)}» مدة ${r.term} شهراً. الربح ${100-r.bankShare}% للعميل و${r.bankShare}% لشاطر حسن، والخسارة على رأس المال ما لم يثبت تعدٍّ أو تقصير.`,
+    qard:`يُقرض شاطر حسن العميل ${money(r.amount)} قرضاً حسناً بلا أي زيادة، يُرد على ${r.term} قسطاً شهرياً متساوياً.`
+  };
+  return `<div class="card"><h3>شروط العقد</h3><p>${lines[r.product]}</p>${r.offered?`<p class="sub" style="margin-top:8px">صدر العرض في ${fdate(r.offered)}${r.accepted?` · قبله العميل في ${fdate(r.accepted)}`:''}</p>`:''}</div>`;
+}
+C.invest=u=>{
+  const prof=db.tx.filter(t=>t.uid===u.id&&t.type==='profit').slice().reverse();
+  const pool=db.users.reduce((a,x)=>a+x.bal.invest,0);
+  return `<div class="stack"><div class="head"><div><h2>الاستثمار بالمضاربة</h2><p class="sub">وعاء استثماري مشترك يدار في أنشطة حلال، ويوزع ربحه الفعلي دورياً.</p></div><a class="btn" href="#/c/accounts">إيداع في الاستثمار</a></div>
+  <div class="grid g3">
+   <div class="card kpi"><span>رصيدك الاستثماري</span><b>${money(u.bal.invest)}</b></div>
+   <div class="card kpi"><span>حصتك من الوعاء</span><b>${pool?(u.bal.invest/pool*100).toFixed(2):'0.00'}%</b><small>حجم الوعاء ${money(pool)}</small></div>
+   <div class="card kpi"><span>إجمالي أرباحك المحققة</span><b>${money(prof.reduce((a,t)=>a+t.amt,0))}</b></div>
+  </div>
+  <div class="note"><b>كيف يُحسب ربحك؟</b> يُخصم من الربح الفعلي للوعاء ${db.settings.mudaribShare}% حصة شاطر حسن مقابل الإدارة، ويوزع الباقي على المودعين بنسبة أرصدتهم. لا يُعد أي ربح مسبقاً، وإن وقعت خسارة بلا تقصير نقصت الأرصدة بنسبتها ولم يأخذ المضارب شيئاً.</div>
+  <h3 style="font-size:18px">سجل التوزيعات</h3>${table([{l:'التاريخ'},{l:'البيان'},{l:'المبلغ',num:1},{l:'الرصيد بعدها',num:1}],prof.map(t=>[fdate(t.at),esc(t.note),amtCell(t.amt),money(t.bal)]),'لم تُوزع أرباح على حسابك بعد.')}</div>`;
+};
+C.zakat=u=>{
+  const s=db.settings,nisab=85*s.goldPrice;
+  const gifts=db.tx.filter(t=>t.uid===u.id&&['zakat','sadaqa','waqf'].includes(t.type)).slice().reverse();
+  return `<div class="stack"><div class="head"><div><h2>الزكاة والصدقة والوقف</h2><p class="sub">سعر غرام الذهب عيار 24 اليوم ${money(s.goldPrice)} · النصاب ${money(nisab)}</p></div></div>
+  <div class="grid g2" style="align-items:start">
+  <div class="card"><h3>حاسبة الزكاة</h3><form id="zk" data-form="zakatpay"><div class="f">
+   <div class="split"><span>الحساب الجاري</span><b>${money(u.bal.current)}</b></div>
+   <div class="split"><span>حساب الاستثمار</span><b>${money(u.bal.invest)}</b></div>
+   <label>نقد وأرصدة أخرى (${CUR})<input name="cash" type="number" min="0" value="0" dir="ltr" data-zk></label>
+   <label>ذهب وفضة للادخار (بالقيمة السوقية)<input name="gold" type="number" min="0" value="0" dir="ltr" data-zk></label>
+   <label>عروض تجارة (بضاعة معدة للبيع بسعر اليوم)<input name="trade" type="number" min="0" value="0" dir="ltr" data-zk></label>
+   <label>ديون مرجوّة لك على الآخرين<input name="recv" type="number" min="0" value="0" dir="ltr" data-zk></label>
+   <label>ديون حالّة عليك تُخصم<input name="debt" type="number" min="0" value="0" dir="ltr" data-zk></label>
+   <label style="display:flex;gap:8px;align-items:center;color:var(--ink)"><input type="checkbox" name="hawl" checked style="width:auto;min-height:0" data-zk> حال على المال حول قمري كامل</label>
+   <div id="zkOut"></div>
+   <button class="btn" id="zkBtn" ${u.status!=='active'?'disabled':''}>إخراج الزكاة وتوكيل شاطر حسن بتوزيعها</button>
+  </div></form></div>
+  <div class="card"><h3>صدقة أو وقف</h3><form data-form="give"><div class="f">
+   <label>النوع<select name="kind"><option value="sadaqa">صدقة جارية في صندوق الصدقات</option><option value="waqf">مساهمة في الوقف النقدي (يُستثمر أصله ويُصرف ريعه)</option></select></label>
+   <label>المبلغ (${CUR})<input name="amt" type="number" min="1" step="0.01" required dir="ltr"></label>
+   <button class="btn" ${u.status!=='active'?'disabled':''}>تبرّع</button></div></form>
+   <p class="sub" style="margin-top:12px">تُصرف الزكاة على المصارف الثمانية المذكورة في سورة التوبة، وتُنشر تقارير الصرف للمساهمين.</p></div>
+  </div>
+  <h3 style="font-size:18px">سجل عطائك</h3>${table([{l:'التاريخ'},{l:'البيان'},{l:'المبلغ',num:1}],gifts.map(t=>[fdate(t.at),esc(t.note),money(-t.amt)]),'لا توجد مدفوعات زكاة أو صدقات بعد.')}</div>`;
+};
+function calcZakat(){
+  const f=$('#zk');if(!f)return;const u=me(),s=db.settings,nisab=85*s.goldPrice;
+  const v=n=>+f[n].value||0;
+  const base=r2(u.bal.current+u.bal.invest+v('cash')+v('gold')+v('trade')+v('recv')-v('debt'));
+  const due=f.hawl.checked&&base>=nisab?r2(base*0.025):0;
+  f.dataset.due=due;
+  $('#zkOut').innerHTML=`<div class="split"><span>الوعاء الزكوي</span><b>${money(base)}</b></div><div class="split"><span>${base>=nisab?'بلغ النصاب':'لم يبلغ النصاب'}${f.hawl.checked?'':' · لم يحل الحول'}</span><b style="font-size:20px">${money(due)}</b></div>`;
+  $('#zkBtn').disabled=!due||u.status!=='active';
+}
+C.profile=u=>`<div class="stack"><div class="head"><h2>ملفي</h2></div>
+  <div class="grid g2" style="align-items:start"><div class="card">
+   <div class="split"><span>الاسم</span><b style="direction:rtl">${esc(u.name)}</b></div>
+   <div class="split"><span>رقم الحساب</span><b>${u.acct}</b></div>
+   <div class="split"><span>الجوال</span><b>${fphone(u.phone)}</b></div>
+   <div class="split"><span>البريد</span><b>${esc(u.email)}</b></div>
+   <div class="split"><span>الهوية</span><b>${esc(u.nid)}</b></div>
+   <div class="split"><span>تاريخ الانضمام</span><b>${fdate(u.created)}</b></div>
+   <div class="split"><span>الحالة</span>${uTag(u.status)}</div></div>
+  <div class="card"><h3>تغيير كلمة المرور</h3><form data-form="pw"><div class="f">
+   <label>كلمة المرور الحالية<input name="old" type="password" required dir="ltr" autocomplete="current-password"></label>
+   <label>الجديدة<input name="pw" type="password" minlength="8" required dir="ltr" autocomplete="new-password"></label>
+   <button class="btn">حفظ</button></div></form></div></div></div>`;
+
+/* ---------- admin ---------- */
+const A={};
+A.home=()=>{
+  const cust=db.users.filter(u=>u.role==='customer');
+  const act=db.reqs.filter(r=>r.status==='active');
+  const late=act.filter(r=>isLate(nextDue(r)));
+  const pend=db.reqs.filter(r=>r.status==='pending'),pc=db.cash.filter(c=>c.status==='pending'),pu=cust.filter(u=>u.status==='pending');
+  const byP=Object.keys(PRODUCTS).map(k=>[k,act.filter(r=>r.product===k).reduce((a,r)=>a+remaining(r),0)]);
+  const mx=Math.max(1,...byP.map(x=>x[1]));
+  return `<div class="stack"><div class="head"><div><h2>لوحة التحكم</h2><p class="sub">${fdate(now())}</p></div></div>
+  <div class="grid g4">
+   <div class="card kpi"><span>العملاء</span><b>${cust.length}</b><small>${cust.filter(u=>u.status==='active').length} مفعّل · ${pu.length} بانتظار التحقق</small></div>
+   <div class="card kpi"><span>الحسابات الجارية</span><b>${money(cust.reduce((a,u)=>a+u.bal.current,0))}</b><small>مضمونة (قرض حسن)</small></div>
+   <div class="card kpi"><span>وعاء المضاربة</span><b>${money(cust.reduce((a,u)=>a+u.bal.invest,0))}</b><small>غير مضمون، يشارك في الربح</small></div>
+   <div class="card kpi"><span>التمويل القائم</span><b>${money(act.reduce((a,r)=>a+remaining(r),0))}</b><small>${act.length} عقد · ${late.length} متأخر</small></div>
+  </div>
+  <div class="grid g3">
+   <a class="card kpi" href="#/a/requests" style="text-decoration:none;color:inherit"><span>طلبات تمويل للمراجعة</span><b>${pend.length}</b></a>
+   <a class="card kpi" href="#/a/cash" style="text-decoration:none;color:inherit"><span>إيداعات وسحوبات للتحقق</span><b>${pc.length}</b></a>
+   <a class="card kpi" href="#/a/users" style="text-decoration:none;color:inherit"><span>عملاء بانتظار التحقق</span><b>${pu.length}</b></a>
+  </div>
+  <div class="grid g2" style="align-items:start">
+   <div class="card"><h3>التمويل القائم حسب الصيغة</h3>${byP.map(([k,v])=>`<div style="margin-top:10px"><div class="row" style="justify-content:space-between;font-size:14px"><span>${PRODUCTS[k].name}</span><b style="direction:ltr">${money(v)}</b></div><div class="bar"><i style="width:${v/mx*100}%"></i></div></div>`).join('')}</div>
+   <div class="card"><h3>الصناديق</h3>${Object.entries(FUNDS).map(([k,n])=>`<div class="split"><span>${n}</span><b>${money(db.funds[k])}</b></div>`).join('')}<div class="split"><span>صندوق القرض الحسن (المتاح)</span><b>${money(db.funds.qard)}</b></div></div>
+  </div>
+  <h3 style="font-size:18px">أحدث العمليات</h3>${table([{l:'الوقت'},{l:'العملية'},{l:'المنفّذ'}],db.log.slice(0,8).map(l=>[fdt(l.at),esc(l.what),esc(l.who)]))}</div>`;
+};
+A.requests=(u,arg)=>{
+  if(arg){const r=db.reqs.find(x=>x.id===arg);if(!r)return '<div class="card empty">غير موجود</div>';const c=userById(r.uid);
+    return `<div class="stack"><div class="head"><div><h2>${PRODUCTS[r.product].name}</h2><p class="sub"><span dir="ltr">${r.id}</span> · ${stTag(r.status)}</p></div><a href="#/a/requests">رجوع</a></div>
+    <div class="grid g2" style="align-items:start"><div class="card"><h3>الطلب</h3>
+     <div class="split"><span>العميل</span><b style="direction:rtl"><a href="#/a/users/${c.id}">${esc(c.name)}</a></b></div>
+     <div class="split"><span>الجوال</span><b>${fphone(c.phone)}</b></div>
+     <div class="split"><span>المبلغ</span><b>${money(r.amount)}</b></div><div class="split"><span>المدة</span><b>${r.term} شهراً</b></div>
+     ${r.product==='musharaka'?`<div class="split"><span>حصة العميل</span><b>${r.down}%</b></div>`:''}${r.product==='mudaraba'?`<div class="split"><span>حصة شاطر حسن من الربح</span><b>${r.share}%</b></div>`:''}
+     <div class="split"><span>الأصل/الغرض</span><b style="direction:rtl">${esc(r.asset)}</b></div><div class="split"><span>ملاحظات</span><b style="direction:rtl">${esc(r.purpose)||'—'}</b></div>
+     <div class="split"><span>تاريخ الطلب</span><b>${fdate(r.created)}</b></div>
+     <div class="split"><span>رصيد العميل الجاري</span><b>${money(c.bal.current)}</b></div>
+     <div class="split"><span>تمويل قائم على العميل</span><b>${money(db.reqs.filter(x=>x.uid===c.id&&x.status==='active').reduce((a,x)=>a+remaining(x),0))}</b></div></div>
+    <div class="stack">${r.status!=='pending'?contractBox(r):''}
+    ${r.status==='pending'?`<div class="card"><h3>القرار</h3><form data-form="decide"><input type="hidden" name="id" value="${r.id}"><div class="f">
+     ${PRODUCTS[r.product].kind==='sale'||PRODUCTS[r.product].kind==='lease'?'<label style="display:flex;gap:8px;align-items:flex-start;color:var(--ink)"><input type="checkbox" name="own" required style="width:auto;min-height:0;margin-top:6px">أؤكد أن شاطر حسن اشترى الأصل وتملكه وقبضه قبل عرضه على العميل</label>':''}
+     <label>ملاحظة للعميل<textarea name="note" maxlength="300"></textarea></label>
+     <div class="row"><button class="btn" name="d" value="approve">اعتماد وإصدار العرض</button><button class="btn bad" name="d" value="reject" formnovalidate>اعتذار</button></div></div></form></div>`:''}
+    ${r.schedule&&r.schedule.length?`<div class="card"><h3>السداد</h3><div class="split"><span>المسدد</span><b>${r.schedule.filter(s=>s.paid).length} من ${r.schedule.length}</b></div><div class="split"><span>المتبقي</span><b>${money(remaining(r))}</b></div><div class="split"><span>القسط القادم</span><b>${nextDue(r)?fdate(nextDue(r).due):'—'}</b></div></div>`:''}</div></div></div>`;}
+  const f=(window._rf||'pending');
+  const list=db.reqs.filter(r=>f==='all'||r.status===f).slice().reverse();
+  return `<div class="stack"><div class="head"><div><h2>طلبات التمويل</h2></div>
+   <div class="row">${[['pending','للمراجعة'],['offer','عروض معلقة'],['active','سارية'],['completed','مكتملة'],['all','الكل']].map(([k,l])=>`<button class="btn sm ${f===k?'':'ghost'}" data-act="rf" data-id="${k}">${l}</button>`).join('')}</div></div>
+  ${table([{l:'الرقم'},{l:'العميل'},{l:'الصيغة'},{l:'المبلغ',num:1},{l:'المدة'},{l:'التاريخ'},{l:'الحالة'},{l:''}],
+   list.map(r=>[`<span dir="ltr">${r.id}</span>`,esc(userById(r.uid).name),PRODUCTS[r.product].name,money(r.amount),`${r.term} شهراً`,fdate(r.created),stTag(r.status)+(r.status==='active'&&isLate(nextDue(r))?' <span class="tag bad">متأخر</span>':''),`<a class="btn sm ${r.status==='pending'?'':'ghost'}" href="#/a/requests/${r.id}">${r.status==='pending'?'مراجعة':'عرض'}</a>`]),'لا توجد طلبات في هذا التصنيف.')}</div>`;
+};
+A.cash=()=>{
+  const list=db.cash.slice().reverse();
+  const cs={pending:['قيد التحقق','warn'],done:['منفّذ','ok'],rejected:['مرفوض','bad']};
+  return `<div class="stack"><div class="head"><div><h2>الإيداع والسحب</h2><p class="sub">تحقق من المرجع قبل التنفيذ.</p></div></div>
+  ${table([{l:'التاريخ'},{l:'العميل'},{l:'النوع'},{l:'الطريقة'},{l:'المرجع'},{l:'المبلغ',num:1},{l:'الحالة'}],
+   list.map(c=>{const u=userById(c.uid);return [fdt(c.at),esc(u.name),c.kind==='deposit'?'إيداع':'سحب',esc(c.method),`<span dir="ltr">${esc(c.ref)}</span>`,money(c.amt),
+    c.status==='pending'?`<span class="row"><button class="btn sm" data-act="cashok" data-id="${c.id}">تنفيذ</button><button class="btn sm bad" data-act="cashno" data-id="${c.id}">رفض</button></span>`:`<span class="tag ${cs[c.status][1]}">${cs[c.status][0]}</span>`]}),'لا توجد طلبات.')}</div>`;
+};
+A.users=(u,arg)=>{
+  if(arg){const c=userById(arg);if(!c)return '<div class="card empty">غير موجود</div>';
+    const tx=db.tx.filter(t=>t.uid===c.id).slice().reverse();
+    return `<div class="stack"><div class="head"><div><h2>${esc(c.name)}</h2><p class="sub"><span dir="ltr">${c.acct}</span> · ${uTag(c.status)}</p></div><a href="#/a/users">رجوع</a></div>
+    <div class="grid g3"><div class="card"><div class="split"><span>الجوال</span><b>${fphone(c.phone)}</b></div><div class="split"><span>البريد</span><b>${esc(c.email)}</b></div><div class="split"><span>الهوية</span><b>${esc(c.nid)}</b></div><div class="split"><span>الانضمام</span><b>${fdate(c.created)}</b></div></div>
+     <div class="card kpi"><span>الجاري</span><b>${money(c.bal.current)}</b><span style="margin-top:8px">الاستثمار</span><b>${money(c.bal.invest)}</b></div>
+     <div class="card"><h3>الإجراءات</h3><div class="row">${c.status!=='active'?`<button class="btn sm" data-act="ustat" data-id="${c.id}" data-v="active">${c.status==='pending'?'اعتماد الهوية وتفعيل الحساب':'إعادة التفعيل'}</button>`:`<button class="btn sm bad" data-act="ustat" data-id="${c.id}" data-v="frozen">إيقاف الحساب</button>`}<button class="btn sm ghost" data-act="resetpw" data-id="${c.id}">إعادة تعيين كلمة المرور</button></div></div></div>
+    <h3 style="font-size:18px">عقود العميل</h3>${table([{l:'الرقم'},{l:'الصيغة'},{l:'المبلغ',num:1},{l:'الحالة'},{l:''}],db.reqs.filter(r=>r.uid===c.id).map(r=>[`<span dir="ltr">${r.id}</span>`,PRODUCTS[r.product].name,money(r.amount),stTag(r.status),`<a class="btn sm ghost" href="#/a/requests/${r.id}">عرض</a>`]),'لا توجد عقود.')}
+    <h3 style="font-size:18px">كشف الحساب</h3>${table(TXC,txRows(tx),'لا توجد حركات.')}</div>`;}
+  const q=(window._uq||'').trim();
+  const list=db.users.filter(x=>x.role==='customer'&&(!q||(x.name+x.email+x.phone+x.acct+x.nid).toLowerCase().includes(q.toLowerCase())||x.phone.includes(phoneDigits(q)||'~')));
+  return `<div class="stack"><div class="head"><div><h2>العملاء</h2><p class="sub">${list.length} عميل</p></div>
+   <form data-form="usearch" class="row"><input name="q" value="${esc(q)}" placeholder="بحث بالاسم أو الجوال أو رقم الحساب" style="width:min(320px,70vw)"><button class="btn sm ghost">بحث</button></form></div>
+  ${table([{l:'الاسم'},{l:'رقم الحساب'},{l:'الجوال'},{l:'الجاري',num:1},{l:'الاستثمار',num:1},{l:'الحالة'},{l:''}],
+   list.map(c=>[esc(c.name),`<span dir="ltr">${c.acct}</span>`,`<span dir="ltr">${fphone(c.phone)}</span>`,money(c.bal.current),money(c.bal.invest),uTag(c.status),`<a class="btn sm ${c.status==='pending'?'':'ghost'}" href="#/a/users/${c.id}">${c.status==='pending'?'تحقق':'فتح'}</a>`]),'لا نتائج.')}</div>`;
+};
+A.profit=()=>{
+  const inv=db.users.filter(u=>u.role==='customer'&&u.bal.invest>0);const pool=r2(inv.reduce((a,u)=>a+u.bal.invest,0));
+  return `<div class="stack"><div class="head"><div><h2>توزيع أرباح المضاربة</h2><p class="sub">حجم الوعاء ${money(pool)} · ${inv.length} مودع · حصة المضارب ${db.settings.mudaribShare}%</p></div></div>
+  <div class="card"><form data-form="dist"><div class="grid g3" style="align-items:end">
+   <label>الفترة<input name="period" required placeholder="مثال: الربع الرابع 2026"></label>
+   <label>صافي ربح الوعاء الفعلي (${CUR})<input name="gross" type="number" step="0.01" required dir="ltr"><span class="hint">أدخل الخسارة بإشارة سالبة</span></label>
+   <button class="btn" ${pool?'':'disabled'}>معاينة التوزيع</button></div></form></div>
+  <div class="note"><b>القاعدة:</b> عند الربح يأخذ شاطر حسن ${db.settings.mudaribShare}% مضارباً ويوزع الباقي على المودعين بنسبة أرصدتهم. عند الخسارة بلا تقصير تنقص أرصدة المودعين بنسبتها ولا يأخذ المضارب شيئاً.</div>
+  <h3 style="font-size:18px">التوزيعات السابقة</h3>${table([{l:'التاريخ'},{l:'الفترة'},{l:'الوعاء',num:1},{l:'صافي الربح',num:1},{l:'حصة المضارب',num:1},{l:'للمودعين',num:1}],
+   db.dist.slice().reverse().map(d=>[fdate(d.at),esc(d.period),money(d.pool),amtCell(d.gross),money(d.mud),amtCell(d.net)]),'لا توجد توزيعات.')}</div>`;
+};
+A.funds=()=>{
+  const dist=db.fundOut||[];
+  return `<div class="stack"><div class="head"><div><h2>الزكاة والصناديق</h2><p class="sub">صرف موثّق لكل ريال.</p></div></div>
+  <div class="grid g4">${Object.entries(FUNDS).map(([k,n])=>`<div class="card kpi"><span>${n}</span><b>${money(db.funds[k])}</b></div>`).join('')}<div class="card kpi"><span>صندوق القرض الحسن</span><b>${money(db.funds.qard)}</b></div></div>
+  <div class="card"><h3>تسجيل صرف</h3><form data-form="fundout"><div class="grid g4" style="align-items:end">
+   <label>الصندوق<select name="fund">${Object.entries(FUNDS).map(([k,n])=>`<option value="${k}">${n}</option>`).join('')}</select></label>
+   <label>المصرف<select name="to">${MASARIF.map(m=>`<option>${m}</option>`).join('')}<option>مشروع وقفي</option><option>إغاثة عامة</option></select></label>
+   <label>المبلغ (${CUR})<input name="amt" type="number" min="1" step="0.01" required dir="ltr"></label>
+   <label>المستفيد أو البيان<input name="note" required maxlength="80"></label></div><div style="margin-top:12px"><button class="btn">تسجيل الصرف</button></div></form></div>
+  <h3 style="font-size:18px">سجل الصرف</h3>${table([{l:'التاريخ'},{l:'الصندوق'},{l:'المصرف'},{l:'البيان'},{l:'المبلغ',num:1}],dist.slice().reverse().map(d=>[fdate(d.at),FUNDS[d.fund],esc(d.to),esc(d.note),money(d.amt)]),'لم يُسجل صرف بعد.')}</div>`;
+};
+A.settings=()=>{const s=db.settings;
+  return `<div class="stack"><div class="head"><div><h2>الإعدادات</h2><p class="sub">تسري المعدلات على العروض الجديدة فقط، ولا تمس العقود القائمة.</p></div></div>
+  <div class="card"><form data-form="settings"><div class="grid g3">
+   <label>هامش ربح المرابحة السنوي %<input name="murabahaRate" type="number" step="0.01" min="0" value="${s.murabahaRate}" dir="ltr"></label>
+   <label>معدل أجرة الإجارة السنوي %<input name="ijaraRate" type="number" step="0.01" min="0" value="${s.ijaraRate}" dir="ltr"></label>
+   <label>معدل أجرة المشاركة السنوي %<input name="musharakaRate" type="number" step="0.01" min="0" value="${s.musharakaRate}" dir="ltr"></label>
+   <label>حصة المضارب من ربح الوعاء %<input name="mudaribShare" type="number" step="1" min="0" max="90" value="${s.mudaribShare}" dir="ltr"></label>
+   <label>سعر غرام الذهب عيار 24 (${CUR})<input name="goldPrice" type="number" step="0.01" min="1" value="${s.goldPrice}" dir="ltr"></label>
+   <label>الحد الأعلى للقرض الحسن (${CUR})<input name="qardMax" type="number" step="1" min="0" value="${s.qardMax}" dir="ltr"></label>
+   <label>أدنى دفعة أولى في المشاركة %<input name="minDown" type="number" step="1" min="0" max="90" value="${s.minDown}" dir="ltr"></label>
+  </div><div style="margin-top:14px"><button class="btn">حفظ الإعدادات</button></div></form></div>
+  <div class="card"><h3>بيانات التجربة</h3><p class="sub" style="margin-bottom:10px">تعيد النظام إلى بياناته الأولى في هذا المتصفح.</p><button class="btn bad" data-act="reset">إعادة ضبط بيانات التجربة</button></div></div>`;
+};
+A.log=()=>`<div class="stack"><div class="head"><h2>سجل العمليات</h2></div>${table([{l:'الوقت'},{l:'العملية'},{l:'المنفّذ'}],db.log.map(l=>[fdt(l.at),esc(l.what),esc(l.who)]))}</div>`;
+
+/* ---------- actions ---------- */
+const need=(c,m)=>{if(!c){throw new Error(m)}};
+const FORMS={
+  async login(f){
+    const id=f.id.trim().toLowerCase();const pd=phoneDigits(id);
+    const u=db.users.find(x=>x.email.toLowerCase()===id||(pd.length>=8&&x.phone===pd)||x.acct.toLowerCase()===id);
+    need(u&&u.pass===await hash(f.pw,u.salt),'بيانات الدخول غير صحيحة.');
+    store.set(SKEY,u.id);logA('تسجيل دخول',u.name);save();toast(`مرحباً ${u.name.split(' ')[0]}`);go(u.role==='admin'?'#/a/home':'#/c/home');
+  },
+  async register(f){
+    const email=f.email.trim().toLowerCase(),phone=phoneDigits(f.phone);
+    need(normName(f.name).split(' ').length>=2,'اكتب الاسم الكامل (اسمان على الأقل).');
+    need(phone.length>=10&&phone.length<=13,'رقم الجوال غير صحيح.');
+    need(!db.users.some(u=>u.email===email),'هذا البريد مسجّل من قبل.');
+    need(!db.users.some(u=>u.phone===phone),'رقم الجوال مسجّل من قبل.');
+    need(!db.users.some(u=>u.nid&&u.nid===f.nid.trim()),'رقم الهوية مسجّل من قبل.');
+    const salt=Math.random().toString(36).slice(2);
+    const u={id:uid('u'),acct:'SH-'+(++db.seq)+String(Math.floor(Math.random()*9000+1000)),salt,pass:await hash(f.pw,salt),name:normName(f.name),email,phone,nid:f.nid.trim(),role:'customer',status:'pending',created:now(),bal:{current:0,invest:0}};
+    db.users.push(u);store.set(SKEY,u.id);logA(`فتح حساب جديد ${u.acct}`,u.name);save();toast('تم فتح حسابك. ستُفعَّل العمليات بعد التحقق.');go('#/c/home');
+  },
+  move(f){const u=me();need(u.status==='active','الحساب غير مفعّل.');const a=r2(+f.amt);need(a>0,'أدخل مبلغاً صحيحاً.');
+    const [from,to]=f.dir==='ci'?['current','invest']:['invest','current'];
+    need((from==='current'?avail(u):u.bal.invest)>=a,'الرصيد غير كافٍ.');
+    addTx(u,from,-a,'move',`تحويل إلى ${ACC[to]}`);addTx(u,to,a,'move',`تحويل من ${ACC[from]}`);logA(`نقل ${money(a)} إلى ${ACC[to]}`);save();toast('تم النقل');render()},
+  transfer(f){const u=me();need(u.status==='active','الحساب غير مفعّل.');const a=r2(+f.amt);need(a>0,'أدخل مبلغاً صحيحاً.');
+    const t=f.to.trim().toUpperCase(),pd=phoneDigits(t);
+    const to=db.users.find(x=>x.role==='customer'&&(x.acct===t||(pd.length>=8&&x.phone===pd)));
+    need(to,'لم نجد مستفيداً بهذا الرقم.');need(to.id!==u.id,'لا يمكن التحويل إلى حسابك نفسه.');need(to.status!=='frozen','حساب المستفيد موقوف.');
+    need(avail(u)>=a,'الرصيد المتاح غير كافٍ.');
+    dialog(`<h3>تأكيد التحويل</h3><div class="split"><span>إلى</span><b style="direction:rtl">${esc(to.name)}</b></div><div class="split"><span>رقم الحساب</span><b>${to.acct}</b></div><div class="split"><span>المبلغ</span><b>${money(a)}</b></div><div class="split"><span>الرسوم</span><b>${money(0)}</b></div>
+     <div class="row" style="margin-top:16px"><button class="btn" data-act="doTransfer" data-id="${to.id}" data-v="${a}" data-n="${esc(f.note)}">تأكيد</button><button class="btn ghost" data-act="close">إلغاء</button></div>`)},
+  cash(f){const u=me();need(u.status==='active','الحساب غير مفعّل.');const a=r2(+f.amt);need(a>=10,'أقل مبلغ 10.00 '+CUR);
+    if(f.kind==='withdraw')need(avail(u)>=a,'الرصيد المتاح غير كافٍ.');
+    db.cash.push({id:uid('c'),uid:u.id,kind:f.kind,amt:a,method:f.method,ref:f.ref.trim(),status:'pending',at:now()});
+    logA(`طلب ${f.kind==='deposit'?'إيداع':'سحب'} ${money(a)}`);save();toast('أُرسل الطلب، وسيُنفذ بعد التحقق.');render()},
+  fin(f){const u=me();need(u.status==='active','الحساب غير مفعّل.');const s=db.settings;
+    const a=+f.amount;need(a>=500,'أقل مبلغ 500.00 '+CUR);
+    if(f.product==='qard')need(a<=s.qardMax,`الحد الأعلى للقرض الحسن ${money(s.qardMax)}.`);
+    if(f.product==='musharaka')need(+f.down>=s.minDown,`أدنى حصة أولى ${s.minDown}%.`);
+    need(f.asset.trim().length>=3,'صف الأصل أو الغرض.');
+    const r=newReq(u,f.product,{amount:a,term:f.term,down:f.down,share:f.share,asset:f.asset.trim(),purpose:f.purpose.trim()});
+    logA(`طلب ${PRODUCTS[f.product].name} ${r.id} بمبلغ ${money(a)}`);save();toast('أُرسل طلبك للمراجعة');go('#/c/finance/'+r.id)},
+  settle(f){const u=me();const r=db.reqs.find(x=>x.id===f.id&&x.uid===u.id&&x.status==='active');need(r,'العقد غير متاح.');
+    const p=r2(+f.profit);need(p>=-r.amount,'الخسارة لا تتجاوز رأس المال.');
+    const pay=p>=0?r2(r.amount+p*r.bankShare/100):r2(r.amount+p);
+    need(avail(u)>=pay,`يلزم رصيد ${money(pay)} في الحساب الجاري.`);
+    addTx(u,'current',-pay,'installment',`تسوية مضاربة ${r.id}: رأس المال ${p>=0?'وحصة الربح':'بعد خصم الخسارة'}`);r.status='completed';r.settled={profit:p,paid:pay,at:now()};
+    logA(`تسوية مضاربة ${r.id} بربح ${money(p)}`);save();toast('تمت التسوية');render()},
+  zakatpay(f){const u=me();const due=+$('#zk').dataset.due;need(due>0,'لا زكاة مستحقة.');need(avail(u)>=due,'الرصيد الجاري غير كافٍ.');
+    addTx(u,'current',-due,'zakat','زكاة المال · توكيل بالتوزيع');db.funds.zakat=r2(db.funds.zakat+due);logA(`إخراج زكاة ${money(due)}`);save();toast('تقبّل الله زكاتك');render()},
+  give(f){const u=me();const a=r2(+f.amt);need(a>0,'أدخل مبلغاً صحيحاً.');need(avail(u)>=a,'الرصيد غير كافٍ.');
+    addTx(u,'current',-a,f.kind,f.kind==='waqf'?'مساهمة في الوقف النقدي':'صدقة');db.funds[f.kind]=r2(db.funds[f.kind]+a);logA(`${f.kind==='waqf'?'وقف':'صدقة'} ${money(a)}`);save();toast('جزاك الله خيراً');render()},
+  async pw(f){const u=me();need(u.pass===await hash(f.old,u.salt),'كلمة المرور الحالية غير صحيحة.');u.pass=await hash(f.pw,u.salt);logA('تغيير كلمة المرور');save();toast('حُفظت كلمة المرور الجديدة');render()},
+  decide(f,btn){const r=db.reqs.find(x=>x.id===f.id&&x.status==='pending');need(r,'الطلب لم يعد قيد المراجعة.');
+    r.note=f.note.trim();
+    if(btn==='reject'){need(r.note,'اكتب سبب الاعتذار للعميل.');r.status='rejected';r.decided=now();logA(`اعتذار عن ${r.id}`);save();toast('أُبلغ العميل بالاعتذار');return go('#/a/requests')}
+    if(r.product==='qard')need(db.funds.qard>=r.amount,'رصيد صندوق القرض الحسن غير كافٍ.');
+    makeOffer(r);logA(`اعتماد ${r.id} وإصدار العرض`);save();toast('صدر العرض، وهو بانتظار قبول العميل');go('#/a/requests')},
+  usearch(f){window._uq=f.q;render()},
+  dist(f){const gross=r2(+f.gross);need(gross!==0,'أدخل الربح أو الخسارة.');
+    const inv=db.users.filter(u=>u.role==='customer'&&u.bal.invest>0);const pool=r2(inv.reduce((a,u)=>a+u.bal.invest,0));
+    need(gross>-pool,'الخسارة تتجاوز الوعاء.');
+    const mud=gross>0?r2(gross*db.settings.mudaribShare/100):0,net=r2(gross-mud);
+    dialog(`<h3>معاينة التوزيع · ${esc(f.period)}</h3><div class="split"><span>الوعاء</span><b>${money(pool)}</b></div><div class="split"><span>صافي الربح</span><b>${money(gross)}</b></div><div class="split"><span>حصة المضارب</span><b>${money(mud)}</b></div><div class="split"><span>للمودعين</span><b>${money(net)}</b></div>
+     <div style="max-height:220px;overflow:auto;margin-top:10px">${inv.map(u=>`<div class="split"><span>${esc(u.name)}</span><b>${money(r2(net*u.bal.invest/pool))}</b></div>`).join('')}</div>
+     <div class="row" style="margin-top:16px"><button class="btn" data-act="doDist" data-id="${esc(f.period)}" data-v="${gross}">اعتماد التوزيع</button><button class="btn ghost" data-act="close">إلغاء</button></div>`)},
+  fundout(f){const a=r2(+f.amt);need(a>0,'أدخل مبلغاً.');need(db.funds[f.fund]>=a,'رصيد الصندوق غير كافٍ.');
+    db.funds[f.fund]=r2(db.funds[f.fund]-a);(db.fundOut=db.fundOut||[]).push({at:now(),fund:f.fund,to:f.to,note:f.note.trim(),amt:a});
+    logA(`صرف ${money(a)} من ${FUNDS[f.fund]} إلى ${f.to}`);save();toast('سُجل الصرف');render()},
+  settings(f){const s=db.settings;for(const k in s){if(f[k]!==undefined&&f[k]!=='')s[k]=+f[k]}logA('تحديث الإعدادات');save();toast('حُفظت الإعدادات');render()}
+};
+const ACTS={
+  logout(){const u=me();if(u)logA('تسجيل خروج',u.name);store.del(SKEY);save();toast('تم تسجيل الخروج');go('#/')},
+  close(){closeDlg()},
+  doTransfer(b){const u=me(),to=userById(b.dataset.id),a=+b.dataset.v;need(avail(u)>=a,'الرصيد غير كافٍ.');
+    const n=b.dataset.n?' · '+b.dataset.n:'';
+    addTx(u,'current',-a,'transfer',`تحويل إلى ${to.name}${n}`);addTx(to,'current',a,'transfer',`تحويل من ${u.name}${n}`);
+    logA(`تحويل ${money(a)} إلى ${to.acct}`);save();closeDlg();toast('تم التحويل بنجاح');render()},
+  accept(b){const u=me();const r=db.reqs.find(x=>x.id===b.dataset.id&&x.uid===u.id&&x.status==='offer');need(r,'العرض غير متاح.');
+    if(r.product==='musharaka'){need(avail(u)>=r.downAmt,`يلزم ${money(r.downAmt)} في الحساب الجاري للدفعة الأولى.`);addTx(u,'current',-r.downAmt,'installment',`دفعة أولى · مشاركة ${r.id}`)}
+    if(r.product==='qard'){need(db.funds.qard>=r.amount,'صندوق القرض الحسن لا يكفي حالياً.');db.funds.qard=r2(db.funds.qard-r.amount);addTx(u,'current',r.amount,'finance',`صرف قرض حسن ${r.id}`)}
+    if(r.product==='mudaraba')addTx(u,'current',r.amount,'finance',`رأس مال مضاربة ${r.id}`);
+    r.status='active';r.accepted=now();r.schedule=buildSchedule(r,now());logA(`قبول عقد ${r.id}`);save();toast('تم إبرام العقد');render()},
+  decline(b){const u=me();const r=db.reqs.find(x=>x.id===b.dataset.id&&x.uid===u.id&&x.status==='offer');need(r,'العرض غير متاح.');r.status='cancelled';logA(`اعتذار العميل عن ${r.id}`);save();toast('أُلغي العرض');render()},
+  pay(b){const u=me();const r=db.reqs.find(x=>x.id===b.dataset.id&&x.uid===u.id);const s=nextDue(r);need(s,'لا أقساط مستحقة.');
+    need(avail(u)>=s.amt,`الرصيد المتاح ${money(avail(u))} لا يكفي للقسط.`);
+    addTx(u,'current',-s.amt,'installment',`قسط ${s.n} · ${PRODUCTS[r.product].name}`);s.paid=true;s.paidAt=now();
+    if(r.product==='qard')db.funds.qard=r2(db.funds.qard+s.amt);
+    if(!nextDue(r)){r.status='completed';r.closed=now()}
+    logA(`سداد القسط ${s.n} من ${r.id}`);save();toast(r.status==='completed'?'اكتمل العقد بحمد الله':'تم سداد القسط');render()},
+  rf(b){window._rf=b.dataset.id;render()},
+  cashok(b){const c=db.cash.find(x=>x.id===b.dataset.id&&x.status==='pending');need(c,'الطلب معالج.');const u=userById(c.uid);
+    if(c.kind==='withdraw'){need(u.bal.current>=c.amt,'رصيد العميل لا يكفي.');}
+    c.status='done';c.done=now();addTx(u,'current',c.kind==='deposit'?c.amt:-c.amt,c.kind,`${c.kind==='deposit'?'إيداع':'سحب'} ${c.method} · مرجع ${c.ref}`);
+    logA(`تنفيذ ${c.kind==='deposit'?'إيداع':'سحب'} ${money(c.amt)} لـ${u.name}`);save();toast('تم التنفيذ');render()},
+  cashno(b){const c=db.cash.find(x=>x.id===b.dataset.id&&x.status==='pending');need(c,'الطلب معالج.');
+    dialog(`<h3>رفض الطلب</h3><form data-form="cashreject"><input type="hidden" name="id" value="${c.id}"><div class="f"><label>السبب<input name="note" required maxlength="100"></label><div class="row"><button class="btn bad">رفض</button><button type="button" class="btn ghost" data-act="close">إلغاء</button></div></div></form>`)},
+  ustat(b){const c=userById(b.dataset.id);c.status=b.dataset.v;logA(`${c.status==='active'?'تفعيل':'إيقاف'} حساب ${c.name}`);save();toast(c.status==='active'?'فُعّل الحساب':'أُوقف الحساب');render()},
+  async resetpw(b){const c=userById(b.dataset.id);const p='SH'+Math.random().toString().slice(2,8)+'@';c.pass=await hash(p,c.salt);logA(`إعادة تعيين كلمة مرور ${c.name}`);save();
+    dialog(`<h3>كلمة المرور المؤقتة</h3><p>أبلغ العميل بها عبر قناة موثوقة:</p><p style="font-size:22px;font-weight:700;direction:ltr;text-align:center;margin:12px 0">${p}</p><button class="btn" data-act="close">تم</button>`)},
+  doDist(b){const gross=+b.dataset.v,period=b.dataset.id;const inv=db.users.filter(u=>u.role==='customer'&&u.bal.invest>0);const pool=r2(inv.reduce((a,u)=>a+u.bal.invest,0));
+    const mud=gross>0?r2(gross*db.settings.mudaribShare/100):0,net=r2(gross-mud);
+    inv.forEach(u=>{const sh=r2(net*u.bal.invest/pool);if(sh)addTx(u,'invest',sh,'profit',`${sh>0?'حصتك من ربح':'حصتك من خسارة'} وعاء المضاربة · ${period}`)});
+    db.dist.push({id:uid('p'),at:now(),period,gross,mud,net,pool,by:me().name});logA(`توزيع ${gross>0?'ربح':'خسارة'} المضاربة ${period}: ${money(gross)}`);save();closeDlg();toast('اعتُمد التوزيع');render()},
+  async reset(){if(!confirmReset()){return}store.del(KEY);await seed();toast('أُعيدت بيانات التجربة');go('#/a/home')}
+};
+FORMS.cashreject=f=>{const c=db.cash.find(x=>x.id===f.id&&x.status==='pending');need(c,'الطلب معالج.');c.status='rejected';c.note=f.note;logA(`رفض طلب ${c.kind==='deposit'?'إيداع':'سحب'} لـ${userById(c.uid).name}`);save();closeDlg();toast('رُفض الطلب');render()};
+function confirmReset(){if(ACTS.reset.armed){ACTS.reset.armed=false;return true}ACTS.reset.armed=true;toast('اضغط مرة أخرى خلال 5 ثوانٍ للتأكيد');setTimeout(()=>ACTS.reset.armed=false,5000);return false}
+
+document.addEventListener('submit',async e=>{
+  const f=e.target.closest('form[data-form]');if(!f)return;e.preventDefault();
+  const btn=e.submitter&&e.submitter.name==='d'?e.submitter.value:null;
+  const data={};new FormData(f).forEach((v,k)=>data[k]=typeof v==='string'?v:v);
+  [...f.elements].forEach(el=>{if(el.type==='checkbox')data[el.name]=el.checked});
+  const err=f.querySelector('.err')||$('#err');if(err)err.textContent='';
+  try{await FORMS[f.dataset.form](data,btn)}catch(x){if(err&&f.contains(err))err.textContent=x.message;else toast(x.message)}
+});
+document.addEventListener('click',async e=>{
+  const b=e.target.closest('[data-act]');if(!b)return;e.preventDefault();
+  try{await ACTS[b.dataset.act](b)}catch(x){toast(x.message)}
+});
+document.addEventListener('input',e=>{if(e.target.matches('[data-live]'))previewFin();if(e.target.matches('[data-zk]'))calcZakat()});
+document.addEventListener('change',e=>{if(e.target.matches('[data-live]'))previewFin();if(e.target.matches('[data-zk]'))calcZakat()});
+$('#dlg').addEventListener('click',e=>{if(e.target.id==='dlg')closeDlg()});
+window.addEventListener('hashchange',render);
+window.addEventListener('storage',e=>{if(e.key===KEY&&e.newValue){db=JSON.parse(e.newValue);render()}});
+(async()=>{
+  try{db=JSON.parse(store.get(KEY)||'null')}catch(e){db=null}
+  if(!db||db.v!==1)await seed();
+  render();
+})();
+</script>
+</body>
+</html>

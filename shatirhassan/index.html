@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="شاطر حسن: محددات الاقتصاد الإسلامي وتصميم نظام مصرفي إسلامي متكامل بديل عن البنوك.">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>شاطر حسن</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one reading column (max 1080px) with a sticky section bar; the two parts (determinants, then the system) are set as chapters; tables and calculators break the column rhythm. */
+:root{
+  --bg:#f7f8fa;
+  --surface:#ffffff;
+  --ink:#1f2933;
+  --muted:#5f6b76;
+  --line:#dde2e8;
+  --brass:#1f4e79;       /* single accent: navy */
+  --brass-soft:#eef3f8;
+  --jade:#1f4e79;
+  --jade-soft:#eef3f8;
+  --rust:#9b2c2c;
+  --rust-soft:#f8eded;
+  --f-display:"IBM Plex Sans Arabic","Segoe UI",Tahoma,Arial,sans-serif;
+  --f-body:"IBM Plex Sans Arabic","Segoe UI",Tahoma,Arial,sans-serif;
+  --f-ui:"IBM Plex Sans Arabic","Segoe UI",Tahoma,Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#14181d;--surface:#1b2027;--ink:#e6e9ed;--muted:#a3adb8;--line:#2e3540;
+  --brass:#8ab4e0;--brass-soft:#1f2a37;--jade:#8ab4e0;--jade-soft:#1f2a37;--rust:#e39a9a;--rust-soft:#3a2224;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14181d;--surface:#1b2027;--ink:#e6e9ed;--muted:#a3adb8;--line:#2e3540;
+  --brass:#8ab4e0;--brass-soft:#1f2a37;--jade:#8ab4e0;--jade-soft:#1f2a37;--rust:#e39a9a;--rust-soft:#3a2224;color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16.5px;line-height:1.85;direction:rtl}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:1080px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3,h4{font-family:var(--f-display);font-weight:700;line-height:1.45;text-wrap:balance;margin:0}
+p{margin:0}
+a{color:var(--jade)}
+:focus-visible{outline:2px solid var(--brass);outline-offset:3px;border-radius:4px}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--surface);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:16px;padding-block:10px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);flex:none}
+.brand b{font-family:var(--f-display);font-size:22px}
+.nav{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;min-width:0;font-family:var(--f-ui);font-size:14px}
+.nav::-webkit-scrollbar{display:none}
+.nav a{white-space:nowrap;text-decoration:none;color:var(--muted);padding:6px 10px;border-radius:999px}
+.nav a:hover{background:var(--jade-soft);color:var(--jade)}
+
+/* hero */
+.hero{padding-block:56px 40px;border-bottom:1px solid var(--line)}
+.hero .wrap{display:grid;grid-template-columns:1.35fr 1fr;gap:40px;align-items:center}
+.hero h1{font-size:clamp(28px,4.6vw,44px);font-weight:700}
+.hero h1 span{color:var(--brass)}
+.lede{margin-top:16px;font-size:19px;color:var(--muted);max-width:60ch}
+.eyebrow{font-family:var(--f-ui);font-size:13px;letter-spacing:.04em;color:var(--jade);font-weight:600}
+.pillars{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;font-family:var(--f-ui);font-size:14px}
+.pillars span{border:1px solid var(--line);background:var(--surface);padding:4px 12px;border-radius:999px}
+.mark{width:100%;max-width:300px;justify-self:center}
+
+/* chapters */
+.chapter{padding-block:28px 8px}
+.chapter-head{display:flex;align-items:baseline;gap:14px;padding-block:28px 6px;border-top:2px solid var(--ink)}
+.chapter-head .no{font-family:var(--f-display);color:var(--brass);font-size:15px;flex:none}
+.chapter-head h2{font-size:clamp(26px,4vw,36px)}
+section.block{padding-block:30px;border-bottom:1px solid var(--line)}
+section.block>h3{font-size:24px;margin-bottom:6px}
+.sub{color:var(--muted);max-width:68ch;margin-bottom:20px}
+
+/* determinants */
+.det-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.det{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.det h4{font-size:19px;display:flex;gap:10px;align-items:center}
+.det .tag{font-family:var(--f-ui);font-size:12px;padding:1px 9px;border-radius:999px;font-weight:600;flex:none}
+.det.no-go .tag{background:var(--rust-soft);color:var(--rust)}
+.det.go .tag{background:var(--jade-soft);color:var(--jade)}
+.det.inst .tag{background:var(--brass-soft);color:var(--brass)}
+.det .src{font-family:var(--f-ui);font-size:13px;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px;margin-top:auto}
+.det .rule{font-size:15.5px}
+.quote{font-family:var(--f-body);color:var(--ink);font-weight:600}
+
+.maqasid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:6px}
+.maqasid div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center;font-family:var(--f-ui);font-size:14px}
+.maqasid b{display:block;font-family:var(--f-display);font-size:19px;color:var(--jade)}
+
+/* tables */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:720px;font-size:15px}
+th,td{text-align:right;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--f-ui);font-size:13px;color:var(--muted);font-weight:600;background:var(--bg)}
+tr:last-child td{border-bottom:0}
+td b{font-family:var(--f-display);font-weight:500;font-size:16px}
+.cmp td:nth-child(2){color:var(--rust)}
+.cmp td:nth-child(3){color:var(--jade)}
+
+/* accounts */
+.acc-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.acc{border-top:3px solid var(--jade);background:var(--surface);border-radius:0 0 10px 10px;padding:16px 18px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.acc h4{font-size:18px}
+.acc .k{font-family:var(--f-ui);font-size:13px;color:var(--brass);font-weight:600}
+.acc p{font-size:15.5px}
+
+/* flow */
+.flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;counter-reset:s;margin-block:10px 4px}
+.flow li{list-style:none;position:relative;padding:14px 12px 14px 12px;background:var(--surface);border:1px solid var(--line);margin-inline-start:-1px;font-size:14.5px;line-height:1.7;min-width:0}
+.flow li::before{counter-increment:s;content:counter(s);display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--surface);font-family:var(--f-ui);font-size:13px;margin-bottom:6px}
+.flow li b{display:block;font-family:var(--f-display);font-weight:500;font-size:15.5px}
+.flow li.gate{background:var(--brass-soft);border-color:var(--brass)}
+.flow-wrap{padding:0;margin:0}
+
+/* governance */
+.gov{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.gov div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;min-width:0}
+.gov h4{font-size:17px;margin-bottom:4px}
+.gov p{font-size:15px;color:var(--muted)}
+.gov .top-node{grid-column:1/-1;background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.gov .top-node p{color:inherit;opacity:.8}
+
+/* tools */
+.tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.tool{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.tool h4{font-size:19px}
+.tool .note{font-family:var(--f-ui);font-size:12.5px;color:var(--muted)}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.fields label{display:flex;flex-direction:column;gap:4px;font-family:var(--f-ui);font-size:13px;color:var(--muted);min-width:0}
+.fields input{font:500 16px var(--f-ui);padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);width:100%;direction:ltr;text-align:right;font-variant-numeric:tabular-nums}
+.out{background:var(--jade-soft);border-radius:10px;padding:14px 16px;font-family:var(--f-ui);font-size:15px;display:grid;gap:4px}
+.out .big{font-family:var(--f-display);font-size:26px;color:var(--jade);font-variant-numeric:tabular-nums}
+.out.warn{background:var(--rust-soft)}
+.out.warn .big{color:var(--rust)}
+
+/* tech stack */
+.stack{display:grid;gap:8px}
+.layer{display:grid;grid-template-columns:190px minmax(0,1fr);gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 18px;align-items:start}
+.layer h4{font-size:17px;color:var(--jade)}
+.layer p{font-size:15px}
+.layer.core{border-color:var(--brass);background:var(--brass-soft)}
+.layer.core h4{color:var(--brass)}
+
+/* roadmap */
+.road{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.road div{border-inline-start:3px solid var(--brass);padding:4px 14px;min-width:0}
+.road .ph{font-family:var(--f-ui);font-size:13px;color:var(--brass);font-weight:600}
+.road h4{font-size:17px}
+.road p{font-size:14.5px;color:var(--muted)}
+
+ul.clean{margin:0;padding-inline-start:20px;display:grid;gap:4px;font-size:16px}
+.callout{background:var(--brass-soft);border-radius:10px;padding:16px 20px;font-size:16px;margin-top:16px}
+.callout b{font-family:var(--f-display);font-weight:500;color:var(--brass)}
+.contact{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.contact div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:grid;gap:4px;min-width:0}
+.contact span{font-family:var(--f-ui);font-size:13px;color:var(--muted)}
+.contact a{font:600 17px var(--f-ui);text-decoration:none;color:var(--jade);overflow-wrap:anywhere;text-align:right}
+@media (max-width:700px){.contact{grid-template-columns:1fr}}
+footer{padding-block:36px 48px;color:var(--muted);font-family:var(--f-ui);font-size:13.5px}
+footer .wrap{display:grid;gap:8px}
+
+@media (max-width:860px){
+  .hero .wrap{grid-template-columns:1fr}
+  .mark{max-width:120px;grid-row:1}
+  .acc-grid,.gov{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .maqasid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .flow{grid-template-columns:1fr}
+  .flow li{margin-inline-start:0;margin-top:-1px}
+  .road{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tools{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  body{font-size:16px}
+  .det-grid,.acc-grid,.gov,.road{grid-template-columns:1fr}
+  .maqasid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .layer{grid-template-columns:1fr;gap:4px}
+  .fields{grid-template-columns:1fr}
+  .brand b{font-size:19px}
+  .hero{padding-block:32px 28px}
+}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+section[id],div[id]{scroll-margin-top:72px}
+</style>
+
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="شاطر حسن">
+      <svg width="34" height="34" viewBox="0 0 64 64" aria-hidden="true"><use href="#bm-mark"/></svg>
+      <b>شاطر حسن</b>
+    </a>
+    <nav class="nav" aria-label="أقسام الوثيقة">
+      <a href="#determinants">المحددات</a>
+      <a href="#compare">المقارنة</a>
+      <a href="#accounts">الحسابات</a>
+      <a href="#financing">التمويل</a>
+      <a href="#payments">المدفوعات</a>
+      <a href="#invest">الاستثمار</a>
+      <a href="#takaful">التكافل</a>
+      <a href="#zakat">الزكاة والوقف</a>
+      <a href="#governance">الحوكمة</a>
+      <a href="#risk">المخاطر</a>
+      <a href="#tech">التقنية</a>
+      <a href="#roadmap">خارطة الإطلاق</a>
+      <a href="#contact">تواصل معنا</a>
+      <a href="app/" style="font-weight:700">النموذج العامل</a>
+    </nav>
+  </div>
+</header>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="bm-mark" viewBox="0 0 64 64">
+      <!-- an arched treasury door holding an eight-point seal -->
+      <path d="M12 58V30a20 20 0 0 1 40 0v28z" fill="var(--jade)"/>
+      <rect x="8" y="56" width="48" height="5" rx="1.5" fill="var(--jade)"/>
+      <g transform="translate(32 36)" fill="var(--surface)">
+        <rect x="-8" y="-8" width="16" height="16" rx="1.5"/>
+        <rect x="-8" y="-8" width="16" height="16" rx="1.5" transform="rotate(45)"/>
+      </g>
+      <circle cx="32" cy="36" r="4" fill="var(--jade)"/>
+    </symbol>
+  </defs>
+</svg>
+
+<main id="top">
+<div class="hero">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">منظومة مصرفية متكاملة على أصول الاقتصاد الإسلامي</p>
+      <h1>شاطر حسن: مالٌ يعمل <span>في الحلال</span>، ويربح مع صاحبه لا عليه</h1>
+      <p class="lede">وثيقة تأسيسية من جزأين. الأول يضع محددات الاقتصاد الإسلامي التي يُحتكم إليها في كل قرار. والثاني يبني عليها نظاماً مصرفياً كاملاً يُغني الفرد والأسرة والمنشأة عن البنك الربوي: حسابات، وتمويل، ومدفوعات، واستثمار، وتكافل، وزكاة ووقف، مع حوكمة شرعية وإدارة مخاطر ونموذج تقني قابل للتنفيذ.</p>
+      <p style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap"><a href="app/#/register" style="display:inline-block;background:var(--jade);color:var(--surface);padding:10px 20px;border-radius:9px;text-decoration:none;font-weight:600">افتح حساباً في النموذج العامل</a><a href="app/#/login" style="display:inline-block;border:1px solid var(--jade);padding:10px 20px;border-radius:9px;text-decoration:none;font-weight:600">الدخول</a></p>
+      <div class="pillars"><span>لا ربا</span><span>لا غرر</span><span>لا ميسر</span><span>الغُنم بالغُرم</span><span>المال مربوط بأصل حقيقي</span></div>
+    </div>
+    <svg class="mark" viewBox="0 0 64 64" role="img" aria-label="شعار شاطر حسن"><use href="#bm-mark"/></svg>
+  </div>
+</div>
+
+<!-- ============ PART ONE ============ -->
+<div class="wrap chapter" id="determinants">
+  <div class="chapter-head"><span class="no">الجزء الأول</span><h2>محددات الاقتصاد الإسلامي</h2></div>
+  <p class="sub" style="margin-top:10px">المحددات هي الضوابط الحاكمة التي يُعرض عليها كل منتج وكل عقد وكل قرار في النظام. صُنّفت في ثلاث فئات: محظورات تُجتنب، وأسس إيجابية يُبنى عليها، وضوابط مؤسسية تضمن الالتزام. وكل محدد مقرون بدليله ثم بأثره العملي في شاطر حسن.</p>
+
+  <section class="block">
+    <h3>أولاً: المحظورات الحاكمة</h3>
+    <p class="sub">ما يُبطل العقد أو يُفسده. أي منتج يحمل واحداً منها يُرفض في مرحلة التصميم قبل أن يصل إلى العميل.</p>
+    <div class="det-grid">
+      <article class="det no-go"><h4><span class="tag">محظور</span>تحريم الربا بنوعيه</h4>
+        <p class="rule">ربا الديون (النسيئة): كل زيادة مشروطة على أصل القرض مقابل الأجل. وربا البيوع (الفضل): التفاضل أو التأجيل في مبادلة الأموال الربوية من جنس واحد كالذهب بالذهب والعملة بالعملة.</p>
+        <p class="rule"><b>الأثر في شاطر حسن:</b> لا فائدة دائنة ولا مدينة، ولا غرامة تأخير تعود على المؤسسة، وصرف العملات يتم يداً بيد في الجلسة نفسها.</p>
+        <p class="src"><span class="quote">﴿وَأَحَلَّ اللَّهُ الْبَيْعَ وَحَرَّمَ الرِّبَا﴾</span> البقرة: 275 · حديث «الذهب بالذهب... مثلاً بمثل، يداً بيد» رواه مسلم</p></article>
+
+      <article class="det no-go"><h4><span class="tag">محظور</span>تحريم الغرر الفاحش</h4>
+        <p class="rule">الجهالة المؤثرة في محل العقد أو ثمنه أو أجله أو القدرة على تسليمه، بحيث يكون أحد الطرفين على خطر لا يُعرف مآله.</p>
+        <p class="rule"><b>الأثر:</b> كل عقد يحدد السلعة والثمن والأجل وجدول السداد تحديداً تاماً قبل التوقيع، ولا تُتداول المشتقات المالية القائمة على المراهنة.</p>
+        <p class="src">«نهى رسول الله ﷺ عن بيع الغرر» رواه مسلم</p></article>
+
+      <article class="det no-go"><h4><span class="tag">محظور</span>تحريم الميسر والقمار</h4>
+        <p class="rule">كل معاملة يكون فيها كسب طرف خسارةً محضة للآخر دون إنتاج قيمة، كالرهان على الأسعار والعقود الصفرية واليانصيب.</p>
+        <p class="rule"><b>الأثر:</b> لا عقود خيارات أو مستقبليات مضاربية، ولا جوائز سحب مشروطة بالإيداع.</p>
+        <p class="src"><span class="quote">﴿إِنَّمَا الْخَمْرُ وَالْمَيْسِرُ وَالْأَنصَابُ وَالْأَزْلَامُ رِجْسٌ﴾</span> المائدة: 90</p></article>
+
+      <article class="det no-go"><h4><span class="tag">محظور</span>بيع ما لا يُملك وربح ما لم يُضمن</h4>
+        <p class="rule">لا يبيع المرء سلعة قبل أن يتملكها ويدخلها في ضمانه، ولا يستحق ربحاً على ما لم يتحمل مخاطرته.</p>
+        <p class="rule"><b>الأثر:</b> محرك العقود يمنع تقنياً إصدار عقد المرابحة قبل تسجيل تملك المؤسسة للسلعة وقبضها.</p>
+        <p class="src">«لا تبع ما ليس عندك» رواه أبو داود والترمذي والنسائي · «نهى عن ربح ما لم يُضمن» رواه الترمذي</p></article>
+
+      <article class="det no-go"><h4><span class="tag">محظور</span>الاحتكار والغش والتدليس</h4>
+        <p class="rule">حبس السلع لإغلاء ثمنها، وإخفاء العيوب، والتغرير بالعميل في الإفصاح عن التكلفة أو الربح.</p>
+        <p class="rule"><b>الأثر:</b> إفصاح كامل عن التكلفة الأصلية والربح في المرابحة، وشروط مكتوبة بلغة واضحة.</p>
+        <p class="src">«لا يحتكر إلا خاطئ» رواه مسلم · «من غشّ فليس مني» رواه مسلم</p></article>
+
+      <article class="det no-go"><h4><span class="tag">محظور</span>تمويل الأنشطة المحرمة</h4>
+        <p class="rule">لا يُموَّل ولا يُستثمر في الخمور والتبغ والقمار والإباحية ولحوم الخنزير، ولا في المؤسسات المالية الربوية.</p>
+        <p class="rule"><b>الأثر:</b> قائمة استبعاد قطاعية إلزامية، وفرز شرعي آلي لكل جهة مستفيدة أو شركة مستثمَر فيها.</p>
+        <p class="src"><span class="quote">﴿وَلَا تَعَاوَنُوا عَلَى الْإِثْمِ وَالْعُدْوَانِ﴾</span> المائدة: 2</p></article>
+    </div>
+  </section>
+
+  <section class="block">
+    <h3>ثانياً: الأسس الإيجابية التي يُبنى عليها</h3>
+    <p class="sub">ما يجعل المال الإسلامي بديلاً منتجاً لا مجرد امتناع عن المحرم.</p>
+    <div class="det-grid">
+      <article class="det go"><h4><span class="tag">أساس</span>الغُنم بالغُرم والخراج بالضمان</h4>
+        <p class="rule">من يستحق الربح يتحمل المخاطرة. صاحب المال يشارك في نتيجة المشروع ربحاً وخسارة، ولا يضمن لنفسه عائداً ثابتاً.</p>
+        <p class="rule"><b>الأثر:</b> حسابات الاستثمار تقوم على المضاربة، وتوزَّع أرباحها بنسبة شائعة متفق عليها مسبقاً لا بمبلغ مقطوع.</p>
+        <p class="src">«الخراج بالضمان» رواه أبو داود والترمذي · قاعدة «الغُنم بالغُرم» مجلة الأحكام العدلية م/87</p></article>
+
+      <article class="det go"><h4><span class="tag">أساس</span>ربط المال بالأصول الحقيقية</h4>
+        <p class="rule">النقود وسيلة تبادل لا سلعة تُتّجر فيها بالأجل. كل تمويل يقابله بيع أو إجارة أو شراكة في أصل أو خدمة حقيقية.</p>
+        <p class="rule"><b>الأثر:</b> لا يُصرف تمويل نقدي مباشر للعميل، بل تُشترى السلعة أو المنفعة نيابة عنه أو يُدخل شريكاً في المشروع.</p>
+        <p class="src"><span class="quote">﴿إِلَّا أَن تَكُونَ تِجَارَةً عَن تَرَاضٍ مِّنكُمْ﴾</span> النساء: 29</p></article>
+
+      <article class="det go"><h4><span class="tag">أساس</span>الاستخلاف في المال</h4>
+        <p class="rule">المال مال الله، والإنسان مستخلف فيه، يملكه ملكاً حقيقياً مقيداً بحقوق الله والمجتمع، فلا إسراف ولا اكتناز ولا إضرار.</p>
+        <p class="rule"><b>الأثر:</b> أدوات ترشيد الإنفاق وتنبيهات الادخار جزء من تجربة العميل، لا إضافة تسويقية.</p>
+        <p class="src"><span class="quote">﴿وَأَنفِقُوا مِمَّا جَعَلَكُم مُّسْتَخْلَفِينَ فِيهِ﴾</span> الحديد: 7</p></article>
+
+      <article class="det go"><h4><span class="tag">أساس</span>الزكاة فريضة دورية</h4>
+        <p class="rule">ربع العشر (2.5%) من المال النامي إذا بلغ النصاب وحال عليه الحول القمري، تُصرف في المصارف الثمانية.</p>
+        <p class="rule"><b>الأثر:</b> حاسبة زكاة مدمجة في كل حساب، مع خيار التوكيل في الإخراج والتوزيع على مستحقين موثّقين.</p>
+        <p class="src"><span class="quote">﴿خُذْ مِنْ أَمْوَالِهِمْ صَدَقَةً تُطَهِّرُهُمْ﴾</span> التوبة: 103 · مصارفها في التوبة: 60</p></article>
+
+      <article class="det go"><h4><span class="tag">أساس</span>الوقف والقرض الحسن</h4>
+        <p class="rule">حبس الأصل وتسبيل المنفعة صدقةً جارية، والإقراض بلا زيادة تفريجاً للكرب. هما ذراعا التكافل الاجتماعي في الاقتصاد الإسلامي.</p>
+        <p class="rule"><b>الأثر:</b> صندوق وقف نقدي يستثمَر أصله وتموّل غلّته القروض الحسنة والمنح التعليمية والصحية.</p>
+        <p class="src">«إن شئت حبست أصلها وتصدقت بها» متفق عليه · <span class="quote">﴿مَّن ذَا الَّذِي يُقْرِضُ اللَّهَ قَرْضًا حَسَنًا﴾</span> البقرة: 245</p></article>
+
+      <article class="det go"><h4><span class="tag">أساس</span>العدالة التوزيعية ومنع التركّز</h4>
+        <p class="rule">ألا يدور المال بين الأغنياء وحدهم. التمويل يصل إلى الصغير والحرفي والمزارع بأدوات تناسبهم.</p>
+        <p class="rule"><b>الأثر:</b> حصة إلزامية من محفظة التمويل للمنشآت الصغيرة والمتناهية الصغر، بالسلم والمضاربة والمشاركة.</p>
+        <p class="src"><span class="quote">﴿كَيْ لَا يَكُونَ دُولَةً بَيْنَ الْأَغْنِيَاءِ مِنكُمْ﴾</span> الحشر: 7</p></article>
+
+      <article class="det go"><h4><span class="tag">أساس</span>الأصل في المعاملات الإباحة</h4>
+        <p class="rule">كل عقد جديد مباح ما لم يتضمن محظوراً. هذا يفتح باب الابتكار في المنتجات بشرط العرض على الضوابط.</p>
+        <p class="rule"><b>الأثر:</b> مختبر منتجات تحت إشراف الهيئة الشرعية، يجيز ما سلم من المحظورات ولو لم يكن له سابقة.</p>
+        <p class="src"><span class="quote">﴿يَا أَيُّهَا الَّذِينَ آمَنُوا أَوْفُوا بِالْعُقُودِ﴾</span> المائدة: 1</p></article>
+
+      <article class="det go"><h4><span class="tag">أساس</span>إنظار المعسر</h4>
+        <p class="rule">المدين العاجز حقيقةً يُمهَل ولا يُضاعف عليه الدين، والمماطل القادر يُلزم بالسداد.</p>
+        <p class="rule"><b>الأثر:</b> لجنة تقدير إعسار تعيد الجدولة بلا زيادة، والتزام المماطل بالتبرع يُصرف في الخير لا في دخل المؤسسة.</p>
+        <p class="src"><span class="quote">﴿وَإِن كَانَ ذُو عُسْرَةٍ فَنَظِرَةٌ إِلَىٰ مَيْسَرَةٍ﴾</span> البقرة: 280 · «مطل الغني ظلم» متفق عليه</p></article>
+    </div>
+  </section>
+
+  <section class="block">
+    <h3>ثالثاً: الضوابط المؤسسية</h3>
+    <div class="det-grid">
+      <article class="det inst"><h4><span class="tag">ضابط</span>الحوكمة الشرعية المستقلة</h4>
+        <p class="rule">هيئة رقابة شرعية مستقلة، قراراتها ملزمة، وتدقيق شرعي داخلي وخارجي دوري، ونشر الفتاوى والتقارير للعموم.</p>
+        <p class="src">معايير هيئة المحاسبة والمراجعة للمؤسسات المالية الإسلامية (أيوفي) للحوكمة</p></article>
+      <article class="det inst"><h4><span class="tag">ضابط</span>الشفافية والإفصاح</h4>
+        <p class="rule">إفصاح دوري عن أسس توزيع الأرباح، ونسب المضارب، والاحتياطيات، ومصادر الدخل غير المشروع وطريقة تطهيرها.</p>
+        <p class="src"><span class="quote">﴿يَا أَيُّهَا الَّذِينَ آمَنُوا إِذَا تَدَايَنتُم بِدَيْنٍ... فَاكْتُبُوهُ﴾</span> البقرة: 282</p></article>
+      <article class="det inst"><h4><span class="tag">ضابط</span>لا ضرر ولا ضرار</h4>
+        <p class="rule">لا يُفرض على العميل شرط مجحف، ولا تُحمَّل المؤسسة مخاطر تهدد أموال المودعين.</p>
+        <p class="src">«لا ضرر ولا ضرار» رواه ابن ماجه ومالك</p></article>
+      <article class="det inst"><h4><span class="tag">ضابط</span>تطهير الكسب</h4>
+        <p class="rule">أي دخل اختلط به عنصر غير مشروع يُحسب ويُصرف في وجوه الخير، ولا يدخل في أرباح المساهمين أو المودعين.</p>
+        <p class="src">قرارات مجمع الفقه الإسلامي الدولي في الاستثمار في الأسهم</p></article>
+    </div>
+  </section>
+
+  <section class="block">
+    <h3>المرجعية العليا: مقاصد الشريعة في المال</h3>
+    <p class="sub">كل محدد سبق يخدم مقصداً من هذه المقاصد. عند غياب النص في مسألة جديدة، يُرجَّح ما يحققها.</p>
+    <div class="maqasid">
+      <div><b>الرواج</b>تداول المال وعدم اكتنازه</div>
+      <div><b>الوضوح</b>البعد عن الغرر والنزاع</div>
+      <div><b>الحفظ</b>صيانة المال من التلف والعدوان</div>
+      <div><b>الثبات</b>استقرار الملكية والعقود</div>
+      <div><b>العدل</b>التوازن بين أطراف العقد</div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ PART TWO ============ -->
+<div class="wrap chapter">
+  <div class="chapter-head"><span class="no">الجزء الثاني</span><h2>شاطر حسن: النظام المصرفي الإسلامي البديل</h2></div>
+  <p class="sub" style="margin-top:10px">شاطر حسن منظومة تقدم كل ما يحتاجه الناس من البنك، بعقود مستمدة من المحددات أعلاه. اسمه مستلهم من «الشاطر حسن» في الحكاية الشعبية: الفطن الأمين الذي يُحسن التدبير، ويكسب بالحلال، ويقف مع الناس في الشدة.</p>
+
+  <section class="block" id="compare">
+    <h3>الفرق الجوهري عن البنك التقليدي</h3>
+    <div class="tbl"><table class="cmp">
+      <thead><tr><th>الوظيفة</th><th>البنك التقليدي</th><th>شاطر حسن</th></tr></thead>
+      <tbody>
+        <tr><td><b>علاقة المودع</b></td><td>دائن يقبض فائدة ثابتة</td><td>رب مال شريك في الربح والخسارة (مضاربة)، أو مُقرض بلا عائد في الحساب الجاري</td></tr>
+        <tr><td><b>التمويل</b></td><td>قرض نقدي بفائدة على الزمن</td><td>بيع أو إجارة أو شراكة في أصل حقيقي، والربح مقابل الضمان والعمل</td></tr>
+        <tr><td><b>التأخر في السداد</b></td><td>فوائد تأخير مركبة</td><td>إنظار للمعسر، والتزام بالتبرع على المماطل يُصرف في الخير</td></tr>
+        <tr><td><b>مصدر الربح</b></td><td>فرق سعر الفائدة</td><td>أرباح التجارة والإجارة والمشاركات، وأجور الخدمات</td></tr>
+        <tr><td><b>التأمين</b></td><td>تأمين تجاري بعوض</td><td>تكافل تعاوني قائم على التبرع، والفائض للمشتركين</td></tr>
+        <tr><td><b>البعد الاجتماعي</b></td><td>مسؤولية اجتماعية اختيارية</td><td>زكاة ووقف وقرض حسن جزء من بنية النظام</td></tr>
+        <tr><td><b>الرقابة</b></td><td>رقابة مالية فقط</td><td>رقابة مالية ورقابة شرعية مستقلة ملزمة</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="block" id="accounts">
+    <h3>1. الحسابات والودائع</h3>
+    <p class="sub">لكل حساب عقد شرعي محدد يحكم علاقة العميل بالمؤسسة، ويظهر اسم العقد للعميل عند الفتح.</p>
+    <div class="acc-grid">
+      <div class="acc"><span class="k">عقد القرض</span><h4>الحساب الجاري</h4><p>مضمون بالكامل للعميل، يسحب منه متى شاء، ولا يستحق عليه أي عائد. تستثمره المؤسسة على مسؤوليتها.</p></div>
+      <div class="acc"><span class="k">مضاربة مطلقة</span><h4>حساب الاستثمار العام</h4><p>يدخل الوعاء الاستثماري العام، ويشارك في الربح بنسبة متفق عليها، ويتحمل الخسارة بقدر حصته ما لم تتعدَّ المؤسسة أو تقصّر.</p></div>
+      <div class="acc"><span class="k">مضاربة مقيدة</span><h4>حساب الاستثمار المخصص</h4><p>يختار العميل قطاعاً أو مشروعاً بعينه، كالعقار أو الزراعة أو التعليم، ويرى أداءه منفصلاً.</p></div>
+      <div class="acc"><span class="k">مضاربة بهدف</span><h4>الادخار الهادف</h4><p>حج وعمرة، زواج، تعليم الأبناء، سكن. استقطاع دوري تلقائي مع لوحة تقدم نحو الهدف.</p></div>
+      <div class="acc"><span class="k">وكالة</span><h4>محفظة الزكاة والصدقات</h4><p>حساب منفصل تُجنَّب فيه الزكاة المستحقة، ويوكّل العميل شاطر حسن أو يختار بنفسه المستحقين الموثّقين.</p></div>
+      <div class="acc"><span class="k">وكالة بأجر</span><h4>حساب المنشآت</h4><p>للتجار والشركات: تحصيل، رواتب، فواتير، مع ربط مباشر بخطوط التمويل بالمرابحة والسلم والمشاركة.</p></div>
+    </div>
+  </section>
+
+  <section class="block" id="financing">
+    <h3>2. التمويل</h3>
+    <p class="sub">ثمانية عقود تغطي حاجات الفرد والمنشأة. كل عقد له دورة إجراءات إلزامية في النظام لا يمكن تجاوزها.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>العقد</th><th>الاستخدام</th><th>آلية العمل</th><th>الضابط الشرعي الحاكم</th><th>المرجع</th></tr></thead>
+      <tbody>
+        <tr><td><b>المرابحة للآمر بالشراء</b></td><td>سيارة، أجهزة، مواد خام، بضائع</td><td>يشتري شاطر حسن السلعة ويتملكها ثم يبيعها للعميل بالتكلفة وربح معلوم على أقساط</td><td>التملك والقبض قبل البيع، ونكول العميل عن وعده يُلزمه بالضرر الفعلي فقط دون ربح فائت</td><td>أيوفي، المعيار الشرعي 8</td></tr>
+        <tr><td><b>الإجارة المنتهية بالتمليك</b></td><td>سكن، معدات، مركبات أساطيل</td><td>يملك شاطر حسن الأصل ويؤجره، وتنتقل ملكيته للعميل بهبة أو بيع بعقد مستقل في نهاية المدة</td><td>الصيانة الأساسية والتأمين على المؤجر، والأجرة مقابل منفعة قائمة</td><td>أيوفي، المعيار الشرعي 9</td></tr>
+        <tr><td><b>المشاركة المتناقصة</b></td><td>تمويل السكن والمشروعات</td><td>يشترك العميل وشاطر حسن في الأصل، ويشتري العميل حصة شاطر حسن تدريجياً ويدفع أجرة عن الحصة الباقية</td><td>شراء الحصص بالقيمة السوقية أو المتفق عليها عند كل شراء، لا بضمان رأس المال</td><td>أيوفي، المعيار الشرعي 12</td></tr>
+        <tr><td><b>المضاربة</b></td><td>رواد الأعمال وأصحاب الخبرة</td><td>يقدم شاطر حسن رأس المال ويقدم العميل العمل، والربح بنسبة شائعة</td><td>الخسارة على رب المال ما لم يتعدَّ المضارب أو يقصّر</td><td>أيوفي، المعيار الشرعي 13</td></tr>
+        <tr><td><b>المشاركة الدائمة</b></td><td>شركات قائمة تحتاج توسعاً</td><td>حصة ملكية في المشروع مع تمثيل في الإدارة</td><td>الربح بالنسبة المتفق عليها، والخسارة بقدر الحصص</td><td>أيوفي، المعيار الشرعي 12</td></tr>
+        <tr><td><b>السَّلَم</b></td><td>المزارعون والمنتجون</td><td>يدفع شاطر حسن الثمن مقدماً ويستلم المحصول في أجل معلوم، ثم يبيعه بسلم موازٍ أو في السوق</td><td>تسليم الثمن كاملاً في المجلس، وتحديد الصفة والكمية والأجل</td><td>أيوفي، المعيار الشرعي 10</td></tr>
+        <tr><td><b>الاستصناع</b></td><td>البناء والمصانع والمشروعات قيد الإنشاء</td><td>يتعاقد شاطر حسن على صنع الأصل وتسليمه للعميل، ويتعاقد مع المقاول باستصناع موازٍ</td><td>مواصفات منضبطة، ويجوز تأجيل الثمن وتقسيطه</td><td>أيوفي، المعيار الشرعي 11</td></tr>
+        <tr><td><b>القرض الحسن</b></td><td>الحاجات الطارئة والطلاب والأسر</td><td>قرض بلا زيادة من صندوق وقفي، بأجر إداري فعلي غير مرتبط بالمبلغ</td><td>لا زيادة مشروطة بأي صورة</td><td>أيوفي، المعيار الشرعي 19</td></tr>
+      </tbody>
+    </table></div>
+    <p class="callout"><b>قرار استبعاد:</b> لا يقدم شاطر حسن التورق المنظم للتمويل النقدي، أخذاً بقرار مجمع الفقه الإسلامي الدولي رقم 179 (19/5) لعام 2009 بعدم جوازه، ويلبي حاجة السيولة النقدية بالقرض الحسن أو بتمويل الأصل مباشرة.</p>
+
+    <h4 style="font-size:19px;margin-top:28px">دورة المرابحة كما ينفذها النظام</h4>
+    <p class="sub" style="margin-bottom:8px">الخطوة المظللة بوابة تقنية: لا يُفتح ما بعدها حتى تُستوفى.</p>
+    <ol class="flow flow-wrap">
+      <li><b>طلب الشراء</b>يحدد العميل السلعة والمورد، ويقدم وعداً بالشراء.</li>
+      <li><b>الدراسة الائتمانية</b>تقييم القدرة على السداد وتحديد الضمانات.</li>
+      <li class="gate"><b>التملك والقبض</b>يشتري شاطر حسن السلعة ويُسجَّل سند التملك في النظام.</li>
+      <li><b>عقد البيع</b>يُعرض العقد بالتكلفة والربح وجدول الأقساط للتوقيع الإلكتروني.</li>
+      <li><b>التسليم والسداد</b>تُسلَّم السلعة، وتُحصَّل الأقساط آلياً من الحساب.</li>
+    </ol>
+  </section>
+
+  <section class="block" id="payments">
+    <h3>3. المدفوعات والتحويلات</h3>
+    <div class="det-grid">
+      <article class="det go"><h4>المحفظة والتحويل الفوري</h4><p class="rule">تحويلات داخلية فورية بلا رسوم، وخارجية عبر الشبكة الوطنية للمدفوعات برسم ثابت يُعلن مسبقاً، تكييفه وكالة بأجر.</p></article>
+      <article class="det go"><h4>بطاقة الحسم المباشر</h4><p class="rule">تخصم من الرصيد فوراً، ولا تسمح بالسحب على المكشوف. تعمل محلياً ودولياً وعبر الهاتف.</p><p class="src">أيوفي، المعيار الشرعي 2</p></article>
+      <article class="det go"><h4>بطاقة الشراء بالأقساط</h4><p class="rule">بديل بطاقة الائتمان: رسم عضوية سنوي ثابت لا يرتبط بالمبلغ أو المدة، والتقسيط عبر مرابحة على السلع المشتراة، بلا أي فائدة على التأخير.</p></article>
+      <article class="det go"><h4>صرف العملات</h4><p class="rule">يتم بسعر يوم التنفيذ مع تقابض فوري في الحسابين خلال الجلسة نفسها، ولا مواعدة ملزمة على صرف مستقبلي.</p><p class="src">أيوفي، المعيار الشرعي 1</p></article>
+      <article class="det go"><h4>الحوالات الدولية للمغتربين</h4><p class="rule">تحويل بسعر معلن ورسم ثابت، مع تحويل جزء آلي إلى الزكاة أو الادخار الهادف إن رغب المرسل.</p></article>
+      <article class="det go"><h4>خدمات التجار</h4><p class="rule">نقاط بيع وروابط دفع وتحصيل فواتير، والعمولة أجرة على خدمة لا نسبة على الدين.</p></article>
+    </div>
+  </section>
+
+  <section class="block" id="invest">
+    <h3>4. الاستثمار وإدارة الثروات</h3>
+    <div class="det-grid">
+      <article class="det go"><h4>صناديق شاطر حسن</h4><p class="rule">صناديق أسهم مفروزة شرعياً، وصناديق عقارية مدرّة للأجرة، وصناديق سلع، وصناديق صكوك. الإدارة بالوكالة بأجر أو بالمضاربة.</p></article>
+      <article class="det go"><h4>الصكوك</h4><p class="rule">إصدار وتداول صكوك إجارة ومشاركة واستصناع تمثل حصصاً شائعة في أصول حقيقية، لا سندات دين.</p><p class="src">أيوفي، المعيار الشرعي 17</p></article>
+      <article class="det go"><h4>منصة الشراكات المباشرة</h4><p class="rule">يطّلع المستثمر على مشروعات حقيقية مدروسة، ويدخل فيها بالمشاركة أو المضاربة، ويتابع أداءها من التطبيق.</p></article>
+      <article class="det go"><h4>معايير الفرز الشرعي للأسهم</h4><p class="rule">نشاط أساسي مباح، والديون الربوية أقل من 30% من القيمة السوقية، والدخل غير المشروع أقل من 5% من الإيرادات ويُطهَّر.</p><p class="src">أيوفي، المعيار الشرعي 21</p></article>
+    </div>
+  </section>
+
+  <section class="block" id="takaful">
+    <h3>5. التكافل</h3>
+    <p class="sub">بديل التأمين التجاري. المشتركون يتبرعون لصندوق مشترك يعوّض من تصيبه الأضرار منهم.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>العنصر</th><th>التكييف</th><th>التفصيل</th></tr></thead>
+      <tbody>
+        <tr><td><b>صندوق المشتركين</b></td><td>تبرع ملزم بالتعاون</td><td>ذمة مالية مستقلة عن أموال الشركة المديرة</td></tr>
+        <tr><td><b>إدارة الصندوق</b></td><td>وكالة بأجر معلوم</td><td>رسم إداري محدد سلفاً من الاشتراكات</td></tr>
+        <tr><td><b>استثمار الاحتياطيات</b></td><td>مضاربة</td><td>حصة من الربح فقط، لا من رأس المال</td></tr>
+        <tr><td><b>الفائض التأميني</b></td><td>حق المشتركين</td><td>يوزَّع عليهم أو يرحَّل للاحتياطي بقرار الهيئة</td></tr>
+        <tr><td><b>العجز</b></td><td>قرض حسن من المدير</td><td>يُسترد من فوائض السنوات التالية</td></tr>
+      </tbody>
+    </table></div>
+    <p class="sub" style="margin-top:14px">المنتجات: تكافل صحي، تكافل المركبات، تكافل الممتلكات، تكافل عائلي يضمن سداد التمويل عند الوفاة، وتكافل التعليم. المرجع: أيوفي، المعيار الشرعي 26.</p>
+  </section>
+
+  <section class="block" id="zakat">
+    <h3>6. الزكاة والوقف والأداتان المدمجتان</h3>
+    <p class="sub">جُرّبت الحاسبتان بأرقام مثال يمكنك تغييرها. النتائج تقريبية للتوضيح، والفتوى في الحالات الخاصة للهيئة الشرعية.</p>
+    <div class="tools">
+      <div class="tool">
+        <h4>حاسبة الزكاة</h4>
+        <div class="fields">
+          <label for="z-cash">النقد والأرصدة<input id="z-cash" type="number" inputmode="decimal" value="180000"></label>
+          <label for="z-gold">ذهب للادخار (جرام)<input id="z-gold" type="number" inputmode="decimal" value="40"></label>
+          <label for="z-price">سعر جرام ذهب عيار 24<input id="z-price" type="number" inputmode="decimal" value="4500"></label>
+          <label for="z-trade">عروض التجارة بسعر السوق<input id="z-trade" type="number" inputmode="decimal" value="60000"></label>
+          <label for="z-recv">ديون مرجوة لك<input id="z-recv" type="number" inputmode="decimal" value="20000"></label>
+          <label for="z-debt">ديون حالّة عليك<input id="z-debt" type="number" inputmode="decimal" value="30000"></label>
+        </div>
+        <div class="out" id="z-out" aria-live="polite"></div>
+        <p class="note">النصاب = قيمة 85 جراماً من الذهب الخالص. النسبة 2.5% عن الحول القمري. الأرقام الافتراضية مثال توضيحي بالعملة المحلية.</p>
+      </div>
+      <div class="tool">
+        <h4>توزيع ربح المضاربة على المودع</h4>
+        <div class="fields">
+          <label for="m-pool">إجمالي الوعاء الاستثماري<input id="m-pool" type="number" inputmode="decimal" value="50000000"></label>
+          <label for="m-res">صافي نتيجة الوعاء (ربح أو خسارة بالسالب)<input id="m-res" type="number" inputmode="decimal" value="4000000"></label>
+          <label for="m-share">نسبة شاطر حسن كمضارب %<input id="m-share" type="number" inputmode="decimal" value="30"></label>
+          <label for="m-bal">متوسط رصيدك المرجّح<input id="m-bal" type="number" inputmode="decimal" value="250000"></label>
+        </div>
+        <div class="out" id="m-out" aria-live="polite"></div>
+        <p class="note">في الربح: يأخذ المضارب نسبته ويوزَّع الباقي على أرباب المال بقدر أرصدتهم. في الخسارة: يتحملها أرباب المال بقدر حصصهم، ويخسر المضارب جهده، ما لم يثبت تعدٍّ أو تقصير.</p>
+      </div>
+    </div>
+    <div class="det-grid" style="margin-top:16px">
+      <article class="det inst"><h4>الصندوق الوقفي النقدي</h4><p class="rule">يوقف العميل مبلغاً ولو صغيراً، يُستثمر أصله استثماراً آمناً بالمضاربة، وتصرف غلته في القرض الحسن والمنح التعليمية والعلاج. للواقف لوحة تُظهر أثر وقفه.</p><p class="src">أيوفي، المعيار الشرعي 33</p></article>
+      <article class="det inst"><h4>بيت الزكاة الرقمي</h4><p class="rule">قاعدة مستحقين موثّقة بالتعاون مع جمعيات معتمدة، وتوزيع على المصارف الثمانية، وتقرير سنوي للمزكي بما صُرف وأين.</p><p class="src">أيوفي، المعيار الشرعي 35</p></article>
+    </div>
+  </section>
+
+  <section class="block" id="governance">
+    <h3>7. هيكل الحوكمة والرقابة الشرعية</h3>
+    <div class="gov">
+      <div class="top-node"><h4>الجمعية العامة للمساهمين ومجلس أصحاب حسابات الاستثمار</h4><p>للمودعين المستثمرين مجلس ممثّل يطّلع على سياسات توزيع الأرباح ويُستشار فيها، لأنهم شركاء لا دائنون.</p></div>
+      <div><h4>مجلس الإدارة</h4><p>الاستراتيجية والرقابة على الإدارة التنفيذية، وفيه أعضاء مستقلون.</p></div>
+      <div><h4>هيئة الرقابة الشرعية</h4><p>ثلاثة فقهاء على الأقل من المتخصصين في فقه المعاملات، تعينهم الجمعية العامة، وقراراتها ملزمة للإدارة.</p></div>
+      <div><h4>التدقيق الشرعي الداخلي</h4><p>يراجع العقود المنفذة فعلياً بعينات دورية ويرفع تقاريره مباشرة للهيئة.</p></div>
+      <div><h4>لجنة المخاطر والالتزام</h4><p>حدود المخاطر والسيولة وكفاية رأس المال ومكافحة غسل الأموال.</p></div>
+      <div><h4>المراجع الخارجي</h4><p>مراجعة مالية وشرعية مستقلة سنوية تُنشر نتائجها كاملة.</p></div>
+      <div><h4>مختبر المنتجات</h4><p>تصميم المنتجات الجديدة واختبارها والعرض على الهيئة قبل الإطلاق.</p></div>
+    </div>
+  </section>
+
+  <section class="block" id="risk">
+    <h3>8. إدارة المخاطر</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>الخطر</th><th>مصدره في النظام الإسلامي</th><th>أدوات المعالجة المشروعة</th></tr></thead>
+      <tbody>
+        <tr><td><b>مخاطر الائتمان</b></td><td>تعثر عميل المرابحة أو الإجارة</td><td>رهن الأصل، الكفالة، هامش الجدية، تكافل الوفاء، لجنة الإعسار</td></tr>
+        <tr><td><b>مخاطر الشريك</b></td><td>ضعف أداء المشروع في المشاركة والمضاربة</td><td>دراسة جدوى، حق الرقابة والتقارير، التمويل على مراحل، تنويع المحفظة</td></tr>
+        <tr><td><b>المخاطر التجارية المنقولة</b></td><td>ضغط المنافسة لدفع عوائد أعلى من الربح الفعلي</td><td>احتياطي معدل الأرباح واحتياطي مخاطر الاستثمار بموافقة المودعين المسبقة</td></tr>
+        <tr><td><b>مخاطر السيولة</b></td><td>غياب الإقراض الربوي بين البنوك</td><td>اتفاقيات وكالة ومضاربة بين المؤسسات الإسلامية، محفظة صكوك سائلة، نسبة نقد احتياطية</td></tr>
+        <tr><td><b>مخاطر السوق والسلع</b></td><td>تملك السلع والأصول قبل بيعها</td><td>تقليص مدة الحيازة، الوعد من الآمر بالشراء، التحوط بعقود سلم موازية</td></tr>
+        <tr><td><b>مخاطر عدم الالتزام الشرعي</b></td><td>تنفيذ مخالف للعقد المعتمد</td><td>بوابات تقنية في محرك العقود، تدقيق شرعي، تطهير الكسب المخالف</td></tr>
+        <tr><td><b>المخاطر التشغيلية والسيبرانية</b></td><td>الأنظمة والأفراد</td><td>فصل المهام، تشفير شامل، اختبارات اختراق دورية، خطة استمرارية الأعمال</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="block" id="tech">
+    <h3>9. النموذج التقني</h3>
+    <p class="sub">بنية رقمية أولاً، تعمل عبر تطبيق الجوال والويب، وتجعل الالتزام الشرعي قيداً برمجياً لا إجراءً ورقياً.</p>
+    <div class="stack">
+      <div class="layer"><h4>قنوات العميل</h4><p>تطبيق جوال للأفراد، بوابة ويب للمنشآت، فتح حساب إلكتروني بالتحقق من الهوية، دعم كامل للعربية والإنجليزية.</p></div>
+      <div class="layer"><h4>بوابة الواجهات البرمجية</h4><p>واجهات مفتوحة للتجار والشركاء والجمعيات الخيرية، مع مصادقة قوية وحدود استخدام.</p></div>
+      <div class="layer core"><h4>محرك العقود الشرعية</h4><p>كل عقد آلة حالات بخطوات إلزامية مرتبة. يمنع إصدار البيع قبل التملك، ويمنع أي حقل لفائدة أو غرامة لصالح المؤسسة، ويوثّق كل خطوة بسجل غير قابل للتعديل.</p></div>
+      <div class="layer"><h4>دفتر الأستاذ المركزي</h4><p>قيد مزدوج يربط كل رصيد تمويل بأصل مسجّل، ويفصل أوعية المضاربة عن أموال المساهمين.</p></div>
+      <div class="layer"><h4>محرك توزيع الأرباح</h4><p>يحسب أرصدة الأوعية بالنمر اليومية، ويطبق نسب المضارب والاحتياطيات، ويصدر كشوف التوزيع الشهرية.</p></div>
+      <div class="layer"><h4>الامتثال والفرز</h4><p>فرز شرعي آلي للشركات والقطاعات، ومكافحة غسل الأموال، وتطهير آلي للدخل غير المشروع.</p></div>
+      <div class="layer"><h4>التكامل الخارجي</h4><p>الشبكة الوطنية للمدفوعات، شبكات البطاقات، مزودي السلع، سجلات الملكية العقارية والمركبات.</p></div>
+    </div>
+  </section>
+
+  <section class="block" id="roadmap">
+    <h3>10. خارطة الإطلاق</h3>
+    <div class="road">
+      <div><span class="ph">المرحلة 1</span><h4>التأسيس</h4><p>الشكل القانوني والترخيص من الجهة الرقابية، تشكيل الهيئة الشرعية، اعتماد السياسات والعقود.</p></div>
+      <div><span class="ph">المرحلة 2</span><h4>الحسابات والمدفوعات</h4><p>الحساب الجاري، المحفظة، بطاقة الحسم، التحويلات، حاسبة الزكاة.</p></div>
+      <div><span class="ph">المرحلة 3</span><h4>التمويل</h4><p>المرابحة والإجارة أولاً، ثم المشاركة المتناقصة والسلم والاستصناع، وصندوق القرض الحسن.</p></div>
+      <div><span class="ph">المرحلة 4</span><h4>الاستثمار والتكافل</h4><p>حسابات المضاربة، الصناديق، الصكوك، منصة الشراكات، التكافل والوقف.</p></div>
+    </div>
+    <p class="callout"><b>الإطار القانوني:</b> ممارسة قبول الودائع ومنح التمويل نشاط مرخص في كل الدول. يمكن البدء بشاطر حسن في صورة شركة تمويل أو شركة تقنية مالية مرخصة أو جمعية تعاونية، وفق قوانين الدولة المستهدفة، ثم التوسع إلى رخصة مصرفية كاملة.</p>
+  </section>
+
+  <section class="block" id="contact">
+    <h3>تواصل معنا</h3>
+    <p class="sub">للاستفسار عن شاطر حسن أو المشاركة في تأسيسه وتطويره.</p>
+    <div class="contact">
+      <div><span>البريد الإلكتروني</span><a href="mailto:munijizqa@gmail.com" dir="ltr">munijizqa@gmail.com</a></div>
+      <div><span>الهاتف</span><a href="tel:+97451600498" dir="ltr">+974 5160 0498</a></div>
+      <div><span>واتساب</span><a href="https://wa.me/97451600498" target="_blank" rel="noopener" dir="ltr">+974 5160 0498</a></div>
+    </div>
+  </section>
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>شاطر حسن · وثيقة تأسيسية للنقاش والتطوير · إصدار 30-10-2026</p>
+    <p dir="ltr" style="text-align:right">munijizqa@gmail.com · +974 5160 0498</p>
+    <p>الأحكام الواردة ملخّصة من المصادر المذكورة ومعايير هيئة المحاسبة والمراجعة للمؤسسات المالية الإسلامية وقرارات مجمع الفقه الإسلامي الدولي، وتُعتمد صيغها النهائية من الهيئة الشرعية للمؤسسة.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const n=id=>{const v=parseFloat($(id).value);return isFinite(v)?v:0};
+  const fmt=v=>Math.round(v).toLocaleString('en-US');
+  function zakat(){
+    const price=n('z-price');
+    const gold=n('z-gold')*price;
+    const net=n('z-cash')+gold+n('z-trade')+n('z-recv')-n('z-debt');
+    const nisab=85*price;
+    const o=$('z-out');
+    if(price<=0){o.className='out warn';o.innerHTML='<span>أدخل سعر جرام الذهب لحساب النصاب.</span>';return}
+    if(net>=nisab){
+      o.className='out';
+      o.innerHTML='<span>الزكاة المستحقة</span><span class="big">'+fmt(net*0.025)+'</span><span>صافي المال الزكوي '+fmt(net)+' · النصاب '+fmt(nisab)+'</span>';
+    }else{
+      o.className='out warn';
+      o.innerHTML='<span>لا زكاة: المال دون النصاب</span><span class="big">0</span><span>صافي المال الزكوي '+fmt(Math.max(net,0))+' · النصاب '+fmt(nisab)+'</span>';
+    }
+  }
+  function mudaraba(){
+    const pool=n('m-pool'),res=n('m-res'),share=Math.min(Math.max(n('m-share'),0),100)/100,bal=n('m-bal');
+    const o=$('m-out');
+    if(pool<=0||bal<=0||bal>pool){o.className='out warn';o.innerHTML='<span>أدخل وعاءً موجباً ورصيداً لا يتجاوزه.</span>';return}
+    const w=bal/pool;
+    if(res>=0){
+      const mud=res*share,inv=res-mud,mine=inv*w;
+      o.className='out';
+      o.innerHTML='<span>نصيبك من الربح</span><span class="big">'+fmt(mine)+'</span><span>عائد فعلي '+(mine/bal*100).toFixed(2)+'% · نصيب المضارب '+fmt(mud)+' · نصيب أرباب المال '+fmt(inv)+'</span>';
+    }else{
+      const mine=res*w;
+      o.className='out warn';
+      o.innerHTML='<span>نصيبك من الخسارة</span><span class="big">'+fmt(mine)+'</span><span>'+(mine/bal*100).toFixed(2)+'% من رصيدك · المضارب لا يأخذ ربحاً ويخسر جهده</span>';
+    }
+  }
+  ['z-cash','z-gold','z-price','z-trade','z-recv','z-debt'].forEach(id=>$(id).addEventListener('input',zakat));
+  ['m-pool','m-res','m-share','m-bal'].forEach(id=>$(id).addEventListener('input',mudaraba));
+  zakat();mudaraba();
+})();
+</script>
+</body>
+</html>
