@@ -1,0 +1,11 @@
+#!/bin/sh
+# الرازي للهاتف: لا توجد خدمات نظام داخل الحاوية؛ أوامر الطاقة تتحكم في جلسة الرازي نفسها
+for a in "$@"; do
+  case "$a" in
+    poweroff|halt|shutdown)
+      pkill -f icewm-session; pkill -f websockify; pkill -f Xtigervnc; exit 0 ;;
+    reboot)
+      touch /tmp/razi-restart; pkill -f icewm-session; exit 0 ;;
+  esac
+done
+exit 0

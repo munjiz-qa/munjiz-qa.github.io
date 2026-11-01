@@ -1,0 +1,4 @@
+#!/bin/sh
+# قفل الشاشة (Win + L)
+if command -v dm-tool >/dev/null && ! grep -q boot=casper /proc/cmdline; then exec dm-tool lock; fi
+yad --info --title="قفل الشاشة" --center --text="القفل متاح بعد تثبيت الرازي على الجهاز." --button="حسنًا:0"

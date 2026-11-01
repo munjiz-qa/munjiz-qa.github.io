@@ -1,0 +1,33 @@
+#!/bin/bash
+# تشغيل سطح مكتب الرازي داخل الهاتف
+#   razi-session browser [WxH]  عرض عبر متصفح الهاتف (لا يحتاج أي تطبيق إضافي)
+#   razi-session x11            عرض عبر تطبيق Termux:X11 (أسرع)
+MODE=${1:-browser}; GEOM=${2:-1560x720}
+export LANG=ar_EG.UTF-8 LANGUAGE=ar:en LC_ALL=ar_EG.UTF-8 USER=root HOME=/root SHELL=/bin/bash
+export XDG_RUNTIME_DIR=/tmp/runtime-root NO_AT_BRIDGE=1 GTK_A11Y=none
+mkdir -p $XDG_RUNTIME_DIR /tmp/.X11-unix; chmod 700 $XDG_RUNTIME_DIR; chmod 1777 /tmp/.X11-unix 2>/dev/null
+LOG=/tmp/razi-session.log
+session() {
+  xsetroot -solid "#0B1E2D" 2>/dev/null
+  # «إعادة التشغيل» من قائمة الطاقة تعيد فتح سطح المكتب دون إيقاف العرض
+  while :; do
+    rm -f /tmp/razi-restart
+    dbus-launch --exit-with-session icewm-session
+    [ -f /tmp/razi-restart ] || break
+  done
+}
+case "$MODE" in
+  browser)
+    pkill -f 'Xtigervnc :1' 2>/dev/null; pkill -f 'websockify.*6080' 2>/dev/null
+    rm -f /tmp/.X1-lock /tmp/.X11-unix/X1
+    Xtigervnc :1 -geometry "$GEOM" -depth 24 -dpi 110 -SecurityTypes None -localhost=1 -rfbport 5901 \
+      -AlwaysShared -AcceptSetDesktopSize=1 >"$LOG" 2>&1 &
+    for i in $(seq 1 50); do [ -e /tmp/.X11-unix/X1 ] && break; sleep 0.2; done
+    websockify --web /usr/share/novnc 127.0.0.1:6080 127.0.0.1:5901 >>"$LOG" 2>&1 &
+    export DISPLAY=:1
+    session >>"$LOG" 2>&1
+    pkill -f websockify; pkill -f Xtigervnc ;;
+  x11)
+    export DISPLAY=:0
+    session >"$LOG" 2>&1 ;;
+esac

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="448 0 1024 768" width="1024" height="768">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#123A4F"/><stop offset="0.5" stop-color="#0B1E2D"/><stop offset="1" stop-color="#06131D"/>
+    </linearGradient>
+    <!-- شبكة سداسية مستوحاة من جزيئات الكيمياء التي برع فيها الرازي -->
+    <pattern id="hex" width="104" height="180" patternUnits="userSpaceOnUse">
+      <g fill="none" stroke="#3FD1C1" stroke-opacity="0.07" stroke-width="1.6">
+        <path d="M52 0 L104 30 L104 90 L52 120 L0 90 L0 30 Z"/>
+        <path d="M52 120 L52 180"/>
+      </g>
+      <g fill="#F3CF72" fill-opacity="0.10"><circle cx="52" cy="0" r="3"/><circle cx="0" cy="90" r="3"/><circle cx="104" cy="90" r="3"/></g>
+    </pattern>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#2EC4B6" stop-opacity="0.22"/><stop offset="1" stop-color="#2EC4B6" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <rect width="1920" height="1080" fill="url(#hex)"/>
+  <circle cx="960" cy="400" r="330" fill="url(#glow)"/>
+  <image xlink:href="logo.svg" x="850" y="130" width="220" height="220"/>
+  <text x="960" y="455" text-anchor="middle" font-family="Noto Kufi Arabic" font-weight="bold" font-size="80" fill="#F7F3E8">الرازي</text>
+  <text x="960" y="530" text-anchor="middle" font-family="Noto Naskh Arabic" font-size="30" fill="#F3CF72" fill-opacity="0.92">علمٌ يُحيي كل جهاز</text>
+</svg>

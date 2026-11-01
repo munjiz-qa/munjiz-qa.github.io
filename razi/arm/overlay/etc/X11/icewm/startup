@@ -1,0 +1,15 @@
+#!/bin/sh
+# جلسة الرازي: لوحة المفاتيح، سطح المكتب، شريط المهام، مفتاح ويندوز
+LAYOUT=$(cat "$HOME/.config/razi-keyboard" 2>/dev/null || echo us,ara)
+setxkbmap -layout "$LAYOUT" -option "" -option grp:alt_shift_toggle -option grp_led:scroll
+xcape -e 'Super_L=Control_L|Escape;Super_R=Control_L|Escape' &
+razi-desktop-layout
+pcmanfm --desktop --profile razi &
+tint2 -c /etc/xdg/tint2/razi.tint2rc &
+for a in nm-applet volumeicon lxpolkit; do command -v $a >/dev/null && ($a >/dev/null 2>&1 &); done
+# في الجلسة الحية لا تُطفأ الشاشة (مثلًا أثناء التثبيت الطويل)
+grep -q boot=casper /proc/cmdline 2>/dev/null && xset s off -dpms s noblank
+EDITION=$(cat /etc/razi-edition 2>/dev/null)
+if { grep -q boot=casper /proc/cmdline 2>/dev/null || [ -n "$EDITION" ]; } && [ ! -f "$HOME/.config/razi-welcomed" ]; then
+  (sleep 4; razi-welcome; mkdir -p "$HOME/.config"; touch "$HOME/.config/razi-welcomed") &
+fi

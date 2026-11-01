@@ -1,0 +1,4 @@
+#!/bin/sh
+yad --question --title="تسجيل الخروج" --center --window-icon=system-log-out \
+  --text="هل تريد تسجيل الخروج وإغلاق كل البرامج المفتوحة؟" --button="إلغاء:1" --button="تسجيل الخروج:0" || exit 0
+exec pkill -TERM -u "$(id -u)" -x icewm-session

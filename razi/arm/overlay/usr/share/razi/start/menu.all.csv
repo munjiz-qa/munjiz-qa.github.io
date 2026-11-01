@@ -1,0 +1,90 @@
+^sep(اكتب للبحث في كل البرامج)
+مستكشف الملفات,pcmanfm,system-file-manager
+متصفح الويب,falkon,web-browser
+معالج النصوص (Writer),libreoffice --writer,libreoffice-writer
+الجداول الحسابية (Calc),libreoffice --calc,libreoffice-calc
+العروض التقديمية (Impress),libreoffice --impress,libreoffice-impress
+مشغل الوسائط,vlc,vlc
+المفكرة,mousepad,accessories-text-editor
+الحاسبة,galculator,accessories-calculator
+^sep(كل التطبيقات)
+الملحقات,^checkout(acc),applications-accessories
+المكتب,^checkout(office),applications-office
+الإنترنت,^checkout(net),applications-internet
+الوسائط المتعددة,^checkout(media),applications-multimedia
+التعليم,^checkout(edu),applications-science
+البرمجة,^checkout(dev),applications-development
+أدوات النظام,^checkout(sys),applications-system
+الأدوات الإدارية,^checkout(admin),preferences-system
+برامج ويندوز,^checkout(win),wine
+^sep()
+هذا الكمبيوتر,pcmanfm computer:///,computer
+لوحة التحكم,razi-control-panel,preferences-system
+تثبيت برنامج جديد,razi-get-apps,system-software-install
+تشغيل أمر,razi-run,system-run
+تثبيت الرازي على هذا الجهاز,razi-install,system-software-install
+الطاقة,^checkout(power),system-shutdown
+
+^tag(acc)
+المفكرة,mousepad,accessories-text-editor
+الحاسبة,galculator,accessories-calculator
+الرسام,mtpaint,applications-graphics
+أداة القص (لقطة الشاشة),xfce4-screenshooter,applets-screenshooter
+عارض الصور,gpicview,image-x-generic
+ضغط الملفات وفكّها,xarchiver,package-x-generic
+مرحبًا بك في الرازي,razi-welcome,help-about
+
+^tag(office)
+معالج النصوص (Writer),libreoffice --writer,libreoffice-writer
+الجداول الحسابية (Calc),libreoffice --calc,libreoffice-calc
+العروض التقديمية (Impress),libreoffice --impress,libreoffice-impress
+الرسم والمخططات (Draw),libreoffice --draw,libreoffice-draw
+عارض PDF,atril,atril
+الماسح الضوئي,simple-scan,scanner
+
+^tag(net)
+متصفح الويب,falkon,web-browser
+البريد الإلكتروني,claws-mail,internet-mail
+تنزيل الملفات (تورنت),transmission-gtk,transmission
+
+^tag(media)
+مشغل الوسائط,vlc,vlc
+مشغل الموسيقى,audacious,audacious
+تحرير الصور (GIMP),gimp,gimp
+الرسام,mtpaint,applications-graphics
+عارض الصور,gpicview,image-x-generic
+
+^tag(edu)
+جي كومبريس للأطفال,gcompris-qt,gcompris-qt
+
+^tag(dev)
+بيئة البرمجة Geany,geany,geany
+بايثون التفاعلية,lxterminal -e python3,utilities-terminal
+موجه الأوامر (الطرفية),lxterminal,utilities-terminal
+
+^tag(sys)
+إدارة المهام,lxtask,utilities-system-monitor
+موجه الأوامر (الطرفية),lxterminal,utilities-terminal
+معلومات النظام,razi-about,dialog-information
+معلومات العتاد,hardinfo,hardinfo
+لوحة التحكم,razi-control-panel,preferences-system
+تشغيل أمر,razi-run,system-run
+
+^tag(admin)
+إدارة الأقراص,gnome-disks,gnome-disks
+مقسّم الأقراص,sudo -E gparted,gparted
+متجر البرامج (Synaptic),sudo -E synaptic,synaptic
+اتصالات الشبكة,nm-connection-editor,network-workgroup
+الطابعات,system-config-printer,printer
+
+^tag(win)
+إعدادات برامج ويندوز,winecfg,wine
+مستكشف ملفات ويندوز,wine explorer,wine
+محرر النصوص لويندوز,wine notepad,wine
+إلغاء تثبيت برامج ويندوز,wine uninstaller,wine
+
+^tag(power)
+قفل الشاشة,razi-lock,system-lock-screen
+تسجيل الخروج,razi-logout,system-log-out
+إعادة التشغيل,systemctl reboot,system-reboot
+إيقاف التشغيل,systemctl poweroff,system-shutdown

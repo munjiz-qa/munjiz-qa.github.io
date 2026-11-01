@@ -1,0 +1,48 @@
+# شاشة إقلاع الرازي: خلفية الليل، الشعار يتوهج ببطء، وشريط تقدم بلون الفيروز.
+# العناصر تُنشأ عند أول تحديث للشاشة لأن بعض البطاقات تجهز بعد بدء السكربت.
+Window.SetBackgroundTopColor(0.043, 0.118, 0.176);
+Window.SetBackgroundBottomColor(0.043, 0.118, 0.176);
+bg_img = Image("bg.png");
+logo_img = Image("logo.png");
+track_img = Image("track.png");
+fill_img = Image("fill.png");
+bar_w = 220; bar_h = 4;
+ready = 0; t = 0; prog = 0;
+
+fun setup() {
+  w = Window.GetWidth(); h = Window.GetHeight();
+  cx = Window.GetX() + w / 2; cy = Window.GetY() + h / 2;
+  global.bg = Sprite(bg_img.Scale(w, h)); global.bg.SetPosition(Window.GetX(), Window.GetY(), -10);
+  global.logo = Sprite(logo_img); global.logo.SetPosition(cx - logo_img.GetWidth() / 2, cy - logo_img.GetHeight() / 2 - 30, 1);
+  fy = cy + logo_img.GetHeight() / 2 + 10;
+  global.trk = Sprite(track_img.Scale(bar_w, bar_h)); global.trk.SetPosition(cx - bar_w / 2, fy, 2);
+  global.fil = Sprite(); global.fil.SetPosition(cx - bar_w / 2, fy, 3);
+  global.msg = Sprite(); global.msg.SetPosition(cx - 200, fy + 30, 4);
+  global.ready = 1;
+}
+
+fun refresh_cb() {
+  if (!global.ready) setup();
+  global.t++;
+  # إعادة رسم الخلفية كل ثانية تقريبًا حتى تظهر كاملة بعد تبدّل مشغّل الشاشة أثناء الإقلاع
+  if (global.t % 25 == 0) { if (global.t % 50 == 0) o = 1; else o = 0.98; global.bg.SetOpacity(o); global.trk.SetOpacity(o); }
+  global.logo.SetOpacity(0.8 + 0.2 * Math.Sin(global.t / 25));
+  w = Math.Int(bar_w * global.prog); if (w < 2) w = 2;
+  global.fil.SetImage(fill_img.Scale(w, bar_h));
+}
+Plymouth.SetRefreshFunction(refresh_cb);
+
+fun progress_cb(duration, progress) { global.prog = progress; }
+Plymouth.SetBootProgressFunction(progress_cb);
+
+fun message_cb(text) { if (global.ready) global.msg.SetImage(Image.Text(text, 0.96, 0.92, 0.87)); }
+Plymouth.SetMessageFunction(message_cb);
+fun password_cb(prompt, bullets) {
+  if (!global.ready) setup();
+  s = prompt + "  ";
+  for (i = 0; i < bullets; i++) s += "•";
+  global.msg.SetImage(Image.Text(s, 0.95, 0.81, 0.45));
+}
+Plymouth.SetDisplayPasswordFunction(password_cb);
+fun normal_cb() { if (global.ready) global.msg.SetImage(Image.Text("", 1, 1, 1)); }
+Plymouth.SetDisplayNormalFunction(normal_cb);

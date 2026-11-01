@@ -1,0 +1,5 @@
+#!/bin/sh
+# لوحة التحكم: شبكة أيقونات بأسلوب ويندوز
+exec yad --icons --read-dir=/usr/share/razi/control-panel --title="لوحة التحكم" \
+  --window-icon=preferences-system --width=760 --height=520 --center --item-width=150 \
+  --single-click --no-buttons --sort-by-name

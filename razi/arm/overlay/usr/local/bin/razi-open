@@ -1,0 +1,14 @@
+#!/bin/sh
+# فتح أي ملف تثبيت بنقرة مزدوجة: ‎.deb و‎.exe و‎.msi و‎.AppImage و‎.flatpakref
+F="$1"; [ -f "$F" ] || exit 1
+# لا نطلب تنزيل مكونات ‎.NET وGecko عند أول تشغيل لبرامج ويندوز
+export WINEDLLOVERRIDES="${WINEDLLOVERRIDES:-mscoree,mshtml=}"
+case "$(echo "$F" | tr 'A-Z' 'a-z')" in
+  *.deb) exec sudo -E gdebi-gtk "$F" ;;
+  *.flatpakref|*.flatpakrepo)
+    exec lxterminal --title="تثبيت من Flathub" -e sh -c "sudo flatpak install -y --from \"$F\"; echo; echo 'اكتمل. اضغط Enter للإغلاق.'; read x" ;;
+  *.appimage) chmod +x "$F"; exec "$F" ;;
+  *.msi) command -v wine >/dev/null || exec yad --center --image=dialog-information --button="حسنًا:0" --text="تشغيل برامج ويندوز متاح في إصدار الرازي الكامل."; exec wine msiexec /i "$F" ;;
+  *.exe) command -v wine >/dev/null || exec yad --center --image=dialog-information --button="حسنًا:0" --text="تشغيل برامج ويندوز متاح في إصدار الرازي الكامل."; exec wine "$F" ;;
+  *) exec xdg-open "$F" ;;
+esac
