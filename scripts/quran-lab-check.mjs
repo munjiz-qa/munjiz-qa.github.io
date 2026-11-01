@@ -6,7 +6,7 @@ let fail = 0; const ok = (c, m) => { console.log((c ? '✓ ' : '✗ ') + m); if 
 const b = await chromium.launch(); const p = await b.newPage(); const bad = [], errs = [], ext = new Set();
 p.on('request', r => { const u = new URL(r.url()); if (/claude|anthropic/i.test(u.host)) bad.push(r.url()); if (u.origin !== new URL(B).origin) ext.add(u.host); });
 p.on('pageerror', e => errs.push(e.message));
-for (const f of ['', 'app.js', 'sw.js', 'manifest.webmanifest', 'config.json', 'data/quran.txt', 'data/t/ibnkathir/0.txt', ...['bukhari', 'muslim', 'abudawud', 'tirmidhi', 'nasai', 'ibnmajah'].map(k => `data/hadith/${k}.txt`), 'data/tr/index.json', 'data/tr/en.txt', 'data/tr/fr.txt', 'data/i18n/en.json']) {
+for (const f of ['', 'app.js', 'sw.js', 'manifest.webmanifest', 'config.json', 'data/quran.txt', 'data/t/ibnkathir/0.txt', ...['bukhari', 'muslim', 'abudawud', 'tirmidhi', 'nasai', 'ibnmajah'].map(k => `data/hadith/${k}.txt`), 'data/tr/index.json', 'data/tr/en.txt', 'data/tr/fr.txt', 'data/i18n/en.json', 'data/i18n/fr.json', 'data/i18n/ur.json']) {
   const r = await p.request.get(B + f); ok(r.ok(), `${f || 'index.html'} → ${r.status()}`);
 }
 const cfg = await (await p.request.get(B + 'config.json')).json();
@@ -29,6 +29,8 @@ ok(!!(await p.$('#uform')) && !!(await p.$('#rform')), 'صفحة الدخول ل
   ok(await q.evaluate(() => document.documentElement.dir === 'ltr' && document.querySelectorAll('.mean').length === 7 && /praise/i.test([...document.querySelectorAll('.mean')].map(x => x.textContent).join(' '))), 'English: left-to-right, Al-Fatiha with its meanings (Saheeh International)');
   await q.evaluate(() => location.hash = 'prayer'); await q.waitForTimeout(1200);
   ok((await q.$$('.prcell')).length === 6 && /Next prayer/.test(await q.textContent('#view')), 'English: prayer times page');
+  await q.evaluate(() => localStorage.setItem('quran-lang', 'fr')); await q.reload(); await q.waitForTimeout(5000);
+  ok(await q.evaluate(() => document.documentElement.lang === 'fr' && /Paramètres/.test(document.querySelector('#nav').textContent)), 'Français : interface traduite intégrée');
   await q.evaluate(() => setLang('ar')); await q.waitForTimeout(5000); await q.evaluate(() => location.hash = 'prayer'); await q.waitForTimeout(1200);
   ok(await q.evaluate(() => document.documentElement.dir === 'rtl') && /الصلاة القادمة/.test(await q.textContent('#view')), 'العودة إلى العربية، ومواقيت الصلاة تعمل');
   ok(!e2.length, 'لا أخطاء برمجية في اللغات والمواقيت ' + e2.join(' | ')); await c2.close(); }
