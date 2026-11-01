@@ -4,8 +4,8 @@
 const KEY = "teacher-db-v1";
 const SESSION_DAYS = 30, MAX_FAILS = 5, LOCK_MIN = 15;
 const SEED = [
-  {id:"u-admin",   username:"admin",   name:"مدير المنصة",     role:"admin",   salt:"3e2fdd130428b233abb86699050be713", hash:"42df48581c466756cdfa1a02933b691b82bf70aad336477c2c264302b6be4726"},
-  {id:"u-student", username:"student", name:"متعلّم تجريبي", role:"learner", salt:"80bbbbdd955e3965ec614a2279cf87a8", hash:"291970a7914407f3a8c801a2137f455b4a93ccbdfe2d3d44d33208805e2fc3af"}
+  {id:"u-admin",   username:"admin",   name:"مدير المنصة",     role:"admin",   mustChange:true, salt:"3e2fdd130428b233abb86699050be713", hash:"42df48581c466756cdfa1a02933b691b82bf70aad336477c2c264302b6be4726"},
+  {id:"u-student", username:"student", name:"متعلّم تجريبي", role:"learner", mustChange:true, salt:"80bbbbdd955e3965ec614a2279cf87a8", hash:"291970a7914407f3a8c801a2137f455b4a93ccbdfe2d3d44d33208805e2fc3af"}
 ];
 const now = () => new Date().toISOString();
 const rnd = n => Array.from(crypto.getRandomValues(new Uint8Array(n)), b => b.toString(16).padStart(2,"0")).join("");
@@ -29,11 +29,13 @@ function load(){
   try{ d = JSON.parse(localStorage.getItem(KEY) || "null"); }catch(e){}
   if(!d || !Array.isArray(d.users)) d = fresh();
   if(!d.users.some(u => u.role==="admin" && u.active)){ const a = d.users.find(u => u.id==="u-admin"); if(a){ a.active = true; a.role = "admin"; } else d.users.unshift(Object.assign({active:true, created:now(), lastLogin:""}, SEED[0])); }
+  // Accounts still on a default (seeded) password must set a new one before anything else.
+  for(const u of d.users){ const s = SEED.find(x => x.id===u.id); if(s && u.mustChange===undefined && u.hash===s.hash) u.mustChange = true; }
   return d;
 }
 function save(d){ try{ localStorage.setItem(KEY, JSON.stringify(d)); }catch(e){ fail("storage"); } }
 function log(d, actor, action, detail){ d.log.push({time:now(), actor, action, detail:detail||""}); if(d.log.length>500) d.log = d.log.slice(-500); }
-const pub = u => ({id:u.id, username:u.username, name:u.name, role:u.role, active:!!u.active});
+const pub = u => ({id:u.id, username:u.username, name:u.name, role:u.role, active:!!u.active, mustChange:!!u.mustChange});
 const settings = d => ({sequential:d.settings.sequential!==false, allowSignup:d.settings.allowSignup!==false});
 function session(d, userId){ const t = rnd(24); d.sessions[t] = {userId, expires:Date.now()+SESSION_DAYS*864e5}; return t; }
 const admins = d => d.users.filter(u => u.role==="admin" && u.active).length;
@@ -80,9 +82,11 @@ async function call(action, b){
   if(action==="changePassword"){
     if((await hashPw(b.current, me.salt)).hash !== me.hash) fail("invalid");
     if(String(b.password||"").length < 8) fail("weak_password");
-    Object.assign(me, await hashPw(b.password)); log(d, me.username, "changePassword"); save(d); return {ok:true};
+    if(String(b.password)===String(b.current)) fail("same_password");
+    Object.assign(me, await hashPw(b.password)); me.mustChange = false; log(d, me.username, "changePassword"); save(d); return {ok:true, user:pub(me)};
   }
 
+  if(me.mustChange) fail("must_change");
   if(me.role !== "admin") fail("forbidden");
   const target = () => d.users.find(u => u.id===b.id) || fail("not_found");
   if(action==="listUsers") return {ok:true, users:d.users.map(u => { const p = d.progress[u.id]||{}; return Object.assign(pub(u), {created:u.created, lastLogin:u.lastLogin, done:p.done||[], xp:p.xp||0, streak:p.streak||0, quizAvg:p.quizAvg||0, last:p.updated||""}); })};
@@ -111,7 +115,7 @@ async function call(action, b){
   if(action==="resetPassword"){
     const u = target();
     if(String(b.password||"").length < 8) fail("weak_password");
-    Object.assign(u, await hashPw(b.password));
+    Object.assign(u, await hashPw(b.password)); if(u.id!==me.id) u.mustChange = true;
     for(const [t,x] of Object.entries(d.sessions)) if(x.userId===u.id && t!==b.token) delete d.sessions[t];
     log(d, me.username, "resetPassword", u.username); save(d); return {ok:true};
   }
