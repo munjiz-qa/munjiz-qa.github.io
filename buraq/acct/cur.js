@@ -135,7 +135,8 @@
   function hint(el) {
     var inp = document.getElementById(el.dataset.usdHint); if (!inp) return;
     var v = parseFloat(inp.value);
-    el.textContent = isFinite(v) && v > 0 ? "≈ " + format(v, null, "QAR") + " · " + format(v, null, "EGP") : "";
+    var t = isFinite(v) && v > 0 ? "≈ " + format(v, null, "QAR") + " · " + format(v, null, "EGP") : "";
+    if (el.textContent !== t) el.textContent = t; // الكتابة عند التغيّر فقط: تمنع حلقة لا نهائية مع MutationObserver (كانت تجمّد لوحة الإدارة عند كتابة السعر)
     if (!inp._bqh) { inp._bqh = 1; inp.addEventListener("input", function () { hint(el); }); }
   }
 
