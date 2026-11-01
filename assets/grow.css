@@ -63,3 +63,12 @@ footer .grow-links a{font-weight:700}
 .grow .gprom li::before{content:"✓";position:absolute;inset-inline-start:0;top:0;font-weight:700;color:var(--ok,#1b6644)}
 .grow .gprom b{font-size:16px}
 .grow .gprom span{color:var(--mute,#555);font-size:14px}
+/* sign-in choice page (login.html) */
+.grow .lggrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin:18px 0}
+.grow .lgpanel{background:var(--surface,#fff);border:1px solid var(--line,#dde);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:8px}
+.grow .lgpanel h2{margin:0;font-size:22px}
+.grow .lgpanel p{margin:0;flex:1;color:var(--mute,#555)}
+.grow .lgpanel.cl{border:2px solid var(--amber,#c9a24d)}
+.grow .lgpanel.st{background:transparent;border-style:dashed}
+.grow .lgico{font-size:30px;line-height:1}
+.grow .lgpanel .cta{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
