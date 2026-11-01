@@ -9,13 +9,13 @@
 <meta property="og:description" content="منصة طبية عربية مجانية: فحص الأعراض، والأمراض والأدوية، والحاسبات السريرية، والأخبار الطبية، والمكتبة والمراجع.">
 <meta property="og:url" content="https://munjiz-qa.github.io/altayyibat/">
 <link rel="canonical" href="https://munjiz-qa.github.io/altayyibat/">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="fonts/fonts.css">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ar_AR">
 <title>الطيبات</title>
 <meta name="description" content="الطيبات: منصة طبية عربية مجانية للمرضى وطلبة الطب والأطباء والباحثين">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Readex+Pro:wght@500;600;700&display=swap">
 <style>
 /* Layout: sticky brand bar + scrollable section rail; each view is a single column of working panels, never a marketing page. */
 :root{
@@ -381,6 +381,21 @@ function decorate(){
     sec.querySelector("#tyLogin")?.addEventListener("click",()=>open());
   }
 }
+// ===== التثبيت على الكمبيوتر والعمل دون اتصال =====
+let deferred=null;
+const offline=location.protocol==="file:";
+if("serviceWorker" in navigator && window.isSecureContext && location.protocol!=="file:") navigator.serviceWorker.register("sw.js").catch(()=>{});
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault(); deferred=e; showInstall()});
+window.addEventListener("appinstalled",()=>{deferred=null; document.getElementById("tyInstall")?.remove()});
+function showInstall(){
+  if(document.getElementById("tyInstall")||!deferred) return;
+  const f=document.querySelector("footer .wrap"); if(!f) return;
+  f.insertAdjacentHTML("afterbegin",`<div id="tyInstall" class="acc-who" style="background:var(--pine-soft);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--ink)"><div><b>ثبّت «الطيبات» على جهازك</b><div class="small muted">يفتح كتطبيق مستقل من سطح المكتب، ويعمل حتى دون اتصال بالإنترنت.</div></div><button class="btn" type="button">تثبيت التطبيق</button></div>`);
+  document.querySelector("#tyInstall button").addEventListener("click",async()=>{if(!deferred) return; deferred.prompt(); await deferred.userChoice.catch(()=>{}); deferred=null; document.getElementById("tyInstall")?.remove()});
+}
+if(!offline) document.addEventListener("DOMContentLoaded",()=>{document.querySelector("footer .wrap")?.insertAdjacentHTML("beforeend",`<p class="small" id="tyDesk"><b>للكمبيوتر:</b> <a href="altayyibat-desktop.zip" download>نزّل النسخة المكتبية</a> (ملف واحد يعمل دون إنترنت)، أو ثبّت التطبيق من زر التثبيت في شريط عنوان المتصفح.</p>`)});
+if(offline) document.addEventListener("DOMContentLoaded",()=>{const f=document.querySelector("footer .wrap"); f?.insertAdjacentHTML("afterbegin",`<p class="small" id="tyOffline"><b>النسخة المكتبية:</b> تعمل على هذا الجهاز دون إنترنت، وتُحفظ بياناتها وحساباتها في هذا المتصفح. الروابط الخارجية للمراجع تحتاج اتصالاً.</p>`)});
+
 const start=()=>{mountBtn(); const m=document.getElementById("main"); if(m){decorate(); new MutationObserver(decorate).observe(m,{childList:true})}};
 if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",start); else start();
 })();
