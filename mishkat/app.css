@@ -263,3 +263,16 @@ tr.clk{cursor:pointer} tr.clk:hover td{background:var(--accent-soft)}
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 .split{grid-template-columns:minmax(0,1.65fr) minmax(0,1fr)}
 @media (max-width:860px){.split{grid-template-columns:1fr}}
+
+/* research lab: the generated paper, and a clean print layout */
+.rdoc:empty{display:none}
+.rdoc{background:var(--sheet);border:1px solid var(--line);border-radius:var(--r);padding:24px 28px;display:flex;flex-direction:column;gap:14px;line-height:1.95}
+.rdoc h2{font-size:1.25rem;margin:10px 0 4px;color:var(--accent)}.rdoc h3{font-size:1.02rem;margin:12px 0 4px}
+.rdoc .rhead{border-bottom:2px solid var(--saffron);padding-bottom:10px}.rdoc .rhead h1{margin:4px 0}
+.rlist{margin:0;padding-inline-start:1.8em;list-style:arabic-indic}.rlist li{margin-bottom:4px}.rlist .ayah{margin:0}
+.rq{border-inline-start:3px solid var(--saffron);background:var(--saffron-soft);margin:8px 0;padding:6px 14px;border-radius:0 8px 8px 0}
+.rq p{margin:0 0 4px;white-space:pre-line}.rq cite{display:block;font-style:normal;color:var(--muted);font-size:.86rem}
+@media (max-width:640px){.rdoc{padding:16px 14px}}
+@media print{.rail,.searchbar,.tabbar,.banner,.no-print,.toast,.drawer{display:none!important}.shell{margin:0!important;padding:0!important}
+  body{background:#fff!important;color:#000}.wrap{max-width:none!important;padding:0!important}.rdoc{border:0;padding:0}.rq{background:#faf7f0;break-inside:avoid}a{color:#000;text-decoration:none}.chip{border-color:#999}}
+.rdoc ol{list-style:arabic-indic}
