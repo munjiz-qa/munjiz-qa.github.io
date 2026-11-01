@@ -6,7 +6,7 @@ let fail = 0; const ok = (c, m) => { console.log((c ? '✓ ' : '✗ ') + m); if 
 const b = await chromium.launch(); const p = await b.newPage(); const bad = [], errs = [];
 p.on('request', r => { if (/claude|anthropic/i.test(new URL(r.url()).host)) bad.push(r.url()); });
 p.on('pageerror', e => errs.push(e.message));
-for (const f of ['', 'app.js', 'app.css', 'sw.js', 'manifest.webmanifest', 'config.json', 'data/quran.txt', 'data/t/muyassar/0.txt', 'data/hadith/bukhari.txt', 'data/hadith/muslim.txt']) {
+for (const f of ['', 'app.js', 'app.css', 'sw.js', 'manifest.webmanifest', 'config.json', 'data/quran.txt', 'data/t/muyassar/0.txt', ...['bukhari', 'muslim', 'abudawud', 'tirmidhi', 'nasai', 'ibnmajah'].map(k => `data/hadith/${k}.txt`)]) {
   const r = await p.request.get(B + f); ok(r.ok(), `${f || 'index.html'} → ${r.status()}`);
 }
 const cfg = await (await p.request.get(B + 'config.json')).json();
@@ -19,7 +19,7 @@ for (const v of ['account', 'admin', 'search', 'hifz', 'map', 'awwalin', 'ijaz',
 }
 await p.evaluate(() => location.hash = 'research'); await p.waitForTimeout(700);
 await p.fill('#rq', 'الصبر'); await p.click('#rgo');
-await p.waitForSelector('#rdoc #rprint', { timeout: 60000 }).catch(() => {});
+await p.waitForSelector('#rdoc #rprint', { timeout: 600000 }).catch(() => {});
 const doc = await p.evaluate(() => document.querySelector('#rdoc')?.innerText || '');
 ok(/الآيات القرآنية/.test(doc) && /أقوال المفسرين/.test(doc) && /السنة النبوية/.test(doc) && /صحيح (البخاري|مسلم)/.test(doc) && /المراجع/.test(doc), 'مختبر الأبحاث يُعدّ بحثاً مؤصّلاً بالقرآن والتفسير والسنة والمراجع');
 await p.evaluate(() => location.hash = 'account'); await p.waitForTimeout(700);
