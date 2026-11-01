@@ -3,7 +3,7 @@
 name: Desktop package
 on:
   push:
-    branches: [main]
+    branches: [main, 'claude/**']
     paths: ['*.html', '*.webmanifest', 'sw.js', 'en/**', 'assets/**', 'pc/**', 'scripts/desktop-*', '.github/workflows/desktop-package.yml']
   schedule:
     - cron: '30 3 * * *'
@@ -65,6 +65,7 @@ jobs:
         run: BASE=http://localhost:8765/ node scripts/desktop-e2e.cjs
   publish:
     needs: test
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
