@@ -1,7 +1,7 @@
 // لوحة إدارة براق: صلاحيات كاملة على الطلبات والمستخدمين والخطط والكتالوج والمحتوى.
 import { READY, auth, db, A, F, loadProfile, createUserAsAdmin } from "./fb.js";
 import { $, esc, fmtDate, normPhone, phoneHtml, money, STATUS, stBadge, TYPES, toast, errMsg } from "./ui.js";
-import { CATALOG, KIND, CONTENT } from "./seed.js";
+import { CATALOG, KIND, CONTENT } from "./seed.js?v=2";
 
 let ME = null, USERS = [], REQS = [], PLANS = [], CAT = [], unsub = [];
 $("boot").hidden = true;
@@ -237,11 +237,14 @@ $("addItem").onclick = async () => {
   try { await F.addDoc(F.collection(db, "catalog"), { order: CAT.length + 1, code: "BQ-NEW", name: "بند جديد", cat: "أخرى", price: null, kind: "est", active: false, updatedAt: F.serverTimestamp() }); toast("أُضيف بند جديد غير مفعّل في آخر الجدول. عدّله ثم فعّله واحفظ."); } catch (err) { toast(errMsg(err), true); }
 };
 $("seedCat").onclick = async () => {
-  if (!confirm("استيراد بنود براق الافتراضية؟ البنود ذات الرموز نفسها تُحدَّث بأسعارها الافتراضية.")) return;
+  const have = new Set(CAT.map((c) => c.code));
+  const miss = CATALOG.filter((c) => !have.has(c.code));
+  if (!miss.length) return toast("كل بنود براق الافتراضية موجودة في الجدول. عدّل أسعارها من الجدول مباشرة.");
+  if (!confirm(`إضافة ${miss.length} بنداً ناقصاً من بنود براق الافتراضية؟ البنود الموجودة وأسعارها لا تتغير.`)) return;
   try {
     const b = F.writeBatch(db);
-    CATALOG.forEach((c, i) => b.set(F.doc(db, "catalog", c.code.replace(/[^\w-]/g, "_")), { ...c, order: i + 1, active: true, updatedAt: F.serverTimestamp() }));
-    await b.commit(); toast(`اُستورد ${CATALOG.length} بنداً.`);
+    miss.forEach((c) => b.set(F.doc(db, "catalog", c.code.replace(/[^\w-]/g, "_")), { ...c, order: CATALOG.indexOf(c) + 1, active: true, updatedAt: F.serverTimestamp() }));
+    await b.commit(); toast(`أُضيف ${miss.length} بنداً، منها: ${miss.slice(0, 3).map((c) => c.code).join("، ")}.`);
   } catch (err) { toast(errMsg(err), true); }
 };
 
