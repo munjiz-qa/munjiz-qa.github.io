@@ -98,24 +98,56 @@ const NAV = LAB ? [
   ['أدوات التحقق', [['mushaf','المصحف','i-book'],['words','المعجم المفهرس','i-abc']]],
   ['التطبيق', [['guide','دليل المختبر','i-info'],['account','حسابي','i-user'],['settings','الإعدادات','i-gear'],['admin','لوحة الإدارة','i-shield']]],
 ] : [
-  ['الأساس', [['home','الرئيسية','i-home'],['mushaf','المصحف','i-book'],['stats','الإحصاء العام','i-chart'],['words','المعجم المفهرس','i-abc'],['topics','الموسوعة الموضوعية','i-grid']]],
-  ['الذكاء', [['search','البحث بالمعنى','i-search',1],['ask','اسأل مشكاة','i-spark',1]]],
-  ['الحفظ والتلاوة', [['hifz','الحفظ والتسميع','i-mic',1],['saved','محفوظاتي','i-bookmark'],['prayer','مواقيت الصلاة','i-time',1]]],
-  ['التحليل', [['research','مختبر الأبحاث','i-flask',1],['awwalin','أخبار الأولين والآخرين','i-scroll',1],['ijaz','الإعجاز العلمي','i-atom',1]]],
-  ['الاستكشاف', [['map','أطلس القرآن','i-map',1],['timeline','الخط الزمني','i-time',1],['graph','شبكة المعرفة','i-graph',1]]],
-  ['التطبيق', [['guide','دليل التطبيق','i-info',1],['account','حسابي','i-user'],['settings','الإعدادات','i-gear'],['about','المنهج والمصادر','i-info'],['admin','لوحة الإدارة','i-shield']]],
+  ['', [['home','الرئيسية','i-home']]],
+  ['اقرأ وتدبّر', [['mushaf','المصحف','i-book'],['search','البحث بالمعنى','i-search'],['ask','اسأل مشكاة','i-spark'],['topics','الموسوعة الموضوعية','i-grid']], 'p1'],
+  ['احفظ وتعبّد', [['hifz','الحفظ والتسميع','i-mic'],['saved','محفوظاتي','i-bookmark'],['prayer','مواقيت الصلاة','i-time']], 'p2'],
+  ['ابحث وحقّق', [['research','مختبر الأبحاث','i-flask'],['words','المعجم المفهرس','i-abc'],['stats','الإحصاء العام','i-chart']], 'p3'],
+  ['اكتشف وتأمّل', [['awwalin','أخبار الأولين والآخرين','i-scroll'],['ijaz','الإعجاز العلمي','i-atom'],['map','أطلس القرآن','i-map'],['timeline','الخط الزمني','i-time'],['graph','شبكة المعرفة','i-graph']], 'p4'],
+  ['التطبيق', [['guide','دليل التطبيق','i-info'],['about','المنهج والمصادر','i-info'],['account','حسابي','i-user'],['settings','الإعدادات','i-gear'],['admin','لوحة الإدارة','i-shield']]],
 ];
 let isOwner = false;
 function navHTML() {
-  return NAV.map(([sec, items]) => `<div class="sec">${sec}</div>` + items.filter(([v]) => (v !== 'admin' || (IS_PWA ? isAdmin() : isOwner)) && (v !== 'account' || IS_PWA))
+  return NAV.map(([sec, items, pc]) => (sec ? `<div class="sec${pc ? ' ' + pc : ''}">${pc ? '<i class="dot"></i>' : ''}${sec}</div>` : '') + items.filter(([v]) => (v !== 'admin' || (IS_PWA ? isAdmin() : isOwner)) && (v !== 'account' || IS_PWA))
     .map(([v, l, ic, nw]) => `<a href="#${v}" data-v="${v}"><svg><use href="#${ic}"/></svg>${l}${nw ? '<span class="new">جديد</span>' : ''}</a>`).join('')).join('');
 }
 function drawNav() { $('#nav').innerHTML = navHTML(); }
-const V = html => { $('#view').innerHTML = html; };
+/* مسارات مشكاة: كل قسم بوصفه ولونه ومساره، تُبنى منها الرئيسية وروابط «تابع الاستكشاف» */
+const PATHS = [
+  ['p1', 'اقرأ وتدبّر', 'النص الكريم ومعانيه: تلاوة، وبحث بالفكرة، وموضوعات مفهرسة.', [
+    ['mushaf', 'i-book', 'المصحف', 'رواية حفص بخط واضح، مع التفسير والمعاني لكل آية.', () => `${n(Q.surahs.length)} سورة`],
+    ['search', 'i-search', 'البحث بالمعنى', 'اكتب الفكرة بلغتك، فتظهر الآيات الأقرب إليها مرتبةً.', () => `${n(Q.ayat.length)} آية`],
+    ['ask', 'i-spark', 'اسأل مشكاة', 'سؤالك يُجاب من الآيات وأقوال المفسرين والمداخل الموضوعية.', () => ''],
+    ['topics', 'i-grid', 'الموسوعة الموضوعية', 'الأنبياء والأقوام والأماكن والأحكام، كل موضوع بآياته.', () => `${n(T.length)} فهرساً`]]],
+  ['p2', 'احفظ وتعبّد', 'رفيقك اليومي: حفظ بخطة مراجعة، وعلامات، ومواقيت الصلاة.', [
+    ['hifz', 'i-mic', 'الحفظ والتسميع', 'إخفاء تدريجي، واختبار بالكتابة والصوت، وجدول مراجعة.', () => ''],
+    ['saved', 'i-bookmark', 'محفوظاتي', 'الآيات التي علّمتها ومقاطع حفظك في مكان واحد.', () => `${n(ST.bookmarks.length)} علامة`],
+    ['prayer', 'i-time', 'مواقيت الصلاة', 'حسب بلدك ومذهبك، مع اتجاه القبلة والتاريخ الهجري.', () => '']]],
+  ['p3', 'ابحث وحقّق', 'أدوات الباحث: أبحاث موثقة، ومعجم الألفاظ والجذور، والإحصاء.', [
+    ['research', 'i-flask', 'مختبر الأبحاث', 'بحث كامل في أي موضوع من الآيات والتفاسير والصحاح، بمصادره.', () => ''],
+    ['words', 'i-abc', 'المعجم المفهرس', 'كل لفظ وجذر في المصحف بمواضعه وصيغه.', () => `${n(W.roots.length)} جذراً`],
+    ['stats', 'i-chart', 'الإحصاء العام', 'السور والكلمات والحروف وأقسام الكلم بالأرقام الموثقة.', () => `${n(W.w.length)} كلمة`]]],
+  ['p4', 'اكتشف وتأمّل', 'رحلة في أخبار القرآن وآياته الكونية، على الخريطة والزمن.', [
+    ['awwalin', 'i-scroll', 'أخبار الأولين والآخرين', 'قصص الأمم السابقة وأخبار الغيب الآتي، من الآيات.', () => ''],
+    ['ijaz', 'i-atom', 'الإعجاز العلمي', 'آيات الكون والإنسان مع درجة كل قول ومصادره.', () => ''],
+    ['map', 'i-map', 'أطلس القرآن', 'خريطة للمدن والقرى والأماكن الواردة في القرآن.', () => ''],
+    ['timeline', 'i-time', 'الخط الزمني', 'الأنبياء على ترتيب المؤرخين، وأحداث السيرة بسنواتها.', () => ''],
+    ['graph', 'i-graph', 'شبكة المعرفة', 'علاقات الأنبياء بأقوامهم وأماكنهم والسور.', () => '']]],
+];
+const PATH_OF = {}; PATHS.forEach((p, gi) => p[3].forEach((x, i) => { PATH_OF[x[0]] = [gi, i]; }));
+const sCard = ([v, ic, t, d, meta], pc, big) => { let m = ''; try { m = meta(); } catch (e) {} return `<a class="scard ${pc}${big ? ' big' : ''}" href="#${v}"><span class="sic"><svg><use href="#${ic}"/></svg></span><span class="stx"><b>${t}</b><span>${d}</span></span><span class="sft">${m ? `<em>${m}</em>` : '<em></em>'}<i aria-hidden="true">←</i></span></a>`; };
+function nextPaths(v) {
+  const at = PATH_OF[v]; if (!at || LAB) return '';
+  const [gi, i] = at, g = PATHS[gi], ng = PATHS[(gi + 1) % PATHS.length];
+  const same = g[3].filter((x, k) => k !== i).slice(0, 2).map(x => [x, g[0]]), other = [[ng[3][0], ng[0]]];
+  return `<section class="nextpaths no-print"><div class="np-head"><span class="eyebrow">تابع الاستكشاف</span><a href="#home" class="np-all">كل الأقسام</a></div><div class="np-grid">${[...same, ...other].map(([x, pc]) => sCard(x, pc)).join('')}</div></section>`;
+}
+let curRoute = '';
+const V = html => { $('#view').innerHTML = html + nextPaths(curRoute); };
 const views = { prayer, home: LAB ? research : home, mine: () => research(null, true), mushaf, stats, words, topics, search, ask, hifz, saved, map: atlas, timeline, graph, settings, about, admin, guide, account, awwalin, ijaz, research };
 function route() {
   const h = (location.hash || '#' + HOME).slice(1);
   let m, cur;
+  curRoute = /^(s|a)\d/.test(h) ? 'mushaf' : /^t-/.test(h) ? 'topics' : /^(root|lem)\d/.test(h) ? 'words' : h;
   if (m = h.match(/^s(\d+)$/)) { cur = 'mushaf'; surah(+m[1]); }
   else if (m = h.match(/^a(\d+)-(\d+)$/)) { cur = 'mushaf'; surah(+m[1], +m[2]); }
   else if (m = h.match(/^t-([a-z]+)$/)) { cur = 'topics'; topic(m[1]); }
@@ -142,39 +174,53 @@ function home() {
   const di = dailyIndex();
   const last = ST.last != null ? ST.last : null;
   const due = dueList();
-  const F = [
-    ['search','i-search','البحث بالمعنى','اكتب الفكرة بلغتك، فتظهر الآيات ذات الصلة مرتبةً بالأقرب، مع التفسير الميسر.'],
-    ['ask','i-spark','اسأل مشكاة', IS_PWA ? 'مساعد بحث يجمع لك الآيات وأقوال المفسرين والمداخل الموضوعية في سؤالك، على جهازك.' : 'مساعد ذكي يجيب من الآيات والتفاسير المعتمدة ويذكر المواضع، ولا يفتي.'],
-    ['hifz','i-mic','الحفظ والتسميع','إخفاء تدريجي، واختبار بالكتابة، وتسميع بالصوت، وجدول مراجعة يتذكّر مستواك.'],
-    ['map','i-map','أطلس القرآن','خريطة تفاعلية للمدن والقرى والأماكن الواردة في القرآن مع آياتها.'],
-    ['timeline','i-time','الخط الزمني','الأنبياء على ترتيب المؤرخين، وأحداث السيرة بسنواتها من الآيات.'],
-    ['graph','i-graph','شبكة المعرفة','علاقات الأنبياء بأقوامهم وأماكنهم والسور التي ذُكروا فيها.'],
-  ];
-  V(`<div class="stack">
-  <div class="hero">
+  const hr = new Date().getHours(), greet = hr < 12 ? 'صباح الخير' : 'مساء الخير';
+  const QUICK = ['الصبر على البلاء', 'بر الوالدين', 'التوكل على الله', 'الرزق', 'التوبة'];
+  V(`<div class="stack home2">
+  <div class="hero2">
+    <section class="welcome">
+      <div class="wl-pat" aria-hidden="true"></div>
+      <span class="eyebrow">${greet}${SESSION ? ' · ' + esc(SESSION.name) : ''}</span>
+      <h1>القرآن الكريم بين يديك: اقرأ، وابحث، وتدبّر</h1>
+      <p class="lead">موسوعة واحدة تجمع المصحف وتفاسيره، والبحث بالمعنى، والحفظ، والأبحاث الموثقة، تعمل على جهازك دون إنترنت.</p>
+      <form class="wl-search" id="homeQ" role="search"><svg><use href="#i-search"/></svg><input type="search" id="homeQi" placeholder="عمّ تبحث في القرآن؟ اكتب فكرة أو كلمة" aria-label="ابحث في القرآن"><button class="btn primary" type="submit">ابحث</button></form>
+      <div class="wl-chips"><span class="muted small">جرّب:</span>${QUICK.map(q => `<button type="button" class="chip" data-hq="${esc(q)}">${esc(q)}</button>`).join('')}</div>
+    </section>
     <section class="daily stack tight"><div class="eyebrow">${siteCfg.featured ? 'آية مختارة' : 'آية اليوم'} · ${esc(ref(di))}</div>
       ${ayahHTML(di, null, false)}
       ${siteCfg.featuredNote ? `<p style="margin:0;opacity:.9">${esc(siteCfg.featuredNote)}</p>` : ''}
       <div class="toolbar"><button class="btn" data-ayah="${di}">التفسير</button><button class="btn" data-card="${di}"><svg><use href="#i-image"/></svg>بطاقة للمشاركة</button><a class="btn" href="#a${Q.ayat[di][0]}-${Q.ayat[di][1]}">في سياقها</a></div>
     </section>
-    <section class="panel stack tight">
-      <h2>متابعتك</h2>
-      ${last != null ? `<a class="row" href="#a${Q.ayat[last][0]}-${Q.ayat[last][1]}"><span class="t">أكمل القراءة من <b>${esc(ref(last))}</b></span><span class="n">←</span></a>` : `<p class="muted small" style="margin:0">ابدأ القراءة من <a href="#mushaf">المصحف</a>، وسيحفظ التطبيق موضعك تلقائياً.</p>`}
-      <a class="row" href="#hifz"><span class="t">مقاطع للمراجعة اليوم</span><span class="n">${n(due.length)}</span></a>
-      <a class="row" href="#saved"><span class="t">الآيات المحفوظة في علاماتك</span><span class="n">${n(ST.bookmarks.length)}</span></a>
-      <div class="pill-row" style="margin-top:4px">${cloud ? '<span class="chip ok">تقدّمك محفوظ في حسابك ويتزامن بين أجهزتك</span>' : SESSION ? `<a class="chip ok" href="#account">حسابك: ${esc(SESSION.name)} · ${ROLE[SESSION.role]}</a>` : IS_PWA ? '<span class="chip">تقدّمك محفوظ على هذا الجهاز</span><a class="chip acc" href="#account">ادخل إلى حسابك</a>' : '<span class="chip">تقدّمك محفوظ على هذا الجهاز</span>'}${IS_PWA && installEvt ? '<button class="chip acc" id="homeInst">ثبّت مشكاة على جهازك</button>' : ''}</div>
-    </section>
   </div>
-  ${prHomeCard()}
-  <div class="grid tiles">
-    ${[['سورة',Q.surahs.length],['آية',Q.ayat.length],['كلمة',W.w.length],['جذراً',W.roots.length],['كتب تفسير',TF.length]].map(([k,v]) => `<div class="tile"><b>${n(v)}</b><span>${k}</span></div>`).join('')}
+  <div class="today">
+    ${prHomeCard()}
+    <div class="mine3">
+      ${last != null ? `<a class="mcard" href="#a${Q.ayat[last][0]}-${Q.ayat[last][1]}"><svg><use href="#i-book"/></svg><span><small>أكمل القراءة</small><b>${esc(ref(last))}</b></span></a>` : `<a class="mcard" href="#mushaf"><svg><use href="#i-book"/></svg><span><small>ابدأ القراءة</small><b>افتح المصحف</b></span></a>`}
+      <a class="mcard" href="#hifz"><svg><use href="#i-mic"/></svg><span><small>مراجعة اليوم</small><b>${n(due.length)} مقطع</b></span></a>
+      <a class="mcard" href="#saved"><svg><use href="#i-bookmark"/></svg><span><small>علاماتك</small><b>${n(ST.bookmarks.length)} آية</b></span></a>
+    </div>
+    <div class="pill-row acct-row">${cloud ? '<span class="chip ok">تقدّمك محفوظ في حسابك ويتزامن بين أجهزتك</span>' : SESSION ? `<a class="chip ok" href="#account">حسابك: ${esc(SESSION.name)} · ${ROLE[SESSION.role]}</a>` : IS_PWA ? '<span class="chip">تقدّمك محفوظ على هذا الجهاز</span><a class="chip acc" href="#account">ادخل إلى حسابك</a>' : '<span class="chip">تقدّمك محفوظ على هذا الجهاز</span>'}${IS_PWA && installEvt ? '<button class="chip acc" id="homeInst">ثبّت مشكاة على جهازك</button>' : ''}</div>
   </div>
-  <section class="stack tight"><div class="toolbar" style="justify-content:space-between"><h2>ما الجديد في مشكاة</h2><a class="btn" href="#guide">دليل التطبيق والمتطلبات</a></div>
-    <div class="grid feat">${F.map(([h,ic,t,d]) => `<a class="fcard" href="#${h}"><span class="ic"><svg><use href="#${ic}"/></svg></span><b>${t}</b><p>${d}</p></a>`).join('')}</div></section>
-  <section class="stack tight"><h2>الموسوعة الموضوعية</h2>
-    <div class="grid cats">${T.slice(0, 8).map(c => `<a class="cat" href="#t-${c.id}"><span class="eyebrow">${n(c.items.length)} مدخلاً</span><h3>${c.title}</h3><p>${esc(c.intro)}</p></a>`).join('')}</div>
-    <a class="btn" href="#topics" style="align-self:flex-start">كل الفهارس (${n(T.length)})</a></section>
+  <section class="paths">
+    <div class="sec-head"><div><span class="eyebrow">مسارات مشكاة</span><h2>اختر طريقك في الموسوعة</h2></div><a class="btn" href="#guide">دليل التطبيق</a></div>
+    ${PATHS.map(([pc, t, d, items], gi) => `<div class="path ${pc}"><div class="path-head"><span class="pnum">${n(gi + 1)}</span><div><h3>${t}</h3><p>${d}</p></div></div><div class="path-grid">${items.map((x, i) => sCard(x, pc, i === 0)).join('')}</div></div>`).join('')}
+  </section>
+  <section class="numbers">
+    <div class="sec-head"><div><span class="eyebrow">القرآن بالأرقام</span><h2>إحصاء موثق من نص المصحف</h2></div><a class="btn" href="#stats">الإحصاء الكامل</a></div>
+    <div class="grid tiles">${[['سورة',Q.surahs.length],['آية',Q.ayat.length],['كلمة',W.w.length],['جذراً',W.roots.length],['كتب تفسير',TF.length]].map(([k,v]) => `<div class="tile"><b>${n(v)}</b><span>${k}</span></div>`).join('')}</div>
+  </section>
+  <section class="stack tight">
+    <div class="sec-head"><div><span class="eyebrow">الموسوعة الموضوعية</span><h2>موضوعات مختارة</h2></div><a class="btn" href="#topics">كل الفهارس (${n(T.length)})</a></div>
+    <div class="cat-rail">${T.slice(0, 10).map(c => `<a class="cat" href="#t-${c.id}"><span class="eyebrow">${n(c.items.length)} مدخلاً</span><h3>${c.title}</h3><p>${esc(c.intro)}</p></a>`).join('')}</div>
+  </section>
+  <footer class="hfoot">
+    <div class="hf-brand"><img src="icons/icon-192.png" alt=""><span><b>مشكاة</b><small>موسوعة القرآن الذكية · مصحف المدينة النبوية، رواية حفص عن عاصم</small></span></div>
+    <nav class="hf-links"><a href="#about">المنهج والمصادر</a><a href="#guide">دليل التطبيق</a><a href="#settings">الإعدادات</a>${IS_PWA ? '<a href="#account">حسابي</a>' : ''}</nav>
+  </footer>
   </div>`);
+  const go = q => { if (!q.trim()) return; window.scrollTo(0, 0); $('#qinput').value = q; history.replaceState(null, '', '#search'); curRoute = 'search'; setCur('search'); search(q); };
+  $('#homeQ').onsubmit = e => { e.preventDefault(); go($('#homeQi').value); };
+  $$('[data-hq]').forEach(b => b.onclick = () => go(b.dataset.hq));
   const hi = $('#homeInst'); if (hi) hi.onclick = async () => { installEvt.prompt(); await installEvt.userChoice; installEvt = null; hi.remove(); };
 }
 
@@ -1570,7 +1616,7 @@ function wordDrawer(wi) {
   <section><h3>الآية</h3>${ayahHTML(i, new Set([wi]), false)}<button class="btn" data-ayah="${i}">عرض تفسير الآية</button></section></div>`);
   tafsir('gharib', Q.ayat[i][0]).then(t => { $('#gbody').textContent = t[Q.ayat[i][1]] || 'لم يذكر كتاب «الميسر في غريب القرآن» ألفاظاً غريبة في هذه الآية. اضغط «عرض تفسير الآية» لقراءة التفسير.'; }).catch(() => { $('#gbody').textContent = 'تعذّر التحميل.'; });
 }
-function moreMenu() { openDrawer(`<div class="stack"><a class="brand" href="#${HOME}" data-close style="padding:0"><img src="icons/icon-192.png" alt="" style="width:40px;height:40px;border-radius:10px"><span><b>${LAB ? 'مختبر الأبحاث' : 'مشكاة'}</b><small>${LAB ? 'القرآنية والحديثية' : 'موسوعة القرآن الذكية'}</small></span></a><nav class="nav">${navHTML()}</nav></div>`); }
+function moreMenu() { openDrawer(`<div class="stack mm"><a class="brand" href="#${HOME}" data-close style="padding:0"><img src="icons/icon-192.png" alt="" style="width:40px;height:40px;border-radius:10px"><span><b>${LAB ? 'مختبر الأبحاث' : 'مشكاة'}</b><small>${LAB ? 'القرآنية والحديثية' : 'موسوعة القرآن الذكية'}</small></span></a><nav class="nav${LAB ? '' : ' nav-tiles'}">${navHTML()}</nav></div>`); }
 
 /* ================= global events */
 document.addEventListener('click', e => {
@@ -1592,7 +1638,7 @@ document.addEventListener('click', e => {
   else if (d.close !== undefined || t.matches('#sheet .nav a')) closeDrawer();
 });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
-$('#qform').onsubmit = e => { e.preventDefault(); const q = $('#qinput').value; if (LAB) { if (!q.trim()) return; pendingResearch = { q: q.trim(), n: 20, k: 5, h: 10, tf: ['muyassar', 'saadi', 'ibnkathir', 'qurtubi'], sunan: true, scan: true }; $('#qinput').value = ''; if (location.hash === '#research') research(); else location.hash = 'research'; return; } if (location.hash !== '#search') history.replaceState(null, '', '#search'); setCur('search'); search(q); };
+$('#qform').onsubmit = e => { e.preventDefault(); const q = $('#qinput').value; if (LAB) { if (!q.trim()) return; pendingResearch = { q: q.trim(), n: 20, k: 5, h: 10, tf: ['muyassar', 'saadi', 'ibnkathir', 'qurtubi'], sunan: true, scan: true }; $('#qinput').value = ''; if (location.hash === '#research') research(); else location.hash = 'research'; return; } if (location.hash !== '#search') history.replaceState(null, '', '#search'); curRoute = 'search'; setCur('search'); search(q); };
 $('#moreBtn').onclick = moreMenu;
 $('#themeBtn').onclick = () => { const dark = ST.prefs.theme === 'dark' || (ST.prefs.theme === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches); ST.prefs.theme = dark ? 'light' : 'dark'; applyPrefs(); save(); };
 window.addEventListener('hashchange', route);
