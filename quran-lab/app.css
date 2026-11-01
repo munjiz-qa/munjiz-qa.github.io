@@ -24,7 +24,7 @@
   --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 24px rgba(0,0,0,.25); color-scheme:dark}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-html{direction:rtl}
+html{direction:rtl}html[dir=ltr]{direction:ltr}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.75;margin:0}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--sheet)}
 a{color:var(--accent)}
@@ -276,3 +276,42 @@ tr.clk{cursor:pointer} tr.clk:hover td{background:var(--accent-soft)}
 @media print{.rail,.searchbar,.tabbar,.banner,.no-print,.toast,.drawer{display:none!important}.shell{margin:0!important;padding:0!important}
   body{background:#fff!important;color:#000}.wrap{max-width:none!important;padding:0!important}.rdoc{border:0;padding:0}.rq{background:#faf7f0;break-inside:avoid}a{color:#000;text-decoration:none}.chip{border-color:#999}}
 .rdoc ol{list-style:arabic-indic}
+
+/* ---------- languages */
+.langbtn{width:auto;min-width:40px;padding:0 10px;gap:5px;display:inline-flex;align-items:center;font-weight:600;font-size:.82rem;font-family:"Readex Pro",system-ui,sans-serif}
+.langgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.langopt{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:start;border:1px solid var(--line);background:var(--sheet);color:inherit;border-radius:12px;padding:9px 12px;cursor:pointer;font:inherit}
+.langopt b{font-size:1rem}.langopt small{color:var(--muted);font-size:.72rem;line-height:1.35}
+.langopt:hover{border-color:var(--accent)}.langopt.on{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--sheet))}
+.langopt[hidden]{display:none}
+#langQ{width:100%}
+.mean{font-family:"Readex Pro",system-ui,sans-serif;font-size:.98rem;line-height:1.75;color:var(--ink);opacity:.92;margin:4px 0 14px;padding:8px 12px;border-inline-start:3px solid var(--saffron);background:color-mix(in srgb,var(--saffron) 7%,transparent);border-radius:6px;text-align:start}
+.mean .mean-src{display:block;font-size:.7rem;color:var(--muted);margin-top:4px}
+#gte,.goog-te-banner-frame,.skiptranslate>iframe,.VIpgJd-ZVi9od-ORHb-OEVmcd,#goog-gt-tt,.goog-te-balloon-frame{display:none!important}
+body{top:0!important}font{background:none!important;box-shadow:none!important}
+/* left-to-right languages: mirror the layout, keep Quran text right-to-left */
+html[dir=ltr] .rail{right:auto;left:0;border-left:0;border-right:1px solid var(--line)}
+html[dir=ltr] .shell{margin-right:0;margin-left:var(--rail)}
+@media (max-width:999px){html[dir=ltr] .shell{margin-left:0}}
+html[dir=ltr] th,html[dir=ltr] td{text-align:left}
+html[dir=ltr] .hbar em{text-align:right}
+html[dir=ltr] .drawer .close{float:right}
+html[dir=ltr] .tl .ev::before{right:auto;left:-24px}
+html[dir=ltr] .tl::before{right:auto;left:8px}
+html[dir=ltr] .ayah{text-align:right}
+@media (max-width:520px){#themeBtn{display:none}.langbtn{padding:0 8px;gap:3px}.searchbar .wrap{gap:8px}}
+/* ---------- prayer times */
+.prnext{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 70%,#000));color:var(--accent-ink);border:0}
+.prnext .eyebrow{color:inherit;opacity:.8;display:block}.prnext .prnm{font-size:1.6rem;margin-inline-end:10px}.prnext .prat{font-size:1.6rem;font-weight:300}
+.prnext .chip{background:rgba(255,255,255,.16);color:inherit;border-color:transparent}
+.prgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.prcell{background:var(--sheet);border:1px solid var(--line);border-radius:var(--r);padding:12px;display:flex;flex-direction:column;gap:2px;text-align:center}
+.prcell span{color:var(--muted);font-size:.85rem}.prcell b{font-size:1.25rem;font-weight:600}
+.prcell.on{border-color:var(--saffron);box-shadow:inset 0 0 0 1px var(--saffron);background:var(--saffron-soft)}.prcell.sun b{color:var(--muted);font-weight:400}
+.prform{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.prform .field{display:flex;flex-direction:column;gap:4px}.prform select{width:100%}
+.chk{display:inline-flex;gap:6px;align-items:center;cursor:pointer}
+.prtable tr.today td{background:var(--saffron-soft);font-weight:600}
+.prbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;text-decoration:none;color:inherit;padding:12px 16px}
+.prbar .prwho{display:flex;gap:10px;align-items:center}.prbar .prwho svg{width:26px;height:26px;stroke:var(--saffron);fill:none;stroke-width:1.7}
+.prbar .eyebrow{display:block}.prmini{display:flex;gap:14px;flex-wrap:wrap}.prmini span{display:flex;flex-direction:column;font-size:.92rem;font-weight:600}.prmini small{color:var(--muted);font-weight:400;font-size:.72rem}.prmini .on{color:var(--saffron)}
+@media (max-width:760px){.prgrid{grid-template-columns:repeat(3,1fr)}.prform{grid-template-columns:1fr}.prmini{gap:10px;width:100%;justify-content:space-between}}

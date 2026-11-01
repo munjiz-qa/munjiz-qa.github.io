@@ -6,7 +6,9 @@ const LAB = window.MISHKAT_APP === 'lab'; // «مختبر الأبحاث الق�
 const BRAND = LAB ? 'مختبر الأبحاث القرآنية' : 'مشكاة', HOME = LAB ? 'research' : 'home';
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
-const NF = new Intl.NumberFormat('ar-EG');
+/* اللغة: العربية أصل المنصة؛ English مترجمة ترجمة كاملة مضمّنة تعمل دون إنترنت؛ بقية اللغات بترجمة Google عند الاتصال، ومعاني القرآن بترجمات معتمدة مضمّنة */
+const LANG = (() => { try { return localStorage.getItem('quran-lang') || 'ar'; } catch (e) { return 'ar'; } })();
+const NF = new Intl.NumberFormat(LANG === 'ar' ? 'ar-EG' : 'en-US');
 const n = x => NF.format(x);
 const POS = {N:'اسم',PN:'اسم علم',ADJ:'صفة',ACT_PCPL:'اسم فاعل',PASS_PCPL:'اسم مفعول',PRON:'ضمير',REL:'اسم موصول',DEM:'اسم إشارة',T:'ظرف زمان',LOC:'ظرف مكان',VN:'مصدر',VPERF:'فعل ماضٍ',VIMPF:'فعل مضارع',VIMPV:'فعل أمر',P:'حرف'};
 let Q, W, T, TF, GEO;
@@ -92,13 +94,13 @@ const itemAyat = it => it ? (it.a || (it.r ? it.r.flatMap(([s, e]) => { const o 
 
 /* ================= navigation */
 const NAV = LAB ? [
-  ['المختبر', [['research','بحث جديد','i-flask'],['mine','أبحاثي','i-bookmark']]],
+  ['المختبر', [['research','بحث جديد','i-flask'],['mine','أبحاثي','i-bookmark'],['prayer','مواقيت الصلاة','i-time',1]]],
   ['أدوات التحقق', [['mushaf','المصحف','i-book'],['words','المعجم المفهرس','i-abc']]],
   ['التطبيق', [['guide','دليل المختبر','i-info'],['account','حسابي','i-user'],['settings','الإعدادات','i-gear'],['admin','لوحة الإدارة','i-shield']]],
 ] : [
   ['الأساس', [['home','الرئيسية','i-home'],['mushaf','المصحف','i-book'],['stats','الإحصاء العام','i-chart'],['words','المعجم المفهرس','i-abc'],['topics','الموسوعة الموضوعية','i-grid']]],
   ['الذكاء', [['search','البحث بالمعنى','i-search',1],['ask','اسأل مشكاة','i-spark',1]]],
-  ['الحفظ والتلاوة', [['hifz','الحفظ والتسميع','i-mic',1],['saved','محفوظاتي','i-bookmark']]],
+  ['الحفظ والتلاوة', [['hifz','الحفظ والتسميع','i-mic',1],['saved','محفوظاتي','i-bookmark'],['prayer','مواقيت الصلاة','i-time',1]]],
   ['التحليل', [['research','مختبر الأبحاث','i-flask',1],['awwalin','أخبار الأولين والآخرين','i-scroll',1],['ijaz','الإعجاز العلمي','i-atom',1]]],
   ['الاستكشاف', [['map','أطلس القرآن','i-map',1],['timeline','الخط الزمني','i-time',1],['graph','شبكة المعرفة','i-graph',1]]],
   ['التطبيق', [['guide','دليل التطبيق','i-info',1],['account','حسابي','i-user'],['settings','الإعدادات','i-gear'],['about','المنهج والمصادر','i-info'],['admin','لوحة الإدارة','i-shield']]],
@@ -110,7 +112,7 @@ function navHTML() {
 }
 function drawNav() { $('#nav').innerHTML = navHTML(); }
 const V = html => { $('#view').innerHTML = html; };
-const views = { home: LAB ? research : home, mine: () => research(null, true), mushaf, stats, words, topics, search, ask, hifz, saved, map: atlas, timeline, graph, settings, about, admin, guide, account, awwalin, ijaz, research };
+const views = { prayer, home: LAB ? research : home, mine: () => research(null, true), mushaf, stats, words, topics, search, ask, hifz, saved, map: atlas, timeline, graph, settings, about, admin, guide, account, awwalin, ijaz, research };
 function route() {
   const h = (location.hash || '#' + HOME).slice(1);
   let m, cur;
@@ -119,7 +121,7 @@ function route() {
   else if (m = h.match(/^t-([a-z]+)$/)) { cur = 'topics'; topic(m[1]); }
   else if (m = h.match(/^root(\d+)$/)) { cur = 'words'; rootView(+m[1]); }
   else if (m = h.match(/^lem(\d+)$/)) { cur = 'words'; lemmaView(+m[1]); }
-  else { cur = views[h] ? h : HOME; if (LAB && cur === 'home') cur = 'research'; if (LAB && cur === 'about') cur = 'guide'; if (LAB && !['research', 'mine', 'mushaf', 'words', 'guide', 'account', 'settings', 'admin'].includes(cur)) cur = 'research'; views[cur](); }
+  else { cur = views[h] ? h : HOME; if (LAB && cur === 'home') cur = 'research'; if (LAB && cur === 'about') cur = 'guide'; if (LAB && !['research', 'mine', 'prayer', 'mushaf', 'words', 'guide', 'account', 'settings', 'admin'].includes(cur)) cur = 'research'; views[cur](); }
   setCur(cur);
   if (!/^a\d/.test(h)) window.scrollTo(0, 0);
 }
@@ -163,6 +165,7 @@ function home() {
       <div class="pill-row" style="margin-top:4px">${cloud ? '<span class="chip ok">تقدّمك محفوظ في حسابك ويتزامن بين أجهزتك</span>' : SESSION ? `<a class="chip ok" href="#account">حسابك: ${esc(SESSION.name)} · ${ROLE[SESSION.role]}</a>` : IS_PWA ? '<span class="chip">تقدّمك محفوظ على هذا الجهاز</span><a class="chip acc" href="#account">ادخل إلى حسابك</a>' : '<span class="chip">تقدّمك محفوظ على هذا الجهاز</span>'}${IS_PWA && installEvt ? '<button class="chip acc" id="homeInst">ثبّت مشكاة على جهازك</button>' : ''}</div>
     </section>
   </div>
+  ${prHomeCard()}
   <div class="grid tiles">
     ${[['سورة',Q.surahs.length],['آية',Q.ayat.length],['كلمة',W.w.length],['جذراً',W.roots.length],['كتب تفسير',TF.length]].map(([k,v]) => `<div class="tile"><b>${n(v)}</b><span>${k}</span></div>`).join('')}
   </div>
@@ -440,6 +443,7 @@ function search(q0) {
   $('.suggest').onclick = e => { const b = e.target.closest('button'); if (!b) return; $('#sq').value = b.dataset.q; run(); };
   const run = async () => {
     const raw = $('#sq').value.trim(); if (!raw) { $('#sres').innerHTML = ''; return; }
+    if (!ARX.test(raw) && I18N.mean) return meanSearch(raw);
     if (mode === 'exact') return exactSearch(raw);
     $('#sres').innerHTML = '<p class="loading">جارٍ تجهيز فهرس المعاني (مرة واحدة فقط)…</p>';
     const r = await smartSearch(raw, 60);
@@ -451,6 +455,16 @@ function search(q0) {
     const ta = $('#toAsk'); if (ta) ta.onclick = () => { pendingAsk = raw; };
     if (!r.ids.length) { $('#shits').innerHTML = '<p class="muted">لم أجد آيات قريبة. جرّب كلمة أخرى قريبة من المعنى.</p>'; return; }
     renderOcc($('#shits'), r.ids, null, 20, i => `<p class="snip">${snippet((r.mu[Q.ayat[i][0]] || {})[Q.ayat[i][1]] || '', r.terms)}</p><div class="why"><span class="chip">درجة القرب ${n(Math.max(1, Math.round(r.score[i] / top * 100)))}٪</span></div>`);
+  };
+  const meanSearch = raw => { // بحث بلغة الزائر في ترجمة المعاني المعتمدة المضمّنة
+    const STOP = new Set(['the','and','for','that','with','from','this','are','was','were','who','what','which','about','into','have','has','not','but','his','her','they','them','you','your','our','their','its','how','why','when','verses','verse','quran']);
+    const ws = raw.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').split(/[^\p{L}\p{N}]+/u).filter(w => w.length > 2 && !STOP.has(w)).map(w => w.length > 5 ? w.slice(0, w.length - 2) : w);
+    if (!ws.length) { $('#sres').innerHTML = ''; return; }
+    const sc = new Map(); I18N.mean.forEach((t, i) => { const lt = ' ' + t.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '') + ' '; let k = 0; for (const w of ws) if (lt.includes(w)) k += lt.includes(' ' + w) ? 2 : 1; if (k) sc.set(i, k + ws.filter(w => lt.includes(w)).length * 3); });
+    const ids = [...sc.keys()].sort((a, b) => sc.get(b) - sc.get(a)), top = ids.length ? sc.get(ids[0]) : 1;
+    $('#sres').innerHTML = `<div class="stack"><section class="panel stack tight"><div class="pill-row"><span class="chip acc">${n(ids.length)} آية ذات صلة</span></div><p class="muted small" style="margin:0">بحث في ترجمة معاني القرآن المعتمدة بلغتك، مرتّبة بالأقرب. ويمكنك البحث بالعربية أيضاً.</p></section><section class="panel"><div id="shits"></div></section></div>`;
+    if (!ids.length) { $('#shits').innerHTML = '<p class="muted">لم أجد آيات قريبة. جرّب كلمة أخرى قريبة من المعنى.</p>'; return; }
+    renderOcc($('#shits'), ids.slice(0, 200), null, 20, i => `<div class="why"><span class="chip">درجة القرب ${n(Math.max(1, Math.round(sc.get(i) / top * 100)))}٪</span></div>`);
   };
   const exactSearch = raw => {
     const nq = norm(raw); const rx = new RegExp(nq.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
@@ -923,7 +937,7 @@ function about() {
 const uniqAyat = items => [...new Set(items.flatMap(it => itemAyat(it)))];
 const notLex = it => !it.n.startsWith('لفظ');
 const barsHTML = (rows, cat) => { const mx = Math.max(...rows.map(r => r[1]), 1); return `<div class="hbars wide">${rows.map(([nm, v, label]) => `<a class="hbar" ${cat ? `data-open="${esc(cat)}|${esc(nm)}"` : ''}><span class="k">${esc(label || nm)}</span><i style="width:${(v / mx * 100).toFixed(1)}%"></i><em>${n(v)}</em></a>`).join('')}</div>`; };
-const ayahQuote = (s, a, b = a) => { const i = idxOf(s, a), j = idxOf(s, b); const t = []; for (let k = i; k <= j; k++) t.push(ayahText(k)); return `<p class="ayah" style="margin:0">${esc(t.join(' ۝ '))} <a data-ayah="${i}" class="small">﴿${esc(Q.surahs[s-1].name)}: ${n(a)}${b > a ? '–' + n(b) : ''}﴾</a></p>`; };
+const ayahQuote = (s, a, b = a) => { const i = idxOf(s, a), j = idxOf(s, b); const t = []; for (let k = i; k <= j; k++) t.push(ayahText(k)); return `<p class="ayah" data-from="${i}" data-to="${j}" style="margin:0">${esc(t.join(' ۝ '))} <a data-ayah="${i}" class="small">﴿${esc(Q.surahs[s-1].name)}: ${n(a)}${b > a ? '–' + n(b) : ''}﴾</a></p>`; };
 const FATES = [
   ['قوم نوح', 'تكذيب نوح عليه السلام ألف سنة إلا خمسين عاماً', 'الطوفان والغرق', 29, 14],
   ['عاد', 'الاستكبار في الأرض والبطش', 'الريح الصرصر العاتية', 69, 6],
@@ -945,7 +959,7 @@ function awwalin() {
   const cat = id => T.find(c => c.id === id);
   const qs = cat('qasas').items.filter(notLex), an = cat('anbiya').items, aq = cat('aqwam').items, ak = cat('akhbar').items, mu = cat('mustaqbal').items;
   const storyAyat = uniqAyat(qs), futAyat = uniqAyat(mu.filter(notLex));
-  const pct = x => (x / Q.ayat.length * 100).toLocaleString('ar-EG', { maximumFractionDigits: 1 });
+  const pct = x => (x / Q.ayat.length * 100).toLocaleString(LANG === 'ar' ? 'ar-EG' : 'en-US', { maximumFractionDigits: 1 });
   const bySurah = {}; storyAyat.forEach(i => { const s = Q.ayat[i][0]; bySurah[s] = (bySurah[s] || 0) + 1; });
   const topS = Object.entries(bySurah).sort((a, b) => b[1] - a[1]).slice(0, 10);
   const mk = storyAyat.filter(i => Q.surahs[Q.ayat[i][0]-1].type === 'مكية').length;
@@ -960,7 +974,7 @@ function awwalin() {
   <div class="grid split"><section class="panel stack tight"><h3>أكثر القصص حضوراً (بعدد الآيات)</h3>${barsHTML(topQ, 'qasas')}</section>
   <section class="panel stack tight"><h3>أكثر الأنبياء ذكراً (بعدد مرات ورود الاسم)</h3>${barsHTML(topP, 'anbiya')}</section></div>
   <section class="panel stack tight"><h3>أين رُويت القصص؟</h3>
-    <p style="margin:0">${n(mk)} آية من آيات القصص في السور المكية (${(mk / storyAyat.length * 100).toLocaleString('ar-EG', { maximumFractionDigits: 0 })}٪)، و${n(storyAyat.length - mk)} في السور المدنية. فالقصص سمة القرآن المكي في مرحلة الدعوة والتثبيت.</p>
+    <p style="margin:0">${n(mk)} آية من آيات القصص في السور المكية (${(mk / storyAyat.length * 100).toLocaleString(LANG === 'ar' ? 'ar-EG' : 'en-US', { maximumFractionDigits: 0 })}٪)، و${n(storyAyat.length - mk)} في السور المدنية. فالقصص سمة القرآن المكي في مرحلة الدعوة والتثبيت.</p>
     <div class="meter"><i style="width:${(mk / storyAyat.length * 100).toFixed(1)}%;background:var(--saffron)"></i></div>
     <h4 style="margin:6px 0 0">السور الأكثر قصصاً</h4>${barsHTML(topS.map(([s, v]) => [s, v, 'سورة ' + Q.surahs[s-1].name]))}</section>
   <section class="panel stack tight"><h3>سنن الله في الأمم المكذّبة</h3>${ayahQuote(29, 40)}
@@ -1184,7 +1198,7 @@ const QNAMES = [ // أسماء القرآن وصفاته الواردة فيه،
   ['القرآن', 2, 185], ['الكتاب', 2, 2], ['الفرقان', 25, 1], ['الذكر', 15, 9], ['التنزيل', 26, 192], ['النور', 4, 174], ['البرهان', 4, 174], ['الموعظة والشفاء والهدى والرحمة', 10, 57], ['الروح', 42, 52],
   ['الحكيم', 36, 2], ['المجيد', 50, 1], ['الكريم', 56, 77], ['العزيز', 41, 41], ['المبين', 12, 1], ['المبارك', 38, 29], ['أحسن الحديث', 39, 23], ['القول الفصل', 86, 13], ['العظيم', 15, 87], ['المهيمن', 5, 48], ['البشير والنذير', 41, 4], ['حبل الله', 3, 103],
 ];
-const fmtDate = d => new Intl.DateTimeFormat('ar-EG', { day: 'numeric', month: 'long', year: 'numeric' }).format(d);
+const fmtDate = d => new Intl.DateTimeFormat(LANG === 'ar' ? 'ar-EG' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).format(d);
 const cut = (t, m) => t.length > m ? t.slice(0, m).replace(/\s+\S*$/, '') + '…' : t;
 function saveFile(name, blob) { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
 let pendingResearch = null;
@@ -1583,6 +1597,335 @@ $('#moreBtn').onclick = moreMenu;
 $('#themeBtn').onclick = () => { const dark = ST.prefs.theme === 'dark' || (ST.prefs.theme === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches); ST.prefs.theme = dark ? 'light' : 'dark'; applyPrefs(); save(); };
 window.addEventListener('hashchange', route);
 
+/* ================= prayer times: computed on the device from the sun's position (no internet, no outside service) */
+const PR_METHODS = [ // [key, Arabic name, English name, fajr angle, isha angle or minutes after maghrib ('90m'), maghrib angle]
+  ['umm', 'أم القرى (مكة المكرمة)', 'Umm al-Qura (Makkah)', 18.5, '90m'],
+  ['qatar', 'وزارة الأوقاف القطرية', 'Qatar Ministry of Awqaf', 18, '90m'],
+  ['gulf', 'الهيئة العامة للشؤون الإسلامية والأوقاف (الإمارات)', 'UAE General Authority of Islamic Affairs', 18.2, 18.2],
+  ['kuwait', 'وزارة الأوقاف الكويتية', 'Kuwait Ministry of Awqaf', 18, 17.5],
+  ['egypt', 'الهيئة المصرية العامة للمساحة', 'Egyptian General Authority of Survey', 19.5, 17.5],
+  ['mwl', 'رابطة العالم الإسلامي', 'Muslim World League', 18, 17],
+  ['karachi', 'جامعة العلوم الإسلامية بكراتشي', 'University of Islamic Sciences, Karachi', 18, 18],
+  ['turkey', 'رئاسة الشؤون الدينية التركية', 'Diyanet (Turkey)', 18, 17],
+  ['jordan', 'وزارة الأوقاف الأردنية', 'Jordan Ministry of Awqaf', 18, 18],
+  ['morocco', 'وزارة الأوقاف المغربية', 'Morocco Ministry of Habous', 19, 17],
+  ['algeria', 'وزارة الشؤون الدينية الجزائرية', 'Algeria Ministry of Religious Affairs', 18, 17],
+  ['tunisia', 'وزارة الشؤون الدينية التونسية', 'Tunisia Ministry of Religious Affairs', 18, 18],
+  ['singapore', 'مجلس سنغافورة الإسلامي (وماليزيا وإندونيسيا)', 'MUIS Singapore (Malaysia, Indonesia)', 20, 18],
+  ['isna', 'الجمعية الإسلامية لأمريكا الشمالية', 'ISNA (North America)', 15, 15],
+  ['france', 'اتحاد المنظمات الإسلامية بفرنسا', 'UOIF (France)', 12, 12],
+  ['russia', 'الإدارة الدينية لمسلمي روسيا', 'Spiritual Administration of Muslims of Russia', 16, 15],
+  ['tehran', 'معهد الجيوفيزياء بجامعة طهران', 'Institute of Geophysics, Tehran', 17.7, 14, 4.5],
+  ['jafari', 'المذهب الجعفري (مؤسسة ليفا، قم)', "Shia Ithna-Ashari (Leva, Qum)", 16, 14, 4],
+];
+const PR_MADHAB = [['std', 'الجمهور: المالكي والشافعي والحنبلي (ظل المثل)', 'Majority: Maliki, Shafi\'i, Hanbali (shadow ×1)', 1], ['hanafi', 'الحنفي (ظل المثلين)', 'Hanafi (shadow ×2)', 2]];
+// [code, Arabic, English, default method, time zone, [[city Arabic, city English, lat, lng, zone?]]]
+const PR_PLACES = [
+  ['QA', 'قطر', 'Qatar', 'qatar', 'Asia/Qatar', [['الدوحة', 'Doha', 25.2854, 51.531], ['الوكرة', 'Al Wakrah', 25.1715, 51.6034], ['الخور', 'Al Khor', 25.6839, 51.5058], ['الريان', 'Al Rayyan', 25.2919, 51.4244], ['دخان', 'Dukhan', 25.4246, 50.7826]]],
+  ['SA', 'السعودية', 'Saudi Arabia', 'umm', 'Asia/Riyadh', [['مكة المكرمة', 'Makkah', 21.4225, 39.8262], ['المدينة المنورة', 'Madinah', 24.4672, 39.6111], ['الرياض', 'Riyadh', 24.7136, 46.6753], ['جدة', 'Jeddah', 21.4858, 39.1925], ['الدمام', 'Dammam', 26.4207, 50.0888], ['الطائف', 'Taif', 21.2703, 40.4158], ['أبها', 'Abha', 18.2164, 42.5053], ['تبوك', 'Tabuk', 28.3838, 36.555], ['بريدة', 'Buraydah', 26.326, 43.975], ['حائل', 'Hail', 27.5114, 41.7208], ['جازان', 'Jazan', 16.8892, 42.5511], ['نجران', 'Najran', 17.4933, 44.1277]]],
+  ['AE', 'الإمارات', 'United Arab Emirates', 'gulf', 'Asia/Dubai', [['أبوظبي', 'Abu Dhabi', 24.4539, 54.3773], ['دبي', 'Dubai', 25.2048, 55.2708], ['الشارقة', 'Sharjah', 25.3463, 55.4209], ['العين', 'Al Ain', 24.2075, 55.7447], ['عجمان', 'Ajman', 25.4052, 55.5136], ['رأس الخيمة', 'Ras Al Khaimah', 25.7895, 55.9432], ['الفجيرة', 'Fujairah', 25.1288, 56.3265]]],
+  ['KW', 'الكويت', 'Kuwait', 'kuwait', 'Asia/Kuwait', [['مدينة الكويت', 'Kuwait City', 29.3759, 47.9774], ['الجهراء', 'Al Jahra', 29.3375, 47.6581], ['الأحمدي', 'Al Ahmadi', 29.0769, 48.0838]]],
+  ['BH', 'البحرين', 'Bahrain', 'umm', 'Asia/Bahrain', [['المنامة', 'Manama', 26.2285, 50.586], ['المحرق', 'Muharraq', 26.2572, 50.6119], ['الرفاع', 'Riffa', 26.13, 50.555]]],
+  ['OM', 'عُمان', 'Oman', 'mwl', 'Asia/Muscat', [['مسقط', 'Muscat', 23.588, 58.3829], ['صلالة', 'Salalah', 17.0151, 54.0924], ['صحار', 'Sohar', 24.3643, 56.7468], ['نزوى', 'Nizwa', 22.9333, 57.5333]]],
+  ['YE', 'اليمن', 'Yemen', 'mwl', 'Asia/Aden', [['صنعاء', "Sana'a", 15.3694, 44.191], ['عدن', 'Aden', 12.7855, 45.0187], ['تعز', 'Taiz', 13.5795, 44.0209], ['المكلا', 'Mukalla', 14.5425, 49.1242], ['الحديدة', 'Hodeidah', 14.7978, 42.9545]]],
+  ['EG', 'مصر', 'Egypt', 'egypt', 'Africa/Cairo', [['القاهرة', 'Cairo', 30.0444, 31.2357], ['الإسكندرية', 'Alexandria', 31.2001, 29.9187], ['الجيزة', 'Giza', 30.0131, 31.2089], ['المنصورة', 'Mansoura', 31.0409, 31.3785], ['طنطا', 'Tanta', 30.7865, 31.0004], ['أسيوط', 'Asyut', 27.1783, 31.1859], ['الأقصر', 'Luxor', 25.6872, 32.6396], ['أسوان', 'Aswan', 24.0889, 32.8998], ['بورسعيد', 'Port Said', 31.2653, 32.3019], ['السويس', 'Suez', 29.9668, 32.5498], ['الزقازيق', 'Zagazig', 30.5877, 31.502], ['دمياط', 'Damietta', 31.4175, 31.8144]]],
+  ['JO', 'الأردن', 'Jordan', 'jordan', 'Asia/Amman', [['عمّان', 'Amman', 31.9539, 35.9106], ['إربد', 'Irbid', 32.5556, 35.85], ['الزرقاء', 'Zarqa', 32.0728, 36.088], ['العقبة', 'Aqaba', 29.532, 35.0063]]],
+  ['PS', 'فلسطين', 'Palestine', 'mwl', 'Asia/Hebron', [['القدس', 'Jerusalem (Al-Quds)', 31.7767, 35.2345], ['غزة', 'Gaza', 31.5017, 34.4668], ['الخليل', 'Hebron', 31.5326, 35.0998], ['نابلس', 'Nablus', 32.2211, 35.2544], ['رام الله', 'Ramallah', 31.9038, 35.2034]]],
+  ['SY', 'سوريا', 'Syria', 'mwl', 'Asia/Damascus', [['دمشق', 'Damascus', 33.5138, 36.2765], ['حلب', 'Aleppo', 36.2021, 37.1343], ['حمص', 'Homs', 34.7324, 36.7137], ['اللاذقية', 'Latakia', 35.5317, 35.7901]]],
+  ['LB', 'لبنان', 'Lebanon', 'mwl', 'Asia/Beirut', [['بيروت', 'Beirut', 33.8938, 35.5018], ['طرابلس', 'Tripoli', 34.4367, 35.8497], ['صيدا', 'Sidon', 33.5571, 35.3729]]],
+  ['IQ', 'العراق', 'Iraq', 'mwl', 'Asia/Baghdad', [['بغداد', 'Baghdad', 33.3152, 44.3661], ['البصرة', 'Basra', 30.5085, 47.7804], ['الموصل', 'Mosul', 36.3489, 43.1577], ['أربيل', 'Erbil', 36.1911, 44.0092], ['النجف', 'Najaf', 32.0259, 44.3462], ['كربلاء', 'Karbala', 32.616, 44.0249]]],
+  ['SD', 'السودان', 'Sudan', 'egypt', 'Africa/Khartoum', [['الخرطوم', 'Khartoum', 15.5007, 32.5599], ['أم درمان', 'Omdurman', 15.6445, 32.4777], ['بورتسودان', 'Port Sudan', 19.6158, 37.2164]]],
+  ['LY', 'ليبيا', 'Libya', 'egypt', 'Africa/Tripoli', [['طرابلس', 'Tripoli', 32.8872, 13.1913], ['بنغازي', 'Benghazi', 32.1167, 20.0667], ['مصراتة', 'Misrata', 32.3754, 15.0925]]],
+  ['TN', 'تونس', 'Tunisia', 'tunisia', 'Africa/Tunis', [['تونس', 'Tunis', 36.8065, 10.1815], ['صفاقس', 'Sfax', 34.7406, 10.7603], ['سوسة', 'Sousse', 35.8256, 10.636], ['القيروان', 'Kairouan', 35.6781, 10.0963]]],
+  ['DZ', 'الجزائر', 'Algeria', 'algeria', 'Africa/Algiers', [['الجزائر العاصمة', 'Algiers', 36.7538, 3.0588], ['وهران', 'Oran', 35.6971, -0.6308], ['قسنطينة', 'Constantine', 36.365, 6.6147], ['عنابة', 'Annaba', 36.9, 7.7667]]],
+  ['MA', 'المغرب', 'Morocco', 'morocco', 'Africa/Casablanca', [['الرباط', 'Rabat', 34.0209, -6.8416], ['الدار البيضاء', 'Casablanca', 33.5731, -7.5898], ['فاس', 'Fes', 34.0181, -5.0078], ['مراكش', 'Marrakesh', 31.6295, -7.9811], ['طنجة', 'Tangier', 35.7595, -5.834], ['أكادير', 'Agadir', 30.4278, -9.5981]]],
+  ['MR', 'موريتانيا', 'Mauritania', 'mwl', 'Africa/Nouakchott', [['نواكشوط', 'Nouakchott', 18.0735, -15.9582], ['نواذيبو', 'Nouadhibou', 20.9425, -17.0362]]],
+  ['SO', 'الصومال', 'Somalia', 'mwl', 'Africa/Mogadishu', [['مقديشو', 'Mogadishu', 2.0469, 45.3182], ['هرجيسا', 'Hargeisa', 9.56, 44.065]]],
+  ['DJ', 'جيبوتي', 'Djibouti', 'mwl', 'Africa/Djibouti', [['جيبوتي', 'Djibouti', 11.5721, 43.1456]]],
+  ['KM', 'جزر القمر', 'Comoros', 'mwl', 'Indian/Comoro', [['موروني', 'Moroni', -11.7172, 43.2473]]],
+  ['TR', 'تركيا', 'Türkiye', 'turkey', 'Europe/Istanbul', [['إسطنبول', 'Istanbul', 41.0082, 28.9784], ['أنقرة', 'Ankara', 39.9334, 32.8597], ['إزمير', 'Izmir', 38.4237, 27.1428], ['بورصة', 'Bursa', 40.1885, 29.061], ['قونية', 'Konya', 37.8746, 32.4932], ['غازي عنتاب', 'Gaziantep', 37.0662, 37.3833]]],
+  ['IR', 'إيران', 'Iran', 'tehran', 'Asia/Tehran', [['طهران', 'Tehran', 35.6892, 51.389], ['مشهد', 'Mashhad', 36.2605, 59.6168], ['أصفهان', 'Isfahan', 32.6546, 51.668], ['تبريز', 'Tabriz', 38.08, 46.2919]]],
+  ['PK', 'باكستان', 'Pakistan', 'karachi', 'Asia/Karachi', [['إسلام آباد', 'Islamabad', 33.6844, 73.0479], ['كراتشي', 'Karachi', 24.8607, 67.0011], ['لاهور', 'Lahore', 31.5204, 74.3587], ['بيشاور', 'Peshawar', 34.0151, 71.5249], ['فيصل آباد', 'Faisalabad', 31.4504, 73.135], ['كويتا', 'Quetta', 30.1798, 66.975]]],
+  ['AF', 'أفغانستان', 'Afghanistan', 'karachi', 'Asia/Kabul', [['كابل', 'Kabul', 34.5553, 69.2075], ['قندهار', 'Kandahar', 31.628, 65.7372], ['هرات', 'Herat', 34.3529, 62.204]]],
+  ['IN', 'الهند', 'India', 'karachi', 'Asia/Kolkata', [['نيودلهي', 'New Delhi', 28.6139, 77.209], ['مومباي', 'Mumbai', 19.076, 72.8777], ['حيدر آباد', 'Hyderabad', 17.385, 78.4867], ['كولكاتا', 'Kolkata', 22.5726, 88.3639], ['لكهنؤ', 'Lucknow', 26.8467, 80.9462], ['بنغالور', 'Bengaluru', 12.9716, 77.5946], ['سريناغار', 'Srinagar', 34.0837, 74.7973]]],
+  ['BD', 'بنغلاديش', 'Bangladesh', 'karachi', 'Asia/Dhaka', [['دكا', 'Dhaka', 23.8103, 90.4125], ['شيتاغونغ', 'Chattogram', 22.3569, 91.7832], ['سيلهت', 'Sylhet', 24.8949, 91.8687]]],
+  ['ID', 'إندونيسيا', 'Indonesia', 'singapore', 'Asia/Jakarta', [['جاكرتا', 'Jakarta', -6.2088, 106.8456], ['سورابايا', 'Surabaya', -7.2575, 112.7521], ['باندونغ', 'Bandung', -6.9175, 107.6191], ['ميدان', 'Medan', 3.5952, 98.6722], ['باندا آتشيه', 'Banda Aceh', 5.5483, 95.3238], ['مكاسر', 'Makassar', -5.1477, 119.4327, 'Asia/Makassar']]],
+  ['MY', 'ماليزيا', 'Malaysia', 'singapore', 'Asia/Kuala_Lumpur', [['كوالالمبور', 'Kuala Lumpur', 3.139, 101.6869], ['جورج تاون', 'George Town', 5.4141, 100.3288], ['جوهور بهرو', 'Johor Bahru', 1.4927, 103.7414], ['كوتا كينابالو', 'Kota Kinabalu', 5.9804, 116.0735]]],
+  ['SG', 'سنغافورة', 'Singapore', 'singapore', 'Asia/Singapore', [['سنغافورة', 'Singapore', 1.3521, 103.8198]]],
+  ['BN', 'بروناي', 'Brunei', 'singapore', 'Asia/Brunei', [['بندر سري بكاوان', 'Bandar Seri Begawan', 4.9031, 114.9398]]],
+  ['MV', 'المالديف', 'Maldives', 'mwl', 'Indian/Maldives', [['ماليه', 'Malé', 4.1755, 73.5093]]],
+  ['UZ', 'أوزبكستان', 'Uzbekistan', 'mwl', 'Asia/Tashkent', [['طشقند', 'Tashkent', 41.2995, 69.2401], ['سمرقند', 'Samarkand', 39.6542, 66.9597], ['بخارى', 'Bukhara', 39.7681, 64.4556]]],
+  ['KZ', 'كازاخستان', 'Kazakhstan', 'mwl', 'Asia/Almaty', [['أستانا', 'Astana', 51.1694, 71.4491], ['ألماتي', 'Almaty', 43.222, 76.8512]]],
+  ['AZ', 'أذربيجان', 'Azerbaijan', 'mwl', 'Asia/Baku', [['باكو', 'Baku', 40.4093, 49.8671]]],
+  ['NG', 'نيجيريا', 'Nigeria', 'mwl', 'Africa/Lagos', [['أبوجا', 'Abuja', 9.0765, 7.3986], ['لاغوس', 'Lagos', 6.5244, 3.3792], ['كانو', 'Kano', 12.0022, 8.592], ['سوكوتو', 'Sokoto', 13.0059, 5.2476]]],
+  ['SN', 'السنغال', 'Senegal', 'mwl', 'Africa/Dakar', [['داكار', 'Dakar', 14.7167, -17.4677], ['طوبى', 'Touba', 14.85, -15.8833]]],
+  ['ML', 'مالي', 'Mali', 'mwl', 'Africa/Bamako', [['باماكو', 'Bamako', 12.6392, -8.0029], ['تمبكتو', 'Timbuktu', 16.7666, -3.0026]]],
+  ['NE', 'النيجر', 'Niger', 'mwl', 'Africa/Niamey', [['نيامي', 'Niamey', 13.5116, 2.1254]]],
+  ['TD', 'تشاد', 'Chad', 'mwl', 'Africa/Ndjamena', [['إنجامينا', "N'Djamena", 12.1348, 15.0557]]],
+  ['ET', 'إثيوبيا', 'Ethiopia', 'mwl', 'Africa/Addis_Ababa', [['أديس أبابا', 'Addis Ababa', 9.03, 38.74], ['هرر', 'Harar', 9.3126, 42.1227]]],
+  ['KE', 'كينيا', 'Kenya', 'mwl', 'Africa/Nairobi', [['نيروبي', 'Nairobi', -1.2921, 36.8219], ['مومباسا', 'Mombasa', -4.0435, 39.6682]]],
+  ['TZ', 'تنزانيا', 'Tanzania', 'mwl', 'Africa/Dar_es_Salaam', [['دار السلام', 'Dar es Salaam', -6.7924, 39.2083], ['زنجبار', 'Zanzibar', -6.1659, 39.2026]]],
+  ['ZA', 'جنوب أفريقيا', 'South Africa', 'mwl', 'Africa/Johannesburg', [['جوهانسبرغ', 'Johannesburg', -26.2041, 28.0473], ['كيب تاون', 'Cape Town', -33.9249, 18.4241], ['ديربان', 'Durban', -29.8587, 31.0218]]],
+  ['GB', 'المملكة المتحدة', 'United Kingdom', 'mwl', 'Europe/London', [['لندن', 'London', 51.5074, -0.1278], ['برمنغهام', 'Birmingham', 52.4862, -1.8904], ['مانشستر', 'Manchester', 53.4808, -2.2426], ['برادفورد', 'Bradford', 53.796, -1.7594], ['غلاسكو', 'Glasgow', 55.8642, -4.2518]]],
+  ['FR', 'فرنسا', 'France', 'france', 'Europe/Paris', [['باريس', 'Paris', 48.8566, 2.3522], ['مرسيليا', 'Marseille', 43.2965, 5.3698], ['ليون', 'Lyon', 45.764, 4.8357], ['تولوز', 'Toulouse', 43.6047, 1.4442], ['ليل', 'Lille', 50.6292, 3.0573]]],
+  ['DE', 'ألمانيا', 'Germany', 'mwl', 'Europe/Berlin', [['برلين', 'Berlin', 52.52, 13.405], ['هامبورغ', 'Hamburg', 53.5511, 9.9937], ['ميونخ', 'Munich', 48.1351, 11.582], ['كولونيا', 'Cologne', 50.9375, 6.9603], ['فرانكفورت', 'Frankfurt', 50.1109, 8.6821]]],
+  ['NL', 'هولندا', 'Netherlands', 'mwl', 'Europe/Amsterdam', [['أمستردام', 'Amsterdam', 52.3676, 4.9041], ['روتردام', 'Rotterdam', 51.9244, 4.4777]]],
+  ['BE', 'بلجيكا', 'Belgium', 'mwl', 'Europe/Brussels', [['بروكسل', 'Brussels', 50.8503, 4.3517], ['أنتويرب', 'Antwerp', 51.2194, 4.4025]]],
+  ['ES', 'إسبانيا', 'Spain', 'mwl', 'Europe/Madrid', [['مدريد', 'Madrid', 40.4168, -3.7038], ['برشلونة', 'Barcelona', 41.3851, 2.1734], ['غرناطة', 'Granada', 37.1773, -3.5986], ['قرطبة', 'Córdoba', 37.8882, -4.7794]]],
+  ['IT', 'إيطاليا', 'Italy', 'mwl', 'Europe/Rome', [['روما', 'Rome', 41.9028, 12.4964], ['ميلانو', 'Milan', 45.4642, 9.19]]],
+  ['SE', 'السويد', 'Sweden', 'mwl', 'Europe/Stockholm', [['ستوكهولم', 'Stockholm', 59.3293, 18.0686], ['مالمو', 'Malmö', 55.605, 13.0038]]],
+  ['NO', 'النرويج', 'Norway', 'mwl', 'Europe/Oslo', [['أوسلو', 'Oslo', 59.9139, 10.7522]]],
+  ['DK', 'الدنمارك', 'Denmark', 'mwl', 'Europe/Copenhagen', [['كوبنهاغن', 'Copenhagen', 55.6761, 12.5683]]],
+  ['AT', 'النمسا', 'Austria', 'mwl', 'Europe/Vienna', [['فيينا', 'Vienna', 48.2082, 16.3738]]],
+  ['CH', 'سويسرا', 'Switzerland', 'mwl', 'Europe/Zurich', [['زيورخ', 'Zurich', 47.3769, 8.5417], ['جنيف', 'Geneva', 46.2044, 6.1432]]],
+  ['BA', 'البوسنة والهرسك', 'Bosnia and Herzegovina', 'mwl', 'Europe/Sarajevo', [['سراييفو', 'Sarajevo', 43.8563, 18.4131]]],
+  ['AL', 'ألبانيا', 'Albania', 'mwl', 'Europe/Tirane', [['تيرانا', 'Tirana', 41.3275, 19.8187]]],
+  ['RU', 'روسيا', 'Russia', 'russia', 'Europe/Moscow', [['موسكو', 'Moscow', 55.7558, 37.6173], ['قازان', 'Kazan', 55.7963, 49.1088], ['غروزني', 'Grozny', 43.3178, 45.6982], ['محج قلعة', 'Makhachkala', 42.9849, 47.5047], ['أوفا', 'Ufa', 54.7388, 55.9721, 'Asia/Yekaterinburg']]],
+  ['US', 'الولايات المتحدة', 'United States', 'isna', 'America/New_York', [['نيويورك', 'New York', 40.7128, -74.006], ['واشنطن', 'Washington, D.C.', 38.9072, -77.0369], ['ديترويت', 'Detroit', 42.3314, -83.0458], ['شيكاغو', 'Chicago', 41.8781, -87.6298, 'America/Chicago'], ['هيوستن', 'Houston', 29.7604, -95.3698, 'America/Chicago'], ['دالاس', 'Dallas', 32.7767, -96.797, 'America/Chicago'], ['لوس أنجلوس', 'Los Angeles', 34.0522, -118.2437, 'America/Los_Angeles'], ['سان فرانسيسكو', 'San Francisco', 37.7749, -122.4194, 'America/Los_Angeles']]],
+  ['CA', 'كندا', 'Canada', 'isna', 'America/Toronto', [['تورونتو', 'Toronto', 43.6532, -79.3832], ['مونتريال', 'Montreal', 45.5017, -73.5673], ['أوتاوا', 'Ottawa', 45.4215, -75.6972], ['كالغاري', 'Calgary', 51.0447, -114.0719, 'America/Edmonton'], ['فانكوفر', 'Vancouver', 49.2827, -123.1207, 'America/Vancouver']]],
+  ['BR', 'البرازيل', 'Brazil', 'mwl', 'America/Sao_Paulo', [['ساو باولو', 'São Paulo', -23.5505, -46.6333], ['ريو دي جانيرو', 'Rio de Janeiro', -22.9068, -43.1729]]],
+  ['AR', 'الأرجنتين', 'Argentina', 'mwl', 'America/Argentina/Buenos_Aires', [['بوينس آيرس', 'Buenos Aires', -34.6037, -58.3816]]],
+  ['AU', 'أستراليا', 'Australia', 'mwl', 'Australia/Sydney', [['سيدني', 'Sydney', -33.8688, 151.2093], ['ملبورن', 'Melbourne', -37.8136, 144.9631, 'Australia/Melbourne'], ['بيرث', 'Perth', -31.9505, 115.8605, 'Australia/Perth'], ['بريزبن', 'Brisbane', -27.4698, 153.0251, 'Australia/Brisbane']]],
+  ['NZ', 'نيوزيلندا', 'New Zealand', 'mwl', 'Pacific/Auckland', [['أوكلاند', 'Auckland', -36.8485, 174.7633]]],
+  ['CN', 'الصين', 'China', 'mwl', 'Asia/Shanghai', [['بكين', 'Beijing', 39.9042, 116.4074], ['شنغهاي', 'Shanghai', 31.2304, 121.4737], ['أورومتشي', 'Ürümqi', 43.8256, 87.6168]]],
+  ['JP', 'اليابان', 'Japan', 'mwl', 'Asia/Tokyo', [['طوكيو', 'Tokyo', 35.6762, 139.6503]]],
+  ['KR', 'كوريا الجنوبية', 'South Korea', 'mwl', 'Asia/Seoul', [['سيول', 'Seoul', 37.5665, 126.978]]],
+  ['PH', 'الفلبين', 'Philippines', 'mwl', 'Asia/Manila', [['مانيلا', 'Manila', 14.5995, 120.9842], ['مراوي', 'Marawi', 8.0, 124.2833]]],
+  ['TH', 'تايلاند', 'Thailand', 'mwl', 'Asia/Bangkok', [['بانكوك', 'Bangkok', 13.7563, 100.5018]]],
+];
+const PR_NAMES = [['fajr', 'الفجر', 'Fajr'], ['sunrise', 'الشروق', 'Sunrise'], ['dhuhr', 'الظهر', 'Dhuhr'], ['asr', 'العصر', 'Asr'], ['maghrib', 'المغرب', 'Maghrib'], ['isha', 'العشاء', 'Isha']];
+const prName = x => LANG === 'ar' ? x[1] : x[2];
+function prCfg() { const d = { c: 'QA', i: 0, m: '', h: 'std', f24: false, adj: 0 }; const v = Object.assign(d, LS.get('prayer', {}) || {}); return v; }
+function prPlace(cfg) {
+  if (cfg.c === 'GEO' && cfg.geo) return { country: LANG === 'ar' ? 'موقعي الحالي' : 'My location', city: cfg.geo.label || '', lat: cfg.geo.lat, lng: cfg.geo.lng, tz: cfg.geo.tz, method: cfg.m || 'mwl' };
+  const c = PR_PLACES.find(x => x[0] === cfg.c) || PR_PLACES[0], ci = c[5][cfg.i] || c[5][0];
+  return { country: LANG === 'ar' ? c[1] : c[2], city: LANG === 'ar' ? ci[0] : ci[1], lat: ci[2], lng: ci[3], tz: ci[4] || c[4], method: cfg.m || c[3] };
+}
+function tzOffset(tz, date) { // hours east of UTC for that zone on that date (handles summer time); falls back to the device zone
+  try { const p = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: tz, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }).formatToParts(date).map(x => [x.type, x.value]));
+    return (Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second) - Math.floor(date.getTime() / 1000) * 1000) / 36e5; }
+  catch (e) { return -date.getTimezoneOffset() / 60; }
+}
+function prayerTimes(y, mo, d, lat, lng, tz, method, madhab) { // returns hours (local, float) for the six times
+  const R = Math.PI / 180, sin = x => Math.sin(x * R), cos = x => Math.cos(x * R), tan = x => Math.tan(x * R);
+  const asin = x => Math.asin(x) / R, acos = x => Math.acos(Math.max(-1, Math.min(1, x))) / R, atan2 = (a, b) => Math.atan2(a, b) / R, acot = x => Math.atan(1 / x) / R;
+  const fix = (a, b) => { a = a - b * Math.floor(a / b); return a < 0 ? a + b : a; };
+  if (mo <= 2) { y -= 1; mo += 12; } const A = Math.floor(y / 100), B = 2 - A + Math.floor(A / 4);
+  const jd0 = Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (mo + 1)) + d + B - 1524.5 - lng / 360;
+  const sun = t => { const D = jd0 + t / 24 - 2451545.0, g = fix(357.529 + 0.98560028 * D, 360), q = fix(280.459 + 0.98564736 * D, 360), L = fix(q + 1.915 * sin(g) + 0.020 * sin(2 * g), 360), e = 23.439 - 0.00000036 * D;
+    const RA = fix(atan2(cos(e) * sin(L), cos(L)) / 15, 24); return { decl: asin(sin(e) * sin(L)), eqt: q / 15 - RA }; };
+  const noon = t => fix(12 - sun(t).eqt, 24);
+  const T = (ang, t, ccw) => { const dc = sun(t).decl, v = acos((-sin(ang) - sin(dc) * sin(lat)) / (cos(dc) * cos(lat))) / 15; return noon(t) + (ccw ? -v : v); };
+  const asrT = (f, t) => { const dc = sun(t).decl, ang = -acot(f + tan(Math.abs(lat - dc))); return T(ang, t, false); };
+  const M = PR_METHODS.find(x => x[0] === method) || PR_METHODS[5], fac = (PR_MADHAB.find(x => x[0] === madhab) || PR_MADHAB[0])[3];
+  let t = { fajr: 5, sunrise: 6, dhuhr: 12, asr: 13, maghrib: 18, isha: 18 };
+  for (let k = 0; k < 2; k++) { // refine with the sun's position at each approximate time
+    const r = (h) => h / 24 * 24;
+    t = { fajr: T(M[3], r(t.fajr), true), sunrise: T(0.833, r(t.sunrise), true), dhuhr: noon(r(t.dhuhr)), asr: asrT(fac, r(t.asr)),
+      maghrib: T(M[5] || 0.833, r(t.maghrib), false), isha: typeof M[4] === 'string' ? null : T(M[4], r(t.isha), false) };
+    const sunset = T(0.833, 18, false); if (typeof M[4] === 'string') t.isha = (M[5] ? sunset : t.maghrib) + parseFloat(M[4]) / 60;
+  }
+  // high latitudes: when twilight never ends or lasts too long, use the angle-based portion of the night
+  const sunset = T(0.833, 18, false), night = 24 - (sunset - t.sunrise);
+  const capF = t.sunrise - night * M[3] / 60, capI = sunset + night * (typeof M[4] === 'string' ? 18 : M[4]) / 60;
+  if (isNaN(t.fajr) || t.fajr < capF) t.fajr = capF;
+  if (typeof M[4] !== 'string' && (isNaN(t.isha) || t.isha > capI)) t.isha = capI;
+  const out = {}; for (const [k, v] of Object.entries(t)) out[k] = fix(v + tz - lng / 15, 24);
+  out.dhuhr += 1 / 60; // the customary minute after the zenith
+  return out;
+}
+const prFmt = (h, f24) => { if (h == null || isNaN(h)) return '—'; let m = Math.round(h * 60) % 1440; const H = Math.floor(m / 60), Mi = m % 60;
+  if (f24) return `${n(H).padStart(2, n(0))}:${n(Mi).padStart(2, n(0))}`.replace(/٬/g, '');
+  const h12 = (H % 12) || 12; return `${n(h12)}:${n(Mi).padStart(2, n(0))} ${LANG === 'ar' ? (H < 12 ? 'ص' : 'م') : (H < 12 ? 'AM' : 'PM')}`; };
+function prDay(date, cfg) {
+  const P = prPlace(cfg), tz = tzOffset(P.tz, new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 12)));
+  const t = prayerTimes(date.getFullYear(), date.getMonth() + 1, date.getDate(), P.lat, P.lng, tz, P.method, cfg.h);
+  // Umm al-Qura and Qatar: Isha is 120 minutes after Maghrib in Ramadan
+  if (['umm', 'qatar'].includes(P.method)) { try { const hm = +new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', { month: 'numeric' }).format(date).replace(/\D/g, ''); if (hm === 9) t.isha = t.maghrib + 2; } catch (e) {} }
+  return { t, P, tz };
+}
+function qibla(lat, lng) { const R = Math.PI / 180, k = [21.4225 * R, 39.8262 * R], a = lat * R, dl = k[1] - lng * R;
+  return (Math.atan2(Math.sin(dl), Math.cos(a) * Math.tan(k[0]) - Math.sin(a) * Math.cos(dl)) / R + 360) % 360; }
+function hijri(d) { try { return new Intl.DateTimeFormat((LANG === 'ar' ? 'ar-SA' : 'en-GB') + '-u-ca-islamic-umalqura', { day: 'numeric', month: 'long', year: 'numeric' }).format(d); } catch (e) { return ''; } }
+function prNext(cfg) { // {name, at(Date)} of the next prayer, in the place's own clock
+  const now = new Date(); const { t, tz } = prDay(now, cfg); const nowH = ((now.getTime() / 36e5 + tz) % 24 + 24) % 24;
+  for (const x of PR_NAMES) if (x[0] !== 'sunrise' && t[x[0]] > nowH) return { x, h: t[x[0]], left: t[x[0]] - nowH };
+  const tm = prDay(new Date(now.getTime() + 864e5), cfg).t; return { x: PR_NAMES[0], h: tm.fajr, left: 24 - nowH + tm.fajr };
+}
+const prLeft = h => { const m = Math.max(0, Math.round(h * 60)); return LANG === 'ar' ? `بعد ${n(Math.floor(m / 60))} ساعة و${n(m % 60)} دقيقة` : `in ${Math.floor(m / 60)} h ${m % 60} min`; };
+let prTimer = 0;
+function prayer() {
+  const cfg = prCfg(), P = prPlace(cfg), now = new Date(), { t } = prDay(now, cfg), nx = prNext(cfg);
+  const M = PR_METHODS.find(x => x[0] === P.method) || PR_METHODS[5];
+  const ctry = PR_PLACES.find(x => x[0] === cfg.c);
+  const month = []; for (let k = 0; k < 30; k++) { const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + k); month.push([d, prDay(d, cfg).t]); }
+  const dfmt = d => new Intl.DateTimeFormat(LANG === 'ar' ? 'ar-EG' : 'en-GB', { weekday: 'short', day: 'numeric', month: 'short' }).format(d);
+  V(`<div class="stack" style="max-width:980px"><div><div class="eyebrow">مواقيت الصلاة</div><h1 class="notranslate" translate="no">${esc(P.city)}${P.country ? (LANG === 'ar' ? '، ' : ', ') + esc(P.country) : ''}</h1>
+    <p class="lead" style="margin:4px 0 0">${esc(new Intl.DateTimeFormat(LANG === 'ar' ? 'ar-EG' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(now))} · ${esc(hijri(now))}</p></div>
+  <section class="prnext panel"><div><span class="eyebrow">الصلاة القادمة</span><b class="prnm">${prName(nx.x)}</b><span class="prat">${prFmt(nx.h, cfg.f24)}</span></div><span class="chip acc" id="prLeft">${prLeft(nx.left)}</span></section>
+  <div class="prgrid">${PR_NAMES.map(x => `<div class="prcell${x === nx.x ? ' on' : ''}${x[0] === 'sunrise' ? ' sun' : ''}"><span>${prName(x)}</span><b>${prFmt(t[x[0]], cfg.f24)}</b></div>`).join('')}</div>
+  <section class="panel stack tight"><h2>البلد وطريقة الحساب</h2>
+    <div class="prform">
+      <label class="field"><span>البلد</span><select id="prC" class="notranslate" translate="no">${PR_PLACES.map(c => `<option value="${c[0]}"${c[0] === cfg.c ? ' selected' : ''}>${esc(LANG === 'ar' ? c[1] : c[2])}</option>`).join('')}${cfg.geo ? `<option value="GEO"${cfg.c === 'GEO' ? ' selected' : ''}>${LANG === 'ar' ? 'موقعي الحالي' : 'My location'}</option>` : ''}</select></label>
+      <label class="field"><span>المدينة</span><select id="prI" class="notranslate" translate="no" ${ctry ? '' : 'disabled'}>${ctry ? ctry[5].map((ci, i) => `<option value="${i}"${i === cfg.i ? ' selected' : ''}>${esc(LANG === 'ar' ? ci[0] : ci[1])}</option>`).join('') : '<option>—</option>'}</select></label>
+      <label class="field"><span>طريقة الحساب</span><select id="prM" class="notranslate" translate="no"><option value="">${LANG === 'ar' ? 'المعتمدة في البلد' : 'Official for the country'} (${esc(LANG === 'ar' ? M[1] : M[2])})</option>${PR_METHODS.map(m => `<option value="${m[0]}"${m[0] === cfg.m ? ' selected' : ''}>${esc(LANG === 'ar' ? m[1] : m[2])}</option>`).join('')}</select></label>
+      <label class="field"><span>المذهب في وقت العصر</span><select id="prH" class="notranslate" translate="no">${PR_MADHAB.map(m => `<option value="${m[0]}"${m[0] === cfg.h ? ' selected' : ''}>${esc(LANG === 'ar' ? m[1] : m[2])}</option>`).join('')}</select></label>
+    </div>
+    <div class="toolbar"><button class="btn" id="prGeo" type="button"><svg><use href="#i-map"/></svg>استعمل موقعي الحالي</button><label class="chk"><input type="checkbox" id="prF"${cfg.f24 ? ' checked' : ''}> نظام ٢٤ ساعة</label><span class="muted small" id="prMsg"></span></div>
+    <p class="muted small" style="margin:0">الفجر بزاوية ${n(M[3])}°، والعشاء ${typeof M[4] === 'string' ? `بعد المغرب بـ${n(parseFloat(M[4]))} دقيقة (${n(120)} في رمضان)` : `بزاوية ${n(M[4])}°`}. اتجاه القبلة: ${n(Math.round(qibla(P.lat, P.lng)))}° من الشمال باتجاه عقارب الساعة. المواقيت محسوبة على جهازك من موقع الشمس، وتعمل دون إنترنت، وقد تختلف دقيقة أو دقيقتين عن تقويم الجهة الرسمية؛ فالمعتمد إعلان المسجد والجهة الرسمية في بلدك.</p>
+  </section>
+  <section class="panel stack tight"><h2>مواقيت ثلاثين يوماً</h2><div class="tablebox"><table class="wtable prtable"><thead><tr><th>اليوم</th>${PR_NAMES.map(x => `<th>${prName(x)}</th>`).join('')}</tr></thead><tbody>
+    ${month.map(([d, tt], k) => `<tr${k === 0 ? ' class="today"' : ''}><td>${esc(dfmt(d))}</td>${PR_NAMES.map(x => `<td>${prFmt(tt[x[0]], cfg.f24)}</td>`).join('')}</tr>`).join('')}</tbody></table></div></section></div>`);
+  const saveCfg = ch => { LS.set('prayer', Object.assign(prCfg(), ch)); prayer(); };
+  $('#prC').onchange = e => saveCfg({ c: e.target.value, i: 0, m: '' });
+  $('#prI').onchange = e => saveCfg({ i: +e.target.value });
+  $('#prM').onchange = e => saveCfg({ m: e.target.value });
+  $('#prH').onchange = e => saveCfg({ h: e.target.value });
+  $('#prF').onchange = e => saveCfg({ f24: e.target.checked });
+  $('#prGeo').onclick = () => { if (!navigator.geolocation) { $('#prMsg').textContent = 'تحديد الموقع غير متاح في هذا المتصفح.'; return; }
+    $('#prMsg').textContent = 'جارٍ تحديد موقعك…';
+    navigator.geolocation.getCurrentPosition(pos => { const { latitude: lat, longitude: lng } = pos.coords; const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      saveCfg({ c: 'GEO', geo: { lat, lng, tz, label: `${lat.toFixed(3)}°, ${lng.toFixed(3)}°` } }); },
+      () => { $('#prMsg').textContent = 'لم يُسمح بتحديد الموقع. اختر البلد والمدينة من القائمة.'; }, { timeout: 15000 }); };
+  clearInterval(prTimer); prTimer = setInterval(() => { const el = $('#prLeft'); if (!el) return clearInterval(prTimer); const x = prNext(prCfg()); el.textContent = prLeft(x.left); if (x.left < 1 / 120) prayer(); }, 30000);
+}
+function prHomeCard() {
+  try { const cfg = prCfg(), P = prPlace(cfg), nx = prNext(cfg), { t } = prDay(new Date(), cfg);
+    return `<a class="prbar panel" href="#prayer"><span class="prwho"><svg><use href="#i-time"/></svg><span><span class="eyebrow">مواقيت الصلاة · <span class="notranslate" translate="no">${esc(P.city)}</span></span><b>${prName(nx.x)} ${prFmt(nx.h, cfg.f24)}</b> <span class="muted small">${prLeft(nx.left)}</span></span></span><span class="prmini">${PR_NAMES.filter(x => x[0] !== 'sunrise').map(x => `<span${x === nx.x ? ' class="on"' : ''}><small>${prName(x)}</small>${prFmt(t[x[0]], cfg.f24)}</span>`).join('')}</span></a>`; }
+  catch (e) { return ''; }
+}
+
+/* ================= languages: picker, English UI dictionary, Google Translate for other languages, approved meaning translations */
+const I18N = { dict: null, sur: null, idx: [], mean: null, meanCode: '', miss: new Map(), gt: false };
+const ARX = /[؀-ۿ]/, DIGRX = /[0-9٠-٩][0-9٠-٩٬,.٫]*/g;
+const toLat = s => s.replace(/[٠-٩]/g, d => d.charCodeAt(0) - 1632).replace(/٬/g, ',').replace(/٫/g, '.');
+const GT_CODE = { he: 'iw', jv: 'jw', prs: 'fa', kmr: 'ku', 'zh-CN': 'zh-CN', 'zh-TW': 'zh-TW', tl: 'tl', ber: 'ber' };
+const I18N_SKIP = '.ayah,.num,.mean,.notranslate,[translate="no"],script,style,textarea,code,.langlist';
+const langRow = c => I18N.idx.find(r => r[0] === c);
+const isRTL = c => c === 'ar' || !!(langRow(c) || [])[4];
+let surRx = null;
+// صيغ العدد العربية تُردّ إلى رقم + مفرد قبل البحث في القاموس
+const CNT0 = [[/آية واحدة/g, '1 آية'], [/آيتين|آيتان/g, '2 آية'], [/([0-9٠-٩][0-9٠-٩٬,.٫]* )آيات/g, '$1آية'], [/مرة واحدة/g, '1 مرة'], [/مرتين|مرتان/g, '2 مرة'], [/([0-9٠-٩][0-9٠-٩٬,.٫]* )مرات/g, '$1مرة'],
+  [/حديث واحد/g, '1 حديث'], [/حديثين|حديثان/g, '2 حديث'], [/([0-9٠-٩][0-9٠-٩٬,.٫]* )(?:أحاديث|حديثاً)/g, '$1حديث'], [/صيغة واحدة/g, '1 صيغة'], [/صيغتين/g, '2 صيغة'], [/([0-9٠-٩][0-9٠-٩٬,.٫]* )صيغ(?!ة)/g, '$1صيغة'],
+  [/واحدة مكية/g, '1 مكية'], [/اثنتان مكيتان/g, '2 مكية'], [/واحدة مدنية/g, '1 مدنية'], [/اثنتان مدنيتان/g, '2 مدنية']];
+const CNT = CNT0.map(([re, r]) => [new RegExp('(?<![\\u0600-\\u06FF])' + re.source, 'g'), r]);
+function trRx(c) {
+  if (I18N.rx) for (const [re, out] of I18N.rx) { const g = c.match(re); if (!g) continue; let bad = false;
+    const r = out.replace(/\$(\d)/g, (_, i) => g[i] ?? '').replace(/%(\d)/g, (_, i) => { if (g[i] == null || g[i] === '') return ''; const t = ARX.test(g[i]) ? trKey(g[i]) : g[i]; if (t == null) bad = true; return t ?? ''; });
+    if (!bad) return r; }
+  return null;
+}
+function trLookup(k) {
+  const d = I18N.dict; if (d[k] != null) return d[k];
+  const m = k.match(/^([·•→←(«﴿\s-]*)(.*?)([·•→←)»﴾:.،؛\s-]*)$/); if (!m || !m[2]) return trRx(k);
+  const [, pre, core, suf] = m;
+  // the suffix may hold a closing bracket that belongs to the text: try the text with it first
+  const s2 = suf.match(/^[)»﴾]*/)[0], core2 = core + s2, suf2 = suf.slice(s2.length), pre2 = pre.endsWith('(') && s2 ? pre : pre;
+  for (const [c, sf] of (s2 ? [[core2, suf2], [core, suf]] : [[core, suf]])) {
+    const v = d[c] ?? trRx(c);
+    if (v != null) return pre2 + v + sf.replace(/،/g, ',').replace(/؛/g, ';');
+  }
+  return null;
+}
+function trKey(k) {
+  let v = trLookup(k); if (v != null) return v;
+  if (surRx) { const names = []; const k3 = k.replace(surRx, (m, a) => { names.push(I18N.sur[a]); return '@'; }); if (names.length) { v = trLookup(k3); if (v != null) { let q = 0; return v.replace(/@/g, () => names[q++] ?? ''); } } }
+  for (const sep of [' | ', ' · ', ' — ', '؛ ', '، ', ': ', ' و']) if (k.includes(sep)) { const parts = k.split(sep).map(p => ARX.test(p) ? trKey(p) : p); if (parts.every(p => p != null)) return parts.join(sep === '، ' ? ', ' : sep === '؛ ' ? '; ' : sep === ' و' ? ' and ' : sep); }
+  return null;
+}
+function trStr(s) {
+  if (!ARX.test(s) || !I18N.dict) return null;
+  let k = s.replace(/\s+/g, ' ').trim(); for (const [re, r] of CNT) k = k.replace(re, r);
+  const nums = []; k = k.replace(DIGRX, m => { nums.push(toLat(m)); return '#'; });
+  if (!k) return null;
+  let v = trKey(k);
+  if (v == null) { if (!I18N.quiet && k.length < 400 && k.replace(/[\s#]/g, "").length > 2 && !/^[A-Za-z(«]/.test(k) && !/[\u064B-\u0652\u06E1]/.test(k) && !/^(\S )+\S$/.test(k)) I18N.miss.set(k, (I18N.miss.get(k) || 0) + 1); return null; }
+  let j = 0; v = v.replace(/#/g, () => nums[j++] ?? '').replace(/\b1 (verse|time|hadith|form|surah|word|letter|root|passage|result|place|entr|index|node|link)(?:e?s|ies)\b/g, (m, w) => '1 ' + (w === 'entr' ? 'entry' : w === 'index' ? 'index' : w));
+  if (document.documentElement.dir === 'ltr') v = v.replace(/[→←]/g, c => c === '→' ? '←' : '→');
+  return (/^\s/.test(s) ? ' ' : '') + v + (/\s$/.test(s) ? ' ' : '');
+}
+function trNode(root) {
+  if (!I18N.dict || !root) return;
+  if (root.nodeType === 3) { const p = root.parentElement; if (p && !p.closest(I18N_SKIP)) { const v = trStr(root.nodeValue); if (v != null) root.nodeValue = v; } return; }
+  if (root.nodeType !== 1 || root.closest(I18N_SKIP)) return;
+  const tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT, { acceptNode: x => x.nodeType === 1 ? (x.matches(I18N_SKIP) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_SKIP) : NodeFilter.FILTER_ACCEPT });
+  let x; const list = []; while (x = tw.nextNode()) list.push(x);
+  for (const t of list) { I18N.quiet = !!t.parentElement?.closest('blockquote,.snip,.tafsir,#tbody,#gbody,.rq,.wtable td:nth-child(2)'); const v = trStr(t.nodeValue); if (v != null) t.nodeValue = v; }
+  I18N.quiet = false;
+  for (const el of [root, ...root.querySelectorAll('[placeholder],[title],[aria-label],input[type=button],input[type=submit]')]) {
+    if (el.closest(I18N_SKIP)) continue;
+    for (const a of ['placeholder', 'title', 'aria-label']) { const o = el.getAttribute && el.getAttribute(a); if (o && ARX.test(o)) { const v = trStr(o); if (v != null) el.setAttribute(a, v.trim()); } }
+    if (el.type === 'button' || el.type === 'submit') { const v = el.value && trStr(el.value); if (v) el.value = v.trim(); }
+  }
+}
+/* معنى الآية بلغة الزائر تحت النص العربي، من ترجمة معتمدة مضمّنة (لا ترجمة آلية للقرآن) */
+function addMeanings(root) {
+  if (!I18N.mean || !root || root.nodeType !== 1) return;
+  const els = root.matches?.('.ayah') ? [root] : [...root.querySelectorAll('.ayah')];
+  for (const el of els) {
+    if (el.dataset.mean || el.id === 'hzText' || el.classList.contains('basmala')) continue;
+    let ids = [];
+    if (el.dataset.from) { for (let k = +el.dataset.from; k <= +el.dataset.to; k++) ids.push(k); }
+    else { const nm = el.querySelector('.num[data-ayah]'); if (nm) ids = [+nm.dataset.ayah]; }
+    if (!ids.length) continue;
+    el.dataset.mean = '1';
+    const r = langRow(I18N.meanCode) || [];
+    const box = document.createElement('div'); box.className = 'mean notranslate'; box.translate = false; box.setAttribute('translate', 'no');
+    box.dir = r[4] ? 'rtl' : 'ltr'; box.lang = I18N.meanCode;
+    box.innerHTML = ids.map(i => esc(I18N.mean[i] || '')).join(' ') + `<span class="mean-src">${esc(r[1] || '')} · ${esc(r[2] || '')}</span>`;
+    el.after(box);
+  }
+}
+async function gtLoad(code) { // Google Translate للواجهة والنصوص الطويلة؛ يحتاج اتصالاً بالإنترنت
+  const g = GT_CODE[code] || code;
+  if (!navigator.onLine) return false;
+  if (!FILE_MODE) { const dir = location.pathname.replace(/[^/]*$/, ''); document.cookie = `googtrans=/ar/${g};path=${dir}`; }
+  return new Promise(res => {
+    let done = false; const fin = ok => { if (!done) { done = true; res(ok); } };
+    setTimeout(() => fin(false), 12000);
+    const h = document.createElement('div'); h.id = 'gte'; h.hidden = true; document.body.appendChild(h);
+    window.gtInit = () => { try { new google.translate.TranslateElement({ pageLanguage: 'ar', autoDisplay: false }, 'gte'); } catch (e) { return fin(false); }
+      let tries = 0; const pick = () => { const c = document.querySelector('.goog-te-combo');
+        if (c && c.options.length > 1) { if (![...c.options].some(o => o.value === g)) return fin(false); c.value = g; c.dispatchEvent(new Event('change')); setTimeout(() => { c.value = g; c.dispatchEvent(new Event('change')); }, 400); return fin(true); }
+        if (++tries < 60) setTimeout(pick, 150); else fin(false); };
+      pick(); };
+    const sc = document.createElement('script'); sc.src = 'https://translate.google.com/translate_a/element.js?cb=gtInit'; sc.onerror = () => fin(false); document.head.appendChild(sc);
+  });
+}
+function setLang(c) { if (!FILE_MODE) { const dir = location.pathname.replace(/[^/]*$/, ''); document.cookie = `googtrans=;path=${dir};expires=Thu, 01 Jan 1970 00:00:00 GMT`; } try { if (c === 'ar') localStorage.removeItem('quran-lang'); else localStorage.setItem('quran-lang', c); } catch (e) {} location.reload(); }
+function langMenu() {
+  const rows = [['ar', 'العربية', 'اللغة الأصلية للمنصة', '', 1], ['en', 'English', 'Full built-in translation · Saheeh International', '', 0], ...I18N.idx.filter(r => r[0] !== 'en').map(r => [r[0], r[1], r[5] + ' · ' + r[2], '', r[4]])];
+  openDrawer(`<div class="stack langlist notranslate" translate="no"><div><div class="eyebrow">اللغة · Language</div><h2>اختر لغة المنصة</h2>
+  <p class="muted small" style="margin:4px 0 0">العربية والإنجليزية مضمّنتان وتعملان دون إنترنت. بقية اللغات: تُترجم الواجهة والنصوص بترجمة Google عند الاتصال بالإنترنت، أما معاني القرآن الكريم فمن ترجمة معتمدة لكل لغة مضمّنة في التطبيق، والنص القرآني العربي لا يُترجم آلياً أبداً.</p>
+  <p class="muted small" dir="ltr" style="margin:4px 0 0;text-align:left">Arabic and English are built in and work offline. Other languages: the interface is translated by Google Translate when online; the meanings of the Quran come from an approved translation for each language, built in, and the Arabic Quran text is never machine-translated.</p></div>
+  <input type="search" id="langQ" placeholder="ابحث عن لغة · Search language" aria-label="ابحث عن لغة">
+  <div class="langgrid" id="langGrid">${rows.map(([c, nm, sub, , rtl]) => `<button class="langopt${c === LANG ? ' on' : ''}" data-lang="${c}" lang="${c}"><b dir="${rtl ? 'rtl' : 'ltr'}">${esc(nm)}</b><small dir="ltr">${esc(sub)}</small></button>`).join('')}</div>
+  <p class="muted small">${n(rows.length)} لغة · ${n(rows.length)} languages</p></div>`);
+  $('#langGrid').onclick = e => { const b = e.target.closest('[data-lang]'); if (b) setLang(b.dataset.lang); };
+  $('#langQ').oninput = e => { const q = e.target.value.trim().toLowerCase(); $$('#langGrid .langopt').forEach(b => { b.hidden = q && !b.textContent.toLowerCase().includes(q) && !b.dataset.lang.startsWith(q); }); };
+}
+async function i18nInit() {
+  const btn = $('#langBtn'); if (btn) { btn.onclick = langMenu; const lb = $('#langCode'); if (lb) lb.textContent = LANG === 'ar' ? 'ع' : LANG.split('-')[0].toUpperCase(); }
+  try { I18N.idx = await getJSON('data/tr/index.json'); } catch (e) { I18N.idx = []; }
+  if (LANG === 'ar') return;
+  const html = document.documentElement, rtl = isRTL(LANG);
+  html.lang = LANG; html.dir = rtl ? 'rtl' : 'ltr'; html.classList.add('i18n', rtl ? 'i18n-rtl' : 'i18n-ltr');
+  const loadDict = async () => { if (I18N.dict) return; try { const d = await getJSON('data/i18n/en.json'); I18N.sur = d.__surahs; I18N.rx = (d.__rx || []).map(([a, b]) => [new RegExp('^' + a + '$'), b]); delete d.__surahs; delete d.__rx; I18N.dict = d;
+    const names = Object.keys(I18N.sur).sort((a, b) => b.length - a.length).map(x => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    surRx = new RegExp(`(?<![\\u0600-\\u06FF])(${names.join('|')})(?=:? #|$|[،؛)﴾]| ←| →)`, 'g'); } catch (e) {} };
+  // المعاني: لغة الزائر إن وُجدت لها ترجمة معتمدة، وإلا الإنجليزية
+  I18N.meanCode = langRow(LANG) ? LANG : 'en';
+  const meanP = gz(`data/tr/${I18N.meanCode}.txt`).then(m => { I18N.mean = m; addMeanings(document.body); }).catch(() => {});
+  if (LANG === 'en') await loadDict();
+  new MutationObserver(ms => { for (const m of ms) for (const x of m.addedNodes) if (x.nodeType === 1 && !x.closest?.('.mean')) addMeanings(x); }).observe(document.body, { childList: true, subtree: true });
+  const obs = new MutationObserver(ms => { for (const m of ms) { if (m.type === 'characterData') { trNode(m.target); continue; } for (const x of m.addedNodes) trNode(x); } });
+  const start = () => { trNode(document.body); document.title = trStr(document.title)?.trim() || document.title; obs.observe(document.body, { childList: true, subtree: true, characterData: true }); };
+  if (LANG === 'en') { start(); if (navigator.onLine) setTimeout(() => gtLoad('en').then(ok => { I18N.gt = ok; }), 1500); } // نصوص التفاسير والأحاديث الطويلة تُترجم عند الاتصال
+  else { gtLoad(LANG).then(async ok => { I18N.gt = ok; if (ok) return; await loadDict(); html.dir = 'ltr'; html.classList.replace('i18n-rtl', 'i18n-ltr'); start();
+    toast(navigator.onLine ? 'Interface shown in English (this language is not available in Google Translate). Quran meanings are shown in your language.' : 'Offline: interface shown in English. Quran meanings in your language work offline.'); }); }
+  return meanP;
+}
+
 /* ================= boot */
 async function connectCloud() {
   if (IS_PWA || !window.claude?.use) return;
@@ -1601,8 +1944,10 @@ async function connectCloud() {
   } catch (e) {}
 }
 applyPrefs(); drawNav(); if (IS_PWA) $('#acctBtn').hidden = false;
+const i18nReady = i18nInit().catch(() => {});
 (async () => {
   try {
+    if (LANG === 'en') await Promise.race([i18nReady, new Promise(r => setTimeout(r, 3000))]);
     [Q, W, T, TF, GEO] = await Promise.all([gz('data/quran.txt'), gz('data/words.txt'), gz('data/topics.txt'), getJSON('data/tafsir.json'), getJSON('data/geo.json')]);
     prep();
     if (IS_PWA) { try { const base = await getJSON('config.json').catch(() => ({})), pv = LS.get('cfgPreview', null); siteCfg = pv && (pv.updated || 0) > (base.updated || 0) ? pv : base; applyCfg(); } catch (e) {} checkSession(); }
