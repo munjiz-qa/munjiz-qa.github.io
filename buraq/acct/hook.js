@@ -102,7 +102,7 @@ async function loadPublic() {
     rows += `<tr><td dir="ltr" style="text-align:right;white-space:nowrap">${esc(x.code)}</td><td>${esc(x.name)}<div class="k">${KIND[x.kind] || ""}</div></td><td class="p">${x.price != null ? money(x.price) : "عند الطلب"}</td></tr>`;
   });
   const sec = document.createElement("section"); sec.id = "prices";
-  sec.innerHTML = `<div class="wrap"><div class="sec-head"><div class="eyebrow">Price List · USD</div><h2>${esc(c.pricesTitle)}</h2><p class="lead">${esc(c.pricesLead)}</p></div>
+  sec.innerHTML = `<div class="wrap"><div class="sec-head"><div class="eyebrow">Price List</div><h2>${esc(c.pricesTitle)}</h2><p class="lead">${esc(c.pricesLead)}</p><p class="k" style="margin-top:6px">تُعرض الأسعار بال<span data-cur-name>ريال قطري</span> تلقائياً حسب دولتك وبسعر الصرف اليومي، ويمكنك تغيير العملة من الزر أعلى الصفحة.</p></div>
     <div class="tw"><table><thead><tr><th>الرمز</th><th>البند</th><th style="text-align:left">السعر</th></tr></thead><tbody>${rows}</tbody></table></div>
     <p style="margin-top:14px"><a class="btn" href="account.html#new" style="display:inline-flex">اطلب عرض سعر من حسابك</a>${c.updatedAt ? ` <span style="color:var(--muted);font-size:.8rem">آخر تحديث للمحتوى: ${fmtDate(c.updatedAt)}</span>` : ""}</p></div>`;
   const before = $("contact") || document.querySelector("footer");

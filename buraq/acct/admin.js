@@ -94,7 +94,7 @@ function openReq(id) {
   <form id="stF" class="card" style="padding:14px;margin-bottom:16px">
     <div class="row">
       <label class="f">الحالة<select id="dSt">${Object.entries(STATUS).map(([k, v]) => `<option value="${k}" ${k === r.status ? "selected" : ""}>${v[0]}</option>`).join("")}</select></label>
-      <label class="f">عرض السعر ($)<input id="dPr" type="number" min="0" step="0.01" inputmode="decimal" value="${r.price ?? ""}"></label>
+      <label class="f">عرض السعر بالدولار (يُحوَّل تلقائياً لعملة العميل)<input id="dPr" type="number" min="0" step="0.01" inputmode="decimal" value="${r.price ?? ""}"><small class="mute sm" data-usd-hint="dPr" data-nocur></small></label>
     </div>
     <label class="f">ملاحظة للعميل (تظهر في حسابه)<textarea id="dNote" maxlength="1000" style="min-height:70px">${esc(r.adminNote || "")}</textarea></label>
     <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn pri" type="submit">حفظ التحديث</button><button class="btn bad" type="button" id="dDel">حذف الطلب نهائياً</button></div>
