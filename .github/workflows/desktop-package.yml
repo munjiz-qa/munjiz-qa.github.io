@@ -1,0 +1,78 @@
+# حزمة «منجز على الكمبيوتر»: تُبنى وتُختبر على ويندوز وماك ولينكس حقيقيين، ثم تُنشر في
+# https://github.com/munjiz-qa/munjiz-qa.github.io/releases/download/desktop/munjiz-desktop.zip
+name: Desktop package
+on:
+  push:
+    branches: [main]
+    paths: ['*.html', '*.webmanifest', 'sw.js', 'en/**', 'assets/**', 'pc/**', 'scripts/desktop-*', '.github/workflows/desktop-package.yml']
+  schedule:
+    - cron: '30 3 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: desktop-package
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: ./scripts/desktop-pack.sh
+      - uses: actions/upload-artifact@v4
+        with: { name: munjiz-desktop, path: dist/munjiz-desktop.zip }
+  test:
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { sparse-checkout: scripts }
+      - uses: actions/download-artifact@v4
+        with: { name: munjiz-desktop, path: pkg }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: cd scripts && npm init -y >/dev/null && npm i playwright@1.48.2 >/dev/null && npx playwright install chromium
+        shell: bash
+      - name: Start and test all roles (Windows launcher, as the user double-clicks it)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Expand-Archive pkg/munjiz-desktop.zip -DestinationPath run
+          Start-Process cmd -ArgumentList '/c', (Resolve-Path 'run/munjiz-desktop/Start-Munjiz-Windows.bat') -WindowStyle Hidden
+          Start-Process powershell -ArgumentList '-NoProfile','-ExecutionPolicy','Bypass','-File',(Resolve-Path 'run/munjiz-desktop/tools/server.ps1'),'-Port','8766','-NoBrowser','-SocketOnly' -WindowStyle Hidden
+          foreach ($p in 8765,8766) { for ($i=0; $i -lt 60; $i++) { try { Invoke-WebRequest "http://localhost:$p/desktop.html" -UseBasicParsing | Out-Null; break } catch { Start-Sleep 1 } } }
+          $r = Invoke-WebRequest 'http://localhost:8765/assets/app.js' -UseBasicParsing; "app.js type: $($r.Headers['Content-Type'])"
+          try { Invoke-WebRequest 'http://localhost:8765/..%2f..%2ftools/server.ps1' -UseBasicParsing; throw 'path escape not blocked' } catch { if ($_.Exception.Message -eq 'path escape not blocked') { throw } ; 'path escape blocked' }
+          $env:BASE = 'http://localhost:8765/'; node scripts/desktop-e2e.cjs; if ($LASTEXITCODE) { exit 1 }
+          'Fallback engine (no HttpListener):'
+          $env:BASE = 'http://localhost:8766/'; node scripts/desktop-e2e.cjs; if ($LASTEXITCODE) { exit 1 }
+      - name: Start (Mac / Linux launcher)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          mkdir run && cd run && unzip -q ../pkg/munjiz-desktop.zip
+          L=munjiz-desktop/Start-Munjiz-Linux.sh; [ "$RUNNER_OS" = macOS ] && L=munjiz-desktop/Start-Munjiz-Mac.command
+          nohup "./$L" > launcher.log 2>&1 &
+          for i in $(seq 1 60); do curl -sf http://localhost:8765/desktop.html >/dev/null && break; sleep 1; done
+          cat launcher.log
+      - name: Test all roles (visitor, client, admin)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: BASE=http://localhost:8765/ node scripts/desktop-e2e.cjs
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { name: munjiz-desktop, path: dist }
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release view desktop >/dev/null 2>&1 || gh release create desktop --title "منجز على الكمبيوتر" --notes "حزمة تشغيل منجز من الكمبيوتر على ويندوز وماك ولينكس. التعليمات: https://munjiz-qa.github.io/desktop.html" --latest=false
+          gh release upload desktop dist/munjiz-desktop.zip --clobber
+          gh release edit desktop --notes "حزمة تشغيل منجز من الكمبيوتر على ويندوز وماك ولينكس. التعليمات: https://munjiz-qa.github.io/desktop.html  آخر تحديث: $(date -u +'%Y-%m-%d %H:%M') UTC، واختُبرت على ويندوز وماك ولينكس."
