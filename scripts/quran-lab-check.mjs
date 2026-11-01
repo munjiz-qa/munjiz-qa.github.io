@@ -11,7 +11,9 @@ for (const f of ['', 'app.js', 'sw.js', 'manifest.webmanifest', 'config.json', '
 }
 const cfg = await (await p.request.get(B + 'config.json')).json();
 ok(['client', 'admin'].every(u => cfg.users?.some(x => x.u === u && !x.off)), 'الحسابان الافتراضيان (client و admin) موجودان ومفعّلان');
+ok(cfg.users.every(x => /^pbkdf2\$\d{6,}\$/.test(x.h || '')), 'كلمات المرور محفوظة بتجزئة PBKDF2 مملّحة، لا نص صريح ولا تجزئة سريعة');
 await p.goto(B); await p.waitForSelector('#rform', { timeout: 60000 });
+ok(!!(await p.$('meta[http-equiv="Content-Security-Policy"]')) && await p.evaluate(async () => (await fetch('https://example.com/').then(() => 'open', () => 'blocked')) === 'blocked'), 'سياسة أمان المحتوى (CSP) مفعّلة وتمنع الاتصال بمواقع غريبة');
 ok(/مختبر الأبحاث القرآنية/.test(await p.title()) && await p.evaluate(() => typeof window.claude === 'undefined'), 'يفتح على المختبر باسمه، دون أي مكوّن من Claude');
 await p.fill('#rq', 'اسم الله الأعظم من الكتاب والسنة'); await p.click('#rgo');
 await p.waitForFunction(() => /اكتمل/.test(document.querySelector('#rstat')?.textContent || ''), null, { timeout: 900000 }).catch(() => {});

@@ -31,10 +31,22 @@ function loadState() {
   for (const k of Object.keys(ST)) delete ST[k];
   Object.assign(ST, { bookmarks: [], last: null, hifz: {}, research: [], prefs: { tafsir: 'muyassar', size: 1, theme: 'auto' }, updated: 0 }, LS.get(stateKey(), {}));
   ST.prefs = Object.assign({ tafsir: 'muyassar', size: 1, theme: 'auto' }, ST.prefs || {});
+  cleanState(ST);
 }
 loadState();
 let cloud = null; // {db, uid}
 let saveTimer = 0;
+/* تنقية البيانات المحفوظة أو المستوردة: أرقام آيات صحيحة فقط، فلا يمر أي نص إلى الصفحة */
+function isAyahIx(v) { return Number.isInteger(v) && v >= 0 && v < 6236; }
+function cleanHifz(h) { const o = {}; if (h && typeof h === 'object') for (const [k, v] of Object.entries(h)) { if (!/^\d{1,3}:\d{1,3}-\d{1,3}$/.test(k) || !v || typeof v !== 'object') continue; const r = {}; for (const f of ['ef', 'int', 'reps', 'due', 'last']) if (Number.isFinite(+v[f])) r[f] = +v[f]; o[k] = r; } return o; }
+function cleanState(x) {
+  x.bookmarks = [...new Set((Array.isArray(x.bookmarks) ? x.bookmarks : []).map(Number).filter(isAyahIx))];
+  x.last = isAyahIx(x.last) ? x.last : null;
+  x.hifz = cleanHifz(x.hifz);
+  x.research = (Array.isArray(x.research) ? x.research : []).filter(r => r && typeof r.q === 'string').slice(0, 200);
+  const p = x.prefs || {}; x.prefs = { ...p, tafsir: /^[a-z0-9_-]{1,32}$/.test(p.tafsir) ? p.tafsir : 'muyassar', size: [0.9, 1, 1.2, 1.45].includes(+p.size) ? +p.size : 1, theme: ['auto', 'light', 'dark'].includes(p.theme) ? p.theme : 'auto' };
+  return x;
+}
 function save() {
   ST.updated = Date.now();
   LS.set(stateKey(), ST);
@@ -46,12 +58,28 @@ function save() {
 
 /* ================= data loading */
 const FILE_MODE = location.protocol === 'file:';
+if (IS_PWA && !FILE_MODE && window.top !== window.self) { document.documentElement.hidden = true; document.documentElement.style.display = 'none'; try { window.top.location.replace(location.href); } catch (e) {} } // لا تُعرض المنصة داخل إطار موقع آخر
 window.__ATH = window.__ATH || {};
 function scriptData(url) { // file:// pages cannot fetch(); every data file also ships as a .js twin
   if (window.__ATH[url] != null) return Promise.resolve(window.__ATH[url]);
   return new Promise((res, rej) => { const sc = document.createElement('script'); sc.src = url + '.js'; sc.onload = () => { const v = window.__ATH[url]; delete window.__ATH[url]; sc.remove(); v == null ? rej(new Error(url)) : res(v); }; sc.onerror = () => rej(new Error(url)); document.head.appendChild(sc); });
 }
-async function getText(url) { if (FILE_MODE) return scriptData(url); const r = await fetch(url); if (!r.ok) throw new Error(url); return r.text(); }
+/* سلامة البيانات: بصمة SHA-256 لكل ملف بيانات تُضمَّن في app.js عند البناء، ويُرفض أي ملف معدَّل */
+const INTEGRITY = {"data/geo.json":"3a381595551873cb2f5612b47aa211a2","data/hadith/abudawud.txt":"add164bbe53224463598b5d5a8771d84","data/hadith/bukhari.txt":"a40d9810e6718b084f4a75ceb094331a","data/hadith/ibnmajah.txt":"8b9a2ecdbd11ad5aebdd3ded1dd5bf95","data/hadith/muslim.txt":"c422cf76a7e81044477b76bc052474a0","data/hadith/nasai.txt":"ca0303322e9a8b85c8beb942f8c55cce","data/hadith/tirmidhi.txt":"3cc7c7bada84ef1fa49d06e5f9666930","data/i18n/aa.json":"0f55aa470b819145d05749adbd800ae8","data/i18n/ace.json":"27d52f3d2cf9d20f12a679bbd3536b6e","data/i18n/af.json":"a031cecd4b51fe848ae39f13080e82b3","data/i18n/am.json":"45c82ac9de0a4d8e5faec9c6dfed65d8","data/i18n/as.json":"2f3b24a9ed9c66b70d0e1a24caac0641","data/i18n/az.json":"e438da9a3f5db4afe2a5f8de311e7ef1","data/i18n/ber.json":"f6677c2477e7ffc7da00fd8bbaec54cb","data/i18n/bg.json":"faabbebf158c97d54a3a5171b08cafc4","data/i18n/bm.json":"0fa3dcd15d9a5e3e36c29136b1289568","data/i18n/bn.json":"f5138fa2ecba1c40de7606101bfe77ad","data/i18n/bs.json":"dc812a9ef07235808db67be8fc10af49","data/i18n/ca.json":"fd981beaf132319c45f8c93dcebf83e9","data/i18n/cs.json":"fea48625dad6ae6337ff4f751a09d785","data/i18n/da.json":"7eeececdcc6df7f3a5ea23fe3bb372cb","data/i18n/de.json":"1e372c8e789653b3f0670ae158c0db0a","data/i18n/dv.json":"0f2ade382bc30738f6a7c9377440b980","data/i18n/en.json":"742c208c5978bf3108c64ec7e23ef007","data/i18n/eo.json":"55d4324bd2c5878fd32df2671c85b743","data/i18n/es.json":"4395246b5d4b5737c01cda27eb070b0f","data/i18n/fa.json":"38002bd9852f5e4704e8ea410a89fa3b","data/i18n/ff.json":"a522d944e07337c8a690482880b5c354","data/i18n/fi.json":"49d912f3b18148f1b0f152155ce39908","data/i18n/fr.json":"1b6d75774863d0376cbca1f03b049ba7","data/i18n/gu.json":"1225119bac9cd21c90396589cf9bddb3","data/i18n/ha.json":"1cb556c4a2ef185d670394ace3ab6c63","data/i18n/he.json":"8ef89e6acb86a529eccac785d7a5b1e2","data/i18n/hi.json":"5db8662176c22b9f5376a2d66b1ad94b","data/i18n/hr.json":"4ee7a96ed1121afd2c517d9bdb228dd7","data/i18n/hu.json":"4efad8e9920bdc011714dd07f2c19e07","data/i18n/id.json":"677c9a6d7c95b5c606dd0f6697416a76","data/i18n/it.json":"dfd1e5385d36bcb1562b8380eb9cafd0","data/i18n/ja.json":"3e147be3a89bcbd939500516fb9cc837","data/i18n/jv.json":"d8c63084664507bf9d89169d2f54a2a4","data/i18n/kk.json":"dafaa863de71a7d0535517d3bfc79593","data/i18n/km.json":"92da65657465a29ea20e4767d0d7a006","data/i18n/kmr.json":"b68a2688dda0e19d6cc83454e998a7b6","data/i18n/kn.json":"23a4550ac4b4eb5ea794204a0f48e6fe","data/i18n/ko.json":"ee8f952ae2cb8fa81d395cad19b1c364","data/i18n/ku.json":"9b16ed1e7134334c7e83126297d06fd9","data/i18n/ky.json":"690e61fbe8fba8d89ac39ee975937417","data/i18n/la.json":"1248eb9298d1709f647df84a309f1aad","data/i18n/lg.json":"5712748259cd5ebee19168dc55465bbb","data/i18n/ln.json":"230658453f279cce1e484422bf6a0d88","data/i18n/mk.json":"b332fdcc6dd14a4976fbb6a904684439","data/i18n/ml.json":"d77a9bf812c0824cacb6604317c583f3","data/i18n/mr.json":"0b9851f1615455ef6cbe2525bb3e060d","data/i18n/ms.json":"3fde5c180e20802ef1b493299575614f","data/i18n/mt.json":"81f8bc2ae334bed7967d8dedf6395f26","data/i18n/my.json":"673a3d4245c4bd41eab3be943786a190","data/i18n/ne.json":"1d5ec06232e0e72195ded684176e839c","data/i18n/nl.json":"425c58caa3e1906a5042b7335d96fb6b","data/i18n/no.json":"2c77e674d292304e60dc42741446ddba","data/i18n/ny.json":"072042e6c27995f869fe0a021e7d0828","data/i18n/om.json":"2b6340f3ec323612d86cf310d340a45c","data/i18n/pa.json":"3bc96da83a1c463a9eab519ceaea18d9","data/i18n/pl.json":"22353c71d3d9a82e47f3b73c3823727c","data/i18n/prs.json":"1a1d565a70428c1c2be48ca092bf9187","data/i18n/ps.json":"44a363f4ffced10dc0be1191f7e78d0c","data/i18n/pt.json":"40b3c944e3bc7bdc915b6101d92c18e0","data/i18n/rn.json":"8ecceeb181d4a4bf4e2b1cb48f74ed62","data/i18n/ro.json":"3d9356165cb476d29911ed58970131ec","data/i18n/ru.json":"b7a44bc237f4643412337d004a189fbb","data/i18n/rw.json":"a007a156061320ab6a4b2f4a54f66760","data/i18n/sd.json":"93e8e3415f40890deb33375a9ffd7d51","data/i18n/si.json":"54d5ff4995c2b41caff8da36266e3c2e","data/i18n/sk.json":"8f8b2fec1419e05ce5930b5f19152569","data/i18n/sn.json":"5175ee91c5cd647408cd48be13f68b7d","data/i18n/so.json":"4eaf506ecb6ebf1eb83be220e9f6a543","data/i18n/sq.json":"91055ee92b8b0facaecda095164bc1ea","data/i18n/sr.json":"79032b2ec56b771a487cdccaad378438","data/i18n/st.json":"d224137f55fe6206c379490185dcc656","data/i18n/sv.json":"fe875d0e5c29ba807787039189cb47d9","data/i18n/sw.json":"9c9047bece7c726a0e65a3d4d1ecc56d","data/i18n/ta.json":"e2d7ae83fb7132b18634de65b62e925f","data/i18n/te.json":"38cb518a7cf4f3416bd164d8111a9bda","data/i18n/tg.json":"151a910899b0b16ec0204265b309cd4e","data/i18n/th.json":"6a44df063da3ebab9517e0c74bce7008","data/i18n/tl.json":"b4b260af10aec7615bcd2c13b67efdc4","data/i18n/tr.json":"716cbfe1247b36a93c1cde745c0ad6db","data/i18n/tt.json":"928e0eacbaff0178545f36a6148dd267","data/i18n/tw.json":"22ac965fd1104be76951f91d13ccfac8","data/i18n/ug.json":"e76d7ac45efb10891050bb1d7b11898c","data/i18n/uk.json":"7af8189c82061711448d5f160279a52e","data/i18n/ur.json":"4b01efdb614f2a34902a55bda74d53a6","data/i18n/uz.json":"f49b9c0eab98f23d43a50af0d8cb9e42","data/i18n/vi.json":"d556b75742933e3549d13fddde137669","data/i18n/xh.json":"5ef1839f7e26ab8ac8791e4289c6fc45","data/i18n/yo.json":"4f41ddcc22f7da9a7d7ff16b99030308","data/i18n/zh-CN.json":"914a7a33c7e64b0d703ff8a17c3269bd","data/i18n/zh-TW.json":"0e37920b28e1f2ce20e761fb2d6f808f","data/i18n/zu.json":"9417917b611e6a505dc40d3de2fecbad","data/quran.txt":"7e5e37a5ed56a512f434350824aa0fa0","data/t/baghawi/0.txt":"7faae25c408cdc26625a7524dca815dc","data/t/baghawi/1.txt":"30173aa5f1fcbd954b9c6bbe45f5d617","data/t/baghawi/10.txt":"7565e6bbed96f16acbb42cefb8f6facb","data/t/baghawi/11.txt":"71e2d5e8f78fb0c30444bec7ad107c84","data/t/baghawi/12.txt":"888811ec46d136bbb3a035eb60d3ff4a","data/t/baghawi/2.txt":"513bb1d9ff2ed425e78d7ab105fafff7","data/t/baghawi/3.txt":"6722e346ca4db204bb7ea92742106176","data/t/baghawi/4.txt":"b437112f9c51d6ea6431837820a05e37","data/t/baghawi/5.txt":"79474312a9168d04530565d73706d72b","data/t/baghawi/6.txt":"8e2c637220c8e6648348f34347c9420e","data/t/baghawi/7.txt":"f10d852add588e55be80e13f2c5335e7","data/t/baghawi/8.txt":"49a1e3d8b1f4660a617b1c810831d907","data/t/baghawi/9.txt":"e4150e87e5db7780c7edb5c4aa9fa309","data/t/gharib/0.txt":"d9643ca7a9e4b3ce54b4536016862492","data/t/ibnkathir/0.txt":"b9f71c8ea4bb6e1a69fa220d922ba81f","data/t/ibnkathir/1.txt":"fef628ff6ab2f8a4249d7b59df680303","data/t/ibnkathir/10.txt":"e9ebcbec4bea5c58332eb26073fd73a2","data/t/ibnkathir/11.txt":"f3ee0d04b0a9c7d651ad34ddc8123418","data/t/ibnkathir/12.txt":"1b976a9e445704d32cf4ec797b96dd91","data/t/ibnkathir/13.txt":"4a6e87593ff4eed81f39ee4deabf020f","data/t/ibnkathir/14.txt":"ac43f8a575ad304fa0bb3525f19b7e67","data/t/ibnkathir/15.txt":"45cd62ec8ea417752e9786b865f8264d","data/t/ibnkathir/16.txt":"3196b23811704529f697ca2fab7230bf","data/t/ibnkathir/17.txt":"f58d8af171c28b480eee69c1e356120e","data/t/ibnkathir/18.txt":"909ab1ac7fae9a08fb67839be52ac345","data/t/ibnkathir/19.txt":"aae865c0f16344a551d3d4010db57e48","data/t/ibnkathir/2.txt":"1bcc4c9bf088ba4c6549d31d6c65eb51","data/t/ibnkathir/20.txt":"6ac5ccb14fba012f687eab70ae563803","data/t/ibnkathir/21.txt":"0b4ef942c43911f1a835815148399ff2","data/t/ibnkathir/22.txt":"e84bcff9a5ea04a2962d5f8b0ff0a1c6","data/t/ibnkathir/23.txt":"896608268ed7e2dc1d954510b16da876","data/t/ibnkathir/24.txt":"07573e0b9362fb51206c28cb6b09b2fc","data/t/ibnkathir/25.txt":"700eb9a4166fd9dd7847252660d74065","data/t/ibnkathir/26.txt":"b289aa3fba775ab933f6608abfe2dbf0","data/t/ibnkathir/27.txt":"e62aa99726ffe79233750c372a02ff18","data/t/ibnkathir/28.txt":"3482541f88ba219443368dcb5102b57e","data/t/ibnkathir/3.txt":"960ab05782deedd3ef636cdfbc156770","data/t/ibnkathir/4.txt":"35e3fa721824520a834d44c6d5fd021b","data/t/ibnkathir/5.txt":"73c13ea42fb37331500cc1a58e07ef6b","data/t/ibnkathir/6.txt":"86e4d3270a53c4444376bea4a86d62da","data/t/ibnkathir/7.txt":"1f0bc0f74f005b942a3ac90b677ae0ff","data/t/ibnkathir/8.txt":"198963d3a1028799c8c685c7084a92ec","data/t/ibnkathir/9.txt":"40dca06d4a4dca7d1cd7aed5678d855a","data/t/jalalayn/0.txt":"808c69712a35d920348120a32cc4b136","data/t/muyassar/0.txt":"c3638ff74728fac6db2a4dcb0d48a12b","data/t/qurtubi/0.txt":"350fbe701785ef42832a49971fd1334f","data/t/qurtubi/1.txt":"69b49609871dfd2e6721fe5b73a95364","data/t/qurtubi/10.txt":"4746ae89f4d87ac3e306fdd3cf938899","data/t/qurtubi/11.txt":"22d9e2f4d222f6fff050ccc4e5fc547d","data/t/qurtubi/12.txt":"e5096a9d84fe5cacdcfb0359f8a4cc68","data/t/qurtubi/13.txt":"a58c6c63dde97bb84f7a46b683b849d5","data/t/qurtubi/14.txt":"ce8e23ae2ac906081de1b026fb4c9567","data/t/qurtubi/15.txt":"e744ea365fb4342a28b2dcd64746f006","data/t/qurtubi/16.txt":"01143d68d66d86db10578d4c5ecc70f7","data/t/qurtubi/17.txt":"f6dc50f4b1f9b7bfda020b181d39c510","data/t/qurtubi/18.txt":"ff81fe5ac87c70538649ceda4a48b719","data/t/qurtubi/19.txt":"3124580bba03ba9dd95ebea99fbb5702","data/t/qurtubi/2.txt":"1953f016d7c806d93d52735c287565d1","data/t/qurtubi/20.txt":"28a9138224c69f482a3ca7cecd64f61f","data/t/qurtubi/21.txt":"b44810e2e2ede712c16d9199ad0a9ac3","data/t/qurtubi/22.txt":"79cab53b39c91e66fab8f37959534e22","data/t/qurtubi/23.txt":"5e9e1cfd7184680a449c250372dd7ce1","data/t/qurtubi/24.txt":"c653c0a8f6a990ed3b06b1303c759111","data/t/qurtubi/25.txt":"f5acf4b4a21aabf020ca4aba50a92657","data/t/qurtubi/26.txt":"5ea26baecf62c5d2ebe1be03f6cc1045","data/t/qurtubi/3.txt":"adc1f2f78cd7a9ea701bb51c7bf2c6c6","data/t/qurtubi/4.txt":"781145f3a0c186c59941f0ca572230cd","data/t/qurtubi/5.txt":"7817db8a204a04f3dddd55240424811e","data/t/qurtubi/6.txt":"ad7e4d93acf6dd023f9f95dce6cd1cc9","data/t/qurtubi/7.txt":"9a8f5186741a80f43f758731c35a4229","data/t/qurtubi/8.txt":"084bc82055350254ac76ca9a582a133a","data/t/qurtubi/9.txt":"5d90458dc5b353c1789f8fb6b6acf30e","data/t/saadi/0.txt":"db815b6ddf5247c31372571e22bfb43a","data/t/saadi/1.txt":"3d675d6e1261c291a050367e8d45c742","data/t/saadi/10.txt":"e3f7b8585d6a1f4d7309a96452115505","data/t/saadi/11.txt":"b2f05d6d2fe897cbfa2c271019916eb9","data/t/saadi/12.txt":"e2625e384fe7395ea7432cdd57d80859","data/t/saadi/2.txt":"33af5b1e2a623c71522b73c2142f2d9a","data/t/saadi/3.txt":"51e53bcd9da2ef33e7b9cde87192b4b7","data/t/saadi/4.txt":"97848b26daa977c4215bc016c4e0196c","data/t/saadi/5.txt":"fb54c7c851141be805e91baa38788762","data/t/saadi/6.txt":"925ee23ae0b1b6f52198d86070cd7d9a","data/t/saadi/7.txt":"b1bcce418884d9eb3bcc2648ecdd84b9","data/t/saadi/8.txt":"03baf29844f76e727280c8faa0e11fae","data/t/saadi/9.txt":"2996a21ab899675d6f74348c527fa48f","data/t/tabari/0.txt":"21aea58e4dfb5cf145507d2a65586a10","data/t/tabari/1.txt":"0386493b0bef93a33f2274b4b8a80f77","data/t/tabari/10.txt":"0a625c3387aca8f7c13e952e7e94720d","data/t/tabari/11.txt":"5d0799a3601daa5e8c1aec5274d80347","data/t/tabari/12.txt":"ce3a4c2baa7e524dd75a9424d167569d","data/t/tabari/13.txt":"ab83e444f25790ff1a14040e16f1eb91","data/t/tabari/14.txt":"c956aa1a645a4befab9e016f1be572b9","data/t/tabari/15.txt":"4cb17f0859f4ab1341a70c45fe46f242","data/t/tabari/16.txt":"194c32676e1ff9452f800df13e997f5e","data/t/tabari/17.txt":"53865d3c86e98520de55ed698c66831f","data/t/tabari/18.txt":"828b76964e337cfa99665ef86acae45c","data/t/tabari/19.txt":"efeef96b7069d3a4352b4e1e5df670dc","data/t/tabari/2.txt":"b46845e07001e4add5abbca72182bf29","data/t/tabari/3.txt":"1b87a27cfe412d44b769a2b409eacbca","data/t/tabari/4.txt":"a0d883cec1eb493dfd4ce203d1b578b8","data/t/tabari/5.txt":"2bd32bc0e11391cd722b76c128094b34","data/t/tabari/6.txt":"167a05d5d934f10837804d98ab768877","data/t/tabari/7.txt":"b2b8e3353dbe8095e67174d6462b9208","data/t/tabari/8.txt":"79ed4d3197d54d2be60f6a8641be4b73","data/t/tabari/9.txt":"785500a3787ff62fc2194836b913e75a","data/tafsir.json":"0b340e92baea2ad150cc24986aefa196","data/topics.txt":"f68fb424e69865b75d9893a3cc68b132","data/tr/aa.txt":"6db3f725119a862fd48797cce594cb57","data/tr/ace.txt":"ebf7a0ce6077a8901d6991216968663e","data/tr/af.txt":"8cb3ff29d1deaf6952dd8dd1bd89469b","data/tr/am.txt":"5a62b3361537d47cf5d239cc4069ceaa","data/tr/as.txt":"bf36c16a778a210cb47134b1ddeb3a05","data/tr/az.txt":"b81701f24c2642e1f11816f73ec88b0f","data/tr/ber.txt":"1147bd28aa6dacc8f569c3ebeb461d0a","data/tr/bg.txt":"ddc0e9863a6f6c464e7fb260f29f46b5","data/tr/bm.txt":"329ed374f974c2a3c2661c7dad03d788","data/tr/bn.txt":"732b3afea91619f7406c68f3baf9acb3","data/tr/bs.txt":"895f5cd361874e0936541ffcf3ddef7c","data/tr/ca.txt":"b9adb72e9dfccad8ab48a1ba9ea2ee17","data/tr/cs.txt":"f56a8b99d853965b420441c9f559b0cd","data/tr/da.txt":"514cdf5202023bce0b9fa3a8e5ea450d","data/tr/dag.txt":"7f6dfc22d3dd0e682742fed3a67a5633","data/tr/de.txt":"3b554c9ab374d00d3ad8dd1d25c2da22","data/tr/dv.txt":"823e9e42083e852b06af3971058dbe8f","data/tr/en.txt":"68759abc70885f8ad84a6d35f58e8b59","data/tr/eo.txt":"e1ddfc523837ec5d8ce5f537f86f3540","data/tr/es.txt":"2e12b4b315a45fc4114764570bc05ac9","data/tr/fa.txt":"739de532508ebeb86f99e68c8500d634","data/tr/ff.txt":"ac4fce5af3c6a7bddd61eb7c03e75b76","data/tr/fi.txt":"5a2734bbc9c60ebbfea035274df02306","data/tr/fr.txt":"514d96682aebd7702dceeb3d95761229","data/tr/gu.txt":"8c1f6f0683737da9bad96153254be6fe","data/tr/ha.txt":"244bb98e4fbfc091f495d3fed55415d1","data/tr/he.txt":"e23b9e3510a0dd9c905d02e711fbd780","data/tr/hi.txt":"2e49c1c92ccb8e49a5c2853d94ec076b","data/tr/hr.txt":"8f52e215197d759197fbd177f7aac08c","data/tr/hu.txt":"9f1d09f4ecb83a7803450a8621371279","data/tr/id.txt":"ce0a3dbb5aaf5b071e4cf7ab81442df0","data/tr/ilp.txt":"9769844d7a19d990b18a112dbc58b442","data/tr/index.json":"bbb5abf5e6429c81e43dfa27739aaafc","data/tr/it.txt":"6fd9d367ffa96feacf10637dbeb15057","data/tr/ja.txt":"76bbe7bb7fb8820b9657beab10b55b75","data/tr/jv.txt":"e6e4faa4b17a44bdb58c3a1e4147555e","data/tr/kk.txt":"3351bf98c181f76c762b2b8ed17506ec","data/tr/km.txt":"3f398183d1248948bb833bde66887a05","data/tr/kmr.txt":"01b8a56c2f518d8090462cc995451bdf","data/tr/kn.txt":"b971aad35b50a36473e0060bcbef8f40","data/tr/knx.txt":"ec559ff35338ae4c82ae7f2df3a12992","data/tr/ko.txt":"3d480d78fdb593eb8b93c15a03981796","data/tr/ku.txt":"4a593acdb3fb3bdc7dc39aa262bd880c","data/tr/ky.txt":"b3ab45d73e9c91456109906e0e0ec684","data/tr/la.txt":"5713c542ce930b7d38b10ac59fdb2edb","data/tr/lg.txt":"f47be5e9e031f55633d08ceeb035672d","data/tr/ln.txt":"0a03ea925fa25343fccd14ff99b4bd7b","data/tr/luy.txt":"dce0ce3054d84f82fb3461a604a65643","data/tr/mk.txt":"5e09a28b9ea6c5872b645a70267b9e58","data/tr/ml.txt":"d6f04a27acd0732ad574197606219dd9","data/tr/mr.txt":"81267e60b4f42938b3a96f119beb17b5","data/tr/mrw.txt":"16aa33b43dc194d2b0d6c395d0d2ef3f","data/tr/ms.txt":"9339cd81b318a107de562ec94ff8d770","data/tr/mt.txt":"ce5f84c2d34b1f99dfb3f239d275ac90","data/tr/my.txt":"e02cb7e9b7960c2f00c33c02c18af9dc","data/tr/ne.txt":"31744c329d68eb08b5fd759e5bc5b7da","data/tr/nl.txt":"fd1a0f11b46a5d520be1fd45217e69bb","data/tr/no.txt":"e8ccab3ce5aff3fae250e4672871082f","data/tr/ny.txt":"82d02cfc3d450874c34398cd1aa10145","data/tr/om.txt":"c85c0d03278e472017cd4374095843bf","data/tr/pa.txt":"f1cfe18b5ee847276ac13d950c893d5d","data/tr/pl.txt":"d182460edec7b416ee45908417b13a8c","data/tr/prs.txt":"9de1463afbef144a37007fc347fc871b","data/tr/ps.txt":"8641a133150303e2c80baa4b13db5b4e","data/tr/pt.txt":"1128c4e578f250e1d7aebfcffbb479c2","data/tr/rn.txt":"5995763ec5e3a7dd21aa8a821c2754c3","data/tr/ro.txt":"3790733ce253647107e46dec267df6df","data/tr/ru.txt":"3a2ee252097bdffa7ab2343ab5a59ecf","data/tr/rw.txt":"380e41a1a83091847be114f95ea436f8","data/tr/sd.txt":"cad418daf644fe9eb82b5db466c14335","data/tr/si.txt":"e35ed062b53090cf4ef6d8f32f5eced5","data/tr/sk.txt":"22f6bae04ffc51c129df4007de32e28f","data/tr/sn.txt":"62fc72ece9072859eb5057dbe668a5f8","data/tr/so.txt":"18b6658ee7de4f4583091c38dfe34068","data/tr/sq.txt":"c919b1f7737a51d8d6c0e20de35bd98c","data/tr/sr.txt":"43716edda5709333c54d40d6b5c8bb94","data/tr/st.txt":"29e7a76cfa9478bb5607b1d93364a417","data/tr/sv.txt":"e2e9ef9491c4975873773aae18107ef7","data/tr/sw.txt":"e4e4becf8ea3be702b516c4860d9fdcb","data/tr/ta.txt":"b64bef347d184666505efb640a79d692","data/tr/te.txt":"fd13ec7ac64f3fa0314a4ce137e0491d","data/tr/tg.txt":"7269bc4d31c63b02bd51a869bb5dd4ea","data/tr/th.txt":"398f48130ac7395152df8c7309d52633","data/tr/tl.txt":"a04af6ca1fa790972d074daa7ea83179","data/tr/tr.txt":"1916c2a115b3da0fd22c5dad367dda6b","data/tr/tt.txt":"92e96de81be9d68fc24a822eb2ea2850","data/tr/tw.txt":"885dbbf376d5a870ce52485d628809f1","data/tr/ug.txt":"232ed978b1a1158fc4c141586e8ea308","data/tr/uk.txt":"5fe630290c5af71fdbdb2bc8e29f19b3","data/tr/ur.txt":"966e68c7d4d0215f39bbb74695fe7a29","data/tr/uz.txt":"ff35602979a11f6c0a693883f5f07eb6","data/tr/vi.txt":"36fca7fdb1cc524253758129a915b455","data/tr/xh.txt":"1df1342445407e592cd7c24bc583a027","data/tr/yao.txt":"e4fb3735b05e1295f30962322f13debc","data/tr/yo.txt":"411cfeb0e30045b121ff674926cbfaba","data/tr/zh-CN.txt":"d49c39b253674555663e80a97ded9feb","data/tr/zh-TW.txt":"6797c91ed8b7af21a5f8b87a337b46f9","data/tr/zu.txt":"03b06a023c1d15befb46bb774e046b61","data/words.txt":"6108e9bdb76a8465b9e167a416c10031"};
+async function sha256hex(t) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join(''); }
+async function verified(url, t) { const want = INTEGRITY[url]; if (!want || !crypto?.subtle) return true; return (await sha256hex(t)).slice(0, want.length) === want; }
+async function getText(url) {
+  let t;
+  if (FILE_MODE) t = await scriptData(url);
+  else { const r = await fetch(url); if (!r.ok) throw new Error(url); t = await r.text(); }
+  if (await verified(url, t)) return t;
+  if (!FILE_MODE && window.caches) { // نسخة قديمة أو معدَّلة في ذاكرة الجهاز: تُحذف ويُعاد التنزيل مرة واحدة
+    try { for (const k of await caches.keys()) await (await caches.open(k)).delete(new URL(url, location.href).href, { ignoreSearch: true }); } catch (e) {}
+    const r = await fetch(url + (url.includes('?') ? '&' : '?') + 'v=' + Date.now(), { cache: 'reload' }); if (r.ok) { t = await r.text(); if (await verified(url, t)) return t; }
+  }
+  console.warn('integrity check failed', url);
+  throw new Error('تعذّر التحقق من سلامة ملف البيانات ' + url);
+}
 async function getJSON(url) { return JSON.parse(await getText(url)); }
 async function gz(url) {
   const bin = atob((await getText(url)).trim());
@@ -937,7 +965,7 @@ function settings() {
   $('#tfSel').onchange = e => { ST.prefs.tafsir = e.target.value; save(); toast('حُفظ التفسير الافتراضي'); };
   $('#expBtn').onclick = () => copyText(btoa(unescape(encodeURIComponent(JSON.stringify({ bookmarks: ST.bookmarks, hifz: ST.hifz, last: ST.last })))));
   $('#impBtn').onclick = () => { $('#impBox').hidden = false; $('#impRow').hidden = false; $('#impBox').focus(); };
-  $('#impGo').onclick = () => { try { const d = JSON.parse(decodeURIComponent(escape(atob($('#impBox').value.trim())))); ST.bookmarks = [...new Set([...ST.bookmarks, ...(d.bookmarks || [])])]; Object.assign(ST.hifz, d.hifz || {}); if (d.last != null) ST.last = d.last; save(); $('#dataMsg').textContent = 'استُورد تقدّمك بنجاح.'; } catch (e) { $('#dataMsg').textContent = 'الرمز غير صحيح. انسخه كاملاً ثم أعد المحاولة.'; } };
+  $('#impGo').onclick = () => { try { const d = cleanState(JSON.parse(decodeURIComponent(escape(atob($('#impBox').value.trim()))))); ST.bookmarks = [...new Set([...ST.bookmarks, ...d.bookmarks])]; Object.assign(ST.hifz, d.hifz); if (d.last != null) ST.last = d.last; save(); $('#dataMsg').textContent = 'استُورد تقدّمك بنجاح.'; } catch (e) { $('#dataMsg').textContent = 'الرمز غير صحيح. انسخه كاملاً ثم أعد المحاولة.'; } };
   let armed = false; $('#clrBtn').onclick = () => { if (!armed) { armed = true; $('#clrBtn').textContent = 'اضغط مرة أخرى للتأكيد'; return; } ST.bookmarks = []; ST.hifz = {}; ST.last = null; save(); $('#dataMsg').textContent = 'مُسحت بياناتك.'; $('#clrBtn').textContent = 'مسح كل بياناتي'; armed = false; };
   const ib = $('#instBtn'); if (ib) ib.onclick = async () => { if (!installEvt) return; installEvt.prompt(); await installEvt.userChoice; installEvt = null; ib.hidden = true; };
   const da = $('#dlAll'); if (da) da.onclick = async () => {
@@ -1454,20 +1482,43 @@ async function sha(t) { const b = await crypto.subtle.digest('SHA-256', new Text
 const ROLE = { client: 'عميل', admin: 'مدير شامل' };
 const isAdmin = () => SESSION?.role === 'admin';
 const uKey = u => String(u || '').trim().toLowerCase();
-const pwHash = (u, pw) => sha('mishkat-user-v1:' + uKey(u) + ':' + pw);
-function allUsers() { // published accounts (config.json) plus accounts created or changed on this device
+/* كلمات المرور: PBKDF2-SHA256 بملح عشوائي لكل حساب و٣١٠ آلاف دورة، فلا تُستخرج من الملف المنشور */
+const PBK = 310000, b64e = u8 => btoa(String.fromCharCode(...u8)), b64d = t => Uint8Array.from(atob(t), c => c.charCodeAt(0));
+async function pbkdf2(pw, salt, it) { const k = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveBits']); return new Uint8Array(await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt, iterations: it }, k, 256)); }
+const ctEq = (a, b) => { if (typeof a !== 'string' || typeof b !== 'string' || a.length !== b.length) return false; let d = 0; for (let i = 0; i < a.length; i++) d |= a.charCodeAt(i) ^ b.charCodeAt(i); return d === 0; };
+async function pwMake(u, pw) { const salt = crypto.getRandomValues(new Uint8Array(16)); return `pbkdf2$${PBK}$${b64e(salt)}$${b64e(await pbkdf2(uKey(u) + ':' + pw, salt, PBK))}`; }
+async function pwCheck(x, pw) {
+  const h = x?.h; if (typeof h !== 'string') return false;
+  if (h.startsWith('pbkdf2$')) { const [, it, sl, d] = h.split('$'); if (!(+it >= 100000)) return false; return ctEq(b64e(await pbkdf2(uKey(x.u) + ':' + pw, b64d(sl), +it)), d); }
+  return x.src === 'device' && ctEq(await sha('mishkat-user-v1:' + uKey(x.u) + ':' + pw), h); // حسابات قديمة على الجهاز تُرقّى عند أول دخول
+}
+const pwStrong = pw => pw.length >= 10 && /[A-Za-z]/.test(pw) && /\d/.test(pw);
+const PW_RULE = 'كلمة المرور ١٠ أحرف على الأقل، فيها حروف وأرقام.';
+/* قفل بعد المحاولات الفاشلة: ٥ محاولات ثم انتظار يتضاعف (١٥ دقيقة فأكثر) */
+const lockInfo = u => (LS.get('authFail', {})[u] || { n: 0, until: 0 });
+function lockLeft(u) { const l = lockInfo(u); return Math.max(0, l.until - Date.now()); }
+function noteFail(u) { const all = LS.get('authFail', {}), l = all[u] || { n: 0, until: 0, k: 0 }; l.n++; if (l.n >= 5) { l.k = (l.k || 0) + 1; l.until = Date.now() + 15 * 60e3 * 2 ** (l.k - 1); l.n = 0; } all[u] = l; LS.set('authFail', all); }
+function clearFail(u) { const all = LS.get('authFail', {}); delete all[u]; LS.set('authFail', all); }
+function rawUsers() { // published accounts plus every change made on this device (what the admin publishes)
   const m = new Map(); for (const x of (siteCfg.users || [])) m.set(x.u, { ...x, src: 'site' });
   for (const x of LS.get('users', [])) m.set(x.u, { ...(m.get(x.u) || {}), ...x, src: m.has(x.u) ? 'site' : 'device' });
+  return [...m.values()].filter(x => !x.del);
+}
+function allUsers() { // accounts that can sign in: a change on this device can never raise a role or replace an admin's published password
+  const m = new Map(); for (const x of (siteCfg.users || [])) m.set(x.u, { ...x, src: 'site' });
+  for (const x of LS.get('users', [])) { const p = m.get(x.u);
+    if (p && p.src === 'site') { const o = { ...p }; if (x.off != null) o.off = !!x.off; if (x.del) o.del = true; if (typeof x.name === 'string' && x.name) o.name = x.name; if (x.role === 'client') o.role = 'client'; if (x.h && p.role !== 'admin') o.h = x.h; m.set(x.u, o); }
+    else m.set(x.u, { ...x, role: 'client', src: 'device' }); }
   return [...m.values()].filter(x => !x.del);
 }
 function putUser(x) { const L = LS.get('users', []).filter(y => y.u !== x.u); L.push(x); LS.set('users', L); }
 function startSession(x) {
   const guest = LS.get('state', null), mine = LS.get('state@' + x.u, null);
   if (!mine && guest && (guest.bookmarks?.length || Object.keys(guest.hifz || {}).length)) LS.set('state@' + x.u, guest); // carry the visitor's progress into the new account
-  SESSION = { u: x.u, name: x.name, role: x.role }; LS.set('session', SESSION); loadState(); applyPrefs(); drawNav();
+  SESSION = { u: x.u, name: x.name, role: x.role, exp: Date.now() + (x.role === 'admin' ? 8 : 24 * 14) * 3600e3 }; LS.set('session', SESSION); loadState(); applyPrefs(); drawNav();
 }
 function endSession() { SESSION = null; LS.set('session', null); loadState(); applyPrefs(); drawNav(); }
-function checkSession() { if (!SESSION) return; const x = allUsers().find(y => y.u === SESSION.u); if (!x || x.off) endSession(); else if (x.role !== SESSION.role || x.name !== SESSION.name) { SESSION = { u: x.u, name: x.name, role: x.role }; LS.set('session', SESSION); drawNav(); } }
+function checkSession() { if (!SESSION) return; const x = allUsers().find(y => y.u === SESSION.u); if (!x || x.off || !(SESSION.exp > Date.now())) endSession(); else if (x.role !== SESSION.role || x.name !== SESSION.name) { SESSION = { ...SESSION, name: x.name, role: x.role }; LS.set('session', SESSION); drawNav(); } }
 const PERMS = {
   visitor: ['قراءة المصحف والتفاسير الثمانية والموسوعة كاملة', 'البحث بالمعنى ومساعد البحث والأطلس والخط الزمني', 'الحفظ والتسميع، ويُحفظ تقدّمه على جهازه'],
   client: ['كل ما يتاح للزائر', 'حساب شخصي باسمه تُحفظ فيه العلامات والحفظ وموضع القراءة منفصلة عن غيره على الجهاز نفسه', 'تغيير كلمة المرور، ونقل تقدّمه إلى جهاز آخر برمز النقل'],
@@ -1486,20 +1537,25 @@ function account(msg = '') {
     <form class="panel stack tight" id="rform"><h2>حساب عميل جديد</h2>
       <label for="rn">الاسم</label><input class="field" id="rn" autocomplete="name" required>
       <label for="ru">اسم المستخدم (حروف إنجليزية وأرقام)</label><input class="field" id="ru" autocomplete="username" dir="ltr" required>
-      <label for="rpw">كلمة المرور (٨ أحرف على الأقل)</label><input class="field" id="rpw" type="password" autocomplete="new-password" dir="ltr" required>
+      <label for="rpw">كلمة المرور (١٠ أحرف على الأقل، حروف وأرقام)</label><input class="field" id="rpw" type="password" autocomplete="new-password" dir="ltr" required>
       <button class="btn" style="align-self:flex-start">إنشاء الحساب</button><p class="small" id="rmsg" style="margin:0"></p>
       <p class="muted small" style="margin:0">يُنشأ الحساب على هذا الجهاز. ولحساب يعمل على كل الأجهزة يضيفه المدير من لوحة الإدارة.</p></form></div>
     <section class="panel stack tight"><h2>الصلاحيات</h2><dl class="kv"><dt>الزائر</dt><dd>${permList('visitor')}</dd><dt>العميل</dt><dd>${permList('client')}</dd><dt>المدير الشامل</dt><dd>${permList('admin')}</dd></dl></section></div>`);
     $('#uform').onsubmit = async e => { e.preventDefault(); if (!crypto?.subtle) { $('#umsg').textContent = 'افتح التطبيق من رابطه الآمن (https) لتسجيل الدخول.'; return; }
-      const u = uKey($('#uu').value), x = allUsers().find(y => y.u === u);
-      if (!x || x.h !== await pwHash(u, $('#upw').value)) { $('#umsg').textContent = 'اسم المستخدم أو كلمة المرور غير صحيحة.'; return; }
-      if (x.off) { $('#umsg').textContent = `هذا الحساب معطّل. تواصل مع إدارة ${BRAND}.`; return; }
+      const um = t => { const el = $('#umsg'); if (el) el.textContent = t; };
+      const u = uKey($('#uu').value), pw = $('#upw').value, x = allUsers().find(y => y.u === u), left = lockLeft(u);
+      if (left) { um(`أُوقف الدخول إلى هذا الحساب مؤقتاً بعد محاولات خاطئة متكررة. أعد المحاولة بعد ${n(Math.ceil(left / 60e3))} دقيقة.`); return; }
+      um('جارٍ التحقق…');
+      if (!x || !(await pwCheck(x, pw))) { noteFail(u); await new Promise(r => setTimeout(r, 600)); um('اسم المستخدم أو كلمة المرور غير صحيحة.'); return; }
+      clearFail(u); if (!x.h.startsWith('pbkdf2$')) { const { src, ...rest } = x; putUser({ ...rest, h: await pwMake(u, pw) }); }
+      um('');
+      if (x.off) { um(`هذا الحساب معطّل. تواصل مع إدارة ${BRAND}.`); return; }
       startSession(x); toast('أهلاً بك، ' + x.name); if (location.hash === '#admin' && isAdmin()) admin(); else account(); };
     $('#rform').onsubmit = async e => { e.preventDefault(); const nm = $('#rn').value.trim(), u = uKey($('#ru').value), pw = $('#rpw').value;
       if (!/^[a-z0-9._-]{3,24}$/.test(u)) { $('#rmsg').textContent = 'اسم المستخدم من ٣ إلى ٢٤ حرفاً إنجليزياً أو رقماً.'; return; }
-      if (pw.length < 8) { $('#rmsg').textContent = 'كلمة المرور ٨ أحرف على الأقل.'; return; }
-      if (allUsers().some(y => y.u === u)) { $('#rmsg').textContent = 'اسم المستخدم مستعمل. اختر غيره.'; return; }
-      const x = { u, name: nm || u, role: 'client', h: await pwHash(u, pw), created: Date.now() }; putUser(x); startSession(x); toast('أُنشئ حسابك'); account(); };
+      if (!pwStrong(pw)) { $('#rmsg').textContent = PW_RULE; return; }
+      if (rawUsers().some(y => y.u === u)) { $('#rmsg').textContent = 'اسم المستخدم مستعمل. اختر غيره.'; return; }
+      const x = { u, name: (nm || u).slice(0, 60), role: 'client', h: await pwMake(u, pw), created: Date.now() }; putUser(x); startSession({ ...x, src: 'device' }); toast('أُنشئ حسابك'); account(); };
     return;
   }
   const due = Object.values(ST.hifz).filter(h => (h.due || 0) <= Date.now()).length, last = ST.last;
@@ -1510,13 +1566,14 @@ function account(msg = '') {
   <section class="panel stack tight"><h2>صلاحياتك</h2>${permList(SESSION.role)}</section>
   <form class="panel stack tight" id="pwform" style="max-width:520px"><h2>تغيير كلمة المرور</h2>
     <label for="opw">كلمة المرور الحالية</label><input class="field" id="opw" type="password" autocomplete="current-password" dir="ltr" required>
-    <label for="npw">كلمة المرور الجديدة (٨ أحرف على الأقل)</label><input class="field" id="npw" type="password" autocomplete="new-password" dir="ltr" required>
+    <label for="npw">كلمة المرور الجديدة (١٠ أحرف على الأقل، حروف وأرقام)</label><input class="field" id="npw" type="password" autocomplete="new-password" dir="ltr" required>
     <button class="btn" style="align-self:flex-start">حفظ</button><p class="small" id="pwmsg" style="margin:0"></p></form></div>`);
   $('#outBtn').onclick = () => { endSession(); toast('سُجّل خروجك'); account(); };
   $('#pwform').onsubmit = async e => { e.preventDefault(); const x = allUsers().find(y => y.u === SESSION.u), np = $('#npw').value;
-    if (!x || x.h !== await pwHash(x.u, $('#opw').value)) { $('#pwmsg').textContent = 'كلمة المرور الحالية غير صحيحة.'; return; }
-    if (np.length < 8) { $('#pwmsg').textContent = 'كلمة المرور الجديدة ٨ أحرف على الأقل.'; return; }
-    const { src, ...rest } = x; putUser({ ...rest, h: await pwHash(x.u, np) }); $('#pwmsg').textContent = 'تغيّرت كلمة المرور على هذا الجهاز.' + (isAdmin() ? ' ولتعميمها على كل الأجهزة احفظ الإعدادات وانشرها من لوحة الإدارة.' : ''); $('#pwform').reset(); };
+    if (lockLeft(x?.u)) { $('#pwmsg').textContent = 'أُوقفت المحاولات مؤقتاً بعد أخطاء متكررة. أعد المحاولة لاحقاً.'; return; }
+    if (!x || !(await pwCheck(x, $('#opw').value))) { noteFail(SESSION.u); $('#pwmsg').textContent = 'كلمة المرور الحالية غير صحيحة.'; return; }
+    if (!pwStrong(np)) { $('#pwmsg').textContent = PW_RULE; return; }
+    const { src, ...rest } = x; putUser({ ...rest, h: await pwMake(x.u, np) }); $('#pwmsg').textContent = isAdmin() ? 'حُفظت كلمة المرور الجديدة للنشر. تُعتمد كلمة مرور المدير بعد «حفظ ونشر» من لوحة الإدارة ورفع الملف، وإلى ذلك الحين تبقى السابقة.' : 'تغيّرت كلمة المرور على هذا الجهاز.'; $('#pwform').reset(); };
 }
 async function admin() {
   if (IS_PWA && !SESSION) return account('لوحة الإدارة للمدير الشامل. سجّل الدخول بحساب المدير.');
@@ -1555,23 +1612,23 @@ async function admin() {
     const s = +$('#adS').value, a = +$('#adA').value; const ok = idxOf(s, a) >= 0;
     if ($('#adS').value && !ok) { $('#adMsg').textContent = 'رقم السورة أو الآية غير صحيح.'; return; }
     const cfg = { banner: $('#adBanner').value.trim(), featured: ok ? { s, a } : null, featuredNote: $('#adNote').value.trim(), updated: Date.now() };
-    if (IS_PWA) { cfg.users = allUsers().map(({ src, ...x }) => x); LS.set('users', []); }
+    if (IS_PWA) { cfg.users = rawUsers().map(({ src, ...x }) => x); LS.set('users', []); }
     if (IS_PWA) { siteCfg = cfg; applyCfg(); LS.set('cfgPreview', cfg); const blob = new Blob([JSON.stringify(cfg, null, 2)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'config.json'; a.click();
       $('#adMsg').innerHTML = FILE_MODE ? 'حُفظ على هذا الكمبيوتر وظهر فوراً، ونُزّلت نسخة احتياطية باسم config.json.' : 'ظهر التعديل على هذا الجهاز، ونُزّل ملف config.json. لنشره لكل الزوار ارفعه مكان الملف نفسه في مجلد mishkat على GitHub، أو أرسله إلى فريق منجز.'; return; }
     try { await db.doc('site/config').set(cfg); siteCfg = cfg; applyCfg(); $('#adMsg').textContent = 'حُفظ ونُشر لكل الزوار.'; } catch (e) { $('#adMsg').textContent = 'لم يُحفظ: ' + (e?.code || 'خطأ غير معروف'); }
   };
 }
 function usersPanel() {
-  const L = allUsers(), me = SESSION.u, msg = t => { $('#uMsg').textContent = t; };
+  const L = rawUsers(), me = SESSION.u, msg = t => { $('#uMsg').textContent = t; };
   $('#uTable').innerHTML = `<thead><tr><th>الاسم</th><th>اسم المستخدم</th><th>الدور</th><th>الحالة</th><th>المصدر</th></tr></thead><tbody>${L.map(x => `<tr><td>${esc(x.name)}${x.u === me ? ' <span class="chip">أنت</span>' : ''}</td><td dir="ltr">${esc(x.u)}</td><td>${ROLE[x.role]}</td><td>${x.off ? 'معطّل' : 'فعّال'}</td><td>${x.src === 'site' ? 'منشور' : 'هذا الجهاز'}</td></tr>`).join('')}</tbody>`;
   $('#ueU').innerHTML = L.map(x => `<option value="${esc(x.u)}">${esc(x.name)} (${esc(x.u)})</option>`).join('');
   const pick = () => L.find(x => x.u === $('#ueU').value), strip = ({ src, ...x }) => x;
-  const admins = () => allUsers().filter(x => x.role === 'admin' && !x.off).length;
+  const admins = () => rawUsers().filter(x => x.role === 'admin' && !x.off).length;
   $('#uaForm').onsubmit = async e => { e.preventDefault(); const u = uKey($('#naU').value), pw = $('#naPw').value;
     if (!/^[a-z0-9._-]{3,24}$/.test(u)) return msg('اسم المستخدم من ٣ إلى ٢٤ حرفاً إنجليزياً أو رقماً.');
-    if (pw.length < 8) return msg('كلمة المرور ٨ أحرف على الأقل.'); if (L.some(x => x.u === u)) return msg('اسم المستخدم مستعمل.');
-    putUser({ u, name: $('#naName').value.trim() || u, role: $('#naRole').value, h: await pwHash(u, pw), created: Date.now() }); usersPanel(); msg('أُضيف الحساب على هذا الجهاز. اضغط «حفظ ونشر» لتعميمه.'); $('#uaForm').reset(); };
-  $('#ueSetPw').onclick = async () => { const x = pick(), pw = $('#uePw').value; if (pw.length < 8) return msg('كلمة المرور ٨ أحرف على الأقل.'); putUser({ ...strip(x), h: await pwHash(x.u, pw) }); $('#uePw').value = ''; usersPanel(); msg('عُيّنت كلمة المرور لحساب ' + x.name + '.'); };
+    if (!pwStrong(pw)) return msg(PW_RULE); if (L.some(x => x.u === u)) return msg('اسم المستخدم مستعمل.');
+    putUser({ u, name: ($('#naName').value.trim() || u).slice(0, 60), role: $('#naRole').value === 'admin' ? 'admin' : 'client', h: await pwMake(u, pw), created: Date.now() }); usersPanel(); msg('أُضيف الحساب على هذا الجهاز. اضغط «حفظ ونشر» لتعميمه.'); $('#uaForm').reset(); };
+  $('#ueSetPw').onclick = async () => { const x = pick(), pw = $('#uePw').value; if (!pwStrong(pw)) return msg(PW_RULE); putUser({ ...strip(x), h: await pwMake(x.u, pw) }); $('#uePw').value = ''; usersPanel(); msg('عُيّنت كلمة المرور لحساب ' + x.name + '.'); };
   $('#ueRole').onclick = () => { const x = pick(); if (x.role === 'admin' && admins() < 2) return msg('لا بد من مدير شامل واحد فعّال على الأقل.'); putUser({ ...strip(x), role: x.role === 'admin' ? 'client' : 'admin' }); usersPanel(); checkSession(); msg('تغيّر دور ' + x.name + '.'); if (!isAdmin()) admin(); };
   $('#ueOff').onclick = () => { const x = pick(); if (x.u === me) return msg('لا يمكنك تعطيل حسابك وأنت داخل به.'); if (!x.off && x.role === 'admin' && admins() < 2) return msg('لا بد من مدير شامل واحد فعّال على الأقل.'); putUser({ ...strip(x), off: !x.off }); usersPanel(); msg((x.off ? 'فُعّل' : 'عُطّل') + ' حساب ' + x.name + '.'); };
   $('#ueDel').onclick = () => { const x = pick(); if (x.u === me) return msg('لا يمكنك حذف حسابك وأنت داخل به.'); if (x.role === 'admin' && admins() < 2) return msg('لا بد من مدير شامل واحد فعّال على الأقل.');
@@ -2007,7 +2064,7 @@ async function connectCloud() {
     cloud = { db, uid };
     const snap = await db.doc(`data/users/${uid}/state/main`).get().catch(() => null);
     const remote = snap ? (typeof snap.data === 'function' ? snap.data() : snap.data) : null;
-    if (remote && remote.updated > (ST.updated || 0)) { Object.assign(ST, remote); LS.set(stateKey(), ST); applyPrefs(); }
+    if (remote && remote.updated > (ST.updated || 0)) { Object.assign(ST, cleanState({ ...remote })); LS.set(stateKey(), ST); applyPrefs(); }
     else if (ST.updated) save();
     const h = (location.hash || '#' + HOME).slice(1); if (['home', 'saved', 'settings', 'hifz', 'research', 'mine'].includes(h)) route();
   } catch (e) {}
