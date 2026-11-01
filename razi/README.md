@@ -29,7 +29,7 @@
 | **الرازي للهاتف** | `razi-android.sh` و `razi-1.2-phone-arm64.tar.xz` | هواتف أندرويد عبر تطبيق Termux، دون مسح أندرويد ودون root |
 | **الرازي لـ Raspberry Pi** | `razi-1.2-raspberrypi-arm64.img.xz` | Raspberry Pi 3 و4 و400 و5 |
 
-الملفات كلها في **[صفحة الإصدار على GitHub](https://github.com/munjiz-qa/munjiz-qa.github.io/releases/tag/razi-v1.2)** مع بصمات SHA-256، والتجربة في المتصفح على **[munjiz-qa.github.io/razi](https://munjiz-qa.github.io/razi/)**.
+نسخ التثبيت تُطلب من منجز عبر واتساب [+974 5160 0498](https://wa.me/97451600498) مع بصمات SHA-256، والتجربة في المتصفح على **[munjiz-qa.github.io/razi](https://munjiz-qa.github.io/razi/)**.
 
 ## المزايا
 
