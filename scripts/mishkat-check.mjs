@@ -14,7 +14,7 @@ ok(['client', 'admin'].every(u => cfg.users?.some(x => x.u === u && !x.off)), '�
 ok(cfg.users.every(x => /^pbkdf2\$\d{6,}\$/.test(x.h || '')), 'كلمات المرور محفوظة بتجزئة PBKDF2 مملّحة، لا نص صريح ولا تجزئة سريعة');
 await p.goto(B + '#home'); await p.waitForSelector('.daily', { timeout: 30000 });
 ok(!!(await p.$('meta[http-equiv="Content-Security-Policy"]')) && await p.evaluate(async () => (await fetch('https://example.com/').then(() => 'open', () => 'blocked')) === 'blocked'), 'سياسة أمان المحتوى (CSP) مفعّلة وتمنع الاتصال بمواقع غريبة');
-ok((await p.$$('.path')).length === 4 && (await p.$$('.path .scard')).length === 15, 'الرئيسية الجديدة: أربعة مسارات و١٥ بطاقة قسم');
+ok((await p.$$('.path')).length === 4 && (await p.$$('.path .scard')).length === 16, 'الرئيسية الجديدة: أربعة مسارات و١٦ بطاقة قسم (مع أذكار الصباح والمساء)');
 ok(await p.evaluate(() => typeof window.claude === 'undefined'), 'لا يوجد أي مكوّن من Claude في الصفحة');
 for (const v of ['account', 'admin', 'search', 'hifz', 'map', 'awwalin', 'ijaz', 'research']) {
   await p.evaluate(v => location.hash = v, v); await p.waitForTimeout(700);
@@ -31,6 +31,12 @@ ok(/الآيات القرآنية/.test(doc) && /أقوال المفسرين/.te
   await p.waitForSelector('#tpanel .qstory .qs-quote', { timeout: 30000 }).catch(() => {});
   const qs = await p.evaluate(() => { const x = document.querySelector('#tpanel .qstory'); return x ? { s: x.querySelectorAll('.qs-steps li a[data-ayah]').length, q: [...x.querySelectorAll('.qs-quote figcaption b')].map(b => b.textContent).join(), l: x.querySelectorAll('.qs-lesson').length, v: !!x.querySelector('a.qs-video[href*="youtube.com/results"]') } : null; });
   ok(qs && qs.s >= 5 && qs.q === 'تفسير ابن كثير,تفسير الطبري,تفسير القرطبي' && qs.l >= 3 && qs.v, 'القصص القرآني: قصة يوسف مجمّعة بآياتها، مع نقول ابن كثير والطبري والقرطبي والعبر ورابط الفيديو');
+}
+{ // أذكار الصباح والمساء: الورد المناسب لوقت مدينة المستخدم، بنصوص حصن المسلم وتخريجها، وعدّاد لكل ذكر
+  await p.evaluate(() => location.hash = 'adhkar'); await p.waitForTimeout(1200);
+  const ad = await p.evaluate(() => { const A = adhNow(prCfg()), x = document.querySelector('.adh'); return x ? { k: A.kind, shown: x.classList.contains(A.kind), n: document.querySelectorAll('.adh-card').length, src: document.querySelectorAll('.adh-src').length, home: typeof adhHomeCard() === 'string' && /adhbar/.test(adhHomeCard()) } : null; });
+  ok(ad && ad.shown && ad.n === (ad.k === 'm' ? 23 : 21) && ad.src === ad.n && ad.home, `أذكار الصباح والمساء: يظهر ورد ${ad?.k === 'm' ? 'الصباح' : 'المساء'} في وقته (${ad?.n} ذكراً بتخريجها) مع بطاقة الرئيسية`);
+  await p.click('.adh-card [data-adhc]'); ok(await p.evaluate(() => /[١1]/.test(document.querySelector('.adh-card .adh-count b').textContent)), 'عدّاد الأذكار يعمل');
 }
 await p.evaluate(() => location.hash = 'account'); await p.waitForTimeout(700);
 ok(!!(await p.$('#uform')) && !!(await p.$('#rform')), 'صفحة الدخول للعميل والمدير وإنشاء الحساب تعمل');

@@ -89,22 +89,24 @@ async function route() {
   const item = NAV.find(n => n[0] === pg);
   S.page = item && (!item[2] || can(item[2])) ? pg : "home";
   shell();
+  document.title = (item ? item[1] + " · " : "") + "سَيْف · منجز";
   const v = $("#view");
   try { await PAGES[S.page](v); } catch (e) { if (e.code !== "auth") v.innerHTML = `<div class="banner alert">${esc(e.message)}</div>`; }
 }
 window.addEventListener("hashchange", route);
+document.addEventListener("click", e => { const k = e.target.closest && e.target.closest("a.skip"); if (!k) return; e.preventDefault(); const m = document.querySelector("main"); if (m) m.focus(); });
 
 function shell() {
   const u = S.user;
-  $("#app").innerHTML = `<header class="top"><div class="top-in">
+  $("#app").innerHTML = `<a class="skip" href="#">انتقل إلى المحتوى</a><header class="top"><div class="top-in">
       <a class="brand" href="#home">${LOGO()}<span><b>سَيْف</b><small>حارس سرية البيانات · منجز لخدمات الأعمال</small></span></a>
       <span class="live" id="live" title="حالة الاتصال والمزامنة"><i></i><span id="liveT">مباشر</span></span>
       <span class="who"><span class="nm">${esc(u.name)}</span><span class="pill ${u.role === "admin" ? "warn" : "ok"} rl">${esc(u.roleName)}</span></span>
-      <button class="sm ghost" id="thm" type="button" aria-label="تبديل المظهر">◐</button>
+      <button class="sm ghost ico" id="thm" type="button" aria-label="تبديل المظهر بين الفاتح والداكن" title="تبديل المظهر"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor" stroke="none"/></svg></button>
       <button class="sm" id="out" type="button">خروج</button>
     </div>
-    <nav class="tabs" aria-label="أقسام المنصة">${NAV.filter(n => !n[2] || can(n[2])).map(n => `<a href="#${n[0]}" class="${n[0] === S.page ? "on" : ""}">${n[1]}</a>`).join("")}</nav>
-  </header><main class="wrap" id="view"><div class="boot">جارٍ التحميل…</div></main>${footer()}`;
+    <nav class="tabs" aria-label="أقسام المنصة">${NAV.filter(n => !n[2] || can(n[2])).map(n => `<a href="#${n[0]}" class="${n[0] === S.page ? "on" : ""}"${n[0] === S.page ? ' aria-current="page"' : ""}>${n[1]}</a>`).join("")}</nav>
+  </header><main class="wrap" id="view" tabindex="-1"><div class="boot">جارٍ التحميل…</div></main>${footer()}`;
   $("#thm").onclick = () => theme(document.documentElement.dataset.theme === "dark" ? "light" : (document.documentElement.dataset.theme === "light" ? "dark" : (matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "dark")));
   $("#out").onclick = logout;
   const on = $("nav.tabs a.on"); if (on && on.scrollIntoView) on.scrollIntoView({ block: "nearest", inline: "center" });
@@ -135,9 +137,10 @@ document.addEventListener("visibilitychange", () => { if (document.visibilitySta
 
 /* ---------- الزائر ---------- */
 function renderPublic() {
-  $("#app").innerHTML = `<header class="top"><div class="top-in"><a class="brand" href="#">${LOGO()}<span><b>سَيْف</b><small>حارس سرية البيانات · منجز لخدمات الأعمال</small></span></a>
+  document.title = "سَيْف · حارس سرية البيانات من منجز";
+  $("#app").innerHTML = `<a class="skip" href="#">انتقل إلى المحتوى</a><header class="top"><div class="top-in"><a class="brand" href="#">${LOGO()}<span><b>سَيْف</b><small>حارس سرية البيانات · منجز لخدمات الأعمال</small></span></a>
     <span class="live" id="pubLive"><i></i><span>المنصة تعمل الآن</span></span><a class="btn pri sm" href="#login">تسجيل الدخول</a></div></header>
-  <main class="wrap">
+  <main class="wrap" id="main" tabindex="-1">
     <section class="hero"><div><h1>بياناتك السرية تبقى سرية، وأنت ترى ذلك لحظة بلحظة</h1>
       <p>سَيْف يفحص ملفاتك على جهازك نفسه، فيكشف أرقام الهواتف والهويات والحسابات البنكية وكلمات المرور والمفاتيح المكشوفة، ويختم كل تقرير ببصمة لا تقبل التعديل، ويتابع حالة جهازك واتصاله مباشرة.</p>
       <div class="row"><a class="btn pri" href="#login">الدخول إلى حسابك</a><a class="btn" href="https://wa.me/${CONTACT.wa}" target="_blank" rel="noopener">اطلب حساباً عبر واتساب</a></div></div>
@@ -151,8 +154,9 @@ function renderPublic() {
     </section></main>${footer()}`;
 }
 function renderLogin() {
-  $("#app").innerHTML = `<header class="top"><div class="top-in"><a class="brand" href="#">${LOGO()}<span><b>سَيْف</b><small>حارس سرية البيانات · منجز لخدمات الأعمال</small></span></a><a class="btn sm" href="#">الصفحة الرئيسية</a></div></header>
-  <main class="wrap"><section class="card login" style="margin-top:28px"><h2>تسجيل الدخول</h2>
+  document.title = "تسجيل الدخول · سَيْف";
+  $("#app").innerHTML = `<a class="skip" href="#">انتقل إلى المحتوى</a><header class="top"><div class="top-in"><a class="brand" href="#">${LOGO()}<span><b>سَيْف</b><small>حارس سرية البيانات · منجز لخدمات الأعمال</small></span></a><a class="btn sm" href="#">الصفحة الرئيسية</a></div></header>
+  <main class="wrap" id="main" tabindex="-1"><section class="card login" style="margin-top:28px"><h2>تسجيل الدخول</h2>
     <form id="lf" novalidate><label>اسم المستخدم<input id="lu" autocomplete="username" dir="ltr" autocapitalize="none" spellcheck="false" required></label>
     <label>كلمة المرور<span class="pwrap"><input id="lp" type="password" autocomplete="current-password" dir="ltr" required><button type="button" class="sm" id="pt">إظهار</button></span></label>
     <span class="err" id="le" role="alert"></span><button class="pri" style="width:100%" id="lb">دخول</button></form>

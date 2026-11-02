@@ -1,0 +1,26 @@
+{
+  "id": "/buraq/",
+  "name": "براق BURAQ · منظومة التحويل الكهربائي",
+  "short_name": "براق",
+  "description": "منظومة براق BQ-10 المعيارية لتحويل السيارات إلى كهربائية: مخطط التحويل، الأسعار، الشحن الشمسي، وحسابات العملاء.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./?source=app",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#EDF0F1",
+  "theme_color": "#14202A",
+  "categories": ["business", "productivity", "shopping"],
+  "icons": [
+    {"src": "app/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "app/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "app/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"},
+    {"src": "app/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"}
+  ],
+  "shortcuts": [
+    {"name": "مخطط تحويل سيارتك", "short_name": "المخطط", "url": "./#convert", "icons": [{"src": "app/icon-192.png", "sizes": "192x192"}]},
+    {"name": "حسابي", "short_name": "حسابي", "url": "account.html", "icons": [{"src": "app/icon-192.png", "sizes": "192x192"}]},
+    {"name": "الشحن الشمسي", "short_name": "الشمسي", "url": "./#solar", "icons": [{"src": "app/icon-192.png", "sizes": "192x192"}]}
+  ]
+}
