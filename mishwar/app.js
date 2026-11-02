@@ -78,7 +78,7 @@
   const fmtDate = t => { const d = new Date(t); return isNaN(d) ? '' : d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear(); };
   const ago = t => { const m = Math.round((Date.now() - t) / 60000); if (m < 1) return 'الآن'; if (m < 60) return 'قبل ' + m + ' د'; const h = Math.floor(m / 60); return h < 24 ? 'قبل ' + h + ' س' : fmtDate(t); };
   const hm = s => { const [h, m] = s.split(':').map(Number); return h * 60 + m; };
-  const clock12 = mins => { let h = Math.floor(mins / 60) % 24, m = String(Math.round(mins % 60)).padStart(2, '0'); const ap = h < 12 ? 'ص' : 'م'; h = h % 12 || 12; return h + ':' + m + ' ' + ap; };
+  const clock12 = mins => { const t = ((Math.round(mins) % 1440) + 1440) % 1440; let h = Math.floor(t / 60), m = String(t % 60).padStart(2, '0'); const ap = h < 12 ? 'ص' : 'م'; h = h % 12 || 12; return h + ':' + m + ' ' + ap; };
 
   let map, G, PRO = {}, POI = [], STREETS = [], mode = LS.get('mode', 'car'), start, dest, R = null, ST = null, nav = null, voice = LS.get('voice', true);
   let reports = [], official = [], feed = null, markers = [], startMk, destMk, carMk, meMk, toastT, is3d = true, searchFor = 'dest', tab = LS.get('tab', 'road'), dockOpen = false, penKey = '';
