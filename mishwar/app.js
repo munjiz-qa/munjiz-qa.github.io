@@ -4,6 +4,10 @@
   const CFG = Object.assign({ API: '', SITE: 'https://munjiz-qa.github.io/mishwar/' }, window.MISHWAR_CONFIG || {});
   const MZ = Object.assign({ WHATSAPP: '97451600498', PHONE: '+974 5160 0498', EMAIL: 'munijizqa@gmail.com' }, window.MUNJIZ_CONFIG || {});
   const D = 'data/';
+  const ON_SITE = /munjiz-qa\.github\.io$/.test(location.hostname);
+  const NATIVE = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+  const PLUG = () => (window.Capacitor && window.Capacitor.Plugins) || {};
+  const FEED = ON_SITE || /^(localhost|127\.0\.0\.1)$/.test(location.hostname) && !NATIVE ? 'feed.json' : CFG.SITE + 'feed.json';
 
   // جهات حكومية: الاسم، المنطقة، بداية الدوام، نهاية الدوام، خط العرض، خط الطول، الهاتف
   const GOV = [
@@ -91,7 +95,10 @@
     clearTimeout(toastT); toastT = setTimeout(() => el.hidden = true, action ? 5000 : 2800);
   }
   function say(t) {
-    if (!voice || !('speechSynthesis' in window)) return;
+    if (!voice) return;
+    const tts = PLUG().TextToSpeech;
+    if (tts) { try { tts.stop().catch(() => {}); tts.speak({ text: t, lang: 'ar-SA', rate: 1, pitch: 1, volume: 1, category: 'playback' }).catch(() => {}); } catch (e) {} return; }
+    if (!('speechSynthesis' in window)) return;
     try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'ar-SA'; const v = speechSynthesis.getVoices().find(v => /^ar/i.test(v.lang)); if (v) u.voice = v; speechSynthesis.speak(u); } catch (e) {}
   }
   function award(n, why) {
@@ -106,6 +113,7 @@
     }
   }
   async function share(title, text, url) {
+    const sh = PLUG().Share; if (sh) { try { await sh.share({ title, text, url, dialogTitle: 'مشاركة' }); return; } catch (e) { if (/cancel/i.test(String(e && e.message))) return; } }
     if (navigator.share) { try { await navigator.share({ title, text, url }); return; } catch (e) { if (e && e.name === 'AbortError') return; } }
     copy(text + (url ? '\n' + url : ''), 'نُسخ النص، الصقه في واتساب أو أي محادثة');
   }
@@ -278,7 +286,8 @@ ${w.advice && w.advice.length ? `<div class="warn" style="background:var(--card)
 <a href="https://wa.me/${E(MZ.WHATSAPP)}" target="_blank" rel="noopener">${svg(I.wa)}<span>واتساب منجز</span><span class="v" style="margin-inline-start:auto">${E(MZ.PHONE)}</span></a>
 <a href="mailto:${E(MZ.EMAIL)}">${svg(I.mail)}<span>البريد</span><span class="v" style="margin-inline-start:auto">${E(MZ.EMAIL)}</span></a>
 <a href="tel:${E(MZ.PHONE.replace(/\s/g, ''))}">${svg(I.phone)}<span>اتصال</span><span class="v" style="margin-inline-start:auto">${E(MZ.PHONE)}</span></a>
-<a href="../">${svg(I.gov)}<span>خدمات منجز للمعاملات الحكومية</span></a>
+<a href="${CFG.SITE}../" target="_blank" rel="noopener">${svg(I.gov)}<span>خدمات منجز للمعاملات الحكومية</span></a>
+${NATIVE ? '' : `<a href="${CFG.SITE}download.html" ${ON_SITE ? '' : 'target="_blank" rel="noopener"'}>${svg(I.star)}<span>نزّل مشوار على جهازك</span><span class="v" style="margin-inline-start:auto">أندرويد · ويندوز · ماك</span></a>`}
 <button data-act="invite">${svg(I.share)}<span>شارك مشوار</span></button></div>
 <div class="note">بيانات الطرق والمباني من مساهمي OpenStreetMap للدوحة الكبرى من الوكرة إلى لوسيل. مواقع الجهات الحكومية وأوقات دوامها محدّثة 2026. الطقس من Open-Meteo، والأخبار من الصحافة المحلية عبر أخبار Google. عرض الشارع يفتح الصور الحقيقية في خرائط Google.</div>`;
   }
@@ -415,6 +424,7 @@ ${w.advice && w.advice.length ? `<div class="warn" style="background:var(--card)
     if (nav) cancelAnimationFrame(nav.raf);
     nav = { d: 0, pace: keep ? keep.pace : 1, last: performance.now(), spoken: {}, gps: false, asked: keep ? keep.asked : {}, off: 0, km: keep ? keep.km : 0 };
     document.body.classList.add('nav'); $('#dock').hidden = true; sizeDock(); startMk.remove();
+    try { if (navigator.wakeLock && !nav.lock) navigator.wakeLock.request('screen').then(l => { if (nav) nav.lock = l; else l.release(); }).catch(() => {}); } catch (e) {}
     R.cumc = [0]; for (let i = 1; i < R.coords.length; i++) R.cumc.push(R.cumc[i - 1] + MSR.hav(R.coords[i - 1][1], R.coords[i - 1][0], R.coords[i][1], R.coords[i][0]));
     carMk.setLngLat(R.coords[0]).addTo(map);
     map.easeTo({ center: R.coords[0], zoom: 17, pitch: 60, duration: 700 });
@@ -436,6 +446,7 @@ ${w.advice && w.advice.length ? `<div class="warn" style="background:var(--card)
   }
   function stopNav(arrived) {
     if (!nav) return; cancelAnimationFrame(nav.raf); if (nav.watch != null) try { navigator.geolocation.clearWatch(nav.watch); } catch (e) {}
+    try { nav.lock && nav.lock.release(); } catch (e) {}
     me.km += nav.km / 1000; LS.set('me', me); nav = null;
     carMk.remove(); ['banner', 'navbar', 'ask'].forEach(id => $('#' + id).hidden = true); document.body.classList.remove('nav');
     if (arrived) {
@@ -590,7 +601,7 @@ ${r.note ? `<p style="margin:8px 0 0">${E(r.note)}</p>` : ''}
   // ---------- feed (weather + news + official closures) ----------
   async function loadFeed() {
     try {
-      const r = await fetch('feed.json?t=' + Math.floor(Date.now() / 300000), { cache: 'no-cache' }); if (!r.ok) return;
+      let r; try { r = await fetch(FEED + '?t=' + Math.floor(Date.now() / 300000), { cache: 'no-cache' }); } catch (e) {} if ((!r || !r.ok) && FEED !== 'feed.json') r = await fetch('feed.json'); if (!r || !r.ok) return;
       feed = await r.json();
       official = (feed.closures || []).filter(c => c.lat && c.lon && (!c.until || +new Date(c.until) > Date.now())).map((c, i) => Object.assign({ id: 'o' + i, type: c.type || 'closed', official: true, t: +new Date(c.from || feed.updated) }, c));
       const fx = $('#fx'), imp = feed.weather && feed.weather.impact;

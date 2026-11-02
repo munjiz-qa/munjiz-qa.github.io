@@ -1,0 +1,37 @@
+{
+  "name": "mishwar",
+  "productName": "مشوار",
+  "version": "1.0.0",
+  "description": "مشوار من منجز: ملاحة عربية لقطر",
+  "author": { "name": "Munjiz Business Services", "email": "munijizqa@gmail.com" },
+  "homepage": "https://munjiz-qa.github.io/mishwar/",
+  "license": "UNLICENSED",
+  "main": "electron/main.js",
+  "private": true,
+  "scripts": {
+    "prep": "node prep.mjs",
+    "desktop": "electron-builder --publish never"
+  },
+  "dependencies": {
+    "@capacitor/android": "6.2.0",
+    "@capacitor/core": "6.2.0",
+    "@capacitor/share": "6.0.3",
+    "@capacitor-community/text-to-speech": "4.1.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "6.2.0",
+    "electron": "33.2.1",
+    "electron-builder": "25.1.8"
+  },
+  "build": {
+    "appId": "qa.munjiz.mishwar",
+    "productName": "Mishwar",
+    "copyright": "© 2026 Munjiz Business Services",
+    "directories": { "output": "dist" },
+    "files": ["electron/**", "www/**", "package.json"],
+    "win": { "target": [{ "target": "nsis", "arch": ["x64"] }], "icon": "icon.png", "artifactName": "Mishwar-Setup.${ext}" },
+    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true, "shortcutName": "مشوار", "uninstallDisplayName": "مشوار" },
+    "mac": { "target": [{ "target": "dmg", "arch": ["universal"] }], "icon": "icon.png", "category": "public.app-category.navigation", "artifactName": "Mishwar.${ext}", "identity": null },
+    "linux": { "target": ["AppImage"], "icon": "icon.png", "category": "Utility", "artifactName": "Mishwar.${ext}" }
+  }
+}

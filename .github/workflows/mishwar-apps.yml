@@ -1,0 +1,139 @@
+# تطبيقات «مشوار»: أندرويد (APK للتثبيت المباشر + AAB لمتجر Google Play) وويندوز وماك ولينكس.
+# تُبنى وتُختبر هنا، ثم تُنشر في https://github.com/munjiz-qa/munjiz-qa.github.io/releases/tag/mishwar
+# للتوقيع بمفتاح المتجر أضف أسرار المستودع: MISHWAR_UPLOAD_KEYSTORE (ملف p12 بترميز base64) و MISHWAR_UPLOAD_PASS.
+name: Mishwar apps
+on:
+  push:
+    branches: [main]
+    paths: ['mishwar/index.html', 'mishwar/app.js', 'mishwar/engine.js', 'mishwar/assets/**', 'mishwar/data/**', 'mishwar/native/**', '.github/workflows/mishwar-apps.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: mishwar-apps
+  cancel-in-progress: true
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: mishwar/native } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 17 }
+      - run: npm install --no-audit --no-fund
+      - run: node prep.mjs
+      - run: npx cap add android
+      - run: python3 android-res/patch.py ${{ github.run_number }} 1.0.${{ github.run_number }}
+      - run: npx cap sync android
+      - name: Signing key
+        env:
+          UPLOAD_KEYSTORE: ${{ secrets.MISHWAR_UPLOAD_KEYSTORE }}
+          UPLOAD_PASS: ${{ secrets.MISHWAR_UPLOAD_PASS }}
+        run: |
+          if [ -n "$UPLOAD_KEYSTORE" ]; then
+            echo "$UPLOAD_KEYSTORE" | base64 -d > "$RUNNER_TEMP/key.p12"
+            echo "MISHWAR_KEY_ALIAS=mishwar-upload" >> $GITHUB_ENV; echo "MISHWAR_KEY_PASS=$UPLOAD_PASS" >> $GITHUB_ENV; echo "STORE_SIGNED=1" >> $GITHUB_ENV
+          else
+            cp android-res/direct-install.p12 "$RUNNER_TEMP/key.p12"
+            echo "MISHWAR_KEY_ALIAS=mishwar" >> $GITHUB_ENV; echo "MISHWAR_KEY_PASS=mishwar-direct" >> $GITHUB_ENV; echo "STORE_SIGNED=0" >> $GITHUB_ENV
+          fi
+          echo "MISHWAR_KEYSTORE=$RUNNER_TEMP/key.p12" >> $GITHUB_ENV
+      - name: Build APK and AAB
+        working-directory: mishwar/native/android
+        run: ./gradlew --no-daemon assembleRelease bundleRelease
+      - run: |
+          mkdir -p out
+          cp android/app/build/outputs/apk/release/app-release.apk out/Mishwar.apk
+          cp android/app/build/outputs/bundle/release/app-release.aab out/Mishwar.aab
+          ls -la out; echo "store signed: $STORE_SIGNED"
+      - uses: actions/upload-artifact@v4
+        with: { name: android, path: mishwar/native/out }
+
+  android-test:
+    needs: android
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { name: android, path: out }
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
+      - name: Install and run on an Android 13 phone emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 33
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: |
+            adb install -r out/Mishwar.apk
+            adb shell pm grant qa.munjiz.mishwar android.permission.ACCESS_FINE_LOCATION
+            adb emu geo fix 51.5257 25.2941
+            adb logcat -c
+            adb shell am start -n qa.munjiz.mishwar/.MainActivity
+            sleep 45
+            adb exec-out screencap -p > out/android-home.png
+            adb shell pidof qa.munjiz.mishwar && echo APP_RUNNING
+            adb logcat -d | grep -iE "FATAL|AndroidRuntime: |Capacitor/Console" | tail -60 > out/android-log.txt || true
+            cat out/android-log.txt
+            adb shell pidof qa.munjiz.mishwar
+      - uses: actions/upload-artifact@v4
+        with: { name: android-test, path: out/android-* }
+
+  desktop:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: windows-latest, flag: --win, files: 'dist/Mishwar-Setup.exe' }
+          - { os: macos-latest, flag: --mac, files: 'dist/Mishwar.dmg' }
+          - { os: ubuntu-latest, flag: --linux, files: 'dist/Mishwar.AppImage' }
+    runs-on: ${{ matrix.os }}
+    defaults: { run: { working-directory: mishwar/native, shell: bash } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm install --no-audit --no-fund
+      - run: node prep.mjs
+      - run: npx electron-builder ${{ matrix.flag }} --publish never
+        env: { CSC_IDENTITY_AUTO_DISCOVERY: 'false' }
+      - name: Smoke test (the app starts and stays open)
+        run: |
+          if [ "$RUNNER_OS" = Linux ]; then sudo apt-get install -y -qq xvfb libfuse2 >/dev/null; chmod +x dist/Mishwar.AppImage; (xvfb-run -a dist/Mishwar.AppImage --no-sandbox > run.log 2>&1 &) ; P=Mishwar.AppImage; fi
+          if [ "$RUNNER_OS" = macOS ]; then APP=$(ls -d dist/mac*/Mishwar.app | head -1); ("$APP/Contents/MacOS/Mishwar" > run.log 2>&1 &); P=Mishwar.app; fi
+          if [ "$RUNNER_OS" = Windows ]; then (dist/win-unpacked/Mishwar.exe > run.log 2>&1 &); P=Mishwar.exe; fi
+          sleep 25
+          if [ "$RUNNER_OS" = Windows ]; then tasklist | grep -i mishwar; else pgrep -fl "$P"; fi
+          cat run.log | tail -20
+      - uses: actions/upload-artifact@v4
+        with: { name: desktop-${{ runner.os }}, path: 'mishwar/native/${{ matrix.files }}' }
+
+  publish:
+    needs: [android, android-test, desktop]
+    if: always() && needs.android.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { path: dl }
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          find dl -type f | sort
+          gh release view mishwar >/dev/null 2>&1 || gh release create mishwar --title "مشوار من منجز" --notes "تطبيق مشوار للملاحة في قطر." --latest=false
+          gh release upload mishwar $(find dl -type f \( -name 'Mishwar*' -o -name 'android-home.png' -o -name 'android-log.txt' \)) --clobber
+          gh release edit mishwar --notes "مشوار من منجز: ملاحة عربية لقطر.
+
+          - أندرويد: Mishwar.apk للتثبيت المباشر، وMishwar.aab لمتجر Google Play
+          - ويندوز: Mishwar-Setup.exe
+          - ماك: Mishwar.dmg
+          - لينكس: Mishwar.AppImage
+          - آيفون والأجهزة الأخرى: https://munjiz-qa.github.io/mishwar/ ثم «إضافة إلى الشاشة الرئيسية»
+
+          صفحة التنزيل: https://munjiz-qa.github.io/mishwar/download.html
+          آخر تحديث: $(date -u +'%Y-%m-%d %H:%M') UTC · الإصدار 1.0.${{ github.run_number }}"
