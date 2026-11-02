@@ -118,7 +118,7 @@ function toast(m){const n=$('#toast');n.textContent=m;n.hidden=false;clearTimeou
 function copyText(s){const done=()=>toast(t('copied'));try{navigator.clipboard.writeText(s).then(done,()=>fallback(s,done))}catch(e){fallback(s,done)}}
 function fallback(s,done){const ta=el('textarea');ta.value=s;ta.style.position='fixed';ta.style.opacity='0';document.body.append(ta);ta.select();try{document.execCommand('copy')}catch(e){}ta.remove();done()}
 function itemCard(it,zone){
-  const li=el('li','item');li.style.setProperty('--zc',ZC[zone]);li.id='i-'+it.id;
+  const li=el('li','item');li.style.setProperty('--zc',ZC[zone]);li.dataset.zone=zone;li.id='i-'+it.id;
   li.append(el('span','cat',it.cat[LANG]));const p=el('p');hl(p,it[LANG]);li.append(p);
   const tr=trust(it);if(tr)li.append(tr);
   const f=el('div','item-foot');f.append(srcLine(it.src));
