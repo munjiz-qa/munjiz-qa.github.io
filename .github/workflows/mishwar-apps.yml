@@ -101,7 +101,8 @@ jobs:
       - run: npm install --no-audit --no-fund
       - run: node prep.mjs
       - run: npx electron-builder ${{ matrix.flag }} --publish never
-        env: { CSC_IDENTITY_AUTO_DISCOVERY: 'false' }
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
       - name: Smoke test (the app starts and stays open)
         run: |
           if [ "$RUNNER_OS" = Linux ]; then sudo apt-get install -y -qq xvfb libfuse2 >/dev/null; chmod +x dist/Mishwar.AppImage; (xvfb-run -a dist/Mishwar.AppImage --no-sandbox > run.log 2>&1 &) ; P=Mishwar.AppImage; fi
@@ -111,7 +112,9 @@ jobs:
           if [ "$RUNNER_OS" = Windows ]; then tasklist | grep -i mishwar; else pgrep -fl "$P"; fi
           cat run.log | tail -20
       - uses: actions/upload-artifact@v4
-        with: { name: desktop-${{ runner.os }}, path: 'mishwar/native/${{ matrix.files }}' }
+        with:
+          name: desktop-${{ runner.os }}
+          path: mishwar/native/${{ matrix.files }}
 
   publish:
     needs: [android, android-test, desktop]
