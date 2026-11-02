@@ -174,6 +174,8 @@ function renderCart(){
     i.oninput=()=>{const v=Math.max(1,Math.min(999,parseInt(i.value)||1));cart.set(code,v);r.querySelector('.lt').textContent=fmt(s.p*v);updateTotals()};
     const x=document.createElement('button');x.className='x';x.type='button';x.textContent='×';x.setAttribute('aria-label',T.rmA+s.n);x.onclick=()=>{cart.delete(code);renderCart();render();renderCon()};
     r.append(i,x);c.appendChild(r)});
+  const withDocs=[...cart.keys()].filter(k=>byCode[k]&&byCode[k].d&&(byCode[k].d.docs||[]).length);
+  if(withDocs.length){const a=document.createElement('a');a.className='btn ghost sm cklink';a.style.cssText='margin-top:10px;display:inline-block';a.href='checklist.html?s='+withDocs.join(',');a.textContent='📋 '+L(`جهّز مستندات ${withDocs.length} خدمة في قائمة واحدة`,`Prepare documents for ${withDocs.length} service${withDocs.length>1?'s':''} in one list`);c.appendChild(a)}
   updateTotals();
 }
 function updateTotals(){
@@ -212,7 +214,7 @@ function openSvc(code){const s=byCode[code];if(!s||!dlg)return;const d=s.d||{};
    <div class="dprice">${T.fee}: ${priceHTML(s)}${isOnce(s)&&s.kind==='setup'?` <small>${T.once}</small>`:''}${s.core?` <span class="tag">${T.core}</span>`:''}</div>
    ${d.about?`<h4>${T.about}</h4><p>${esc(d.about)}</p>`:''}
    <h4>${T.inc}</h4><ol>${steps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>
-   ${d.docs&&d.docs.length?`<h4>${T.docs}</h4><ul>${d.docs.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}
+   ${d.docs&&d.docs.length?`<h4>${T.docs}</h4><ul>${d.docs.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><p><a class="btn ghost sm" href="checklist.html?s=${s.c}">📋 ${L('جهّز هذه المستندات في قائمة تؤشّر عليها','Prepare these documents as a tick list')}</a></p>`:''}
    ${d.out?`<h4>${T.out}</h4><p>${esc(d.out)}</p>`:''}
    ${d.time?`<h4>${T.time}</h4><p>${esc(d.time)}</p>`:''}
    ${d.note?`<p class="dnote">${esc(d.note)}</p>`:''}
