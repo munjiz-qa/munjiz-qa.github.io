@@ -10,7 +10,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="acct/acct.css?v=1">
-<script src="acct/cur.js?v=1" defer></script>
+<script src="acct/cur.js?v=2" defer></script>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="app/apple-touch-icon.png">
+<meta name="theme-color" content="#14202A">
+<script src="app/pwa.js?v=1" defer></script>
 </head>
 <body>
 <header class="top"><div class="wrap">
@@ -62,7 +66,7 @@
     <div data-pane="reqs" hidden>
       <div class="toolbar">
         <input id="rq" type="search" placeholder="بحث برقم الطلب أو الاسم أو الجوال أو السيارة">
-        <select id="rs"><option value="">كل الحالات</option></select>
+        <select id="rs" aria-label="تصفية الطلبات حسب الحالة"><option value="">كل الحالات</option></select>
         <button class="btn sm" id="csvReq">تصدير CSV</button>
       </div>
       <div class="tbl-wrap"><table><thead><tr><th>رقم الطلب</th><th>العميل</th><th>الجوال</th><th>النوع</th><th>السيارة</th><th>الحالة</th><th>عرض السعر</th><th>التاريخ</th><th></th></tr></thead><tbody id="reqRows"></tbody></table></div>
@@ -71,7 +75,7 @@
     <div data-pane="users" hidden>
       <div class="toolbar">
         <input id="uq" type="search" placeholder="بحث بالاسم أو البريد أو الجوال">
-        <select id="ur"><option value="">كل الأدوار</option><option value="customer">عملاء</option><option value="admin">مديرون</option></select>
+        <select id="ur" aria-label="تصفية المستخدمين حسب الدور"><option value="">كل الأدوار</option><option value="customer">عملاء</option><option value="admin">مديرون</option></select>
         <button class="btn sm pri" id="addUser">إضافة مستخدم</button>
       </div>
       <div class="tbl-wrap"><table><thead><tr><th>الاسم</th><th>البريد</th><th>الجوال</th><th>المدينة</th><th>الدور</th><th>الحالة</th><th>تاريخ التسجيل</th><th></th></tr></thead><tbody id="usrRows"></tbody></table></div>

@@ -82,3 +82,12 @@ body.no-scroll{overflow:hidden}
   .hero-top>div:has(.hero-cta) .ver{order:3}
 }
 @media (min-width:961px){.top .nav{-webkit-mask-image:linear-gradient(to left,transparent 0,#000 18px,#000 calc(100% - 18px),transparent 100%);mask-image:linear-gradient(to left,transparent 0,#000 18px,#000 calc(100% - 18px),transparent 100%)}}
+/* 01/11/2026 · أهداف لمس مريحة على الشاشات اللمسية (معيار 40–44 بكسل) دون تغيير الشكل على الكمبيوتر */
+@media (pointer:coarse){
+ .btn{min-height:40px;padding:8px 14px}
+ #bqCurBtn{min-height:40px;padding:7px 14px}
+ #mdTbl td button{min-height:36px;padding:6px 12px}
+ #mdTbl th button{min-height:36px;padding:6px 2px}
+ [id^="ws-z-"]{min-height:44px}
+ #mdBom a,#bomBody a,#wsBody a,#wsGroups a,#modGrid a,#srcList a{display:inline-block;padding-block:6px}
+}

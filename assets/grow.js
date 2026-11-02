@@ -40,6 +40,7 @@ function footer(){const f=document.querySelector('footer');if(!f||f.querySelecto
   const pages=f.querySelector('a[href$="restaurants.html"]')?[]:(GROW.pages||[]);
   if(pages.length){const n=el('nav','grow-links');n.setAttribute('aria-label',t('صفحات تهمّك','Useful pages'));
     pages.forEach(p=>{const a=el('a',null,t(p.ar,p.en));a.href=(p.ext?p.href:BASE+p.href);n.appendChild(a)});w.appendChild(n)}
+  if(!f.querySelector('a[href$="standards.html"]')){const a=el('a','gt-std',t('معايير خدمتنا','Our service standards'));a.href=BASE+'standards.html';w.appendChild(a)}
   f.appendChild(w)}
 
 // 3) forms on the new pages: sent to the office system, or prepared as a WhatsApp message when the system is unreachable
