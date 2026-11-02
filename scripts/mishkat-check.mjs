@@ -32,6 +32,12 @@ ok(/الآيات القرآنية/.test(doc) && /أقوال المفسرين/.te
   const qs = await p.evaluate(() => { const x = document.querySelector('#tpanel .qstory'); return x ? { s: x.querySelectorAll('.qs-steps li a[data-ayah]').length, q: [...x.querySelectorAll('.qs-quote figcaption b')].map(b => b.textContent).join(), l: x.querySelectorAll('.qs-lesson').length, v: !!x.querySelector('a.qs-video[href*="youtube.com/results"]') } : null; });
   ok(qs && qs.s >= 5 && qs.q === 'تفسير ابن كثير,تفسير الطبري,تفسير القرطبي' && qs.l >= 3 && qs.v, 'القصص القرآني: قصة يوسف مجمّعة بآياتها، مع نقول ابن كثير والطبري والقرطبي والعبر ورابط الفيديو');
 }
+{ // أذكار الصباح والمساء: الورد المناسب لوقت مدينة المستخدم، بنصوص حصن المسلم وتخريجها، وعدّاد لكل ذكر
+  await p.evaluate(() => location.hash = 'adhkar'); await p.waitForTimeout(1200);
+  const ad = await p.evaluate(() => { const A = adhNow(prCfg()), x = document.querySelector('.adh'); return x ? { k: A.kind, shown: x.classList.contains(A.kind), n: document.querySelectorAll('.adh-card').length, src: document.querySelectorAll('.adh-src').length, home: typeof adhHomeCard() === 'string' && /adhbar/.test(adhHomeCard()) } : null; });
+  ok(ad && ad.shown && ad.n === (ad.k === 'm' ? 23 : 21) && ad.src === ad.n && ad.home, `أذكار الصباح والمساء: يظهر ورد ${ad?.k === 'm' ? 'الصباح' : 'المساء'} في وقته (${ad?.n} ذكراً بتخريجها) مع بطاقة الرئيسية`);
+  await p.click('.adh-card [data-adhc]'); ok(await p.evaluate(() => /[١1]/.test(document.querySelector('.adh-card .adh-count b').textContent)), 'عدّاد الأذكار يعمل');
+}
 await p.evaluate(() => location.hash = 'account'); await p.waitForTimeout(700);
 ok(!!(await p.$('#uform')) && !!(await p.$('#rform')), 'صفحة الدخول للعميل والمدير وإنشاء الحساب تعمل');
 { // اللغات ومواقيت الصلاة: الإنجليزية مضمّنة، ومعاني الآيات بالترجمة المعتمدة، والمواقيت تُحسب على الجهاز
