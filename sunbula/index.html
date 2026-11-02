@@ -8,7 +8,6 @@
 </head>
 <body>
 <title>سنبلة للاستثمار</title>
-<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Reem+Kufi:wght@500;600;700&display=swap">
@@ -436,7 +435,8 @@ function seed(){
   ];
   const U=(o)=>Object.assign({id:uid('u'),role:'investor',kyc:'approved',status:'active',cash:0,holdings:{},subs:{},watch:[],hist:[],risk:'متوازن',nat:'السعودية',created:now-200*DAY},o);
   const users=[
-    U({id:'u_admin',name:'مدير النظام',email:'admin@sunbula.demo',pass:hash('Admin@2026'),role:'admin',phone:{cc:'966',n:'500000001'},created:now-540*DAY}),
+    /* حساب الإدارة بلا كلمة مرور، وتُعيَّن عند أول دخول على هذا الجهاز، فلا تُنشر كلمة مرور الإدارة في ملف عام. */
+    U({id:'u_admin',name:'مدير النظام',email:'admin@sunbula.demo',pass:'',setup:true,role:'admin',phone:{cc:'966',n:'500000001'},created:now-540*DAY}),
     U({id:'u_sara',name:'سارة المنصوري',email:'investor@sunbula.demo',pass:hash('Invest@2026'),phone:{cc:'966',n:'551234567'},cash:2450.35,created:now-180*DAY,watch:['TSLA','2222','GLD'],
        holdings:{AAPL:{q:12.5,cost:2610},NVDA:{q:40,cost:4720},KO:{q:30,cost:1980},VT:{q:20,cost:2230}},
        subs:{p1:{units:30,cost:3120},p4:{units:50,cost:5150}}}),
@@ -903,7 +903,7 @@ function authModal(mode){
      <button class="btn block">دخول</button></form>
      <div class="demo-creds"><b>حسابات العرض التجريبي</b>
       <div>المستثمر: <span class="num">investor@sunbula.demo</span> / <span class="num">Invest@2026</span></div><button class="btn sm ghost" data-act="fill" data-id="investor">تعبئة بيانات المستثمر</button>
-      <div>مدير النظام: <span class="num">admin@sunbula.demo</span> / <span class="num">Admin@2026</span></div><button class="btn sm ghost" data-act="fill" data-id="admin">تعبئة بيانات المدير</button></div>`
+      <div>مدير النظام: <span class="num">admin@sunbula.demo</span> · اكتب كلمة مرور من اختيارك عند أول دخول فتُثبَّت على هذا الجهاز</div><button class="btn sm ghost" data-act="fill" data-id="admin">تعبئة بريد المدير</button></div>`
    :`<form data-form="signup" style="display:grid;gap:14px">
      <div class="field"><label for="s_name">الاسم الكامل كما في الهوية</label><input class="input" id="s_name" name="name" required minlength="5" autocomplete="name"></div>
      <div class="field"><label for="s_email">البريد الإلكتروني</label><input class="input" id="s_email" name="email" type="email" required dir="ltr" autocomplete="email"></div>
@@ -998,7 +998,7 @@ const ACTS={
  menu(){S.menu=!S.menu;$('#pnav').classList.toggle('open',S.menu)},
  closemenu(){S.menu=false;$('#pnav')?.classList.remove('open')},
  auth(id){authModal(id)},
- fill(id){$('#l_email').value=id==='admin'?'admin@sunbula.demo':'investor@sunbula.demo';$('#l_pass').value=id==='admin'?'Admin@2026':'Invest@2026'},
+ fill(id){$('#l_email').value=id==='admin'?'admin@sunbula.demo':'investor@sunbula.demo';$('#l_pass').value=id==='admin'?'':'Invest@2026';if(id==='admin')$('#l_pass').focus()},
  logout(){DB.session=null;save();S.view='home';closeModal();render();window.scrollTo(0,0);toast('تم تسجيل الخروج بأمان.')},
  go(id,el){closeModal();S.view=id;if(el?.dataset.f)S.uFilter=el.dataset.f;S.txFilter='all';render();window.scrollTo(0,0);if(id==='account'&&me().kyc!=='approved')setTimeout(()=>$('#kyc')?.scrollIntoView({block:'start'}),30)},
  mfilter(id){S.mfilter=id;rerenderMarket()},
@@ -1032,7 +1032,11 @@ const ACTS={
  'mclose-bg'(_,el,e){if(e.target===el)closeModal()}
 };
 const FORMS={
- login(f){const em=f.email.value.trim().toLowerCase(),u=DB.users.find(x=>x.email===em);if(!u||u.pass!==hash(f.pass.value))return toast('البريد الإلكتروني أو كلمة المرور غير صحيحة.',true);DB.session=u.id;S.view=u.role==='admin'?'aov':'dash';S.kycStep=1;closeModal();pushHist(u);save();render();window.scrollTo(0,0);toast(u.role==='admin'?'مرحباً بك في لوحة الإدارة.':`مرحباً ${u.name.split(' ')[0]}، تم تسجيل الدخول.`)},
+ login(f){const em=f.email.value.trim().toLowerCase(),u=DB.users.find(x=>x.email===em);
+   if(u&&u.setup){/* أول دخول لحساب الإدارة على هذا الجهاز: ما يُكتب الآن يصبح كلمة المرور. */
+     if(String(f.pass.value||'').length<8)return toast('اكتب كلمة مرور لحساب الإدارة، ثمانية أحرف على الأقل، فهذا أول دخول على هذا الجهاز.',true);
+     u.pass=hash(f.pass.value);u.setup=false;DB.session=u.id;S.view='aov';S.kycStep=1;closeModal();pushHist(u);save();render();window.scrollTo(0,0);return toast('تم تعيين كلمة مرور الإدارة على هذا الجهاز.')}
+   if(!u||u.setup||u.pass!==hash(f.pass.value))return toast('البريد الإلكتروني أو كلمة المرور غير صحيحة.',true);DB.session=u.id;S.view=u.role==='admin'?'aov':'dash';S.kycStep=1;closeModal();pushHist(u);save();render();window.scrollTo(0,0);toast(u.role==='admin'?'مرحباً بك في لوحة الإدارة.':`مرحباً ${u.name.split(' ')[0]}، تم تسجيل الدخول.`)},
  signup(f){
   const name=normName(f.name.value),em=f.email.value.trim().toLowerCase(),ph=f.phone.value.replace(/\D/g,'').replace(/^0+/,''),pw=f.pass.value;
   if(name.split(' ').length<2)return toast('يرجى كتابة الاسم الأول واسم العائلة على الأقل.',true);
