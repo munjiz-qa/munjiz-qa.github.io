@@ -56,7 +56,9 @@ const QUERIES = [
   ['en', '(QMD OR "Qatar Meteorology" OR rain OR fog OR dust OR "strong wind") Qatar when:2d']
 ];
 const MUST = /قطر|الدوحة|لوسيل|الوكرة|الريان|الخور|أشغال|Qatar|Doha|Lusail|Wakra|Rayyan|Ashghal|QMD/i;
-const SKIP = /مباراة|منتخب|كأس|الدوري|غزة|حرب|قصف|match|football|league|Gaza|war|airline|flight|stock|بورصة/i;
+const SKIP = /مباراة|منتخب|كأس|الدوري|غزة|حرب|قصف|ناقلة|الملاحة البحرية|تدين|سفير|مؤتمر|متاحف|طيران|match|football|league|Gaza|war|airline|flight|aviation|air traffic|maritime|tanker|stock|بورصة|Foreign Minister/i;
+// keep only headlines that are actually about roads, traffic or weather
+const ROAD = /إغلاق|تحويل|طريق|شارع|تقاطع|نفق|جسر|أشغال|المرور|مروري|حادث|ازدحام|زحام|أمطار|مطر|الأرصاد|ضباب|غبار|رياح|طقس|الطقس|حرارة|سيول|رعد|road|street|interchange|tunnel|bridge|Ashghal|traffic|accident|crash|congestion|closure|diversion|rain|fog|dust|wind|weather|QMD|Meteorolog|storm|thunder/i;
 function kind(t) {
   if (/إغلاق|تحويل|مغلق|closure|closed|diversion|Ashghal|أشغال/i.test(t)) return 'closure';
   if (/أرصاد|مطر|أمطار|ضباب|غبار|رياح|طقس|حرارة|QMD|Meteorolog|rain|fog|dust|wind|weather/i.test(t)) return 'weather';
@@ -74,7 +76,7 @@ async function news() {
         let title = text(tag(it, 'title')), source = text(tag(it, 'source')), link = text(tag(it, 'link'));
         if (source && title.endsWith(' - ' + source)) title = title.slice(0, -(source.length + 3));
         const key = title.replace(/[\s\p{P}]+/gu, '').slice(0, 60);
-        if (!/^https:\/\//.test(link) || !title || seen.has(key) || !MUST.test(title) || SKIP.test(title)) continue; seen.add(key);
+        if (!/^https:\/\//.test(link) || !title || seen.has(key) || !MUST.test(title) || !ROAD.test(title) || SKIP.test(title)) continue; seen.add(key);
         const d = new Date(text(tag(it, 'pubDate')));
         all.push({ title: title.slice(0, 200), link, source: source.slice(0, 60), date: isNaN(d) ? '' : d.toISOString(), kind: kind(title), lang });
       }
