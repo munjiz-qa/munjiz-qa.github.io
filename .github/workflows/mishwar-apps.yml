@@ -129,7 +129,7 @@ jobs:
         run: |
           find dl -type f | sort
           gh release view mishwar >/dev/null 2>&1 || gh release create mishwar --title "مشوار من منجز" --notes "تطبيق مشوار للملاحة في قطر." --latest=false
-          gh release upload mishwar $(find dl -type f \( -name 'Mishwar*' -o -name 'android-home.png' -o -name 'android-log.txt' \)) --clobber
+          gh release upload mishwar $(find dl -type f -size +0 \( -name 'Mishwar*' -o -name 'android-home.png' \)) --clobber
           gh release edit mishwar --notes "مشوار من منجز: ملاحة عربية لقطر.
 
           - أندرويد: Mishwar.apk للتثبيت المباشر، وMishwar.aab لمتجر Google Play
