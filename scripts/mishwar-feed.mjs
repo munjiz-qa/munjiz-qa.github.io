@@ -56,11 +56,11 @@ const QUERIES = [
   ['en', '(QMD OR "Qatar Meteorology" OR rain OR fog OR dust OR "strong wind") Qatar when:2d']
 ];
 const MUST = /قطر|الدوحة|لوسيل|الوكرة|الريان|الخور|أشغال|Qatar|Doha|Lusail|Wakra|Rayyan|Ashghal|QMD/i;
-const SKIP = /مباراة|منتخب|كأس|الدوري|غزة|حرب|قصف|ناقلة|الملاحة البحرية|تدين|سفير|مؤتمر|متاحف|طيران|match|football|league|Gaza|war|airline|flight|aviation|air traffic|maritime|tanker|stock|بورصة|Foreign Minister/i;
+const SKIP = /مباراة|منتخب|كأس|الدوري|غزة|حرب|قصف|ناقلة|الملاحة البحرية|تدين|سفير|مؤتمر|متاحف|طيران|match|football|league|Gaza|war|airline|flight|aviation|air traffic|maritime|tanker|stock|بورصة|Foreign Minister|internet|جائزة|الترشح|meets|يستقبل|يلتقي/i;
 // keep only headlines that are actually about roads, traffic or weather
-const ROAD = /إغلاق|تحويل|طريق|شارع|تقاطع|نفق|جسر|أشغال|المرور|مروري|حادث|ازدحام|زحام|أمطار|مطر|الأرصاد|ضباب|غبار|رياح|طقس|الطقس|حرارة|سيول|رعد|road|street|interchange|tunnel|bridge|Ashghal|traffic|accident|crash|congestion|closure|diversion|rain|fog|dust|wind|weather|QMD|Meteorolog|storm|thunder/i;
+const ROAD = /طريق|الطرق|شارع|تقاطع|نفق|جسر|المرور|مروري|حادث سير|حادث مروري|ازدحام|زحام|تحويلة|أمطار|مطر|الأرصاد|ضباب|غبار|رياح|طقس|الطقس|سيول|رعد|\broad|street|interchange|tunnel|bridge|diversion|traffic|accident|crash|congestion|\brain|fog|dust|wind|weather|QMD|Meteorolog|storm|thunder/i;
 function kind(t) {
-  if (/إغلاق|تحويل|مغلق|closure|closed|diversion|Ashghal|أشغال/i.test(t)) return 'closure';
+  if (/إغلاق|تحويل|مغلق|closure|closed|diversion/i.test(t) && /طريق|شارع|تقاطع|نفق|جسر|مخرج|road|street|interchange|tunnel|bridge|exit/i.test(t)) return 'closure';
   if (/أرصاد|مطر|أمطار|ضباب|غبار|رياح|طقس|حرارة|QMD|Meteorolog|rain|fog|dust|wind|weather/i.test(t)) return 'weather';
   if (/سلامة|توعية|safety|awareness/i.test(t)) return 'safety';
   return 'traffic';
