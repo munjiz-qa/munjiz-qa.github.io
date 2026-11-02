@@ -694,7 +694,7 @@ ${r.note ? `<p style="margin:8px 0 0">${E(r.note)}</p>` : ''}
       const HAVE = new Set(['0-255', '1536-1791', '1792-2047', '2048-2303', '8192-8447', '64256-64511', '64512-64767', '64768-65023', '65024-65279']);
       const EMPTY = new Uint8Array([10, 7, 10, 1, 109, 18, 2, 48, 48]).buffer; // valid empty glyph set
       maplibregl.addProtocol('mishwar', async params => { const range = params.url.split('/').pop(); if (!HAVE.has(range)) return { data: EMPTY.slice(0) }; try { const r = await fetch(D + 'glyphs/' + range + '.pbf'); if (r.ok) return { data: await r.arrayBuffer() }; } catch (e) {} return { data: EMPTY.slice(0) }; });
-      /*RTLOFF*/
+      try { const pr = maplibregl.setRTLTextPlugin(new URL('vendor/rtl-text.js', location.href).href, false); if (pr && pr.catch) pr.catch(() => {}); } catch (e) {}
       map = new maplibregl.Map({ container: 'map', style: style(gj), center: [51.522, 25.305], zoom: 12.4, pitch: 50, bearing: -12, maxBounds: [[50.6, 24.4], [52.0, 26.3]], attributionControl: false, maxPitch: 70 });
       const el = (cls, html) => { const d = document.createElement('div'); d.className = cls; d.innerHTML = html; return d; };
       startMk = new maplibregl.Marker({ element: el('me-dot', '') }); meMk = new maplibregl.Marker({ element: el('me-dot', '') });
