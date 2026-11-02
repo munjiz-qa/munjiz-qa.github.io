@@ -14,7 +14,7 @@ ok(['client', 'admin'].every(u => cfg.users?.some(x => x.u === u && !x.off)), '�
 ok(cfg.users.every(x => /^pbkdf2\$\d{6,}\$/.test(x.h || '')), 'كلمات المرور محفوظة بتجزئة PBKDF2 مملّحة، لا نص صريح ولا تجزئة سريعة');
 await p.goto(B + '#home'); await p.waitForSelector('.daily', { timeout: 30000 });
 ok(!!(await p.$('meta[http-equiv="Content-Security-Policy"]')) && await p.evaluate(async () => (await fetch('https://example.com/').then(() => 'open', () => 'blocked')) === 'blocked'), 'سياسة أمان المحتوى (CSP) مفعّلة وتمنع الاتصال بمواقع غريبة');
-ok((await p.$$('.path')).length === 4 && (await p.$$('.path .scard')).length === 15, 'الرئيسية الجديدة: أربعة مسارات و١٥ بطاقة قسم');
+ok((await p.$$('.path')).length === 4 && (await p.$$('.path .scard')).length === 16, 'الرئيسية الجديدة: أربعة مسارات و١٦ بطاقة قسم (مع أذكار الصباح والمساء)');
 ok(await p.evaluate(() => typeof window.claude === 'undefined'), 'لا يوجد أي مكوّن من Claude في الصفحة');
 for (const v of ['account', 'admin', 'search', 'hifz', 'map', 'awwalin', 'ijaz', 'research']) {
   await p.evaluate(v => location.hash = v, v); await p.waitForTimeout(700);
