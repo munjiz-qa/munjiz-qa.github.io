@@ -595,3 +595,22 @@ html[dir=ltr] .adh-txt,html[dir=ltr] .adh-pre{text-align:right}
   .k-next{grid-template-columns:96px 1fr auto}
 }
 @media print{.k-quiz,.k-next{display:none}}
+
+/* ---------- علوم القرآن */
+.u-hero h1{margin:4px 0}.u-hero .lead{margin:0}
+.u-index ol{list-style:none;margin:8px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px}
+.u-index a{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:8px 10px;background:var(--sheet)}
+.u-index a:hover{border-color:var(--accent)}
+.u-n{flex:none;width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:inline-grid;place-items:center;font-size:.85rem;font-weight:700}
+.u-ch>summary{cursor:pointer;display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.08rem;list-style:none}
+.u-ch>summary::-webkit-details-marker{display:none}
+.u-ch>summary::after{content:'+';margin-inline-start:auto;color:var(--muted);font-size:1.3rem}.u-ch[open]>summary::after{content:'−'}
+.u-body{margin-top:12px}.u-body h3{margin:10px 0 0;color:var(--saffron);font-size:1rem}
+.u-intro{margin:0;line-height:1.95}
+.u-pts{margin:0;padding-inline-start:22px;display:grid;gap:6px;list-style:arabic-indic}html[dir=ltr] .u-pts{list-style:decimal}
+.u-ev{border-top:1px dashed var(--line);padding-top:10px}
+.u-ref{font-size:.85rem}.u-ref a{cursor:pointer}
+.u-mu{margin:6px 0 0;font-size:.95rem;line-height:1.85}
+.u-q{margin-top:8px}.u-q blockquote{margin:0;line-height:1.9}.u-q figcaption{font-size:.8rem;color:var(--muted);margin-top:4px}
+.u-src{margin:12px 0 0;font-size:.85rem;color:var(--muted)}
+@media (max-width:640px){.u-index ol{grid-template-columns:1fr}.u-ch>summary{font-size:1rem}}
