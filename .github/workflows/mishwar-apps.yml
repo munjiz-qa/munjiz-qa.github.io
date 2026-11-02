@@ -31,14 +31,18 @@ jobs:
         env:
           UPLOAD_KEYSTORE: ${{ secrets.MISHWAR_UPLOAD_KEYSTORE }}
           UPLOAD_PASS: ${{ secrets.MISHWAR_UPLOAD_PASS }}
+          UPLOAD_ALIAS: ${{ vars.MISHWAR_KEY_ALIAS }}
         run: |
-          if [ -n "$UPLOAD_KEYSTORE" ]; then
-            echo "$UPLOAD_KEYSTORE" | base64 -d > "$RUNNER_TEMP/key.p12"
-            echo "MISHWAR_KEY_ALIAS=mishwar-upload" >> $GITHUB_ENV; echo "MISHWAR_KEY_PASS=$UPLOAD_PASS" >> $GITHUB_ENV; echo "STORE_SIGNED=1" >> $GITHUB_ENV
-          else
-            cp android-res/direct-install.p12 "$RUNNER_TEMP/key.p12"
-            echo "MISHWAR_KEY_ALIAS=mishwar" >> $GITHUB_ENV; echo "MISHWAR_KEY_PASS=mishwar-direct" >> $GITHUB_ENV; echo "STORE_SIGNED=0" >> $GITHUB_ENV
+          # مفتاح التوقيع يأتي من أسرار المستودع وحده. لا مفتاح في الملفات ولا كلمة مرور في المسار.
+          if [ -z "$UPLOAD_KEYSTORE" ] || [ -z "$UPLOAD_PASS" ]; then
+            echo "::error::مفتاح التوقيع غير مضبوط. أضف السرّين MISHWAR_UPLOAD_KEYSTORE (المفتاح بصيغة base64) وMISHWAR_UPLOAD_PASS في إعدادات المستودع." >&2
+            exit 1
           fi
+          echo "$UPLOAD_KEYSTORE" | base64 -d > "$RUNNER_TEMP/key.p12"
+          echo "MISHWAR_KEY_ALIAS=${UPLOAD_ALIAS:-mishwar-upload}" >> $GITHUB_ENV
+          echo "::add-mask::$UPLOAD_PASS"
+          echo "MISHWAR_KEY_PASS=$UPLOAD_PASS" >> $GITHUB_ENV
+          echo "STORE_SIGNED=1" >> $GITHUB_ENV
           echo "MISHWAR_KEYSTORE=$RUNNER_TEMP/key.p12" >> $GITHUB_ENV
       - name: Build APK and AAB
         working-directory: mishwar/native/android

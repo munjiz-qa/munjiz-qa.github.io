@@ -224,9 +224,11 @@ async function seed(){
   const d=(m,day=5)=>{const x=new Date(t0);x.setMonth(x.getMonth()+m);x.setDate(day);x.setHours(10,30,0,0);return x.toISOString()};
   db={v:1,seq:1000,users:[],tx:[],reqs:[],cash:[],dist:[],funds:{zakat:0,sadaqa:0,waqf:0,qard:250000},log:[],
       settings:{murabahaRate:5,ijaraRate:5.5,musharakaRate:5,mudaribShare:30,goldPrice:245,qardMax:20000,minDown:20}};
-  const mk=async(o)=>{const salt=Math.random().toString(36).slice(2);const u={id:uid('u'),acct:'SH-'+(++db.seq)+String(Math.floor(Math.random()*9000+1000)),salt,pass:await hash(o.pw,salt),
+  const mk=async(o)=>{const salt=Math.random().toString(36).slice(2);const u={id:uid('u'),acct:'SH-'+(++db.seq)+String(Math.floor(Math.random()*9000+1000)),salt,pass:o.setup?'':await hash(o.pw,salt),setup:!!o.setup,
     name:o.name,email:o.email,phone:phoneDigits(o.phone),nid:o.nid||'',role:o.role||'customer',status:o.status||'active',created:o.created||d(0,1),bal:{current:0,invest:0}};delete u.pw;db.users.push(u);return u};
-  await mk({name:'مدير النظام',email:'admin@shatirhassan.qa',phone:'55000001',pw:'Hassan@Admin2026',role:'admin'});
+  /* حساب الإدارة يُنشأ بلا كلمة مرور، وتُعيَّن كلمة مروره عند أول دخول على هذا الجهاز،
+     فلا تكون كلمة مرور الإدارة مكتوبة في ملف منشور. */
+  await mk({name:'مدير النظام',email:'admin@shatirhassan.qa',phone:'55000001',pw:'',role:'admin',setup:true});
   const c=await mk({name:'عبدالله محمد الكواري',email:'client@shatirhassan.qa',phone:'55123456',nid:'28763400001',pw:'Client@2026'});
   const c2=await mk({name:'مريم أحمد السليطي',email:'maryam@shatirhassan.qa',phone:'66234567',nid:'29063400002',pw:'Client@2026'});
   await mk({name:'يوسف خالد العلي',email:'yousef@shatirhassan.qa',phone:'33456789',nid:'29563400003',pw:'Client@2026',status:'pending',created:d(4,1)});
@@ -696,7 +698,13 @@ const FORMS={
   async login(f){
     const id=f.id.trim().toLowerCase();const pd=phoneDigits(id);
     const u=db.users.find(x=>x.email.toLowerCase()===id||(pd.length>=8&&x.phone===pd)||x.acct.toLowerCase()===id);
-    need(u&&u.pass===await hash(f.pw,u.salt),'بيانات الدخول غير صحيحة.');
+    if(u&&u.setup){
+      /* أول دخول لحساب الإدارة على هذا الجهاز: ما يُكتب الآن يصبح كلمة المرور. */
+      need(String(f.pw||'').length>=8,'اكتب كلمة مرور لحساب الإدارة، ثمانية أحرف على الأقل، فهذا أول دخول على هذا الجهاز.');
+      u.pass=await hash(f.pw,u.salt);u.setup=false;
+      store.set(SKEY,u.id);logA('تعيين كلمة مرور الإدارة',u.name);save();toast('تم تعيين كلمة مرور الإدارة على هذا الجهاز');go('#/a/home');return;
+    }
+    need(u&&!u.setup&&u.pass===await hash(f.pw,u.salt),'بيانات الدخول غير صحيحة.');
     store.set(SKEY,u.id);logA('تسجيل دخول',u.name);save();toast(`مرحباً ${u.name.split(' ')[0]}`);go(u.role==='admin'?'#/a/home':'#/c/home');
   },
   async register(f){
