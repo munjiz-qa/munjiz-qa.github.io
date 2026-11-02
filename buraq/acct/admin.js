@@ -1,4 +1,5 @@
 // لوحة إدارة براق: صلاحيات كاملة على الطلبات والمستخدمين والخطط والكتالوج والمحتوى.
+import { printQuote } from "./quote.js?v=1";
 import { READY, auth, db, A, F, loadProfile, createUserAsAdmin } from "./fb.js";
 import { $, esc, fmtDate, normPhone, phoneHtml, money, STATUS, stBadge, TYPES, toast, errMsg } from "./ui.js";
 import { CATALOG, KIND, CONTENT } from "./seed.js?v=2";
@@ -97,7 +98,7 @@ function openReq(id) {
       <label class="f">عرض السعر بالدولار (يُحوَّل تلقائياً لعملة العميل)<input id="dPr" type="number" min="0" step="0.01" inputmode="decimal" value="${r.price ?? ""}"><small class="mute sm" data-usd-hint="dPr" data-nocur></small></label>
     </div>
     <label class="f">ملاحظة للعميل (تظهر في حسابه)<textarea id="dNote" maxlength="1000" style="min-height:70px">${esc(r.adminNote || "")}</textarea></label>
-    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn pri" type="submit">حفظ التحديث</button><button class="btn bad" type="button" id="dDel">حذف الطلب نهائياً</button></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn pri" type="submit">حفظ التحديث</button><button class="btn" type="button" id="dPdf"${r.price != null ? "" : " hidden"}>عرض السعر PDF</button><button class="btn bad" type="button" id="dDel">حذف الطلب نهائياً</button></div>
   </form>
   <ul class="timeline">${(r.history || []).map((h) => `<li>${STATUS[h.s]?.[0] || esc(h.s)} · ${fmtDate(h.at, true)}${h.by === "customer" ? " (العميل)" : ""}</li>`).join("<li>←</li>")}</ul>
   <h3>المراسلة مع العميل</h3>
@@ -117,6 +118,7 @@ function openReq(id) {
     if (st !== r.status) upd.history = [...(r.history || []), { s: st, at: new Date().toISOString(), by: ME.name }];
     try { await F.updateDoc(F.doc(db, "requests", id), upd); toast("حُفظ تحديث الطلب وظهر للعميل."); $("dlg").close(); } catch (err) { toast(errMsg(err), true); }
   };
+  $("dPdf").onclick = () => printQuote(r, USERS.find((u) => u.id === r.uid));
   $("dDel").onclick = async () => {
     if (!confirm(`حذف الطلب ${r.no} نهائياً؟ لا يمكن التراجع.`)) return;
     try { await F.deleteDoc(F.doc(db, "requests", id)); $("dlg").close(); toast("حُذف الطلب."); } catch (err) { toast(errMsg(err), true); }
