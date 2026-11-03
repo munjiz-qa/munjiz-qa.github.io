@@ -14,9 +14,25 @@ ok(['client', 'admin'].every(u => cfg.users?.some(x => x.u === u && !x.off)), '�
 ok(cfg.users.every(x => /^pbkdf2\$\d{6,}\$/.test(x.h || '')), 'كلمات المرور محفوظة بتجزئة PBKDF2 مملّحة، لا نص صريح ولا تجزئة سريعة');
 await p.goto(B + '#home'); await p.waitForSelector('.daily', { timeout: 30000 });
 ok(!!(await p.$('meta[http-equiv="Content-Security-Policy"]')) && await p.evaluate(async () => (await fetch('https://example.com/').then(() => 'open', () => 'blocked')) === 'blocked'), 'سياسة أمان المحتوى (CSP) مفعّلة وتمنع الاتصال بمواقع غريبة');
-ok((await p.$$('.path')).length === 4 && (await p.$$('.path .scard')).length === 16, 'الرئيسية الجديدة: أربعة مسارات و١٦ بطاقة قسم (مع أذكار الصباح والمساء)');
+ok((await p.$$('.path')).length === 4 && (await p.$$('.path .scard')).length === 18, 'الرئيسية: أربعة مسارات و١٨ بطاقة قسم (مع الأذكار وركن الأطفال وعلوم القرآن)');
+{ // نسخة الجوال المبسطة: فهرس كل الأقسام في أول الشاشة، وركن الأطفال بقصصه وأسئلته
+  const m = await b.newPage({ viewport: { width: 390, height: 844 } }); await m.goto(B + '#home'); await m.waitForSelector('.mindex .mi-tile', { timeout: 30000 }).catch(() => {});
+  const mi = await m.evaluate(() => { const t = [...document.querySelectorAll('.mindex .mi-tile')]; return { n: t.length, top: t.length ? t[0].getBoundingClientRect().top : 9e9, paths: getComputedStyle(document.querySelector('.home2 .paths')).display }; });
+  ok(mi.n === 18 && mi.top < 844 && mi.paths === 'none', 'الجوال: فهرس الأقسام كلها يظهر في أول شاشة بدل البطاقات الطويلة');
+  await m.evaluate(() => location.hash = 'kids'); await m.waitForTimeout(800);
+  ok(await m.evaluate(() => document.querySelectorAll('.k-card .ksv').length >= 11), 'ركن الأطفال: ١١ قصة مصوّرة');
+  await m.evaluate(() => location.hash = 'k-nuh'); await m.waitForTimeout(800);
+  const k = await m.evaluate(() => ({ s: document.querySelectorAll('.k-scene .ksv').length, a: document.querySelectorAll('.k-scene .k-ay .ayah').length, q: document.querySelectorAll('.k-q').length }));
+  await m.evaluate(() => document.querySelectorAll('.k-q').forEach(f => f.querySelectorAll('.k-op').forEach(x => { if (x.dataset.k === '0') x.click(); })));
+  const st = await m.evaluate(() => JSON.parse(localStorage.getItem('mishkat:kids') || '{}').nuh);
+  ok(k.s === 5 && k.a >= 5 && k.q === 3 && st === 3, 'قصة سفينة نوح: ٥ مشاهد مصوّرة بآياتها، و٣ أسئلة تمنح النجوم');
+  await m.evaluate(() => location.hash = 'ulum'); await m.waitForSelector('#u-nuzul .u-q blockquote', { timeout: 60000 }).catch(() => {});
+  const u = await m.evaluate(() => ({ ch: document.querySelectorAll('.u-ch').length, ix: document.querySelectorAll('.u-index li').length, q: document.querySelectorAll('#u-nuzul .u-q').length, a: document.querySelectorAll('#u-nuzul .u-ev .ayah').length }));
+  ok(u.ch >= 5 && u.ix === u.ch && u.q >= 3 && u.a >= 5, 'علوم القرآن: أبواب مسلسلة بفهرسها، وشواهد الباب الأول بآياتها ونقول المفسرين');
+  await m.close();
+}
 ok(await p.evaluate(() => typeof window.claude === 'undefined'), 'لا يوجد أي مكوّن من Claude في الصفحة');
-for (const v of ['account', 'admin', 'search', 'hifz', 'map', 'awwalin', 'ijaz', 'research']) {
+for (const v of ['account', 'admin', 'search', 'hifz', 'map', 'awwalin', 'ijaz', 'research', 'kids', 'ulum']) {
   await p.evaluate(v => location.hash = v, v); await p.waitForTimeout(700);
   const t = await p.evaluate(() => document.body.innerText); ok(!/claude|anthropic/i.test(t) && t.length > 200, `صفحة ${v} تعمل ولا تذكر Claude`);
 }
