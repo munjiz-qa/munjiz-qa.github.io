@@ -4,7 +4,7 @@ on:
     - cron: '17 * * * *'
   push:
     branches: [main]
-    paths: ['saif/**', 'scripts/saif-test.mjs', '.github/workflows/saif-health.yml']
+    paths: ['saif/**', 'scripts/saif-test.mjs', 'scripts/saif-e2e.mjs', '.github/workflows/saif-health.yml']
   workflow_dispatch:
 permissions:
   contents: read

@@ -21,7 +21,7 @@ css.textContent = `
 #prices td.p{font-weight:700;white-space:nowrap;direction:ltr;text-align:left}
 #prices .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
 #prices .k{font-size:.75rem;color:var(--muted)}
-#prices .cat td{background:var(--copper-soft);font-weight:700;color:var(--copper)}
+#prices .cat td{background:var(--copper-soft);font-weight:700;color:color-mix(in srgb,var(--copper) 82%,var(--ink))}
 #bqToast{position:fixed;inset-inline:16px;bottom:max(16px,env(safe-area-inset-bottom));margin:auto;max-width:440px;background:var(--ink);color:var(--bg);padding:12px 16px;border-radius:12px;text-align:center;z-index:99}
 `;
 document.head.append(css);

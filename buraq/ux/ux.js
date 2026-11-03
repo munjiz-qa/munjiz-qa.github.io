@@ -60,3 +60,13 @@ const onScroll=()=>{tick=false;const y=scrollY,h=document.documentElement.scroll
 addEventListener("scroll",()=>{if(!tick){tick=true;requestAnimationFrame(onScroll)}},{passive:true});
 addEventListener("resize",onScroll);onScroll();
 })();
+// 02/11/2026 · المناطق القابلة للتمرير أفقياً (جداول ومعادلات) تُصبح قابلة للتركيز والتمرير بلوحة المفاتيح
+(()=>{let seq=0;const mark=()=>{document.querySelectorAll(".tbl,.formula,.sx,[class*='scroll']").forEach(el=>{
+  if(el.hasAttribute("data-scrollfocus")||el.scrollWidth<=el.clientWidth+1)return;
+  if(el.querySelector("a,button,input,select,textarea,[tabindex]"))return;
+  const h=el.closest("section,figure,.fig,div")?.querySelector("h2,h3,figcaption,.k");
+  el.tabIndex=0;el.setAttribute("data-scrollfocus","");el.setAttribute("role","region");
+  el.setAttribute("aria-label",(h?h.textContent.trim().slice(0,60)+" · ":"")+"منطقة قابلة للتمرير "+(++seq));});};
+ let t;const run=()=>{clearTimeout(t);t=setTimeout(mark,400)};
+ addEventListener("load",run);addEventListener("resize",run);
+ new MutationObserver(run).observe(document.body,{childList:true,subtree:true});})();
