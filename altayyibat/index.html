@@ -246,6 +246,108 @@ html[lang="en"] body{direction:ltr}html[lang="en"] :is(p,li,dd,dt,td,th,h1,h2,h3
 
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
+<style id="trk-css">
+/* متابعتي اليومية (track) */
+:root{--c1:#08866B;--c2:#C0612A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--c1:#33A386;--c2:#CF7440}}
+:root[data-theme="dark"]{--c1:#33A386;--c2:#CF7440}
+.trk-tabs{position:sticky;top:calc(env(safe-area-inset-top,0px) + 108px);z-index:5;background:var(--bg);padding-block:6px;margin-block:-6px}
+.trk-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.trk-tabs::-webkit-scrollbar{display:none}
+.trk-tabs .chip{display:inline-flex;align-items:center;gap:6px;flex-shrink:0;white-space:nowrap}
+.trk-tabs .chip svg{width:16px;height:16px}
+.trk-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.trk-nav{display:inline-flex;align-items:center;gap:6px}
+.trk-nav button{border:1px solid var(--line);background:var(--surface);border-radius:8px;width:36px;height:36px;cursor:pointer;font-size:1.1rem;line-height:1}
+.trk-nav .lbl{font-family:var(--f-display);font-weight:600;min-width:9ch;text-align:center}
+.trk-nav input[type=date]{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 8px;color:var(--ink)}
+html[dir=rtl] .trk-nav .flip{transform:scaleX(-1)}
+.trk-hero{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center}
+.trk-gauge{position:relative;width:150px;height:150px}
+.trk-gauge svg{width:100%;height:100%}
+.trk-gauge .n{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.trk-gauge .n b{font-family:var(--f-display);font-size:2.3rem;line-height:1}
+.trk-gauge .n small{color:var(--muted);font-size:.78rem}
+.trk-bars{display:grid;gap:10px}
+.trk-pb{display:grid;gap:3px}
+.trk-pb .t{display:flex;justify-content:space-between;gap:8px;font-size:.88rem}
+.trk-pb .t span:last-child{color:var(--muted)}
+.trk-pb .b{height:8px;border-radius:99px;background:var(--sunk);overflow:hidden}
+.trk-pb .b i{display:block;height:100%;border-radius:99px;background:var(--c1);transition:width .3s}
+.trk-pb.done .b i{background:var(--ok)}
+.trk-meta{display:flex;flex-wrap:wrap;gap:8px}
+.trk-f{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr))}
+.trk-f .field input{background:var(--bg)}
+.trk-unit{position:relative}
+.trk-unit input{padding-inline-end:52px}
+.trk-unit span{position:absolute;inset-inline-end:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.8rem;pointer-events:none}
+.trk-step{display:flex;align-items:center;gap:8px}
+.trk-step button{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-size:1.3rem;cursor:pointer;flex-shrink:0}
+.trk-step input{text-align:center}
+.trk-cups{display:flex;flex-wrap:wrap;gap:4px}
+.trk-cups i{width:14px;height:20px;border:2px solid var(--c1);border-top-width:1px;border-radius:2px 2px 5px 5px;opacity:.35}
+.trk-cups i.on{background:var(--c1);opacity:1}
+.trk-scale{display:flex;gap:6px;flex-wrap:wrap}
+.trk-scale button{flex:1 1 0;min-width:44px;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 4px;cursor:pointer;display:grid;gap:2px;justify-items:center;font-size:.78rem;color:var(--muted)}
+.trk-scale button b{font-family:var(--f-display);font-size:1.05rem;color:var(--ink)}
+.trk-scale button[aria-pressed="true"]{background:var(--pine);border-color:var(--pine);color:var(--pine-ink)}
+.trk-scale button[aria-pressed="true"] b{color:var(--pine-ink)}
+.trk-pain{display:grid;gap:4px}
+.trk-pain input{width:100%;accent-color:var(--copper)}
+.trk-pain .ends{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted)}
+.trk-reads{display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.trk-reads li{display:flex;align-items:center;gap:8px;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;padding:6px 10px;background:var(--bg)}
+.trk-reads li .x{margin-inline-start:auto;border:0;background:none;color:var(--muted);cursor:pointer;font-size:1.1rem}
+.trk-add{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,90px),1fr));align-items:end}
+.trk-saved{font-size:.85rem;color:var(--ok);min-height:1.3em}
+.trk-kpis{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,190px),1fr))}
+.trk-kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;display:grid;gap:2px;text-align:start;cursor:pointer;color:var(--ink);font:inherit}
+.trk-kpi:hover{border-color:var(--pine)}
+.trk-kpi[aria-pressed="true"]{border-color:var(--pine);box-shadow:inset 0 0 0 1px var(--pine)}
+.trk-kpi .k{font-size:.85rem;color:var(--muted)}
+.trk-kpi .v{font-family:var(--f-display);font-size:1.5rem;font-weight:600;line-height:1.3}
+.trk-kpi .v small{font-size:.8rem;color:var(--muted);font-weight:400;margin-inline-start:4px}
+.trk-kpi .d{font-size:.8rem;color:var(--muted)}
+.trk-chart{position:relative}
+.trk-chart svg{width:100%;height:auto;display:block;direction:ltr;overflow:visible}
+.trk-chart text{font-family:var(--f-body);font-variant-numeric:tabular-nums;font-size:11px;fill:var(--muted)}
+.trk-chart .gl{stroke:var(--line);stroke-width:1}
+.trk-chart .goal{stroke:var(--copper);stroke-width:1.5;stroke-dasharray:5 4}
+.trk-chart .band{fill:var(--ok);opacity:.09}
+.trk-chart .hit{fill:transparent;cursor:crosshair}
+.trk-chart .xh{stroke:var(--muted);stroke-width:1;opacity:0}
+.trk-tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--bg);border-radius:8px;padding:6px 10px;font-size:.82rem;white-space:nowrap;transform:translate(-50%,0);opacity:0;transition:opacity .12s;z-index:3;line-height:1.5}
+.trk-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.85rem;color:var(--muted)}
+.trk-legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-inline-end:6px}
+.trk-ins{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.trk-ins li{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;padding:10px 12px;border-radius:8px;background:var(--bg);border:1px solid var(--line)}
+.trk-ins li .tag{margin-top:3px}
+.trk-heat{overflow-x:auto}
+.trk-heat svg{direction:ltr;display:block;min-width:620px;width:100%;height:auto}
+.trk-heat text{font-size:9px;fill:var(--muted);font-family:var(--f-body)}
+.trk-dev{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr))}
+.trk-dev .panel h3{display:flex;align-items:center;gap:10px}
+.trk-dev .ico{width:36px;height:36px;border-radius:9px;background:var(--pine-soft);color:var(--pine);display:grid;place-items:center;flex-shrink:0}
+.trk-dev .ico svg{width:20px;height:20px}
+.trk-dev ol{margin:0;padding-inline-start:20px;display:grid;gap:3px;font-size:.92rem}
+.trk-file{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.trk-file input[type=file]{max-width:100%;font-size:.88rem}
+.trk-prog{height:6px;background:var(--sunk);border-radius:99px;overflow:hidden}
+.trk-prog i{display:block;height:100%;width:0;background:var(--c1);transition:width .2s}
+.trk-live{font-family:var(--f-display);font-size:2rem;font-weight:700;color:var(--c1)}
+.trk-code{font-family:var(--f-mono);font-size:.8rem;direction:ltr;text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;word-break:break-all;user-select:all}
+.trk-home{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-inline-start:4px solid var(--c1);border-radius:var(--r);padding:14px 16px;text-decoration:none;color:var(--ink)}
+.trk-home:hover{border-color:var(--pine)}
+.trk-home .ring{width:52px;height:52px;flex-shrink:0}
+.trk-home b{font-family:var(--f-display)}
+.trk-home .go{margin-inline-start:auto}
+.trk-meds{display:grid;gap:6px}
+.trk-meds label{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;cursor:pointer;background:var(--bg)}
+.trk-meds input{width:20px;height:20px;accent-color:var(--pine)}
+.trk-meds label.on{border-color:var(--ok);background:var(--ok-soft)}
+#trkPrint{display:none}
+@media (max-width:560px){.trk-hero{grid-template-columns:1fr;justify-items:center}.trk-bars{width:100%}.trk-tabs{top:calc(env(safe-area-inset-top,0px) + 104px)}.trk-kpi .v{font-size:1.3rem}}
+@media print{body.trk-printing>*:not(#trkPrint){display:none!important}body.trk-printing #trkPrint{display:block!important;color:#000}#trkPrint table{font-size:11pt}#trkPrint h1{font-size:18pt}#trkPrint .trk-chart text{fill:#444}}
+</style>
 
 <header class="top">
   <div class="wrap">
@@ -3002,4 +3104,831 @@ async function boot(){
 }
 boot();
 
+</script>
+
+<script id="trk-js">
+// ===== متابعتي اليومية: تسجيل يومي، إحصاءات وتحليلات، وربط الأجهزة (الإصدار 1.9) =====
+(()=>{
+if(typeof VIEWS==="undefined"||typeof R==="undefined") return;
+const EN = window.TY_LANG==="en";
+const T = (a,e) => EN ? e : a;
+const q = (s,r=document)=>r.querySelector(s), qa=(s,r=document)=>[...r.querySelectorAll(s)];
+const h = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const say = m => (typeof toast==="function"?toast(m):alert(m));
+
+// ---------- التواريخ ----------
+const MON = EN ? ["January","February","March","April","May","June","July","August","September","October","November","December"] : ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+const MS = EN ? ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"] : ["ينا","فبر","مار","أبر","ماي","يون","يول","أغس","سبت","أكت","نوف","ديس"];
+const WD = EN ? ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"] : ["أحد","إثنين","ثلاثاء","أربعاء","خميس","جمعة","سبت"];
+const p2 = n => String(n).padStart(2,"0");
+const dk = d => `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;
+const pd = k => { const [y,m,d]=k.split("-").map(Number); return new Date(y,m-1,d); };
+const addD = (k,n) => { const d=pd(k); d.setDate(d.getDate()+n); return dk(d); };
+const today = () => dk(new Date());
+const fdate = k => { const d=pd(k); return `${d.getDate()} ${MON[d.getMonth()]} ${d.getFullYear()}`; };
+const fshort = k => { const d=pd(k); return `${d.getDate()} ${MS[d.getMonth()]}`; };
+const tm = t => { const d=new Date(t); return `${p2(d.getHours())}:${p2(d.getMinutes())}`; };
+const range = (a,b) => { const o=[]; for(let k=a;k<=b;k=addD(k,1)) o.push(k); return o; };
+
+// ---------- البيانات (خاصة بهذا الجهاز، ولكل حساب ملفه) ----------
+const ses = () => { try{ return JSON.parse(localStorage.getItem("ty_session")) }catch{ return null } };
+const KEY = () => "ty_track_" + ((ses()||{}).uid || "guest");
+const blank = () => ({v:1, days:{}, meds:[], goals:{steps:8000, active:30, water:8, sleep:7.5, weight:null}, prof:{h:null, sex:"", by:null, gu:"mg"}, created:Date.now()});
+let D = (()=>{ try{ const d=JSON.parse(localStorage.getItem(KEY())); if(d&&d.v&&d.days) return {...blank(), ...d, goals:{...blank().goals, ...d.goals}, prof:{...blank().prof, ...d.prof}} }catch{} return blank(); })();
+let saveT=null;
+const save = (quiet) => { try{ localStorage.setItem(KEY(), JSON.stringify(D)); if(!quiet) flash(); }catch(e){ say(T("تعذّر الحفظ: مساحة التخزين في المتصفح ممتلئة","Could not save: browser storage is full")); } };
+const flash = () => { const s=q("#trkSaved"); if(s){ s.textContent=T("تم الحفظ تلقائياً على جهازك ✓","Saved automatically on your device ✓"); clearTimeout(saveT); saveT=setTimeout(()=>{ if(s) s.textContent=""; },2200); } };
+const day = k => D.days[k] || (D.days[k] = {});
+const clean = k => { const d=D.days[k]; if(!d) return; for(const x in d){ const v=d[x]; if(v==null||v===""||(Array.isArray(v)&&!v.length)||(typeof v==="object"&&!Array.isArray(v)&&!Object.keys(v).length)) delete d[x]; } if(!Object.keys(d).filter(x=>x!=="u"&&x!=="src").length) delete D.days[k]; };
+
+// ---------- تعريف المؤشرات ----------
+const GU = () => D.prof.gu==="mmol";
+const M = {
+  steps:{ar:"الخطوات",en:"Steps",u:["خطوة","steps"],agg:"sum",dec:0,min:0,max:100000,chart:"bar",goal:"steps"},
+  active:{ar:"دقائق النشاط",en:"Active minutes",u:["دقيقة","min"],agg:"sum",dec:0,min:0,max:1440,chart:"bar",goal:"active"},
+  water:{ar:"شرب الماء",en:"Water",u:["كوب","cups"],agg:"sum",dec:0,min:0,max:40,chart:"bar",goal:"water"},
+  sleep:{ar:"ساعات النوم",en:"Sleep",u:["ساعة","h"],agg:"avg",dec:1,min:0,max:24,chart:"bar",goal:"sleep",band:[7,9]},
+  sleepQ:{ar:"جودة النوم",en:"Sleep quality",u:["من 5","/5"],agg:"avg",dec:1,min:1,max:5,chart:"line"},
+  weight:{ar:"الوزن",en:"Weight",u:["كغ","kg"],agg:"avg",dec:1,min:2,max:400,chart:"line"},
+  bp:{ar:"ضغط الدم",en:"Blood pressure",u:["ملم زئبق","mmHg"],agg:"avg",dec:0,chart:"bp"},
+  hr:{ar:"نبض الراحة",en:"Resting heart rate",u:["نبضة/د","bpm"],agg:"avg",dec:0,min:20,max:250,chart:"line",band:[60,100]},
+  glu:{ar:"سكر الدم",en:"Blood glucose",u:["ملغ/دل","mg/dL"],agg:"avg",dec:0,chart:"line",band:[70,140]},
+  spo2:{ar:"أكسجين الدم",en:"Blood oxygen",u:["%","%"],agg:"avg",dec:0,min:50,max:100,chart:"line",band:[95,100]},
+  temp:{ar:"الحرارة",en:"Temperature",u:["°م","°C"],agg:"avg",dec:1,min:30,max:45,chart:"line",band:[36.1,37.5]},
+  mood:{ar:"المزاج",en:"Mood",u:["من 5","/5"],agg:"avg",dec:1,min:1,max:5,chart:"line"},
+  energy:{ar:"الطاقة",en:"Energy",u:["من 5","/5"],agg:"avg",dec:1,min:1,max:5,chart:"line"},
+  stress:{ar:"التوتر",en:"Stress",u:["من 5","/5"],agg:"avg",dec:1,min:1,max:5,chart:"line"},
+  pain:{ar:"الألم",en:"Pain",u:["من 10","/10"],agg:"avg",dec:1,min:0,max:10,chart:"line"},
+  score:{ar:"مؤشر اليوم",en:"Day score",u:["من 100","/100"],agg:"avg",dec:0,chart:"bar"}
+};
+const mn = k => EN ? M[k].en : M[k].ar;
+const mu = k => k==="glu" ? (GU()?T("ملمول/ل","mmol/L"):T("ملغ/دل","mg/dL")) : M[k].u[EN?1:0];
+const SYM = [["headache","صداع","Headache"],["fatigue","إرهاق","Fatigue"],["dizzy","دوخة","Dizziness"],["cough","سعال","Cough"],["sob","ضيق تنفس","Shortness of breath"],["chest","ألم في الصدر","Chest pain"],["palp","خفقان","Palpitations"],["nausea","غثيان","Nausea"],["abd","ألم في البطن","Abdominal pain"],["diarr","إسهال","Diarrhea"],["const","إمساك","Constipation"],["heart","حرقة المعدة","Heartburn"],["joint","ألم المفاصل","Joint pain"],["back","ألم الظهر","Back pain"],["insom","أرق","Insomnia"],["anx","قلق","Anxiety"],["cold","رشح أو زكام","Runny nose"],["fever","حمى","Fever"]];
+const symN = id => { const s=SYM.find(x=>x[0]===id); return s ? (EN?s[2]:s[1]) : id; };
+const GCTX = {f:["صائم","Fasting"],p:["بعد الأكل بساعتين","2 h after meal"],r:["عشوائي","Random"],b:["قبل النوم","Bedtime"]};
+const LV = (n,a,e) => `<span class="tag t${n}">${T(a,e)}</span>`;
+const dW = n => n===1?"يوم":n===2?"يومين":n>=3&&n<=10?"أيام":"يوماً";
+const avg = a => a.length ? a.reduce((s,x)=>s+x,0)/a.length : null;
+const fmt = (v,dec=0) => v==null||isNaN(v) ? "—" : (+v).toLocaleString("en-US",{maximumFractionDigits:dec,minimumFractionDigits:0});
+const gOut = v => GU() ? Math.round(v/18.016*10)/10 : Math.round(v);
+const gIn = v => GU() ? v*18.016 : v;
+
+// قيمة المؤشر في يوم واحد
+function val(k, d){
+  if(!d) return null;
+  if(k==="sys"||k==="dia"){ const a=(d.bp||[]).map(r=>r[k==="sys"?"s":"d"]); return a.length?avg(a):null; }
+  if(k==="glu"){ const a=(d.glu||[]).map(r=>r.v); return a.length?avg(a):null; }
+  if(k==="gluF"){ const a=(d.glu||[]).filter(r=>r.c==="f").map(r=>r.v); return a.length?avg(a):null; }
+  if(k==="score") return score(d).v;
+  const v=d[k]; return typeof v==="number"&&!isNaN(v) ? v : null;
+}
+// مؤشر اليوم: مزيج متوازن من الحركة والنوم والماء والمزاج، من 100
+function score(d){
+  const g=D.goals, parts=[];
+  if(val("steps",d)!=null) parts.push([25, Math.min(d.steps/(g.steps||8000),1)]);
+  if(val("active",d)!=null) parts.push([15, Math.min(d.active/(g.active||30),1)]);
+  if(val("sleep",d)!=null){ const s=d.sleep, gs=g.sleep||7.5; parts.push([25, s<=gs ? Math.min(s/gs,1) : Math.max(0, 1-(s-Math.max(gs,9))/4)]); }
+  if(val("water",d)!=null) parts.push([15, Math.min(d.water/(g.water||8),1)]);
+  if(val("mood",d)!=null) parts.push([20, (d.mood-1)/4]);
+  if(parts.length<2) return {v:null, parts};
+  const w=parts.reduce((s,p)=>s+p[0],0);
+  return {v:Math.round(parts.reduce((s,p)=>s+p[0]*p[1],0)/w*100), parts};
+}
+const bpClass = (s,dd) => s>=180||dd>=120 ? [3,"مرتفع جداً","Severely high"] : s>=140||dd>=90 ? [3,"مرتفع (المرحلة الثانية)","High (stage 2)"] : s>=130||dd>=80 ? [2,"مرتفع (المرحلة الأولى)","High (stage 1)"] : s>=120 ? [2,"مرتفع قليلاً","Elevated"] : s<90||dd<60 ? [2,"منخفض","Low"] : [1,"طبيعي","Normal"];
+const gluClass = (v,c) => v<54 ? [3,"هبوط شديد","Severe low"] : v<70 ? [3,"هبوط","Low"] : c==="f" ? (v>=126?[3,"ضمن مدى السكري","Diabetes range"]:v>=100?[2,"ضمن مدى ما قبل السكري","Prediabetes range"]:[1,"طبيعي","Normal"]) : (v>=200?[3,"مرتفع جداً","Very high"]:v>=140?[2,"مرتفع","High"]:[1,"طبيعي","Normal"]);
+
+// ---------- الحالة ----------
+const UI = (()=>{ try{ return JSON.parse(localStorage.getItem("ty_track_ui"))||{} }catch{ return {} } })();
+const S = {tab: UI.tab||"today", date: today(), per: UI.per||"week", anchor: today(), metric: UI.metric||"steps", table:false, pending:null, imp:null};
+const keepUI = () => { try{ localStorage.setItem("ty_track_ui", JSON.stringify({tab:S.tab, per:S.per, metric:S.metric})) }catch{} };
+
+// ---------- أيقونات ----------
+const ic = p => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const I = {
+  today: ic('<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18M8 15h3"/>'),
+  stats: ic('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'),
+  dev: ic('<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>'),
+  plan: ic('<path d="M10.5 20.5 3.5 13.5a5 5 0 0 1 7-7l7 7a5 5 0 0 1-7 7z"/><path d="m8.5 8.5 7 7"/>'),
+  data: ic('<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/>'),
+  apple: ic('<path d="M12 21s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.6-7 10-7 10z"/>'),
+  watch: ic('<rect x="6" y="6" width="12" height="12" rx="3"/><path d="M9 6V2h6v4M9 18v4h6v-4M12 10v2l1.5 1.5"/>'),
+  csv: ic('<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h8"/>'),
+  bt: ic('<path d="m7 7 10 10-5 5V2l5 5L7 17"/>'),
+  link: ic('<path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/>'),
+  info: ic('<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>')
+};
+
+// ---------- الهيكل ----------
+const TABS = [["today",T("يومي","Today"),I.today],["stats",T("الإحصاءات والتحليلات","Stats & insights"),I.stats],["dev",T("ربط الأجهزة","Connect devices"),I.dev],["plan",T("أدويتي وأهدافي","Meds & goals"),I.plan],["data",T("بياناتي وخصوصيتي","My data"),I.data]];
+R.track = () => `<div class="view-head"><h1>${T("متابعتي الصحية اليومية","My daily health")}</h1><p>${T("سجّل مؤشراتك وأعراضك ونومك ونشاطك ومزاجك وأدويتك في دقيقة، واستورد بيانات هاتفك وساعتك، ثم تابع إحصاءاتك يومياً وأسبوعياً وشهرياً وسنوياً مع تحليلات واضحة تساعدك أنت وطبيبك. بياناتك تبقى على جهازك وحدك.","Log your vitals, symptoms, sleep, activity, mood and medicines in a minute, import data from your phone and watch, then follow daily, weekly, monthly and yearly statistics with clear insights for you and your doctor. Your data stays on your device only.")}</p></div>
+<nav class="chips trk-tabs" aria-label="${T("أقسام المتابعة","Tracking sections")}">${TABS.map(([id,n,i])=>`<button type="button" class="chip" data-ttab="${id}" aria-pressed="${S.tab===id}">${i}${n}</button>`).join("")}</nav>
+<div id="trkBody"></div>`;
+AFTER.track = () => {
+  const sec = q('#main section[data-view="track"]'); if(!sec) return;
+  sec.addEventListener("click", onClick); sec.addEventListener("input", onInput); sec.addEventListener("change", onChange);
+  draw();
+};
+function draw(){
+  const b=q("#trkBody"); if(!b) return;
+  qa("[data-ttab]").forEach(x=>x.setAttribute("aria-pressed", x.dataset.ttab===S.tab));
+  b.innerHTML = ({today:vToday, stats:vStats, dev:vDev, plan:vPlan, data:vData}[S.tab]||vToday)();
+  if(S.tab==="stats") wireCharts(b);
+}
+
+// ---------- اليوم ----------
+const numF = (k, label, unit, v, step="any", ph="") => `<div class="field"><label for="tk_${k}">${label}</label><div class="trk-unit"><input type="number" inputmode="decimal" id="tk_${k}" data-k="${k}" min="${M[k]?.min??0}" max="${M[k]?.max??99999}" step="${step}" value="${v??""}" placeholder="${ph}"><span>${unit}</span></div></div>`;
+const scale = (k, v, n=5, labels) => `<div class="trk-scale" role="group" aria-label="${mn(k)}">${Array.from({length:n},(_,i)=>i+1).map(i=>`<button type="button" data-sc="${k}" data-v="${i}" aria-pressed="${v===i}"><b>${i}</b>${labels?labels[i-1]:""}</button>`).join("")}</div>`;
+const MOODL = EN ? ["Very low","Low","Okay","Good","Great"] : ["سيئ جداً","سيئ","عادي","جيد","ممتاز"];
+const LVL5 = EN ? ["Very low","Low","Medium","High","Very high"] : ["منخفض جداً","منخفض","متوسط","مرتفع","مرتفع جداً"];
+function gauge(v, size=150){
+  const r=58, c=2*Math.PI*r, arc=c*0.75, f = v==null?0:arc*v/100;
+  return `<svg viewBox="0 0 150 150" width="${size}" height="${size}" aria-hidden="true"><g transform="rotate(135 75 75)"><circle cx="75" cy="75" r="${r}" fill="none" stroke="var(--sunk)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${arc} ${c}"/><circle cx="75" cy="75" r="${r}" fill="none" stroke="var(--c1)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${f} ${c}"/></g></svg>`;
+}
+function streak(){ let n=0, k=today(); if(!D.days[k]) k=addD(k,-1); while(D.days[k]){ n++; k=addD(k,-1); } return n; }
+function heroHTML(k){
+  const d=D.days[k]||{}, sc=score(d), g=D.goals;
+  const pb=(lab,v,goal,unit,dec=0)=>{ const p=v==null?0:Math.min(100,Math.round(v/goal*100)); return `<div class="trk-pb${p>=100?" done":""}"><div class="t"><span>${lab}</span><span><span class="mono">${fmt(v,dec)}</span> / <span class="mono">${fmt(goal,dec)}</span> ${unit}</span></div><div class="b"><i style="width:${p}%"></i></div></div>`; };
+  const st=streak(), logged=Object.keys(D.days).length;
+  return `<div class="trk-hero"><div class="trk-gauge" role="img" aria-label="${T("مؤشر اليوم","Day score")} ${sc.v??"—"}">${gauge(sc.v)}<div class="n"><b class="mono">${sc.v??"—"}</b><small>${T("مؤشر يومك","Day score")}</small></div></div>
+  <div class="trk-bars">${pb(T("الخطوات","Steps"),d.steps,g.steps,"")}${pb(T("دقائق النشاط","Active minutes"),d.active,g.active,"")}${pb(T("النوم","Sleep"),d.sleep,g.sleep,T("ساعة","h"),1)}${pb(T("الماء","Water"),d.water,g.water,T("كوب","cups"))}
+  <div class="trk-meta"><span class="tag tp">${T("سلسلة التسجيل","Logging streak")}: <span class="mono">${st}</span> ${T(dW(st),"days")}</span><span class="tag tp">${T("أيام مسجّلة","Days logged")}: <span class="mono">${logged}</span></span>${sc.v==null?`<span class="small muted">${T("أدخل مؤشرين على الأقل (الخطوات، النوم، الماء، النشاط، المزاج) ليظهر مؤشر يومك.","Enter at least two of steps, sleep, water, activity or mood to see your day score.")}</span>`:""}</div></div></div>`;
+}
+function alertsHTML(d){
+  const a=[];
+  (d.bp||[]).forEach(r=>{ if(r.s>=180||r.d>=120) a.push(T(`قراءة ضغط ${r.s}/${r.d}: إن صاحبها ألم في الصدر أو ضيق تنفس أو ضعف في جانب من الجسم أو اضطراب في الكلام أو الرؤية فاتصل بالإسعاف فوراً، وإلا فأعد القياس بعد 5 دقائق من الراحة وتواصل مع طبيبك اليوم.`,`Blood pressure ${r.s}/${r.d}: if you have chest pain, shortness of breath, weakness on one side, or trouble speaking or seeing, call emergency services now. Otherwise rest 5 minutes, measure again, and contact your doctor today.`)); });
+  (d.glu||[]).forEach(r=>{ if(r.v<70) a.push(T(`سكر ${gOut(r.v)} ${mu("glu")}: هبوط. تناول 15 غراماً من سكر سريع (نصف كوب عصير أو 3 ملاعق صغيرة سكر) وأعد القياس بعد 15 دقيقة. إن فقد الوعي أو تعذّر البلع فاتصل بالإسعاف.`,`Glucose ${gOut(r.v)} ${mu("glu")}: low. Take 15 g of fast sugar (half a cup of juice or 3 teaspoons of sugar) and recheck in 15 minutes. If the person is unconscious or cannot swallow, call emergency services.`)); else if(r.v>=300) a.push(T(`سكر ${gOut(r.v)} ${mu("glu")}: مرتفع جداً. اشرب الماء وتواصل مع طبيبك اليوم، واطلب الإسعاف إن صاحبه قيء أو تنفس سريع أو تشوّش.`,`Glucose ${gOut(r.v)} ${mu("glu")}: very high. Drink water and contact your doctor today; call emergency services if there is vomiting, rapid breathing or confusion.`)); });
+  if(d.spo2!=null&&d.spo2<92) a.push(T(`أكسجين الدم ${d.spo2}%: منخفض. إن صاحبه ضيق تنفس أو ازرقاق فاطلب الإسعاف فوراً.`,`Blood oxygen ${d.spo2}%: low. If you are short of breath or turning blue, call emergency services now.`));
+  if(d.temp!=null&&d.temp>=39.5) a.push(T(`حرارة ${d.temp}°م: حمى عالية. راجع الطبيب، وفوراً إن صاحبها تيبس الرقبة أو طفح لا يختفي بالضغط أو تشوّش.`,`Temperature ${d.temp}°C: high fever. See a doctor, urgently if there is neck stiffness, a rash that does not fade under pressure, or confusion.`));
+  if((d.sym||[]).includes("chest")&&((d.sym||[]).includes("sob")||(d.pain||0)>=7)) a.push(T("ألم في الصدر مع ضيق تنفس أو ألم شديد: اتصل بالإسعاف فوراً ولا تقد السيارة بنفسك.","Chest pain with shortness of breath or severe pain: call emergency services now and do not drive yourself."));
+  return a.length ? `<div class="alert" role="alert"><h3>${T("تنبيه مهم","Important")}</h3><ul class="clean">${a.map(x=>`<li>${h(x)}</li>`).join("")}</ul><div class="row"><button class="btn warn" type="button" onclick="document.getElementById('sosBtn')?.click()">${T("أرقام الطوارئ","Emergency numbers")}</button></div></div>` : "";
+}
+function vToday(){
+  const k=S.date, d=D.days[k]||{}, isT=k===today();
+  const pend = S.pending ? `<div class="panel" style="border-color:var(--c1)"><h3>${T("وصلت قراءات من اختصار هاتفك","Readings arrived from your phone shortcut")}</h3><p class="small">${h(pendDesc(S.pending))}</p><div class="row"><button class="btn" type="button" data-act="pendOk">${T("حفظ في سجل","Save to")} ${fdate(S.pending.date)}</button><button class="btn ghost" type="button" data-act="pendNo">${T("تجاهل","Dismiss")}</button></div></div>` : "";
+  const bpL = (d.bp||[]).map((r,i)=>{ const c=bpClass(r.s,r.d); return `<li><span class="mono">${tm(r.t)}</span> <b class="mono">${r.s}/${r.d}</b>${r.p?` <span class="small muted">${T("نبض","pulse")} <span class="mono">${r.p}</span></span>`:""} ${LV(c[0],c[1],c[2])}<button class="x" type="button" data-del="bp" data-i="${i}" aria-label="${T("حذف","Delete")}">×</button></li>`; }).join("");
+  const gL = (d.glu||[]).map((r,i)=>{ const c=gluClass(r.v,r.c); return `<li><span class="mono">${tm(r.t)}</span> <b class="mono">${gOut(r.v)}</b> <span class="small muted">${mu("glu")} · ${T(...GCTX[r.c]||GCTX.r)}</span> ${LV(c[0],c[1],c[2])}<button class="x" type="button" data-del="glu" data-i="${i}" aria-label="${T("حذف","Delete")}">×</button></li>`; }).join("");
+  const meds = D.meds.length ? `<div class="trk-meds">${D.meds.map(m=>{ const on=!!(d.meds||{})[m.id]; return `<label class="${on?"on":""}"><input type="checkbox" data-med="${m.id}" ${on?"checked":""}><span data-noi18n><b>${h(m.n)}</b>${m.d?` · ${h(m.d)}`:""}${m.t?` <span class="small muted">(${h(m.t)})</span>`:""}</span></label>`; }).join("")}</div>` : `<p class="small muted">${T("لم تضف أدوية بعد.","No medicines added yet.")} <button type="button" class="btn ghost" data-ttab="plan" style="padding:4px 10px">${T("أضف أدويتك","Add your medicines")}</button></p>`;
+  return `${pend}
+<div class="panel"><div class="trk-bar"><div class="trk-nav"><button type="button" data-act="dPrev" aria-label="${T("اليوم السابق","Previous day")}"><span class="flip" style="display:inline-block">‹</span></button><input type="date" id="trkDate" value="${k}" max="${today()}" aria-label="${T("التاريخ","Date")}"><button type="button" data-act="dNext" aria-label="${T("اليوم التالي","Next day")}" ${isT?"disabled":""}><span class="flip" style="display:inline-block">›</span></button>${isT?"":`<button type="button" data-act="dToday" style="width:auto;padding:0 10px;font-size:.9rem">${T("اليوم","Today")}</button>`}</div><span class="trk-saved" id="trkSaved" aria-live="polite"></span></div>
+<h2 style="font-size:1.15rem">${isT?T("اليوم","Today")+" · ":""}${fdate(k)}</h2><div id="trkHero">${heroHTML(k)}</div></div>
+<div id="trkAlerts">${alertsHTML(d)}</div>
+<div class="grid-2">
+<div class="panel"><h3>${T("النشاط والحركة","Activity")}</h3><div class="trk-f">${numF("steps",T("الخطوات","Steps"),T("خطوة","steps"),d.steps,1,"8000")}${numF("active",T("دقائق النشاط","Active minutes"),T("دقيقة","min"),d.active,1,"30")}</div>
+<div class="field"><label>${T("شرب الماء (كوب = 250 مل)","Water (1 cup = 250 ml)")}</label><div class="trk-step"><button type="button" data-water="-1" aria-label="${T("إنقاص كوب","Remove a cup")}">−</button><input type="number" id="tk_water" data-k="water" min="0" max="40" step="1" value="${d.water??""}" placeholder="0" style="max-width:90px"><button type="button" data-water="1" aria-label="${T("إضافة كوب","Add a cup")}">+</button><div class="trk-cups" aria-hidden="true">${Array.from({length:Math.max(D.goals.water||8,d.water||0)},(_,i)=>`<i class="${i<(d.water||0)?"on":""}"></i>`).join("")}</div></div></div></div>
+<div class="panel"><h3>${T("النوم","Sleep")}</h3><div class="trk-f">${numF("sleep",T("مدة النوم الليلة الماضية","Last night's sleep"),T("ساعة","h"),d.sleep,"0.25","7.5")}</div><div class="field"><label>${T("جودة النوم","Sleep quality")}</label>${scale("sleepQ",d.sleepQ,5,MOODL)}</div></div>
+<div class="panel"><h3>${T("ضغط الدم","Blood pressure")}</h3><ul class="trk-reads">${bpL||`<li class="small muted">${T("لا قراءات اليوم. يُفضّل القياس جالساً بعد 5 دقائق راحة، مرتين صباحاً ومساءً.","No readings yet. Measure seated after 5 minutes of rest, twice in the morning and evening.")}</li>`}</ul>
+<div class="trk-add"><div class="field"><label for="tkS">${T("الانقباضي","Systolic")}</label><input type="number" id="tkS" inputmode="numeric" min="60" max="260" placeholder="120"></div><div class="field"><label for="tkD">${T("الانبساطي","Diastolic")}</label><input type="number" id="tkD" inputmode="numeric" min="30" max="160" placeholder="80"></div><div class="field"><label for="tkP">${T("النبض","Pulse")}</label><input type="number" id="tkP" inputmode="numeric" min="20" max="250" placeholder="72"></div><button class="btn" type="button" data-act="addBP">${T("إضافة","Add")}</button></div></div>
+<div class="panel"><h3>${T("سكر الدم","Blood glucose")}</h3><ul class="trk-reads">${gL||`<li class="small muted">${T("لا قراءات اليوم.","No readings yet.")}</li>`}</ul>
+<div class="trk-add"><div class="field"><label for="tkG">${T("القراءة","Reading")} (${mu("glu")})</label><input type="number" id="tkG" inputmode="decimal" step="any" placeholder="${GU()?"5.5":"100"}"></div><div class="field"><label for="tkGc">${T("التوقيت","Timing")}</label><select id="tkGc">${Object.entries(GCTX).map(([c,n])=>`<option value="${c}">${T(n[0],n[1])}</option>`).join("")}</select></div><button class="btn" type="button" data-act="addG">${T("إضافة","Add")}</button></div></div>
+<div class="panel"><h3>${T("مؤشرات أخرى","Other vitals")}</h3><div class="trk-f">${numF("weight",T("الوزن","Weight"),T("كغ","kg"),d.weight,"0.1","70")}${numF("hr",T("نبض الراحة","Resting heart rate"),T("نبضة/د","bpm"),d.hr,1,"70")}${numF("spo2",T("أكسجين الدم","Blood oxygen"),"%",d.spo2,1,"98")}${numF("temp",T("الحرارة","Temperature"),T("°م","°C"),d.temp,"0.1","36.8")}</div>${bmiLine(d.weight)}</div>
+<div class="panel"><h3>${T("المزاج والطاقة","Mood & energy")}</h3><div class="field"><label>${T("المزاج","Mood")}</label>${scale("mood",d.mood,5,MOODL)}</div><div class="field"><label>${T("الطاقة","Energy")}</label>${scale("energy",d.energy,5,LVL5)}</div><div class="field"><label>${T("التوتر","Stress")}</label>${scale("stress",d.stress,5,LVL5)}</div>
+<div class="field trk-pain"><label for="tk_pain">${T("شدة الألم","Pain level")}: <b class="mono" id="tkPainV">${d.pain??"—"}</b> / 10</label><input type="range" id="tk_pain" data-k="pain" min="0" max="10" step="1" value="${d.pain??0}"><div class="ends"><span>${T("لا ألم","No pain")}</span><span>${T("أشد ألم","Worst pain")}</span></div></div></div>
+<div class="panel"><h3>${T("الأعراض والملاحظات","Symptoms & notes")}</h3><div class="chips">${SYM.map(([id])=>`<button type="button" class="chip${["chest","sob"].includes(id)?" red":""}" data-sym="${id}" aria-pressed="${(d.sym||[]).includes(id)}">${symN(id)}</button>`).join("")}${D.prof.sex==="f"?`<button type="button" class="chip" data-cyc aria-pressed="${!!d.cyc}">${T("يوم من الدورة الشهرية","Period day")}</button>`:""}</div>
+<div class="field"><label for="tk_note">${T("ملاحظة اليوم","Today's note")}</label><textarea id="tk_note" data-k="note" data-noi18n maxlength="1000" placeholder="${T("مثل: صداع بعد السهر، أو تغيير في جرعة دواء","e.g. headache after a late night, or a change in a medicine dose")}">${h(d.note||"")}</textarea></div></div>
+<div class="panel"><h3>${T("أدوية اليوم","Today's medicines")}</h3>${meds}</div>
+</div>
+<p class="disclaimer">${T("هذه المتابعة للتوعية ودعم الحوار مع طبيبك، ولا تُشخّص ولا تغني عن الفحص. التنبيهات مبنية على حدود إرشادات ACC/AHA للضغط وADA للسكري وWHO للنشاط والنوم.","This tracker supports awareness and conversations with your doctor; it does not diagnose. Alerts use thresholds from ACC/AHA (blood pressure), ADA (diabetes) and WHO (activity and sleep) guidance.")}</p>`;
+}
+function bmiLine(w){
+  const ht=D.prof.h; if(!w||!ht) return `<p class="small muted">${T("أضف طولك في «أدويتي وأهدافي» ليُحسب مؤشر كتلة الجسم.","Add your height under Meds & goals to calculate BMI.")}</p>`;
+  const b=w/((ht/100)**2), c=b<18.5?[2,"نقص وزن","Underweight"]:b<25?[1,"وزن صحي","Healthy weight"]:b<30?[2,"زيادة وزن","Overweight"]:[3,"سمنة","Obesity"];
+  return `<p class="small">${T("مؤشر كتلة الجسم","BMI")}: <b class="mono">${fmt(b,1)}</b> ${LV(c[0],c[1],c[2])}</p>`;
+}
+function refreshToday(){
+  const k=S.date, d=D.days[k]||{};
+  const hEl=q("#trkHero"); if(hEl) hEl.innerHTML=heroHTML(k);
+  const a=q("#trkAlerts"); if(a) a.innerHTML=alertsHTML(d);
+}
+
+// ---------- الفترات والإحصاءات ----------
+function period(per, anchor){
+  const d=pd(anchor);
+  if(per==="day") return {a:anchor,b:anchor};
+  if(per==="week"){ const off=(d.getDay()+1)%7; const a=addD(anchor,-off); return {a, b:addD(a,6)}; } // يبدأ الأسبوع يوم السبت
+  if(per==="month"){ const a=dk(new Date(d.getFullYear(),d.getMonth(),1)); return {a, b:dk(new Date(d.getFullYear(),d.getMonth()+1,0))}; }
+  return {a:`${d.getFullYear()}-01-01`, b:`${d.getFullYear()}-12-31`};
+}
+function shift(per, anchor, n){
+  const d=pd(anchor);
+  if(per==="day") return addD(anchor,n); if(per==="week") return addD(anchor,7*n);
+  if(per==="month") return dk(new Date(d.getFullYear(), d.getMonth()+n, 1));
+  return dk(new Date(d.getFullYear()+n, 0, 1));
+}
+function pLabel(per, P){
+  const a=pd(P.a);
+  if(per==="day") return fdate(P.a);
+  if(per==="week") return `${fshort(P.a)} – ${fdate(P.b)}`;
+  if(per==="month") return `${MON[a.getMonth()]} ${a.getFullYear()}`;
+  return `${a.getFullYear()}`;
+}
+const ser = (k,P) => range(P.a, P.b).map(x=>[x, val(k, D.days[x])]).filter(x=>x[1]!=null);
+function stat(k,P){ const s=ser(k,P), v=s.map(x=>x[1]); return {n:v.length, mean:avg(v), min:v.length?Math.min(...v):null, max:v.length?Math.max(...v):null, sum:v.reduce((a,b)=>a+b,0), s}; }
+const CHARTK = ["score","steps","active","sleep","water","weight","bp","hr","glu","spo2","temp","mood","energy","stress","pain","sleepQ"];
+const has = (k,P) => k==="bp" ? stat("sys",P).n>0 : stat(k,P).n>0;
+function vStats(){
+  const P=period(S.per,S.anchor), len=range(P.a,P.b).length, Q={a:addD(P.a,-len), b:addD(P.a,-1)};
+  const isFuture = P.a>today();
+  const avail = CHARTK.filter(k=>has(k,P));
+  if(!avail.includes(S.metric)) S.metric = avail[0]||"steps";
+  const logged = range(P.a,P.b).filter(x=>D.days[x]).length;
+  const kpis = avail.map(k=>{
+    if(k==="bp"){ const s=stat("sys",P), d=stat("dia",P), ps=stat("sys",Q), pdd=stat("dia",Q); const delta = ps.n? `${s.mean-ps.mean>=0?"▲":"▼"} ${fmt(Math.abs(s.mean-ps.mean))}/${fmt(Math.abs(d.mean-pdd.mean))} ${T("عن الفترة السابقة","vs previous")}` : ""; return kpi(k, `${fmt(s.mean)}/${fmt(d.mean)}`, `${T("المدى","Range")} <span class="mono">${fmt(s.min)}–${fmt(s.max)}</span> · ${delta}`); }
+    const s=stat(k,P), p=stat(k,Q), conv = k==="glu"?gOut:(x=>x);
+    const delta = p.n&&s.n ? (()=>{ const d=s.mean-p.mean; const pct = p.mean? Math.round(d/p.mean*100):0; return `${d>=0?"▲":"▼"} <span class="mono">${fmt(Math.abs(conv(d)), M[k].dec)}</span>${Math.abs(pct)>=1&&!["mood","energy","stress","pain","sleepQ"].includes(k)?` (<span class="mono">${Math.abs(pct)}%</span>)`:""} ${T("عن الفترة السابقة","vs previous")}`; })() : "";
+    const goal = M[k].goal&&D.goals[M[k].goal] ? ` · ${T("تحقق الهدف","Goal met")} <span class="mono">${s.s.filter(x=>x[1]>=D.goals[M[k].goal]).length}/${s.n}</span>` : "";
+    const main = S.per==="day" ? fmt(conv(s.mean),M[k].dec) : fmt(conv(s.mean),M[k].dec);
+    return kpi(k, main, `${S.per==="day"?"":`${T(M[k].agg==="sum"?"متوسط يومي":"المتوسط","Daily average")} · `}${s.n>1?`<span class="mono">${fmt(conv(s.min),M[k].dec)}–${fmt(conv(s.max),M[k].dec)}</span>`:""}${goal}${delta?` · ${delta}`:""}`);
+  }).join("");
+  return `<div class="panel"><div class="trk-bar"><div class="seg" role="group" aria-label="${T("الفترة","Period")}">${[["day",T("يوم","Day")],["week",T("أسبوع","Week")],["month",T("شهر","Month")],["year",T("سنة","Year")]].map(([p,n])=>`<button type="button" data-per="${p}" aria-pressed="${S.per===p}">${n}</button>`).join("")}</div>
+<div class="trk-nav"><button type="button" data-act="pPrev" aria-label="${T("الفترة السابقة","Previous period")}"><span class="flip" style="display:inline-block">‹</span></button><span class="lbl">${pLabel(S.per,P)}</span><button type="button" data-act="pNext" aria-label="${T("الفترة التالية","Next period")}" ${P.b>=today()?"disabled":""}><span class="flip" style="display:inline-block">›</span></button></div>
+<div class="row"><button class="btn ghost" type="button" data-act="report">${T("تقرير للطبيب (طباعة أو PDF)","Doctor report (print or PDF)")}</button></div></div>
+<p class="small muted">${T("أيام مسجّلة في هذه الفترة","Days logged in this period")}: <span class="mono">${logged}</span> / <span class="mono">${range(P.a,P.b).filter(x=>x<=today()).length}</span></p></div>
+${avail.length ? `<div class="panel"><h2>${T("تحليلات وتوصيات","Insights")}</h2><ul class="trk-ins">${insights(P,Q).map(x=>`<li>${LV(x[0],...(x[0]===3?["مهم","Important"]:x[0]===2?["انتبه","Note"]:["جيد","Good"]))}<span>${x[1]}</span></li>`).join("")}</ul><p class="small muted">${T("الارتباط بين مؤشرين لا يعني أن أحدهما سبب الآخر، لكنه يقترح ما يستحق التجربة والنقاش مع طبيبك.","A correlation between two measures does not prove cause, but it suggests what is worth trying and discussing with your doctor.")}</p></div>
+<div class="trk-kpis">${kpis}</div>
+<div class="panel" id="trkChartP">${chartPanel(P)}</div>
+${S.per==="year"?`<div class="panel"><h3>${T("خريطة السنة: مؤشر يومك","Year map: day score")}</h3>${heat(P)}</div>`:""}
+${S.per==="day"?dayDetail(P.a):""}`
+  : `<div class="panel"><p>${isFuture?"":T("لا توجد بيانات في هذه الفترة بعد.","No data in this period yet.")} ${T("سجّل من تبويب «يومي»، أو استورد بيانات هاتفك من «ربط الأجهزة»، أو جرّب المنصة ببيانات تجريبية.","Log from the Today tab, import your phone data under Connect devices, or try it with sample data.")}</p><div class="row"><button class="btn" type="button" data-ttab="today">${T("سجّل اليوم","Log today")}</button><button class="btn ghost" type="button" data-ttab="dev">${T("ربط الأجهزة","Connect devices")}</button><button class="btn ghost" type="button" data-act="demo">${T("جرّب ببيانات تجريبية","Try sample data")}</button></div></div>`}`;
+}
+const kpi = (k,v,sub) => `<button type="button" class="trk-kpi" data-metric="${k}" aria-pressed="${S.metric===k}"><span class="k">${mn(k)}</span><span class="v mono">${v}<small>${mu(k)}</small></span><span class="d">${sub}</span></button>`;
+function dayDetail(k){
+  const d=D.days[k]||{}, rows=[];
+  (d.bp||[]).forEach(r=>rows.push([r.t, T("ضغط الدم","Blood pressure"), `${r.s}/${r.d}${r.p?` · ${T("نبض","pulse")} ${r.p}`:""}`]));
+  (d.glu||[]).forEach(r=>rows.push([r.t, T("سكر الدم","Blood glucose"), `${gOut(r.v)} ${mu("glu")} · ${T(...GCTX[r.c]||GCTX.r)}`]));
+  rows.sort((a,b)=>a[0]-b[0]);
+  const sy=(d.sym||[]).map(symN).join(T("، ",", "));
+  return `<div class="panel"><h3>${T("تفاصيل اليوم","Day details")}</h3>${rows.length?`<div class="table-wrap"><table><thead><tr><th>${T("الوقت","Time")}</th><th>${T("القياس","Measure")}</th><th>${T("القيمة","Value")}</th></tr></thead><tbody>${rows.map(r=>`<tr><td class="mono">${tm(r[0])}</td><td>${r[1]}</td><td class="mono">${r[2]}</td></tr>`).join("")}</tbody></table></div>`:""}
+  ${sy?`<p><b>${T("الأعراض","Symptoms")}:</b> ${sy}</p>`:""}${d.note?`<p data-noi18n><b>${T("ملاحظة","Note")}:</b> ${h(d.note)}</p>`:""}${D.meds.length?`<p><b>${T("الأدوية المأخوذة","Medicines taken")}:</b> <span data-noi18n>${D.meds.filter(m=>(d.meds||{})[m.id]).map(m=>h(m.n)).join("، ")||"—"}</span></p>`:""}<div class="row"><button class="btn ghost" type="button" data-edit="${k}">${T("تعديل هذا اليوم","Edit this day")}</button></div></div>`;
+}
+
+// ---------- الرسم البياني ----------
+function points(k,P){
+  // تُعيد [{lab, key, v, v2}] بحسب الفترة: يومي للأسبوع والشهر، شهري للسنة، قراءات للّيوم
+  const kk = k==="bp" ? "sys" : k;
+  if(S.per==="year"){
+    return Array.from({length:12},(_,m)=>{ const y=pd(P.a).getFullYear(); const a=dk(new Date(y,m,1)), b=dk(new Date(y,m+1,0)); const s=stat(kk,{a,b}); return {lab:MS[m], tip:`${MON[m]} ${y}`, v:s.n?s.mean:null, v2:k==="bp"?stat("dia",{a,b}).mean:null, n:s.n}; });
+  }
+  if(S.per==="day"){
+    const d=D.days[P.a]||{};
+    if(k==="bp") return (d.bp||[]).map(r=>({lab:tm(r.t), tip:tm(r.t), v:r.s, v2:r.d}));
+    if(k==="glu") return (d.glu||[]).map(r=>({lab:tm(r.t), tip:`${tm(r.t)} · ${T(...GCTX[r.c]||GCTX.r)}`, v:r.v}));
+    const v=val(kk,d); return v==null?[]:[{lab:fshort(P.a), tip:fdate(P.a), v}];
+  }
+  const end = S.per==='month'&&P.b>today()&&P.a<=today() ? today() : P.b;
+  return range(P.a,end).map(x=>{ const d=D.days[x]; const w=pd(x).getDay(); return {lab:S.per==="week"?WD[w]:String(pd(x).getDate()), tip:`${WD[w]} ${fdate(x)}`, v:val(kk,d), v2:k==="bp"?val("dia",d):null}; });
+}
+function chartPanel(P){
+  const k=S.metric, pts=points(k,P), conv = k==="glu"?gOut:(x=>x);
+  const goal = M[k].goal ? D.goals[M[k].goal] : null;
+  let band = M[k].band||null; if(k==="bp") band=null; if(k==="glu") band=[70,140];
+  const title = `${mn(k)} <span class="small muted">(${mu(k)}${S.per==="year"?` · ${T("متوسط شهري","monthly average")}`:""})</span>`;
+  const legend = k==="bp" ? `<div class="trk-legend"><span><i style="background:var(--c1)"></i>${T("الانقباضي","Systolic")}</span><span><i style="background:var(--c2)"></i>${T("الانبساطي","Diastolic")}</span><span><i style="background:var(--copper);height:0;border-top:2px dashed var(--copper)"></i>${T("حد 130/80","130/80 threshold")}</span></div>` : `<div class="trk-legend">${goal?`<span><i style="background:none;border-top:2px dashed var(--copper);height:0"></i>${T("هدفك","Your goal")} <span class="mono">${fmt(goal,1)}</span></span>`:""}${band?`<span><i style="background:var(--ok);opacity:.35;height:10px"></i>${T("المدى المرجعي","Reference range")} <span class="mono">${fmt(conv(band[0]),1)}–${fmt(conv(band[1]),1)}</span></span>`:""}</div>`;
+  const table = `<div class="table-wrap" ${S.table?"":"hidden"} id="trkTbl"><table><thead><tr><th>${T("الفترة","Period")}</th><th>${mn(k)}</th></tr></thead><tbody>${pts.filter(p=>p.v!=null).map(p=>`<tr><td>${p.tip}</td><td class="mono">${k==="bp"?`${fmt(p.v)}/${fmt(p.v2)}`:fmt(conv(p.v),M[k].dec)}</td></tr>`).join("")}</tbody></table></div>`;
+  return `<div class="trk-bar"><h3>${title}</h3><button type="button" class="btn ghost" data-act="tbl" style="padding:5px 12px">${S.table?T("عرض الرسم","Show chart"):T("عرض كجدول","Show as table")}</button></div>${legend}
+  <div class="trk-chart" ${S.table?"hidden":""}>${pts.some(p=>p.v!=null)?svgChart(k,pts,goal,band):`<p class="muted">${T("لا قراءات لهذا المؤشر في هذه الفترة.","No readings for this measure in this period.")}</p>`}<div class="trk-tip" role="status"></div></div>${table}`;
+}
+function nice(lo,hi){ if(lo===hi){ lo-=1; hi+=1; } const span=hi-lo, step0=span/4, mag=10**Math.floor(Math.log10(step0)), st=[1,2,2.5,5,10].map(x=>x*mag).find(x=>x>=step0); return {lo:Math.floor(lo/st)*st, hi:Math.ceil(hi/st)*st, st}; }
+function svgChart(k,pts,goal,band){
+  const W=Math.round(Math.max(300, Math.min(760, (q('#trkBody')?.clientWidth||680)-38))), H=W<480?210:230, L=44, Rr=12, Tp=14, B=26, iw=W-L-Rr, ih=H-Tp-B, n=pts.length, conv=k==="glu"?gOut:(x=>x);
+  const kind = M[k].chart==="bar" && S.per!=="day" ? "bar" : "line";
+  let vals = pts.flatMap(p=>[p.v,p.v2]).filter(v=>v!=null).map(conv);
+  if(goal) vals.push(goal); if(band) vals.push(conv(band[0]),conv(band[1])); if(k==="bp") vals.push(130,80);
+  let lo = kind==="bar" ? 0 : Math.min(...vals), hi = Math.max(...vals);
+  if(kind!=="bar"){ const pad=(hi-lo)*0.1||1; lo-=pad; hi+=pad; if(["mood","energy","stress","sleepQ"].includes(k)){lo=1;hi=5} if(k==="pain"){lo=0;hi=10} if(k==="spo2") hi=Math.min(hi,100); }
+  const ns=nice(lo,hi); lo=ns.lo; hi=ns.hi;
+  const X = i => L + (n===1 ? iw/2 : (kind==="bar" ? (i+0.5)*iw/n : i*iw/(n-1)));
+  const Y = v => Tp + ih - (conv(v)-lo)/(hi-lo)*ih;
+  const Yr = v => Tp + ih - (v-lo)/(hi-lo)*ih;
+  let g = "";
+  for(let t=lo;t<=hi+1e-9;t+=ns.st){ const y=Yr(t); g+=`<line class="gl" x1="${L}" x2="${W-Rr}" y1="${y}" y2="${y}"/><text x="${L-6}" y="${y+4}" text-anchor="end">${fmt(t,ns.st<1?1:0)}</text>`; }
+  if(band){ const y1=Y(band[1]), y0=Y(band[0]); g+=`<rect class="band" x="${L}" width="${iw}" y="${Math.max(Tp,y1)}" height="${Math.max(0,Math.min(Tp+ih,y0)-Math.max(Tp,y1))}"/>`; }
+  const every = Math.ceil(n/ Math.max(4, Math.floor(iw/ (S.per==="week"?44:52))));
+  pts.forEach((p,i)=>{ if(i%every===0||i===n-1&&n<=12) g+=`<text x="${X(i)}" y="${H-6}" text-anchor="middle">${h(p.lab)}</text>`; });
+  let marks="";
+  if(kind==="bar"){
+    const bw=Math.max(3,Math.min(28, iw/n*0.62));
+    pts.forEach((p,i)=>{ if(p.v==null) return; const y=Y(p.v), y0=Yr(lo), x=X(i)-bw/2, hh=Math.max(1,y0-y), r=Math.min(4,bw/2,hh); const met = goal&&p.v>=goal;
+      marks+=`<path d="M${x},${y0}V${y+r}Q${x},${y} ${x+r},${y}H${x+bw-r}Q${x+bw},${y} ${x+bw},${y+r}V${y0}Z" fill="var(--c1)" opacity="${met||!goal?1:.6}"/>`; });
+  } else {
+    const line=(key,color)=>{ let d="", pen=false; pts.forEach((p,i)=>{ const v=p[key]; if(v==null){ pen=false; return; } d+=`${pen?"L":"M"}${X(i).toFixed(1)},${Y(v).toFixed(1)}`; pen=true; }); let o=`<path d="${d}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`; if(n<=45) pts.forEach((p,i)=>{ if(p[key]!=null) o+=`<circle cx="${X(i)}" cy="${Y(p[key])}" r="4" fill="${color}" stroke="var(--surface)" stroke-width="2"/>`; }); return o; };
+    marks += line("v","var(--c1)"); if(k==="bp") marks += line("v2","var(--c2)");
+  }
+  if(goal) g+=`<line class="goal" x1="${L}" x2="${W-Rr}" y1="${Yr(goal)}" y2="${Yr(goal)}"/>`;
+  if(k==="bp"){ g+=`<line class="goal" x1="${L}" x2="${W-Rr}" y1="${Yr(130)}" y2="${Yr(130)}"/><line class="goal" x1="${L}" x2="${W-Rr}" y1="${Yr(80)}" y2="${Yr(80)}"/>`; }
+  // تسمية مباشرة لآخر قيمة
+  const last=[...pts].reverse().find(p=>p.v!=null), li=pts.lastIndexOf(last);
+  let lab=""; if(last&&kind==="line"){ lab+=`<text x="${Math.min(X(li)+7,W-Rr)}" y="${Y(last.v)-8}" text-anchor="${X(li)>W-60?"end":"start"}" style="fill:var(--ink);font-weight:600">${fmt(conv(last.v),M[k].dec)}</text>`; if(k==="bp"&&last.v2!=null) lab+=`<text x="${Math.min(X(li)+7,W-Rr)}" y="${Y(last.v2)+16}" text-anchor="${X(li)>W-60?"end":"start"}" style="fill:var(--ink);font-weight:600">${fmt(last.v2)}</text>`; }
+  const colW = n===1?iw:(kind==="bar"?iw/n:iw/(n-1));
+  const hits = pts.map((p,i)=>`<rect class="hit" data-i="${i}" x="${X(i)-colW/2}" y="${Tp}" width="${colW}" height="${ih}"/>`).join("");
+  const tipData = pts.map(p=>[p.tip, p.v==null?null:(k==="bp"?`${fmt(p.v)}/${fmt(p.v2)}`:fmt(conv(p.v),M[k].dec)), p.n]);
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${mn(k)}" data-tips='${h(JSON.stringify(tipData))}' data-xs='${JSON.stringify(pts.map((_,i)=>+X(i).toFixed(1)))}' data-unit="${h(mu(k))}" data-w="${W}"><g>${g}</g><line class="xh" x1="0" x2="0" y1="${Tp}" y2="${Tp+ih}"/>${marks}${lab}${hits}</svg>`;
+}
+function wireCharts(root){
+  qa(".trk-chart svg[data-tips]", root).forEach(svg=>{
+    const tips=JSON.parse(svg.dataset.tips), xs=JSON.parse(svg.dataset.xs), unit=svg.dataset.unit, box=svg.parentElement, tip=box.querySelector(".trk-tip"), xh=svg.querySelector(".xh");
+    const show = i => { const t=tips[i]; if(!t) return; const r=svg.getBoundingClientRect(), sx=r.width/(+svg.dataset.w||640); tip.innerHTML=`${h(t[0])}<br><b class="mono">${t[1]==null?T("لا تسجيل","No entry"):h(t[1])+" "+h(unit)}</b>${t[2]>1?` <span style="opacity:.75">(${t[2]} ${T(dW(t[2]),"days")})</span>`:""}`; const x=xs[i]*sx; tip.style.left=Math.max(70,Math.min(r.width-70,x))+"px"; tip.style.top="2px"; tip.style.opacity=1; xh.setAttribute("x1",xs[i]); xh.setAttribute("x2",xs[i]); xh.style.opacity=.5; };
+    const hide = () => { tip.style.opacity=0; xh.style.opacity=0; };
+    svg.addEventListener("pointermove", e=>{ const r=e.target.closest(".hit"); if(r) show(+r.dataset.i); });
+    svg.addEventListener("click", e=>{ const r=e.target.closest(".hit"); if(r) show(+r.dataset.i); });
+    svg.addEventListener("pointerleave", hide);
+  });
+}
+function heat(P){
+  const y=pd(P.a).getFullYear(), start=pd(P.a), off=(start.getDay()+1)%7, days=range(P.a,P.b), cs=11, gap=2;
+  let cells="", mon="";
+  days.forEach((x,i)=>{ const idx=i+off, c=Math.floor(idx/7), r=idx%7, sc=val("score",D.days[x]), lg=!!D.days[x];
+    const op = sc==null ? (lg?.25:0) : .25+.75*sc/100;
+    cells+=`<rect x="${30+c*(cs+gap)}" y="${14+r*(cs+gap)}" width="${cs}" height="${cs}" rx="2" fill="${sc==null&&!lg?"var(--sunk)":"var(--c1)"}" ${sc!=null||lg?`fill-opacity="${op.toFixed(2)}"`:""}><title>${fdate(x)}${sc!=null?` · ${sc}`:lg?` · ${T("مسجّل","logged")}`:""}</title></rect>`;
+    if(pd(x).getDate()===1) mon+=`<text x="${30+c*(cs+gap)}" y="10">${MS[pd(x).getMonth()]}</text>`; });
+  const wl=[0,2,4].map(r=>`<text x="0" y="${14+r*(cs+gap)+9}">${WD[(r+6)%7]}</text>`).join("");
+  const W=30+54*(cs+gap);
+  return `<div class="trk-heat"><svg viewBox="0 0 ${W} ${14+7*(cs+gap)+4}" role="img" aria-label="${T("خريطة السنة","Year map")} ${y}">${mon}${wl}${cells}</svg></div><div class="trk-legend"><span>${T("أقل","Lower")}</span>${[.25,.5,.75,1].map(o=>`<span><i style="background:var(--c1);opacity:${o};width:12px;height:12px"></i></span>`).join("")}<span>${T("أعلى","Higher")}</span></div>`;
+}
+
+// ---------- التحليلات ----------
+function corr(a,b,P){ const xs=[],ys=[]; range(P.a,P.b).forEach(x=>{ const d=D.days[x]; const u=val(a,d), v=val(b,d); if(u!=null&&v!=null){ xs.push(u); ys.push(v); } }); const n=xs.length; if(n<7) return null; const mx=avg(xs), my=avg(ys); let sxy=0,sx=0,sy=0; for(let i=0;i<n;i++){ sxy+=(xs[i]-mx)*(ys[i]-my); sx+=(xs[i]-mx)**2; sy+=(ys[i]-my)**2; } if(!sx||!sy) return null; return {r:sxy/Math.sqrt(sx*sy), n}; }
+function slope(k,P){ const s=ser(k,P); if(s.length<4) return null; const t0=pd(s[0][0]).getTime(), xs=s.map(x=>(pd(x[0]).getTime()-t0)/864e5), ys=s.map(x=>x[1]); const mx=avg(xs), my=avg(ys); let a=0,b=0; xs.forEach((x,i)=>{ a+=(x-mx)*(ys[i]-my); b+=(x-mx)**2; }); return b? a/b*7 : null; }
+function insights(P,Q){
+  const o=[], b=(x)=>`<b class="mono">${x}</b>`, len=range(P.a,P.b).length;
+  // الضغط
+  const s=stat("sys",P), d=stat("dia",P);
+  const allBp = range(P.a,P.b).flatMap(x=>(D.days[x]?.bp)||[]);
+  if(allBp.length){
+    const ms=avg(allBp.map(r=>r.s)), md=avg(allBp.map(r=>r.d)), c=bpClass(ms,md), worst=allBp.reduce((m,r)=>r.s>m.s?r:m);
+    if(allBp.length<3) o.push([2, T(`لديك ${allBp.length} قراءة ضغط فقط. للحكم الدقيق سجّل قراءتين صباحاً ومساءً لمدة 7 أيام.`,`You have only ${allBp.length} blood pressure reading(s). For a reliable picture, record two readings morning and evening for 7 days.`)]);
+    else o.push([c[0], T(`متوسط ضغطك ${b(`${fmt(ms)}/${fmt(md)}`)} من ${allBp.length} قراءة: ${c[1]}. ${c[0]===1?"استمر على نمط حياتك الصحي.":c[0]===2?"قلّل الملح، وتحرّك 150 دقيقة أسبوعياً، وراجع طبيبك إن استمر.":"راجع طبيبك قريباً لتقييم العلاج، وخذ معك تقرير هذه الصفحة."}`,`Your average blood pressure is ${b(`${fmt(ms)}/${fmt(md)}`)} from ${allBp.length} readings: ${c[2].toLowerCase()}. ${c[0]===1?"Keep up your healthy routine.":c[0]===2?"Cut salt, move 150 minutes a week, and see your doctor if it persists.":"See your doctor soon to review treatment, and bring this page's report."}`)]);
+    if(worst.s>=180||worst.d>=120) o.push([3, T(`سُجّلت قراءة شديدة الارتفاع ${b(`${worst.s}/${worst.d}`)} في ${fdate(dk(new Date(worst.t)))}.`,`A severely high reading of ${b(`${worst.s}/${worst.d}`)} was recorded on ${fdate(dk(new Date(worst.t)))}.`)]);
+  }
+  // السكر
+  const allG = range(P.a,P.b).flatMap(x=>(D.days[x]?.glu)||[]);
+  if(allG.length){
+    const f=allG.filter(r=>r.c==="f"), lows=allG.filter(r=>r.v<70).length, hiP=allG.filter(r=>r.c==="p"&&r.v>=180).length;
+    if(f.length){ const m=avg(f.map(r=>r.v)), c=gluClass(m,"f"); o.push([c[0], T(`متوسط سكر الصيام ${b(fmt(gOut(m),1))} ${mu("glu")} من ${f.length} قراءة: ${c[1]}.${c[0]>1?" الأرقام المنزلية لا تشخّص وحدها؛ اطلب من طبيبك تحليل HbA1c.":""}`,`Average fasting glucose ${b(fmt(gOut(m),1))} ${mu("glu")} from ${f.length} readings: ${c[2].toLowerCase()}.${c[0]>1?" Home readings alone do not diagnose; ask your doctor for an HbA1c test.":""}`)]); }
+    if(lows) o.push([3, T(`${b(lows)} قراءة هبوط سكر (أقل من 70). ناقش مع طبيبك تعديل الدواء أو مواعيد الوجبات.`,`${b(lows)} low glucose reading(s) (below 70). Discuss medicine or meal timing with your doctor.`)]);
+    if(hiP) o.push([2, T(`${b(hiP)} قراءة بعد الأكل تجاوزت 180.`,`${b(hiP)} after-meal reading(s) above 180.`)]);
+  }
+  // النوم
+  const sl=stat("sleep",P);
+  if(sl.n>=3){ const m=sl.mean; o.push([m<6?3:m<7||m>9.5?2:1, m<7 ? T(`متوسط نومك ${b(fmt(m,1))} ساعة، أقل من 7 ساعات التي يوصى بها للبالغين. ثبّت موعد النوم، وأبعد الشاشات قبله بساعة.`,`You average ${b(fmt(m,1))} hours of sleep, below the 7 hours recommended for adults. Keep a fixed bedtime and put screens away an hour before.`) : m>9.5 ? T(`متوسط نومك ${b(fmt(m,1))} ساعة، أطول من المعتاد. إن صاحبه إرهاق مستمر فراجع طبيبك.`,`You average ${b(fmt(m,1))} hours of sleep, longer than usual. If you also feel persistently tired, see your doctor.`) : T(`متوسط نومك ${b(fmt(m,1))} ساعة، ضمن المدى الصحي.`,`You average ${b(fmt(m,1))} hours of sleep, within the healthy range.`)]); }
+  // الحركة
+  const st=stat("steps",P), pst=stat("steps",Q);
+  if(st.n>=2){ const ch = pst.n>=2 ? Math.round((st.mean-pst.mean)/pst.mean*100) : null; const met=st.s.filter(x=>x[1]>=D.goals.steps).length;
+    o.push([st.mean>=D.goals.steps?1:2, T(`متوسط خطواتك ${b(fmt(st.mean))} يومياً، وحققت هدفك في ${b(met)} من ${b(st.n)} ${dW(st.n)}.${ch!=null?` ${ch>=0?"ارتفع":"انخفض"} نشاطك ${b(Math.abs(ch)+"%")} عن الفترة السابقة.`:""}`,`You average ${b(fmt(st.mean))} steps a day and met your goal on ${b(met)} of ${b(st.n)} days.${ch!=null?` Activity is ${ch>=0?"up":"down"} ${b(Math.abs(ch)+"%")} vs the previous period.`:""}`)]); }
+  const ac=stat("active",P);
+  if(ac.n>=5&&len>=7){ const wk=ac.mean*7; o.push([wk>=150?1:2, T(`نشاطك المعتدل نحو ${b(fmt(wk))} دقيقة أسبوعياً؛ توصي منظمة الصحة العالمية بما لا يقل عن 150 دقيقة.`,`Your moderate activity is about ${b(fmt(wk))} minutes a week; WHO recommends at least 150 minutes.`)]); }
+  // الوزن
+  const wsl=slope("weight",P), w=stat("weight",P);
+  if(w.n>=4&&wsl!=null&&len>=14){ const a=Math.abs(wsl); o.push([a>1?2:1, T(`اتجاه وزنك ${b((wsl>=0?"+":"−")+fmt(a,2))} كغ أسبوعياً${a>1?"؛ التغير أسرع من المعتاد، فإن لم يكن مقصوداً فراجع طبيبك.":"."}`,`Your weight trend is ${b((wsl>=0?"+":"−")+fmt(a,2))} kg per week${a>1?"; that is faster than usual, so see your doctor if it is unintended.":"."}`)]); }
+  // النبض والأكسجين والحرارة
+  const hr=stat("hr",P); if(hr.n>=3&&(hr.mean>100||hr.mean<50)) o.push([2, T(`متوسط نبض الراحة ${b(fmt(hr.mean))} نبضة/دقيقة، خارج المعدل المعتاد (60 إلى 100). ناقشه مع طبيبك، خاصة إن صاحبه دوخة أو خفقان.`,`Average resting heart rate ${b(fmt(hr.mean))} bpm, outside the usual 60 to 100. Discuss it with your doctor, especially with dizziness or palpitations.`)]);
+  const ox=stat("spo2",P); if(ox.n&&ox.min<94) o.push([ox.min<92?3:2, T(`أدنى قراءة أكسجين ${b(fmt(ox.min)+"%")}.`,`Lowest oxygen reading ${b(fmt(ox.min)+"%")}.`)]);
+  const fev=ser("temp",P).filter(x=>x[1]>=38).length; if(fev) o.push([fev>=3?3:2, T(`حمى (38 أو أكثر) في ${b(fev)} ${dW(fev)}.${fev>=3?" الحمى أكثر من 3 أيام تستدعي مراجعة الطبيب.":""}`,`Fever (38 or above) on ${b(fev)} day(s).${fev>=3?" Fever lasting more than 3 days needs a doctor's review.":""}`)]);
+  // الأعراض
+  const cnt={}; let ld=0; range(P.a,P.b).forEach(x=>{ const d=D.days[x]; if(d){ ld++; (d.sym||[]).forEach(s=>cnt[s]=(cnt[s]||0)+1); } });
+  const top=Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  if(top.length){ const freq = top[0][1]>=Math.max(4,ld*0.5); o.push([freq?2:1, T(`أكثر الأعراض تكراراً: ${top.map(([s,n])=>`${symN(s)} (${n} ${dW(n)})`).join("، ")}.${freq?" تكرار العرض في نصف الأيام أو أكثر يستحق تقييماً طبياً.":""}`,`Most frequent symptoms: ${top.map(([s,n])=>`${symN(s)} (${n} day${n===1?"":"s"})`).join(", ")}.${freq?" A symptom on half the days or more deserves a medical review.":""}`)]); }
+  // الأدوية
+  if(D.meds.length){ const ds=range(P.a,P.b).filter(x=>D.days[x]&&x<=today()); if(ds.length){ const tk=ds.reduce((s,x)=>s+D.meds.filter(m=>(D.days[x].meds||{})[m.id]).length,0), pc=Math.round(tk/(ds.length*D.meds.length)*100); o.push([pc>=80?1:2, T(`التزامك بالأدوية ${b(pc+"%")} في الأيام المسجّلة.${pc<80?" ضع منبّهاً يومياً أو علبة أدوية أسبوعية.":""}`,`Medicine adherence ${b(pc+"%")} on logged days.${pc<80?" Try a daily alarm or a weekly pill organiser.":""}`)]); } }
+  // المزاج
+  const md=stat("mood",P);
+  if(md.n>=7){ const low=md.s.filter(x=>x[1]<=2).length; if(low>=Math.ceil(md.n*0.6)&&low>=7) o.push([3, T(`مزاجك كان منخفضاً في ${b(low)} من ${b(md.n)} ${dW(md.n)}. إن استمر أسبوعين أو أكثر فتحدّث مع طبيب أو مختص نفسي، فالمساعدة متاحة وفعالة.`,`Your mood was low on ${b(low)} of ${b(md.n)} days. If this lasts two weeks or more, talk to a doctor or mental health professional; help works.`)]); else o.push([md.mean>=3?1:2, T(`متوسط مزاجك ${b(fmt(md.mean,1))} من 5.`,`Average mood ${b(fmt(md.mean,1))} of 5.`)]); }
+  // الارتباطات
+  const PAIRS=[["sleep","mood","كلما طال نومك تحسّن مزاجك","longer sleep goes with better mood","طول النوم يقترن بمزاج أقل","longer sleep goes with lower mood"],["sleep","energy","النوم الأطول يقترن بطاقة أعلى","longer sleep goes with more energy","النوم الأطول يقترن بطاقة أقل","longer sleep goes with less energy"],["steps","sleep","الأيام الأكثر حركة يتبعها نوم أطول","more active days go with longer sleep","الأيام الأكثر حركة يقترن بها نوم أقصر","more active days go with shorter sleep"],["stress","sleep","التوتر الأعلى يقترن بنوم أطول","higher stress goes with longer sleep","التوتر الأعلى يقترن بنوم أقصر","higher stress goes with shorter sleep"],["steps","mood","الأيام الأكثر حركة يقترن بها مزاج أفضل","more active days go with better mood","الأيام الأكثر حركة يقترن بها مزاج أقل","more active days go with lower mood"],["water","pain","شرب ماء أكثر يقترن بألم أكثر","more water goes with more pain","شرب ماء أكثر يقترن بألم أقل","more water goes with less pain"]];
+  PAIRS.forEach(([a,c,pa,pe,na,ne])=>{ const r=corr(a,c,P); if(r&&Math.abs(r.r)>=0.35) o.push([1, T(`في بياناتك: ${r.r>0?pa:na} (معامل الارتباط ${b(fmt(r.r,2))} من ${r.n} ${dW(r.n)}).`,`In your data: ${r.r>0?pe:ne} (correlation ${b(fmt(r.r,2))} over ${r.n} days).`)]); });
+  // الانتظام
+  if(len>=7){ const lg=range(P.a,P.b).filter(x=>D.days[x]).length, el=range(P.a,P.b).filter(x=>x<=today()).length; if(el) o.push([lg/el>=0.7?1:2, T(`سجّلت ${b(lg)} من ${b(el)} ${dW(el)}. الانتظام يجعل التحليلات أدق.`,`You logged ${b(lg)} of ${b(el)} days. Regular logging makes the insights more accurate.`)]); }
+  if(!o.length) o.push([1, T("سجّل بضعة أيام أخرى لتظهر التحليلات.","Log a few more days to see insights.")]);
+  return o.sort((x,y)=>y[0]-x[0]);
+}
+
+// ---------- تقرير الطبيب ----------
+function report(){
+  const P=period(S.per,S.anchor), rows=["steps","active","sleep","water","weight","hr","glu","spo2","temp","mood","energy","stress","pain"].map(k=>[k,stat(k,P)]).filter(x=>x[1].n);
+  const bp=stat("sys",P), dp=stat("dia",P), sv=ses(), pr=D.prof;
+  const reads = range(P.a,P.b).flatMap(x=>[...(D.days[x]?.bp||[]).map(r=>[r.t,T("ضغط","BP"),`${r.s}/${r.d}${r.p?` (${r.p})`:""}`]), ...(D.days[x]?.glu||[]).map(r=>[r.t,T("سكر","Glucose"),`${gOut(r.v)} ${mu("glu")} · ${T(...GCTX[r.c]||GCTX.r)}`])]).sort((a,b)=>a[0]-b[0]).slice(-60);
+  const sy={}; range(P.a,P.b).forEach(x=>(D.days[x]?.sym||[]).forEach(s=>sy[s]=(sy[s]||0)+1));
+  const el=document.getElementById("trkPrint")||document.body.appendChild(Object.assign(document.createElement("div"),{id:"trkPrint"}));
+  const ins = insights(P,{a:addD(P.a,-range(P.a,P.b).length),b:addD(P.a,-1)});
+  el.innerHTML = `<h1>${T("«الطيبات» · تقرير المتابعة الصحية","Al-Tayyibat · Health tracking report")}</h1><p>${pLabel(S.per,P)}${sv?.name?` · <span data-noi18n>${h(sv.name)}</span>`:""}${pr.by?` · ${T("العمر","Age")} ${new Date().getFullYear()-pr.by}`:""}${pr.sex?` · ${pr.sex==="f"?T("أنثى","Female"):T("ذكر","Male")}`:""}${pr.h?` · ${T("الطول","Height")} ${pr.h} ${T("سم","cm")}`:""}</p>
+  <table><thead><tr><th>${T("المؤشر","Measure")}</th><th>${T("المتوسط","Average")}</th><th>${T("الأدنى","Min")}</th><th>${T("الأعلى","Max")}</th><th>${T("عدد الأيام","Days")}</th></tr></thead><tbody>
+  ${bp.n?`<tr><td>${mn("bp")} (${mu("bp")})</td><td>${fmt(bp.mean)}/${fmt(dp.mean)}</td><td>${fmt(bp.min)}/${fmt(dp.min)}</td><td>${fmt(bp.max)}/${fmt(dp.max)}</td><td>${bp.n}</td></tr>`:""}
+  ${rows.map(([k,s])=>{ const c=k==="glu"?gOut:(x=>x); return `<tr><td>${mn(k)} (${mu(k)})</td><td>${fmt(c(s.mean),M[k].dec)}</td><td>${fmt(c(s.min),M[k].dec)}</td><td>${fmt(c(s.max),M[k].dec)}</td><td>${s.n}</td></tr>`; }).join("")}</tbody></table>
+  <h3>${T("ملاحظات تحليلية","Insights")}</h3><ul>${ins.map(x=>`<li>${x[1]}</li>`).join("")}</ul>
+  ${Object.keys(sy).length?`<h3>${T("الأعراض","Symptoms")}</h3><p>${Object.entries(sy).sort((a,b)=>b[1]-a[1]).map(([s,n])=>`${symN(s)}: ${n}`).join(" · ")}</p>`:""}
+  ${D.meds.length?`<h3>${T("الأدوية","Medicines")}</h3><p data-noi18n>${D.meds.map(m=>h(m.n+(m.d?` ${m.d}`:"")+(m.t?` (${m.t})`:""))).join(" · ")}</p>`:""}
+  ${reads.length?`<h3>${T("القراءات","Readings")}</h3><table><thead><tr><th>${T("التاريخ","Date")}</th><th>${T("القياس","Measure")}</th><th>${T("القيمة","Value")}</th></tr></thead><tbody>${reads.map(r=>`<tr><td>${fdate(dk(new Date(r[0])))} ${tm(r[0])}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join("")}</tbody></table>`:""}
+  <p style="margin-top:12px;font-size:9pt">${T("أعدّه المستخدم بنفسه من بيانات سجّلها أو استوردها؛ للاطلاع والنقاش مع الطبيب، وليس تشخيصاً. munjiz-qa.github.io/altayyibat · ","Prepared by the user from data they logged or imported; for discussion with a doctor, not a diagnosis. munjiz-qa.github.io/altayyibat · ")}${fdate(today())}</p>`;
+  document.body.classList.add("trk-printing");
+  const done=()=>{ document.body.classList.remove("trk-printing"); window.removeEventListener("afterprint",done); };
+  window.addEventListener("afterprint",done); setTimeout(()=>{ window.print(); setTimeout(done,1500); },50);
+}
+
+// ---------- ربط الأجهزة ----------
+function vDev(){
+  const bt = !!(navigator.bluetooth);
+  const sample = `${location.origin}${location.pathname}#track?steps=8432&sleep=7.2&hr=64&w=72.5&sys=118&dia=76&glu=95&spo2=98`;
+  return `<div class="disclaimer"><b>${T("كيف يعمل الربط؟","How does linking work?")}</b> ${T("منصة الويب لا تستطيع قراءة Apple Health أو Health Connect مباشرة؛ فهذا متاح فقط للتطبيقات المثبتة على الهاتف. لذلك نوفّر لك أربعة طرق عملية: استيراد ملف التصدير الرسمي من هاتفك، أو ملف CSV من أي ساعة أو تطبيق، أو الاتصال المباشر بالأجهزة الطبية عبر البلوتوث، أو اختصار هاتف يرسل قراءاتك اليومية بلمسة. كل المعالجة تتم داخل متصفحك، ولا يُرفع أي ملف إلى أي خادم.","A website cannot read Apple Health or Health Connect directly; only apps installed on the phone can. So you get four practical routes: import your phone's official export, import a CSV from any watch or app, connect medical devices directly over Bluetooth, or use a phone shortcut that sends today's readings in one tap. Everything is processed inside your browser and no file is uploaded anywhere.")}</div>
+<div id="trkImpRes"></div>
+<div class="trk-dev">
+<div class="panel"><h3><span class="ico">${I.apple}</span>${T("تطبيق «صحتي» في iPhone وApple Watch","iPhone & Apple Watch (Health app)")}</h3>
+<ol><li>${T("افتح تطبيق «صحتي» واضغط صورتك أعلى الشاشة.","Open the Health app and tap your picture at the top.")}</li><li>${T("اختر «تصدير جميع البيانات الصحية» ثم احفظ الملف في «الملفات».","Choose Export All Health Data and save the file to Files.")}</li><li>${T("اختر ملف export.zip هنا (أو export.xml بعد فك الضغط).","Choose export.zip here (or export.xml after unzipping).")}</li></ol>
+<p class="small muted">${T("نقرأ: الخطوات، ودقائق التمرين، والنوم، والوزن، ونبض الراحة، والضغط، والسكر، والأكسجين، والحرارة، والماء. ونحسب المجموع اليومي من المصدر الأعلى لتجنب تكرار عدّ الهاتف والساعة.","We read steps, exercise minutes, sleep, weight, resting heart rate, blood pressure, glucose, oxygen, temperature and water. Daily totals use the highest single source so phone and watch are not double counted.")}</p>
+<div class="trk-file"><input type="file" id="trkApple" accept=".zip,.xml,application/zip,text/xml"></div><div class="trk-prog" hidden id="trkAppleP"><i></i></div></div>
+<div class="panel"><h3><span class="ico">${I.watch}</span>${T("أندرويد وGoogle Fit وFitbit","Android, Google Fit & Fitbit")}</h3>
+<ol><li>${T("ادخل takeout.google.com واختر «Fit» أو «Fitbit» ثم صدّر.","Go to takeout.google.com, select Fit or Fitbit, and export.")}</li><li>${T("فك الضغط، ثم اختر ملف «Daily activity metrics.csv» أو ملفات الأيام (يمكن اختيار عدة ملفات).","Unzip it, then choose “Daily activity metrics.csv” or the per-day files (you can select several).")}</li></ol>
+<p class="small muted">${T("أعلنت Google التحول من Google Fit إلى منصة Health Connect على أندرويد. وHealth Connect لا يتيح القراءة من المواقع، فاستخدم تصدير CSV من تطبيقك (Samsung Health، أو Mi Fitness، أو Huawei Health، أو تطبيقات مثل Health Sync) ثم استورده هنا.","Google is moving from Google Fit to Health Connect on Android. Health Connect cannot be read by websites, so export a CSV from your app (Samsung Health, Mi Fitness, Huawei Health, or apps such as Health Sync) and import it here.")}</p>
+<div class="trk-file"><input type="file" id="trkCsv1" accept=".csv,text/csv" multiple></div></div>
+<div class="panel"><h3><span class="ico">${I.csv}</span>${T("أي ساعة أو جهاز أو تطبيق (CSV)","Any watch, device or app (CSV)")}</h3>
+<p class="small">${T("Samsung Health (تنزيل البيانات الشخصية)، وWithings، وGarmin Connect، وOura، وأجهزة الضغط والسكر التي تصدّر CSV. نتعرّف تلقائياً على أعمدة التاريخ والخطوات والنوم والوزن والضغط والنبض والسكر والأكسجين والحرارة بالعربية والإنجليزية، ونعرض لك ما وجدناه قبل الحفظ.","Samsung Health (download personal data), Withings, Garmin Connect, Oura, and BP or glucose meters that export CSV. We auto-detect date, steps, sleep, weight, blood pressure, pulse, glucose, oxygen and temperature columns in Arabic or English, and show you what we found before saving.")}</p>
+<div class="trk-file"><input type="file" id="trkCsv2" accept=".csv,.txt,text/csv" multiple><button class="btn ghost" type="button" data-act="tpl" style="padding:6px 12px">${T("نزّل قالب CSV","Download CSV template")}</button></div></div>
+<div class="panel"><h3><span class="ico">${I.bt}</span>${T("أجهزة البلوتوث الطبية","Bluetooth medical devices")}</h3>
+<p class="small">${bt?T("يدعم متصفحك الاتصال المباشر. شغّل الجهاز وضعه في وضع الاقتران ثم اختر:","Your browser supports direct connection. Turn the device on, put it in pairing mode, then choose:"):T("متصفحك الحالي لا يدعم البلوتوث من الويب. استخدم Chrome أو Edge على أندرويد أو الكمبيوتر، أو متصفح Bluefy على iPhone.","This browser does not support Web Bluetooth. Use Chrome or Edge on Android or a computer, or the Bluefy browser on iPhone.")}</p>
+<div class="row">${[["hr",T("حزام أو ساعة النبض","Heart-rate strap or watch")],["bp",T("جهاز الضغط","BP monitor")],["ws",T("الميزان","Scale")],["th",T("ميزان الحرارة","Thermometer")],["ox",T("مقياس الأكسجين","Pulse oximeter")]].map(([id,n])=>`<button class="btn ghost" type="button" data-bt="${id}" ${bt?"":"disabled"}>${n}</button>`).join("")}</div>
+<div id="trkBt" aria-live="polite"></div>
+<p class="small muted">${T("يعمل مع الأجهزة التي تتبع معايير Bluetooth الصحية القياسية (Heart Rate، وBlood Pressure، وWeight Scale، وHealth Thermometer، وPulse Oximeter)، مثل كثير من أحزمة الصدر وأجهزة الضغط والموازين الذكية. بعض الساعات تبث النبض فقط عند تفعيل «بث معدل النبض». الأجهزة ذات البروتوكولات المغلقة تُربط عبر تطبيقها ثم تصدير CSV.","Works with devices that follow the standard Bluetooth health profiles (Heart Rate, Blood Pressure, Weight Scale, Health Thermometer, Pulse Oximeter), such as many chest straps, BP monitors and smart scales. Some watches broadcast heart rate only when “HR broadcast” is on. Devices with closed protocols connect through their own app, then a CSV export.")}</p></div>
+<div class="panel"><h3><span class="ico">${I.link}</span>${T("اختصار الهاتف: مزامنة يومية بلمسة","Phone shortcut: one-tap daily sync")}</h3>
+<p class="small">${T("على iPhone: أنشئ في تطبيق «الاختصارات» اختصاراً يجمع عينات «صحتي» لليوم (الخطوات، والنوم، والنبض، والوزن…) ثم يفتح رابطاً بهذه الصيغة. ويمكن جدولته يومياً من «الأتمتة». وعلى أندرويد: أي تطبيق أتمتة يفتح الروابط (مثل Tasker) يؤدي المهمة نفسها.","On iPhone: in the Shortcuts app, build a shortcut that finds today's Health samples (steps, sleep, heart rate, weight…) and opens a link in this format; schedule it daily under Automation. On Android: any automation app that opens links (such as Tasker) does the same.")}</p>
+<div class="trk-code" data-noi18n>${h(sample)}</div>
+<p class="small muted">${T("المفاتيح المتاحة: steps، active، water، sleep، w (الوزن)، hr، sys، dia، glu، spo2، temp، mood، date (اختياري بصيغة 2026-11-03). تظهر لك القراءات للتأكيد قبل الحفظ.","Keys: steps, active, water, sleep, w (weight), hr, sys, dia, glu, spo2, temp, mood, date (optional, e.g. 2026-11-03). You confirm the readings before they are saved.")}</p>
+<div class="row"><button class="btn ghost" type="button" data-act="copyLink">${T("انسخ الرابط النموذجي","Copy sample link")}</button></div></div>
+<div class="panel"><h3><span class="ico">${I.info}</span>${T("لماذا لا يوجد تسجيل دخول بحساب Fitbit أو Withings أو Garmin؟","Why no sign-in with Fitbit, Withings or Garmin?")}</h3>
+<p class="small">${T("الربط السحابي المباشر بهذه الخدمات يتطلب خادماً آمناً يحفظ مفاتيح الوصول، واتفاقيات مطورين، ونقل بياناتك الصحية إلى طرف ثالث. اخترنا عمداً أن تبقى بياناتك على جهازك فقط. ويمكن إضافة هذا الربط مستقبلاً بخادم خاص إن قررت الإدارة ذلك.","Direct cloud linking with these services needs a secure server holding access keys, developer agreements, and sending your health data to a third party. We deliberately keep your data on your device only. Cloud linking can be added later with a dedicated server if the platform decides to.")}</p></div>
+</div>`;
+}
+
+// استيراد: دمج الأيام
+function mergeDays(map, src){
+  let n=0, fields=new Set(), mn0=null, mx0=null;
+  for(const [k,v] of Object.entries(map)){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(k)||k>today()) continue;
+    const d=day(k); let any=false;
+    for(const [f,x] of Object.entries(v)){
+      if(f==="bp"||f==="glu"){ const arr=d[f]||(d[f]=[]); x.forEach(r=>{ if(!arr.some(o=>Math.abs(o.t-r.t)<60000)) { arr.push(r); any=true; } }); arr.sort((a,b)=>a.t-b.t); fields.add(f); continue; }
+      if(x==null||isNaN(x)) continue; d[f]=Math.round(x*100)/100; (d.src||(d.src={}))[f]=src; fields.add(f); any=true;
+    }
+    clean(k); if(any){ n++; mn0=!mn0||k<mn0?k:mn0; mx0=!mx0||k>mx0?k:mx0; }
+  }
+  save(true);
+  return {n, fields:[...fields], a:mn0, b:mx0};
+}
+function impResult(r, label){
+  const el=q("#trkImpRes"); if(!el) return;
+  const names=r.fields.map(f=>f==="bp"?mn("bp"):M[f]?mn(f):f).join(T("، ",", "));
+  el.innerHTML = r.n ? `<div class="panel" style="border-color:var(--ok)"><h3>${T("تم الاستيراد بنجاح","Import complete")} · ${h(label)}</h3><p>${T(`أُضيفت بيانات ${r.n} ${dW(r.n)} من ${fdate(r.a)} إلى ${fdate(r.b)}.`,`Added data for ${r.n} days from ${fdate(r.a)} to ${fdate(r.b)}.`)}</p><p class="small muted">${names}</p><div class="row"><button class="btn" type="button" data-act="seeStats">${T("اعرض الإحصاءات","View statistics")}</button></div></div>`
+    : `<div class="panel" style="border-color:var(--warn)"><h3>${T("لم نجد بيانات صالحة","No usable data found")}</h3><p class="small">${T("تأكد أن الملف هو ملف التصدير الصحيح، وأنه يحتوي على تواريخ وأرقام. يمكنك تنزيل قالب CSV ومطابقة أعمدته.","Make sure the file is the right export and contains dates and numbers. You can download the CSV template and match its columns.")}</p></div>`;
+  el.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+// Apple Health: قراءة متدفقة لملف ضخم دون تحميله كاملاً في الذاكرة
+async function zipEntryStream(file){
+  const tail = new DataView(await file.slice(Math.max(0,file.size-66000)).arrayBuffer());
+  let e=-1; for(let i=tail.byteLength-22;i>=0;i--) if(tail.getUint32(i,true)===0x06054b50){ e=i; break; }
+  if(e<0) throw new Error("zip");
+  let cdOff=tail.getUint32(e+16,true), cdN=tail.getUint16(e+10,true);
+  if(cdOff===0xFFFFFFFF||cdN===0xFFFF){ // ZIP64
+    const loc=e-20; if(tail.getUint32(loc,true)===0x07064b50){ const z64=Number(tail.getBigUint64(loc+8,true)); const zd=new DataView(await file.slice(z64,z64+56).arrayBuffer()); cdN=Number(zd.getBigUint64(32,true)); cdOff=Number(zd.getBigUint64(48,true)); }
+  }
+  const cdBuf=new DataView(await file.slice(cdOff, Math.min(file.size, cdOff+Math.max(1,cdN)*400+65536)).arrayBuffer());
+  let p=0, hit=null; const dec=new TextDecoder();
+  for(let i=0;i<cdN&&p+46<=cdBuf.byteLength;i++){
+    if(cdBuf.getUint32(p,true)!==0x02014b50) break;
+    const meth=cdBuf.getUint16(p+10,true); let cs=cdBuf.getUint32(p+20,true); const nl=cdBuf.getUint16(p+28,true), xl=cdBuf.getUint16(p+30,true), cl=cdBuf.getUint16(p+32,true); let lo=cdBuf.getUint32(p+42,true);
+    const name=dec.decode(new Uint8Array(cdBuf.buffer, p+46, nl));
+    if(cs===0xFFFFFFFF||lo===0xFFFFFFFF){ let x=p+46+nl, end=x+xl; while(x<end){ const id=cdBuf.getUint16(x,true), sz=cdBuf.getUint16(x+2,true); if(id===1){ let y=x+4; const us=cdBuf.getUint32(p+24,true); if(us===0xFFFFFFFF) y+=8; if(cs===0xFFFFFFFF){ cs=Number(cdBuf.getBigUint64(y,true)); y+=8; } if(lo===0xFFFFFFFF) lo=Number(cdBuf.getBigUint64(y,true)); } x+=4+sz; } }
+    if(/(^|\/)export\.xml$/i.test(name)) hit={meth,cs,lo};
+    p+=46+nl+xl+cl;
+  }
+  if(!hit) throw new Error("noxml");
+  const lh=new DataView(await file.slice(hit.lo, hit.lo+30).arrayBuffer());
+  const start=hit.lo+30+lh.getUint16(26,true)+lh.getUint16(28,true);
+  const raw=file.slice(start, start+hit.cs).stream();
+  if(hit.meth===0) return {s:raw, size:hit.cs};
+  if(typeof DecompressionStream==="undefined") throw new Error("nodecomp");
+  return {s:raw.pipeThrough(new DecompressionStream("deflate-raw")), size:hit.cs};
+}
+async function importApple(file){
+  const bar=q("#trkAppleP"), bi=bar?.querySelector("i"); if(bar) bar.hidden=false;
+  let src;
+  try{ src = /\.zip$/i.test(file.name)||file.type.includes("zip") ? await zipEntryStream(file) : {s:file.stream(), size:file.size}; }
+  catch(e){ if(bar) bar.hidden=true; say(e.message==="nodecomp"?T("متصفحك لا يفك ملفات zip؛ فك الضغط واختر export.xml","Your browser cannot unzip; unzip and choose export.xml"):T("لم نجد export.xml داخل الملف","export.xml was not found in the file")); return; }
+  const agg={}; // day -> {key -> {source -> [sum,count]}}
+  const add=(k,f,s,v,mode)=>{ const a=agg[k]||(agg[k]={}), b=a[f]||(a[f]={}), c=b[s]||(b[s]=[0,0,mode]); c[0]+=v; c[1]++; };
+  const bpP={}; const gl={};
+  const TYPES={StepCount:"steps",AppleExerciseTime:"active",BodyMass:"weight",RestingHeartRate:"hr",HeartRate:"hrAll",BloodPressureSystolic:"sys",BloodPressureDiastolic:"dia",BloodGlucose:"glu",OxygenSaturation:"spo2",BodyTemperature:"temp",DietaryWater:"water",SleepAnalysis:"sleep"};
+  const at=(s,n)=>{ const m=s.match(new RegExp(`\\s${n}="([^"]*)"`)); return m?m[1]:null; };
+  const pt=s=>{ const m=s.match(/^(\d{4})-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d)/); return m?new Date(+m[1],m[2]-1,+m[3],+m[4],+m[5],+m[6]).getTime():NaN; };
+  const reader=src.s.pipeThrough(new TextDecoderStream()).getReader();
+  let buf="", read=0, rec=0;
+  const handle = tag => {
+    const ty=at(tag,"type"); if(!ty) return; const short=ty.replace(/^HK(Quantity|Category)TypeIdentifier/,""); const f=TYPES[short]; if(!f) return;
+    const sd=at(tag,"startDate")||"", ed=at(tag,"endDate")||sd, s=at(tag,"sourceName")||"?", u=at(tag,"unit")||"", vs=at(tag,"value");
+    rec++;
+    if(f==="sleep"){ if(!/Asleep/.test(vs||"")) return; const hrs=(pt(ed)-pt(sd))/36e5; if(hrs>0&&hrs<24) add(ed.slice(0,10),"sleep",s,hrs,"sum"); return; }
+    let v=parseFloat(vs); if(isNaN(v)) return; const k=sd.slice(0,10);
+    if(f==="weight"){ if(/lb/.test(u)) v*=0.4536; add(k,f,s,v,"last"); return; }
+    if(f==="spo2"){ if(v<=1) v*=100; add(k,f,s,v,"avg"); return; }
+    if(f==="temp"){ if(/F/.test(u)) v=(v-32)*5/9; add(k,f,s,v,"avg"); return; }
+    if(f==="water"){ v = /oz/.test(u) ? v*29.57/250 : /^L$/.test(u) ? v*4 : v/250; add(k,f,s,v,"sum"); return; }
+    if(f==="glu"){ if(/mmol/.test(u)) v*=18.016; const t=pt(sd); (gl[k]||(gl[k]=[])).push({v:Math.round(v),c:"r",t}); return; }
+    if(f==="sys"||f==="dia"){ const t=pt(sd); const o=bpP[t]||(bpP[t]={}); o[f]=v; o.k=k; return; }
+    add(k,f,s,v, f==="steps"||f==="active" ? "sum" : "avg");
+  };
+  try{
+    for(;;){
+      const {done,value}=await reader.read(); if(done) break;
+      buf+=value; read+=value.length;
+      let i=0, m; const re=/<Record\b[^>]*>/g;
+      while((m=re.exec(buf))){ handle(m[0]); i=re.lastIndex; }
+      const lt=buf.lastIndexOf("<"); buf = buf.slice(Math.max(i, lt>i?lt:buf.length));
+      if(bi&&src.size) bi.style.width=Math.min(99, read/(src.size*(src.s===file.stream?1:9))*100)+"%";
+    }
+  }catch(e){ say(T("تعذّرت قراءة الملف","Could not read the file")); if(bar) bar.hidden=true; return; }
+  const out={};
+  for(const [k,a] of Object.entries(agg)){
+    const o=out[k]={};
+    for(const [f,bys] of Object.entries(a)){
+      const vals=Object.values(bys).map(([s,c,mode])=>mode==="avg"?s/c:mode==="last"?s/c:s);
+      const mode=Object.values(bys)[0][2];
+      o[f==="hrAll"?"hrAll":f] = mode==="sum" ? Math.max(...vals) : avg(vals);
+    }
+    if(o.hr==null&&o.hrAll!=null) o.hr=o.hrAll; delete o.hrAll;
+    if(o.steps!=null) o.steps=Math.round(o.steps); if(o.active!=null) o.active=Math.round(o.active); if(o.water!=null) o.water=Math.round(o.water); if(o.hr!=null) o.hr=Math.round(o.hr); if(o.spo2!=null) o.spo2=Math.round(o.spo2);
+    if(o.sleep!=null) o.sleep=Math.round(Math.min(o.sleep,16)*10)/10;
+  }
+  Object.entries(bpP).forEach(([t,o])=>{ if(o.sys&&o.dia){ const x=out[o.k]||(out[o.k]={}); (x.bp||(x.bp=[])).push({s:Math.round(o.sys),d:Math.round(o.dia),t:+t}); } });
+  Object.entries(gl).forEach(([k,a])=>{ (out[k]||(out[k]={})).glu=a; });
+  if(bi) bi.style.width="100%"; setTimeout(()=>{ if(bar) bar.hidden=true; },600);
+  impResult(mergeDays(out,"apple"), "Apple Health");
+}
+
+// CSV عام بتعرّف تلقائي على الأعمدة
+function parseCSV(txt){
+  txt=txt.replace(/^﻿/,"");
+  const first=txt.split(/\r?\n/).find(l=>l.trim())||""; const dl=[",",";","\t"].sort((a,b)=>first.split(b).length-first.split(a).length)[0];
+  const rows=[]; let row=[], cell="", qq=false;
+  for(let i=0;i<txt.length;i++){ const c=txt[i];
+    if(qq){ if(c==='"'){ if(txt[i+1]==='"'){ cell+='"'; i++; } else qq=false; } else cell+=c; continue; }
+    if(c==='"') qq=true; else if(c===dl){ row.push(cell); cell=""; } else if(c==="\n"||c==="\r"){ if(c==="\r"&&txt[i+1]==="\n") i++; row.push(cell); rows.push(row); row=[]; cell=""; } else cell+=c; }
+  if(cell||row.length){ row.push(cell); rows.push(row); }
+  return rows.filter(r=>r.some(x=>x.trim()));
+}
+function toDate(s, dmy){
+  s=String(s).trim(); if(!s) return null;
+  if(/^\d{10,13}(\.\d+)?$/.test(s)){ const n=+s; return dk(new Date(n<1e12?n*1000:n)); }
+  let m=s.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/); if(m) return `${m[1]}-${p2(m[2])}-${p2(m[3])}`;
+  m=s.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4})/); if(m){ const [a,b]=dmy?[m[1],m[2]]:[m[2],m[1]]; return `${m[3]}-${p2(b)}-${p2(a)}`; }
+  const t=Date.parse(s); return isNaN(t)?null:dk(new Date(t));
+}
+function mapCols(hdr, hint){
+  const H=hdr.map(x=>x.toLowerCase().trim()), map={};
+  const pick=(f,re,not)=>{ if(map[f]!=null) return; const i=H.findIndex((x,j)=>re.test(x)&&!(not&&not.test(x))&&!Object.values(map).includes(j)); if(i>=0) map[f]=i; };
+  pick("date",/^(date|day|day_time|datetime|time|start_time|start time|start|timestamp|create_time|التاريخ|اليوم|تاريخ)$|date|التاريخ/,/update|end/);
+  pick("steps",/step|خطو|^count$/.test(hint)?/step count|steps|خطوات|^count$|step/:/step count|steps|خطوات|step/, /length|goal|cadence/);
+  pick("active",/move minutes|active min|exercise|activity min|very active|نشاط|حركة|active_time/, /goal|cal/);
+  pick("sleep",/sleep|نوم|asleep/, /score|start|end|latency|efficiency|goal/);
+  pick("weight",/weight|الوزن|وزن|body mass/, /max|min|goal|target/);
+  pick("sys",/systolic|انقباض|^sys|sbp/);
+  pick("dia",/diastolic|انبساط|^dia|dbp/);
+  pick("hr",/resting heart|resting hr|average heart|avg heart|heart rate|^pulse|نبض|bpm|heart_rate/, /max|min|variab|hrv|zone/);
+  pick("glu",/glucose|سكر|sugar|بالدم/);
+  pick("spo2",/spo2|oxygen|أكسجين|saturation/);
+  pick("temp",/temperature|حرارة|^temp/, /deviation|skin/);
+  pick("water",/water|ماء|hydration/);
+  pick("mood",/mood|مزاج/);
+  return map;
+}
+function csvToDays(rows, fname){
+  let i0=0; if(rows[0]&&rows[0].length<=3&&/com\.samsung|^#/.test(rows[0][0])) i0=1;
+  const hdr=rows[i0]||[], body=rows.slice(i0+1), hint=(fname+" "+(rows[0]||[]).join(" ")).toLowerCase();
+  const map=mapCols(hdr, hint);
+  const fileDate = (fname.match(/(\d{4}-\d{2}-\d{2})/)||[])[1];
+  if(map.date==null&&!fileDate) return {days:{}, map, hdr};
+  let dmy=true; if(map.date!=null){ for(const r of body.slice(0,200)){ const m=String(r[map.date]||"").match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.]\d{4}/); if(m){ if(+m[2]>12){ dmy=false; break; } } } }
+  const H=hdr.map(x=>x.toLowerCase()), acc={};
+  const isMin = f => map[f]!=null && /min|دقيق/.test(H[map[f]]) && !/minutes asleep.*h/.test(H[map[f]]);
+  for(const r of body){
+    const k = map.date!=null ? toDate(r[map.date], dmy) : fileDate; if(!k) continue;
+    const a=acc[k]||(acc[k]={});
+    for(const [f,ci] of Object.entries(map)){ if(f==="date") continue; let v=parseFloat(String(r[ci]??"").replace(/,/g,"").replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d))); if(isNaN(v)) continue;
+      if(f==="sleep"){ if(isMin("sleep")||v>24) v/=60; if(/ms|milli/.test(H[ci])) v/=3600000/60; }
+      if(f==="weight"&&/lb/.test(H[ci])) v*=0.4536;
+      if(f==="glu"&&(/mmol/.test(H[ci])||v<35)) v*=18.016;
+      if(f==="temp"&&v>50) v=(v-32)*5/9;
+      if(f==="spo2"&&v<=1) v*=100;
+      if(f==="water"&&(/ml|مل/.test(H[ci])||v>40)) v/=250;
+      (a[f]||(a[f]=[])).push(v); }
+  }
+  const out={}, SUM=["steps","active","water","sleep"];
+  for(const [k,a] of Object.entries(acc)){ const o={};
+    for(const [f,v] of Object.entries(a)){ if(f==="sys"||f==="dia") continue; o[f]=SUM.includes(f)?v.reduce((s,x)=>s+x,0):avg(v); }
+    if(a.sys&&a.dia){ o.bp=a.sys.map((s,i)=>a.dia[i]!=null?{s:Math.round(s),d:Math.round(a.dia[i]),t:pd(k).getTime()+8*36e5+i*60000}:null).filter(Boolean); }
+    if(o.glu!=null){ o.glu=a.glu.map((v,i)=>({v:Math.round(v),c:"r",t:pd(k).getTime()+9*36e5+i*60000})); }
+    ["steps","active","hr","spo2"].forEach(f=>{ if(o[f]!=null) o[f]=Math.round(o[f]); }); if(o.water!=null) o.water=Math.round(o.water); if(o.sleep!=null) o.sleep=Math.round(o.sleep*10)/10;
+    if(Object.keys(o).length) out[k]=o; }
+  return {days:out, map, hdr};
+}
+async function importCSV(files){
+  const all={}, found=new Set(); let names=[];
+  for(const f of files){ const txt=await f.text(); const r=csvToDays(parseCSV(txt), f.name); names.push(f.name);
+    Object.entries(r.map).forEach(([k,i])=>{ if(k!=="date") found.add(`${k==="sys"||k==="dia"?mn("bp"):M[k]?mn(k):k} ← «${r.hdr[i]}»`); });
+    for(const [k,o] of Object.entries(r.days)){ const t=all[k]||(all[k]={}); for(const [f2,v] of Object.entries(o)){ if(Array.isArray(v)) t[f2]=[...(t[f2]||[]),...v]; else if(["steps","active","water","sleep"].includes(f2)&&t[f2]!=null&&files.length>1&&/\d{4}-\d{2}-\d{2}/.test(f.name)) t[f2]+=v; else t[f2]=v; } } }
+  const ds=Object.keys(all).filter(k=>k<=today()).sort();
+  const el=q("#trkImpRes"); if(!el) return;
+  if(!ds.length){ impResult({n:0,fields:[]}, ""); return; }
+  S.imp=all;
+  el.innerHTML=`<div class="panel" style="border-color:var(--c1)"><h3>${T("معاينة قبل الحفظ","Preview before saving")}</h3><p>${T(`وجدنا ${ds.length} ${dW(ds.length)} من ${fdate(ds[0])} إلى ${fdate(ds[ds.length-1])}.`,`Found ${ds.length} days from ${fdate(ds[0])} to ${fdate(ds[ds.length-1])}.`)}</p><ul class="clean small" data-noi18n>${[...found].map(x=>`<li>${h(x)}</li>`).join("")}</ul><p class="small muted">${h(names.slice(0,5).join(" · "))}${names.length>5?" …":""}</p><div class="row"><button class="btn" type="button" data-act="impOk">${T("احفظ في سجلي","Save to my log")}</button><button class="btn ghost" type="button" data-act="impNo">${T("إلغاء","Cancel")}</button></div></div>`;
+  el.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+// البلوتوث الصحي القياسي
+const sfloat = v => { let m=v&0x0FFF, e=v>>12; if(m>=0x0800) m-=0x1000; if(e>=8) e-=16; if([0x07FF,0x0800,0x07FE,0x0802,0x0801].includes(v&0x0FFF)&&e===0) return NaN; return m*10**e; };
+const float32 = dv => { let m=dv.getUint8(0)|(dv.getUint8(1)<<8)|(dv.getUint8(2)<<16); if(m>=0x800000) m-=0x1000000; const e=dv.getInt8(3); return m*10**e; };
+let btDev=null;
+async function bt(kind){
+  const box=q("#trkBt"); const SV={hr:["heart_rate","heart_rate_measurement"],bp:["blood_pressure","blood_pressure_measurement"],ws:["weight_scale","weight_measurement"],th:["health_thermometer","temperature_measurement"],ox:[0x1822,0x2A5F]};
+  const [svc,ch]=SV[kind];
+  try{
+    if(btDev?.gatt?.connected) btDev.gatt.disconnect();
+    btDev = await navigator.bluetooth.requestDevice({filters:[{services:[svc]}]});
+    box.innerHTML=`<p>${T("جارٍ الاتصال بـ","Connecting to")} <b data-noi18n>${h(btDev.name||"")}</b>…</p>`;
+    const srv = await (await btDev.gatt.connect()).getPrimaryService(svc);
+    const chs = kind==="ox" ? (await srv.getCharacteristics()).filter(c=>[0x2A5E,0x2A5F].some(u=>c.uuid.startsWith("0000"+u.toString(16)))) : [await srv.getCharacteristic(ch)];
+    const hrs=[];
+    box.innerHTML=`<p>${T("متصل بـ","Connected to")} <b data-noi18n>${h(btDev.name||"")}</b>. ${kind==="hr"?T("انتظر بضع ثوانٍ لتستقر القراءة.","Wait a few seconds for the reading to settle."):T("ابدأ القياس على الجهاز الآن.","Start the measurement on the device now.")}</p><div class="trk-live mono" id="trkLive">—</div><div class="row" id="trkBtAct"></div>`;
+    const live=q("#trkLive"), act=q("#trkBtAct");
+    const offer = (label, fn) => { act.innerHTML=`<button class="btn" type="button" id="trkBtSave">${T("حفظ في سجل اليوم","Save to today's log")}</button><span class="small muted">${label}</span>`; q("#trkBtSave").onclick=()=>{ fn(); save(true); say(T("تم حفظ القراءة","Reading saved")); btDev.gatt.disconnect(); }; };
+    for(const c of chs){
+      c.addEventListener("characteristicvaluechanged", e=>{ const dv=e.target.value, fl=dv.getUint8(0);
+        if(kind==="hr"){ const v=fl&1?dv.getUint16(1,true):dv.getUint8(1); hrs.push(v); live.textContent=`${v} ${T("نبضة/د","bpm")}`; if(hrs.length>=5){ const m=Math.round(avg(hrs.slice(-15))); offer(T(`متوسط آخر القراءات ${m}`,`Average of recent readings ${m}`), ()=>{ day(today()).hr=m; }); } }
+        if(kind==="bp"){ let s=sfloat(dv.getUint16(1,true)), d=sfloat(dv.getUint16(3,true)); if(fl&1){ s*=7.50062; d*=7.50062; } let o=7; if(fl&2) o+=7; let p=null; if(fl&4){ p=Math.round(sfloat(dv.getUint16(o,true))); }
+          s=Math.round(s); d=Math.round(d); live.textContent=`${s}/${d}${p?` · ${p}`:""}`; offer(T(...bpClass(s,d).slice(1)), ()=>{ const x=day(today()); (x.bp||(x.bp=[])).push({s,d,p:p||undefined,t:Date.now()}); }); }
+        if(kind==="ws"){ let w=dv.getUint16(1,true)*(fl&1?0.01*0.4536:0.005); w=Math.round(w*10)/10; live.textContent=`${w} ${T("كغ","kg")}`; offer("", ()=>{ day(today()).weight=w; }); }
+        if(kind==="th"){ let t=float32(new DataView(dv.buffer, dv.byteOffset+1, 4)); if(fl&1) t=(t-32)*5/9; t=Math.round(t*10)/10; live.textContent=`${t} ${T("°م","°C")}`; offer("", ()=>{ day(today()).temp=t; }); }
+        if(kind==="ox"){ const o2=Math.round(sfloat(dv.getUint16(1,true))), pr=Math.round(sfloat(dv.getUint16(3,true))); if(!isNaN(o2)){ live.textContent=`${o2}% · ${pr} ${T("نبضة/د","bpm")}`; offer("", ()=>{ const x=day(today()); x.spo2=o2; if(pr) x.hr=pr; }); } }
+      });
+      await c.startNotifications();
+    }
+  }catch(e){ if(e&&e.name==="NotFoundError") { box.innerHTML=""; return; } box.innerHTML=`<p class="small" style="color:var(--bad)">${T("تعذّر الاتصال: ","Could not connect: ")}${h(e.message||e)}</p>`; }
+}
+
+// ---------- الأدوية والأهداف ----------
+function vPlan(){
+  const g=D.goals, p=D.prof;
+  return `<div class="grid-2"><div class="panel"><h2>${T("أدويتي","My medicines")}</h2>
+<ul class="trk-reads">${D.meds.map(m=>`<li data-noi18n><b>${h(m.n)}</b>${m.d?` · ${h(m.d)}`:""}${m.t?` <span class="small muted">(${h(m.t)})</span>`:""}<button class="x" type="button" data-delmed="${m.id}" aria-label="${T("حذف","Delete")}">×</button></li>`).join("")||`<li class="small muted">${T("لا أدوية بعد.","No medicines yet.")}</li>`}</ul>
+<div class="trk-add"><div class="field"><label for="tmN">${T("اسم الدواء","Medicine")}</label><input type="text" id="tmN" maxlength="60" placeholder="${T("مثل: ميتفورمين","e.g. Metformin")}"></div><div class="field"><label for="tmD">${T("الجرعة","Dose")}</label><input type="text" id="tmD" maxlength="30" placeholder="500 mg"></div><div class="field"><label for="tmT">${T("المواعيد","Times")}</label><input type="text" id="tmT" maxlength="40" placeholder="${T("صباحاً ومساءً","morning & evening")}"></div><button class="btn" type="button" data-act="addMed">${T("إضافة","Add")}</button></div>
+<p class="small muted">${T("تظهر أدويتك يومياً في تبويب «يومي» لتأشّر على ما أخذته، ويُحسب التزامك في الإحصاءات. للتداخلات الدوائية استخدم","Your medicines appear daily under Today to tick off, and adherence is shown in the statistics. For interactions use")} <a href="#drugs">${T("دليل الأدوية","the drug guide")}</a>.</p></div>
+<div class="panel"><h2>${T("أهدافي اليومية","My daily goals")}</h2><div class="trk-f">
+${[["steps",T("الخطوات","Steps"),1],["active",T("دقائق النشاط","Active minutes"),1],["water",T("أكواب الماء","Cups of water"),1],["sleep",T("ساعات النوم","Sleep hours"),"0.5"],["weight",T("الوزن المستهدف (اختياري)","Target weight (optional)"),"0.1"]].map(([k,n,st])=>`<div class="field"><label for="tg_${k}">${n}</label><input type="number" id="tg_${k}" data-goal="${k}" step="${st}" min="0" value="${g[k]??""}"></div>`).join("")}</div>
+<p class="small muted">${T("القيم المقترحة مبنية على توصيات منظمة الصحة العالمية والأكاديمية الأمريكية لطب النوم: 150 دقيقة نشاط معتدل أسبوعياً، و7 ساعات نوم أو أكثر للبالغين.","Defaults follow WHO and AASM guidance: 150 minutes of moderate activity a week and at least 7 hours of sleep for adults.")}</p></div>
+<div class="panel"><h2>${T("ملفي الصحي","My profile")}</h2><div class="trk-f">
+<div class="field"><label for="tp_h">${T("الطول (سم)","Height (cm)")}</label><input type="number" id="tp_h" data-prof="h" min="40" max="250" value="${p.h??""}"></div>
+<div class="field"><label for="tp_by">${T("سنة الميلاد","Birth year")}</label><input type="number" id="tp_by" data-prof="by" min="1900" max="${new Date().getFullYear()}" value="${p.by??""}"></div>
+<div class="field"><label for="tp_sex">${T("الجنس","Sex")}</label><select id="tp_sex" data-prof="sex"><option value="">—</option><option value="m" ${p.sex==="m"?"selected":""}>${T("ذكر","Male")}</option><option value="f" ${p.sex==="f"?"selected":""}>${T("أنثى","Female")}</option></select></div>
+<div class="field"><label for="tp_gu">${T("وحدة السكر","Glucose unit")}</label><select id="tp_gu" data-prof="gu"><option value="mg" ${p.gu!=="mmol"?"selected":""}>mg/dL</option><option value="mmol" ${p.gu==="mmol"?"selected":""}>mmol/L</option></select></div></div></div>
+<div class="panel"><h2>${T("تذكير يومي","Daily reminder")}</h2><p class="small">${T("أضف تذكيراً يومياً إلى تقويم هاتفك أو حاسوبك ليذكّرك بتسجيل قراءاتك وأخذ أدويتك.","Add a daily reminder to your phone or computer calendar to log readings and take your medicines.")}</p>
+<div class="row"><input type="time" id="trkRemT" value="21:00" style="background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px"><button class="btn" type="button" data-act="ics">${T("أضف إلى التقويم","Add to calendar")}</button></div></div></div>`;
+}
+
+// ---------- البيانات والخصوصية ----------
+function vData(){
+  const n=Object.keys(D.days).length, sz=(()=>{ try{ return (localStorage.getItem(KEY())||"").length }catch{ return 0 } })(), s=ses();
+  return `<div class="grid-2"><div class="panel"><h2>${T("خصوصيتك أولاً","Your privacy first")}</h2><ul class="clean">
+<li>${T("كل ما تسجّله يُحفظ في متصفح هذا الجهاز فقط، ولا يصل إلى إدارة المنصة أو أي خادم.","Everything you log is stored in this device's browser only; it never reaches the platform admins or any server.")}</li>
+<li>${s?T(`سجلّك مرتبط بحسابك «${h(s.name||s.u)}» على هذا الجهاز، ولكل حساب سجل منفصل.`,`Your log is tied to your account “${h(s.name||s.u)}” on this device; each account has its own log.`):T("أنت تستخدم المنصة زائراً. سجّل الدخول ليكون لكل فرد من الأسرة سجل منفصل على الجهاز نفسه.","You are using the platform as a visitor. Sign in so each family member has a separate log on the same device.")}</li>
+<li>${T("لنقل بياناتك إلى جهاز آخر: صدّر نسخة احتياطية ثم استوردها هناك.","To move to another device: export a backup and import it there.")}</li>
+<li>${T("مسح بيانات المتصفح يحذف السجل، فاحتفظ بنسخة احتياطية دورية.","Clearing browser data deletes the log, so keep regular backups.")}</li></ul>
+<p class="small muted">${T("أيام مسجّلة","Days logged")}: <span class="mono">${n}</span> · ${T("الحجم","Size")}: <span class="mono">${fmt(sz/1024,1)}</span> KB${D.demo?` · <span class="tag t2">${T("يحتوي بيانات تجريبية","Contains sample data")}</span>`:""}</p></div>
+<div class="panel"><h2>${T("النسخ والنقل","Backup & transfer")}</h2><div class="row"><button class="btn" type="button" data-act="exJson">${T("نسخة احتياطية (JSON)","Backup (JSON)")}</button><button class="btn ghost" type="button" data-act="exCsv">${T("تصدير جدول (CSV)","Export table (CSV)")}</button></div>
+<div class="field"><label for="trkRest">${T("استعادة نسخة احتياطية","Restore a backup")}</label><input type="file" id="trkRest" accept=".json,application/json"></div>
+<p class="small muted">${T("ملف CSV يُفتح في Excel أو Google Sheets، ويمكن مشاركته مع طبيبك.","The CSV opens in Excel or Google Sheets and can be shared with your doctor.")}</p></div>
+<div class="panel"><h2>${T("التجربة والحذف","Try & delete")}</h2><div class="row"><button class="btn ghost" type="button" data-act="demo">${T("أضف بيانات تجريبية (120 يوماً)","Add sample data (120 days)")}</button>${D.demo?`<button class="btn ghost" type="button" data-act="undemo">${T("احذف البيانات التجريبية","Remove sample data")}</button>`:""}</div>
+<div class="row"><button class="btn warn" type="button" data-act="wipe">${T("حذف كل بياناتي","Delete all my data")}</button></div><p class="small muted">${T("الحذف نهائي ولا يمكن التراجع عنه.","Deletion is permanent.")}</p></div></div>`;
+}
+function download(name, text, type){ const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([text],{type})); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),3000); }
+function toCSV(){
+  const cols=["date","steps","active_min","water_cups","sleep_h","sleep_quality","weight_kg","bp_systolic","bp_diastolic","resting_hr","glucose_mgdl","spo2","temp_c","mood","energy","stress","pain","symptoms","medicines_taken","note"];
+  const esc2=v=>{ v=v==null?"":String(v); return /[",\n]/.test(v)?`"${v.replace(/"/g,'""')}"`:v; };
+  const lines=Object.keys(D.days).sort().map(k=>{ const d=D.days[k], r=x=>x==null?"":Math.round(x*10)/10;
+    return [k,d.steps,d.active,d.water,d.sleep,d.sleepQ,d.weight,r(val("sys",d)),r(val("dia",d)),d.hr,r(val("glu",d)),d.spo2,d.temp,d.mood,d.energy,d.stress,d.pain,(d.sym||[]).map(s=>SYM.find(x=>x[0]===s)?.[2]||s).join("; "),D.meds.filter(m=>(d.meds||{})[m.id]).map(m=>m.n).join("; "),d.note].map(esc2).join(","); });
+  return "﻿"+cols.join(",")+"\n"+lines.join("\n");
+}
+function demo(){
+  const rnd=(a,b)=>a+Math.random()*(b-a); let w=78.5;
+  if(!D.meds.length) D.meds=[{id:"m1",n:T("فيتامين د","Vitamin D"),d:"1000 IU",t:T("صباحاً","morning")}];
+  for(let i=119;i>=1;i--){ const k=addD(today(),-i); if(D.days[k]) continue; const sl=Math.round(rnd(5.2,8.6)*4)/4, act=Math.round(rnd(5,60)), steps=Math.round(rnd(3500,12500)+act*60);
+    w+=rnd(-0.12,0.06); const st=Math.max(1,Math.min(5,Math.round(rnd(1,5)-(sl-7)*0.5)));
+    D.days[k]={steps, active:act, water:Math.round(rnd(4,10)), sleep:sl, sleepQ:Math.max(1,Math.min(5,Math.round((sl-4)))), weight:Math.round(w*10)/10, hr:Math.round(rnd(60,76)), mood:Math.max(1,Math.min(5,Math.round(2+(sl-6)*0.8+steps/12000+rnd(-0.6,0.6)))), energy:Math.max(1,Math.min(5,Math.round(1.5+(sl-5)*0.9+rnd(-0.5,0.5)))), stress:st, demo:1};
+    if(i%2===0) D.days[k].bp=[{s:Math.round(rnd(118,138)),d:Math.round(rnd(74,88)),p:Math.round(rnd(62,78)),t:pd(k).getTime()+rnd(7,9)*36e5}];
+    if(i%3===0) D.days[k].glu=[{v:Math.round(rnd(88,112)),c:"f",t:pd(k).getTime()+7*36e5}];
+    if(Math.random()<0.15) D.days[k].sym=[["headache","fatigue","back","insom"][Math.floor(rnd(0,4))]];
+    if(Math.random()<0.85) D.days[k].meds={m1:true};
+  }
+  D.demo=1; save(true); say(T("أُضيفت بيانات تجريبية لـ 120 يوماً","Added 120 days of sample data"));
+}
+
+// ---------- الأحداث ----------
+function setNum(k, raw){
+  const d=day(S.date), v=raw===""?null:parseFloat(raw), m=M[k];
+  if(v==null||isNaN(v)) delete d[k]; else { if(m&&(v<m.min||v>m.max)) return; d[k]=v; if(d.src) delete d.src[k]; }
+  d.u=Date.now(); clean(S.date); save();
+}
+function onInput(e){
+  const t=e.target;
+  if(t.dataset.k&&S.tab==="today"){ if(t.dataset.k==="note"){ const d=day(S.date); d.note=t.value.slice(0,1000); d.u=Date.now(); clean(S.date); save(); return; }
+    if(t.dataset.k==="pain"){ q("#tkPainV").textContent=t.value; }
+    setNum(t.dataset.k, t.value); refreshToday();
+    if(t.dataset.k==="water"){ const c=q(".trk-cups"); if(c){ const n=+t.value||0; c.innerHTML=Array.from({length:Math.max(D.goals.water||8,n)},(_,i)=>`<i class="${i<n?"on":""}"></i>`).join(""); } }
+    if(t.dataset.k==="weight"){ const p=t.closest(".panel")?.querySelector("p.small:last-child"); if(p) p.outerHTML=bmiLine(+t.value||null); }
+  }
+}
+function onChange(e){
+  const t=e.target;
+  if(t.id==="trkDate"&&t.value){ S.date=t.value>today()?today():t.value; draw(); return; }
+  if(t.dataset.goal){ const v=t.value===""?null:+t.value; D.goals[t.dataset.goal]=v; save(true); say(T("تم حفظ الهدف","Goal saved")); return; }
+  if(t.dataset.prof){ const k=t.dataset.prof; D.prof[k]= ["h","by"].includes(k) ? (t.value?+t.value:null) : t.value; save(true); say(T("تم الحفظ","Saved")); return; }
+  if(t.dataset.med){ const d=day(S.date); d.meds=d.meds||{}; if(t.checked) d.meds[t.dataset.med]=true; else delete d.meds[t.dataset.med]; t.closest("label").classList.toggle("on",t.checked); d.u=Date.now(); clean(S.date); save(); return; }
+  if(t.id==="trkApple"&&t.files[0]) { importApple(t.files[0]); t.value=""; return; }
+  if((t.id==="trkCsv1"||t.id==="trkCsv2")&&t.files.length){ importCSV([...t.files]); t.value=""; return; }
+  if(t.id==="trkRest"&&t.files[0]){ t.files[0].text().then(x=>{ try{ const o=JSON.parse(x); const src=o.days?o:o.data; if(!src||!src.days) throw 0; let n=0; for(const [k,v] of Object.entries(src.days)){ if(/^\d{4}-\d{2}-\d{2}$/.test(k)){ D.days[k]={...(D.days[k]||{}),...v}; n++; } } if(Array.isArray(src.meds)) src.meds.forEach(m=>{ if(m&&m.id&&!D.meds.some(x=>x.id===m.id)) D.meds.push(m); }); if(src.goals) D.goals={...D.goals,...src.goals}; if(src.prof) D.prof={...D.prof,...src.prof}; save(true); say(T(`تمت استعادة ${n} ${dW(n)}`,`Restored ${n} days`)); draw(); }catch{ say(T("الملف ليس نسخة احتياطية صالحة","Not a valid backup file")); } }); t.value=""; }
+}
+function onClick(e){
+  const t=e.target.closest("button,[data-ttab]"); if(!t) return;
+  if(t.dataset.ttab){ S.tab=t.dataset.ttab; keepUI(); draw(); q(".trk-tabs")?.scrollIntoView({block:"nearest"}); return; }
+  if(t.dataset.per){ S.per=t.dataset.per; keepUI(); draw(); return; }
+  if(t.dataset.metric){ S.metric=t.dataset.metric; keepUI(); qa(".trk-kpi").forEach(x=>x.setAttribute("aria-pressed",x.dataset.metric===S.metric)); const P=period(S.per,S.anchor), cp=q("#trkChartP"); cp.innerHTML=chartPanel(P); wireCharts(cp); return; }
+  if(t.dataset.sc){ const k=t.dataset.sc, v=+t.dataset.v, d=day(S.date); if(d[k]===v) delete d[k]; else d[k]=v; d.u=Date.now(); qa(`[data-sc="${k}"]`).forEach(b=>b.setAttribute("aria-pressed", +b.dataset.v===d[k])); clean(S.date); save(); refreshToday(); return; }
+  if(t.dataset.sym){ const d=day(S.date), s=new Set(d.sym||[]); s.has(t.dataset.sym)?s.delete(t.dataset.sym):s.add(t.dataset.sym); d.sym=[...s]; d.u=Date.now(); t.setAttribute("aria-pressed", s.has(t.dataset.sym)); clean(S.date); save(); refreshToday(); return; }
+  if(t.hasAttribute("data-cyc")){ const d=day(S.date); d.cyc=d.cyc?undefined:1; t.setAttribute("aria-pressed",!!d.cyc); clean(S.date); save(); return; }
+  if(t.dataset.water){ const d=day(S.date); const n=Math.max(0,Math.min(40,(d.water||0)+(+t.dataset.water))); const inp=q("#tk_water"); inp.value=n||""; inp.dispatchEvent(new Event("input",{bubbles:true})); return; }
+  if(t.dataset.del){ const d=day(S.date); d[t.dataset.del].splice(+t.dataset.i,1); clean(S.date); save(); draw(); return; }
+  if(t.dataset.delmed){ D.meds=D.meds.filter(m=>m.id!==t.dataset.delmed); save(true); draw(); return; }
+  if(t.dataset.edit){ S.date=t.dataset.edit; S.tab="today"; keepUI(); draw(); return; }
+  if(t.dataset.bt){ bt(t.dataset.bt); return; }
+  const a=t.dataset.act; if(!a) return;
+  const P=period(S.per,S.anchor);
+  ({
+    dPrev:()=>{ S.date=addD(S.date,-1); draw(); }, dNext:()=>{ if(S.date<today()){ S.date=addD(S.date,1); draw(); } }, dToday:()=>{ S.date=today(); draw(); },
+    pPrev:()=>{ S.anchor=shift(S.per,S.anchor,-1); draw(); }, pNext:()=>{ const n=shift(S.per,S.anchor,1); S.anchor = n>today()?today():n; draw(); },
+    tbl:()=>{ S.table=!S.table; const cp=q("#trkChartP"); cp.innerHTML=chartPanel(P); wireCharts(cp); },
+    report, seeStats:()=>{ S.tab="stats"; S.per="month"; S.anchor=today(); draw(); },
+    addBP:()=>{ const s=+q("#tkS").value, dd=+q("#tkD").value, p=+q("#tkP").value; if(!(s>=60&&s<=260&&dd>=30&&dd<=160&&s>dd)){ say(T("أدخل قراءة ضغط صحيحة، مثل 120 على 80","Enter a valid reading, e.g. 120 over 80")); return; } const d=day(S.date); (d.bp||(d.bp=[])).push({s,d:dd,p:p>=20&&p<=250?p:undefined,t:S.date===today()?Date.now():pd(S.date).getTime()+12*36e5+(d.bp.length)*60000}); d.u=Date.now(); save(); draw(); },
+    addG:()=>{ let v=+q("#tkG").value; const c=q("#tkGc").value; v=gIn(v); if(!(v>=20&&v<=700)){ say(T("أدخل قراءة سكر صحيحة","Enter a valid glucose reading")); return; } const d=day(S.date); (d.glu||(d.glu=[])).push({v:Math.round(v),c,t:S.date===today()?Date.now():pd(S.date).getTime()+12*36e5+(d.glu.length)*60000}); d.u=Date.now(); save(); draw(); },
+    addMed:()=>{ const n=q("#tmN").value.trim(); if(!n){ say(T("اكتب اسم الدواء","Enter the medicine name")); return; } D.meds.push({id:"m"+Date.now().toString(36),n:n.slice(0,60),d:q("#tmD").value.trim().slice(0,30),t:q("#tmT").value.trim().slice(0,40)}); save(true); draw(); },
+    pendOk:()=>{ const p=S.pending; const d=day(p.date); Object.entries(p.v).forEach(([k,v])=>{ if(k==="bp") (d.bp||(d.bp=[])).push(v); else if(k==="glu") (d.glu||(d.glu=[])).push(v); else { d[k]=v; (d.src||(d.src={}))[k]="shortcut"; } }); d.u=Date.now(); save(true); S.pending=null; S.date=p.date; say(T("تم حفظ القراءات","Readings saved")); draw(); },
+    pendNo:()=>{ S.pending=null; draw(); },
+    impOk:()=>{ const r=mergeDays(S.imp||{},"csv"); S.imp=null; impResult(r,"CSV"); }, impNo:()=>{ S.imp=null; q("#trkImpRes").innerHTML=""; },
+    tpl:()=>download("altayyibat-template.csv","﻿date,steps,active_min,water_cups,sleep_h,weight_kg,systolic,diastolic,resting_hr,glucose_mgdl,spo2,temp_c,mood\n"+`${today()},8200,35,8,7.5,72.4,121,79,66,96,98,36.7,4\n`,"text/csv"),
+    copyLink:()=>{ const s=q(".trk-code")?.textContent||""; (navigator.clipboard?.writeText(s)||Promise.reject()).then(()=>say(T("تم نسخ الرابط","Link copied")),()=>say(s)); },
+    ics:()=>{ const tt=(q("#trkRemT").value||"21:00").replace(":",""), d=today().replace(/-/g,""), url=location.origin+location.pathname+"#track";
+      const ics=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Altayyibat//Daily health//AR","BEGIN:VEVENT",`UID:trk-${Date.now()}@altayyibat`,`DTSTAMP:${new Date().toISOString().replace(/[-:]/g,"").slice(0,15)}Z`,`DTSTART:${d}T${tt}00`,"DURATION:PT10M","RRULE:FREQ=DAILY",`SUMMARY:${T("الطيبات: سجّل متابعتك اليومية","Al-Tayyibat: log your daily health")}`,`DESCRIPTION:${T("سجّل قراءاتك وأدويتك","Log your readings and medicines")} ${url}`,`URL:${url}`,"BEGIN:VALARM","ACTION:DISPLAY","TRIGGER:PT0M",`DESCRIPTION:${T("حان وقت المتابعة اليومية","Time for your daily check-in")}`,"END:VALARM","END:VEVENT","END:VCALENDAR"].join("\r\n");
+      download("altayyibat-reminder.ics", ics, "text/calendar"); },
+    exJson:()=>download(`altayyibat-health-${today()}.json`, JSON.stringify({app:"altayyibat-track",exported:new Date().toISOString(),...D},null,1),"application/json"),
+    exCsv:()=>download(`altayyibat-health-${today()}.csv`, toCSV(), "text/csv"),
+    demo:()=>{ demo(); draw(); },
+    undemo:()=>{ for(const k in D.days) if(D.days[k].demo) delete D.days[k]; delete D.demo; save(true); say(T("حُذفت البيانات التجريبية","Sample data removed")); draw(); },
+    wipe:()=>{ if(t.dataset.sure!=="1"){ t.dataset.sure="1"; t.textContent=T("اضغط مرة أخرى للتأكيد النهائي","Press again to confirm"); setTimeout(()=>{ if(t.isConnected){ t.dataset.sure=""; t.textContent=T("حذف كل بياناتي","Delete all my data"); } },5000); return; } D=blank(); try{ localStorage.removeItem(KEY()); }catch{} say(T("حُذفت كل بيانات المتابعة","All tracking data deleted")); draw(); }
+  }[a]||(()=>{}))();
+}
+
+// ---------- روابط الاختصارات: ‎#track?steps=…‎ ----------
+function pendDesc(p){ return Object.entries(p.v).map(([k,v])=> k==="bp"?`${mn("bp")} ${v.s}/${v.d}`:k==="glu"?`${mn("glu")} ${gOut(v.v)} ${mu("glu")}`:`${mn(k)} ${fmt(v,M[k].dec)} ${mu(k)}`).join(T("، ",", ")); }
+function readLink(){
+  const m=location.hash.match(/^#track\?(.+)$/); if(!m) return false;
+  const u=new URLSearchParams(m[1]), v={}, num=k=>{ const x=parseFloat(u.get(k)); return isNaN(x)?null:x; };
+  const map={steps:"steps",active:"active",water:"water",sleep:"sleep",w:"weight",weight:"weight",hr:"hr",spo2:"spo2",temp:"temp",mood:"mood"};
+  Object.entries(map).forEach(([p,k])=>{ let x=num(p); if(x==null) return; if(k==="spo2"&&x<=1) x*=100; if(k==="sleep"&&x>24) x/=60; if(x>=M[k].min&&x<=M[k].max) v[k]= M[k].dec?Math.round(x*10)/10:Math.round(x); });
+  const s=num("sys"), d=num("dia"); if(s&&d&&s>d&&s<=260) v.bp={s:Math.round(s),d:Math.round(d),t:Date.now()};
+  const g=num("glu"); if(g){ const mg=g<35?g*18.016:g; if(mg>=20&&mg<=700) v.glu={v:Math.round(mg),c:"r",t:Date.now()}; }
+  const dt=u.get("date"); const date = dt&&/^\d{4}-\d{2}-\d{2}$/.test(dt)&&dt<=today() ? dt : today();
+  if(Object.keys(v).length){ S.pending={date,v}; S.tab="today"; S.date=date; }
+  history.replaceState(null,"",location.pathname+location.search+"#track");
+  return true;
+}
+
+// ---------- بطاقة في الرئيسية ----------
+const homeAfter = AFTER.home;
+AFTER.home = () => { if(homeAfter) homeAfter();
+  const main=q('#main section[data-view="home"]'); if(!main||q("#trkHome")) return;
+  const d=D.days[today()]||{}, sc=score(d).v, any=Object.keys(D.days).length;
+  const html=`<a class="trk-home" id="trkHome" href="#track"><span class="ring">${gauge(sc,52)}</span><span><b>${T("متابعتي الصحية اليومية","My daily health")}</b><br><span class="small muted">${sc!=null?T(`مؤشر يومك ${sc} من 100 · سلسلة ${streak()} ${dW(streak())}`,`Today's score ${sc}/100 · ${streak()}-day streak`):any?T("لم تسجّل قراءات اليوم بعد. دقيقة واحدة تكفي.","You have not logged today yet. One minute is enough."):T("سجّل مؤشراتك ونومك ونشاطك ومزاجك، واربط هاتفك وساعتك، وتابع إحصاءاتك.","Log vitals, sleep, activity and mood, link your phone and watch, and follow your statistics.")}</span></span><span class="btn go">${sc!=null||any?T("افتح","Open"):T("ابدأ الآن","Start now")}</span></a>`;
+  const hero=main.querySelector(".hero"); if(hero) hero.insertAdjacentHTML("afterend",html); else main.insertAdjacentHTML("afterbegin",html);
+};
+// ---------- ملاحظة للإدارة ----------
+const adminAfter = AFTER.admin;
+AFTER.admin = () => { if(adminAfter) adminAfter();
+  const sec=q('#main section[data-view="admin"]'); if(!sec||q("#trkAdm")) return;
+  sec.querySelector(".view-head")?.insertAdjacentHTML("afterend",`<div class="disclaimer" id="trkAdm"><b>${T("متابعتي الصحية اليومية:","Daily health tracking:")}</b> ${T("بيانات المستخدمين الصحية تبقى على أجهزتهم فقط ولا تظهر في هذه اللوحة، حمايةً لخصوصيتهم. لا يلزم أي إعداد من الإدارة.","Users' health data stays on their own devices and never appears in this panel, to protect their privacy. No admin setup is needed.")}</div>`);
+};
+
+// ---------- التسجيل في التنقل ----------
+if(!VIEWS.some(v=>v[0]==="track")){ const i=VIEWS.findIndex(v=>v[0]==="assess"); VIEWS.splice(i>=0?i+1:2, 0, ["track", T("متابعتي اليومية","My daily health")]); }
+window.TY_NAV_META = Object.assign(window.TY_NAV_META||{}, {track:{g:"check", d:["سجّل مؤشراتك اليومية واربط هاتفك وساعتك، وتابع إحصاءاتك وتحليلاتك","Log daily vitals, link your phone and watch, and follow your stats and insights"]}});
+if(EN && typeof I18N_EN!=="undefined") I18N_EN["متابعتي اليومية"]="My daily health";
+const linked = readLink();
+window.addEventListener("hashchange", ()=>{ if(/^#track\?/.test(location.hash)&&readLink()&&typeof go==="function") go(); });
+window.TY_TRACK = {get data(){ return D; }, score, insights:(per,anchor)=>{ const P=period(per,anchor||today()), n=range(P.a,P.b).length; return insights(P,{a:addD(P.a,-n),b:addD(P.a,-1)}); }, parseCSV, csvToDays, reload:()=>{ draw(); }};
+if(typeof renderRail==="function") renderRail();
+if(linked || ["","#","#track","#home","#admin"].includes(location.hash)) { if(typeof go==="function") go(); }
+})();
 </script>
