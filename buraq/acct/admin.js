@@ -1,5 +1,6 @@
 // لوحة إدارة براق: صلاحيات كاملة على الطلبات والمستخدمين والخطط والكتالوج والمحتوى.
 import { printQuote } from "./quote.js?v=1";
+import { insightsHtml, INS_CSS } from "./insights.js?v=1";
 import { READY, auth, db, A, F, loadProfile, createUserAsAdmin } from "./fb.js";
 import { $, esc, fmtDate, normPhone, phoneHtml, money, STATUS, stBadge, TYPES, toast, errMsg } from "./ui.js";
 import { CATALOG, KIND, CONTENT } from "./seed.js?v=2";
@@ -58,10 +59,13 @@ function renderOv() {
     [USERS.filter((u) => u.role === "customer").length, "العملاء"], [USERS.filter((u) => u.role === "admin").length, "المديرون"],
     [PLANS.length, "خطط محفوظة"], [money(val), "قيمة الطلبات المعتمدة"]
   ].map(([v, l]) => `<div class="kpi"><b>${v}</b><span>${l}</span></div>`).join("");
+  $("insights").innerHTML = insightsHtml(REQS);
   $("latest").innerHTML = REQS.slice(0, 6).map(reqItem).join("") || `<div class="empty">لا توجد طلبات بعد.</div>`;
   $("nReq").textContent = REQS.length; $("nUsr").textContent = USERS.length; $("nPlan").textContent = PLANS.length;
 }
 const reqItem = (r) => `<article class="item"><div><h3>${esc(r.name)} · ${esc(TYPES[r.type] || r.type)} ${stBadge(r.status)}</h3><div class="meta"><span dir="ltr">${esc(r.no)}</span><span>${esc(r.car || "—")}</span><span>${fmtDate(r.createdAt, true)}</span></div></div><div class="acts"><button class="btn sm pri" data-open="${r.id}">إدارة الطلب</button></div></article>`;
+{ const st = document.createElement("style"); st.textContent = INS_CSS; document.head.appendChild(st); }
+$("insights").onclick = (e) => { const b = e.target.closest("[data-open]"); if (b) openReq(b.dataset.open); };
 $("latest").onclick = (e) => { const b = e.target.closest("[data-open]"); if (b) openReq(b.dataset.open); };
 
 // ===== الطلبات =====
@@ -108,8 +112,9 @@ function openReq(id) {
   if (msgUnsub) msgUnsub();
   msgUnsub = F.onSnapshot(F.query(F.collection(db, "requests", id, "msgs"), F.orderBy("at")), (s) => {
     const t = $("thread"); if (!t) return;
-    t.innerHTML = s.empty ? `<div class="mute sm">لا رسائل بعد.</div>` : s.docs.map((d) => { const m = d.data(); return `<div class="bubble ${m.fromAdmin ? "adm" : ""}">${esc(m.text)}<small>${m.fromAdmin ? "براق · " + esc(m.name) : esc(m.name)} · ${fmtDate(m.at, true)}</small></div>`; }).join("");
+    t.innerHTML = s.empty ? `<div class="mute sm">لا رسائل بعد.</div>` : s.docs.map((d) => { const m = d.data(); return `<div class="bubble ${m.fromAdmin ? "adm" : ""}${m.accept ? " acc" : ""}">${esc(m.text)}<small>${m.fromAdmin ? "براق · " + esc(m.name) : esc(m.name)} · ${fmtDate(m.at, true)}</small></div>`; }).join("");
     t.scrollTop = t.scrollHeight;
+    if (s.docs.some((d) => d.data().accept) && r.status === "quoted" && !$("accHint")) $("stF").insertAdjacentHTML("afterbegin", `<p class="msg ok" id="accHint" style="margin:0 0 10px">اعتمد العميل هذا العرض من حسابه. غيّر الحالة إلى «معتمد» واحفظ.</p>`);
   });
   $("stF").onsubmit = async (e) => {
     e.preventDefault();

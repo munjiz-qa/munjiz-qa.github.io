@@ -141,7 +141,7 @@ function openReq(id) {
     <dt>السيارة</dt><dd>${esc(r.car || "—")}</dd>
     <dt>تاريخ الإرسال</dt><dd>${fmtDate(r.createdAt, true)}</dd>
     <dt>آخر تحديث</dt><dd>${fmtDate(r.updatedAt, true)}</dd>
-    <dt>عرض السعر</dt><dd>${r.price != null ? `<b>${money(r.price, r.currency)}</b> <button type="button" class="btn sm" id="qPdf">تنزيل عرض السعر PDF</button>` : "لم يُرسل بعد"}</dd>
+    <dt>عرض السعر</dt><dd>${r.price != null ? `<b>${money(r.price, r.currency)}</b> <button type="button" class="btn sm" id="qPdf">تنزيل عرض السعر PDF</button>${r.status === "quoted" ? ` <button type="button" class="btn sm pri" id="qAcc" hidden>اعتماد العرض</button>` : ""}` : "لم يُرسل بعد"}</dd>
     ${r.adminNote ? `<dt>ملاحظة براق</dt><dd>${esc(r.adminNote)}</dd>` : ""}
     <dt>التفاصيل</dt><dd style="white-space:pre-wrap">${esc(r.details)}</dd>
     ${r.planSummary ? `<dt>الخطة المرفقة</dt><dd class="plan-sum">${esc(r.planSummary)}</dd>` : ""}
@@ -157,9 +157,21 @@ function openReq(id) {
   msgUnsub = F.onSnapshot(F.query(F.collection(db, "requests", id, "msgs"), F.orderBy("at")), (s) => {
     const t = $("thread"); if (!t) return;
     t.innerHTML = s.empty ? `<div class="mute sm">لا رسائل بعد. اكتب سؤالك وسيرد فريق براق هنا.</div>` :
-      s.docs.map((d) => { const m = d.data(); return `<div class="bubble ${m.fromAdmin ? "adm" : ""}">${esc(m.text)}<small>${m.fromAdmin ? "فريق براق" : "أنت"} · ${fmtDate(m.at, true)}</small></div>`; }).join("");
+      s.docs.map((d) => { const m = d.data(); return `<div class="bubble ${m.fromAdmin ? "adm" : ""}${m.accept ? " acc" : ""}">${esc(m.text)}<small>${m.fromAdmin ? "فريق براق" : "أنت"} · ${fmtDate(m.at, true)}</small></div>`; }).join("");
     t.scrollTop = t.scrollHeight;
+    const acc = s.docs.some((d) => d.data().accept), qa = $("qAcc");
+    if (qa) qa.hidden = acc;
+    if (acc && !$("qAccNote") && $("qPdf")) $("qPdf").insertAdjacentHTML("afterend", ` <span class="badge st-ok" id="qAccNote">أرسلتَ اعتماد العرض</span>`);
   }, (e) => toast(errMsg(e), true));
+  if ($("qAcc")) $("qAcc").onclick = async () => {
+    const amount = document.querySelector("#rdB .kv b")?.textContent.trim() || money(r.price, r.currency);
+    if (!confirm(`اعتماد عرض السعر ${r.no} بقيمة ${amount}؟ سيُبلَّغ فريق براق فوراً لتحديد موعد الفحص.`)) return;
+    try {
+      await F.addDoc(F.collection(db, "requests", id, "msgs"), { uid: ME.id, name: ME.name, fromAdmin: false, accept: true,
+        text: `✓ أعتمد عرض السعر رقم \u2066${r.no}\u2069 بقيمة ${amount}، وأرغب في تحديد موعد الفحص والتركيب.`, at: F.serverTimestamp() });
+      toast("أُرسل اعتمادك إلى فريق براق، وسيتواصل معك لتحديد الموعد.");
+    } catch (err) { toast(errMsg(err), true); }
+  };
   $("msgF").onsubmit = async (e) => {
     e.preventDefault(); const text = $("msgT").value.trim(); if (!text) return;
     try { await F.addDoc(F.collection(db, "requests", id, "msgs"), { uid: ME.id, name: ME.name, fromAdmin: false, text, at: F.serverTimestamp() }); $("msgT").value = ""; }
