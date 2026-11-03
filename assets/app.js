@@ -249,6 +249,10 @@ document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');i
   if(h===location.hash){e.preventDefault();route(h)}});
 function route(h){h=h||location.hash||'#home';let m;
   if(dlg&&dlg.open)dlg.close();
+  if((m=h.match(/^#req=([A-Z]{2}-\d{2}(?:,[A-Z]{2}-\d{2})*)$/))){const cs=m[1].split(',').filter(c=>byCode[c]);
+    // a list prepared elsewhere (the document checklist) arrives in the calculator and the request form together
+    if(cs.length){if(isSample())cart.clear();cs.forEach(c=>{if(!cart.has(c))cart.set(c,1)});renderCart();render();renderCon();$('fSvc').value=cartText()}
+    history.replaceState(null,'','#request');route('#request');return}
   if((m=h.match(/^#svc=([A-Z]{2}-\d{2})$/))&&byCode[m[1]]){const s=byCode[m[1]];
     // a shared service link opens its group behind the details
     history.replaceState(null,'',(s.kind==='consult'?'#cat=':'#ent=')+s.ent);route();openSvc(m[1]);return}

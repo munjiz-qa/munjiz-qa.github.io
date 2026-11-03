@@ -33,7 +33,7 @@
 <div class="ck">
 <section class="ckp"><h2>1. اختر المعاملات</h2><input class="search" id="ckQ" type="search" placeholder="ابحث عن معاملة: إقامة، سجل، رخصة" aria-label="ابحث عن معاملة: إقامة، سجل، رخصة"><div class="ckl" id="ckList"></div></section>
 <section class="ckp"><h2>2. جهّز المستندات</h2><div id="ckSel"></div><div class="ckm" id="ckMeta"></div><div class="ckbar" aria-hidden="true"><i id="ckBar"></i></div><p class="ckr" id="ckReady" aria-live="polite"></p><ul class="ckd" id="ckDocs"></ul>
-<div class="cta" id="ckAct" hidden><a class="btn pri" id="ckWa" target="_blank" rel="noopener">أرسل القائمة على واتساب</a><button type="button" class="btn ghost" id="ckCopy">🔗 انسخ رابط القائمة</button><button type="button" class="btn ghost" id="ckPrint">🖨 اطبع القائمة</button><button type="button" class="btn ghost" id="ckReset">ابدأ من جديد</button></div>
+<div class="cta" id="ckAct" hidden><a class="btn pri" id="ckWa" target="_blank" rel="noopener">أرسل القائمة على واتساب</a><a class="btn ghost" id="ckReq">📝 أرسل الطلب عبر النموذج</a><a class="btn ghost" id="ckMail">✉ أرسل بالبريد</a><button type="button" class="btn ghost" id="ckCopy">🔗 انسخ رابط القائمة</button><button type="button" class="btn ghost" id="ckPrint">🖨 اطبع القائمة</button><button type="button" class="btn ghost" id="ckReset">ابدأ من جديد</button></div>
 <p class="note">القائمة إرشادية، وقد تطلب الجهة المختصة مستندات إضافية حسب الحالة، ونخبرك بذلك قبل البدء. الأتعاب لا تشمل الرسوم الحكومية.</p></section>
 </div>
 <p class="cktoast" id="ckToast" hidden></p>
@@ -76,7 +76,7 @@ function render(){const sel=st.sel.map(c=>S[c]);$('ckSel').innerHTML=sel.length?
  $('ckBar').style.width=ds.length?(okN*100/ds.length)+'%':'0';$('ckReady').textContent=!ds.length?'':okN===ds.length?T.all:f(T.ready,{r:okN,t:ds.length});
  $('ckAct').hidden=!sel.length;
  const msg=T.waHead+'\n'+sel.map(s=>'• '+s.n+' ('+s.c+')').join('\n')+'\n\n'+T.waDocs+'\n'+ds.map(([k,v])=>(st.ok.includes(k)?'✅ ':'⬜ ')+v.d+' ('+(st.ok.includes(k)?T.waOk:T.waNo)+')').join('\n')+'\n\n'+T.waTot+': '+fmt(fee)+' '+T.cur;
- $('ckWa').href='https://wa.me/'+WA+'?text='+encodeURIComponent(msg)}
+ $('ckWa').href='https://wa.me/'+WA+'?text='+encodeURIComponent(msg);$('ckReq').href='index.html#req='+st.sel.join(',');$('ckMail').href='mailto:munijizqa@gmail.com?subject='+encodeURIComponent('قائمة مستندات من مُجهِّز المستندات')+'&body='+encodeURIComponent(msg)}
 function toast(t){const e=$('ckToast');e.textContent=t;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,1800)}
 $('ckList').addEventListener('change',e=>{const c=e.target.dataset.s;if(!c)return;st.sel=e.target.checked?[...new Set([...st.sel,c])]:st.sel.filter(x=>x!==c);save();render()});
 $('ckDocs').addEventListener('change',e=>{const k=e.target.dataset.d;if(k==null)return;st.ok=e.target.checked?[...new Set([...st.ok,k])]:st.ok.filter(x=>x!==k);save();render()});
