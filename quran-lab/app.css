@@ -614,3 +614,16 @@ html[dir=ltr] .adh-txt,html[dir=ltr] .adh-pre{text-align:right}
 .u-q{margin-top:8px}.u-q blockquote{margin:0;line-height:1.9}.u-q figcaption{font-size:.8rem;color:var(--muted);margin-top:4px}
 .u-src{margin:12px 0 0;font-size:.85rem;color:var(--muted)}
 @media (max-width:640px){.u-index ol{grid-template-columns:1fr}.u-ch>summary{font-size:1rem}}
+
+/* ---------- أدعية القرآن، المرأة في القرآن، الرجل في القرآن */
+.th-index details{border-top:1px solid var(--line);padding:8px 0}.th-index details:first-of-type{border-top:0}
+.th-index summary{cursor:pointer;font-weight:700;display:flex;align-items:center;gap:8px}
+.th-index summary em{font-style:normal;font-size:.75rem;background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:1px 8px}
+.th-gt{margin:18px 0 8px;font-size:1.15rem;color:var(--saffron)}
+.th-group{display:grid;gap:10px}
+.th-item .u-t{display:flex;flex-direction:column;gap:2px}.th-item .u-t small{font-weight:400;color:var(--muted);font-size:.8rem}
+.th-ay{background:var(--accent-soft);border-radius:12px;padding:8px 12px}
+.th-ay .ayah{font-size:1.35rem}
+.th-more{margin-top:6px;font-size:.82rem}
+.th-use{border-inline-start:3px solid var(--ok);background:var(--ok-soft);border-radius:0 10px 10px 0;padding:10px 14px}
+.th-use b{color:var(--ok)}.th-use p{margin:4px 0 0;line-height:1.85}
