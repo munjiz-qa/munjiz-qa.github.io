@@ -245,7 +245,47 @@ html[lang="en"] body{direction:ltr}html[lang="en"] :is(p,li,dd,dt,td,th,h1,h2,h3
  body{background:#fff}.report{border:0;padding:0} details.ig{border:0} details.ig>*{display:block} details.ig summary{font-weight:700}}
 
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-</style>
+/* atlas-css */
+:root{--atl-body:#EAD7C7;--atl-line:#C9AE97}
+:root[data-theme="dark"]{--atl-body:#4A3D35;--atl-line:#6E5B4E}
+.rail a.rg{font-weight:600;color:var(--ink)}
+.rail a.rg[aria-current="true"]{background:var(--pine-soft);color:var(--pine)}
+.rail .rail-all{flex-shrink:0;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer;font:inherit;font-size:.92rem;white-space:nowrap;margin-inline-start:auto}
+.rail-sub{background:var(--sunk)}
+.rail-sub a{font-size:.9rem;padding:5px 11px}
+.home-groups{display:grid;gap:22px}
+.home-grp{display:grid;gap:10px}
+.home-grp>h2{font-size:1.08rem;display:flex;align-items:center;gap:10px}
+.home-grp>h2::after{content:"";flex:1;height:1px;background:var(--line)}
+.card-new{border-color:var(--copper)}
+.atl-tabs .chip{font-weight:600}
+.atl-grid{display:grid;gap:14px;grid-template-columns:minmax(0,5fr) minmax(0,7fr);align-items:start}
+.atl-fig{position:sticky;top:120px;padding:10px}
+.atl-svg{width:100%;max-height:72vh;display:block;margin:auto}
+.atl-svg .bodyf{fill:var(--atl-body)}
+.atl-svg .limb{stroke:var(--atl-body);stroke-linecap:round;fill:none}
+.atl-svg .org{cursor:pointer;transition:filter .15s,opacity .15s}
+.atl-svg .org:hover,.atl-svg .org:focus{filter:drop-shadow(0 0 3px var(--copper));outline:none}
+.atl-svg .org.on{filter:drop-shadow(0 0 2.5px var(--copper)) drop-shadow(0 0 5px var(--copper))}
+.atl-svg .org[data-reg="skin"].on .skinhit{fill:var(--copper);fill-opacity:.12}
+.atl-svg .kmark{cursor:pointer}
+.atl-svg .kmark circle{fill:var(--copper);stroke:#fff;stroke-width:1.4}
+.atl-svg .kmark text{fill:#fff;font:700 7.5px var(--f-mono)}
+.atl-svg .kmark:hover circle,.atl-svg .kmark:focus circle{fill:var(--bad)}
+.atl-info{display:grid;gap:12px}
+.atl-side{min-width:0}
+.atl3d{width:100%;height:min(70vh,560px);border-radius:8px;background:radial-gradient(circle at 50% 40%,var(--surface),var(--sunk));overflow:hidden;touch-action:none}
+.atl3d canvas{display:block;width:100%!important;height:100%!important}
+.atl3d-ctl{gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.atl3d-ctl input[type=range]{width:90px;vertical-align:middle}
+.atl-signs li{margin-bottom:8px}
+.gchart{width:100%;height:auto;margin-top:6px}
+.gchart text{font:9px var(--f-mono);fill:var(--muted)}
+.atl-info .linkbtn,#healBody .linkbtn,.atl-signs .linkbtn{font:inherit;padding:0}
+@media (max-width:860px){.atl-grid{grid-template-columns:1fr}.atl-fig{position:static}.atl-svg{max-height:60vh}}
+@media (max-width:420px){.rail .rail-all{padding:6px 9px}.atl-ctl .seg button{padding:6px 9px}}
+@media (max-width:700px){.rail .rail-all{order:-1;margin-inline-start:0;padding:6px 10px}.rail .rail-all .t{display:none}}
+/* /atlas-css */</style>
 <style id="trk-css">
 /* متابعتي اليومية (track) */
 :root{--c1:#08866B;--c2:#C0612A}
@@ -379,7 +419,7 @@ html[dir=rtl] .trk-nav .flip{transform:scaleX(-1)}
     <p><b>تنبيه طبي:</b> المعلومات في «الطيبات» للتثقيف والدعم المعرفي، ولا تغني عن الفحص السريري أو استشارة طبيب مختص. في الحالات الطارئة اتصل بالإسعاف فوراً.</p>
     <p>المراجع: منظمة الصحة العالمية (WHO)، المعهد الوطني البريطاني للصحة والرعاية (NICE)، مراكز السيطرة على الأمراض (CDC)، MedlinePlus، Mayo Clinic، التصنيف الدولي للأمراض ICD-11، وإرشادات الجمعيات العلمية المتخصصة.</p>
     <p><b>تواصل معنا:</b> <a href="mailto:munijizqa@gmail.com" dir="ltr">munijizqa@gmail.com</a> · <a href="https://wa.me/97451600498" target="_blank" rel="noopener" dir="ltr">+974 5160 0498</a> (واتساب)</p>
-    <p>آخر مراجعة للمحتوى: <span class="mono">1</span> نوفمبر <span class="mono">2026</span> · الإصدار <span class="mono">1.8</span> · الطيبات © <span class="mono">2026</span> · <a href="#privacy">الخصوصية وشروط الاستخدام</a></p>
+    <p>آخر مراجعة للمحتوى: <span class="mono">3</span> نوفمبر <span class="mono">2026</span> · الإصدار <span class="mono">1.9</span> · الطيبات © <span class="mono">2026</span> · <a href="#privacy">الخصوصية وشروط الاستخدام</a></p>
   </div>
 </footer>
 <div id="drawer"></div>
@@ -3080,6 +3120,781 @@ ${integSearch("mknQ","ابحثي، مثل: شفاه أو بودرة أو حوا�
 </ul><p class="small muted">المراجع: ${srcList([MKL.fdaSafe,MKL.fdaShelf,MKL.nhsDerm])}</p></div>`;
 AFTER.mknatural = () => igFilter("mknQ","mknList");
 
+// ===== الأطلس والاستشفاء: بداية
+(()=>{
+// ===== أطلس الجسم والأمراض: البيانات =====
+const MP = p => ({n:"MedlinePlus", u:"https://medlineplus.gov/"+p});
+const PUBQ = (q,n) => ({n:n||"PubMed", u:"https://pubmed.ncbi.nlm.nih.gov/?term="+encodeURIComponent(q)});
+// كل نص: [عربي، إنجليزي]
+const ATLAS = [
+ {id:"brain", n:["الدماغ والجهاز العصبي","Brain and nervous system"], v:"fb", sys:"neuro",
+  an:["الدماغ نحو 1.4 كغ، ويتكوّن من المخ (نصفان كرويان وفصوص جبهية وجدارية وصدغية وقذالية)، والمخيخ للتوازن، وجذع الدماغ الذي يتحكم في التنفس ونبض القلب. يحيط به السائل الدماغي الشوكي والسحايا والجمجمة.","The brain weighs about 1.4 kg and has the cerebrum (two hemispheres with frontal, parietal, temporal and occipital lobes), the cerebellum for balance, and the brainstem, which controls breathing and heart rate. It is protected by cerebrospinal fluid, the meninges and the skull."],
+  fn:["مركز التفكير والذاكرة والحركة والإحساس والكلام والنوم وتنظيم الهرمونات عبر الوطاء والغدة النخامية.","The centre of thought, memory, movement, sensation, speech and sleep, and of hormone control through the hypothalamus and pituitary."],
+  facts:[["يستهلك الدماغ نحو 20% من طاقة الجسم مع أنه 2% من وزنه.","The brain uses about 20% of the body's energy while making up 2% of its weight."],["فيه نحو 86 مليار خلية عصبية.","It contains about 86 billion neurons."]],
+  dis:["migraine","tth","stroke","insomnia","mdd","gad"],
+  more:[
+   {n:["الصرع","Epilepsy"],s:["نوبات متكررة من التشنج أو فقدان الوعي أو شرود مفاجئ.","Recurrent seizures, loss of awareness or sudden staring spells."],t:["أدوية مضادة للصرع يحددها طبيب الأعصاب بعد تخطيط الدماغ والتصوير، وتسيطر على النوبات لدى نحو 70% من المرضى.","Antiseizure medicines chosen by a neurologist after EEG and imaging; they control seizures in about 70% of patients."]},
+   {n:["الخرف ومرض ألزهايمر","Dementia and Alzheimer's disease"],s:["نسيان متزايد يؤثر في الحياة اليومية، وتوهان، وتغير في السلوك.","Worsening forgetfulness that affects daily life, disorientation and behaviour change."],t:["تشخيص مبكر، وأدوية مثبطات الكولين إستراز أو ميمانتين حسب المرحلة، وضبط الضغط والسكر والسمع، والنشاط الذهني والبدني، ودعم الأسرة.","Early diagnosis, cholinesterase inhibitors or memantine by stage, control of blood pressure, sugar and hearing, mental and physical activity, and family support."]},
+   {n:["مرض باركنسون","Parkinson's disease"],s:["رعشة أثناء الراحة، وبطء الحركة، وتيبّس، واضطراب المشي.","Resting tremor, slowness, stiffness and walking difficulty."],t:["ليفودوبا وأدوية الدوبامين، والعلاج الطبيعي، وأحياناً التحفيز العميق للدماغ.","Levodopa and dopamine medicines, physiotherapy, and sometimes deep brain stimulation."]}],
+  red:[["ضعف أو تنميل مفاجئ في نصف الجسم، أو ميل الفم، أو تلعثم الكلام: اتصل بالإسعاف فوراً (احتمال سكتة).","Sudden weakness or numbness on one side, facial droop or slurred speech: call an ambulance now (possible stroke)."],["أسوأ صداع في حياتك يبدأ فجأة، أو صداع مع حمى وتيبس الرقبة.","The worst headache of your life starting suddenly, or headache with fever and a stiff neck."]],
+  src:[MP("braindiseases.html")]},
+ {id:"eyes", n:["العينان","Eyes"], v:"f", sys:"eye",
+  an:["مقلة العين كرة قطرها نحو 24 ملم: القرنية الشفافة في الأمام، ثم القزحية والحدقة، فالعدسة، ثم الجسم الزجاجي، والشبكية في الخلف ومنها العصب البصري إلى الدماغ.","The eyeball is about 24 mm across: the clear cornea in front, then the iris and pupil, the lens, the vitreous, and the retina at the back, from which the optic nerve runs to the brain."],
+  fn:["تحويل الضوء إلى إشارات عصبية للرؤية، وضبط البؤرة والإضاءة تلقائياً.","Turning light into nerve signals for vision, with automatic focus and light adjustment."],
+  facts:[["فحص قاع العين يكشف آثار السكري وارتفاع الضغط مبكراً.","A retinal exam reveals early effects of diabetes and high blood pressure."]],
+  dis:["conj"],
+  more:[
+   {n:["الماء الأبيض (إعتام العدسة)","Cataract"],s:["تشوش تدريجي وضعف الرؤية الليلية ووهج حول الأضواء.","Gradual blurring, poor night vision and glare around lights."],t:["جراحة إزالة العدسة وزرع عدسة صناعية، وهي من أنجح العمليات وأكثرها أماناً.","Surgery to remove the lens and implant an artificial one, among the safest and most successful operations."]},
+   {n:["الماء الأزرق (الزرق)","Glaucoma"],s:["غالباً بلا أعراض حتى يضيق مجال الرؤية، والنوع الحاد يسبب ألماً شديداً واحمراراً وقيئاً.","Often silent until side vision narrows; the acute type causes severe pain, redness and vomiting."],t:["قطرات خفض ضغط العين، والليزر أو الجراحة. يُنصح بفحص ضغط العين دورياً بعد سن 40.","Pressure-lowering eye drops, laser or surgery. Regular eye-pressure checks are advised after age 40."]},
+   {n:["اعتلال الشبكية السكري","Diabetic retinopathy"],s:["لا أعراض في البداية، ثم تشوش أو بقع عائمة.","No early symptoms, then blurring or floaters."],t:["ضبط السكر والضغط، وفحص قاع العين سنوياً، والليزر أو الحقن داخل العين.","Control of sugar and blood pressure, a yearly retinal exam, and laser or eye injections."]}],
+  red:[["فقدان مفاجئ للرؤية، أو ألم شديد في العين مع احمرار، أو إصابة كيميائية: اغسل العين بالماء 15 دقيقة واذهب للطوارئ.","Sudden vision loss, severe eye pain with redness, or a chemical injury: rinse with water for 15 minutes and go to the emergency department."]],
+  src:[MP("eyediseases.html")]},
+ {id:"ent", n:["الأذن والأنف والحلق","Ear, nose and throat"], v:"f", sys:"resp",
+  an:["الأذن ثلاثة أجزاء: خارجية، ووسطى فيها عظيمات السمع وتتصل بالحلق بقناة استاكيوس، وداخلية فيها القوقعة وجهاز التوازن. والأنف تحيط به الجيوب الأنفية، ويتصل بالبلعوم والحنجرة التي فيها الأحبال الصوتية.","The ear has three parts: outer; middle, with the hearing ossicles and the Eustachian tube to the throat; and inner, with the cochlea and balance organ. The nose is surrounded by the sinuses and leads to the pharynx and larynx, which holds the vocal cords."],
+  fn:["السمع والتوازن والشم، وتدفئة الهواء وترطيبه وتنقيته، والبلع والكلام.","Hearing, balance and smell; warming, moistening and filtering air; swallowing and speech."],
+  facts:[["أصغر عظمة في الجسم هي عظمة الركاب في الأذن الوسطى (نحو 3 ملم).","The smallest bone in the body is the stapes in the middle ear (about 3 mm)."]],
+  dis:["otitis","sinus","strep","cold","rhinitis","croup"],
+  more:[{n:["الدوار الوضعي الحميد","Benign positional vertigo"],s:["دوخة دوّارة قصيرة عند تغيير وضع الرأس.","Brief spinning dizziness when the head changes position."],t:["مناورات إعادة تموضع البلورات (مثل مناورة إبلي) عند الطبيب أو المعالج.","Canalith repositioning manoeuvres (such as the Epley manoeuvre) by a doctor or therapist."]}],
+  red:[["صعوبة في التنفس أو البلع أو سيلان اللعاب، أو انتفاخ في الرقبة.","Difficulty breathing or swallowing, drooling, or neck swelling."],["فقدان سمع مفاجئ في أذن واحدة: يحتاج طبيباً خلال 24 إلى 72 ساعة.","Sudden hearing loss in one ear: needs a doctor within 24 to 72 hours."]],
+  src:[MP("eardisorders.html")]},
+ {id:"mouth", n:["الفم والأسنان واللسان","Mouth, teeth and tongue"], v:"f", sys:"gi",
+  an:["للبالغ 32 سناً (للطفل 20 سناً لبنية)، ولكل سن مينا وعاج ولب فيه الأعصاب. واللسان عضلة مغطاة بالحليمات الذوقية، وتفرز الغدد اللعابية نحو لتر يومياً.","Adults have 32 teeth (children 20 milk teeth); each has enamel, dentine and a pulp with nerves. The tongue is a muscle covered with taste papillae, and the salivary glands make about a litre of saliva a day."],
+  fn:["المضغ وبدء الهضم والتذوق والكلام، واللعاب يحمي الأسنان من التسوس.","Chewing, starting digestion, taste and speech; saliva protects teeth from decay."],
+  facts:[["مينا الأسنان أصلب مادة في جسم الإنسان.","Tooth enamel is the hardest substance in the human body."]],
+  dis:[],
+  more:[
+   {n:["تسوس الأسنان","Tooth decay"],s:["ألم مع الحلو أو البارد، وبقع بنية أو ثقوب.","Pain with sweet or cold food, and brown spots or holes."],t:["حشو أو علاج عصب أو خلع حسب الدرجة. الوقاية: الفرشاة بمعجون فيه الفلورايد مرتين يومياً، والسواك، وتقليل السكريات.","A filling, root canal or extraction by stage. Prevention: brush with fluoride toothpaste twice daily, use siwak, and cut down on sugar."]},
+   {n:["التهاب اللثة ودواعم السن","Gum disease (gingivitis and periodontitis)"],s:["نزف اللثة عند التفريش، ورائحة الفم، وتخلخل الأسنان.","Bleeding gums when brushing, bad breath and loose teeth."],t:["تنظيف الجير عند الطبيب، والخيط يومياً، وترك التدخين، وضبط السكري.","Professional scaling, daily flossing, stopping smoking and controlling diabetes."]},
+   {n:["القرح الفموية (القلاع)","Mouth ulcers (aphthous ulcers)"],s:["قرح صغيرة مؤلمة تشفى خلال أسبوعين.","Small painful ulcers that heal within two weeks."],t:["غسول مطهر وجل موضعي مسكّن. أي قرحة تبقى أكثر من 3 أسابيع تحتاج فحصاً.","Antiseptic mouthwash and a soothing topical gel. Any ulcer lasting more than 3 weeks needs an exam."]}],
+  red:[["تورم في الوجه أو تحت الفك مع حمى أو صعوبة في فتح الفم أو البلع (خراج منتشر).","Facial or under-jaw swelling with fever, or trouble opening the mouth or swallowing (spreading abscess)."]],
+  src:[MP("mouthdisorders.html"),MP("tonguedisorders.html")]},
+ {id:"thyroid", n:["الرقبة والغدة الدرقية","Neck and thyroid"], v:"f", sys:"meta",
+  an:["الغدة الدرقية على شكل فراشة أمام القصبة الهوائية أسفل تفاحة آدم، ووزنها نحو 20 غراماً، وخلفها الغدد جارات الدرقية الأربع التي تنظّم الكالسيوم.","The butterfly-shaped thyroid sits in front of the windpipe below the Adam's apple and weighs about 20 g. Behind it are the four parathyroid glands, which regulate calcium."],
+  fn:["تفرز هرموني T4 وT3 اللذين يضبطان سرعة الأيض والحرارة ونبض القلب والنمو.","Makes the hormones T4 and T3, which set metabolic rate, body heat, heart rate and growth."],
+  facts:[["يحتاج الجسم اليود لصنع هرمون الدرقية، ولهذا يُضاف إلى ملح الطعام.","The body needs iodine to make thyroid hormone, which is why salt is iodised."]],
+  dis:["hypothy"],
+  more:[
+   {n:["فرط نشاط الغدة الدرقية","Hyperthyroidism"],s:["خفقان، ونقص الوزن مع شهية جيدة، وتعرّق، ورجفة، وجحوظ العينين في داء غريفز.","Palpitations, weight loss despite good appetite, sweating, tremor, and bulging eyes in Graves' disease."],t:["أدوية مضادة للدرقية (كاربيمازول أو ميثيمازول)، وحاصرات بيتا للأعراض، أو اليود المشع أو الجراحة.","Antithyroid drugs (carbimazole or methimazole), beta-blockers for symptoms, or radioactive iodine or surgery."]},
+   {n:["تضخم الدرقية والعقيدات","Goitre and thyroid nodules"],s:["انتفاخ أمام الرقبة يتحرك مع البلع.","A swelling in the front of the neck that moves on swallowing."],t:["تحليل الهرمونات والأشعة الصوتية، وأخذ عينة بالإبرة عند الحاجة.","Hormone tests and ultrasound, with a needle biopsy when needed."]}],
+  red:[["كتلة رقبة صلبة تكبر بسرعة، أو بحة صوت تستمر أكثر من 3 أسابيع.","A hard neck lump that grows quickly, or hoarseness lasting more than 3 weeks."]],
+  src:[MP("thyroiddiseases.html")]},
+ {id:"heart", n:["القلب والأوعية الدموية","Heart and blood vessels"], v:"f", sys:"cv",
+  an:["القلب عضلة بحجم القبضة بين الرئتين مائل لليسار، فيه أربع حجرات (أذينان وبطينان) وأربعة صمامات. يغذّيه الشريانان التاجيان، وينطلق منه الأبهر لتوزيع الدم على الجسم.","The heart is a fist-sized muscle between the lungs, tilted to the left, with four chambers (two atria and two ventricles) and four valves. The coronary arteries feed it, and the aorta carries blood out to the body."],
+  fn:["ضخ نحو 5 لترات من الدم في الدقيقة لنقل الأكسجين والغذاء إلى كل الخلايا.","Pumping about 5 litres of blood a minute to carry oxygen and nutrients to every cell."],
+  facts:[["ينبض القلب نحو 100 ألف مرة يومياً.","The heart beats about 100,000 times a day."],["أمراض القلب والأوعية السبب الأول للوفاة عالمياً، ومعظمها يمكن الوقاية منه.","Cardiovascular disease is the leading cause of death worldwide, and most of it is preventable."]],
+  dis:["htn","acs","hf","af"],
+  more:[{n:["تصلب الشرايين الطرفية","Peripheral artery disease"],s:["ألم في ربلة الساق مع المشي يزول بالراحة.","Calf pain when walking that eases with rest."],t:["ترك التدخين، وبرنامج مشي منتظم، ومضادات الصفائح والستاتين، وأحياناً توسيع الشريان.","Stopping smoking, a regular walking programme, antiplatelets and statins, and sometimes opening the artery."]},
+   {n:["تجلط الأوردة العميقة","Deep vein thrombosis"],s:["تورم وألم واحمرار في ساق واحدة.","Swelling, pain and redness in one leg."],t:["مضادات التخثر فوراً بعد التشخيص بالأشعة الصوتية، فقد تنتقل الجلطة إلى الرئة.","Anticoagulants straight after an ultrasound diagnosis, because the clot can travel to the lungs."]}],
+  red:[["ألم أو ضغط في الصدر يمتد للذراع أو الفك مع تعرق أو ضيق نفس: اتصل بالإسعاف فوراً.","Chest pain or pressure spreading to the arm or jaw with sweating or breathlessness: call an ambulance now."],["إغماء مفاجئ أو خفقان سريع مع دوخة.","Sudden fainting, or a fast heartbeat with dizziness."]],
+  src:[MP("heartdiseases.html")]},
+ {id:"lungs", n:["الرئتان والجهاز التنفسي","Lungs and airways"], v:"fb", sys:"resp",
+  an:["الرئة اليمنى ثلاثة فصوص واليسرى فصّان لإفساح مكان للقلب. تتفرع القصبة الهوائية إلى شعب ثم قصيبات تنتهي بنحو 480 مليون حويصلة هوائية، مساحتها مجتمعة نحو 70 متراً مربعاً. ويفصلها عن البطن الحجاب الحاجز، أهم عضلات التنفس.","The right lung has three lobes and the left two, leaving room for the heart. The windpipe branches into bronchi and bronchioles ending in about 480 million alveoli, with a combined surface of about 70 m². The diaphragm, the main breathing muscle, separates them from the abdomen."],
+  fn:["تبادل الغازات: إدخال الأكسجين إلى الدم وطرد ثاني أكسيد الكربون، والمساعدة في ضبط حموضة الدم.","Gas exchange: bringing oxygen into the blood and removing carbon dioxide, and helping to balance blood acidity."],
+  facts:[["نتنفس نحو 20 ألف مرة يومياً.","We breathe about 20,000 times a day."],["ترك التدخين في أي عمر يبطئ تدهور وظائف الرئة.","Stopping smoking at any age slows the decline in lung function."]],
+  dis:["pneu","asthma","copd","tb","flu","covid","pe","bronchiolitis"],
+  more:[{n:["سرطان الرئة","Lung cancer"],s:["سعال مستمر، أو دم في البلغم، أو نقص الوزن، خاصة لدى المدخنين.","Persistent cough, blood in sputum or weight loss, especially in smokers."],t:["الجراحة أو العلاج الإشعاعي أو الكيميائي أو الموجّه أو المناعي حسب النوع والمرحلة. يُنصح بفحص الأشعة المقطعية منخفضة الجرعة سنوياً للمدخنين بكثرة من 50 إلى 80 عاماً.","Surgery, radiotherapy, chemotherapy, targeted or immune therapy by type and stage. Yearly low-dose CT screening is advised for heavy smokers aged 50 to 80."]}],
+  red:[["ضيق نفس شديد، أو زرقة الشفاه، أو عدم القدرة على إكمال جملة.","Severe breathlessness, blue lips, or being unable to finish a sentence."],["سعال دم.","Coughing up blood."]],
+  src:[MP("lungdiseases.html")]},
+ {id:"breast", n:["الثدي","Breast"], v:"f", sex:"f", sys:"meta",
+  an:["يتكون الثدي من 15 إلى 20 فصاً غدياً تصب في قنوات تنتهي عند الحلمة، يحيطها نسيج دهني وأربطة، وتصرف لمفاوياته غالباً إلى العقد تحت الإبط.","The breast has 15 to 20 glandular lobes draining into ducts that end at the nipple, surrounded by fat and ligaments; its lymph drains mostly to the armpit nodes."],
+  fn:["إنتاج الحليب بعد الولادة، والرضاعة الطبيعية تحمي الأم والطفل.","Producing milk after birth; breastfeeding protects both mother and baby."],
+  facts:[["الرضاعة الطبيعية تقلل خطر سرطان الثدي لدى الأم.","Breastfeeding lowers the mother's risk of breast cancer."]],
+  dis:[],
+  more:[{n:["سرطان الثدي","Breast cancer"],s:["كتلة غير مؤلمة غالباً، أو تغير في الجلد أو الحلمة، أو إفراز دموي.","An often painless lump, skin or nipple changes, or bloody discharge."],t:["الجراحة والعلاج الإشعاعي والكيميائي والهرموني والموجّه حسب النوع. الاكتشاف المبكر يرفع نسب الشفاء كثيراً؛ ويُنصح بتصوير الثدي كل سنتين من 40 إلى 74 عاماً (USPSTF 2024).","Surgery, radiotherapy, chemotherapy, hormone and targeted therapy by type. Early detection greatly raises cure rates; mammography every two years from 40 to 74 is advised (USPSTF 2024)."]},
+   {n:["التهاب الثدي أثناء الرضاعة","Mastitis during breastfeeding"],s:["ألم واحمرار وسخونة في جزء من الثدي، وحمى.","Pain, redness and warmth in part of the breast, with fever."],t:["الاستمرار في الرضاعة أو الشفط، ومسكن، ومضاد حيوي عند الحاجة بوصفة.","Keep breastfeeding or pumping, take a pain reliever, and an antibiotic on prescription if needed."]}],
+  red:[["أي كتلة جديدة أو تغير في شكل الجلد (مثل قشرة البرتقال) أو تراجع الحلمة: راجعي الطبيب خلال أسبوعين.","Any new lump, skin change (such as orange-peel skin) or nipple pulling in: see a doctor within two weeks."]],
+  src:[MP("breastdiseases.html")]},
+ {id:"stomach", n:["المريء والمعدة","Oesophagus and stomach"], v:"f", sys:"gi",
+  an:["المريء أنبوب عضلي طوله نحو 25 سم ينتهي بصمام عند المعدة. والمعدة كيس عضلي في أعلى يسار البطن يتسع لنحو لتر ونصف، وتفرز الحمض والإنزيمات، ويليها الاثنا عشر.","The oesophagus is a muscular tube about 25 cm long ending in a valve at the stomach. The stomach is a muscular sac in the upper left abdomen holding about 1.5 litres; it makes acid and enzymes and empties into the duodenum."],
+  fn:["تخزين الطعام وطحنه وبدء هضم البروتين، وقتل كثير من الجراثيم بالحمض.","Storing and churning food, starting protein digestion, and killing many germs with acid."],
+  facts:[["تتجدد بطانة المعدة كل بضعة أيام لحماية نفسها من الحمض.","The stomach lining renews itself every few days to protect against acid."]],
+  dis:["gerd","ulcer","gastro"],
+  more:[{n:["جرثومة المعدة (الملوية البوابية)","Helicobacter pylori infection"],s:["كثيراً بلا أعراض، أو ألم أعلى البطن وانتفاخ.","Often silent, or upper abdominal pain and bloating."],t:["فحص النفَس أو البراز، ثم علاج ثلاثي أو رباعي لمدة 14 يوماً، وإعادة الفحص للتأكد من الشفاء.","A breath or stool test, then triple or quadruple therapy for 14 days, and a retest to confirm cure."]}],
+  red:[["قيء دم أو براز أسود كالقطران، أو صعوبة متزايدة في البلع، أو نقص وزن غير مبرر.","Vomiting blood, black tarry stools, worsening difficulty swallowing, or unexplained weight loss."]],
+  src:[MP("stomachdisorders.html")]},
+ {id:"liver", n:["الكبد والمرارة","Liver and gallbladder"], v:"f", sys:"gi",
+  an:["الكبد أكبر غدة في الجسم (نحو 1.5 كغ) في أعلى يمين البطن تحت الأضلاع، وله فصّان ويصله دم الوريد البابي من الأمعاء. والمرارة كيس صغير تحته يخزّن العصارة الصفراوية.","The liver is the largest gland in the body (about 1.5 kg), in the upper right abdomen under the ribs, with two lobes and blood from the intestines via the portal vein. The gallbladder is a small sac beneath it that stores bile."],
+  fn:["أكثر من 500 وظيفة: تنقية السموم والأدوية، وصنع البروتينات وعوامل التخثر، وتخزين السكر والحديد والفيتامينات، وإفراز الصفراء لهضم الدهون.","More than 500 jobs: clearing toxins and medicines, making proteins and clotting factors, storing sugar, iron and vitamins, and making bile to digest fat."],
+  facts:[["الكبد العضو الوحيد القادر على النمو مجدداً بعد استئصال جزء كبير منه.","The liver is the only organ that can regrow after a large part is removed."]],
+  dis:["hbv","hcv","masld"],
+  more:[{n:["حصوات المرارة","Gallstones"],s:["ألم شديد أعلى يمين البطن بعد الوجبات الدسمة قد يمتد للكتف.","Severe upper-right abdominal pain after fatty meals that may spread to the shoulder."],t:["مسكنات للنوبة، واستئصال المرارة بالمنظار عند تكرار الأعراض أو المضاعفات.","Pain relief for attacks, and laparoscopic gallbladder removal for repeated symptoms or complications."]},
+   {n:["تليف الكبد","Cirrhosis"],s:["تعب، واصفرار، وتجمع سوائل في البطن، ونزف.","Fatigue, jaundice, fluid in the abdomen and bleeding."],t:["علاج السبب (الفيروس أو الكحول أو الكبد الدهني)، ومتابعة المضاعفات، وزراعة الكبد في المراحل المتقدمة.","Treating the cause (virus, alcohol or fatty liver), monitoring complications, and transplant in advanced stages."]}],
+  red:[["اصفرار العينين والجلد، أو بول داكن جداً مع براز فاتح، أو ارتباك ونعاس لدى مريض الكبد.","Yellow eyes and skin, very dark urine with pale stools, or confusion and drowsiness in someone with liver disease."]],
+  src:[MP("liverdiseases.html")]},
+ {id:"pancreas", n:["البنكرياس","Pancreas"], v:"f", sys:"meta",
+  an:["غدة طولها نحو 15 سم خلف المعدة، رأسها في انحناءة الاثني عشر وذيلها نحو الطحال، وفيها جزر لانغرهانس.","A gland about 15 cm long behind the stomach, its head in the curve of the duodenum and its tail toward the spleen, containing the islets of Langerhans."],
+  fn:["يفرز إنزيمات هضم الدهون والبروتين والنشويات، وهرموني الإنسولين والغلوكاغون لضبط سكر الدم.","Makes enzymes to digest fat, protein and starch, and the hormones insulin and glucagon to control blood sugar."],
+  facts:[["نحو 1 من كل 9 بالغين في العالم مصاب بالسكري، ونصفهم تقريباً لا يعرفون ذلك.","About 1 in 9 adults worldwide has diabetes, and nearly half of them do not know it."]],
+  dis:["t2dm","dka","gdm"],
+  more:[{n:["التهاب البنكرياس الحاد","Acute pancreatitis"],s:["ألم شديد أعلى البطن يمتد للظهر مع قيء.","Severe upper abdominal pain spreading to the back, with vomiting."],t:["دخول المستشفى للسوائل الوريدية والمسكنات وعلاج السبب (حصوات المرارة أو الكحول أو ارتفاع الدهون الثلاثية).","Hospital admission for IV fluids, pain relief and treating the cause (gallstones, alcohol or high triglycerides)."]},
+   {n:["السكري من النوع الأول","Type 1 diabetes"],s:["عطش شديد، وكثرة التبول، ونقص الوزن، غالباً لدى الأطفال والشباب.","Severe thirst, frequent urination and weight loss, often in children and young people."],t:["الإنسولين مدى الحياة، وقياس السكر المستمر، والتثقيف الغذائي.","Lifelong insulin, continuous glucose monitoring and dietary education."]}],
+  red:[["لدى مريض السكري: قيء متكرر، أو تنفس عميق سريع، أو رائحة فم كالفاكهة، أو نعاس: احتمال حماض كيتوني.","In someone with diabetes: repeated vomiting, deep fast breathing, fruity breath or drowsiness: possible ketoacidosis."]],
+  src:[MP("pancreaticdiseases.html")]},
+ {id:"intestine", n:["الأمعاء والقولون","Intestines and colon"], v:"f", sys:"gi",
+  an:["الأمعاء الدقيقة نحو 6 أمتار (الاثنا عشر والصائم واللفائفي) مبطنة بزغابات لامتصاص الغذاء، والأمعاء الغليظة نحو 1.5 متر (الأعور والزائدة والقولون والمستقيم).","The small intestine is about 6 m long (duodenum, jejunum and ileum), lined with villi that absorb food; the large intestine is about 1.5 m (caecum, appendix, colon and rectum)."],
+  fn:["امتصاص الغذاء والماء والأملاح، وفيها تريليونات الجراثيم النافعة (الميكروبيوم) التي تدعم المناعة.","Absorbing food, water and salts; home to trillions of helpful microbes (the microbiome) that support immunity."],
+  facts:[["نحو 70% من خلايا المناعة تتمركز حول الأمعاء.","About 70% of immune cells sit around the gut."]],
+  dis:["ibs","append","constip","hemorrhoids","typhoid"],
+  more:[{n:["التهاب الأمعاء المزمن (كرون والتقرحي)","Inflammatory bowel disease (Crohn's and ulcerative colitis)"],s:["إسهال مزمن قد يكون فيه دم، وألم بطن، ونقص وزن.","Chronic diarrhoea, sometimes bloody, abdominal pain and weight loss."],t:["أدوية مضادة للالتهاب ومعدّلة للمناعة وعلاجات بيولوجية، تحت إشراف طبيب الجهاز الهضمي.","Anti-inflammatory, immune-modulating and biologic treatments under a gastroenterologist."]},
+   {n:["سرطان القولون والمستقيم","Colorectal cancer"],s:["تغير في عادة التبرز، أو دم في البراز، أو فقر دم غير مفسر.","A change in bowel habit, blood in the stool, or unexplained anaemia."],t:["الجراحة والعلاج الكيميائي والموجّه. الفحص الدوري من سن 45 (تحليل البراز أو منظار القولون) يكشفه مبكراً أو يمنعه.","Surgery, chemotherapy and targeted therapy. Regular screening from age 45 (stool test or colonoscopy) finds it early or prevents it."]},
+   {n:["الداء البطني (حساسية القمح)","Coeliac disease"],s:["انتفاخ وإسهال ونقص حديد ونقص نمو لدى الأطفال.","Bloating, diarrhoea, iron deficiency and poor growth in children."],t:["حمية خالية من الغلوتين مدى الحياة بعد تأكيد التشخيص بالتحليل والمنظار.","A lifelong gluten-free diet after diagnosis is confirmed by blood test and endoscopy."]}],
+  red:[["ألم بطن شديد مستمر، أو بطن متصلب، أو قيء مع انقطاع الغازات والبراز.","Severe constant abdominal pain, a rigid belly, or vomiting with no gas or stool passing."],["نزف من الشرج بكمية كبيرة أو مع دوخة.","Heavy rectal bleeding or bleeding with dizziness."]],
+  src:[MP("colonicdiseases.html")]},
+ {id:"kidney", n:["الكليتان","Kidneys"], v:"b", sys:"uro",
+  an:["كليتان بحجم القبضة على جانبي العمود الفقري خلف البطن عند أسفل الأضلاع، في كل منهما نحو مليون وحدة ترشيح (نفرون)، وفوق كل كلية غدة كظرية.","Two fist-sized kidneys on either side of the spine behind the abdomen at the lower ribs, each with about a million filtering units (nephrons), and an adrenal gland on top of each."],
+  fn:["ترشيح نحو 180 لتراً من الدم يومياً لطرد الفضلات، وضبط الماء والأملاح والضغط، وإفراز هرمون كريات الدم الحمراء وتنشيط فيتامين د.","Filtering about 180 litres of blood a day to remove waste; balancing water, salts and blood pressure; making the red-cell hormone and activating vitamin D."],
+  facts:[["السكري وارتفاع الضغط هما السببان الأكثر شيوعاً للفشل الكلوي.","Diabetes and high blood pressure are the commonest causes of kidney failure."]],
+  dis:["stone","ckd"],
+  more:[{n:["التهاب الكلية (الحويضة والكلية)","Kidney infection (pyelonephritis)"],s:["حمى وقشعريرة وألم في الخاصرة مع حرقان البول.","Fever, chills and flank pain with burning urination."],t:["مضاد حيوي بوصفة، ودخول المستشفى إن وُجد قيء أو حمل أو ضعف عام.","Prescribed antibiotics, with hospital care if there is vomiting, pregnancy or marked weakness."]}],
+  red:[["ألم خاصرة شديد مع حمى، أو انقطاع البول، أو تورم مفاجئ في الجسم.","Severe flank pain with fever, no urine output, or sudden body swelling."]],
+  src:[MP("kidneydiseases.html")]},
+ {id:"bladder", n:["المثانة والمسالك البولية","Bladder and urinary tract"], v:"f", sys:"uro",
+  an:["كيس عضلي في الحوض يتسع لنحو 400 إلى 600 مل، يصله الحالبان من الكليتين ويخرج منه الإحليل. والإحليل أقصر لدى المرأة، ولذلك التهابات المثانة أكثر لديها.","A muscular sac in the pelvis holding about 400 to 600 ml, fed by the ureters from the kidneys and emptying through the urethra. The urethra is shorter in women, so bladder infections are more common in them."],
+  fn:["تخزين البول وإفراغه بتحكم إرادي.","Storing urine and emptying it under voluntary control."],
+  facts:[["شرب الماء الكافي يقلل التهابات المثانة وحصوات الكلى.","Drinking enough water reduces bladder infections and kidney stones."]],
+  dis:["uti"],
+  more:[{n:["سلس البول","Urinary incontinence"],s:["تسرب البول مع السعال أو الضحك، أو إلحاح مفاجئ.","Leaking urine with coughing or laughing, or sudden urgency."],t:["تمارين قاع الحوض (كيغل)، وتدريب المثانة، وأدوية أو جراحة حسب النوع.","Pelvic floor (Kegel) exercises, bladder training, and medicines or surgery by type."]}],
+  red:[["دم في البول دون ألم، خاصة بعد سن 40 أو لدى المدخنين: يحتاج فحصاً.","Painless blood in the urine, especially after 40 or in smokers: needs investigation."]],
+  src:[MP("bladderdiseases.html")]},
+ {id:"repro", n:["الجهاز التناسلي","Reproductive system"], v:"f", sys:"meta",
+  an:["لدى المرأة: الرحم في الحوض خلف المثانة، والمبيضان وقناتا فالوب على جانبيه. ولدى الرجل: البروستاتا تحت المثانة تحيط بالإحليل، والخصيتان في كيس الصفن.","In women: the uterus sits in the pelvis behind the bladder, with the ovaries and fallopian tubes on each side. In men: the prostate lies under the bladder around the urethra, and the testes are in the scrotum."],
+  an_f:["الرحم عضو عضلي بحجم الكمثرى، وبطانته تتجدد كل دورة شهرية، والمبيضان يطلقان بويضة شهرياً ويفرزان الإستروجين والبروجسترون.","The uterus is a pear-sized muscular organ whose lining renews each month; the ovaries release an egg monthly and make oestrogen and progesterone."],
+  an_m:["البروستاتا غدة بحجم الجوزة تحيط بأول الإحليل وتكبر مع العمر، والخصيتان تنتجان الحيوانات المنوية وهرمون التستوستيرون.","The prostate is a walnut-sized gland around the start of the urethra that grows with age; the testes make sperm and testosterone."],
+  fn:["الإنجاب، وإفراز الهرمونات الجنسية التي تؤثر في العظام والعضلات والمزاج.","Reproduction, and making sex hormones that affect bones, muscles and mood."],
+  facts:[],
+  dis_f:["pcos","dysmen","ectopic","preecl"], dis_m:["bph"], dis:[],
+  more_f:[{n:["الأورام الليفية الرحمية","Uterine fibroids"],s:["نزف حيض غزير، وألم أو ضغط في الحوض.","Heavy periods, and pelvic pain or pressure."],t:["أدوية تنظيم النزف، أو إزالة الورم بالمنظار، أو قسطرة الشريان الرحمي، حسب الحجم والرغبة في الإنجاب.","Medicines to control bleeding, keyhole removal, or uterine artery embolisation, depending on size and wish for pregnancy."]},
+   {n:["بطانة الرحم المهاجرة","Endometriosis"],s:["آلام حيض شديدة متزايدة، وألم أثناء الجماع، وتأخر الحمل.","Severe, worsening period pain, pain during intercourse and difficulty conceiving."],t:["مسكنات وعلاج هرموني، والمنظار للتشخيص والعلاج.","Pain relief and hormonal treatment, with laparoscopy for diagnosis and treatment."]},
+   {n:["سرطان عنق الرحم","Cervical cancer"],s:["نزف بعد الجماع أو بين الدورات.","Bleeding after intercourse or between periods."],t:["يمكن الوقاية منه بلقاح فيروس الورم الحليمي (HPV) والفحص الدوري من 21 إلى 65 عاماً.","Preventable with the HPV vaccine and regular screening from 21 to 65."]}],
+  more_m:[{n:["سرطان البروستاتا","Prostate cancer"],s:["غالباً بلا أعراض في البداية، ثم ضعف تدفق البول أو ألم العظام.","Often silent early, later weak urine flow or bone pain."],t:["المراقبة النشطة أو الجراحة أو الإشعاع أو العلاج الهرموني. يُناقش تحليل PSA مع الطبيب من 55 إلى 69 عاماً.","Active surveillance, surgery, radiotherapy or hormone therapy. Discuss PSA testing with a doctor from 55 to 69."]},
+   {n:["دوالي الخصية","Varicocele"],s:["ثقل في كيس الصفن، وأحياناً تأخر الإنجاب.","A heavy feeling in the scrotum, sometimes reduced fertility."],t:["المتابعة، أو الجراحة عند الألم أو ضعف الخصوبة.","Monitoring, or surgery for pain or reduced fertility."]}],
+  more:[],
+  red:[["لدى المرأة: نزف مهبلي مع ألم شديد وتأخر الدورة (احتمال حمل خارج الرحم)، أو أي نزف بعد انقطاع الطمث.","In women: vaginal bleeding with severe pain and a late period (possible ectopic pregnancy), or any bleeding after menopause."],["لدى الرجل: ألم مفاجئ شديد في الخصية (احتمال التواء): طوارئ خلال ساعات.","In men: sudden severe testicular pain (possible torsion): an emergency within hours."]],
+  src:[MP("uterinediseases.html"),MP("prostatediseases.html")]},
+ {id:"spine", n:["العمود الفقري والظهر","Spine and back"], v:"b", sys:"msk",
+  an:["33 فقرة: 7 عنقية و12 صدرية و5 قطنية ثم العجز والعصعص، بينها أقراص غضروفية تمتص الصدمات، ويمر في قناتها الحبل الشوكي الذي تخرج منه أعصاب الجسم.","33 vertebrae: 7 cervical, 12 thoracic, 5 lumbar, then the sacrum and coccyx, with cartilage discs between them as shock absorbers; the spinal cord runs in their canal and gives off the body's nerves."],
+  fn:["حمل الجسم ومنحه المرونة، وحماية الحبل الشوكي.","Supporting and flexing the body, and protecting the spinal cord."],
+  facts:[["نحو 90% من آلام أسفل الظهر الحادة تتحسن خلال 6 أسابيع بالحركة والعلاج المحافظ.","About 90% of acute low back pain improves within 6 weeks with activity and conservative care."]],
+  dis:["lbp"],
+  more:[{n:["الانزلاق الغضروفي وعرق النسا","Slipped disc and sciatica"],s:["ألم يمتد من الظهر إلى الساق مع تنميل.","Pain spreading from the back down the leg with numbness."],t:["البقاء نشطاً، ومسكنات، وعلاج طبيعي؛ والجراحة لقلة من المرضى عند ضعف متزايد أو ألم لا يستجيب.","Staying active, pain relief and physiotherapy; surgery for a few patients with worsening weakness or pain that does not respond."]},
+   {n:["آلام الرقبة","Neck pain"],s:["تيبس وألم مع الجلوس الطويل أمام الشاشات.","Stiffness and pain with long screen time."],t:["تمارين الرقبة وتعديل وضعية العمل. انظر قسم العلاج الطبيعي.","Neck exercises and posture correction. See the physiotherapy section."]}],
+  red:[["ألم ظهر مع ضعف في الساقين، أو خدر حول الشرج، أو فقدان التحكم في البول أو البراز: طوارئ (متلازمة ذيل الفرس).","Back pain with leg weakness, numbness around the anus, or loss of bladder or bowel control: emergency (cauda equina syndrome)."]],
+  src:[MP("backpain.html")]},
+ {id:"joints", n:["العظام والمفاصل والعضلات","Bones, joints and muscles"], v:"fb", sys:"msk",
+  an:["للبالغ 206 عظمات ونحو 360 مفصلاً وأكثر من 600 عضلة. تُغطّى أطراف العظام بغضروف أملس، وتحيط بالمفاصل أربطة ومحفظة فيها سائل زلالي.","Adults have 206 bones, about 360 joints and more than 600 muscles. Bone ends are covered with smooth cartilage, and joints are wrapped in ligaments and a capsule containing lubricating fluid."],
+  fn:["الحركة والدعم وحماية الأعضاء، وتخزين الكالسيوم، وصنع خلايا الدم في نخاع العظم.","Movement, support and protection of organs, storing calcium, and making blood cells in the bone marrow."],
+  facts:[["تبلغ كثافة العظام ذروتها نحو سن 30، ثم تنقص تدريجياً.","Bone density peaks around age 30, then slowly declines."]],
+  dis:["oa","gout"],
+  more:[{n:["هشاشة العظام","Osteoporosis"],s:["صامتة حتى يحدث كسر من سقطة بسيطة.","Silent until a fracture from a minor fall."],t:["الكالسيوم وفيتامين د، وتمارين المقاومة، وأدوية مثل البيسفوسفونات. يُنصح بفحص الكثافة للنساء من 65 عاماً أو قبلها عند وجود خطر.","Calcium and vitamin D, resistance exercise, and medicines such as bisphosphonates. Bone density testing is advised for women from 65, or earlier with risk factors."]},
+   {n:["التهاب المفاصل الروماتويدي","Rheumatoid arthritis"],s:["ألم وتورم وتيبس صباحي في مفاصل اليدين والقدمين على الجانبين.","Pain, swelling and morning stiffness in the small joints of both hands and feet."],t:["البدء المبكر بالأدوية المعدّلة للمرض (مثل الميثوتركسات) عند طبيب الروماتيزم يمنع تلف المفاصل.","Starting disease-modifying drugs (such as methotrexate) early with a rheumatologist prevents joint damage."]}],
+  red:[["مفصل واحد متورم ساخن مع حمى (احتمال التهاب صديدي).","A single hot swollen joint with fever (possible septic arthritis)."],["تشوه بعد سقطة أو عدم القدرة على تحميل الوزن.","Deformity after a fall, or being unable to bear weight."]],
+  src:[MP("jointdisorders.html")]},
+ {id:"skin", n:["الجلد والشعر والأظافر","Skin, hair and nails"], v:"fb", sys:"skin",
+  an:["الجلد أكبر أعضاء الجسم (نحو 2 متر مربع)، من ثلاث طبقات: البشرة، والأدمة وفيها الغدد والأعصاب وبصيلات الشعر، وتحت الجلد الدهنية.","The skin is the largest organ (about 2 m²), with three layers: the epidermis; the dermis, with glands, nerves and hair follicles; and the fatty subcutis."],
+  fn:["الحماية من الجراثيم والشمس وفقد الماء، وضبط الحرارة بالعرق، والإحساس، وصنع فيتامين د.","Protection from germs, sun and water loss; temperature control through sweat; sensation; and making vitamin D."],
+  facts:[["تتجدد طبقة البشرة كل 4 أسابيع تقريباً.","The epidermis renews itself about every 4 weeks."]],
+  dis:["eczema","acne","psoriasis","urticaria","scabies","measles","varicella"],
+  more:[{n:["سرطانات الجلد","Skin cancers"],s:["شامة تتغير في الحجم أو اللون أو الشكل، أو قرحة لا تلتئم.","A mole that changes in size, colour or shape, or a sore that does not heal."],t:["الاستئصال الجراحي مبكراً. قاعدة ABCDE لفحص الشامات، والوقاية بتجنب الشمس الحارقة.","Early surgical removal. Use the ABCDE rule to check moles, and prevent with sun protection."]}],
+  red:[["طفح لا يختفي عند الضغط عليه بكوب زجاجي مع حمى (احتمال التهاب السحايا).","A rash that does not fade under a pressed glass, with fever (possible meningitis)."],["تقشر الجلد أو تقرحات الفم والعين بعد دواء جديد.","Peeling skin or mouth and eye sores after a new medicine."]],
+  src:[MP("skinconditions.html"),MP("hairloss.html")]},
+ {id:"blood", n:["الدم والمناعة","Blood and immunity"], v:"b", sys:"gen",
+  an:["في البالغ نحو 5 لترات من الدم: البلازما، وكريات حمراء تحمل الأكسجين، وبيضاء للمناعة، وصفائح للتخثر. ويضم جهاز المناعة الطحال (أعلى يسار البطن) والعقد اللمفاوية والغدة الزعترية ونخاع العظم.","Adults have about 5 litres of blood: plasma, red cells carrying oxygen, white cells for immunity and platelets for clotting. The immune system includes the spleen (upper left abdomen), lymph nodes, thymus and bone marrow."],
+  fn:["نقل الأكسجين والغذاء والهرمونات، والدفاع ضد العدوى، ووقف النزيف.","Carrying oxygen, nutrients and hormones, defending against infection, and stopping bleeding."],
+  facts:[["تعيش كرية الدم الحمراء نحو 120 يوماً.","A red blood cell lives about 120 days."]],
+  dis:["ida","sepsis","dengue","brucella"],
+  more:[{n:["الثلاسيميا وفقر الدم المنجلي","Thalassaemia and sickle cell disease"],s:["فقر دم وراثي منذ الطفولة، ونوبات ألم في المنجلي.","Inherited anaemia from childhood, and pain crises in sickle cell."],t:["نقل الدم وطرد الحديد الزائد، وهيدروكسي يوريا للمنجلي، وزرع النخاع والعلاج الجيني في حالات مختارة. فحص ما قبل الزواج يقي منهما.","Transfusions with iron removal, hydroxyurea for sickle cell, and bone marrow transplant or gene therapy in selected cases. Premarital screening helps prevent them."]},
+   {n:["سرطانات الدم","Blood cancers"],s:["تعب، وكدمات أو نزف بلا سبب، وعدوى متكررة، وتضخم العقد.","Fatigue, unexplained bruising or bleeding, repeated infections and swollen glands."],t:["العلاج الكيميائي والموجّه والمناعي وزراعة النخاع حسب النوع.","Chemotherapy, targeted and immune therapy, and bone marrow transplant by type."]}],
+  red:[["حمى مع تسارع النبض والتنفس وانخفاض الضغط أو ارتباك (احتمال تعفن الدم).","Fever with fast pulse and breathing, low blood pressure or confusion (possible sepsis)."]],
+  src:[MP("blooddisorders.html")]},
+];
+// ===== علامات الأمراض الظاهرة على الجسم =====
+const SIGNS = [
+ {g:["الأظافر","Nails"], r:"skin", items:[
+  [["تقعّر الأظافر كالملعقة","Spoon-shaped nails (koilonychia)"],["نقص الحديد وفقر الدم.","Iron deficiency anaemia."],0],
+  [["تعجّر الأصابع (تضخم أطرافها وتحدّب الظفر)","Finger clubbing"],["أمراض رئوية أو قلبية مزمنة، أو أمراض كبد وأمعاء.","Chronic lung or heart disease, or liver and bowel disease."],1],
+  [["شحوب الأظافر","Pale nails"],["فقر الدم.","Anaemia."],0],
+  [["تنقّر الأظافر (حفر صغيرة)","Nail pitting"],["الصدفية.","Psoriasis."],0],
+  [["خطوط نزفية داكنة طولية تحت الظفر","Splinter haemorrhages"],["قد تشير إلى التهاب شغاف القلب إذا ظهرت مع حمى.","May point to heart valve infection when seen with fever."],2],
+  [["خط بني أو أسود طولي جديد في ظفر واحد","A new brown or black stripe in one nail"],["يحتاج فحصاً لاستبعاد ورم صبغي.","Needs checking to rule out melanoma."],1]]},
+ {g:["العينان","Eyes"], r:"eyes", items:[
+  [["اصفرار بياض العين","Yellow whites of the eyes"],["اليرقان: أمراض الكبد أو المرارة أو تكسّر الدم.","Jaundice: liver, gallbladder or blood-breakdown disorders."],1],
+  [["شحوب باطن الجفن","Pale inner eyelids"],["فقر الدم.","Anaemia."],0],
+  [["جحوظ العينين","Bulging eyes"],["داء غريفز (فرط نشاط الدرقية).","Graves' disease (overactive thyroid)."],1],
+  [["بقع صفراء دهنية حول الجفون","Yellow fatty patches around the eyelids"],["ارتفاع الكوليسترول.","High cholesterol."],0],
+  [["حدقتان غير متساويتين مع صداع أو نعاس","Unequal pupils with headache or drowsiness"],["طارئ عصبي محتمل.","A possible neurological emergency."],2]]},
+ {g:["اللسان والفم","Tongue and mouth"], r:"mouth", items:[
+  [["لسان أحمر أملس مؤلم","Red, smooth, sore tongue"],["نقص الحديد أو فيتامين B12 أو حمض الفوليك.","Iron, vitamin B12 or folate deficiency."],0],
+  [["طبقة بيضاء تُزال وتترك احمراراً","White coating that wipes off leaving redness"],["فطريات الفم، خاصة مع السكري أو بخاخ الكورتيزون أو ضعف المناعة.","Oral thrush, especially with diabetes, steroid inhalers or weak immunity."],0],
+  [["تشققات زوايا الفم","Cracks at the corners of the mouth"],["نقص الحديد أو فيتامينات B، أو فطريات.","Iron or B-vitamin deficiency, or fungal infection."],0],
+  [["بقعة بيضاء أو حمراء لا تزول أكثر من 3 أسابيع","A white or red patch lasting more than 3 weeks"],["تحتاج فحصاً لاستبعاد ورم، خاصة لدى المدخنين.","Needs checking to rule out cancer, especially in smokers."],1],
+  [["رائحة نفَس كالفاكهة","Fruity-smelling breath"],["الحماض الكيتوني السكري.","Diabetic ketoacidosis."],2]]},
+ {g:["الجلد","Skin"], r:"skin", items:[
+  [["زرقة الشفاه والأطراف","Blue lips and fingertips"],["نقص الأكسجين.","Low oxygen."],2],
+  [["جلد داكن مخملي في الرقبة والإبط","Dark velvety skin on the neck and armpits"],["مقاومة الإنسولين وخطر السكري (الشواك الأسود).","Insulin resistance and diabetes risk (acanthosis nigricans)."],0],
+  [["عروق عنكبوتية حمراء على الصدر","Red spider-like veins on the chest"],["أمراض الكبد المزمنة.","Chronic liver disease."],1],
+  [["نقط نزفية حمراء أو بنفسجية لا تختفي بالضغط","Red or purple pinpoint spots that do not fade on pressure"],["نقص الصفائح أو عدوى خطيرة، خاصة مع الحمى.","Low platelets or a serious infection, especially with fever."],2],
+  [["جفاف الجلد وبرودته مع خمول","Dry, cold skin with sluggishness"],["قصور الغدة الدرقية.","Underactive thyroid."],0]]},
+ {g:["الشعر","Hair"], r:"skin", items:[
+  [["تساقط منتشر","Diffuse hair shedding"],["نقص الحديد، أو اضطراب الدرقية، أو بعد حمى أو ولادة أو ضغط نفسي.","Iron deficiency, thyroid disorder, or after fever, childbirth or stress."],0],
+  [["بقع صلع دائرية","Round bald patches"],["الثعلبة (مناعية).","Alopecia areata (autoimmune)."],0],
+  [["شعر زائد لدى المرأة مع اضطراب الدورة","Excess hair in women with irregular periods"],["تكيس المبايض.","Polycystic ovary syndrome."],0]]},
+ {g:["الساقان والقدمان","Legs and feet"], r:"heart", items:[
+  [["تورم الكاحلين يترك أثراً عند الضغط","Ankle swelling that pits on pressure"],["فشل القلب أو أمراض الكلى أو الكبد أو أدوية.","Heart failure, kidney or liver disease, or medicines."],1],
+  [["تورم ساق واحدة مع ألم","One swollen, painful leg"],["تجلط الأوردة العميقة.","Deep vein thrombosis."],2],
+  [["جرح في القدم لا يلتئم مع تنميل","A foot sore that won't heal, with numbness"],["القدم السكرية، تحتاج عناية عاجلة.","Diabetic foot; needs prompt care."],1]]},
+ {g:["الوجه والرقبة","Face and neck"], r:"thyroid", items:[
+  [["انتفاخ الجفون صباحاً","Puffy eyelids in the morning"],["أمراض الكلى أو الحساسية أو قصور الدرقية.","Kidney disease, allergy or underactive thyroid."],0],
+  [["ميلان مفاجئ في الوجه","Sudden facial droop"],["سكتة دماغية: اتصل بالإسعاف فوراً.","Stroke: call an ambulance now."],2],
+  [["عقد لمفاوية متضخمة أكثر من 4 أسابيع","Swollen glands for more than 4 weeks"],["تحتاج فحصاً.","Need checking."],1]]},
+];
+const SIGN_LV = [["متابعة مع الطبيب","See your doctor","t1"],["راجع الطبيب قريباً","See a doctor soon","t2"],["طارئ","Emergency","t3"]];
+// ===== مؤشرات الجسم الصحي حسب الفئة =====
+const HEALTHY = {
+ man:{n:["الرجل","Men"], rows:[
+  [["ضغط الدم","Blood pressure"],["أقل من 120/80 ملم زئبق","Below 120/80 mmHg"]],
+  [["النبض أثناء الراحة","Resting pulse"],["60 إلى 100 نبضة في الدقيقة (الرياضيون أقل)","60 to 100 beats per minute (lower in athletes)"]],
+  [["التنفس","Breathing rate"],["12 إلى 18 مرة في الدقيقة","12 to 18 breaths per minute"]],
+  [["الحرارة","Temperature"],["36.5 إلى 37.3 °م","36.5 to 37.3 °C"]],
+  [["تشبع الأكسجين","Oxygen saturation"],["95% فأكثر","95% or higher"]],
+  [["مؤشر كتلة الجسم","Body mass index"],["18.5 إلى 24.9 كغ/م²","18.5 to 24.9 kg/m²"]],
+  [["محيط الخصر","Waist circumference"],["أقل من 94 سم (الخطر المرتفع من 102 سم)","Below 94 cm (high risk from 102 cm)"]],
+  [["سكر الصيام","Fasting glucose"],["70 إلى 99 ملغ/دل","70 to 99 mg/dL"]],
+  [["السكر التراكمي HbA1c","HbA1c"],["أقل من 5.7%","Below 5.7%"]],
+  [["الكوليسترول الضار LDL","LDL cholesterol"],["أقل من 100 ملغ/دل","Below 100 mg/dL"]],
+  [["الهيموغلوبين","Haemoglobin"],["13.5 إلى 17.5 غ/دل","13.5 to 17.5 g/dL"]],
+  [["النوم","Sleep"],["7 ساعات فأكثر","7 hours or more"]],
+  [["النشاط البدني","Physical activity"],["150 إلى 300 دقيقة معتدلة أسبوعياً + تمارين قوة يومين","150 to 300 moderate minutes a week + strength work on 2 days"]]],
+  screen:[["قياس الضغط: سنوياً من 18 عاماً.","Blood pressure: yearly from age 18."],["السكر: من 35 إلى 70 عاماً لمن لديهم زيادة وزن.","Diabetes: from 35 to 70 for those with overweight."],["سرطان القولون: من 45 إلى 75 عاماً.","Colorectal cancer: from 45 to 75."],["سرطان الرئة: أشعة مقطعية سنوية من 50 إلى 80 للمدخنين بكثرة.","Lung cancer: yearly CT from 50 to 80 for heavy smokers."],["تمدد الأبهر البطني: أشعة صوتية مرة واحدة من 65 إلى 75 لمن دخّن.","Abdominal aortic aneurysm: one ultrasound from 65 to 75 for anyone who has smoked."],["البروستاتا: نقاش تحليل PSA مع الطبيب من 55 إلى 69.","Prostate: discuss PSA testing with a doctor from 55 to 69."]]},
+ woman:{n:["المرأة","Women"], rows:[
+  [["ضغط الدم","Blood pressure"],["أقل من 120/80 ملم زئبق","Below 120/80 mmHg"]],
+  [["النبض أثناء الراحة","Resting pulse"],["60 إلى 100 نبضة في الدقيقة","60 to 100 beats per minute"]],
+  [["الحرارة","Temperature"],["36.5 إلى 37.3 °م","36.5 to 37.3 °C"]],
+  [["مؤشر كتلة الجسم","Body mass index"],["18.5 إلى 24.9 كغ/م²","18.5 to 24.9 kg/m²"]],
+  [["محيط الخصر","Waist circumference"],["أقل من 80 سم (الخطر المرتفع من 88 سم)","Below 80 cm (high risk from 88 cm)"]],
+  [["سكر الصيام","Fasting glucose"],["70 إلى 99 ملغ/دل","70 to 99 mg/dL"]],
+  [["الهيموغلوبين","Haemoglobin"],["12 إلى 15.5 غ/دل (في الحمل 11 فأكثر)","12 to 15.5 g/dL (11 or more in pregnancy)"]],
+  [["الفيريتين (مخزون الحديد)","Ferritin (iron stores)"],["30 نانوغرام/مل فأكثر يعني مخزوناً كافياً","30 ng/mL or more means adequate stores"]],
+  [["الدورة الشهرية","Menstrual cycle"],["كل 21 إلى 35 يوماً، والنزف 2 إلى 7 أيام","Every 21 to 35 days, bleeding for 2 to 7 days"]],
+  [["زيادة الوزن في الحمل (وزن طبيعي قبله)","Pregnancy weight gain (normal pre-pregnancy weight)"],["11.5 إلى 16 كغ","11.5 to 16 kg"]],
+  [["النوم والنشاط","Sleep and activity"],["7 ساعات فأكثر، و150 دقيقة نشاط أسبوعياً","7 hours or more, and 150 minutes of activity a week"]]],
+  screen:[["عنق الرحم: من 21 إلى 65 عاماً (مسحة كل 3 سنوات أو فحص HPV كل 5 سنوات بعد 30).","Cervical: from 21 to 65 (smear every 3 years, or HPV test every 5 years after 30)."],["الثدي: تصوير كل سنتين من 40 إلى 74 عاماً.","Breast: mammogram every two years from 40 to 74."],["هشاشة العظام: من 65 عاماً، أو قبلها بعد سن اليأس مع عوامل خطر.","Osteoporosis: from 65, or earlier after menopause with risk factors."],["سرطان القولون: من 45 إلى 75 عاماً.","Colorectal cancer: from 45 to 75."],["الضغط والسكر كما لدى الرجل، وسكر الحمل بين الأسبوع 24 و28.","Blood pressure and diabetes as for men, plus gestational diabetes testing at weeks 24 to 28."]]},
+ child:{n:["الطفل","Children"], rows:[
+  [["النبض: حديث الولادة","Pulse: newborn"],["100 إلى 160 نبضة في الدقيقة","100 to 160 beats per minute"]],
+  [["النبض: من 1 إلى 5 سنوات","Pulse: 1 to 5 years"],["80 إلى 130 نبضة في الدقيقة","80 to 130 beats per minute"]],
+  [["النبض: من 6 إلى 12 سنة","Pulse: 6 to 12 years"],["70 إلى 110 نبضات في الدقيقة","70 to 110 beats per minute"]],
+  [["التنفس: الرضيع","Breathing: infant"],["30 إلى 60 مرة في الدقيقة","30 to 60 breaths per minute"]],
+  [["التنفس: من 1 إلى 5 سنوات","Breathing: 1 to 5 years"],["20 إلى 40 مرة في الدقيقة","20 to 40 breaths per minute"]],
+  [["التنفس: من 6 إلى 12 سنة","Breathing: 6 to 12 years"],["18 إلى 25 مرة في الدقيقة","18 to 25 breaths per minute"]],
+  [["الوزن","Weight"],["يتضاعف وزن الولادة نحو 5 أشهر، ويتضاعف 3 مرات عند سنة","Birth weight roughly doubles by 5 months and triples by 1 year"]],
+  [["الطول","Height"],["يزيد نحو 25 سم في السنة الأولى، ونحو 12 سم في الثانية","Gains about 25 cm in the first year and about 12 cm in the second"]],
+  [["النوم","Sleep"],["الرضيع 12 إلى 16 ساعة، ومن 3 إلى 5 سنوات 10 إلى 13، ومن 6 إلى 12 سنة 9 إلى 12، والمراهق 8 إلى 10","Infants 12 to 16 hours, 3 to 5 years 10 to 13, 6 to 12 years 9 to 12, teens 8 to 10"]],
+  [["النشاط البدني","Physical activity"],["60 دقيقة يومياً على الأقل من 5 إلى 17 عاماً","At least 60 minutes a day from 5 to 17 years"]],
+  [["الأسنان","Teeth"],["أول سن نحو 6 أشهر، و20 سناً لبنية بعمر 3 سنوات","First tooth around 6 months, 20 milk teeth by age 3"]]],
+  screen:[["قياس الطول والوزن ومحيط الرأس في كل زيارة ومقارنتها بمنحنيات النمو أدناه.","Measure length, weight and head size at every visit and compare with the growth charts below."],["التطعيمات حسب الجدول الوطني.","Vaccines on the national schedule."],["فحص النظر والسمع قبل المدرسة.","Vision and hearing checks before school."],["مراحل التطور: الجلوس نحو 6 أشهر، والمشي نحو 12 إلى 15 شهراً، وكلمات أولى نحو سنة.","Milestones: sitting around 6 months, walking around 12 to 15 months, first words around 1 year."]]},
+ elder:{n:["كبار السن","Older adults"], rows:[
+  [["ضغط الدم","Blood pressure"],["الهدف غالباً أقل من 130/80 إن احتُمل دون دوخة","Usually below 130/80 if tolerated without dizziness"]],
+  [["سرعة المشي","Walking speed"],["أكثر من 0.8 متر في الثانية علامة لياقة جيدة","Above 0.8 metres per second is a good fitness sign"]],
+  [["الوقوف من الكرسي","Chair stands"],["5 مرات دون استعمال اليدين في أقل من 15 ثانية","5 times without using hands in under 15 seconds"]],
+  [["الوزن","Weight"],["فقد أكثر من 5% في 6 أشهر دون قصد يحتاج تقييماً","Unintended loss of over 5% in 6 months needs assessment"]],
+  [["النوم","Sleep"],["7 إلى 8 ساعات","7 to 8 hours"]],
+  [["النشاط","Activity"],["150 دقيقة أسبوعياً، مع تمارين التوازن والقوة 3 أيام","150 minutes a week, with balance and strength work on 3 days"]]],
+  screen:[["مراجعة الأدوية سنوياً لتقليل التداخلات.","Yearly medicine review to cut interactions."],["فحص السمع والنظر والذاكرة.","Hearing, vision and memory checks."],["تقييم خطر السقوط.","Falls-risk assessment."],["لقاحات الإنفلونزا والمكورات الرئوية والحزام الناري.","Flu, pneumococcal and shingles vaccines."]]},
+};
+const HEALTHY_SRC = [MP("ency/article/002341.htm"),{n:"USPSTF A & B",u:"https://www.uspreventiveservicestaskforce.org/uspstf/recommendation-topics/uspstf-a-and-b-recommendations"},{n:"CDC: Sleep",u:"https://www.cdc.gov/sleep/about/index.html"},{n:"WHO: Physical activity 2020",u:"https://www.who.int/publications/i/item/9789240015128"}];
+// ===== الاستشفاء: البيانات =====
+const NC = (p,n) => ({n:"NCCIH: "+n, u:"https://www.nccih.nih.gov/health/"+p});
+const SUN = (c,num,ar,en) => ({ar,en,u:`https://sunnah.com/${c}:${num}`});
+const QUR = (s,a,ar,en) => ({ar,en,u:`https://quran.com/${s}/${a}`});
+const HEAL_TABS = [
+ ["self",["الاستشفاء الذاتي","Self-healing"]],["fast",["الصيام","Fasting"]],["water",["الماء","Water therapy"]],
+ ["hijama",["الحجامة","Cupping (hijama)"]],["kayy",["الكي ومواضعه","Cautery and its sites"]],["world",["مدارس عالمية","World traditions"]]];
+const HEAL = {
+ self:{
+  title:["الاستشفاء الذاتي: كيف يصلح الجسم نفسه","Self-healing: how the body repairs itself"],
+  intro:["خلق الله في الجسم أنظمة إصلاح مذهلة: يلتئم الجرح في أربع مراحل (وقف النزف، ثم الالتهاب، ثم بناء النسيج، ثم إعادة التشكيل)، ويتجدد الجلد وبطانة الأمعاء والدم باستمرار، ويتعلم جهاز المناعة من كل عدوى، ويجدد الكبد نفسه. ودورك أن تهيّئ لهذه الأنظمة ظروف عملها، لا أن تستبدل بها العلاج حين يلزم.","God created remarkable repair systems in the body: a wound heals in four stages (stopping bleeding, inflammation, rebuilding tissue, remodelling); skin, gut lining and blood renew constantly; the immune system learns from every infection; and the liver regenerates. Your role is to give these systems the conditions they need, not to replace treatment when it is needed."],
+  ev:[QUR(13,28,"الَّذِينَ آمَنُوا وَتَطْمَئِنُّ قُلُوبُهُم بِذِكْرِ اللَّهِ ۗ أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ","Those who believe and whose hearts find peace in the remembrance of God. Truly, in the remembrance of God hearts find peace. (Quran 13:28)")],
+  cards:[
+   {n:["النوم العميق","Deep sleep"],ev:3,b:["في النوم يفرز هرمون النمو ويُصلح الأنسجة ويُنظّف الدماغ ويثبّت الذاكرة وتقوى المناعة. قلة النوم المزمنة ترفع خطر السكري والسمنة وأمراض القلب والاكتئاب.","During sleep the body releases growth hormone, repairs tissue, clears the brain, fixes memories and strengthens immunity. Chronic short sleep raises the risk of diabetes, obesity, heart disease and depression."],how:["7 ساعات فأكثر للبالغ، بموعد ثابت، وغرفة مظلمة باردة، وإبعاد الشاشات قبل النوم بساعة، وتجنب المنبهات بعد العصر.","7 hours or more for adults, a fixed schedule, a dark cool room, no screens for an hour before bed, and no caffeine after mid-afternoon."],src:[{n:"CDC: About sleep",u:"https://www.cdc.gov/sleep/about/index.html"}]},
+   {n:["الحركة والنشاط البدني","Movement and physical activity"],ev:3,b:["أقوى «دواء» معروف بلا وصفة: يخفض الوفيات وأمراض القلب والسكري والاكتئاب وبعض السرطانات، ويحسن المزاج والنوم والذاكرة.","The strongest known 'medicine' without a prescription: it lowers death rates, heart disease, diabetes, depression and some cancers, and improves mood, sleep and memory."],how:["150 إلى 300 دقيقة نشاط معتدل أسبوعياً (مثل المشي السريع)، وتمارين قوة يومين، وتقليل الجلوس الطويل.","150 to 300 minutes of moderate activity a week (such as brisk walking), strength work on 2 days, and less long sitting."],src:[{n:"WHO: Physical activity 2020",u:"https://www.who.int/publications/i/item/9789240015128"}]},
+   {n:["الغذاء الطيب المتوازن","Wholesome balanced food"],ev:3,b:["نمط غذائي غني بالخضار والفواكه والبقول والحبوب الكاملة وزيت الزيتون والأسماك، قليل السكر والملح والمصنّعات، يخفض الالتهاب المزمن ويدعم الميكروبيوم.","A diet rich in vegetables, fruit, legumes, whole grains, olive oil and fish, low in sugar, salt and processed food, lowers chronic inflammation and supports the gut microbiome."],how:["نصف الطبق خضار وفواكه، والاعتدال في الكمية: «فثلث لطعامه وثلث لشرابه وثلث لنفَسه».","Half the plate vegetables and fruit, and moderate portions: 'a third for food, a third for drink and a third for breath'."],src:[{n:"WHO: Healthy diet",u:"https://www.who.int/news-room/fact-sheets/detail/healthy-diet"}]},
+   {n:["التنفس والاسترخاء","Breathing and relaxation"],ev:2,b:["التنفس البطيء العميق (نحو 6 أنفاس في الدقيقة) ينشّط الجهاز العصبي اللاودي، فيخفض النبض والضغط والتوتر بدرجة معتدلة.","Slow deep breathing (about 6 breaths a minute) activates the parasympathetic system, modestly lowering pulse, blood pressure and stress."],how:["شهيق من الأنف 4 ثوان، ثم زفير بطيء 6 ثوان، لمدة 5 دقائق مرتين يومياً.","Breathe in through the nose for 4 seconds, then out slowly for 6, for 5 minutes twice a day."],src:[NC("relaxation-techniques-what-you-need-to-know","Relaxation techniques")]},
+   {n:["الطمأنينة والذكر والصلاة","Inner peace, remembrance and prayer"],ev:1,b:["الإيمان والذكر والصلاة والدعاء مصدر سكينة، وتشير دراسات إلى ارتباط الممارسة الدينية بانخفاض الاكتئاب وتحسن التكيف مع المرض.","Faith, remembrance, prayer and supplication bring tranquillity, and studies link religious practice with less depression and better coping with illness."],how:["أذكار الصباح والمساء، والصلاة في وقتها، مع الأخذ بالأسباب الطبية.","Morning and evening remembrance and timely prayer, alongside medical care."],src:[PUBQ("religious coping depression meta-analysis",["PubMed: الدين والتكيف مع المرض","PubMed: religion and coping with illness"])]},
+   {n:["الشمس والهواء الطلق","Sunlight and fresh air"],ev:2,b:["التعرض المعتدل لشمس الصباح يضبط الساعة البيولوجية والنوم، ويساعد الجلد على صنع فيتامين د.","Moderate morning sunlight sets the body clock and sleep, and helps the skin make vitamin D."],how:["10 إلى 20 دقيقة على الذراعين والوجه في غير ساعات الذروة، مع تجنب الحروق.","10 to 20 minutes on the arms and face outside peak hours, avoiding sunburn."],src:[{n:"NIH ODS: Vitamin D",u:"https://ods.od.nih.gov/factsheets/VitaminD-Consumer/"}]},
+   {n:["العلاقات والدعم الاجتماعي","Relationships and social support"],ev:2,b:["العزلة المزمنة ترتبط بزيادة الوفيات بدرجة تقارب التدخين، وصلة الرحم والصحبة الطيبة تقوي المناعة النفسية.","Chronic loneliness is linked with higher death rates, close to the effect of smoking; family ties and good company build resilience."],how:["تواصل منتظم مع الأهل والأصدقاء، والتطوع، وطلب الدعم عند الحاجة.","Regular contact with family and friends, volunteering, and asking for support when needed."],src:[{n:"WHO: Social isolation and loneliness",u:"https://www.who.int/teams/social-determinants-of-health/demographic-change-and-healthy-ageing/social-isolation-and-loneliness"}]}],
+  warn:["الاستشفاء الذاتي لا يعالج وحده العدوى البكتيرية، أو الجلطات، أو السرطان، أو السكري من النوع الأول. لا تؤخر العلاج الطبي، ولا توقف دواءً موصوفاً دون طبيبك.","Self-healing alone does not treat bacterial infections, clots, cancer or type 1 diabetes. Do not delay medical care, and do not stop a prescribed medicine without your doctor."]},
+ fast:{
+  title:["الاستشفاء بالصيام","Healing through fasting"],
+  intro:["الصيام عبادة وصحة: في ساعاته الأولى يستهلك الجسم مخزون السكر في الكبد، ثم يتحول بعد 12 إلى 16 ساعة إلى حرق الدهون وإنتاج الكيتونات، وتنشط عمليات تنظيف الخلايا (الالتهام الذاتي). وأكثر فوائده الثابتة في البشر: خفض الوزن، وتحسن حساسية الإنسولين وضغط الدم والدهون.","Fasting is worship and health: in its first hours the body uses liver sugar stores, then after 12 to 16 hours it shifts to burning fat and making ketones, and cell clean-up (autophagy) increases. Its best-proven benefits in people are weight loss and better insulin sensitivity, blood pressure and lipids."],
+  ev:[QUR(2,184,"أَيَّامًا مَّعْدُودَاتٍ ۚ فَمَن كَانَ مِنكُم مَّرِيضًا أَوْ عَلَىٰ سَفَرٍ فَعِدَّةٌ مِّنْ أَيَّامٍ أُخَرَ","Fast a prescribed number of days. But whoever of you is ill or on a journey, then an equal number of other days. (Quran 2:184)")],
+  note:["أما عبارة «صوموا تصحّوا» فهي حديث ضعيف عند أهل الحديث، ومعناها صحيح في الجملة لما ثبت من فوائد الصيام.","The phrase 'Fast and you will be healthy' is a weak hadith according to hadith scholars, though its meaning is broadly true given the proven benefits of fasting."],
+  types:[
+   [["صيام رمضان","Ramadan fasting"],["من الفجر إلى المغرب لمدة شهر","Dawn to sunset for a month"],["خفض بسيط في الوزن والدهون، وآمن لمعظم الأصحاء. يحتاج مرضى السكري خطة مسبقة.","Modest weight and fat loss; safe for most healthy people. People with diabetes need a plan beforehand."],2],
+   [["صيام التطوع (الاثنين والخميس، والأيام البيض)","Voluntary fasting (Mondays and Thursdays, the 'white days')"],["يومان أسبوعياً أو 3 أيام شهرياً","Two days a week or 3 days a month"],["يشبه في أثره نظام 5:2 المدروس، وفيه خفض للوزن ومقاومة الإنسولين.","Similar to the studied 5:2 pattern, with lower weight and insulin resistance."],2],
+   [["الأكل المقيد بالوقت (16:8)","Time-restricted eating (16:8)"],["الأكل خلال 8 ساعات يومياً","Eating within an 8-hour window daily"],["فعّال لخفض الوزن بقدر يقارب تقليل السعرات المعتاد، ويفيد من يجده أسهل في الالتزام.","Lowers weight about as much as ordinary calorie restriction; helpful for those who find it easier to stick to."],2],
+   [["الصيام الطويل بالماء فقط (أكثر من 48 ساعة)","Prolonged water-only fasting (over 48 hours)"],["تحت إشراف طبي فقط","Only under medical supervision"],["خطر اختلال الأملاح وهبوط الضغط ومتلازمة إعادة التغذية. لا يُنصح به دون متابعة.","Risk of electrolyte imbalance, low blood pressure and refeeding syndrome. Not advised without supervision."],0]],
+  who:["لا يصوم أو يستشير الطبيب أولاً: مريض السكري من النوع الأول أو من يأخذ الإنسولين أو السلفونيل يوريا، والحامل والمرضع، ومرضى الكلى المتقدم، ومن لديه اضطراب أكل، والأطفال صياماً طويلاً، ومن يأخذ أدوية بمواعيد ثابتة مع الطعام، وكبار السن الضعاف.","Do not fast, or see a doctor first, if you: have type 1 diabetes or take insulin or sulfonylureas; are pregnant or breastfeeding; have advanced kidney disease; have an eating disorder; are a child (for long fasts); take medicines tied to meals; or are a frail older adult."],
+  stop:["اقطع الصيام فوراً عند: سكر أقل من 70 ملغ/دل أو أعلى من 300 ملغ/دل، أو دوخة شديدة أو إغماء، أو ألم صدر، أو ارتباك، أو جفاف شديد.","Break the fast at once with: glucose below 70 mg/dL or above 300 mg/dL, severe dizziness or fainting, chest pain, confusion, or severe dehydration."],
+  tips:["السحور متأخراً وفيه بروتين وألياف، والإفطار على تمرات وماء، ثم وجبة معتدلة، و2 إلى 3 لترات ماء بين المغرب والفجر، وتقليل المقليات والحلويات.","Have a late suhoor with protein and fibre, break the fast with dates and water followed by a moderate meal, drink 2 to 3 litres between sunset and dawn, and limit fried food and sweets."],
+  src:[PUBQ("Ramadan fasting diabetes IDF-DAR practical guidelines",["IDF-DAR: السكري ورمضان (PubMed)","IDF-DAR: diabetes and Ramadan (PubMed)"]),PUBQ("time-restricted eating calorie restriction randomized trial NEJM 2022",["PubMed: الأكل المقيد بالوقت","PubMed: time-restricted eating"]),PUBQ("refeeding syndrome review",["PubMed: متلازمة إعادة التغذية","PubMed: refeeding syndrome"])]},
+ water:{
+  title:["الاستشفاء بالماء","Water therapy"],
+  intro:["الماء أساس الحياة ونحو 60% من وزن الجسم، ويُستعمل علاجياً شرباً وغمراً وتبريداً وتدفئة.","Water is the basis of life and about 60% of body weight; it is used therapeutically by drinking, immersion, cooling and warmth."],
+  ev:[SUN("bukhari",5723,"الحُمّى من فَيحِ جهنم فأطفئوها بالماء","Fever is from the heat of Hell, so cool it with water. (Sahih al-Bukhari 5723)")],
+  cards:[
+   {n:["الشرب الكافي","Drinking enough"],ev:3,b:["يحتاج البالغ نحو 2 لتر (المرأة) إلى 2.5 لتر (الرجل) من السوائل يومياً، وأكثر في الحر والرياضة والحمى. يقي من حصوات الكلى والإمساك والتهابات المثانة.","Adults need about 2 litres (women) to 2.5 litres (men) of fluid a day, more in heat, exercise and fever. It helps prevent kidney stones, constipation and bladder infections."],how:["علامة الكفاية: بول أصفر فاتح. مرضى فشل القلب والكلى يلتزمون بكمية يحددها الطبيب.","Sign of enough: pale yellow urine. People with heart or kidney failure follow the amount their doctor sets."],src:[PUBQ("EFSA dietary reference values water",["EFSA: احتياج الماء (PubMed)","EFSA: water requirements (PubMed)"])]},
+   {n:["التبريد في الحمى","Cooling during fever"],ev:2,b:["الكمادات بالماء الفاتر (لا البارد المثلج) تخفف الانزعاج، مع خافض الحرارة المناسب وكثرة السوائل.","Lukewarm (not ice-cold) compresses ease discomfort, together with a suitable fever reducer and plenty of fluids."],how:["لا تستعمل الماء المثلج أو الكحول على جلد الطفل. راجع الطبيب لأي رضيع دون 3 أشهر لديه حمى.","Do not use iced water or alcohol on a child's skin. See a doctor for any baby under 3 months with fever."],src:[MP("ency/article/003090.htm")]},
+   {n:["العلاج المائي والتمارين في الماء","Aquatic exercise and hydrotherapy"],ev:2,b:["التمارين في الماء الدافئ تخفف الألم وتحسن الحركة في خشونة الركبة والورك وآلام الظهر المزمنة، ويخفف الماء الحمل عن المفاصل.","Exercise in warm water eases pain and improves function in knee and hip osteoarthritis and chronic back pain, and water takes load off the joints."],how:["جلسات 30 إلى 45 دقيقة، 2 إلى 3 مرات أسبوعياً، بإشراف معالج في البداية.","Sessions of 30 to 45 minutes, 2 to 3 times a week, supervised by a therapist at first."],src:[PUBQ("aquatic exercise osteoarthritis Cochrane",["Cochrane: التمارين المائية (PubMed)","Cochrane: aquatic exercise (PubMed)"])]},
+   {n:["المغطس الدافئ (الجلوس في ماء دافئ)","Warm sitz bath"],ev:2,b:["يخفف ألم البواسير والشرخ الشرجي ويرخي العضلة العاصرة.","Eases the pain of haemorrhoids and anal fissure and relaxes the anal sphincter."],how:["ماء دافئ 10 إلى 15 دقيقة، 2 إلى 3 مرات يومياً وبعد التبرز.","Warm water for 10 to 15 minutes, 2 to 3 times a day and after bowel movements."],src:[MP("hemorrhoids.html")]},
+   {n:["الساونا والحمام الحار","Sauna and hot baths"],ev:1,b:["دراسات رصدية فنلندية تربط الساونا المنتظمة بانخفاض أمراض القلب، لكنها لا تثبت السببية.","Finnish observational studies link regular sauna with less heart disease, but do not prove cause and effect."],how:["تُتجنب مع الذبحة غير المستقرة، والجلطة الحديثة، وتضيق الصمام الأبهري، والحمل، وبعد الكحول. اشرب الماء بعدها.","Avoid with unstable angina, a recent heart attack, aortic stenosis, pregnancy, or after alcohol. Drink water afterwards."],src:[PUBQ("sauna bathing cardiovascular mortality cohort",["PubMed: الساونا وصحة القلب","PubMed: sauna and heart health"])]},
+   {n:["الماء البارد والغمر البارد","Cold water and cold immersion"],ev:1,b:["قد يخفف ألم العضلات بعد الرياضة، والأدلة على المناعة والمزاج محدودة.","May ease muscle soreness after exercise; evidence on immunity and mood is limited."],how:["خطر صدمة البرد واضطراب نبض القلب؛ لا يُنصح به لمرضى القلب والضغط غير المنضبط، ولا السباحة منفرداً في ماء بارد.","Risk of cold shock and heart-rhythm problems; not advised with heart disease or uncontrolled blood pressure, and never swim alone in cold water."],src:[PUBQ("cold water immersion health effects systematic review",["PubMed: الغمر بالماء البارد","PubMed: cold water immersion"])]},
+   {n:["الوضوء والاغتسال","Ablution (wudu) and ghusl"],ev:1,b:["الطهارة المتكررة تحافظ على نظافة اليدين والفم والأنف والجلد، وغسل اليدين من أقوى وسائل الوقاية من العدوى.","Repeated ritual washing keeps hands, mouth, nose and skin clean, and handwashing is among the strongest ways to prevent infection."],how:["غسل اليدين بالماء والصابون 20 ثانية قبل الطعام وبعد الحمام.","Wash hands with soap and water for 20 seconds before eating and after the toilet."],src:[{n:"WHO: Hand hygiene",u:"https://www.who.int/campaigns/world-hand-hygiene-day"}]}],
+  warn:["احذر «التسمم المائي»: شرب كميات كبيرة جداً في وقت قصير (أكثر من لتر في الساعة لعدة ساعات) قد يخفض الصوديوم بشكل خطير.","Beware 'water intoxication': drinking very large amounts in a short time (over a litre an hour for several hours) can dangerously lower sodium."]},
+ hijama:{
+  title:["الحجامة","Cupping (hijama)"],
+  intro:["الحجامة الرطبة: وضع كؤوس تفريغ هواء على الجلد، ثم خدوش سطحية دقيقة، ثم إعادة الكؤوس لسحب كمية قليلة من الدم. والحجامة الجافة: كؤوس الشفط دون خدوش.","Wet cupping: suction cups are placed on the skin, then tiny superficial cuts are made and the cups reapplied to draw a small amount of blood. Dry cupping uses suction cups without cuts."],
+  ev:[SUN("bukhari",5696,"إنّ أمثلَ ما تداويتم به الحجامةُ والقُسطُ البحري","The best treatments you use are cupping and sea costus. (Sahih al-Bukhari 5696)"),
+      SUN("bukhari",5680,"الشفاء في ثلاثة: شَربةِ عسل، وشَرطةِ مِحجم، وكيّةِ نار، وأنهى أمتي عن الكي","Healing is in three: a drink of honey, the incision of a cupper, and cautery with fire, but I forbid my nation cautery. (Sahih al-Bukhari 5680)"),
+      SUN("abudawud",3861,"من احتجم لسبعَ عشرةَ وتسعَ عشرةَ وإحدى وعشرين كان شفاءً من كل داء","Whoever is cupped on the 17th, 19th and 21st (of the lunar month) will have a cure for every disease. (Sunan Abi Dawud 3861, graded hasan by al-Albani)")],
+  sci:["مراجعات منهجية لتجارب صغيرة تشير إلى أن الحجامة قد تخفف آلام الرقبة وأسفل الظهر والصداع على المدى القصير، لكن جودة الأدلة منخفضة. ولا دليل علمي على أنها «تنقّي الدم من السموم»، ولا على أفضلية أيام بعينها طبياً.","Systematic reviews of small trials suggest cupping may ease neck pain, low back pain and headache in the short term, but evidence quality is low. There is no scientific evidence that it 'cleans toxins from the blood', nor medical evidence favouring particular days."],
+  evl:1,
+  contra:[["فقر الدم أو هيموغلوبين أقل من 11 غ/دل","Anaemia or haemoglobin below 11 g/dL"],["أدوية السيولة (وارفارين، أبيكسابان، ريفاروكسابان) ومضادات الصفائح (كلوبيدوغريل، وأسبرين بجرعة علاجية)","Blood thinners (warfarin, apixaban, rivaroxaban) and antiplatelets (clopidogrel, therapeutic aspirin)"],["اضطرابات النزف ونقص الصفائح والهيموفيليا","Bleeding disorders, low platelets and haemophilia"],["الحمل، خاصة الأشهر الأولى، وعلى البطن وأسفل الظهر","Pregnancy, especially early, and over the abdomen and lower back"],["الأطفال الصغار وكبار السن الضعاف","Young children and frail older adults"],["السكري غير المنضبط وضعف التئام الجروح والجلد الملتهب أو المصاب بالإكزيما أو الصدفية","Uncontrolled diabetes, poor wound healing, and inflamed skin, eczema or psoriasis"],["هبوط الضغط، والحمى، والضعف بعد مرض حاد","Low blood pressure, fever, and weakness after an acute illness"],["القلب الصناعي (منظم النبض) وفوق الأوردة أو الدوالي أو العقد اللمفاوية","Pacemakers, and over veins, varicose veins or lymph nodes"]],
+  safe:[["الممارس مرخّص من وزارة الصحة، وأدوات معقمة لمرة واحدة (كؤوس وشفرات) تُفتح أمامك.","A practitioner licensed by the health ministry, with single-use sterile cups and blades opened in front of you."],["أخبر الممارس بكل أدويتك وأمراضك، وافحص الهيموغلوبين قبلها إن كنت معرضاً لفقر الدم.","Tell the practitioner all your medicines and conditions, and check haemoglobin first if you are prone to anaemia."],["بعدها: نظّف مواضع الخدوش وغطها، وتجنب المجهود الشديد يومها، وراجع الطبيب عند احمرار متزايد أو صديد أو حمى.","Afterwards: clean and cover the cuts, avoid heavy exertion that day, and see a doctor for spreading redness, pus or fever."],["لا تُجرى في البيت بأدوات مستعملة: خطر نقل التهاب الكبد B وC وفيروس HIV.","Never do it at home with reused tools: risk of transmitting hepatitis B and C and HIV."],["الآثار الدائرية طبيعية وتزول خلال أيام، أما الحروق والندبات والعدوى وفقر الدم مع التكرار فهي مضاعفات مسجلة.","Round marks are normal and fade in days; burns, scars, infection and anaemia with repeated sessions are recorded complications."]],
+  src:[NC("cupping","Cupping"),PUBQ("wet cupping systematic review pain",["PubMed: مراجعات الحجامة الرطبة","PubMed: wet cupping reviews"])]},
+ kayy:{
+  title:["العلاج بالكي ومواضعه","Cautery therapy and its sites"],
+  intro:["الكي: إحراق موضع من الجلد بأداة محماة لغرض علاجي، وهو من أقدم أساليب الطب عند العرب وغيرهم. وقد أقرّه النبي ﷺ عند الحاجة وكرهه ونهى أمته عنه، فقال العلماء: يجوز عند الضرورة إذا تعيّن ولم يوجد دواء أنفع، وتركه أفضل لمن قدر. والكي الحديث المنضبط طبياً هو ما يستعمله الأطباء اليوم.","Cautery means burning a spot of skin with a heated tool for treatment, one of the oldest methods in Arab and other medicine. The Prophet ﷺ allowed it when needed yet disliked it and forbade it to his nation, so scholars said it is permitted when necessary and no better remedy exists, and leaving it is better for those able. Its controlled modern form is what doctors use today."],
+  ev:[SUN("bukhari",5680,"الشفاء في ثلاثة: شَربةِ عسل، وشَرطةِ مِحجم، وكيّةِ نار، وأنهى أمتي عن الكي","Healing is in three: a drink of honey, the incision of a cupper, and cautery with fire, but I forbid my nation cautery. (Sahih al-Bukhari 5680)"),
+      SUN("bukhari",5683,"إن كان في شيء من أدويتكم خير ففي شرطة محجم، أو شربة عسل، أو لذعة بنار توافق الداء، وما أحب أن أكتوي","If there is good in any of your medicines, it is in the cupper's incision, a drink of honey, or a touch of fire that suits the illness, and I do not like to be cauterised. (Sahih al-Bukhari 5683)"),
+      SUN("muslim","2207a","بعث رسول الله ﷺ إلى أُبيّ بن كعب طبيباً، فقطع منه عِرقاً، ثم كواه عليه","The Messenger of God ﷺ sent a physician to Ubayy ibn Ka'b, who cut a vein and then cauterised it. (Sahih Muslim 2207a)"),
+      SUN("bukhari",5705,"…هم الذين لا يَسترقون، ولا يتطيّرون، ولا يكتوون، وعلى ربهم يتوكلون","…they are those who do not ask for ruqyah, do not believe in bad omens, and do not get themselves cauterised, but put their trust in their Lord. (Sahih al-Bukhari 5705)")],
+  modern:[[["الكي الكهربائي في الجراحة","Electrocautery in surgery"],["لوقف النزف وقطع الأنسجة، وهو امتداد مباشر لكي الأوعية النازفة عند الزهراوي.","Stops bleeding and cuts tissue; a direct descendant of al-Zahrawi's cautery of bleeding vessels."]],[["كي نزف الأنف","Cautery for nosebleeds"],["بنترات الفضة أو الكهرباء للنزف المتكرر من مقدمة الأنف، عند طبيب الأنف.","Silver nitrate or electric cautery for repeated bleeding from the front of the nose, by an ENT doctor."]],[["الكي بالتردد الحراري (الاستئصال)","Radiofrequency ablation"],["لعلاج الرجفان الأذيني وبعض اضطرابات النظم، وأورام الكبد الصغيرة، ودوالي الساقين، وبعض آلام المفاصل الفقرية.","Treats atrial fibrillation and some arrhythmias, small liver tumours, leg varicose veins, and some spinal joint pain."]],[["الكي بالتبريد","Cryotherapy"],["لإزالة الثآليل وبعض الآفات الجلدية وما قبل السرطانية.","Removes warts and some skin and precancerous lesions."]],[["كي الثآليل والزوائد الجلدية","Cautery of warts and skin tags"],["بأجهزة معقمة وتخدير موضعي عند طبيب الجلدية.","With sterile devices and local anaesthetic by a dermatologist."]]],
+  risk:[["الحروق العميقة والتهابها، والتسمم الدموي، خاصة لدى الأطفال.","Deep burns, wound infection and sepsis, especially in children."],["الندبات والجدرة (الندبة المتضخمة) والتشوهات الدائمة.","Scarring, keloids and permanent disfigurement."],["تأخير التشخيص والعلاج الصحيح، وهو أخطر أضراره: سُجلت حالات كيّ لأطفال مصابين بالتهاب السحايا والزائدة الدودية والتهاب الرئة.","Delaying correct diagnosis and treatment, its greatest harm: children with meningitis, appendicitis and pneumonia have been cauterised instead."],["نقل العدوى بأدوات غير معقمة.","Infection from unsterile tools."]],
+  sites:[
+   {r:"brain",x:100,y:16,n:["أعلى الرأس (اليافوخ)","Crown of the head"],h:["الصداع المزمن والنوازل","Chronic headache and catarrh"],m:["الصداع المزمن يُشخّص سببه ويُعالج بالأدوية الوقائية وتعديل نمط الحياة.","Chronic headache needs its cause diagnosed and treatment with preventive medicines and lifestyle change."],d:"migraine"},
+   {r:"brain",x:80,y:34,n:["الصدغ","Temple"],h:["الشقيقة","Migraine"],m:["للشقيقة علاجات حادة ووقائية حديثة فعالة، ومنها أدوية CGRP.","Migraine has effective acute and preventive treatments, including CGRP medicines."],d:"migraine"},
+   {r:"ent",x:73,y:46,n:["خلف الأذن","Behind the ear"],h:["وجع الأذن المزمن","Chronic ear pain"],m:["التهاب الأذن يُفحص بالمنظار، ويُعالج بالمسكنات أو المضاد الحيوي عند الحاجة.","Ear infection is checked with an otoscope and treated with pain relief or antibiotics when needed."],d:"otitis"},
+   {r:"brain",x:84,y:58,n:["الوجه بجانب الفم","Side of the face near the mouth"],h:["اللقوة (شلل الوجه)","Facial palsy"],m:["شلل الوجه (بِل) يُعالج بالكورتيزون خلال 72 ساعة وحماية العين، ويُستبعد الجلطة.","Bell's palsy is treated with steroids within 72 hours and eye protection, after ruling out stroke."],d:"stroke"},
+   {r:"lungs",x:100,y:118,n:["الصدر","Chest"],h:["السعال المزمن والربو","Chronic cough and asthma"],m:["الربو يُضبط ببخاخات الكورتيزون والموسعات حسب GINA 2026، والكي لا يفيد ويؤذي.","Asthma is controlled with steroid and reliever inhalers per GINA 2026; cautery does not help and causes harm."],d:"asthma"},
+   {r:"lungs",x:76,y:150,n:["بين الأضلاع","Between the ribs"],h:["ذات الجنب","Pleurisy"],m:["حذّر الزهراوي نفسه من كي ما بين الأضلاع لأنه قد يسبب ناسوراً أو الوفاة. التهاب غشاء الرئة يُشخّص بالأشعة ويُعالج سببه.","Al-Zahrawi himself warned that cauterising between the ribs could cause a fistula or death. Pleurisy is diagnosed by imaging and its cause treated."],d:"pneu"},
+   {r:"stomach",x:116,y:176,n:["فم المعدة","Pit of the stomach"],h:["ضعف المعدة وعسر الهضم","Weak stomach and indigestion"],m:["عسر الهضم يُعالج بفحص جرثومة المعدة ومثبطات الحمض وتعديل الغذاء.","Indigestion is managed by H. pylori testing, acid suppressants and diet change."],d:"ulcer"},
+   {r:"liver",x:82,y:180,n:["فوق الكبد","Over the liver"],h:["أوجاع الكبد","Liver complaints"],m:["أمراض الكبد تُشخّص بالتحاليل والأشعة، ولها علاجات فعالة لالتهاب الكبد B وC والكبد الدهني.","Liver disease is diagnosed with tests and imaging; there are effective treatments for hepatitis B, C and fatty liver."],d:"hcv"},
+   {r:"blood",x:124,y:192,n:["فوق الطحال","Over the spleen"],h:["تضخم الطحال","Enlarged spleen"],m:["تضخم الطحال علامة على مرض آخر (عدوى أو مرض دم أو كبد) يجب البحث عنه.","An enlarged spleen is a sign of another disease (infection, blood or liver disease) that must be found."],d:"brucella"},
+   {r:"spine",x:100,y:228,n:["أسفل الظهر","Lower back"],h:["وجع الظهر","Back pain"],m:["آلام الظهر تتحسن بالحركة والتمارين والمسكنات حسب NICE NG59.","Back pain improves with activity, exercise and pain relief per NICE NG59."],d:"lbp",back:1},
+   {r:"spine",x:80,y:268,n:["الورك وأعلى الفخذ","Hip and upper thigh"],h:["عرق النسا","Sciatica"],m:["عرق النسا يتحسن غالباً خلال أسابيع بالعلاج الطبيعي والمسكنات، والجراحة لحالات قليلة.","Sciatica usually improves within weeks with physiotherapy and pain relief; surgery for a few cases."],d:"lbp",back:1},
+   {r:"joints",x:88,y:332,n:["حول المفاصل (الركبة والقدم)","Around joints (knee and foot)"],h:["النقرس وأوجاع المفاصل","Gout and joint pains"],m:["النقرس يُعالج بأدوية خفض حمض اليوريك (ألوبيورينول) ومضادات الالتهاب في النوبة.","Gout is treated with urate-lowering drugs (allopurinol) and anti-inflammatories during attacks."],d:"gout"},
+   {r:"joints",x:50,y:210,n:["الأطراف","The limbs"],h:["الخدر","Numbness"],m:["الخدر له أسباب كثيرة (السكري ونقص B12 وانضغاط الأعصاب) تحتاج تشخيصاً. وقد اشترط الزهراوي معرفة دقيقة بالتشريح قبل كي الأطراف.","Numbness has many causes (diabetes, low B12, nerve compression) that need diagnosis. Al-Zahrawi required precise anatomical knowledge before cauterising the limbs."],d:"t2dm"},
+   {r:"heart",x:44,y:250,n:["العرق النازف","A bleeding vessel"],h:["قطع النزيف","Stopping bleeding"],m:["هذا الاستعمال ما زال قائماً بصورته الحديثة: الكي الكهربائي في غرف العمليات.","This use continues in modern form: electrocautery in the operating room."],d:""}],
+  zsrc:[{n:"Wikipedia: Al-Zahrawi",u:"https://en.wikipedia.org/wiki/Al-Zahrawi"},{n:"Wikipedia: The Canon of Medicine",u:"https://en.wikipedia.org/wiki/The_Canon_of_Medicine"},PUBQ("Albucasis cautery surgery history",["PubMed: الزهراوي والكي","PubMed: al-Zahrawi and cautery"]),PUBQ("traditional cautery complications children",["PubMed: مضاعفات الكي التقليدي","PubMed: complications of traditional cautery"])]},
+ world:{
+  title:["مدارس الاستشفاء العالمية بميزان الدليل","World healing traditions, weighed by evidence"],
+  intro:["عرفت شعوب العالم مدارس متعددة للتداوي. نعرض هنا أشهرها بإنصاف: ما ثبت منها، وما لم يثبت، وما فيه خطر، استناداً إلى المعاهد الوطنية للصحة الأمريكية (NCCIH) ومنظمة الصحة العالمية.","Peoples around the world developed many healing traditions. Here are the best known, presented fairly: what is proven, what is not, and what carries risk, based on the US NCCIH and the WHO."],
+  items:[
+   {n:["الطب اليوناني العربي (اليوناني)","Greco-Arab (Unani) medicine"],o:["العالم الإسلامي، وجنوب آسيا اليوم","The Islamic world; South Asia today"],ev:1,b:["قام على نظرية الأخلاط الأربعة، وطوّره الرازي وابن سينا في «القانون في الطب» الذي دُرّس في أوروبا قروناً. وتراثه في الوقاية والغذاء والنظافة ما زال صالحاً، أما نظرية الأخلاط فتجاوزها الطب الحديث.","Built on the four-humour theory and developed by al-Razi and Ibn Sina in The Canon of Medicine, taught in Europe for centuries. Its legacy in prevention, diet and hygiene still holds, while humoral theory has been superseded."],s:["بعض أدويته التقليدية سامة، فلا تُستعمل مركّبات مجهولة المصدر.","Some traditional remedies are toxic, so avoid compounds of unknown origin."],src:[{n:"Wikipedia: Unani medicine",u:"https://en.wikipedia.org/wiki/Unani_medicine"},{n:"Wikipedia: The Canon of Medicine",u:"https://en.wikipedia.org/wiki/The_Canon_of_Medicine"}]},
+   {n:["الأيورفيدا","Ayurveda"],o:["الهند","India"],ev:1,b:["نظام هندي قديم يقوم على التوازن بين ثلاث «دوشات»، ويستعمل الأعشاب والغذاء والتدليك واليوغا. بعض أعشابه (مثل الكركم والأشواغاندا) قيد الدراسة بنتائج أولية.","An ancient Indian system based on balancing three 'doshas', using herbs, diet, massage and yoga. Some of its herbs (such as turmeric and ashwagandha) are being studied with early results."],s:["حذّرت NCCIH وFDA من أن بعض مستحضراتها تحتوي الرصاص والزئبق والزرنيخ بمستويات سامة.","NCCIH and the FDA warn that some preparations contain toxic levels of lead, mercury and arsenic."],src:[NC("ayurvedic-medicine-in-depth","Ayurvedic medicine")]},
+   {n:["الكامبو","Kampo"],o:["اليابان","Japan"],ev:1,b:["طب عشبي ياباني مستمد من الطب الصيني، مدمج في النظام الصحي الياباني، ويضم نحو 148 تركيبة مقننة معتمدة.","Japanese herbal medicine derived from Chinese medicine, integrated into Japan's health system, with about 148 standardised approved formulas."],s:["له آثار جانبية وتداخلات دوائية؛ يُستعمل بإشراف طبي.","It has side effects and drug interactions; use under medical supervision."],src:[{n:"Wikipedia: Kampo",u:"https://en.wikipedia.org/wiki/Kampo"}]},
+   {n:["الطب الصيني التقليدي","Traditional Chinese medicine"],o:["الصين","China"],ev:2,b:["الوخز بالإبر والتاي تشي والأعشاب. انظر قسم الطب الصيني للتفاصيل.","Acupuncture, tai chi and herbs. See the Chinese medicine section for details."],s:["الأعشاب الصينية المستوردة قد تكون مغشوشة أو ملوثة.","Imported Chinese herbs may be adulterated or contaminated."],src:[NC("tai-chi-what-you-need-to-know","Tai chi")],link:"tcm"},
+   {n:["اليوغا","Yoga"],o:["الهند، ومنتشرة عالمياً","India, now worldwide"],ev:2,b:["تحسّن آلام أسفل الظهر المزمنة والمرونة والتوازن والتوتر.","Improves chronic low back pain, flexibility, balance and stress."],s:["تُتجنب الأوضاع المقلوبة مع الزرق وارتفاع الضغط غير المنضبط، وتُعدّل في الحمل وهشاشة العظام. يُختار منها الجانب الرياضي التنفسي.","Avoid inverted poses with glaucoma or uncontrolled blood pressure, and adapt in pregnancy and osteoporosis. Choose its exercise and breathing side."],src:[NC("yoga-what-you-need-to-know","Yoga")]},
+   {n:["التأمل واليقظة الذهنية","Meditation and mindfulness"],o:["متعدد الأصول","Many origins"],ev:2,b:["برامج اليقظة الذهنية (مثل MBSR) تخفف القلق والاكتئاب والألم المزمن بدرجة معتدلة. وفي التفكر والذكر بديل أصيل في ثقافتنا.","Mindfulness programmes (such as MBSR) moderately ease anxiety, depression and chronic pain. Reflection and remembrance of God are an authentic alternative in our culture."],s:["قد تزيد الأعراض لدى قلة من المصابين باضطرابات نفسية شديدة أو صدمات؛ يُمارس بإشراف عند الحاجة.","May worsen symptoms in a few people with severe mental illness or trauma; practise with guidance when needed."],src:[NC("meditation-and-mindfulness-what-you-need-to-know","Meditation and mindfulness")]},
+   {n:["التاي تشي والتشي غونغ","Tai chi and qigong"],o:["الصين","China"],ev:2,b:["حركات بطيئة مع تنفس منتظم، تقلل السقوط لدى كبار السن، وتوصي بها جمعية الروماتيزم الأمريكية لخشونة الركبة.","Slow movements with steady breathing; reduces falls in older adults and is recommended by the American College of Rheumatology for knee osteoarthritis."],s:["آمن عموماً، وآثاره الجانبية بسيطة كآلام العضلات.","Generally safe, with minor side effects such as muscle aches."],src:[NC("tai-chi-what-you-need-to-know","Tai chi")]},
+   {n:["التدليك العلاجي","Therapeutic massage"],o:["كل الحضارات","All civilisations"],ev:1,b:["قد يخفف آلام الرقبة والكتف والقلق على المدى القصير، ويفيد الخدّج في زيادة الوزن.","May ease neck and shoulder pain and anxiety in the short term, and helps premature babies gain weight."],s:["يُتجنب العميق منه مع الجلطات وهشاشة العظام الشديدة وأدوية السيولة.","Avoid deep massage with clots, severe osteoporosis or blood thinners."],src:[NC("massage-therapy-what-you-need-to-know","Massage therapy")]},
+   {n:["العلاج بالموسيقى والصوت","Music therapy"],o:["كل الحضارات (وكان في بيمارستانات المسلمين)","All civilisations (including Muslim hospitals, the bimaristans)"],ev:2,b:["يخفف القلق والألم حول العمليات، ويساعد في رعاية الخرف.","Eases anxiety and pain around surgery, and helps in dementia care."],s:["آمن عموماً. ويمكن الاستعاضة بتلاوة القرآن والأناشيد لمن يرى ذلك.","Generally safe. Quran recitation and nasheeds are an alternative for those who prefer."],src:[NC("music-and-health-what-you-need-to-know","Music and health")]},
+   {n:["الاستحمام في الغابة (شينرين يوكو)","Forest bathing (shinrin-yoku)"],o:["اليابان","Japan"],ev:1,b:["المشي الهادئ في الطبيعة يخفض التوتر والنبض في دراسات صغيرة.","Quiet walks in nature lower stress and pulse in small studies."],s:["آمن؛ احذر الحساسية والحشرات والحر.","Safe; beware allergies, insects and heat."],src:[PUBQ("shinrin-yoku forest bathing systematic review",["PubMed: الاستحمام في الغابة","PubMed: forest bathing"])]},
+   {n:["الساونا الفنلندية","Finnish sauna"],o:["فنلندا","Finland"],ev:1,b:["ترتبط في دراسات رصدية بانخفاض أمراض القلب والخرف.","Linked in observational studies with less heart disease and dementia."],s:["انظر موانعها في تبويب الماء.","See its contraindications in the Water tab."],src:[PUBQ("sauna bathing cardiovascular mortality cohort",["PubMed: الساونا وصحة القلب","PubMed: sauna and heart health"])]},
+   {n:["المعالجة المثلية (الهوميوباثي)","Homeopathy"],o:["ألمانيا","Germany"],ev:0,b:["تقوم على تخفيف المادة إلى درجة لا يبقى فيها منها شيء تقريباً. وخلصت NCCIH إلى أنه لا دليل كافياً على فعاليتها في أي مرض محدد.","Based on diluting substances until almost none remains. NCCIH concludes there is little evidence it works for any specific condition."],s:["خطرها الأكبر ترك العلاج الفعّال أو اللقاحات بسببها.","Its biggest risk is abandoning effective treatment or vaccines because of it."],src:[NC("homeopathy","Homeopathy")]}]}
+};
+// معايير النمو: WHO Child Growth Standards (0–60 شهراً) وCDC 2000 (60–240 شهراً)، بصيغة [الشهر، L، M، S]
+const GROWTH={"b":{"who":{"wfa":[[0,0.3487,3.3464,0.14602],[1,0.2297,4.4709,0.13395],[2,0.197,5.5675,0.12385],[3,0.1738,6.3762,0.11727],[4,0.1553,7.0023,0.11316],[5,0.1395,7.5105,0.1108],[6,0.1257,7.934,0.10958],[7,0.1134,8.297,0.10902],[8,0.1021,8.6151,0.10882],[9,0.0917,8.9014,0.10881],[10,0.082,9.1649,0.10891],[11,0.073,9.4122,0.10906],[12,0.0644,9.6479,0.10925],[13,0.0563,9.8749,0.10949],[14,0.0487,10.0953,0.10976],[15,0.0413,10.3108,0.11007],[16,0.0343,10.5228,0.11041],[17,0.0275,10.7319,0.11079],[18,0.0211,10.9385,0.11119],[19,0.0148,11.143,0.11164],[20,0.0087,11.3462,0.11211],[21,0.0029,11.5486,0.11261],[22,-0.0028,11.7504,0.11314],[23,-0.0083,11.9514,0.11369],[24,-0.0137,12.1515,0.11426],[25,-0.0189,12.3502,0.11485],[26,-0.024,12.5466,0.11544],[27,-0.0289,12.7401,0.11604],[28,-0.0337,12.9303,0.11664],[29,-0.0385,13.1169,0.11723],[30,-0.0431,13.3,0.11781],[31,-0.0476,13.4798,0.11839],[32,-0.052,13.6567,0.11896],[33,-0.0564,13.8309,0.11953],[34,-0.0606,14.0031,0.12008],[35,-0.0648,14.1736,0.12062],[36,-0.0689,14.3429,0.12116],[37,-0.0729,14.5113,0.12168],[38,-0.0769,14.6791,0.1222],[39,-0.0808,14.8466,0.12271],[40,-0.0846,15.014,0.12322],[41,-0.0883,15.1813,0.12373],[42,-0.092,15.3486,0.12425],[43,-0.0957,15.5158,0.12478],[44,-0.0993,15.6828,0.12531],[45,-0.1028,15.8497,0.12586],[46,-0.1063,16.0163,0.12643],[47,-0.1097,16.1827,0.127],[48,-0.1131,16.3489,0.12759],[49,-0.1165,16.515,0.12819],[50,-0.1198,16.6811,0.1288],[51,-0.123,16.8471,0.12943],[52,-0.1262,17.0132,0.13005],[53,-0.1294,17.1792,0.13069],[54,-0.1325,17.3452,0.13133],[55,-0.1356,17.5111,0.13197],[56,-0.1387,17.6768,0.13261],[57,-0.1417,17.8422,0.13325],[58,-0.1447,18.0073,0.13389],[59,-0.1477,18.1722,0.13453],[60,-0.1506,18.3366,0.13517]],"hfa":[[0,1,49.8842,0.03795],[1,1,54.7244,0.03557],[2,1,58.4249,0.03424],[3,1,61.4292,0.03328],[4,1,63.886,0.03257],[5,1,65.9026,0.03204],[6,1,67.6236,0.03165],[7,1,69.1645,0.03139],[8,1,70.5994,0.03124],[9,1,71.9687,0.03117],[10,1,73.2812,0.03118],[11,1,74.5388,0.03125],[12,1,75.7488,0.03137],[13,1,76.9186,0.03154],[14,1,78.0497,0.03174],[15,1,79.1458,0.03197],[16,1,80.2113,0.03222],[17,1,81.2487,0.0325],[18,1,82.2587,0.03279],[19,1,83.2418,0.0331],[20,1,84.1996,0.03342],[21,1,85.1348,0.03376],[22,1,86.0477,0.0341],[23,1,86.941,0.03445],[24,1,87.1161,0.03507],[25,1,87.972,0.03542],[26,1,88.8065,0.03576],[27,1,89.6197,0.0361],[28,1,90.412,0.03642],[29,1,91.1828,0.03674],[30,1,91.9327,0.03704],[31,1,92.6631,0.03733],[32,1,93.3753,0.03761],[33,1,94.0711,0.03787],[34,1,94.7532,0.03812],[35,1,95.4236,0.03836],[36,1,96.0835,0.03858],[37,1,96.7337,0.03879],[38,1,97.3749,0.039],[39,1,98.0073,0.03919],[40,1,98.631,0.03937],[41,1,99.2459,0.03954],[42,1,99.8515,0.03971],[43,1,100.4485,0.03986],[44,1,101.0374,0.04002],[45,1,101.6186,0.04016],[46,1,102.1933,0.04031],[47,1,102.7625,0.04045],[48,1,103.3273,0.04059],[49,1,103.8886,0.04073],[50,1,104.4473,0.04086],[51,1,105.0041,0.041],[52,1,105.5596,0.04113],[53,1,106.1138,0.04126],[54,1,106.6668,0.04139],[55,1,107.2188,0.04152],[56,1,107.7697,0.04165],[57,1,108.3198,0.04177],[58,1,108.8689,0.0419],[59,1,109.417,0.04202],[60,1,109.9638,0.04214]],"bfa":[[0,-0.3053,13.4069,0.0956],[1,0.2708,14.9441,0.09027],[2,0.1118,16.3195,0.08677],[3,0.0068,16.8987,0.08495],[4,-0.0727,17.1579,0.08378],[5,-0.137,17.2919,0.08296],[6,-0.1913,17.3422,0.08234],[7,-0.2385,17.3288,0.08183],[8,-0.2802,17.2647,0.0814],[9,-0.3176,17.1662,0.08102],[10,-0.3516,17.0488,0.08068],[11,-0.3828,16.9239,0.08037],[12,-0.4115,16.7981,0.08009],[13,-0.4382,16.6743,0.07982],[14,-0.463,16.5548,0.07958],[15,-0.4863,16.4409,0.07935],[16,-0.5082,16.3335,0.07913],[17,-0.5289,16.2329,0.07892],[18,-0.5484,16.1392,0.07873],[19,-0.5669,16.0528,0.07854],[20,-0.5846,15.9743,0.07836],[21,-0.6014,15.9039,0.07818],[22,-0.6174,15.8412,0.07802],[23,-0.6328,15.7852,0.07786],[24,-0.6187,16.0189,0.07785],[25,-0.584,15.98,0.07792],[26,-0.5497,15.9414,0.078],[27,-0.5166,15.9036,0.07808],[28,-0.485,15.8667,0.07818],[29,-0.4552,15.8306,0.07829],[30,-0.4274,15.7953,0.07841],[31,-0.4016,15.7606,0.07854],[32,-0.3782,15.7267,0.07867],[33,-0.3572,15.6934,0.07882],[34,-0.3388,15.661,0.07897],[35,-0.3231,15.6294,0.07914],[36,-0.3101,15.5988,0.07931],[37,-0.3,15.5693,0.0795],[38,-0.2927,15.541,0.07969],[39,-0.2884,15.514,0.0799],[40,-0.2869,15.4885,0.08012],[41,-0.2881,15.4645,0.08036],[42,-0.2919,15.442,0.08061],[43,-0.2981,15.421,0.08087],[44,-0.3067,15.4013,0.08115],[45,-0.3174,15.3827,0.08144],[46,-0.3303,15.3652,0.08174],[47,-0.3452,15.3485,0.08205],[48,-0.3622,15.3326,0.08238],[49,-0.3811,15.3174,0.08272],[50,-0.4019,15.3029,0.08307],[51,-0.4245,15.2891,0.08343],[52,-0.4488,15.2759,0.0838],[53,-0.4747,15.2633,0.08418],[54,-0.5019,15.2514,0.08457],[55,-0.5303,15.24,0.08496],[56,-0.5599,15.2291,0.08536],[57,-0.5905,15.2188,0.08577],[58,-0.6223,15.2091,0.08617],[59,-0.6552,15.2,0.08659],[60,-0.6892,15.1916,0.087]]},"cdc":{"wfa":[[60,-1.0005,18.4859,0.12988],[63,-1.0161,19.0508,0.13231],[66,-1.035,19.6214,0.13468],[69,-1.0587,20.197,0.13695],[72,-1.0875,20.7777,0.13914],[75,-1.121,21.3638,0.14126],[78,-1.1581,21.9564,0.14331],[81,-1.1973,22.557,0.14533],[84,-1.2365,23.1674,0.14734],[87,-1.2735,23.7898,0.14937],[90,-1.3063,24.4265,0.15147],[93,-1.3329,25.0799,0.15366],[96,-1.3518,25.7526,0.15597],[99,-1.3622,26.4468,0.15842],[102,-1.3635,27.1649,0.16103],[105,-1.3557,27.909,0.16377],[108,-1.3394,28.6813,0.16666],[111,-1.3153,29.4836,0.16966],[114,-1.2844,30.3177,0.17273],[117,-1.2478,31.1853,0.17584],[120,-1.2067,32.088,0.17893],[123,-1.1622,33.027,0.18195],[126,-1.1155,34.0036,0.18485],[129,-1.0676,35.0186,0.18756],[132,-1.0193,36.0726,0.19003],[135,-0.9714,37.1658,0.19221],[138,-0.9247,38.2978,0.19405],[141,-0.8797,39.4678,0.19552],[144,-0.837,40.6744,0.19659],[147,-0.797,41.9155,0.19724],[150,-0.7603,43.1883,0.19746],[153,-0.7272,44.489,0.19727],[156,-0.6982,45.8134,0.19666],[159,-0.6737,47.1561,0.19568],[162,-0.6541,48.5111,0.19434],[165,-0.6401,49.8719,0.19271],[168,-0.6319,51.231,0.19081],[171,-0.63,52.5806,0.1887],[174,-0.6349,53.9126,0.18644],[177,-0.6468,55.2188,0.18408],[180,-0.6656,56.491,0.18167],[183,-0.6913,57.7214,0.17925],[186,-0.7232,58.9029,0.17689],[189,-0.7606,60.0293,0.17461],[192,-0.802,61.0954,0.17246],[195,-0.8459,62.0972,0.17047],[198,-0.8904,63.0323,0.16865],[201,-0.9335,63.8996,0.16704],[204,-0.9732,64.6996,0.16564],[207,-1.0077,65.4344,0.16444],[210,-1.0354,66.1075,0.16344],[213,-1.0552,66.7239,0.16261],[216,-1.0662,67.2899,0.16192],[219,-1.0683,67.8128,0.16135],[222,-1.0613,68.3,0.16087],[225,-1.046,68.7589,0.16046],[228,-1.0233,69.1947,0.16014],[231,-0.9951,69.6093,0.15995],[234,-0.9644,69.9987,0.16001],[237,-0.9354,70.3504,0.16051],[240,-0.9165,70.5976,0.16148]],"hfa":[[60,1.2664,109.1751,0.04259],[63,1.2767,110.8058,0.0429],[66,1.2554,112.4296,0.04318],[69,1.2073,114.0479,0.04344],[72,1.1374,115.6609,0.04367],[75,1.0514,117.2678,0.04388],[78,0.9549,118.8668,0.04407],[81,0.8536,120.4554,0.04424],[84,0.7532,122.0305,0.0444],[87,0.6591,123.5886,0.04457],[90,0.5759,125.1259,0.04474],[93,0.5071,126.6388,0.04492],[96,0.4553,128.1237,0.04513],[99,0.4213,129.5777,0.04536],[102,0.4048,130.9983,0.04562],[105,0.4039,132.384,0.04591],[108,0.4157,133.7345,0.04622],[111,0.4362,135.0504,0.04655],[114,0.461,136.3343,0.0469],[117,0.4856,137.5899,0.04725],[120,0.5056,138.8234,0.04761],[123,0.5174,140.0427,0.04796],[126,0.5186,141.2582,0.0483],[129,0.5084,142.4824,0.04863],[132,0.4879,143.7304,0.04894],[135,0.4611,145.019,0.04922],[138,0.4346,146.3665,0.04949],[141,0.4175,147.7911,0.04973],[144,0.4209,149.3088,0.04995],[147,0.4561,150.9313,0.05013],[150,0.532,152.6624,0.05027],[153,0.6527,154.4951,0.05035],[156,0.8162,156.4099,0.05033],[159,1.014,158.3751,0.0502],[162,1.2328,160.3493,0.04993],[165,1.4567,162.2865,0.04951],[168,1.6704,164.1418,0.04895],[171,1.8605,165.8771,0.04827],[174,2.0168,167.4641,0.04751],[177,2.1326,168.8867,0.0467],[180,2.2052,170.1393,0.04589],[183,2.2349,171.2257,0.0451],[186,2.2253,172.1563,0.04436],[189,2.1823,172.9456,0.04369],[192,2.113,173.6101,0.04309],[195,2.0255,174.1665,0.04256],[198,1.9273,174.631,0.04211],[201,1.8252,175.0182,0.04173],[204,1.7247,175.341,0.04141],[207,1.6298,175.6104,0.04115],[210,1.5433,175.836,0.04094],[213,1.4665,176.0254,0.04077],[216,1.4,176.185,0.04064],[219,1.3438,176.3202,0.04055],[222,1.2971,176.4352,0.04047],[225,1.2593,176.5335,0.04042],[228,1.2292,176.6179,0.04039],[231,1.2057,176.6907,0.04037],[234,1.188,176.7538,0.04036],[237,1.1751,176.8088,0.04036],[240,1.1673,176.8492,0.04037]],"bfa":[[60,-2.6152,15.4191,0.07599],[63,-2.8145,15.3938,0.07752],[66,-2.9818,15.3795,0.07921],[69,-3.1141,15.3762,0.08106],[72,-3.2117,15.3835,0.08305],[75,-3.2773,15.4013,0.08517],[78,-3.3148,15.429,0.0874],[81,-3.3286,15.4664,0.08973],[84,-3.3232,15.5129,0.09213],[87,-3.3026,15.5681,0.09459],[90,-3.2705,15.6317,0.09708],[93,-3.2298,15.7032,0.09959],[96,-3.1831,15.7823,0.10209],[99,-3.1324,15.8686,0.10457],[102,-3.0794,15.9617,0.10701],[105,-3.0253,16.0613,0.1094],[108,-2.9711,16.1671,0.11172],[111,-2.9176,16.2788,0.11396],[114,-2.8653,16.3961,0.11611],[117,-2.8146,16.5186,0.11817],[120,-2.7656,16.6461,0.12011],[123,-2.7187,16.7784,0.12195],[126,-2.6739,16.9151,0.12366],[129,-2.6312,17.056,0.12526],[132,-2.5906,17.2009,0.12673],[135,-2.552,17.3494,0.12808],[138,-2.5153,17.5014,0.12931],[141,-2.4805,17.6565,0.13041],[144,-2.4474,17.8146,0.13139],[147,-2.4159,17.9754,0.13225],[150,-2.3859,18.1387,0.13299],[153,-2.3571,18.3043,0.13362],[156,-2.3295,18.4718,0.13414],[159,-2.3028,18.6411,0.13456],[162,-2.277,18.812,0.13488],[165,-2.2519,18.9842,0.13511],[168,-2.2274,19.1576,0.13525],[171,-2.2032,19.3318,0.13532],[174,-2.1794,19.5067,0.13531],[177,-2.1558,19.6821,0.13524],[180,-2.1323,19.8577,0.13511],[183,-2.1089,20.0332,0.13493],[186,-2.0856,20.2086,0.13472],[189,-2.0623,20.3835,0.13447],[192,-2.039,20.5576,0.1342],[195,-2.0159,20.7309,0.13391],[198,-1.9932,20.9029,0.13362],[201,-1.9708,21.0736,0.13333],[204,-1.9491,21.2425,0.13306],[207,-1.9284,21.4094,0.1328],[210,-1.9088,21.5742,0.13258],[213,-1.8908,21.7364,0.13241],[216,-1.8747,21.8959,0.13229],[219,-1.8607,22.0523,0.13223],[222,-1.8493,22.2054,0.13225],[225,-1.8407,22.355,0.13236],[228,-1.8351,22.5007,0.13257],[231,-1.8327,22.6424,0.13289],[234,-1.8334,22.7799,0.13334],[237,-1.8371,22.9129,0.13393],[240,-1.8436,23.0414,0.13468]]}},"g":{"who":{"wfa":[[0,0.3809,3.2322,0.14171],[1,0.1714,4.1873,0.13724],[2,0.0962,5.1282,0.13],[3,0.0402,5.8458,0.12619],[4,-0.005,6.4237,0.12402],[5,-0.043,6.8985,0.12274],[6,-0.0756,7.297,0.12204],[7,-0.1039,7.6422,0.12178],[8,-0.1288,7.9487,0.12181],[9,-0.1507,8.2254,0.12199],[10,-0.17,8.48,0.12223],[11,-0.1872,8.7192,0.12247],[12,-0.2024,8.9481,0.12268],[13,-0.2158,9.1699,0.12283],[14,-0.2278,9.387,0.12294],[15,-0.2384,9.6008,0.12299],[16,-0.2478,9.8124,0.12303],[17,-0.2562,10.0226,0.12306],[18,-0.2637,10.2315,0.12309],[19,-0.2703,10.4393,0.12315],[20,-0.2762,10.6464,0.12323],[21,-0.2815,10.8534,0.12335],[22,-0.2862,11.0608,0.1235],[23,-0.2903,11.2688,0.12369],[24,-0.2941,11.4775,0.1239],[25,-0.2975,11.6864,0.12414],[26,-0.3005,11.8947,0.12441],[27,-0.3032,12.1015,0.12472],[28,-0.3057,12.3059,0.12506],[29,-0.308,12.5073,0.12545],[30,-0.3101,12.7055,0.12587],[31,-0.312,12.9006,0.12633],[32,-0.3138,13.093,0.12683],[33,-0.3155,13.2837,0.12737],[34,-0.3171,13.4731,0.12794],[35,-0.3186,13.6618,0.12855],[36,-0.3201,13.8503,0.12919],[37,-0.3216,14.0385,0.12988],[38,-0.323,14.2265,0.13059],[39,-0.3243,14.414,0.13135],[40,-0.3257,14.601,0.13213],[41,-0.327,14.7873,0.13293],[42,-0.3283,14.9727,0.13376],[43,-0.3296,15.1573,0.1346],[44,-0.3309,15.341,0.13545],[45,-0.3322,15.524,0.1363],[46,-0.3335,15.7064,0.13716],[47,-0.3348,15.8882,0.138],[48,-0.3361,16.0697,0.13884],[49,-0.3374,16.2511,0.13968],[50,-0.3387,16.4322,0.14051],[51,-0.34,16.6133,0.14132],[52,-0.3414,16.7942,0.14213],[53,-0.3427,16.9748,0.14293],[54,-0.344,17.1551,0.14371],[55,-0.3453,17.3347,0.14448],[56,-0.3466,17.5136,0.14525],[57,-0.3479,17.6916,0.146],[58,-0.3492,17.8686,0.14675],[59,-0.3505,18.0445,0.14748],[60,-0.3518,18.2193,0.14821]],"hfa":[[0,1,49.1477,0.0379],[1,1,53.6872,0.0364],[2,1,57.0673,0.03568],[3,1,59.8029,0.0352],[4,1,62.0899,0.03486],[5,1,64.0301,0.03463],[6,1,65.7311,0.03448],[7,1,67.2873,0.03441],[8,1,68.7498,0.0344],[9,1,70.1435,0.03444],[10,1,71.4818,0.03452],[11,1,72.771,0.03464],[12,1,74.015,0.03479],[13,1,75.2176,0.03496],[14,1,76.3817,0.03514],[15,1,77.5099,0.03534],[16,1,78.6055,0.03555],[17,1,79.671,0.03576],[18,1,80.7079,0.03598],[19,1,81.7182,0.0362],[20,1,82.7036,0.03643],[21,1,83.6654,0.03666],[22,1,84.604,0.03688],[23,1,85.5202,0.03711],[24,1,85.7153,0.03764],[25,1,86.5904,0.03786],[26,1,87.4462,0.03808],[27,1,88.283,0.0383],[28,1,89.1004,0.03851],[29,1,89.8991,0.03872],[30,1,90.6797,0.03893],[31,1,91.443,0.03913],[32,1,92.1906,0.03933],[33,1,92.9239,0.03952],[34,1,93.6444,0.03971],[35,1,94.3533,0.03989],[36,1,95.0515,0.04006],[37,1,95.7399,0.04024],[38,1,96.4187,0.04041],[39,1,97.0885,0.04057],[40,1,97.7493,0.04073],[41,1,98.4015,0.04089],[42,1,99.0448,0.04105],[43,1,99.6795,0.0412],[44,1,100.3058,0.04135],[45,1,100.9238,0.0415],[46,1,101.5337,0.04164],[47,1,102.136,0.04179],[48,1,102.7312,0.04193],[49,1,103.3197,0.04206],[50,1,103.9021,0.0422],[51,1,104.4786,0.04233],[52,1,105.0494,0.04246],[53,1,105.6148,0.04259],[54,1,106.1748,0.04272],[55,1,106.7295,0.04285],[56,1,107.2788,0.04298],[57,1,107.8227,0.0431],[58,1,108.3613,0.04322],[59,1,108.8948,0.04334],[60,1,109.4233,0.04347]],"bfa":[[0,-0.0631,13.3363,0.09272],[1,0.3448,14.5679,0.09556],[2,0.1749,15.7679,0.09371],[3,0.0643,16.3574,0.09254],[4,-0.0191,16.6703,0.09166],[5,-0.0864,16.8386,0.09096],[6,-0.1429,16.9083,0.09036],[7,-0.1916,16.902,0.08984],[8,-0.2344,16.8404,0.08939],[9,-0.2725,16.7406,0.08898],[10,-0.3068,16.6184,0.08861],[11,-0.3381,16.4875,0.08828],[12,-0.3667,16.3568,0.08797],[13,-0.3932,16.2311,0.08768],[14,-0.4177,16.1128,0.08741],[15,-0.4407,16.0028,0.08716],[16,-0.4623,15.9017,0.08693],[17,-0.4825,15.8096,0.08671],[18,-0.5017,15.7263,0.0865],[19,-0.5199,15.6517,0.0863],[20,-0.5372,15.5855,0.08612],[21,-0.5537,15.5278,0.08594],[22,-0.5695,15.4787,0.08577],[23,-0.5846,15.438,0.0856],[24,-0.5684,15.6881,0.08454],[25,-0.5684,15.659,0.08452],[26,-0.5684,15.6308,0.08449],[27,-0.5684,15.6037,0.08446],[28,-0.5684,15.5777,0.08444],[29,-0.5684,15.5523,0.08443],[30,-0.5684,15.5276,0.08444],[31,-0.5684,15.5034,0.08448],[32,-0.5684,15.4798,0.08455],[33,-0.5684,15.4572,0.08467],[34,-0.5684,15.4356,0.08484],[35,-0.5684,15.4155,0.08506],[36,-0.5684,15.3968,0.08535],[37,-0.5684,15.3796,0.08569],[38,-0.5684,15.3638,0.08609],[39,-0.5684,15.3493,0.08654],[40,-0.5684,15.3358,0.08704],[41,-0.5684,15.3233,0.08757],[42,-0.5684,15.3116,0.08813],[43,-0.5684,15.3007,0.08872],[44,-0.5684,15.2905,0.08931],[45,-0.5684,15.2814,0.08991],[46,-0.5684,15.2732,0.09051],[47,-0.5684,15.2661,0.0911],[48,-0.5684,15.2602,0.09168],[49,-0.5684,15.2556,0.09227],[50,-0.5684,15.2523,0.09286],[51,-0.5684,15.2503,0.09345],[52,-0.5684,15.2496,0.09403],[53,-0.5684,15.2502,0.0946],[54,-0.5684,15.2519,0.09515],[55,-0.5684,15.2544,0.09568],[56,-0.5684,15.2575,0.09618],[57,-0.5684,15.2612,0.09665],[58,-0.5684,15.2653,0.09709],[59,-0.5684,15.2698,0.0975],[60,-0.5684,15.2747,0.09789]]},"cdc":{"wfa":[[60,-1.2877,18.0231,0.14119],[63,-1.306,18.5857,0.14326],[66,-1.319,19.1583,0.14532],[69,-1.3261,19.7415,0.14741],[72,-1.3268,20.3364,0.14959],[75,-1.3209,20.9444,0.15189],[78,-1.3085,21.5675,0.15433],[81,-1.2899,22.2079,0.15693],[84,-1.2655,22.868,0.15969],[87,-1.2363,23.5505,0.16262],[90,-1.2029,24.2579,0.16569],[93,-1.1664,24.9926,0.16888],[96,-1.1277,25.757,0.17215],[99,-1.0879,26.553,0.17546],[102,-1.0478,27.382,0.17877],[105,-1.0085,28.2452,0.18204],[108,-0.9707,29.1429,0.1852],[111,-0.935,30.0749,0.18822],[114,-0.9022,31.0403,0.19104],[117,-0.8727,32.0374,0.19363],[120,-0.8469,33.0639,0.19595],[123,-0.8252,34.1166,0.19796],[126,-0.8079,35.1918,0.19965],[129,-0.7952,36.2849,0.20099],[132,-0.7874,37.3909,0.20197],[135,-0.7846,38.5043,0.20259],[138,-0.7869,39.6191,0.20285],[141,-0.7945,40.7292,0.20275],[144,-0.8076,41.828,0.2023],[147,-0.8262,42.9091,0.20152],[150,-0.8503,43.9661,0.20042],[153,-0.8801,44.9929,0.19903],[156,-0.9155,45.9837,0.19736],[159,-0.9565,46.9331,0.19545],[162,-1.0031,47.8366,0.19333],[165,-1.0548,48.6902,0.19102],[168,-1.1116,49.4908,0.18856],[171,-1.1729,50.2362,0.18598],[174,-1.238,50.9254,0.18333],[177,-1.3062,51.5582,0.18063],[180,-1.3765,52.1357,0.17795],[183,-1.4476,52.6597,0.17531],[186,-1.5182,53.1333,0.17276],[189,-1.5866,53.5603,0.17035],[192,-1.6512,53.9454,0.16812],[195,-1.7104,54.2941,0.16612],[198,-1.7622,54.6122,0.16437],[201,-1.8053,54.9061,0.16291],[204,-1.8381,55.1822,0.16175],[207,-1.8596,55.4469,0.16092],[210,-1.869,55.7062,0.16042],[213,-1.866,55.9657,0.16024],[216,-1.8509,56.2297,0.16037],[219,-1.8245,56.501,0.16077],[222,-1.788,56.7803,0.1614],[225,-1.7434,57.0656,0.16221],[228,-1.6933,57.3518,0.16314],[231,-1.6407,57.6291,0.16412],[234,-1.5895,57.8833,0.16509],[237,-1.5438,58.0945,0.16599],[240,-1.5134,58.219,0.16664]],"hfa":[[60,-0.0577,107.9566,0.04428],[63,-0.1132,109.7202,0.04447],[66,-0.1592,111.4876,0.04465],[69,-0.1947,113.2519,0.04482],[72,-0.2191,115.0055,0.04496],[75,-0.2323,116.7406,0.0451],[78,-0.2348,118.4496,0.04523],[81,-0.2271,120.1254,0.04535],[84,-0.2102,121.7617,0.04546],[87,-0.1855,123.3531,0.04558],[90,-0.1544,124.8956,0.04569],[93,-0.1184,126.3869,0.04582],[96,-0.0793,127.8263,0.04597],[99,-0.0385,129.2152,0.04614],[102,0.0027,130.5574,0.04634],[105,0.0436,131.8593,0.04659],[108,0.0841,133.1304,0.04688],[111,0.1254,134.3832,0.04724],[114,0.1698,135.6342,0.04767],[117,0.2212,136.9027,0.04816],[120,0.2847,138.2112,0.0487],[123,0.3659,139.5829,0.04927],[126,0.4692,141.0397,0.04981],[129,0.5963,142.5974,0.05026],[132,0.7443,144.2609,0.05052],[135,0.9044,146.0192,0.05053],[138,1.0625,147.8424,0.05021],[141,1.2011,149.6839,0.04955],[144,1.303,151.4866,0.0486],[147,1.3564,153.193,0.04744],[150,1.3582,154.7555,0.0462],[153,1.3154,156.1432,0.04498],[156,1.243,157.3437,0.04386],[159,1.1585,158.3603,0.0429],[162,1.077,159.2075,0.04211],[165,1.0083,159.9058,0.0415],[168,0.9566,160.4777,0.04102],[171,0.9221,160.9449,0.04067],[174,0.9025,161.3268,0.04041],[177,0.8947,161.6399,0.04022],[180,0.8956,161.898,0.04008],[183,0.9025,162.112,0.03998],[186,0.9134,162.2908,0.03991],[189,0.9266,162.4414,0.03986],[192,0.9411,162.569,0.03982],[195,0.9561,162.6781,0.03979],[198,0.971,162.7719,0.03977],[201,0.9856,162.8531,0.03975],[204,0.9995,162.9238,0.03973],[207,1.0127,162.9858,0.03972],[210,1.0251,163.0402,0.03971],[213,1.0368,163.0882,0.0397],[216,1.0476,163.1308,0.03969],[219,1.0576,163.1686,0.03968],[222,1.0669,163.2022,0.03967],[225,1.0754,163.2322,0.03966],[228,1.0833,163.259,0.03966],[231,1.0906,163.283,0.03965],[234,1.0972,163.3045,0.03965],[237,1.1033,163.3237,0.03964],[240,1.108,163.3383,0.03964]],"bfa":[[60,-3.3501,15.1519,0.0843],[63,-3.3497,15.1499,0.08638],[66,-3.3255,15.1606,0.08868],[69,-3.2827,15.1831,0.09116],[72,-3.2256,15.2169,0.0938],[75,-3.1584,15.2614,0.09657],[78,-3.0843,15.3161,0.09943],[81,-3.0062,15.3803,0.10236],[84,-2.9262,15.4536,0.10533],[87,-2.8461,15.5354,0.10831],[90,-2.7673,15.6252,0.11129],[93,-2.6908,15.7226,0.11425],[96,-2.6172,15.827,0.11716],[99,-2.5471,15.938,0.12],[102,-2.481,16.0552,0.12277],[105,-2.4188,16.178,0.12544],[108,-2.3609,16.3061,0.12801],[111,-2.3072,16.439,0.13047],[114,-2.2578,16.5763,0.1328],[117,-2.2125,16.7175,0.135],[120,-2.1713,16.8623,0.13706],[123,-2.1341,17.0103,0.13898],[126,-2.1007,17.161,0.14075],[129,-2.0712,17.314,0.14238],[132,-2.0452,17.4691,0.14387],[135,-2.0228,17.6257,0.14521],[138,-2.0038,17.7836,0.1464],[141,-1.9881,17.9423,0.14745],[144,-1.9755,18.1015,0.14836],[147,-1.966,18.2609,0.14914],[150,-1.9595,18.42,0.14978],[153,-1.9559,18.5787,0.1503],[156,-1.955,18.7364,0.15071],[159,-1.9568,18.893,0.15099],[162,-1.9611,19.0481,0.15118],[165,-1.9679,19.2014,0.15126],[168,-1.9771,19.3526,0.15126],[171,-1.9885,19.5014,0.15117],[174,-2.002,19.6475,0.15101],[177,-2.0175,19.7906,0.15079],[180,-2.0349,19.9306,0.15051],[183,-2.0539,20.067,0.15019],[186,-2.0745,20.1998,0.14984],[189,-2.0963,20.3286,0.14947],[192,-2.1192,20.4533,0.14909],[195,-2.1428,20.5735,0.14871],[198,-2.167,20.6891,0.14835],[201,-2.1915,20.7999,0.14802],[204,-2.2157,20.9058,0.14772],[207,-2.2395,21.0064,0.14749],[210,-2.2624,21.1016,0.14732],[213,-2.2839,21.1913,0.14724],[216,-2.3037,21.2753,0.14727],[219,-2.3212,21.3534,0.14741],[222,-2.336,21.4255,0.14769],[225,-2.3477,21.4913,0.14812],[228,-2.3557,21.5508,0.14872],[231,-2.3596,21.6038,0.14952],[234,-2.359,21.6501,0.15052],[237,-2.3535,21.6895,0.15175],[240,-2.3428,21.7219,0.15324]]}}};
+// ===== أطلس الجسم والأمراض، والاستشفاء، والتنقل المجمّع =====
+const TYL = (()=>{ try{ return localStorage.getItem("tbk_lang")||"ar"; }catch(e){ return "ar"; } })();
+const EN_ = TYL==="en";
+const aT = p => Array.isArray(p) ? (EN_ ? p[1] : p[0]) : (p ?? "");
+const tx = (a,e) => EN_ ? e : a;
+const ATL = { sex:"m", side:"f", sel:"heart", kayy:false, tab:"map", hp:"man", healTab:"self", g3:null };
+try{ const s=JSON.parse(localStorage.getItem("ty_atl")||"{}"); Object.assign(ATL, {sex:s.sex||"m", tab:s.tab||"map", hp:s.hp||"man", healTab:s.healTab||"self"}); }catch(e){}
+const atlSave = () => { try{ localStorage.setItem("ty_atl", JSON.stringify({sex:ATL.sex,tab:ATL.tab,hp:ATL.hp,healTab:ATL.healTab})); }catch(e){} };
+const srcL = arr => (arr||[]).map(s=>`<a href="${esc(s.u)}" target="_blank" rel="noopener">${esc(aT(s.n))}</a>`).join(" · ");
+const evQ = e => `<blockquote class="hadith"><p>${/quran\.com/.test(e.u)?"﴿":"«"}${esc(e.ar)}${/quran\.com/.test(e.u)?"﴾":"»"}</p>${EN_?`<p class="hadith-en small">${esc(e.en)}</p>`:""}<div class="hsrc small"><a href="${esc(e.u)}" target="_blank" rel="noopener">${tx("المصدر","Source")}: ${esc(e.u.replace("https://",""))}</a></div></blockquote>`;
+const segBtns = (name, opts, cur) => `<div class="seg" role="group">${opts.map(([k,l])=>`<button type="button" data-${name}="${k}" aria-pressed="${k===cur}">${esc(aT(l))}</button>`).join("")}</div>`;
+const disName = d => EN_ ? (d.en||d.n) : d.n;
+
+// ---------- رسم الجسم (SVG أصلي) ----------
+const KID_DIS = {lungs:["bronchiolitis","croup","asthma","pneu"], ent:["otitis","strep","croup","cold"], skin:["measles","varicella","eczema","scabies"], intestine:["gastro","append","constip"], blood:["ida","dengue"], brain:["migraine"], pancreas:["dka"]};
+function regionsFor(sex){ return ATLAS.filter(r=>!r.sex || (r.sex==="f" && sex==="f")); }
+function bodySVG(){
+  const sex=ATL.sex, kid=sex==="c", back=ATL.side==="b";
+  const W = sex==="f" ? {sw:35,ww:25,hw:37} : {sw:40,ww:30,hw:33};
+  const torso = `M${100-W.sw} 92 Q100 82 ${100+W.sw} 92 L${100+W.sw-3} 150 Q${100+W.ww} 195 ${100+W.hw} 252 L${100-W.hw} 252 Q${100-W.ww} 195 ${100-W.sw+3} 150 Z`;
+  const arm = s => { const x0=100+s*(W.sw-4), x1=100+s*(W.sw+12), x2=100+s*(W.sw+17); return `<path d="M${x0} 98 L${x1} 172 L${x2} 244" class="limb" stroke-width="15"/><circle cx="${x2}" cy="252" r="9" class="bodyf"/>`; };
+  const leg = s => { const x0=100+s*16, x1=100+s*19, x2=100+s*21; return `<path d="M${x0} 246 L${x1} 332" class="limb" stroke-width="26"/><path d="M${x1} 332 L${x2} 418" class="limb" stroke-width="19"/><ellipse cx="${x2+s*4}" cy="424" rx="12" ry="6" class="bodyf"/>`; };
+  const sel = id => ATL.sel===id ? " on" : "";
+  const o = (id, inner) => `<g class="org${sel(id)}" data-reg="${id}" tabindex="0" role="button" aria-label="${esc(aT((ATLAS.find(r=>r.id===id)||{}).n||""))}">${inner}</g>`;
+  let head = `<ellipse cx="100" cy="42" rx="27" ry="33" class="bodyf"/><rect x="89" y="70" width="22" height="20" rx="6" class="bodyf"/>`;
+  head += o("brain", back ? `<path d="M76 34 Q100 4 124 34 Q126 52 112 56 Q100 50 88 56 Q74 52 76 34Z" fill="#E7A3AC"/><path d="M86 52 Q100 64 114 52 Q112 62 100 64 Q88 62 86 52Z" fill="#C97F8C"/>` : `<path d="M77 36 Q78 10 100 9 Q122 10 123 36 Q112 30 100 33 Q88 30 77 36Z" fill="#E7A3AC"/><path d="M84 22 q6 4 12 0 M104 22 q6 4 12 0 M88 30 q5 -4 10 0 M102 30 q5 -4 10 0" stroke="#C97F8C" stroke-width="1.4" fill="none"/>`);
+  if(!back){
+    head += o("eyes", `<ellipse cx="90" cy="45" rx="5" ry="3.2" fill="#fff" stroke="#5B7C77"/><circle cx="90" cy="45" r="1.8" fill="#2F5D55"/><ellipse cx="110" cy="45" rx="5" ry="3.2" fill="#fff" stroke="#5B7C77"/><circle cx="110" cy="45" r="1.8" fill="#2F5D55"/>`);
+    head += o("ent", `<path d="M100 47 L96 58 Q100 60 104 58Z" fill="#E2A887"/><ellipse cx="73" cy="46" rx="4" ry="8" fill="#E2A887"/><ellipse cx="127" cy="46" rx="4" ry="8" fill="#E2A887"/>`);
+    head += o("mouth", `<path d="M92 64 Q100 69 108 64 Q100 66 92 64Z" fill="#C24E4A" stroke="#C24E4A" stroke-width="2"/>`);
+    head += o("thyroid", `<path d="M92 80 Q96 74 100 80 Q104 74 108 80 Q104 87 100 83 Q96 87 92 80Z" fill="#C7772F"/>`);
+  } else {
+    head += o("ent", `<ellipse cx="73" cy="46" rx="4" ry="8" fill="#E2A887"/><ellipse cx="127" cy="46" rx="4" ry="8" fill="#E2A887"/>`);
+  }
+  let body = `<path d="${torso}" class="bodyf"/>${arm(-1)}${arm(1)}${leg(-1)}${leg(1)}`;
+  body += o("skin", `<path d="${torso}" fill="transparent" class="skinhit"/>`);
+  if(!back){
+    if(sex==="f") body += o("breast", `<path d="M66 128 Q78 150 96 132" fill="none" stroke="#C98A78" stroke-width="2.4"/><path d="M104 132 Q122 150 134 128" fill="none" stroke="#C98A78" stroke-width="2.4"/><ellipse cx="81" cy="138" rx="15" ry="12" fill="#F0C3B3" opacity=".55"/><ellipse cx="119" cy="138" rx="15" ry="12" fill="#F0C3B3" opacity=".55"/>`);
+    body += o("lungs", `<path d="M96 104 Q78 100 70 122 Q64 150 70 168 Q84 166 96 160Z" fill="#EFA6A6"/><path d="M104 104 Q122 100 130 122 Q136 150 130 168 Q118 164 112 158 L104 150Z" fill="#EFA6A6"/><path d="M100 92 V108 M100 108 L92 118 M100 108 L108 118" stroke="#B9817F" stroke-width="3" fill="none"/>`);
+    body += o("heart", `<path d="M100 128 Q106 120 114 126 Q124 132 118 146 Q112 156 104 160 Q98 150 96 140 Q94 130 100 128Z" fill="#C62F2F"/><path d="M104 128 V116" stroke="#C62F2F" stroke-width="4"/>`);
+    body += o("liver", `<path d="M68 170 Q86 162 112 168 Q114 178 104 184 Q86 196 72 192 Q66 182 68 170Z" fill="#8D3B2F"/><ellipse cx="94" cy="190" rx="4" ry="5" fill="#7A9A2E"/>`);
+    body += o("stomach", `<path d="M112 168 Q132 164 134 182 Q134 198 118 200 Q108 198 110 190 Q120 190 120 182 Q118 174 112 174Z" fill="#E68D6E"/>`);
+    body += o("pancreas", `<path d="M90 200 Q104 194 124 198 Q126 204 118 205 Q102 204 92 206Z" fill="#EBC46A"/>`);
+    body += o("intestine", `<path d="M76 210 H124 V246 H112 V220 H88 V246 H76Z" fill="#D9886A" opacity=".95"/><path d="M90 224 q5 -4 10 0 t10 0 M90 232 q5 4 10 0 t10 0 M90 240 q5 -4 10 0 t10 0" stroke="#B7684D" stroke-width="3" fill="none"/>`);
+    body += o("bladder", `<ellipse cx="100" cy="262" rx="9" ry="7" fill="#E3C25E"/>`);
+    body += o("repro", sex==="f" ? `<path d="M93 248 Q100 244 107 248 L104 256 H96Z" fill="#D58AA0"/><path d="M93 249 Q86 246 84 250 M107 249 Q114 246 116 250" stroke="#D58AA0" stroke-width="2" fill="none"/><circle cx="83" cy="251" r="2.6" fill="#D58AA0"/><circle cx="117" cy="251" r="2.6" fill="#D58AA0"/>` : `<circle cx="100" cy="271" r="4" fill="#C9849A"/><ellipse cx="95" cy="283" rx="4" ry="5" fill="#D9A0B0"/><ellipse cx="105" cy="283" rx="4" ry="5" fill="#D9A0B0"/>`);
+  } else {
+    body += o("lungs", `<path d="M96 104 Q78 100 70 122 Q64 150 70 172 Q84 172 96 166Z" fill="#EFA6A6" opacity=".9"/><path d="M104 104 Q122 100 130 122 Q136 150 130 172 Q116 172 104 166Z" fill="#EFA6A6" opacity=".9"/>`);
+    body += o("blood", `<path d="M66 178 Q70 168 78 172 Q82 184 74 192 Q66 190 66 178Z" fill="#7B1F4B"/>`);
+    body += o("kidney", `<path d="M82 200 Q72 206 76 222 Q80 232 88 226 Q84 214 90 208 Q88 200 82 200Z" fill="#8E2A2A"/><path d="M118 200 Q128 206 124 222 Q120 232 112 226 Q116 214 110 208 Q112 200 118 200Z" fill="#8E2A2A"/>`);
+    let v=""; for(let y=90;y<256;y+=8.5) v+=`<rect x="95" y="${y}" width="10" height="6.5" rx="2" fill="#EDE6D6" stroke="#B9AE95" stroke-width=".8"/>`;
+    body += o("spine", v);
+  }
+  let joints = [[100-W.sw+2,96],[100+W.sw-2,96],[100-W.sw-12,172],[100+W.sw+12,172],[100-16,250],[100+16,250],[100-19,332],[100+19,332]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="6" fill="#EDE6D6" stroke="#B9AE95"/>`).join("");
+  body += o("joints", joints);
+  let marks = "";
+  const headT = kid ? ` transform="translate(100 88) scale(1.22) translate(-100 -88)"` : "";
+  const bodyT = kid ? ` transform="translate(100 88) scale(.92 .8) translate(-100 -88)"` : "";
+  if(ATL.kayy) marks = HEAL.kayy.sites.map((s,i)=> (!!s.back)===back ? `<g class="kmark" data-ks="${i}" tabindex="0" role="button" aria-label="${esc(aT(s.n))}"${s.y<88?headT:bodyT}><circle cx="${s.x}" cy="${s.y}" r="6.5"/><text x="${s.x}" y="${s.y+3}" text-anchor="middle">${i+1}</text></g>` : "").join("");
+  return `<svg class="atl-svg" viewBox="20 0 160 ${kid?400:436}" role="group" aria-label="${tx("خريطة الجسم التفاعلية","Interactive body map")}"><g${bodyT}>${body}</g><g${headT}>${head}</g>${marks}</svg>`;
+}
+function regionPanel(id){
+  const r = ATLAS.find(x=>x.id===id); if(!r) return "";
+  const sex = ATL.sex;
+  let dis = r.id==="repro" ? (sex==="f"?r.dis_f:sex==="m"?r.dis_m:[]) : r.dis.slice();
+  if(sex==="c" && KID_DIS[r.id]) dis = [...new Set([...KID_DIS[r.id], ...dis])];
+  dis = dis.map(disById).filter(Boolean);
+  const more = r.id==="repro" ? (sex==="f"?r.more_f:sex==="m"?r.more_m:[]) : r.more;
+  const an = r.id==="repro" && sex!=="c" ? (sex==="f"?r.an_f:r.an_m) : r.an;
+  const ks = HEAL.kayy.sites.map((s,i)=>({...s,i})).filter(s=>s.r===id);
+  return `<div class="atl-info" id="atlInfo">
+  <div class="row" style="justify-content:space-between;align-items:center"><h2>${esc(aT(r.n))}</h2><span class="tag tp">${r.v==="b"?tx("في المنظر الخلفي","On the back view"):r.v==="f"?tx("في المنظر الأمامي","On the front view"):tx("أمامي وخلفي","Front and back")}</span></div>
+  ${sex==="c"&&r.id==="repro"?`<p class="small muted">${tx("يُراجع طبيب الأطفال عند أي تورم أو ألم في المنطقة التناسلية للطفل، أو تأخر أو تبكير في البلوغ.","See a paediatrician for any genital swelling or pain in a child, or for early or late puberty.")}</p>`:""}
+  <dl class="kv"><dt>${tx("التشريح","Anatomy")}</dt><dd>${esc(aT(an))}</dd><dt>${tx("الوظيفة","Function")}</dt><dd>${esc(aT(r.fn))}</dd></dl>
+  ${r.facts.length?`<ul class="clean small">${r.facts.map(f=>`<li>${esc(aT(f))}</li>`).join("")}</ul>`:""}
+  ${dis.length?`<h3>${tx("أمراض هذا الجزء في الموسوعة","Conditions of this part in the encyclopedia")}</h3><div class="chips">${dis.map(d=>`<button class="chip" type="button" data-dis="${esc(d.id)}">${esc(disName(d))}</button>`).join("")}</div><p class="small muted">${tx("اضغط اسم المرض لقراءة الأسباب والأعراض والعلاج الكامل.","Tap a condition to read its causes, symptoms and full treatment.")}</p>`:""}
+  ${more.length?`<h3>${tx("أمراض أخرى وعلاجها","More conditions and their treatment")}</h3><div class="ig-list">${more.map(m=>`<details class="ig"><summary><span>${esc(aT(m.n))}</span></summary><dl class="kv"><dt>${tx("العلامات","Signs")}</dt><dd>${esc(aT(m.s))}</dd><dt>${tx("العلاج","Treatment")}</dt><dd>${esc(aT(m.t))}</dd></dl></details>`).join("")}</div>`:""}
+  <div class="alert" role="note"><h3>${tx("علامات الخطر: اطلب المساعدة فوراً","Red flags: get help now")}</h3><ul class="clean">${r.red.map(x=>`<li>${esc(aT(x))}</li>`).join("")}</ul></div>
+  ${ks.length?`<p class="small"><b>${tx("مواضع كي تاريخية في هذه المنطقة:","Historical cautery sites here:")}</b> ${ks.map(s=>`<button class="linkbtn" type="button" data-ks="${s.i}">${s.i+1}. ${esc(aT(s.n))}</button>`).join("، ")}</p>`:""}
+  <p class="small muted">${tx("المراجع","References")}: ${srcL(r.src)}</p></div>`;
+}
+function kayySiteHTML(i){
+  const s = HEAL.kayy.sites[i]; const d = s.d && disById(s.d);
+  return `<h2>${i+1}. ${esc(aT(s.n))}</h2><p class="tag t2" style="display:inline-block">${tx("توثيق تاريخي، لا توصية علاجية","Historical record, not a treatment recommendation")}</p>
+  <dl class="kv"><dt>${tx("استُعمل قديماً في","Historically used for")}</dt><dd>${esc(aT(s.h))}</dd><dt>${tx("العلاج الحديث المعتمد","Modern evidence-based care")}</dt><dd>${esc(aT(s.m))}</dd></dl>
+  ${d?`<button class="btn ghost" type="button" data-dis="${esc(d.id)}">${tx("اقرأ عن","Read about")} ${esc(disName(d))}</button>`:""}
+  <div class="iw"><p class="small"><b>${tx("تحذير:","Warning:")}</b> ${tx("لا تكتوِ ولا تكوِ غيرك، خاصة الأطفال. الكي الشعبي يسبب حروقاً وعدوى وندبات، ويؤخر علاج أمراض خطيرة.","Never cauterise yourself or others, especially children. Folk cautery causes burns, infection and scars, and delays treatment of serious disease.")}</p></div>
+  <p class="small muted">${tx("المصادر","Sources")}: ${srcL(HEAL.kayy.zsrc)}</p>`;
+}
+
+// ---------- العرض ثلاثي الأبعاد (three.js) ----------
+const ORG3 = [
+ ["brain",[0,3.92,0],[.4,.32,.44],0xE7A3AC,"h"],["eyes",[-.17,3.66,.43],[.075,.06,.05],0xFAFAFA,"h"],["eyes",[.17,3.66,.43],[.075,.06,.05],0xFAFAFA,"h"],
+ ["ent",[0,3.5,.52],[.07,.12,.08],0xE2A887,"h"],["ent",[-.53,3.68,0],[.06,.13,.1],0xE2A887,"h"],["ent",[.53,3.68,0],[.06,.13,.1],0xE2A887,"h"],
+ ["mouth",[0,3.3,.44],[.14,.045,.06],0xC24E4A,"h"],["thyroid",[0,2.95,.2],[.17,.08,.07],0xC7772F],
+ ["lungs",[-.36,1.75,0],[.31,.6,.32],0xEFA6A6],["lungs",[.36,1.75,0],[.31,.6,.32],0xEFA6A6],["heart",[.12,1.55,.22],[.2,.25,.2],0xC62F2F],
+ ["breast",[-.36,1.7,.56],[.24,.2,.16],0xF0C3B3,"f"],["breast",[.36,1.7,.56],[.24,.2,.16],0xF0C3B3,"f"],
+ ["liver",[-.3,1.0,.12],[.42,.24,.3],0x8D3B2F],["liver",[-.16,.83,.32],[.07,.09,.07],0x7A9A2E],["stomach",[.33,.95,.18],[.25,.22,.2],0xE68D6E],
+ ["pancreas",[.06,.74,-.02],[.34,.07,.08],0xEBC46A],["intestine",[0,.2,.12],[.48,.38,.3],0xD9886A],["blood",[.58,1.05,-.15],[.12,.18,.1],0x7B1F4B],
+ ["kidney",[-.32,.62,-.26],[.12,.2,.1],0x8E2A2A],["kidney",[.32,.62,-.26],[.12,.2,.1],0x8E2A2A],["bladder",[0,-.5,.16],[.15,.12,.12],0xE3C25E],
+ ["repro",[0,-.3,0],[.13,.15,.1],0xD58AA0,"f"],["repro",[0,-.66,.02],[.08,.08,.08],0xC9849A,"m"],["repro",[-.08,-.98,.16],[.06,.08,.06],0xD9A0B0,"m"],["repro",[.08,-.98,.16],[.06,.08,.06],0xD9A0B0,"m"]
+];
+function loadThree(){
+  if(window.THREE) return Promise.resolve();
+  return new Promise((res,rej)=>{ const s=document.createElement("script"); s.src="three.min.js"; s.onload=res; s.onerror=rej; document.head.appendChild(s); });
+}
+function stop3D(){ const g=ATL.g3; if(!g) return; cancelAnimationFrame(g.raf); try{ g.ren.dispose(); }catch(e){} window.removeEventListener("resize", g.onR); ATL.g3=null; }
+function start3D(){
+  const box=$("#atl3d"); if(!box) return;
+  box.innerHTML = `<p class="muted small" style="padding:12px">${tx("جارٍ تحميل النموذج ثلاثي الأبعاد…","Loading the 3D model…")}</p>`;
+  loadThree().then(()=>{
+    if(!$("#atl3d")) return;
+    const THREE=window.THREE; let ren;
+    try{ ren = new THREE.WebGLRenderer({antialias:true, alpha:true}); }catch(e){ box.innerHTML=`<p class="muted" style="padding:12px">${tx("جهازك لا يدعم العرض ثلاثي الأبعاد (WebGL). استعمل الخريطة ثنائية الأبعاد.","Your device does not support 3D (WebGL). Use the 2D map.")}</p>`; return; }
+    box.innerHTML=""; stop3D();
+    const w=box.clientWidth, h=box.clientHeight; ren.setPixelRatio(Math.min(2,window.devicePixelRatio||1)); ren.setSize(w,h); box.appendChild(ren.domElement);
+    const scene=new THREE.Scene(), cam=new THREE.PerspectiveCamera(38,w/h,.1,100); let dist=15.5; cam.position.set(0,.2,dist);
+    scene.add(new THREE.HemisphereLight(0xffffff,0x445566,.95)); const dl=new THREE.DirectionalLight(0xffffff,.7); dl.position.set(3,6,8); scene.add(dl);
+    const root=new THREE.Group(); scene.add(root); const kid=ATL.sex==="c", sex=ATL.sex;
+    const head=new THREE.Group(); head.position.set(0,3.6,0); root.add(head);
+    const skinM=new THREE.MeshPhongMaterial({color:0xD9B99B, transparent:true, opacity:.22, depthWrite:false, shininess:10});
+    const add=(geo,pos,sc,mat,parent)=>{ const m=new THREE.Mesh(geo,mat); m.position.set(...pos); if(sc) m.scale.set(...sc); (parent||root).add(m); return m; };
+    const sph=new THREE.SphereGeometry(1,32,24), cap=(r,l)=>new THREE.CapsuleGeometry(r,l,8,16);
+    const sw = sex==="f"?.78:.88, hw = sex==="f"?.62:.55;
+    add(sph,[0,.2,0],[.6,.72,.55],skinM,head); add(new THREE.CylinderGeometry(.2,.24,.5,20),[0,2.9,0],null,skinM);
+    add(cap(.62,1.7),[0,1.35,0],[sw/.62*.86,1,.62],skinM); add(sph,[0,-.45,0],[hw,.5,.45],skinM);
+    [-1,1].forEach(s=>{ const a=add(cap(.16,1.3),[s*(sw+.15),1.65,0],null,skinM); a.rotation.z=s*.18; const b=add(cap(.13,1.2),[s*(sw+.38),.25,.05],null,skinM); b.rotation.z=s*.08;
+      add(cap(.24,1.4),[s*.33,-1.55,0],null,skinM); add(cap(.18,1.4),[s*.36,-3.0,0],null,skinM); add(sph,[s*.38,-3.85,.12],[.15,.08,.26],skinM); });
+    const pick=[]; const mats={};
+    ORG3.forEach(([id,p,sc,col,f])=>{ if(f==="f"&&sex!=="f") return; if(f==="m"&&sex!=="m") return;
+      const mat=new THREE.MeshPhongMaterial({color:col, shininess:40, emissive:0x000000}); (mats[id]=mats[id]||[]).push(mat);
+      const pos = f==="h" ? [p[0],p[1]-3.6,p[2]] : p; const m=add(sph,pos,sc,mat,f==="h"?head:root); m.userData.reg=id; pick.push(m); });
+    const vm=new THREE.MeshPhongMaterial({color:0xEDE6D6}); mats.spine=[vm];
+    for(let y=3.05;y>-.75;y-=.17){ const m=add(new THREE.BoxGeometry(.16,.11,.14),[0,y,-.42],null,vm); m.userData.reg="spine"; pick.push(m); }
+    const jm=new THREE.MeshPhongMaterial({color:0xE9E2D0}); mats.joints=[jm];
+    [[-1,1]].flat().forEach(s=>[[s*(sw+.05),2.3,0],[s*(sw+.3),1.0,0],[s*(sw+.45),-.45,.05],[s*.34,-.75,0],[s*.35,-2.3,.08],[s*.38,-3.7,0]].forEach(p=>{ const m=add(sph,p,[.11,.11,.11],jm); m.userData.reg="joints"; pick.push(m); }));
+    if(kid){ head.scale.setScalar(1.22); root.scale.setScalar(.92); }
+    const mark=()=>{ Object.entries(mats).forEach(([id,arr])=>arr.forEach(m=>m.emissive && m.emissive.setHex(id===ATL.sel?0x5A3A00:0x000000))); const r=ATLAS.find(x=>x.id===ATL.sel); const l=$("#atl3dLbl"); if(l) l.textContent = r ? aT(r.n) : ""; };
+    mark();
+    let rotY=0, rotX=.05, auto=true, drag=null, pinch=null;
+    const el=ren.domElement; el.style.touchAction="none";
+    const ptrs=new Map();
+    el.addEventListener("pointerdown",e=>{ ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY}); drag={x:e.clientX,y:e.clientY,moved:0}; el.setPointerCapture(e.pointerId); });
+    el.addEventListener("pointermove",e=>{ if(!ptrs.has(e.pointerId)) return; const p0=ptrs.get(e.pointerId); ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+      if(ptrs.size===2){ const [a,b]=[...ptrs.values()]; const d=Math.hypot(a.x-b.x,a.y-b.y); if(pinch) dist=Math.min(26,Math.max(5,dist*pinch/d)); pinch=d; return; }
+      if(!drag) return; const dx=e.clientX-p0.x, dy=e.clientY-p0.y; drag.moved+=Math.abs(dx)+Math.abs(dy); rotY+=dx*.01; rotX=Math.max(-.6,Math.min(.6,rotX+dy*.006)); auto=false; });
+    const up=e=>{ ptrs.delete(e.pointerId); if(ptrs.size<2) pinch=null;
+      if(drag && drag.moved<6 && e.type==="pointerup"){ const r=el.getBoundingClientRect(); const v=new THREE.Vector2(((e.clientX-r.left)/r.width)*2-1, -((e.clientY-r.top)/r.height)*2+1); const rc=new THREE.Raycaster(); rc.setFromCamera(v,cam); const hit=rc.intersectObjects(pick,false)[0]; if(hit){ selectRegion(hit.object.userData.reg); mark(); } }
+      drag=null; };
+    el.addEventListener("pointerup",up); el.addEventListener("pointercancel",up);
+    el.addEventListener("wheel",e=>{ e.preventDefault(); dist=Math.min(26,Math.max(5,dist*(e.deltaY>0?1.08:.92))); },{passive:false});
+    const onR=()=>{ const b=$("#atl3d"); if(!b) return; const W2=b.clientWidth,H2=b.clientHeight; ren.setSize(W2,H2); cam.aspect=W2/H2; cam.updateProjectionMatrix(); };
+    window.addEventListener("resize",onR);
+    const g = ATL.g3 = {ren, onR, mark, setAuto:v=>{auto=v}, reset:()=>{rotY=0;rotX=.05;dist=15.5;auto=true}, setSkin:v=>{skinM.opacity=v}};
+    const loop=()=>{ if(!document.body.contains(el)){ stop3D(); return; } if(auto) rotY+=.006; root.rotation.set(rotX,rotY,0); cam.position.set(0,.2,dist); cam.lookAt(0,.1,0); ren.render(scene,cam); g.raf=requestAnimationFrame(loop); };
+    loop();
+  }).catch(()=>{ const b=$("#atl3d"); if(b) b.innerHTML=`<p class="muted" style="padding:12px">${tx("تعذر تحميل مكتبة العرض ثلاثي الأبعاد. تحقق من الاتصال ثم أعد المحاولة.","Could not load the 3D library. Check your connection and try again.")}</p>`; });
+}
+function selectRegion(id){
+  ATL.sel=id; const info=$("#atlInfo"); if(info) info.outerHTML = regionPanel(id);
+  $$(".atl-svg .org").forEach(g=>g.classList.toggle("on", g.dataset.reg===id));
+  $$("[data-regchip]").forEach(b=>b.setAttribute("aria-pressed", b.dataset.regchip===id));
+  if(ATL.g3) ATL.g3.mark();
+}
+
+// ---------- منحنيات النمو (WHO 0–5 سنوات، CDC 5–20 سنة) ----------
+const ncdf = z => { const t=1/(1+.2316419*Math.abs(z)), d=.3989423*Math.exp(-z*z/2); let p=d*t*(.3193815+t*(-.3565638+t*(1.781478+t*(-1.821256+t*1.330274)))); return z>0?1-p:p; };
+function lmsAt(tab, m){
+  if(m<tab[0][0]||m>tab[tab.length-1][0]) return null;
+  for(let i=0;i<tab.length-1;i++){ const a=tab[i], b=tab[i+1]; if(m>=a[0]&&m<=b[0]){ const f=(m-a[0])/((b[0]-a[0])||1); return [1,2,3].map(k=>a[k]+(b[k]-a[k])*f); } }
+  return tab[tab.length-1].slice(1);
+}
+const zOf = (x,[L,M,S]) => Math.abs(L)<1e-6 ? Math.log(x/M)/S : (Math.pow(x/M,L)-1)/(L*S);
+const xOf = (z,[L,M,S]) => Math.abs(L)<1e-6 ? M*Math.exp(S*z) : M*Math.pow(1+L*S*z,1/L);
+function growthCalc(sex, months, wt, ht){
+  const G = GROWTH[sex]; const who = months<=60; const set = who ? G.who : G.cdc; const out=[];
+  const one = (key, val, nameAr, nameEn) => { if(!val||!set[key]) return; const lms=lmsAt(set[key], months); if(!lms) return; const z=zOf(val,lms); out.push({key, n:tx(nameAr,nameEn), z, p:ncdf(z)*100}); };
+  one("wfa", wt, "الوزن مقابل العمر","Weight-for-age"); one("hfa", ht, "الطول مقابل العمر","Height-for-age");
+  if(wt&&ht) one("bfa", wt/Math.pow(ht/100,2), "مؤشر كتلة الجسم مقابل العمر","BMI-for-age");
+  return {who, out};
+}
+function growthVerdict(r, who){
+  const z=r.z, p=r.p;
+  if(r.key==="hfa") return z<-3?[tx("قِصر شديد","Severe stunting"),"t3"]:z<-2?[tx("قِصر (تقزّم)","Stunting"),"t2"]:z>3?[tx("طول زائد جداً، يُراجع الطبيب","Very tall; see a doctor"),"t2"]:[tx("طبيعي","Normal"),"t1"];
+  if(r.key==="wfa") return z<-3?[tx("نقص وزن شديد","Severe underweight"),"t3"]:z<-2?[tx("نقص وزن","Underweight"),"t2"]:[tx("ضمن المدى (قيّمه مع الطول)","Within range (assess with height)"),"t1"];
+  if(who) return z<-3?[tx("هزال شديد","Severe wasting"),"t3"]:z<-2?[tx("هزال","Wasting"),"t2"]:z>3?[tx("سمنة","Obesity"),"t3"]:z>2?[tx("زيادة وزن","Overweight"),"t2"]:z>1?[tx("خطر زيادة الوزن","Risk of overweight"),"t2"]:[tx("طبيعي","Normal"),"t1"];
+  return p<5?[tx("نقص وزن","Underweight"),"t2"]:p>=95?[tx("سمنة","Obesity"),"t3"]:p>=85?[tx("زيادة وزن","Overweight"),"t2"]:[tx("وزن صحي","Healthy weight"),"t1"];
+}
+function growthChart(sex, key, months, val){
+  const G=GROWTH[sex], tabs=[...(G.who[key]||[]).filter(r=>r[0]<=60), ...(G.cdc[key]||[]).filter(r=>r[0]>60)];
+  if(!tabs.length) return "";
+  const maxM = months<=60 ? 60 : 240, rows = tabs.filter(r=>r[0]<=maxM);
+  const lines = [-2,0,2].map(z=>rows.map(r=>[r[0], xOf(z,r.slice(1))]));
+  const all = lines.flat().map(p=>p[1]).concat(val?[val]:[]); const lo=Math.min(...all)*.95, hi=Math.max(...all)*1.03;
+  const X=m=>30+ (m/maxM)*260, Y=v=>170-((v-lo)/(hi-lo))*150;
+  const path = pts => pts.map((p,i)=>(i?"L":"M")+X(p[0]).toFixed(1)+" "+Y(p[1]).toFixed(1)).join("");
+  const ticks = (maxM===60?[0,12,24,36,48,60]:[24,60,96,132,168,204,240]).map(m=>`<text x="${X(m)}" y="186" text-anchor="middle">${maxM===60?m:m/12}</text>`).join("");
+  return `<svg viewBox="0 0 300 192" class="gchart" role="img" aria-label="${tx("منحنى النمو","Growth chart")}"><rect x="30" y="20" width="260" height="150" fill="var(--sunk)" rx="4"/>
+  <path d="${path(lines[0])}" stroke="var(--warn)" fill="none" stroke-dasharray="4 3"/><path d="${path(lines[2])}" stroke="var(--warn)" fill="none" stroke-dasharray="4 3"/><path d="${path(lines[1])}" stroke="var(--pine)" fill="none" stroke-width="2"/>
+  ${val?`<circle cx="${X(months)}" cy="${Y(val)}" r="5" fill="var(--copper)" stroke="#fff" stroke-width="1.5"/>`:""}
+  <text x="32" y="14">${key==="wfa"?tx("كغ","kg"):key==="hfa"?tx("سم","cm"):"kg/m²"}</text>${ticks}<text x="290" y="14" text-anchor="end">${maxM===60?tx("العمر بالأشهر","Age in months"):tx("العمر بالسنوات","Age in years")}</text></svg>`;
+}
+
+// ---------- صفحة الأطلس ----------
+const ATL_TABS = [["map",["خريطة الجسم","Body map"]],["signs",["علامات الأمراض","Disease signs"]],["healthy",["مؤشرات الجسم الصحي","Healthy-body indicators"]],["growth",["نمو الطفل","Child growth"]]];
+R.atlas = () => `<div class="view-head"><h1>${tx("أطلس الجسم والأمراض","Body and disease atlas")}</h1><p>${tx("استكشف الجسم عضواً عضواً: التشريح والوظيفة، وأمراض كل جزء وعلاجها، وعلامات الخطر، مع عرض ثلاثي الأبعاد، وعلامات الأمراض الظاهرة، ومؤشرات الصحة حسب الفئة والعمر.","Explore the body organ by organ: anatomy and function, the diseases of each part and their treatment, and red flags, with a 3D view, visible disease signs, and health indicators by group and age.")}</p></div>
+<nav class="chips atl-tabs" aria-label="${tx("أقسام الأطلس","Atlas sections")}">${ATL_TABS.map(([k,l])=>`<button type="button" class="chip" data-atab="${k}" aria-pressed="${ATL.tab===k}">${esc(aT(l))}</button>`).join("")}</nav>
+<div id="atlBody">${atlTab()}</div>
+<div class="disclaimer">${tx("الأطلس للتثقيف الصحي ولا يغني عن الفحص الطبي. الرسوم توضيحية أصلية مبسطة وليست بمقاييس تشريحية دقيقة.","The atlas is for health education and does not replace a medical examination. The drawings are original simplified illustrations, not exact anatomical scale.")}</div>`;
+function atlTab(){
+  if(ATL.tab==="signs") return signsHTML();
+  if(ATL.tab==="healthy") return healthyHTML();
+  if(ATL.tab==="growth") return growthHTML();
+  const regs = regionsFor(ATL.sex==="c"?"c":ATL.sex);
+  if(!regs.some(r=>r.id===ATL.sel)) ATL.sel="heart";
+  return `<div class="panel atl-ctl"><div class="row" style="gap:10px;flex-wrap:wrap;align-items:center">
+   ${segBtns("asex",[["m",["رجل","Man"]],["f",["امرأة","Woman"]],["c",["طفل","Child"]]],ATL.sex)}
+   ${segBtns("aside",[["f",["أمامي","Front"]],["b",["خلفي","Back"]],["3d",["ثلاثي الأبعاد","3D"]]],ATL.side)}
+   <label class="chip"><input type="checkbox" id="atlKayy" ${ATL.kayy?"checked":""}> ${tx("مواضع الكي التاريخية","Historical cautery sites")}</label></div></div>
+  <div class="atl-grid"><div class="atl-fig panel">${ATL.side==="3d"?`<div id="atl3d" class="atl3d"></div><div class="row atl3d-ctl"><span class="tag tp" id="atl3dLbl"></span><span style="flex:1"></span><button class="btn ghost" type="button" id="a3auto">${tx("تدوير","Rotate")}</button><button class="btn ghost" type="button" id="a3reset">${tx("إعادة","Reset")}</button><label class="small">${tx("شفافية الجلد","Skin")} <input type="range" id="a3skin" min="0" max="0.8" step="0.05" value="0.22"></label></div><p class="small muted">${tx("اسحب للتدوير، وقرّب بإصبعين أو بعجلة الفأرة، واضغط على أي عضو.","Drag to rotate, pinch or scroll to zoom, and tap any organ.")}</p>`:bodySVG()+`<p class="small muted" style="text-align:center">${tx("اضغط على أي عضو أو اختر من القائمة","Tap any organ or choose from the list")}</p>`}</div>
+  <div class="atl-side">${regionPanel(ATL.sel)}</div></div>
+  <div class="panel"><h3>${tx("كل أجزاء الجسم","All body parts")}</h3><div class="chips">${regs.map(r=>`<button type="button" class="chip" data-regchip="${r.id}" aria-pressed="${r.id===ATL.sel}">${esc(aT(r.n))}</button>`).join("")}</div></div>
+  ${ATL.kayy?`<div class="panel"><h3>${tx("مواضع الكي التاريخية على الخريطة","Historical cautery sites on the map")}</h3><p class="small">${tx("الأرقام النحاسية على الجسم تمثل مواضع ذكرها الأطباء المسلمون الأوائل (ومنهم الزهراوي في كتاب التصريف). اضغط الرقم لترى ما استُعمل له قديماً وما يقابله في الطب الحديث. تفاصيل أوفى في","The copper numbers mark sites described by early Muslim physicians (including al-Zahrawi in al-Tasrif). Tap a number to see its historical use and its modern equivalent. More in")} <a href="#heal" data-healtab="kayy">${tx("قسم الكي","the cautery section")}</a>.</p></div>`:""}`;
+}
+function signsHTML(){
+  return `<div class="panel"><h2>${tx("علامات الأمراض الظاهرة على الجسم","Visible signs of disease on the body")}</h2><p class="small muted">${tx("الجسم يرسل إشارات قد تدل على مرض داخلي. العلامة وحدها لا تكفي للتشخيص، لكنها سبب وجيه لمراجعة الطبيب.","The body sends signals that may point to an internal disease. A sign alone is not a diagnosis, but it is a good reason to see a doctor.")}</p>
+  <p class="small">${SIGN_LV.map(l=>`<span class="tag ${l[2]}">${esc(tx(l[0],l[1]))}</span>`).join(" ")}</p></div>
+  <div class="grid-2 atl-signs">${SIGNS.map(g=>`<div class="panel"><div class="row" style="justify-content:space-between"><h3>${esc(aT(g.g))}</h3><button class="linkbtn small" type="button" data-goreg="${g.r}">${tx("في الأطلس","In the atlas")}</button></div><ul class="clean">${g.items.map(([n,m,l])=>`<li><b>${esc(aT(n))}</b> <span class="tag ${SIGN_LV[l][2]}">${esc(tx(SIGN_LV[l][0],SIGN_LV[l][1]))}</span><br><span class="small muted">${esc(aT(m))}</span></li>`).join("")}</ul></div>`).join("")}</div>
+  <p class="small muted">${tx("المراجع","References")}: ${srcL([MP("ency/article/003247.htm"),MP("tonguedisorders.html"),MP("hairloss.html"),MP("skinconditions.html")])}</p>`;
+}
+function healthyHTML(){
+  const H=HEALTHY[ATL.hp]||HEALTHY.man;
+  return `<div class="panel"><div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:10px"><h2>${tx("مؤشرات الجسم الصحي","Healthy-body indicators")}</h2>${segBtns("ahp",Object.entries(HEALTHY).map(([k,v])=>[k,v.n]),ATL.hp)}</div>
+  <div class="table-wrap"><table class="stack"><thead><tr><th>${tx("المؤشر","Indicator")}</th><th>${tx("المعدل الصحي","Healthy range")}</th></tr></thead><tbody>${H.rows.map(([a,b])=>`<tr><td data-l="${tx("المؤشر","Indicator")}"><b>${esc(aT(a))}</b></td><td data-l="${tx("المعدل الصحي","Healthy range")}">${esc(aT(b))}</td></tr>`).join("")}</tbody></table></div>
+  <h3>${tx("الفحوص الدورية الموصى بها","Recommended routine checks")}</h3><ul class="clean">${H.screen.map(s=>`<li>${esc(aT(s))}</li>`).join("")}</ul>
+  ${ATL.hp==="child"?`<button class="btn" type="button" data-atab="growth">${tx("احسب نمو طفلك بمعايير منظمة الصحة العالمية","Check your child's growth with WHO standards")}</button>`:""}
+  <p class="small muted">${tx("المعدلات للبالغين الأصحاء في الراحة، وقد تختلف قليلاً بين المختبرات. للحساب الدقيق استعمل","Ranges are for healthy adults at rest and may differ slightly between labs. For exact calculations use")} <a href="#tools">${tx("الحاسبات السريرية","the clinical calculators")}</a> ${tx("و","and")} <a href="#assess">${tx("التقييم الصحي","the health assessment")}</a>.</p>
+  <p class="small muted">${tx("المراجع","References")}: ${srcL(HEALTHY_SRC)}</p></div>`;
+}
+function growthHTML(){
+  return `<div class="panel"><h2>${tx("حاسبة نمو الطفل","Child growth calculator")}</h2><p class="small muted">${tx("تقارن وزن طفلك وطوله بالمعايير العالمية: معايير منظمة الصحة العالمية (WHO) من الولادة حتى 5 سنوات، ومنحنيات CDC من 5 إلى 20 سنة، وتعطي النسبة المئوية (المئين) والانحراف المعياري (Z).","Compares your child's weight and height with international standards: WHO standards from birth to 5 years and CDC charts from 5 to 20 years, giving the percentile and Z-score.")}</p>
+  <form id="grF" class="as-form"><div class="row" style="gap:10px;flex-wrap:wrap">
+   ${segBtns("gsex",[["b",["ولد","Boy"]],["g",["بنت","Girl"]]],ATL.gsex||"b")}
+   <div class="field"><label for="grY">${tx("العمر: سنوات","Age: years")}</label><input type="number" id="grY" min="0" max="20" step="1" value="2" inputmode="numeric"></div>
+   <div class="field"><label for="grM">${tx("وأشهر","and months")}</label><input type="number" id="grM" min="0" max="11" step="1" value="0" inputmode="numeric"></div>
+   <div class="field"><label for="grW">${tx("الوزن (كغ)","Weight (kg)")}</label><input type="number" id="grW" min="1" max="200" step="0.1" value="12" inputmode="decimal"></div>
+   <div class="field"><label for="grH">${tx("الطول (سم)","Height (cm)")}</label><input type="number" id="grH" min="40" max="220" step="0.1" value="87" inputmode="decimal"></div>
+  </div><button class="btn" type="submit">${tx("احسب","Calculate")}</button></form>
+  <div id="grOut" aria-live="polite"></div>
+  <p class="small muted">${tx("تحت سنتين يُقاس الطول والطفل مستلقٍ. النتيجة استرشادية؛ ناقش أي قيمة أقل من المئين 3 أو أعلى من 97، أو أي تغير مفاجئ في مسار النمو، مع طبيب الأطفال.","Under 2 years, length is measured lying down. Results are a guide; discuss any value below the 3rd or above the 97th percentile, or any sudden change in growth pattern, with a paediatrician.")}</p>
+  <p class="small muted">${tx("المراجع","References")}: ${srcL([{n:"WHO Child Growth Standards",u:"https://www.who.int/tools/child-growth-standards"},{n:"CDC Growth Charts",u:"https://www.cdc.gov/growthcharts/index.htm"}])}</p></div>`;
+}
+function runGrowth(){
+  const y=+$("#grY").value||0, mo=+$("#grM").value||0, w=parseFloat($("#grW").value), h=parseFloat($("#grH").value);
+  const months = Math.round(y*12+mo); const sex = ATL.gsex||"b";
+  if(months>240){ $("#grOut").innerHTML=`<p class="iw small">${tx("الحاسبة حتى 20 سنة. للبالغين استعمل مؤشر كتلة الجسم.","The calculator covers up to 20 years. For adults use BMI.")}</p>`; return; }
+  const {who,out}=growthCalc(sex, months, w, h);
+  if(!out.length){ $("#grOut").innerHTML=`<p class="iw small">${tx("أدخل العمر والوزن والطول بشكل صحيح.","Enter a valid age, weight and height.")}</p>`; return; }
+  $("#grOut").innerHTML = `<div class="grid-3">${out.map(r=>{ const [v,c]=growthVerdict(r,who); return `<div class="card"><h3>${esc(r.n)}</h3><p><b class="mono">${tx("المئين","Percentile")} ${r.p<0.1?"<0.1":r.p>99.9?">99.9":r.p.toFixed(1)}</b> · <span class="mono">Z ${r.z.toFixed(2)}</span></p><span class="tag ${c}">${v}</span>${growthChart(sex,r.key,months,r.key==="wfa"?w:r.key==="hfa"?h:w/Math.pow(h/100,2))}</div>`; }).join("")}</div>
+  <p class="small muted">${who?tx("المعيار المستعمل: منظمة الصحة العالمية (0 إلى 5 سنوات).","Standard used: WHO (0 to 5 years)."):tx("المرجع المستعمل: CDC 2000 (من 5 إلى 20 سنة).","Reference used: CDC 2000 (5 to 20 years).")} ${tx("الخط الأخضر هو الوسيط، والمتقطعان ±2 انحراف معياري.","The green line is the median; the dashed lines are ±2 SD.")}</p>`;
+}
+document.addEventListener("click", e=>{
+    if(currentView()!=="atlas" || !e.target.closest("#main")) return;
+    const t=e.target.closest("[data-atab],[data-asex],[data-aside],[data-regchip],[data-reg],[data-ks],[data-ahp],[data-gsex],[data-goreg],#a3auto,#a3reset");
+    if(!t) return;
+    if(t.dataset.atab){ ATL.tab=t.dataset.atab; atlSave(); stop3D(); go(); return; }
+    if(t.dataset.asex){ ATL.sex=t.dataset.asex; atlSave(); stop3D(); go(); return; }
+    if(t.dataset.aside){ ATL.side=t.dataset.aside; stop3D(); go(); return; }
+    if(t.dataset.ahp){ ATL.hp=t.dataset.ahp; atlSave(); go(); return; }
+    if(t.dataset.gsex){ ATL.gsex=t.dataset.gsex; $$("[data-gsex]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.gsex===ATL.gsex)); if($("#grOut").innerHTML) runGrowth(); return; }
+    if(t.dataset.goreg){ ATL.tab="map"; ATL.sel=t.dataset.goreg; atlSave(); go(); return; }
+    if(t.dataset.ks!==undefined){ openDrawer(kayySiteHTML(+t.dataset.ks)); return; }
+    if(t.id==="a3auto"&&ATL.g3){ ATL.g3.setAuto(true); return; }
+    if(t.id==="a3reset"&&ATL.g3){ ATL.g3.reset(); return; }
+    const id=t.dataset.regchip||t.dataset.reg; if(id){ selectRegion(id); if(innerWidth<860 && t.dataset.reg) $("#atlInfo")?.scrollIntoView({behavior:"smooth",block:"start"}); }
+});
+document.addEventListener("keydown", e=>{ const t=e.target.closest&&e.target.closest(".atl-svg [data-reg],.atl-svg [data-ks]"); if(t&&(e.key==="Enter"||e.key===" ")){ e.preventDefault(); t.dispatchEvent(new MouseEvent("click",{bubbles:true})); } });
+AFTER.atlas = () => {
+  $("#atlKayy")?.addEventListener("change", e=>{ ATL.kayy=e.target.checked; stop3D(); go(); });
+  $("#a3skin")?.addEventListener("input", e=>ATL.g3&&ATL.g3.setSkin(+e.target.value));
+  $("#grF")?.addEventListener("submit", e=>{ e.preventDefault(); runGrowth(); });
+  if(ATL.tab==="growth") runGrowth();
+  if(ATL.tab==="map" && ATL.side==="3d") start3D();
+};
+
+// ---------- صفحة الاستشفاء ----------
+function healCards(cards){ return `<div class="ig-list">${cards.map((c,i)=>`<details class="ig" ${i<2?"open":""}><summary><span>${esc(aT(c.n))}</span>${evTag(c.ev)}</summary><p>${esc(aT(c.b))}</p><dl class="kv"><dt>${tx("كيف تطبّقه","How to apply it")}</dt><dd>${esc(aT(c.how))}</dd></dl><p class="small muted">${tx("المصدر","Source")}: ${srcL(c.src)}</p></details>`).join("")}</div>`; }
+function healTab(){
+  const k=ATL.healTab, H=HEAL[k];
+  const head = `<div class="panel"><h2>${esc(aT(H.title))}</h2><p>${esc(aT(H.intro))}</p>${(H.ev||[]).map(evQ).join("")}</div>`;
+  if(k==="self"||k==="water") return head + healCards(H.cards) + `<div class="iw"><p class="small"><b>${tx("تنبيه:","Note:")}</b> ${esc(aT(H.warn))}</p></div>`;
+  if(k==="fast") return head + `<p class="small muted">${esc(aT(H.note))}</p>
+   <div class="panel"><h3>${tx("أنواع الصيام وما تقوله الأدلة","Types of fasting and what the evidence says")}</h3><div class="table-wrap"><table class="stack"><thead><tr><th>${tx("النوع","Type")}</th><th>${tx("الطريقة","Method")}</th><th>${tx("الأثر والدليل","Effect and evidence")}</th></tr></thead><tbody>${H.types.map(([a,b,c,e])=>`<tr><td data-l="${tx("النوع","Type")}"><b>${esc(aT(a))}</b></td><td data-l="${tx("الطريقة","Method")}">${esc(aT(b))}</td><td data-l="${tx("الأثر والدليل","Effect and evidence")}">${esc(aT(c))} ${evTag(e)}</td></tr>`).join("")}</tbody></table></div></div>
+   <div class="alert" role="note"><h3>${tx("من لا يصوم إلا بإذن الطبيب","Who should fast only with a doctor's approval")}</h3><p>${esc(aT(H.who))}</p><p><b>${esc(aT(H.stop))}</b></p></div>
+   <div class="panel"><h3>${tx("نصائح الصيام الصحي","Healthy fasting tips")}</h3><p>${esc(aT(H.tips))}</p><p class="small muted">${tx("المصادر","Sources")}: ${srcL(H.src)}</p></div>`;
+  if(k==="hijama") return head + `<div class="panel"><h3>${tx("ماذا يقول العلم؟","What does science say?")}</h3><p>${esc(aT(H.sci))} ${evTag(H.evl)}</p></div>
+   <div class="alert" role="note"><h3>${tx("موانع الحجامة","Who should not have cupping")}</h3><ul class="clean">${H.contra.map(x=>`<li>${esc(aT(x))}</li>`).join("")}</ul></div>
+   <div class="panel"><h3>${tx("شروط السلامة","Safety rules")}</h3><ul class="clean">${H.safe.map(x=>`<li>${esc(aT(x))}</li>`).join("")}</ul><p class="small muted">${tx("المصادر","Sources")}: ${srcL(H.src)}</p><p class="small"><a href="#prophetic">${tx("الطب النبوي","Prophetic medicine")}</a> · <a href="#tcm">${tx("الطب الصيني (الحجامة الجافة)","Chinese medicine (dry cupping)")}</a></p></div>`;
+  if(k==="kayy") return head + `<div class="panel"><h3>${tx("الكي في الطب الحديث","Cautery in modern medicine")}</h3><ul class="clean">${H.modern.map(([a,b])=>`<li><b>${esc(aT(a))}:</b> ${esc(aT(b))}</li>`).join("")}</ul></div>
+   <div class="alert" role="note"><h3>${tx("أضرار الكي الشعبي","Harms of folk cautery")}</h3><ul class="clean">${H.risk.map(x=>`<li>${esc(aT(x))}</li>`).join("")}</ul><p><b>${tx("لا يُكوى الأطفال أبداً، ولا يُلجأ إلى الكي بدل التشخيص الطبي.","Never cauterise children, and never use cautery instead of a medical diagnosis.")}</b></p></div>
+   <div class="panel"><div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:8px"><h3>${tx("مواضع الكي في التراث الطبي","Cautery sites in medical heritage")}</h3><a class="btn ghost" href="#atlas" id="kayyMap">${tx("اعرضها على أطلس الجسم","Show them on the body atlas")}</a></div>
+   <p class="small"><span class="tag t2">${tx("توثيق تاريخي، لا توصية علاجية","Historical record, not a treatment recommendation")}</span> ${tx("وصف الزهراوي (ت نحو 1013م) في المقالة الثلاثين من «التصريف» عشرات المواضع، واشترط معرفة دقيقة بالتشريح وطول التدريب، وحذّر من مواضع قد تقتل. ونعرض بجانب كل موضع ما يقابله اليوم.","Al-Zahrawi (d. about 1013 CE) described dozens of sites in the 30th treatise of al-Tasrif, required precise anatomical knowledge and long training, and warned of sites that could kill. Beside each site is its modern equivalent.")}</p>
+   <div class="table-wrap"><table class="stack"><thead><tr><th>#</th><th>${tx("الموضع","Site")}</th><th>${tx("استُعمل قديماً في","Historical use")}</th><th>${tx("البديل الحديث المثبت","Proven modern alternative")}</th></tr></thead><tbody>${H.sites.map((s,i)=>`<tr><td data-l="#">${i+1}</td><td data-l="${tx("الموضع","Site")}"><button class="linkbtn" type="button" data-ks="${i}"><b>${esc(aT(s.n))}</b></button></td><td data-l="${tx("استُعمل قديماً في","Historical use")}">${esc(aT(s.h))}</td><td data-l="${tx("البديل الحديث المثبت","Proven modern alternative")}">${esc(aT(s.m))}</td></tr>`).join("")}</tbody></table></div>
+   <p class="small muted">${tx("المصادر","Sources")}: ${srcL(H.zsrc)}</p></div>`;
+  if(k==="world") return head + `<p class="small muted">${tx("مفتاح الدليل:","Evidence key:")} ${[3,2,1,0].map(evTag).join(" ")}</p><div class="ig-list">${H.items.map((x,i)=>`<details class="ig" ${i<1?"open":""}><summary><span>${esc(aT(x.n))} <small class="muted">· ${esc(aT(x.o))}</small></span>${evTag(x.ev)}</summary><p>${esc(aT(x.b))}</p><div class="iw"><p class="small"><b>${tx("السلامة:","Safety:")}</b> ${esc(aT(x.s))}</p></div>${x.link?`<p class="small"><a href="#${x.link}">${tx("افتح القسم","Open the section")}</a></p>`:""}<p class="small muted">${tx("المصدر","Source")}: ${srcL(x.src)}</p></details>`).join("")}</div>`;
+  return "";
+}
+R.heal = () => `<div class="view-head"><h1>${tx("الاستشفاء","Healing")}</h1><p>${tx("الاستشفاء الذاتي، والصيام، والماء، والحجامة، والكي ومواضعه، ومدارس التداوي العالمية: بالأدلة الشرعية الموثقة والدليل العلمي، مع الموانع وشروط السلامة.","Self-healing, fasting, water, cupping, cautery and its sites, and world healing traditions: with authenticated religious texts and scientific evidence, contraindications and safety rules.")}</p></div>
+<nav class="chips" aria-label="${tx("أقسام الاستشفاء","Healing sections")}">${HEAL_TABS.map(([k,l])=>`<button type="button" class="chip" data-healtab="${k}" aria-pressed="${ATL.healTab===k}">${esc(aT(l))}</button>`).join("")}</nav>
+<div class="disclaimer">${tx("هذه الأساليب تكمّل العلاج الطبي ولا تحل محله. لا توقف دواءك ولا تؤخر مراجعة الطبيب، واستشره قبل أي أسلوب جديد إن كنت حاملاً أو مريضاً مزمناً أو تتناول أدوية.","These approaches complement medical treatment and do not replace it. Do not stop your medicines or delay seeing a doctor, and consult them before any new approach if you are pregnant, chronically ill or on medicines.")}</div>
+<div id="healBody">${healTab()}</div>`;
+document.addEventListener("click", e=>{
+    if(currentView()!=="heal" || !e.target.closest("#main")) return;
+    const t=e.target.closest("[data-healtab],[data-ks],#kayyMap"); if(!t) return;
+    if(t.id==="kayyMap"){ ATL.kayy=true; ATL.tab="map"; ATL.side="f"; atlSave(); return; }
+    if(t.dataset.ks!==undefined){ openDrawer(kayySiteHTML(+t.dataset.ks)); return; }
+    ATL.healTab=t.dataset.healtab; atlSave(); $$("[data-healtab]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.healtab===ATL.healTab)); $("#healBody").innerHTML=healTab(); $("#healBody").scrollIntoView({block:"nearest"});
+});
+document.addEventListener("click", e=>{ const a=e.target.closest('a[data-healtab]'); if(a){ ATL.healTab=a.dataset.healtab; atlSave(); } });
+
+// ---------- التنقل المجمّع والصفحة الرئيسية ----------
+const NAV_GROUPS = [
+ ["check",["الفحص والمتابعة","Check and track"],["track","check","assess","tools"]],
+ ["know",["المعرفة الطبية","Medical knowledge"],["atlas","diseases","drugs","care","learn","library","news"]],
+ ["heal",["الاستشفاء والطب التكميلي","Healing and complementary medicine"],["heal","pt","herbs","prophetic","tcm"]],
+ ["mind",["الصحة النفسية","Mental health"],["mind","therapy","psydx","psyassess","iq"]],
+ ["beauty",["الجمال","Beauty"],["mkislam","mknatural"]],
+ ["svc",["الخدمات","Services"],["consult","calendar","admin"]],
+];
+const NAV_DESC = {
+ track:["سجّل قياساتك اليومية وتابع تطورها","Log your daily readings and follow their trend"],
+ check:["أسئلة واختيارات تقودك إلى الاحتمالات الأقرب ودرجة الإلحاح","Questions that lead you to the likeliest causes and urgency"],
+ assess:["أدخل بياناتك وتحاليلك لتحصل على رأي عام وطرق علاج مقترحة","Enter your data and tests for a general opinion and suggested care"],
+ tools:["حاسبات سريرية للطلبة والأطباء","Clinical calculators for students and doctors"],
+ atlas:["خريطة الجسم ثنائية وثلاثية الأبعاد، وأمراض كل عضو، والعلامات، ومؤشرات الصحة والنمو","2D and 3D body map, each organ's diseases, signs, and health and growth indicators"],
+ diseases:["الأسباب والأعراض والعلاج والوقاية ومتى تراجع الطبيب","Causes, symptoms, treatment, prevention and when to see a doctor"],
+ drugs:["الاستخدامات والآثار الجانبية والتحذيرات ومدقق التداخلات","Uses, side effects, warnings and an interaction checker"],
+ care:["الإسعافات الأولية واللقاحات والتغذية الصحية","First aid, vaccines and healthy nutrition"],
+ learn:["كورسات مجانية وحالات سريرية واختبار ذاتي","Free courses, clinical cases and self-tests"],
+ library:["أمهات الكتب والتراث الطبي العربي والمواقع الموثوقة","Core textbooks, Arabic medical heritage and trusted sites"],
+ news:["موافقات وإرشادات وأبحاث موثقة بالمصدر والتاريخ","Approvals, guidelines and research with source and date"],
+ heal:["الاستشفاء الذاتي والصيام والماء والحجامة والكي ومدارس العالم","Self-healing, fasting, water, cupping, cautery and world traditions"],
+ pt:["برامج تمارين منزلية للظهر والرقبة والركبة والتوازن","Home exercise programmes for back, neck, knee and balance"],
+ herbs:["الأعشاب بميزان الدليل العلمي والتداخلات الدوائية","Herbs weighed by evidence, with drug interactions"],
+ prophetic:["ما صحّ عن النبي ﷺ في التداوي مع ما يقوله العلم الحديث","Authentic prophetic medicine alongside modern science"],
+ tcm:["الوخز بالإبر والتاي تشي بميزان الأدلة والسلامة","Acupuncture and tai chi weighed by evidence and safety"],
+ mind:["الاكتئاب والقلق والضغوط وطرق الدعم","Depression, anxiety, stress and how to get support"],
+ therapy:["أساليب العلاج النفسي المثبتة","Proven psychological therapies"],
+ psydx:["معايير تشخيص الاضطرابات النفسية","Diagnostic criteria for mental disorders"],
+ psyassess:["المقاييس والاستبيانات النفسية","Psychological scales and questionnaires"],
+ iq:["معدلات الذكاء وما تعنيه","IQ ranges and what they mean"],
+ mkislam:["الزينة المباحة وضوابطها بالأدلة والمستحضرات الحلال","Permitted adornment, its evidence and halal products"],
+ mknatural:["وصفات منزلية آمنة من مكونات طبيعية","Safe home recipes from natural ingredients"],
+ consult:["أرسل سؤالك لفريق الطيبات وتابع الرد","Send your question to the Al-Tayyibat team and follow the reply"],
+ calendar:["التاريخ الهجري والميلادي ومواقيت الصلاة","Hijri and Gregorian dates and prayer times"],
+ admin:["إدارة المحتوى والاستشارات","Manage content and consultations"],
+};
+const navMeta = id => (window.TY_NAV_META||{})[id]||{};
+function navGroupOf(id){ const m=navMeta(id); if(m.g) return m.g; const g=NAV_GROUPS.find(g=>g[2].includes(id)); return g?g[0]:"more"; }
+function navGroups(){
+  const vis = VIEWS.filter(([id])=>id!=="home"&&id!=="privacy"&&(id!=="admin"||S.isAdmin));
+  const out = NAV_GROUPS.map(([k,n,ids])=>({k,n,items:[]})); out.push({k:"more",n:["المزيد","More"],items:[]});
+  vis.forEach(v=>{ const k=navGroupOf(v[0]); (out.find(g=>g.k===k)||out[out.length-1]).items.push(v); });
+  out.forEach(g=>{ const order=(NAV_GROUPS.find(x=>x[0]===g.k)||[0,0,[]])[2]; g.items.sort((a,b)=>{ const ia=order.indexOf(a[0]), ib=order.indexOf(b[0]); return (ia<0?99:ia)-(ib<0?99:ib); }); });
+  return out.filter(g=>g.items.length);
+}
+const viewLabel = ([id,n]) => n;
+renderRail = function(){
+  const cur=currentView(), groups=navGroups(), cg=cur==="home"?null:groups.find(g=>g.items.some(v=>v[0]===cur));
+  const rail=$("#rail"); if(!rail) return;
+  rail.innerHTML = `<a href="#home" ${cur==="home"?'aria-current="page"':""}>${tx("الرئيسية","Home")}</a>` + groups.map(g=>`<a href="#${g.items[0][0]}" class="rg" ${cg&&cg.k===g.k?'aria-current="true"':""}>${esc(aT(g.n))}</a>`).join("") + `<button type="button" class="rail-all" id="railAll" aria-label="${tx("كل الأقسام","All sections")}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg> <span class="t">${tx("كل الأقسام","All sections")}</span></button>`;
+  let sub=$("#railSub");
+  if(!sub){ const nav=document.createElement("nav"); nav.className="rail rail-sub"; nav.setAttribute("aria-label",tx("أقسام المجموعة","Group sections")); nav.innerHTML='<div class="wrap" id="railSub"></div>'; rail.closest("nav").after(nav); sub=$("#railSub"); }
+  sub.parentElement.hidden = !cg;
+  sub.innerHTML = cg ? cg.items.map(v=>`<a href="#${v[0]}" ${v[0]===cur?'aria-current="page"':""}>${esc(viewLabel(v))}</a>`).join("") : "";
+  [rail,sub].forEach(r=>{ const a=r.querySelector('[aria-current]'); if(a) a.scrollIntoView({block:"nearest",inline:"center"}); });
+};
+const allSectionsHTML = () => `<h2>${tx("كل أقسام الطيبات","All Al-Tayyibat sections")}</h2>${navGroups().map(g=>`<h3 style="margin-top:14px">${esc(aT(g.n))}</h3><div class="grid-3">${g.items.map(v=>`<a class="card" href="#${v[0]}" style="text-decoration:none;color:inherit"><b>${esc(viewLabel(v))}</b>${(navMeta(v[0]).d||NAV_DESC[v[0]])?`<span class="small muted">${esc(aT(navMeta(v[0]).d||NAV_DESC[v[0]]))}</span>`:""}</a>`).join("")}</div>`).join("")}`;
+document.addEventListener("click", e=>{ if(e.target.closest("#railAll")) openDrawer(allSectionsHTML()); });
+const _homeR = R.home;
+R.home = () => {
+  const h=_homeR();
+  const groups = navGroups().map(g=>`<section class="home-grp" aria-label="${esc(aT(g.n))}"><h2>${esc(aT(g.n))}</h2><div class="grid">${g.items.map(v=>{ const id=v[0]; let t=viewLabel(v); if(id==="diseases") t=tx(`موسوعة ${allDis().length} مرضاً`,`${allDis().length} diseases encyclopedia`); if(id==="drugs") t=tx(`دليل ${allDrugs().length} دواءً`,`${allDrugs().length} medicines guide`); const d=navMeta(id).d||NAV_DESC[id]; return `<a class="card${id==="atlas"||id==="heal"?" card-new":""}" href="#${id}" style="text-decoration:none;color:inherit"><h3>${esc(t)}${id==="atlas"||id==="heal"?` <span class="tag tp">${tx("جديد","New")}</span>`:""}</h3>${d?`<p class="muted small">${esc(aT(d))}</p>`:""}</a>`; }).join("")}</div></section>`).join("");
+  return h.replace(/<div class="grid">[\s\S]*?<\/div>\s*(<div class="disclaimer">)/, `<div class="home-groups">${groups}</div>$1`);
+};
+// تسجيل الأقسام الجديدة
+(()=>{ const i=VIEWS.findIndex(v=>v[0]==="diseases"); if(!VIEWS.some(v=>v[0]==="atlas")) VIEWS.splice(i<0?1:i,0,["atlas","أطلس الجسم والأمراض"]); const j=VIEWS.findIndex(v=>v[0]==="pt"); if(!VIEWS.some(v=>v[0]==="heal")) VIEWS.splice(j<0?VIEWS.length-3:j,0,["heal","الاستشفاء"]); })();
+if(typeof I18N_EN!=="undefined") Object.assign(I18N_EN,{"أطلس الجسم والأمراض":"Body & disease atlas","الاستشفاء":"Healing","متابعتي اليومية":I18N_EN["متابعتي اليومية"]||"My daily health"});
+
+})();
+// ===== الأطلس والاستشفاء: نهاية
 // ===== القدرات (قاعدة البيانات، المستخدم، المساعد) =====
 function applyEntries(docs){
   S.custom = docs.map(d=>({...d.data(), _id:d.id}));
