@@ -3084,6 +3084,493 @@ function asPlain(a){
   return L2.join("\n");
 }
 
+// ===== الصحة النفسية والعلاج النفسي والتشخيص والذكاء (الإصدار 1.9، 3 نوفمبر 2026) =====
+// وحدة مستقلة: تضيف واجهاتها إلى VIEWS وتعرض النص بالعربية أو الإنجليزية مباشرة حسب TY_LANG
+const PSY_EN = window.TY_LANG==="en";
+const A = (ar,en) => PSY_EN ? en : ar;
+const B = x => Array.isArray(x) ? (PSY_EN ? x[1] : x[0]) : x;
+(function(){ const i=VIEWS.findIndex(v=>v[0]==="pt")+1; VIEWS.splice(i,0,["mind","الصحة النفسية"],["therapy","العلاج النفسي"],["psydx","تشخيص الاضطرابات النفسية"],["psyassess","أساليب التقييم النفسي"],["iq","معدلات الذكاء"]); })();
+Object.assign(I18N_EN,{"الصحة النفسية":"Mental health","العلاج النفسي":"Psychotherapy","تشخيص الاضطرابات النفسية":"Diagnosing mental disorders","أساليب التقييم النفسي":"Psychological assessment","معدلات الذكاء":"Intelligence (IQ)"});
+(function(){ const st=document.createElement("style"); st.textContent=`
+.psy-hero{background:linear-gradient(135deg,var(--pine-soft),var(--copper-soft));border:1px solid var(--line);border-radius:var(--r);padding:18px;display:grid;gap:10px}
+.psy-hero h2{margin:0}
+.hot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.hot{background:var(--surface);border:1px solid var(--line);border-inline-start:4px solid var(--pine);border-radius:8px;padding:10px 12px;display:grid;gap:2px}
+.hot a.num{font-family:var(--f-mono);font-size:1.25rem;font-weight:600;color:var(--pine);text-decoration:none;direction:ltr;unicode-bidi:isolate;justify-self:start}
+.psy-q{border-top:1px solid var(--line);padding:10px 0;display:grid;gap:8px}
+.psy-q:first-of-type{border-top:0}
+.psy-q p{margin:0;font-weight:500}
+.psy-opts{display:flex;flex-wrap:wrap;gap:6px}
+.psy-opts label{border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:.9rem;display:inline-flex;gap:6px;align-items:center;background:var(--surface)}
+.psy-opts label:has(input:checked){background:var(--pine);color:var(--pine-ink);border-color:var(--pine)}
+.psy-opts input{position:absolute;opacity:0;pointer-events:none}
+.psy-res{border-radius:var(--r);padding:14px;display:grid;gap:6px;background:var(--sunk);border:1px solid var(--line)}
+.psy-bar{height:10px;border-radius:99px;background:linear-gradient(90deg,var(--ok),var(--warn),var(--bad));position:relative}
+.psy-bar i{position:absolute;top:-4px;width:4px;height:18px;background:var(--ink);border-radius:2px;transform:translateX(-50%)}
+html[dir=rtl] .psy-bar{transform:scaleX(-1)}
+.breath{display:grid;justify-items:center;gap:12px;padding:8px}
+.breath .orb{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 35% 35%,var(--pine-soft),var(--pine));transform:scale(.6);transition:transform 4s ease-in-out;box-shadow:0 0 0 10px var(--pine-soft)}
+.breath .orb.in{transform:scale(1)}
+.breath b{font-family:var(--f-display);font-size:1.1rem}
+.bell{width:100%;max-width:640px;height:auto;display:block;margin:auto}
+.bell text{font-family:var(--f-mono);font-size:13px;fill:var(--muted)}
+.chips a.chip[aria-pressed="true"]{color:var(--pine-ink)!important}
+@media (max-width:560px){.bell text{font-size:20px}}
+.psy-tabs{display:flex;flex-wrap:wrap;gap:6px}
+.crit{margin:0;padding-inline-start:18px;display:grid;gap:4px}
+.psy-hist li{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;border-bottom:1px dashed var(--line);padding:6px 0}
+@media (max-width:560px){.hot-grid{grid-template-columns:1fr}.breath .orb{width:96px;height:96px}}
+@media (prefers-reduced-motion:reduce){.breath .orb{transition:none}}`; document.head.appendChild(st); })();
+
+// ===== المراجع =====
+const PL = {
+  whoMD:{n:A("WHO: الاضطرابات النفسية","WHO: Mental disorders"),u:"https://www.who.int/news-room/fact-sheets/detail/mental-disorders"},
+  whoMH:{n:A("WHO: الصحة النفسية","WHO: Mental health"),u:"https://www.who.int/news-room/fact-sheets/detail/mental-health-strengthening-our-response"},
+  whoSui:{n:A("WHO: الانتحار","WHO: Suicide"),u:"https://www.who.int/news-room/fact-sheets/detail/suicide"},
+  whoDep:{n:A("WHO: الاكتئاب","WHO: Depressive disorder"),u:"https://www.who.int/news-room/fact-sheets/detail/depression"},
+  whoAnx:{n:A("WHO: اضطرابات القلق","WHO: Anxiety disorders"),u:"https://www.who.int/news-room/fact-sheets/detail/anxiety-disorders"},
+  icd:{n:A("WHO: تصنيف ICD-11","WHO: ICD-11 browser"),u:"https://icd.who.int/browse/2024-01/mms/en"},
+  dsm:{n:A("APA: دليل DSM-5-TR","APA: DSM-5-TR"),u:"https://www.psychiatry.org/psychiatrists/practice/dsm"},
+  ng222:{n:A("NICE NG222: الاكتئاب لدى البالغين","NICE NG222: Depression in adults"),u:"https://www.nice.org.uk/guidance/ng222"},
+  cg113:{n:A("NICE CG113: القلق العام والهلع","NICE CG113: GAD and panic disorder"),u:"https://www.nice.org.uk/guidance/cg113"},
+  ng116:{n:A("NICE NG116: اضطراب ما بعد الصدمة","NICE NG116: PTSD"),u:"https://www.nice.org.uk/guidance/ng116"},
+  cg31:{n:A("NICE CG31: الوسواس القهري","NICE CG31: OCD and BDD"),u:"https://www.nice.org.uk/guidance/cg31"},
+  cg78:{n:A("NICE CG78: اضطراب الشخصية الحدية","NICE CG78: Borderline personality disorder"),u:"https://www.nice.org.uk/guidance/cg78"},
+  nhsTT:{n:A("NHS: أنواع العلاج بالكلام","NHS: Types of talking therapy"),u:"https://www.nhs.uk/mental-health/talking-therapies-medicine-treatments/talking-therapies-and-counselling/types-of-talking-therapies/"},
+  nhsCBT:{n:A("NHS: العلاج المعرفي السلوكي","NHS: CBT"),u:"https://www.nhs.uk/mental-health/talking-therapies-medicine-treatments/talking-therapies-and-counselling/cognitive-behavioural-therapy-cbt/overview/"},
+  nhsSelf:{n:A("NHS Every Mind Matters","NHS Every Mind Matters"),u:"https://www.nhs.uk/every-mind-matters/"},
+  apaIQ:{n:A("APA: الذكاء","APA: Intelligence"),u:"https://www.apa.org/topics/intelligence"},
+  pub:(q,n)=>({n:n||A("PubMed: الدراسات المنشورة","PubMed: published studies"),u:"https://pubmed.ncbi.nlm.nih.gov/?term="+encodeURIComponent(q)}),
+  phq9:{n:"Kroenke 2001 (PHQ-9), PubMed",u:"https://pubmed.ncbi.nlm.nih.gov/11556941/"},
+  gad7:{n:"Spitzer 2006 (GAD-7), PubMed",u:"https://pubmed.ncbi.nlm.nih.gov/16717171/"},
+  who5:{n:"Topp 2015 (WHO-5), PubMed",u:"https://pubmed.ncbi.nlm.nih.gov/25831962/"},
+};
+const psySrc = arr => (arr||[]).map(s=>`<a href="${esc(s.u)}" target="_blank" rel="noopener">${esc(s.n)}</a>`).join(" · ");
+
+// ===== خطوط الدعم النفسي (تم التحقق في 3 نوفمبر 2026) =====
+const HOTLINES = [
+  [["مصر","Egypt"],"16328",["الخط الساخن للأمانة العامة للصحة النفسية وعلاج الإدمان، على مدار الساعة","General Secretariat of Mental Health hotline, 24/7"],"https://www.youm7.com/6785315"],
+  [["السعودية","Saudi Arabia"],"920033360",["مركز الاستشارات النفسية بوزارة الصحة","Ministry of Health psychological consultation line"],"https://www.moh.gov.sa/ministry/information-and-services/pages/psychiatry.aspx"],
+  [["الإمارات","UAE"],"800 4673",["الخط الوطني للدعم النفسي (800HOPE)، بالعربية والإنجليزية","National mental health support line (800HOPE), Arabic and English"],"https://www.emirates247.com/uae-guide/uae-mental-health-helplines-2026-numbers-to-call-in-dubai-abu-dhabi-and-across-the-emirates/6178"],
+  [["قطر","Qatar"],"16000",["خط الصحة النفسية الوطني، مؤسسة حمد الطبية (اختر 4)، من 8 صباحاً إلى 6 مساءً، السبت إلى الخميس","National Mental Health Helpline, Hamad Medical Corporation (option 4), 8 am to 6 pm, Saturday to Thursday"],"https://www.gulf-times.com/article/724300/community/health/hmcs-national-mental-health-helpline-handles-over-19000-calls-in-2025"],
+  [["لبنان","Lebanon"],"1564",["خط الحياة للدعم العاطفي والوقاية من الانتحار (Embrace)","Embrace Lifeline: emotional support and suicide prevention"],"https://embracelebanon.org/Aboutus/WhoWeAre"],
+];
+const hotHTML = () => `<div class="hot-grid">${HOTLINES.map(([c,n,d,u])=>`<div class="hot"><b>${esc(B(c))}</b><a class="num" href="tel:${n.replace(/\s/g,"")}">${n}</a><span class="small muted">${esc(B(d))} · <a href="${u}" target="_blank" rel="noopener">${A("المصدر","Source")}</a></span></div>`).join("")}</div>
+<p class="small muted">${A("في الدول الأخرى، أو عند الخطر المباشر على الحياة، اتصل برقم الطوارئ في بلدك أو اذهب إلى أقرب قسم طوارئ.","In other countries, or if a life is in immediate danger, call your local emergency number or go to the nearest emergency department.")} <button type="button" class="linkbtn" data-psy-sos>${A("أرقام الطوارئ","Emergency numbers")}</button></p>`;
+
+const psyNav = cur => $("#railAll") ? "" : `<nav class="chips" aria-label="${A("أقسام الصحة النفسية","Mental health sections")}">${[["mind",A("الصحة النفسية","Mental health")],["therapy",A("العلاج النفسي","Psychotherapy")],["psydx",A("التشخيص والمقاييس","Diagnosis and screening")],["psyassess",A("أساليب التقييم","Assessment methods")],["iq",A("معدلات الذكاء","IQ")]].map(([h,n])=>`<a class="chip" href="#${h}" aria-pressed="${h===cur}" style="text-decoration:none;color:inherit">${n}</a>`).join("")}</nav>`;
+const psyHead = (t,p) => `<div class="view-head"><h1>${t}</h1><p>${p}</p></div>`;
+const psyNote = () => `<div class="disclaimer">${A("<b>تنبيه مهم:</b> هذا المحتوى للتثقيف ولا يُعد تشخيصاً. التشخيص النفسي يضعه طبيب نفسي أو أخصائي نفسي إكلينيكي مرخّص بعد مقابلة وتقييم كاملين. إذا راودتك أفكار بإيذاء نفسك فاطلب المساعدة الآن.","<b>Important:</b> this content is educational and is not a diagnosis. A mental health diagnosis is made by a licensed psychiatrist or clinical psychologist after a full interview and assessment. If you are having thoughts of harming yourself, seek help now.")}</div>`;
+const psyCard = (q, sum, body, open) => `<details class="ig" ${open?"open":""} data-q="${esc(q)}"><summary>${sum}</summary>${body}</details>`;
+const psyFilter = (inp, box) => { const el=$("#"+inp); if(!el) return; el.addEventListener("input",()=>{const q=el.value.trim(); $$("#"+box+" details.ig").forEach(d=>{d.hidden=!!q&&!matchQ(d.dataset.q,q)})}); };
+document.addEventListener("click", e=>{ if(e.target.closest("[data-psy-sos]")) showSOS(); });
+
+// ===== الصحة النفسية =====
+const SELFCARE = [
+  [["النوم المنتظم","Regular sleep"],["7 إلى 9 ساعات للبالغين بمواعيد ثابتة، وإبعاد الشاشات قبل النوم بساعة.","7 to 9 hours for adults at fixed times, with screens away an hour before bed."]],
+  [["الحركة اليومية","Daily movement"],["150 دقيقة أسبوعياً من النشاط المعتدل تخفف أعراض الاكتئاب والقلق بشكل ملموس.","150 minutes a week of moderate activity measurably reduces symptoms of depression and anxiety."]],
+  [["الصلة بالناس","Connection"],["تواصل يومي مع شخص تثق به؛ العزلة من أقوى عوامل الخطر.","Daily contact with someone you trust; isolation is one of the strongest risk factors."]],
+  [["الطمأنينة والسكينة","Calm and reflection"],["الصلاة والذكر والتأمل الواعي وتمارين التنفس تهدئ الجهاز العصبي وتخفف التوتر.","Prayer, remembrance, mindfulness and breathing exercises calm the nervous system and ease stress."]],
+  [["التغذية والابتعاد عن المؤثرات","Nutrition, no substances"],["وجبات منتظمة، وتقليل الكافيين، والابتعاد التام عن الكحول والمخدرات.","Regular meals, less caffeine, and complete avoidance of alcohol and drugs."]],
+  [["هدف صغير كل يوم","One small goal a day"],["إنجاز مهمة صغيرة ممتعة أو نافعة يومياً يعيد الإحساس بالقدرة (التنشيط السلوكي).","Completing one small pleasant or useful task each day restores a sense of capability (behavioural activation)."]],
+];
+const WARN_SIGNS = [
+  ["أفكار متكررة عن الموت أو إيذاء النفس، أو وضع خطة لذلك","Recurring thoughts of death or self-harm, or making a plan"],
+  ["سماع أصوات أو رؤية أشياء لا يراها الآخرون، أو شكوك شديدة غير منطقية","Hearing voices or seeing things others do not, or intense irrational suspicion"],
+  ["الامتناع عن الأكل أو الشرب أو الدواء، أو العجز عن رعاية النفس","Refusing food, drink or medicine, or being unable to care for oneself"],
+  ["طاقة مفرطة مع قلة نوم شديدة وتصرفات متهورة","Excessive energy with very little sleep and reckless behaviour"],
+  ["تعاطي المواد مع تغير مفاجئ في السلوك أو الوعي","Substance use with a sudden change in behaviour or consciousness"],
+];
+R.mind = () => `${psyHead(A("الصحة النفسية","Mental health"),A("فهم الصحة النفسية والاضطرابات الشائعة، وطرق العناية الذاتية المثبتة علمياً، وأرقام الدعم النفسي في الدول العربية.","Understanding mental health and common disorders, evidence-based self-care, and mental health helplines across Arab countries."))}
+${psyNav("mind")}
+<div class="psy-hero"><h2>${A("الصحة النفسية جزء من الصحة","Mental health is part of health")}</h2>
+<p>${A("تعرّف منظمة الصحة العالمية الصحة النفسية بأنها حالة من العافية تمكّن الإنسان من مواجهة ضغوط الحياة، وتحقيق قدراته، والتعلم والعمل الجيد، والإسهام في مجتمعه. ويعيش نحو شخص من كل 7 أشخاص في العالم مع اضطراب نفسي، وأغلب هذه الاضطرابات قابلة للعلاج.","The World Health Organization defines mental health as a state of well-being that enables people to cope with the stresses of life, realise their abilities, learn and work well, and contribute to their community. Nearly 1 in 7 people worldwide live with a mental disorder, and most of these disorders are treatable.")}</p>
+<div class="row"><a class="btn" href="#psydx">${A("اختبر حالتك بالمقاييس المعتمدة","Check yourself with validated scales")}</a><a class="btn ghost" href="#therapy">${A("تعرّف على العلاج النفسي","Explore psychotherapy")}</a></div></div>
+<div class="panel"><h3>${A("أرقام الدعم النفسي","Mental health helplines")}</h3>${hotHTML()}</div>
+<div class="alert"><h3>${A("متى تطلب المساعدة فوراً؟","When to seek help immediately")}</h3><ul class="clean">${WARN_SIGNS.map(w=>`<li>• ${esc(B(w))}</li>`).join("")}</ul>
+<p class="small">${A("في هذه الحالات اتصل بالطوارئ أو بخط الدعم النفسي، ولا تترك الشخص وحده، وأبعد عنه وسائل الأذى.","In these situations call emergency services or a helpline, do not leave the person alone, and remove means of harm.")}</p></div>
+<div class="panel"><h3>${A("العناية الذاتية المثبتة علمياً","Evidence-based self-care")}</h3>
+<div class="grid">${SELFCARE.map(([t,d])=>`<div class="card" style="cursor:default"><h3>${esc(B(t))}</h3><p class="small muted">${esc(B(d))}</p></div>`).join("")}</div>
+<blockquote class="hadith"><p>﴿الَّذِينَ آمَنُوا وَتَطْمَئِنُّ قُلُوبُهُم بِذِكْرِ اللَّهِ ۗ أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ﴾</p>${PSY_EN?`<p class="hadith-en small">“Those who believe and whose hearts find rest in the remembrance of Allah. Verily, in the remembrance of Allah do hearts find rest.”</p>`:""}<div class="hsrc small">${A("سورة الرعد، الآية 28","Surah Ar-Ra'd, 13:28")} · <a href="https://quran.com/13/28" target="_blank" rel="noopener">quran.com</a></div></blockquote>
+<p class="small muted">${A("المراجع:","Sources:")} ${psySrc([PL.whoMH,PL.nhsSelf,PL.pub("physical activity depression anxiety umbrella review")])}</p></div>
+<div class="panel"><h3>${A("تمرين التنفس المربع (4-4-4-4)","Box breathing (4-4-4-4)")}</h3>
+<p class="small muted">${A("شهيق 4 ثوانٍ، حبس 4، زفير 4، حبس 4. كرره 4 دورات عند التوتر أو قبل النوم.","Breathe in 4 seconds, hold 4, out 4, hold 4. Repeat 4 cycles when stressed or before sleep.")}</p>
+<div class="breath"><div class="orb" id="psyOrb" aria-hidden="true"></div><b id="psyBT" aria-live="polite">${A("جاهز","Ready")}</b><button type="button" class="btn" id="psyBB">${A("ابدأ التمرين","Start")}</button></div></div>
+<div class="panel"><h3>${A("الاضطرابات النفسية الشائعة","Common mental disorders")}</h3>
+<p class="small muted">${A("اضغط على أي اضطراب لمعرفة أعراضه ومعايير تشخيصه وعلاجه.","Tap any disorder to see its symptoms, diagnostic criteria and treatment.")}</p>
+<div class="chips">${PSYDX.map(d=>`<a class="chip" href="#psydx" data-psy-open="${d.id}" style="text-decoration:none;color:inherit">${esc(B(d.n))}</a>`).join("")}</div></div>
+${psyNote()}`;
+let psyTimer=null;
+AFTER.mind = () => {
+  const b=$("#psyBB"), o=$("#psyOrb"), t=$("#psyBT"); if(!b) return;
+  const steps=[[A("شهيق","Breathe in"),1],[A("احبس","Hold"),1],[A("زفير","Breathe out"),0],[A("احبس","Hold"),0]];
+  b.addEventListener("click",()=>{
+    if(psyTimer){ clearInterval(psyTimer); psyTimer=null; o.classList.remove("in"); t.textContent=A("جاهز","Ready"); b.textContent=A("ابدأ التمرين","Start"); return; }
+    let i=0, sec=4, n=0; b.textContent=A("إيقاف","Stop");
+    const tick=()=>{ if(!document.body.contains(o)){ clearInterval(psyTimer); psyTimer=null; return; }
+      if(sec===4){ o.classList.toggle("in", !!steps[i][1]); }
+      t.textContent=`${steps[i][0]} · ${sec}`; sec--;
+      if(sec===0){ sec=4; i=(i+1)%4; if(i===0 && ++n>=4){ clearInterval(psyTimer); psyTimer=null; o.classList.remove("in"); t.textContent=A("أحسنت، انتهى التمرين","Well done, exercise complete"); b.textContent=A("ابدأ التمرين","Start"); } } };
+    tick(); psyTimer=setInterval(tick,1000);
+  });
+  $$("[data-psy-open]").forEach(a=>a.addEventListener("click",()=>store.set("psyOpen",a.dataset.psyOpen)));
+};
+
+// ===== العلاج النفسي =====
+const THER = [
+ {id:"cbt",n:["العلاج المعرفي السلوكي","Cognitive behavioural therapy"],en:"CBT",ev:3,
+  what:["يربط بين الأفكار والمشاعر والسلوك: تتعلم رصد الأفكار التلقائية السلبية واختبارها بالدليل، وتغيير السلوكيات التي تُبقي المشكلة.","Links thoughts, feelings and behaviour: you learn to catch negative automatic thoughts, test them against evidence, and change behaviours that keep the problem going."],
+  tech:["سجل الأفكار، إعادة البناء المعرفي، التجارب السلوكية، الواجبات المنزلية بين الجلسات.","Thought records, cognitive restructuring, behavioural experiments, homework between sessions."],
+  for:["الاكتئاب، القلق العام، الهلع، الرهاب الاجتماعي، الوسواس القهري، الأرق، اضطرابات الأكل.","Depression, GAD, panic, social anxiety, OCD, insomnia, eating disorders."],
+  dur:["8 إلى 20 جلسة أسبوعية، 50 دقيقة تقريباً.","8 to 20 weekly sessions of about 50 minutes."],src:[PL.nhsCBT,PL.ng222,PL.cg113]},
+ {id:"ba",n:["التنشيط السلوكي","Behavioural activation"],en:"BA",ev:3,
+  what:["يركز على العودة التدريجية للأنشطة الممتعة والهادفة التي توقف عنها الشخص بسبب الاكتئاب، لأن الفعل يسبق المزاج.","Focuses on a gradual return to pleasant and meaningful activities dropped because of depression, because action comes before mood."],
+  tech:["جدولة الأنشطة، مراقبة المزاج، تقسيم المهام إلى خطوات صغيرة.","Activity scheduling, mood monitoring, breaking tasks into small steps."],
+  for:["الاكتئاب بدرجاته، وفعاليته مقاربة للعلاج المعرفي السلوكي الكامل.","Depression of all severities; effectiveness close to full CBT."],
+  dur:["8 إلى 16 جلسة.","8 to 16 sessions."],src:[PL.ng222,PL.pub("behavioural activation depression meta-analysis")]},
+ {id:"erp",n:["التعرض ومنع الاستجابة","Exposure and response prevention"],en:"ERP",ev:3,
+  what:["مواجهة تدريجية مخططة للمواقف أو الأفكار المخيفة مع الامتناع عن الطقوس أو التجنب، حتى يتعلم الدماغ أن القلق يهدأ وحده.","Planned, gradual facing of feared situations or thoughts while refraining from rituals or avoidance, so the brain learns that anxiety settles on its own."],
+  tech:["سلّم التعرض المتدرج، التعرض الحي والتخيلي، منع الطقوس.","Graded exposure hierarchy, in vivo and imaginal exposure, ritual prevention."],
+  for:["الوسواس القهري، الرهاب المحدد، الرهاب الاجتماعي، الهلع.","OCD, specific phobias, social anxiety, panic."],
+  dur:["12 إلى 20 جلسة غالباً.","Usually 12 to 20 sessions."],src:[PL.cg31]},
+ {id:"dbt",n:["العلاج الجدلي السلوكي","Dialectical behaviour therapy"],en:"DBT",ev:2,
+  what:["يجمع بين القبول والتغيير: يعلّم مهارات تنظيم المشاعر وتحمّل الضيق والعلاقات واليقظة الذهنية.","Combines acceptance and change: teaches skills in emotion regulation, distress tolerance, interpersonal effectiveness and mindfulness."],
+  tech:["جلسات فردية، مجموعة تدريب مهارات أسبوعية، دعم هاتفي عند الأزمات، تحليل السلسلة السلوكية.","Individual sessions, weekly skills group, phone coaching in crises, behavioural chain analysis."],
+  for:["اضطراب الشخصية الحدية، إيذاء النفس المتكرر، صعوبات تنظيم المشاعر الشديدة.","Borderline personality disorder, recurrent self-harm, severe emotional dysregulation."],
+  dur:["برنامج كامل نحو 12 شهراً.","A full programme lasts about 12 months."],src:[PL.cg78,PL.pub("dialectical behavior therapy self-harm meta-analysis")]},
+ {id:"act",n:["علاج القبول والالتزام","Acceptance and commitment therapy"],en:"ACT",ev:2,
+  what:["بدلاً من محاربة الأفكار والمشاعر المؤلمة، يتعلم الشخص تقبّلها والابتعاد عنها ذهنياً، والالتزام بأفعال تتوافق مع قيمه.","Instead of fighting painful thoughts and feelings, the person learns to accept them, step back from them, and commit to actions in line with their values."],
+  tech:["فك الاندماج المعرفي، توضيح القيم، اليقظة الذهنية، الأفعال الملتزمة.","Cognitive defusion, values clarification, mindfulness, committed action."],
+  for:["الألم المزمن، القلق، الاكتئاب، التكيف مع الأمراض المزمنة.","Chronic pain, anxiety, depression, adjusting to chronic illness."],
+  dur:["8 إلى 16 جلسة.","8 to 16 sessions."],src:[PL.pub("acceptance and commitment therapy meta-analysis")]},
+ {id:"ipt",n:["العلاج التفاعلي بين الأشخاص","Interpersonal psychotherapy"],en:"IPT",ev:3,
+  what:["يربط الأعراض بأربع مجالات في العلاقات: الحزن والفقد، الخلافات، تغير الأدوار، العزلة، ويعمل على تحسينها.","Links symptoms to four relationship areas: grief, disputes, role transitions and isolation, and works on improving them."],
+  tech:["تحليل شبكة العلاقات، لعب الأدوار، تحليل التواصل.","Mapping the relationship network, role play, communication analysis."],
+  for:["الاكتئاب، واكتئاب الحمل وما بعد الولادة، ويُستخدم في برامج منظمة الصحة العالمية.","Depression, including perinatal depression; used in WHO programmes."],
+  dur:["12 إلى 16 جلسة.","12 to 16 sessions."],src:[PL.ng222,PL.pub("interpersonal psychotherapy depression meta-analysis")]},
+ {id:"tf",n:["العلاجات المركزة على الصدمة","Trauma-focused therapies"],en:"TF-CBT · CPT · PE",ev:3,
+  what:["علاجات معرفية سلوكية تساعد على معالجة ذكرى الصدمة بأمان وتصحيح المعتقدات التي نشأت عنها، مثل لوم الذات والشعور الدائم بالخطر.","Cognitive behavioural therapies that help process the trauma memory safely and correct beliefs that arose from it, such as self-blame and a constant sense of danger."],
+  tech:["المعالجة المعرفية (CPT)، التعرض المطوّل (PE)، العلاج المعرفي للصدمة.","Cognitive processing therapy (CPT), prolonged exposure (PE), cognitive therapy for PTSD."],
+  for:["اضطراب ما بعد الصدمة لدى البالغين والأطفال.","PTSD in adults and children."],
+  dur:["8 إلى 12 جلسة، وأطول عند الصدمات المعقدة.","8 to 12 sessions, longer for complex trauma."],src:[PL.ng116]},
+ {id:"emdr",n:["إزالة التحسس بحركة العين وإعادة المعالجة","Eye movement desensitisation and reprocessing"],en:"EMDR",ev:2,
+  what:["يستحضر الشخص ذكرى الصدمة مع تحفيز ثنائي الجانب (حركات العين غالباً) لتخفيف شدتها الانفعالية وإعادة معالجتها.","The person recalls the trauma memory while receiving bilateral stimulation (usually eye movements) to reduce its emotional intensity and reprocess it."],
+  tech:["بروتوكول من 8 مراحل يقدمه معالج مدرّب ومعتمد.","An 8-phase protocol delivered by a trained, certified therapist."],
+  for:["اضطراب ما بعد الصدمة، وتوصي به منظمة الصحة العالمية وNICE.","PTSD; recommended by WHO and NICE."],
+  dur:["8 إلى 12 جلسة.","8 to 12 sessions."],src:[PL.ng116,PL.pub("EMDR PTSD meta-analysis")]},
+ {id:"mbct",n:["العلاج المعرفي القائم على اليقظة الذهنية","Mindfulness-based cognitive therapy"],en:"MBCT",ev:3,
+  what:["برنامج جماعي يدمج التأمل الواعي مع العلاج المعرفي لكسر دائرة الاجترار الذهني.","A group programme combining mindfulness meditation with cognitive therapy to break the cycle of rumination."],
+  tech:["تأمل التنفس، مسح الجسد، المساحة التنفسية 3 دقائق، تمارين منزلية يومية.","Breath meditation, body scan, 3-minute breathing space, daily home practice."],
+  for:["الوقاية من انتكاس الاكتئاب لمن مرّ بنوبتين أو أكثر.","Preventing relapse of depression in people with two or more past episodes."],
+  dur:["8 جلسات جماعية أسبوعية.","8 weekly group sessions."],src:[PL.ng222]},
+ {id:"cbti",n:["العلاج المعرفي السلوكي للأرق","CBT for insomnia"],en:"CBT-I",ev:3,
+  what:["العلاج الأول للأرق المزمن قبل المنومات: يعيد ضبط الساعة البيولوجية ويربط السرير بالنوم.","First-line treatment for chronic insomnia, before sleeping pills: it resets the body clock and re-links the bed with sleep."],
+  tech:["تقييد وقت السرير، ضبط المثيرات، تصحيح المعتقدات عن النوم، نظافة النوم.","Sleep restriction, stimulus control, correcting beliefs about sleep, sleep hygiene."],
+  for:["الأرق المزمن، بما فيه الأرق المصاحب للاكتئاب والألم.","Chronic insomnia, including insomnia with depression or pain."],
+  dur:["4 إلى 8 جلسات، ويتوفر رقمياً.","4 to 8 sessions; also available digitally."],src:[PL.pub("cognitive behavioral therapy insomnia meta-analysis")]},
+ {id:"psydyn",n:["العلاج النفسي التحليلي الديناميكي","Psychodynamic psychotherapy"],en:"STPP",ev:2,
+  what:["امتداد حديث للتحليل النفسي: يستكشف الأنماط اللاواعية والتجارب المبكرة وأثرها في العلاقات الحالية. النسخة القصيرة منه مدعومة بتجارب سريرية.","A modern development of psychoanalysis that explores unconscious patterns and early experiences and how they shape current relationships. Its short-term form is supported by clinical trials."],
+  tech:["التداعي الحر، تحليل الأنماط المتكررة والعلاقة العلاجية، تفسير الدفاعات.","Free association, exploring recurring patterns and the therapeutic relationship, interpreting defences."],
+  for:["الاكتئاب، بعض اضطرابات الشخصية، الأعراض الجسدية ذات المنشأ النفسي.","Depression, some personality disorders, somatic symptoms with psychological origin."],
+  dur:["القصير: 16 إلى 30 جلسة. الطويل: سنة أو أكثر.","Short-term: 16 to 30 sessions. Long-term: a year or more."],src:[PL.ng222,PL.pub("short-term psychodynamic psychotherapy meta-analysis")]},
+ {id:"fam",n:["العلاج الأسري والزوجي","Family and couples therapy"],en:"Systemic",ev:2,
+  what:["ينظر إلى المشكلة داخل منظومة الأسرة ويحسّن التواصل وحل الخلافات وأساليب الدعم.","Views the problem within the family system and improves communication, conflict resolution and support."],
+  tech:["جلسات مشتركة، رسم خريطة الأسرة، تدريب الوالدين.","Joint sessions, family mapping, parent training."],
+  for:["اضطرابات الأكل لدى المراهقين، الذهان (للوقاية من الانتكاس)، مشكلات سلوك الأطفال، الخلافات الزوجية.","Adolescent eating disorders, psychosis (relapse prevention), child behaviour problems, couple conflict."],
+  dur:["10 إلى 20 جلسة غالباً.","Usually 10 to 20 sessions."],src:[PL.nhsTT]},
+ {id:"mi",n:["المقابلة التحفيزية","Motivational interviewing"],en:"MI",ev:2,
+  what:["أسلوب حواري يقوّي دافع الشخص الذاتي للتغيير ويحل تردده، دون جدال أو إجبار.","A conversational style that strengthens a person's own motivation to change and resolves ambivalence, without argument or pressure."],
+  tech:["الأسئلة المفتوحة، الإصغاء العاكس، إبراز حديث التغيير.","Open questions, reflective listening, eliciting change talk."],
+  for:["الإدمان والتدخين، الالتزام بالعلاج، تغيير نمط الحياة.","Addiction and smoking, treatment adherence, lifestyle change."],
+  dur:["1 إلى 4 جلسات، وقد يُدمج مع علاجات أخرى.","1 to 4 sessions, often combined with other therapies."],src:[PL.pub("motivational interviewing meta-analysis")]},
+ {id:"rel",n:["العلاج المعرفي المتكيف دينياً","Religiously integrated CBT"],en:"RCBT",ev:1,
+  what:["علاج معرفي سلوكي يستعين بالقيم والنصوص الدينية للمريض (كالصبر والتوكل والرجاء) في إعادة بناء الأفكار، ويقدّمه معالج مؤهل.","CBT that draws on the patient's own religious values and texts (such as patience, trust in God and hope) for cognitive restructuring, delivered by a qualified therapist."],
+  tech:["دمج المعتقدات الدينية في سجل الأفكار، والدعاء والذكر كأدوات تهدئة، وقيم المريض كدافع للتغيير.","Bringing religious beliefs into thought records, using supplication and remembrance for calming, and the patient's values as motivation."],
+  for:["الاكتئاب والقلق لدى المتدينين، ويحسّن القبول والالتزام بالعلاج.","Depression and anxiety in religious patients; improves acceptance and engagement."],
+  dur:["مماثلة للعلاج المعرفي السلوكي.","Similar to standard CBT."],src:[PL.pub("religious cognitive behavioral therapy depression randomized")]},
+];
+const PSY_EV = {3:[A("دليل علمي قوي","Strong evidence"),"t1"],2:[A("دليل علمي متوسط","Moderate evidence"),"t1"],1:[A("دليل علمي محدود","Limited evidence"),"t2"]};
+const psyEv = ev => `<span class="tag ${PSY_EV[ev][1]}">${PSY_EV[ev][0]}</span>`;
+function therCard(t, open){
+  return psyCard(B(t.n)+" "+t.en+" "+B(t.for), `<span>${esc(B(t.n))} <span class="mono small muted">${esc(t.en)}</span></span>${psyEv(t.ev)}`,
+  `<dl class="kv"><dt>${A("ما هو","What it is")}</dt><dd>${esc(B(t.what))}</dd><dt>${A("الأساليب","Techniques")}</dt><dd>${esc(B(t.tech))}</dd><dt>${A("أنسب لـ","Best for")}</dt><dd>${esc(B(t.for))}</dd><dt>${A("المدة","Duration")}</dt><dd>${esc(B(t.dur))}</dd></dl>
+  <p class="small muted">${A("المراجع:","Sources:")} ${psySrc(t.src)}</p>`, open);
+}
+R.therapy = () => `${psyHead(A("العلاج النفسي","Psychotherapy"),A("أشهر أساليب العلاج النفسي بالكلام: ما هي، وكيف تعمل، ولأي الحالات تصلح، وقوة الدليل العلمي عليها حسب الإرشادات الدولية.","The main talking therapies: what they are, how they work, which conditions they suit, and the strength of evidence behind them according to international guidelines."))}
+${psyNav("therapy")}
+<div class="panel"><h3>${A("كيف تختار؟","How to choose")}</h3>
+<div class="table-wrap"><table class="stack"><thead><tr><th>${A("الحالة","Condition")}</th><th>${A("العلاج الأول المثبت","First-line therapy")}</th></tr></thead><tbody>
+${[["الاكتئاب","Depression","العلاج المعرفي السلوكي، التنشيط السلوكي، العلاج التفاعلي","CBT, behavioural activation, IPT"],["القلق العام والهلع","GAD and panic","العلاج المعرفي السلوكي","CBT"],["الوسواس القهري","OCD","التعرض ومنع الاستجابة","ERP"],["اضطراب ما بعد الصدمة","PTSD","العلاجات المركزة على الصدمة، EMDR","Trauma-focused CBT, EMDR"],["الأرق المزمن","Chronic insomnia","CBT-I","CBT-I"],["الشخصية الحدية وإيذاء النفس","Borderline PD and self-harm","العلاج الجدلي السلوكي","DBT"],["الإدمان","Addiction","المقابلة التحفيزية مع العلاج المعرفي السلوكي","MI with CBT"]].map(r=>`<tr><td><b>${A(r[0],r[1])}</b></td><td>${A(r[2],r[3])}</td></tr>`).join("")}
+</tbody></table></div>
+<p class="small muted">${A("في الحالات المتوسطة والشديدة يُجمع غالباً بين العلاج النفسي والدواء بقرار الطبيب النفسي.","In moderate and severe cases, psychotherapy is often combined with medication at the psychiatrist's discretion.")}</p></div>
+${integSearch("thQ",A("ابحث عن علاج أو حالة، مثل: الوسواس","Search a therapy or condition, e.g. OCD"))}
+<div id="thList" class="ig-list">${THER.map((t,i)=>therCard(t,i===0)).join("")}</div>
+${psyNote()}`;
+AFTER.therapy = () => psyFilter("thQ","thList");
+
+// ===== التشخيص: المعايير والمقاييس =====
+const PSYDX = [
+ {id:"mdd",n:["الاكتئاب الجسيم","Major depressive disorder"],icd:"6A70–6A71",scr:"phq9",
+  crit:[["5 أعراض أو أكثر من 9 لمدة أسبوعين على الأقل، أحدها حتماً: المزاج المكتئب أو فقدان الاهتمام والمتعة.","5 or more of 9 symptoms for at least 2 weeks, one of which must be depressed mood or loss of interest or pleasure."],["الأعراض الأخرى: تغير الوزن أو الشهية، اضطراب النوم، بطء أو هياج حركي، إرهاق، شعور بانعدام القيمة أو ذنب مفرط، ضعف التركيز، أفكار متكررة عن الموت.","Other symptoms: change in weight or appetite, sleep disturbance, slowing or agitation, fatigue, worthlessness or excessive guilt, poor concentration, recurrent thoughts of death."],["تسبب ضيقاً أو تعطلاً واضحاً، وليست ناتجة عن مادة أو مرض عضوي، ولا توجد نوبة هوس سابقة.","Causes clear distress or impairment, is not due to a substance or medical condition, and there has never been a manic episode."]],
+  tx:["العلاج النفسي (CBT أو BA أو IPT) للحالات الخفيفة، ويضاف مضاد اكتئاب في الحالات المتوسطة والشديدة.","Psychotherapy (CBT, BA or IPT) for mild cases, adding an antidepressant in moderate and severe cases."],src:[PL.whoDep,PL.ng222]},
+ {id:"gad",n:["اضطراب القلق العام","Generalised anxiety disorder"],icd:"6B00",scr:"gad7",
+  crit:[["قلق وتوجس مفرط معظم الأيام لمدة 6 أشهر على الأقل حول أمور متعددة، ويصعب التحكم فيه.","Excessive anxiety and worry on most days for at least 6 months about several matters, and hard to control."],["3 أعراض أو أكثر من: التململ، سرعة التعب، ضعف التركيز، العصبية، شد العضلات، اضطراب النوم.","3 or more of: restlessness, tiring easily, poor concentration, irritability, muscle tension, sleep disturbance."]],
+  tx:["العلاج المعرفي السلوكي أولاً، ثم مضادات الاكتئاب من فئة SSRI عند الحاجة.","CBT first, then an SSRI antidepressant if needed."],src:[PL.whoAnx,PL.cg113]},
+ {id:"panic",n:["اضطراب الهلع","Panic disorder"],icd:"6B01",scr:"gad7",
+  crit:[["نوبات هلع متكررة غير متوقعة: خوف شديد يبلغ ذروته خلال دقائق مع 4 أعراض أو أكثر مثل خفقان القلب والتعرق والرجفة وضيق النفس وألم الصدر والدوار والخوف من الموت.","Recurrent unexpected panic attacks: intense fear peaking within minutes with 4 or more symptoms such as palpitations, sweating, trembling, breathlessness, chest pain, dizziness and fear of dying."],["يتبعها شهر أو أكثر من القلق المستمر من تكرار النوبات أو تغيير السلوك لتجنبها.","Followed by a month or more of persistent worry about further attacks or behaviour change to avoid them."]],
+  tx:["العلاج المعرفي السلوكي مع التعرض. ويجب أولاً استبعاد الأسباب القلبية والدرقية.","CBT with exposure. Cardiac and thyroid causes must be ruled out first."],src:[PL.cg113]},
+ {id:"social",n:["الرهاب الاجتماعي","Social anxiety disorder"],icd:"6B04",scr:"gad7",
+  crit:[["خوف واضح ومستمر من المواقف الاجتماعية التي قد يتعرض فيها الشخص للتقييم أو الإحراج.","Marked, persistent fear of social situations in which the person may be evaluated or embarrassed."],["تجنب هذه المواقف أو تحملها بضيق شديد، لمدة 6 أشهر أو أكثر.","These situations are avoided or endured with intense distress, for 6 months or more."]],
+  tx:["العلاج المعرفي السلوكي المخصص للرهاب الاجتماعي.","CBT designed for social anxiety."],src:[PL.whoAnx]},
+ {id:"ocd",n:["الوسواس القهري","Obsessive-compulsive disorder"],icd:"6B20",scr:"",
+  crit:[["وساوس: أفكار أو صور أو اندفاعات متكررة مقتحمة وغير مرغوبة تسبب قلقاً.","Obsessions: recurrent, intrusive, unwanted thoughts, images or urges that cause anxiety."],["و/أو أفعال قهرية: سلوكيات أو أفعال ذهنية متكررة يشعر الشخص أنه مجبر عليها لتخفيف القلق.","And/or compulsions: repetitive behaviours or mental acts the person feels driven to perform to reduce anxiety."],["تستهلك وقتاً (أكثر من ساعة يومياً عادة) أو تسبب ضيقاً أو تعطلاً واضحاً.","They are time-consuming (usually over an hour a day) or cause clear distress or impairment."]],
+  tx:["التعرض ومنع الاستجابة، ومضادات SSRI بجرعات أعلى غالباً.","ERP, and SSRIs, often at higher doses."],src:[PL.cg31]},
+ {id:"ptsd",n:["اضطراب ما بعد الصدمة","Post-traumatic stress disorder"],icd:"6B40",scr:"",
+  crit:[["التعرض لحدث صادم (موت أو تهديد به، إصابة خطيرة، عنف).","Exposure to a traumatic event (actual or threatened death, serious injury, violence)."],["إعادة المعايشة (ذكريات مقتحمة، كوابيس، استرجاع)، والتجنب، والشعور الدائم بالتهديد (يقظة مفرطة وفزع). ويضيف DSM-5-TR تغيرات سلبية في الأفكار والمزاج.","Re-experiencing (intrusive memories, nightmares, flashbacks), avoidance, and a persistent sense of threat (hypervigilance, startle). DSM-5-TR adds negative changes in thoughts and mood."],["تستمر أكثر من شهر. ويُشخَّص «اضطراب الصدمة المعقد» في ICD-11 (6B41) عند وجود صعوبات دائمة في تنظيم المشاعر وصورة الذات والعلاقات.","Lasts over a month. ICD-11 diagnoses complex PTSD (6B41) when there are also lasting problems with emotion regulation, self-image and relationships."]],
+  tx:["العلاجات المركزة على الصدمة وEMDR أولاً.","Trauma-focused therapies and EMDR first."],src:[PL.ng116]},
+ {id:"bipolar",n:["الاضطراب ثنائي القطب","Bipolar disorder"],icd:"6A60–6A61",scr:"",
+  crit:[["النوع الأول: نوبة هوس واحدة على الأقل لمدة أسبوع (أو أي مدة إن احتاجت تنويماً): مزاج مرتفع أو متهيج مع زيادة الطاقة و3 أعراض أو أكثر مثل تضخم الذات وقلة الحاجة للنوم وتسارع الكلام والأفكار والاندفاع.","Type I: at least one manic episode lasting a week (or any length if hospitalised): elevated or irritable mood with increased energy and 3 or more symptoms such as grandiosity, reduced need for sleep, pressured speech, racing thoughts and impulsivity."],["النوع الثاني: نوبة هوس خفيف (4 أيام على الأقل) ونوبة اكتئاب جسيم، دون هوس كامل.","Type II: a hypomanic episode (at least 4 days) and a major depressive episode, without full mania."]],
+  tx:["مثبتات المزاج (الليثيوم وغيره) بإشراف الطبيب النفسي، مع التثقيف النفسي. مضادات الاكتئاب وحدها قد تحفز الهوس.","Mood stabilisers (lithium and others) under psychiatric supervision, with psychoeducation. Antidepressants alone can trigger mania."],src:[PL.whoMD]},
+ {id:"scz",n:["الفصام","Schizophrenia"],icd:"6A20",scr:"",
+  crit:[["عرضان أو أكثر: أوهام، هلاوس، كلام مفكك، سلوك مضطرب جداً، أعراض سلبية (تبلد المشاعر وضعف الإرادة)، أحدها حتماً من الثلاثة الأولى.","Two or more of: delusions, hallucinations, disorganised speech, grossly disorganised behaviour, negative symptoms (flat affect, low motivation), at least one from the first three."],["مدة شهر من الأعراض النشطة، ويشترط DSM-5-TR استمرار علامات الاضطراب 6 أشهر.","One month of active symptoms; DSM-5-TR also requires signs of disturbance for 6 months."]],
+  tx:["مضادات الذهان مع التأهيل النفسي الاجتماعي والعلاج الأسري. التدخل المبكر يحسّن النتائج كثيراً.","Antipsychotics with psychosocial rehabilitation and family therapy. Early intervention greatly improves outcomes."],src:[PL.whoMD]},
+ {id:"adhd",n:["اضطراب نقص الانتباه وفرط الحركة","ADHD"],icd:"6A05",scr:"",
+  crit:[["6 أعراض أو أكثر من نقص الانتباه و/أو فرط الحركة والاندفاع (5 لمن عمره 17 سنة فأكثر) لمدة 6 أشهر.","6 or more symptoms of inattention and/or hyperactivity-impulsivity (5 from age 17) for 6 months."],["بدأ عدة منها قبل سن 12، وتظهر في مكانين على الأقل (البيت والمدرسة أو العمل).","Several began before age 12 and appear in at least two settings (home and school or work)."]],
+  tx:["التدريب السلوكي للوالدين للأطفال الصغار، والأدوية المنبهة وغير المنبهة بوصفة الطبيب.","Behavioural parent training for young children, and stimulant or non-stimulant medicines on prescription."],src:[PL.whoMD]},
+ {id:"asd",n:["اضطراب طيف التوحد","Autism spectrum disorder"],icd:"6A02",scr:"",
+  crit:[["صعوبات مستمرة في التواصل والتفاعل الاجتماعي (التبادل العاطفي، التواصل غير اللفظي، بناء العلاقات).","Persistent difficulties in social communication and interaction (emotional reciprocity, non-verbal communication, building relationships)."],["أنماط سلوك أو اهتمامات محدودة ومتكررة (حركات نمطية، التمسك بالروتين، اهتمامات شديدة، حساسية حسية)، تظهر في مرحلة النمو المبكرة.","Restricted, repetitive patterns of behaviour or interests (stereotyped movements, insistence on routine, intense interests, sensory sensitivity) appearing in early development."]],
+  tx:["التدخل السلوكي والتواصلي المبكر، وعلاج النطق والوظائف، ودعم الأسرة والمدرسة.","Early behavioural and communication intervention, speech and occupational therapy, family and school support."],src:[PL.whoMD]},
+ {id:"eat",n:["اضطرابات الأكل","Eating disorders"],icd:"6B80–6B82",scr:"",
+  crit:[["فقدان الشهية العصبي: تقييد الطعام حتى وزن منخفض بوضوح، مع خوف شديد من زيادة الوزن واضطراب صورة الجسد.","Anorexia nervosa: restricting food to a clearly low weight, with intense fear of weight gain and distorted body image."],["الشره العصبي: نوبات أكل مفرط يتبعها تقيؤ أو مسهلات أو صيام، مرة أسبوعياً لمدة 3 أشهر. واضطراب نهم الطعام: نوبات أكل مفرط دون تعويض.","Bulimia nervosa: binge eating followed by vomiting, laxatives or fasting, weekly for 3 months. Binge eating disorder: binges without compensation."]],
+  tx:["العلاج الأسري للمراهقين، والعلاج المعرفي السلوكي المخصص (CBT-E) للبالغين، مع متابعة طبية وغذائية.","Family therapy for adolescents and enhanced CBT (CBT-E) for adults, with medical and nutritional monitoring."],src:[PL.whoMD]},
+ {id:"insom",n:["الأرق المزمن","Chronic insomnia"],icd:"7A00",scr:"",
+  crit:[["صعوبة في بدء النوم أو استمراره أو الاستيقاظ المبكر، 3 ليالٍ أسبوعياً على الأقل لمدة 3 أشهر، رغم توفر فرصة كافية للنوم.","Difficulty starting or staying asleep, or waking early, at least 3 nights a week for 3 months despite adequate opportunity to sleep."],["مع أثر نهاري: إرهاق، ضعف تركيز، تقلب مزاج.","With daytime effects: fatigue, poor concentration, mood changes."]],
+  tx:["CBT-I أولاً. المنومات لفترة قصيرة فقط.","CBT-I first. Sleeping pills only for short periods."],src:[PL.pub("cognitive behavioral therapy insomnia meta-analysis")]},
+ {id:"grief",n:["اضطراب الحزن المطوّل","Prolonged grief disorder"],icd:"6B42",scr:"",
+  crit:[["حنين شديد للمتوفى أو انشغال دائم به مع ألم انفعالي شديد، يعطل الحياة اليومية.","Intense longing for or preoccupation with the deceased with severe emotional pain that disrupts daily life."],["يستمر 6 أشهر على الأقل بعد الفقد في ICD-11، و12 شهراً في DSM-5-TR، ويتجاوز المعتاد في ثقافة الشخص.","Lasts at least 6 months after the loss in ICD-11 and 12 months in DSM-5-TR, beyond what is expected in the person's culture."]],
+  tx:["علاج الحزن المعقد (CGT) وهو نوع من العلاج المعرفي السلوكي.","Complicated grief therapy (CGT), a form of CBT."],src:[PL.icd]},
+ {id:"aud",n:["اضطرابات تعاطي المواد","Substance use disorders"],icd:"6C40–6C4H",scr:"",
+  crit:[["عرضان أو أكثر من 11 خلال 12 شهراً، منها: فقدان السيطرة على الكمية، الرغبة الملحّة، الفشل في الواجبات، الاستمرار رغم الضرر، التحمّل، أعراض الانسحاب.","Two or more of 11 criteria within 12 months, including: loss of control over amount, craving, failing obligations, continued use despite harm, tolerance, withdrawal."]],
+  tx:["المقابلة التحفيزية والعلاج المعرفي السلوكي، وعلاج دوائي للانسحاب والانتكاس، ومجموعات الدعم.","Motivational interviewing and CBT, medicines for withdrawal and relapse prevention, and support groups."],src:[PL.whoMD]},
+];
+
+// المقاييس المعتمدة المجانية (PHQ-9 وGAD-7 بلا قيود ترخيص، وWHO-5 من منظمة الصحة العالمية)
+const OPT4 = [[["أبداً","Not at all"],0],[["عدة أيام","Several days"],1],[["أكثر من نصف الأيام","More than half the days"],2],[["كل يوم تقريباً","Nearly every day"],3]];
+const SCALES = {
+ phq9:{n:["PHQ-9: مقياس الاكتئاب","PHQ-9: Depression scale"],intro:["خلال الأسبوعين الماضيين، كم مرة تضايقت من المشكلات التالية؟","Over the last 2 weeks, how often have you been bothered by the following problems?"],opts:OPT4,
+  q:[["قلة الاهتمام أو المتعة بالقيام بالأشياء","Little interest or pleasure in doing things"],["الشعور بالحزن أو الاكتئاب أو اليأس","Feeling down, depressed, or hopeless"],["صعوبة في النوم أو الاستمرار فيه، أو النوم الزائد","Trouble falling or staying asleep, or sleeping too much"],["الشعور بالتعب أو قلة الطاقة","Feeling tired or having little energy"],["ضعف الشهية أو الإفراط في الأكل","Poor appetite or overeating"],["الشعور بالسوء تجاه نفسك، أو أنك فاشل أو خذلت نفسك أو أسرتك","Feeling bad about yourself, or that you are a failure or have let yourself or your family down"],["صعوبة التركيز، مثل قراءة الجريدة أو مشاهدة التلفاز","Trouble concentrating on things, such as reading the newspaper or watching television"],["البطء في الحركة أو الكلام حتى يلاحظه الآخرون، أو العكس: تململ وحركة زائدة","Moving or speaking so slowly that other people could notice, or the opposite: being fidgety or restless"],["أفكار بأنك ستكون أفضل حالاً لو مت، أو بإيذاء نفسك بأي شكل","Thoughts that you would be better off dead, or of hurting yourself in some way"]],
+  max:27,bands:[[4,["ضئيل","Minimal"],"t1"],[9,["خفيف","Mild"],"t1"],[14,["متوسط","Moderate"],"t2"],[19,["متوسط إلى شديد","Moderately severe"],"t3"],[27,["شديد","Severe"],"t3"]],
+  adv:[["لا توجد مؤشرات واضحة للاكتئاب. استمر في العناية الذاتية.","No clear signs of depression. Keep up your self-care."],["أعراض خفيفة: راقب حالتك، وطبّق العناية الذاتية، وأعد المقياس بعد أسبوعين.","Mild symptoms: monitor yourself, practise self-care, and repeat the scale in 2 weeks."],["أعراض متوسطة: يُنصح بمراجعة طبيب أو أخصائي نفسي لتقييم كامل.","Moderate symptoms: seeing a doctor or psychologist for a full assessment is recommended."],["أعراض متوسطة إلى شديدة: راجع طبيباً نفسياً قريباً؛ العلاج فعّال.","Moderately severe symptoms: see a psychiatrist soon; treatment works."],["أعراض شديدة: راجع طبيباً نفسياً في أقرب وقت ممكن.","Severe symptoms: see a psychiatrist as soon as possible."]],
+  cut:["الدرجة 10 فأكثر: حساسية 88% ونوعية 88% للاكتئاب الجسيم.","Score 10 or more: 88% sensitivity and 88% specificity for major depression."],src:[PL.phq9]},
+ gad7:{n:["GAD-7: مقياس القلق العام","GAD-7: Generalised anxiety scale"],intro:["خلال الأسبوعين الماضيين، كم مرة تضايقت من المشكلات التالية؟","Over the last 2 weeks, how often have you been bothered by the following problems?"],opts:OPT4,
+  q:[["الشعور بالعصبية أو القلق أو التوتر الشديد","Feeling nervous, anxious, or on edge"],["عدم القدرة على إيقاف القلق أو التحكم فيه","Not being able to stop or control worrying"],["القلق الزائد حول أمور مختلفة","Worrying too much about different things"],["صعوبة الاسترخاء","Trouble relaxing"],["التململ لدرجة صعوبة الجلوس بهدوء","Being so restless that it is hard to sit still"],["سرعة الانزعاج أو الغضب","Becoming easily annoyed or irritable"],["الخوف وكأن شيئاً فظيعاً قد يحدث","Feeling afraid, as if something awful might happen"]],
+  max:21,bands:[[4,["ضئيل","Minimal"],"t1"],[9,["خفيف","Mild"],"t1"],[14,["متوسط","Moderate"],"t2"],[21,["شديد","Severe"],"t3"]],
+  adv:[["لا توجد مؤشرات واضحة لاضطراب القلق.","No clear signs of an anxiety disorder."],["قلق خفيف: جرّب تمارين التنفس والنشاط البدني، وأعد المقياس بعد أسبوعين.","Mild anxiety: try breathing exercises and physical activity, and repeat in 2 weeks."],["قلق متوسط: يُنصح بتقييم لدى أخصائي نفسي؛ العلاج المعرفي السلوكي فعّال جداً.","Moderate anxiety: an assessment by a psychologist is recommended; CBT is very effective."],["قلق شديد: راجع طبيباً نفسياً قريباً.","Severe anxiety: see a psychiatrist soon."]],
+  cut:["الدرجة 10 فأكثر: حساسية 89% ونوعية 82% لاضطراب القلق العام.","Score 10 or more: 89% sensitivity and 82% specificity for GAD."],src:[PL.gad7]},
+ who5:{n:["WHO-5: مؤشر العافية النفسية","WHO-5: Well-being index"],intro:["خلال الأسبوعين الماضيين، كم من الوقت شعرت بما يلي؟","Over the last 2 weeks, how much of the time have you felt the following?"],
+  opts:[[["لم يحدث","At no time"],0],[["أحياناً","Some of the time"],1],[["أقل من نصف الوقت","Less than half the time"],2],[["أكثر من نصف الوقت","More than half the time"],3],[["معظم الوقت","Most of the time"],4],[["طوال الوقت","All of the time"],5]],
+  q:[["شعرت بالبهجة والمزاج الطيب","I have felt cheerful and in good spirits"],["شعرت بالهدوء والاسترخاء","I have felt calm and relaxed"],["شعرت بالنشاط والحيوية","I have felt active and vigorous"],["استيقظت أشعر بالانتعاش والراحة","I woke up feeling fresh and rested"],["امتلأت حياتي اليومية بأشياء تهمني","My daily life has been filled with things that interest me"]],
+  max:25,pct:true,bands:[[7,["عافية منخفضة جداً","Very low well-being"],"t3"],[12,["عافية منخفضة","Low well-being"],"t2"],[25,["عافية جيدة","Good well-being"],"t1"]],
+  adv:[["النسبة 28% أو أقل: مؤشر قوي على احتمال الاكتئاب؛ يُنصح بإكمال PHQ-9 ومراجعة مختص.","28% or less: a strong indicator of possible depression; complete the PHQ-9 and see a professional."],["النسبة 50% أو أقل: عافية منخفضة؛ يُنصح بإكمال PHQ-9.","50% or less: low well-being; completing the PHQ-9 is recommended."],["عافية نفسية جيدة. حافظ على عاداتك الصحية.","Good psychological well-being. Keep up your healthy habits."]],
+  cut:["تُضرب الدرجة الخام في 4 لتصبح نسبة من 100.","The raw score is multiplied by 4 to give a percentage out of 100."],src:[PL.who5]},
+};
+const psyHistKey = () => "psy_"+(S.uid||"guest");
+function scaleForm(k){
+  const s=SCALES[k];
+  return `<form class="panel" id="psyForm" data-k="${k}"><h3>${esc(B(s.n))}</h3><p class="small muted">${esc(B(s.intro))}</p>
+  ${s.q.map((q,i)=>`<fieldset class="psy-q" style="border:0;margin:0;padding-inline:0"><legend style="padding:0"><p>${i+1}. ${esc(B(q))}</p></legend><div class="psy-opts">${s.opts.map(([o,v])=>`<label><input type="radio" name="q${i}" value="${v}" required>${esc(B(o))}</label>`).join("")}</div></fieldset>`).join("")}
+  <div class="row"><button class="btn" type="submit">${A("احسب النتيجة","Calculate score")}</button><button class="btn ghost" type="reset">${A("مسح","Clear")}</button></div>
+  <div id="psyOut" aria-live="polite"></div>
+  <p class="small muted">${esc(B(s.cut))} ${A("المرجع:","Source:")} ${psySrc(s.src)}</p></form>`;
+}
+function scaleResult(k, vals){
+  const s=SCALES[k], raw=vals.reduce((a,b)=>a+b,0), bi=s.bands.findIndex(b=>raw<=b[0]), band=s.bands[bi];
+  const shown = s.pct ? `${raw*4}%` : `${raw} / ${s.max}`;
+  const urgent = k==="phq9" && vals[8]>0;
+  return {raw, shown, band:B(band[1]), html:`<div class="psy-res"><div class="row" style="justify-content:space-between"><span class="calc-out">${shown}</span><span class="tag ${band[2]}">${esc(B(band[1]))}</span></div>
+  <div class="psy-bar" aria-hidden="true"><i style="left:${(s.pct? (raw/s.max) : (raw/s.max))*100}%"></i></div>
+  <p>${esc(B(s.adv[bi]))}</p>
+  ${urgent?`<div class="alert"><h3>${A("أشرت إلى أفكار بإيذاء النفس","You indicated thoughts of self-harm")}</h3><p>${A("هذه الإجابة وحدها تستدعي التحدث مع مختص اليوم، أياً كانت الدرجة الكلية. لست وحدك، والمساعدة متاحة الآن:","This answer alone means you should talk to a professional today, whatever the total score. You are not alone, and help is available now:")}</p>${hotHTML()}</div>`:""}
+  <p class="small muted">${A("هذه نتيجة فحص أولي وليست تشخيصاً. التشخيص يضعه مختص بعد مقابلة كاملة.","This is a screening result, not a diagnosis. A professional makes the diagnosis after a full interview.")}</p></div>`};
+}
+function psyHistHTML(){
+  const h=store.get(psyHistKey(),[]); if(!h.length) return "";
+  return `<div class="panel"><div class="row" style="justify-content:space-between"><h3>${A("سجل نتائجك","Your results history")}</h3><button type="button" class="btn ghost" id="psyClr">${A("حذف السجل","Delete history")}</button></div>
+  <ul class="clean psy-hist">${h.slice(-10).reverse().map(x=>`<li><span><b>${esc(B(SCALES[x.k].n).split(":")[0])}</b> · ${fmtDate(x.d)}</span><span>${esc(x.s)} · ${esc(B(SCALES[x.k].bands.find(b=>x.r<=b[0])[1]))}</span></li>`).join("")}</ul>
+  <p class="small muted">${A("يُحفظ السجل على جهازك فقط، ولا يُرسل لأي جهة.","The history is stored on your device only and is never sent anywhere.")}</p></div>`;
+}
+function psyDxCard(d, open){
+  const scr = d.scr ? `<p><a class="btn ghost" href="#psydx" data-psy-scale="${d.scr}">${A("افحص نفسك بمقياس","Screen yourself with")} ${d.scr.toUpperCase().replace("PHQ9","PHQ-9").replace("GAD7","GAD-7")}</a></p>` : "";
+  return psyCard(B(d.n)+" "+d.icd, `<span>${esc(B(d.n))}</span><span class="tag tp mono">ICD-11 ${d.icd}</span>`,
+  `<h4 style="margin:0">${A("معايير التشخيص (ملخص DSM-5-TR وICD-11)","Diagnostic criteria (DSM-5-TR and ICD-11 summary)")}</h4><ul class="crit">${d.crit.map(c=>`<li>${esc(B(c))}</li>`).join("")}</ul>
+  <dl class="kv"><dt>${A("العلاج","Treatment")}</dt><dd>${esc(B(d.tx))}</dd></dl>${scr}
+  <p class="small muted">${A("المراجع:","Sources:")} ${psySrc([...d.src,PL.dsm])}</p>`, open);
+}
+R.psydx = () => `${psyHead(A("تشخيص الاضطرابات النفسية","Diagnosing mental disorders"),A("ملخص معايير التشخيص في الدليلين المعتمدين عالمياً DSM-5-TR وICD-11، مع مقاييس فحص أولي معتمدة ومجانية تحسب نتيجتك فوراً.","A summary of the diagnostic criteria in the two internationally recognised manuals, DSM-5-TR and ICD-11, with free validated screening scales that score your answers instantly."))}
+${psyNav("psydx")}
+<div class="panel"><h3>${A("المقاييس المعتمدة للفحص الأولي","Validated screening scales")}</h3>
+<p class="small muted">${A("اختر مقياساً وأجب بصدق عن الأسبوعين الماضيين. تُحسب النتيجة على جهازك ولا تُرسل لأحد.","Choose a scale and answer honestly about the last 2 weeks. The score is calculated on your device and sent to no one.")}</p>
+<div class="psy-tabs" role="group">${Object.keys(SCALES).map(k=>`<button type="button" class="chip" data-psy-scale="${k}" aria-pressed="${k===(store.get("psyScale","phq9"))}">${esc(B(SCALES[k].n).split(":")[0])}</button>`).join("")}</div></div>
+<div id="psyScaleBox">${scaleForm(store.get("psyScale","phq9"))}</div>
+<div id="psyHist">${psyHistHTML()}</div>
+<div class="panel"><h3>${A("كيف يُشخَّص الاضطراب النفسي؟","How is a mental disorder diagnosed?")}</h3>
+<p>${A("لا يوجد تحليل دم أو أشعة تشخّص الاضطراب النفسي وحدها. يعتمد التشخيص على مقابلة إكلينيكية منظمة، وفحص الحالة العقلية، واستيفاء معايير محددة من حيث عدد الأعراض ومدتها وأثرها في الحياة، مع استبعاد الأسباب العضوية (كالغدة الدرقية ونقص فيتامين B12) وأثر الأدوية والمواد.","No blood test or scan diagnoses a mental disorder on its own. Diagnosis relies on a structured clinical interview, a mental status examination, and meeting specific criteria for number, duration and impact of symptoms, after ruling out medical causes (such as thyroid disease or vitamin B12 deficiency) and the effects of medicines and substances.")}</p>
+<div class="table-wrap"><table class="stack"><thead><tr><th></th><th>DSM-5-TR</th><th>ICD-11</th></tr></thead><tbody>
+<tr><td><b>${A("الجهة","Publisher")}</b></td><td>${A("الجمعية الأمريكية للطب النفسي، 2022","American Psychiatric Association, 2022")}</td><td>${A("منظمة الصحة العالمية، سارٍ منذ 2022","World Health Organization, in effect since 2022")}</td></tr>
+<tr><td><b>${A("الاستخدام","Use")}</b></td><td>${A("البحث العلمي والممارسة في أمريكا وكثير من الدول","Research and practice in the US and many countries")}</td><td>${A("المعيار الرسمي للإحصاءات الصحية والتأمين عالمياً، ومجاني","The official global standard for health statistics and insurance; free")}</td></tr>
+<tr><td><b>${A("الأسلوب","Approach")}</b></td><td>${A("معايير محددة بأعداد ومدد","Explicit criteria with counts and durations")}</td><td>${A("أوصاف إكلينيكية للسمات الأساسية مع مرونة أكبر","Clinical descriptions of essential features with more flexibility")}</td></tr>
+</tbody></table></div></div>
+${integSearch("dxQ",A("ابحث عن اضطراب، مثل: القلق","Search a disorder, e.g. anxiety"))}
+<div id="dxList" class="ig-list">${PSYDX.map(d=>psyDxCard(d,false)).join("")}</div>
+${psyNote()}`;
+AFTER.psydx = () => {
+  psyFilter("dxQ","dxList");
+  const open=store.get("psyOpen",""); if(open){ store.set("psyOpen",""); const i=PSYDX.findIndex(d=>d.id===open); const el=$$("#dxList details.ig")[i]; if(el){ el.open=true; setTimeout(()=>el.scrollIntoView({block:"start",behavior:"smooth"}),50); } }
+  const bind = () => {
+    const f=$("#psyForm"); if(!f) return;
+    f.addEventListener("submit",e=>{ e.preventDefault(); const k=f.dataset.k, s=SCALES[k];
+      const vals=s.q.map((_,i)=>+((f.querySelector(`input[name=q${i}]:checked`)||{}).value)); if(vals.some(isNaN)) return toast(A("أجب عن جميع الأسئلة أولاً","Answer all the questions first"));
+      const r=scaleResult(k,vals); $("#psyOut").innerHTML=r.html;
+      const h=store.get(psyHistKey(),[]); h.push({k,r:r.raw,s:r.shown,d:new Date().toISOString()}); store.set(psyHistKey(),h.slice(-30)); $("#psyHist").innerHTML=psyHistHTML(); bindClr();
+      $("#psyOut").scrollIntoView({block:"nearest",behavior:"smooth"}); });
+    f.addEventListener("reset",()=>{ $("#psyOut").innerHTML=""; });
+  };
+  const bindClr = () => { const c=$("#psyClr"); if(c) c.addEventListener("click",()=>{ store.set(psyHistKey(),[]); $("#psyHist").innerHTML=""; toast(A("تم حذف السجل","History deleted")); }); };
+  $$("[data-psy-scale]").forEach(b=>b.addEventListener("click",e=>{ e.preventDefault(); const k=b.dataset.psyScale; store.set("psyScale",k);
+    $$(".psy-tabs [data-psy-scale]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.psyScale===k)); $("#psyScaleBox").innerHTML=scaleForm(k); bind(); $("#psyScaleBox").scrollIntoView({block:"start",behavior:"smooth"}); }));
+  bind(); bindClr();
+};
+
+// ===== أساليب التقييم النفسي =====
+const PSYAS = [
+ {n:["المقابلة الإكلينيكية","Clinical interview"],what:["حجر الأساس: يجمع المختص الشكوى وتاريخها، والتاريخ النفسي والطبي والأسري والاجتماعي، وعوامل الخطر والحماية.","The cornerstone: the clinician gathers the complaint and its history, psychiatric, medical, family and social history, and risk and protective factors."],ex:["غير منظمة أو شبه منظمة.","Unstructured or semi-structured."],src:[PL.pub("psychiatric clinical interview assessment")]},
+ {n:["المقابلات المنظمة","Structured interviews"],what:["أسئلة موحدة مرتبطة مباشرة بمعايير التشخيص، ترفع دقة التشخيص وتوافق المختصين.","Standardised questions mapped directly to diagnostic criteria, improving accuracy and agreement between clinicians."],ex:["SCID-5 (مرتبطة بـDSM-5)، MINI (قصيرة، 15 إلى 20 دقيقة).","SCID-5 (tied to DSM-5), MINI (short, 15 to 20 minutes)."],src:[PL.pub("MINI international neuropsychiatric interview validity")]},
+ {n:["فحص الحالة العقلية","Mental status examination"],what:["تقييم منظم لحظي: المظهر والسلوك، الكلام، المزاج والوجدان، شكل التفكير ومحتواه، الإدراك (الهلاوس)، الوعي والذاكرة، البصيرة والحكم.","A structured snapshot: appearance and behaviour, speech, mood and affect, thought form and content, perception (hallucinations), cognition and memory, insight and judgement."],ex:["جزء من كل تقييم نفسي.","Part of every psychiatric assessment."],src:[PL.pub("mental status examination")]},
+ {n:["مقاييس التقدير الذاتي","Self-report scales"],what:["استبيانات قصيرة يجيب عنها الشخص لقياس شدة الأعراض ومتابعة التحسن مع العلاج.","Short questionnaires completed by the person to measure symptom severity and track improvement during treatment."],ex:["PHQ-9، GAD-7، WHO-5، BDI-II، PCL-5 للصدمة، AUDIT للكحول.","PHQ-9, GAD-7, WHO-5, BDI-II, PCL-5 for trauma, AUDIT for alcohol."],src:[PL.phq9,PL.gad7]},
+ {n:["مقاييس يطبقها المختص","Clinician-rated scales"],what:["يقدّر المختص شدة الأعراض بناءً على المقابلة والملاحظة.","The clinician rates symptom severity based on interview and observation."],ex:["HAM-D للاكتئاب، Y-BOCS للوسواس، YMRS للهوس، PANSS للفصام، C-SSRS لخطر الانتحار.","HAM-D for depression, Y-BOCS for OCD, YMRS for mania, PANSS for schizophrenia, C-SSRS for suicide risk."],src:[PL.pub("Columbia suicide severity rating scale validity")]},
+ {n:["اختبارات الشخصية الموضوعية","Objective personality tests"],what:["استبيانات طويلة مقننة على عينات كبيرة، تقيس سمات الشخصية والأنماط المرضية، وتتضمن مقاييس لكشف المبالغة أو التجميل.","Long questionnaires standardised on large samples that measure personality traits and clinical patterns, with validity scales to detect exaggeration or faking good."],ex:["MMPI-3، PAI، ونماذج العوامل الخمسة الكبرى (NEO-PI-3).","MMPI-3, PAI, and Big Five models (NEO-PI-3)."],src:[PL.pub("MMPI-3 validity")]},
+ {n:["الاختبارات الإسقاطية","Projective tests"],what:["يُعرض على الشخص مثير غامض (بقع حبر أو صور) ويُحلل تفسيره. أدلة صدقها أضعف من الاختبارات الموضوعية، ويُستخدم نظام R-PAS الحديث لتحسين موثوقية رورشاخ.","The person responds to ambiguous stimuli (inkblots or pictures) and their interpretation is analysed. Their validity evidence is weaker than for objective tests; the modern R-PAS system improves Rorschach reliability."],ex:["رورشاخ، اختبار تفهم الموضوع (TAT)، رسم الشخص.","Rorschach, Thematic Apperception Test (TAT), draw-a-person."],src:[PL.pub("Rorschach validity meta-analysis")]},
+ {n:["الاختبارات العصبية النفسية","Neuropsychological tests"],what:["تقيس الذاكرة والانتباه والوظائف التنفيذية واللغة والقدرات البصرية المكانية، لتشخيص الخرف وإصابات الدماغ وصعوبات التعلم.","Measure memory, attention, executive function, language and visuospatial skills, to diagnose dementia, brain injury and learning difficulties."],ex:["فحص سريع: MoCA وMMSE. تقييم كامل: بطاريات مثل WMS وTrail Making.","Quick screens: MoCA and MMSE. Full assessment: batteries such as WMS and Trail Making."],src:[PL.pub("Montreal Cognitive Assessment validity")]},
+ {n:["اختبارات الذكاء والقدرات","Intelligence and ability tests"],what:["تقيس القدرات المعرفية العامة والفرعية مقارنة بأقران العمر نفسه.","Measure general and specific cognitive abilities compared with same-age peers."],ex:["WAIS للبالغين، WISC للأطفال، ستانفورد بينيه. التفاصيل في صفحة معدلات الذكاء.","WAIS for adults, WISC for children, Stanford-Binet. Details on the IQ page."],src:[PL.apaIQ]},
+ {n:["الملاحظة والتحليل الوظيفي للسلوك","Observation and functional analysis"],what:["رصد السلوك في بيئته الطبيعية وتحليل ما يسبقه وما يليه (A-B-C) لفهم وظيفته وتصميم خطة علاج.","Observing behaviour in its natural setting and analysing what precedes and follows it (A-B-C) to understand its function and design a treatment plan."],ex:["مهم في التوحد ومشكلات سلوك الأطفال والإدمان.","Important in autism, child behaviour problems and addiction."],src:[PL.pub("functional behavioral assessment")]},
+ {n:["الصياغة الإكلينيكية للحالة","Clinical case formulation"],what:["ربط كل المعلومات في قصة تفسيرية واحدة تقود العلاج، وأشهرها نموذج العوامل الخمسة: المُهيّئة، المُعجّلة، المُديمة، الحامية، والمشكلة الحالية.","Bringing all the information together into one explanatory story that guides treatment; the best known is the 5P model: predisposing, precipitating, perpetuating, protective factors and the presenting problem."],ex:["تُبنى على النموذج الحيوي النفسي الاجتماعي.","Built on the biopsychosocial model."],src:[PL.pub("case formulation psychiatry 5P")]},
+ {n:["الفحوص الطبية المساندة","Supporting medical tests"],what:["لاستبعاد أسباب عضوية تحاكي الاضطرابات النفسية، وليست لتشخيص الاضطراب نفسه.","To rule out physical causes that mimic mental disorders; they do not diagnose the disorder itself."],ex:["وظائف الغدة الدرقية، B12 وحمض الفوليك، السكر، الأملاح، فحص المخدرات، وتصوير الدماغ عند وجود علامات عصبية.","Thyroid function, B12 and folate, glucose, electrolytes, drug screen, and brain imaging when there are neurological signs."],src:[PL.ng222]},
+];
+R.psyassess = () => `${psyHead(A("أساليب التقييم والتحليل النفسي","Psychological assessment methods"),A("الأدوات التي يستخدمها الأطباء والأخصائيون النفسيون لفهم الحالة وتشخيصها وقياس شدتها، من المقابلة إلى الاختبارات المقننة.","The tools psychiatrists and psychologists use to understand, diagnose and measure a condition, from the interview to standardised tests."))}
+${psyNav("psyassess")}
+<div class="panel"><h3>${A("مراحل التقييم النفسي","Stages of a psychological assessment")}</h3>
+<ol class="crit"><li>${A("مقابلة أولية وجمع التاريخ المرضي، ومعلومات من الأسرة عند الحاجة.","Initial interview and history, plus information from family when needed.")}</li><li>${A("فحص الحالة العقلية وتقييم خطر إيذاء النفس أو الغير.","Mental status examination and assessment of risk to self or others.")}</li><li>${A("مقاييس واختبارات مقننة حسب السؤال الإكلينيكي.","Standardised scales and tests chosen for the clinical question.")}</li><li>${A("فحوص طبية لاستبعاد الأسباب العضوية.","Medical tests to rule out physical causes.")}</li><li>${A("الصياغة الإكلينيكية والتشخيص وخطة العلاج، ثم إعادة القياس لمتابعة التحسن.","Formulation, diagnosis and treatment plan, then repeated measurement to track progress.")}</li></ol></div>
+${integSearch("paQ",A("ابحث عن أداة، مثل: MMPI","Search a tool, e.g. MMPI"))}
+<div id="paList" class="ig-list">${PSYAS.map((x,i)=>psyCard(B(x.n)+" "+B(x.ex), `<span>${esc(B(x.n))}</span>`, `<p>${esc(B(x.what))}</p><dl class="kv"><dt>${A("أمثلة","Examples")}</dt><dd>${esc(B(x.ex))}</dd></dl><p class="small muted">${A("المراجع:","Sources:")} ${psySrc(x.src)}</p>`, i===0)).join("")}</div>
+<div class="disclaimer">${A("الاختبارات النفسية المقننة يطبقها ويفسرها أخصائي نفسي مؤهل؛ نتائجها خارج هذا الإطار قد تكون مضللة.","Standardised psychological tests must be administered and interpreted by a qualified psychologist; outside that setting their results can be misleading.")}</div>`;
+AFTER.psyassess = () => psyFilter("paQ","paList");
+
+// ===== معدلات الذكاء =====
+const IQ_BANDS = [[130,200,["مرتفع جداً (موهبة)","Extremely high (gifted)"],"t1"],[120,129,["مرتفع","Very high"],"t1"],[110,119,["فوق المتوسط","High average"],"t1"],[90,109,["متوسط","Average"],"tp"],[80,89,["دون المتوسط","Low average"],"t2"],[70,79,["حدّي","Borderline / very low"],"t2"],[0,69,["منخفض جداً","Extremely low"],"t3"]];
+const IQ_TESTS = [
+ [["مقياس وكسلر لذكاء البالغين","Wechsler Adult Intelligence Scale"],"WAIS-IV / WAIS-5",["16 إلى 90 سنة","16 to 90 years"],["الفهم اللفظي، الاستدلال الإدراكي، الذاكرة العاملة، سرعة المعالجة","Verbal comprehension, perceptual reasoning, working memory, processing speed"]],
+ [["مقياس وكسلر لذكاء الأطفال","Wechsler Intelligence Scale for Children"],"WISC-V",["6 إلى 16 سنة","6 to 16 years"],["5 مؤشرات أساسية ونسبة ذكاء كلية","5 primary indexes and a full-scale IQ"]],
+ [["مقياس وكسلر لما قبل المدرسة","Wechsler Preschool and Primary Scale"],"WPPSI-IV",["2.5 إلى 7 سنوات","2.5 to 7 years"],["القدرات اللفظية وغير اللفظية المبكرة","Early verbal and non-verbal abilities"]],
+ [["مقياس ستانفورد بينيه","Stanford-Binet"],"SB5",["2 إلى 85 سنة","2 to 85 years"],["5 عوامل لفظية وغير لفظية، ومفيد للقدرات المرتفعة جداً والمنخفضة جداً","5 verbal and non-verbal factors; useful at the very high and very low extremes"]],
+ [["مصفوفات رافن المتتابعة","Raven's Progressive Matrices"],"Raven's 2",["4 سنوات فأكثر","4 years and over"],["الاستدلال غير اللفظي، وأقل تأثراً باللغة والثقافة","Non-verbal reasoning; less affected by language and culture"]],
+ [["بطارية كوفمان للأطفال","Kaufman Assessment Battery for Children"],"KABC-II",["3 إلى 18 سنة","3 to 18 years"],["المعالجة المتتابعة والمتزامنة والتعلم","Sequential and simultaneous processing and learning"]],
+];
+const ncdf = z => { const t=1/(1+.2316419*Math.abs(z)), d=.3989423*Math.exp(-z*z/2), p=d*t*(.3193815+t*(-.3565638+t*(1.781478+t*(-1.821256+t*1.330274)))); return z>0?1-p:p; };
+function bellSVG(iq){
+  const W=600,H=170,x=v=>((v-40)/120)*W, y=v=>H-26-130*Math.exp(-Math.pow((v-100)/15,2)/2);
+  let d=`M${x(40)},${y(40)}`; for(let v=41;v<=160;v++) d+=` L${x(v).toFixed(1)},${y(v).toFixed(1)}`;
+  const zones=[[40,70,"var(--bad-soft)"],[70,85,"var(--warn-soft)"],[85,115,"var(--pine-soft)"],[115,130,"var(--ok-soft)"],[130,160,"var(--ok-soft)"]];
+  const area=(a,b)=>{let p=`M${x(a)},${H-26}`; for(let v=a;v<=b;v++) p+=` L${x(v).toFixed(1)},${y(v).toFixed(1)}`; return p+` L${x(b)},${H-26} Z`;};
+  const m = iq!=null ? `<line x1="${x(iq)}" y1="10" x2="${x(iq)}" y2="${H-26}" stroke="var(--copper)" stroke-width="3"/><circle cx="${x(iq)}" cy="${y(iq)}" r="6" fill="var(--copper)"/>` : "";
+  return `<svg class="bell" viewBox="0 0 ${W} ${H}" role="img" aria-label="${A("منحنى توزيع الذكاء الطبيعي","IQ normal distribution curve")}" style="direction:ltr">
+  ${zones.map(([a,b,c])=>`<path d="${area(a,b)}" fill="${c}"/>`).join("")}<path d="${d}" fill="none" stroke="var(--pine)" stroke-width="2.5"/>
+  <line x1="0" y1="${H-26}" x2="${W}" y2="${H-26}" stroke="var(--line)"/>
+  ${[55,70,85,100,115,130,145].map(v=>`<text x="${x(v)}" y="${H-8}" text-anchor="middle">${v}</text>`).join("")}
+  ${[[60,"2%"],[77.5,"14%"],[100,"68%"],[122.5,"14%"],[140,"2%"]].map(([v,t])=>`<text x="${x(v)}" y="${Math.min(y(v)-8,H-44)}" text-anchor="middle">${t}</text>`).join("")}${m}</svg>`;
+}
+R.iq = () => `${psyHead(A("معدلات الذكاء","Intelligence and IQ"),A("ما معنى نسبة الذكاء، وكيف تتوزع بين الناس، وما الاختبارات المعتمدة لقياسها، وحدود ما تعنيه الدرجة.","What an IQ score means, how scores are distributed, which validated tests measure it, and the limits of what a score tells you."))}
+${psyNav("iq")}
+<div class="panel"><h3>${A("ما هي نسبة الذكاء؟","What is IQ?")}</h3>
+<p>${A("نسبة الذكاء درجة معيارية تقارن أداء الشخص في اختبار مقنن بأداء أقرانه من العمر نفسه. صُممت بحيث يكون المتوسط 100 والانحراف المعياري 15، فيقع نحو 68% من الناس بين 85 و115، ونحو 95% بين 70 و130.","IQ is a standard score comparing a person's performance on a standardised test with peers of the same age. It is designed with a mean of 100 and a standard deviation of 15, so about 68% of people score between 85 and 115, and about 95% between 70 and 130.")}</p>
+${bellSVG(null)}</div>
+<div class="panel"><h3>${A("حاسبة موقع الدرجة","Score position calculator")}</h3>
+<p class="small muted">${A("إن كانت لديك درجة من اختبار مقنن طبّقه مختص، أدخلها لترى موقعها ونسبتها المئوية بين الناس. هذه الحاسبة لا تقيس الذكاء.","If you have a score from a standardised test given by a professional, enter it to see where it falls and its percentile. This calculator does not measure intelligence.")}</p>
+<div class="row"><div class="field" style="margin:0"><label for="iqIn">${A("درجة الذكاء","IQ score")}</label><input type="number" id="iqIn" min="40" max="160" inputmode="numeric" placeholder="100" style="max-width:140px"></div><button type="button" class="btn" id="iqGo" style="align-self:end">${A("اعرض الموقع","Show position")}</button></div>
+<div id="iqOut" aria-live="polite"></div></div>
+<div class="panel"><h3>${A("تصنيف الدرجات (حسب مقاييس وكسلر)","Score classification (Wechsler scales)")}</h3>
+<div class="table-wrap"><table class="stack"><thead><tr><th>${A("الدرجة","Score")}</th><th>${A("التصنيف","Classification")}</th><th>${A("النسبة من الناس تقريباً","Approx. share of people")}</th></tr></thead><tbody>
+${IQ_BANDS.map(([a,b,n,c])=>{const p=((ncdf(((b===200?160:b)+.5-100)/15)-ncdf((a-.5-100)/15))*100); return `<tr><td class="mono">${a===0?"≤ 69":b===200?"≥ 130":a+"–"+b}</td><td><span class="tag ${c}">${esc(B(n))}</span></td><td class="mono">${p<1?p.toFixed(1):p.toFixed(0)}%</td></tr>`}).join("")}
+</tbody></table></div></div>
+<div class="panel"><h3>${A("الاختبارات المعتمدة","Validated tests")}</h3>
+<div class="table-wrap"><table class="stack"><thead><tr><th>${A("الاختبار","Test")}</th><th>${A("العمر","Age")}</th><th>${A("ما يقيسه","What it measures")}</th></tr></thead><tbody>
+${IQ_TESTS.map(([n,c,a,m])=>`<tr><td><b>${esc(B(n))}</b><br><span class="mono small muted">${c}</span></td><td>${esc(B(a))}</td><td class="small">${esc(B(m))}</td></tr>`).join("")}
+</tbody></table></div>
+<p class="small muted">${A("تُطبَّق هذه الاختبارات فردياً بواسطة أخصائي نفسي مدرّب، في 60 إلى 90 دقيقة، وبنسخ مقننة على البيئة العربية حيثما توفرت.","These tests are given one-to-one by a trained psychologist, take 60 to 90 minutes, and use versions standardised for Arab populations where available.")}</p></div>
+<div class="panel"><h3>${A("حقائق مهمة","Key facts")}</h3><ul class="crit">
+<li>${A("الدرجة تقدير وليست رقماً مطلقاً: لكل اختبار هامش خطأ قياس نحو ±5 نقاط.","A score is an estimate, not an absolute number: every test has a measurement error of about ±5 points.")}</li>
+<li>${A("الإعاقة الذهنية لا تُشخَّص بنسبة الذكاء وحدها؛ يشترط DSM-5-TR وICD-11 قصوراً في السلوك التكيفي (المهارات اليومية والاجتماعية) يبدأ في مرحلة النمو.","Intellectual disability is not diagnosed by IQ alone; DSM-5-TR and ICD-11 require deficits in adaptive behaviour (everyday and social skills) beginning during development.")}</li>
+<li>${A("نسبة الذكاء لا تقيس الإبداع ولا الذكاء العاطفي ولا الأخلاق ولا قيمة الإنسان.","IQ does not measure creativity, emotional intelligence, character or a person's worth.")}</li>
+<li>${A("تتأثر الدرجات بالتعليم والتغذية والصحة واللغة والقلق أثناء الاختبار، وارتفعت المتوسطات عالمياً عبر العقود (تأثير فلين).","Scores are affected by education, nutrition, health, language and test anxiety, and average scores rose worldwide over decades (the Flynn effect).")}</li>
+<li>${A("اختبارات الذكاء المجانية على الإنترنت غير مقننة ولا تصلح للحكم على قدرات أحد.","Free online IQ tests are not standardised and cannot be used to judge anyone's abilities.")}</li></ul>
+<p class="small muted">${A("المراجع:","Sources:")} ${psySrc([PL.apaIQ,PL.dsm,PL.pub("Flynn effect meta-analysis")])}</p></div>`;
+AFTER.iq = () => {
+  const go=()=>{ const v=Math.round(+$("#iqIn").value); if(!v||v<40||v>160) return toast(A("أدخل درجة بين 40 و160","Enter a score between 40 and 160"));
+    const p=ncdf((v-100)/15)*100, b=IQ_BANDS.find(([a,c])=>v>=a&&v<=c);
+    $("#iqOut").innerHTML=`<div class="psy-res">${bellSVG(v)}<div class="row" style="justify-content:space-between"><span class="calc-out">${v}</span><span class="tag ${b[3]}">${esc(B(b[2]))}</span></div>
+    <p>${A(`هذه الدرجة أعلى من نحو ${p<1?p.toFixed(1):p>99?p.toFixed(1):p.toFixed(0)}% من الناس في العمر نفسه.`,`This score is higher than about ${p<1?p.toFixed(1):p>99?p.toFixed(1):p.toFixed(0)}% of people of the same age.`)} ${A(`ومع هامش الخطأ تقع الدرجة الحقيقية غالباً بين ${v-5} و${v+5}.`,`Allowing for measurement error, the true score most likely lies between ${v-5} and ${v+5}.`)}</p>
+    ${v<70?`<p class="small">${A("الدرجة المنخفضة وحدها لا تعني إعاقة ذهنية؛ يلزم تقييم السلوك التكيفي لدى مختص.","A low score alone does not mean intellectual disability; adaptive behaviour must be assessed by a professional.")}</p>`:""}</div>`; };
+  $("#iqGo").addEventListener("click",go); $("#iqIn").addEventListener("keydown",e=>{ if(e.key==="Enter") go(); });
+};
+
+// ===== العلاج الطبيعي: برامج جديدة وتصنيف حسب منطقة الجسم =====
+const PT_REG = {spine:["الرقبة والظهر","Neck and back"],upper:["الكتف والذراع واليد","Shoulder, arm and hand"],lower:["الورك والركبة والقدم","Hip, knee and foot"],core:["التنفس وقاع الحوض","Breathing and pelvic floor"],rehab:["التأهيل بعد الجراحة والمرض","Rehabilitation after surgery and illness"],gen:["اللياقة والتوازن","Fitness and balance"]};
+const PT_MAP = {back:"spine",neck:"spine",desk:"spine",shoulder:"upper",knee:"lower",ankle:"lower",balance:"gen",active:"gen",breath:"core",pelvic:"core",stroke:"rehab"};
+PT.forEach(p=>{ if(!p.reg) p.reg=PT_MAP[p.id]||"gen"; });
+const PT_NEW = [
+ {id:"hip",reg:"lower",n:["خشونة الورك","Hip osteoarthritis"],goal:["تقوية عضلات الورك والفخذ وتحسين مدى الحركة؛ التمارين هي العلاج الأساسي في الإرشادات.","Strengthen hip and thigh muscles and improve range of motion; exercise is the core treatment in guidelines."],
+  ex:[[["رفع الساق جانبياً","Side-lying leg raise"],["استلقِ على جنبك وارفع الساق العليا مستقيمة لأعلى ببطء ثم أنزلها.","Lie on your side and slowly lift the top leg straight up, then lower it."],["مجموعتان × 10 لكل جهة","2 sets × 10 each side"]],[["الجسر","Bridge"],["استلقِ وركبتاك مثنيتان، وارفع الحوض حتى يستقيم الجسم.","Lie with knees bent and lift your hips until your body is straight."],["مجموعتان × 10","2 sets × 10"]],[["الجلوس والوقوف من الكرسي","Sit to stand"],["قف من الكرسي دون استخدام اليدين ثم اجلس ببطء.","Stand up from a chair without using your hands, then sit down slowly."],["مجموعتان × 8","2 sets × 8"]],[["الدراجة الثابتة أو المشي في الماء","Static bike or water walking"],["نشاط هوائي لطيف على المفصل.","Joint-friendly aerobic activity."],["20 إلى 30 دقيقة، 3 مرات أسبوعياً","20 to 30 minutes, 3 times a week"]]],
+  avoid:["الجلوس المنخفض جداً لفترات طويلة، والقفز، وحمل الأوزان الثقيلة.","Very low seats for long periods, jumping, and carrying heavy loads."],red:["ألم مفاجئ شديد بعد سقوط مع عجز عن الوقوف، أو حرارة واحمرار في المفصل: راجع الطوارئ.","Sudden severe pain after a fall with inability to stand, or a hot red joint: go to the emergency department."],src:[L.ng226,L.nhsPhysio]},
+ {id:"elbow",reg:"upper",n:["التهاب أوتار المرفق (مرفق لاعب التنس)","Tennis elbow"],goal:["تخفيف الحمل على الأوتار ثم تقويتها تدريجياً؛ يتحسن أغلب المرضى خلال 6 إلى 12 شهراً.","Offload and then gradually strengthen the tendons; most people improve within 6 to 12 months."],
+  ex:[[["إطالة باسطات الرسغ","Wrist extensor stretch"],["مدّ الذراع وكف اليد للأسفل، واسحب الأصابع نحوك باليد الأخرى.","Straighten the arm, palm down, and gently pull the fingers towards you with the other hand."],["3 مرات × 30 ثانية","3 × 30 seconds"]],[["التقوية بالإنزال البطيء","Slow eccentric lowering"],["امسك وزناً خفيفاً (زجاجة ماء) وكف اليد للأسفل، وأنزل الرسغ ببطء خلال 3 ثوانٍ.","Hold a light weight (a water bottle) palm down and lower the wrist slowly over 3 seconds."],["3 مجموعات × 15 يومياً","3 sets × 15 daily"]],[["قبضة اليد","Grip squeeze"],["اضغط كرة إسفنجية 5 ثوانٍ ثم أرخِ.","Squeeze a soft ball for 5 seconds, then relax."],["10 مرات، مرتين يومياً","10 times, twice daily"]]],
+  avoid:["الحركات المتكررة للرسغ والإمساك القوي مع امتداد الذراع.","Repetitive wrist movements and strong gripping with the arm straight."],red:["تورم شديد أو حرارة أو تنميل مستمر في الأصابع: راجع الطبيب.","Marked swelling, heat, or persistent numbness in the fingers: see a doctor."],src:[{n:A("NHS: مرفق لاعب التنس","NHS: Tennis elbow"),u:"https://www.nhs.uk/conditions/tennis-elbow/"}]},
+ {id:"wrist",reg:"upper",n:["متلازمة النفق الرسغي","Carpal tunnel syndrome"],goal:["تخفيف الضغط على العصب الأوسط وتحسين انزلاق الأوتار والأعصاب.","Reduce pressure on the median nerve and improve tendon and nerve gliding."],
+  ex:[[["جبيرة ليلية","Night splint"],["جبيرة تُبقي الرسغ مستقيماً أثناء النوم، وهي الأكثر فائدة.","A splint that keeps the wrist straight during sleep; the most useful measure."],["كل ليلة حتى 6 أسابيع","Every night for up to 6 weeks"]],[["انزلاق الأوتار","Tendon glides"],["حرّك الأصابع بالتتابع: مستقيمة، قبضة كاملة، قبضة مسطحة، ثم مستقيمة.","Move the fingers in sequence: straight, full fist, flat fist, then straight."],["5 مرات، 3 مرات يومياً","5 times, 3 times a day"]],[["انزلاق العصب","Nerve glide"],["مدّ الذراع جانباً وكف اليد للأعلى، ثم أمِل الرسغ للخلف بلطف دون ألم.","Stretch the arm out to the side palm up, then gently bend the wrist back without pain."],["5 مرات","5 times"]]],
+  avoid:["ثني الرسغ لفترات طويلة، والاهتزاز، والضغط على راحة اليد.","Prolonged wrist bending, vibration, and pressure on the palm."],red:["ضعف أو ضمور في عضلات قاعدة الإبهام، أو خدر دائم: راجع الطبيب لاحتمال الحاجة لتدخل.","Weakness or wasting at the base of the thumb, or constant numbness: see a doctor as surgery may be needed."],src:[{n:A("NHS: النفق الرسغي","NHS: Carpal tunnel syndrome"),u:"https://www.nhs.uk/conditions/carpal-tunnel-syndrome/"}]},
+ {id:"heel",reg:"lower",n:["التهاب اللفافة الأخمصية (ألم الكعب)","Plantar fasciitis (heel pain)"],goal:["إطالة اللفافة وعضلة الساق وتقليل الحمل؛ يتحسن أغلب المرضى خلال أشهر.","Stretch the fascia and calf and reduce load; most people improve within months."],
+  ex:[[["إطالة الساق على الحائط","Wall calf stretch"],["قدم للخلف مستقيمة والكعب على الأرض، وانحنِ نحو الحائط.","One foot back and straight with the heel down, lean towards the wall."],["3 مرات × 30 ثانية، مرتين يومياً","3 × 30 seconds, twice daily"]],[["إطالة اللفافة","Plantar fascia stretch"],["قبل الوقوف صباحاً، اسحب أصابع القدم نحوك باليد.","Before standing in the morning, pull your toes back towards you with your hand."],["10 مرات × 10 ثوانٍ","10 × 10 seconds"]],[["تدليك بزجاجة باردة","Cold bottle roll"],["دحرج باطن القدم على زجاجة ماء مبردة.","Roll the sole of your foot over a chilled water bottle."],["5 دقائق مساءً","5 minutes in the evening"]],[["رفع الكعب","Heel raises"],["قف على درجة وارفع الكعبين ثم أنزلهما ببطء.","Stand on a step, rise onto your toes, then lower slowly."],["3 مجموعات × 12","3 sets × 12"]]],
+  avoid:["المشي حافياً على أرض صلبة، والأحذية المسطحة بلا دعم، والوقوف الطويل.","Walking barefoot on hard floors, flat unsupportive shoes, and prolonged standing."],red:["ألم بعد إصابة مع صعوبة المشي، أو تورم وحرارة، أو خدر في القدم: راجع الطبيب.","Pain after injury with difficulty walking, swelling and heat, or numbness in the foot: see a doctor."],src:[{n:A("NHS: ألم الكعب","NHS: Plantar fasciitis"),u:"https://www.nhs.uk/conditions/plantar-fasciitis/"}]},
+ {id:"tkr",reg:"rehab",n:["التأهيل بعد تغيير مفصل الركبة","Rehabilitation after knee replacement"],goal:["استعادة ثني الركبة ومدّها وقوة الفخذ والمشي الآمن. يبدأ في المستشفى ويستمر 6 إلى 12 أسبوعاً بإشراف أخصائي.","Regain knee bend, straightening, thigh strength and safe walking. Starts in hospital and continues for 6 to 12 weeks under a physiotherapist."],
+  ex:[[["شد عضلة الفخذ","Quadriceps sets"],["اضغط خلف الركبة نحو السرير بشد عضلة الفخذ.","Press the back of the knee into the bed by tightening the thigh."],["10 مرات × 5 ثوانٍ، كل ساعة","10 × 5 seconds, every hour"]],[["انزلاق الكعب","Heel slides"],["استلقِ واسحب الكعب نحو المقعدة لثني الركبة ثم أعده.","Lying down, slide your heel towards your buttock to bend the knee, then straighten."],["10 مرات، 3 مرات يومياً","10 times, 3 times a day"]],[["رفع الساق مستقيمة","Straight leg raise"],["شد الفخذ وارفع الساق مستقيمة 20 سم.","Tighten the thigh and lift the straight leg 20 cm."],["10 مرات","10 times"]],[["المشي التدريجي","Graded walking"],["بالمشاية ثم العكاز، وزِد المسافة يومياً.","With a frame then a stick, increasing the distance daily."],["حسب الخطة","As planned"]]],
+  avoid:["وضع وسادة تحت الركبة أثناء النوم (يمنع استقامتها)، والجلوس الطويل دون حركة.","Putting a pillow under the knee while sleeping (prevents it straightening), and long periods of sitting still."],red:["ألم وتورم في الساق، أو ضيق تنفس مفاجئ، أو حرارة وإفرازات من الجرح: راجع الطوارئ فوراً.","Calf pain and swelling, sudden breathlessness, or fever and discharge from the wound: go to the emergency department at once."],src:[{n:A("NHS: التعافي بعد تغيير الركبة","NHS: Knee replacement recovery"),u:"https://www.nhs.uk/conditions/knee-replacement/recovery/"},L.whoRehab]},
+ {id:"cardiac",reg:"rehab",n:["التأهيل القلبي بعد الجلطة أو العملية","Cardiac rehabilitation"],goal:["برنامج منظم من التمارين والتثقيف يقلل الوفيات وإعادة التنويم ويحسن جودة الحياة بعد الجلطة القلبية أو القسطرة أو جراحة القلب.","A structured programme of exercise and education that reduces deaths and readmissions and improves quality of life after a heart attack, stent or heart surgery."],
+  ex:[[["المشي المتدرج","Progressive walking"],["ابدأ بـ5 إلى 10 دقائق وزِد 2 إلى 5 دقائق أسبوعياً حتى 30 دقيقة.","Start with 5 to 10 minutes and add 2 to 5 minutes a week up to 30 minutes."],["معظم أيام الأسبوع","Most days of the week"]],[["مقياس الجهد","Effort scale"],["يجب أن تستطيع الكلام أثناء التمرين (جهد متوسط).","You should be able to talk while exercising (moderate effort)."],["طوال التمرين","Throughout exercise"]],[["الإحماء والتهدئة","Warm-up and cool-down"],["حركة خفيفة قبل التمرين وبعده.","Light movement before and after exercise."],["10 دقائق لكل منهما","10 minutes each"]]],
+  avoid:["التمارين الشديدة أو رفع الأوزان الثقيلة قبل موافقة الطبيب، والتمرين بعد الأكل مباشرة أو في الحر الشديد.","Strenuous exercise or heavy lifting before your doctor approves, and exercising right after meals or in intense heat."],red:["ألم أو ضغط في الصدر، أو ضيق نفس شديد، أو دوخة، أو خفقان غير منتظم: توقف فوراً، وإن استمر الألم اتصل بالإسعاف.","Chest pain or pressure, severe breathlessness, dizziness, or irregular palpitations: stop immediately, and call an ambulance if the pain persists."],src:[{n:A("NHS: التأهيل القلبي","NHS: Cardiac rehabilitation"),u:"https://www.nhs.uk/conditions/coronary-heart-disease/recovery/"},L.whoRehab]},
+];
+PT_NEW.forEach(p=>PT.push({id:p.id,reg:p.reg,for:[],dis:[],n:B(p.n),goal:B(p.goal),ex:p.ex.map(r=>r.map(B)),avoid:B(p.avoid),red:B(p.red),src:p.src}));
+R.pt = () => { const cur=store.get("ptReg","all");
+  return `<div class="view-head"><h1>${A("العلاج الطبيعي","Physiotherapy")}</h1><p>${A("برامج تمارين منزلية وتأهيلية مصنفة حسب منطقة الجسم، مبنية على الإرشادات الدولية، مع المقدار المناسب وعلامات الخطر التي تستدعي الطبيب.","Home exercise and rehabilitation programmes organised by body region, based on international guidelines, with the right amount and the red flags that need a doctor.")}</p></div>
+${integNav("pt")}
+<div class="chips" role="group" aria-label="${A("منطقة الجسم","Body region")}"><button type="button" class="chip" data-ptreg="all" aria-pressed="${cur==="all"}">${A("الكل","All")} (${PT.length})</button>${Object.entries(PT_REG).map(([k,v])=>`<button type="button" class="chip" data-ptreg="${k}" aria-pressed="${cur===k}">${esc(B(v))} (${PT.filter(p=>p.reg===k).length})</button>`).join("")}</div>
+${integSearch("ptQ",A("ابحث عن حالة، مثل: الركبة أو الظهر","Search a condition, e.g. knee or back"))}
+<div id="ptList" class="ig-list">${PT.map((p,i)=>ptCard(p,i===0).replace('<details class="ig"',`<details class="ig" data-reg="${p.reg}"`)).join("")}</div>
+<div class="disclaimer">${A("هذه التمارين للحالات البسيطة والمزمنة المستقرة. بعد الجراحات والكسور والسكتات، وعند الألم الشديد، يلزم تقييم أخصائي العلاج الطبيعي أولاً.","These exercises are for mild and stable chronic conditions. After surgery, fractures or stroke, or with severe pain, a physiotherapist's assessment is needed first.")}</div>`; };
+AFTER.pt = () => {
+  const apply=()=>{ const r=store.get("ptReg","all"), q=($("#ptQ")||{}).value||""; $$("#ptList details.ig").forEach(d=>{ d.hidden=(r!=="all"&&d.dataset.reg!==r)||(!!q.trim()&&!matchQ(d.dataset.q,q.trim())); }); };
+  $$("[data-ptreg]").forEach(b=>b.addEventListener("click",()=>{ store.set("ptReg",b.dataset.ptreg); $$("[data-ptreg]").forEach(x=>x.setAttribute("aria-pressed",x===b)); apply(); }));
+  const q=$("#ptQ"); if(q) q.addEventListener("input",apply); apply();
+};
+
+// بطاقة في الرئيسية
+(function(){ const h=AFTER.home; AFTER.home=()=>{ h&&h(); const g=$("#main .grid"); if(g&&!$(".home-groups")&&!$('#main [href="#mind"]')){ const a=document.createElement("a"); a.className="card"; a.href="#mind"; a.style.cssText="text-decoration:none;color:inherit"; a.innerHTML=`<h3>${A("الصحة النفسية","Mental health")}</h3><p class="muted small">${A("العلاج النفسي، والتشخيص بالمقاييس المعتمدة، ومعدلات الذكاء، وأرقام الدعم النفسي","Psychotherapy, validated screening scales, IQ, and mental health helplines")}</p>`; g.insertBefore(a,g.children[3]||null); } }; })();
+
+window.TY_NAV_META = Object.assign(window.TY_NAV_META||{}, {
+  mind:{g:"mind",d:["فهم الاضطرابات الشائعة، والعناية الذاتية، وأرقام الدعم النفسي","Common disorders, self-care and mental health helplines"]},
+  therapy:{g:"mind",d:["CBT وDBT وACT وغيرها بميزان الدليل العلمي","CBT, DBT, ACT and more, rated by evidence"]},
+  psydx:{g:"mind",d:["معايير DSM-5-TR وICD-11 ومقاييس PHQ-9 وGAD-7 وWHO-5","DSM-5-TR and ICD-11 criteria with PHQ-9, GAD-7 and WHO-5"]},
+  psyassess:{g:"mind",d:["المقابلة، وفحص الحالة العقلية، والاختبارات المقننة","Interviews, mental status exam and standardised tests"]},
+  iq:{g:"mind",d:["توزيع نسب الذكاء والاختبارات المعتمدة وحاسبة الموقع","IQ distribution, validated tests and a score calculator"]}
+});
+
 // ===== المكياج الإسلامي والمكياج الطبيعي =====
 const mkNav = cur => `<nav class="chips" aria-label="أقسام الجمال">${[["mkislam","المكياج الإسلامي"],["mknatural","المكياج الطبيعي"]].map(([h,n])=>`<a class="chip" href="#${h}" aria-pressed="${h===cur}" style="text-decoration:none;color:inherit">${n}</a>`).join("")}</nav>`;
 const mkEv = e => { const q=/^سورة/.test(e.r); return `<blockquote class="hadith"><p>${q?"﴿":"«"}${esc(e.t)}${q?"﴾":"»"}</p><div class="hsrc small">${esc(e.r)} · <a href="${esc(e.u)}" target="_blank" rel="noopener">المصدر</a></div></blockquote>`; };
