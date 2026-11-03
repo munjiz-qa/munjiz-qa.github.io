@@ -118,7 +118,7 @@ function toast(m){const n=$('#toast');n.textContent=m;n.hidden=false;clearTimeou
 function copyText(s){const done=()=>toast(t('copied'));try{navigator.clipboard.writeText(s).then(done,()=>fallback(s,done))}catch(e){fallback(s,done)}}
 function fallback(s,done){const ta=el('textarea');ta.value=s;ta.style.position='fixed';ta.style.opacity='0';document.body.append(ta);ta.select();try{document.execCommand('copy')}catch(e){}ta.remove();done()}
 function itemCard(it,zone){
-  const li=el('li','item');li.style.setProperty('--zc',ZC[zone]);li.id='i-'+it.id;
+  const li=el('li','item');li.style.setProperty('--zc',ZC[zone]);li.dataset.zone=zone;li.id='i-'+it.id;
   li.append(el('span','cat',it.cat[LANG]));const p=el('p');hl(p,it[LANG]);li.append(p);
   const tr=trust(it);if(tr)li.append(tr);
   const f=el('div','item-foot');f.append(srcLine(it.src));
@@ -227,10 +227,14 @@ function viewToday(){
 function viewZone(id){const z=BRIEF.zones.find(x=>x.id===id);main.append(edHead());if(z)main.append(zoneSection(z,true))}
 function viewRoadmap(){
   const h=el('div','ed-head');h.append(el('span','eyebrow',L('ما الذي ينتظرنا','What comes next')),el('h1',null,t('roadmap')),el('p','mute',t('road_intro')));main.append(h);
-  const items=[...BRIEF.roadmap].sort((a,b)=>(a.date||'9999').localeCompare(b.date||'9999'));
-  const ol=el('ol','road');items.forEach(r=>{const li=el('li'),w=el('div','when');
+  // المواعيد التي مضت تختفي تلقائياً بتوقيت الدوحة، حتى لو تأخر تحديث الخلاصة
+  const dp=dohaParts(new Date()),today=`${dp.year}-${dp.month}-${dp.day}`;
+  const items=[...BRIEF.roadmap].filter(r=>!r.date||r.date>=today).sort((a,b)=>(a.date||'9999').localeCompare(b.date||'9999'));
+  if(!items.length){main.append(el('p','empty',L('لا مواعيد قادمة مسجّلة الآن، وتُحدَّث مع الخلاصة التالية.','No upcoming dates are listed right now; they are refreshed with the next brief.')));return}
+  const ol=el('ol','road');items.forEach(r=>{const li=el('li'),w=el('div','when');if(r.date===today||(r.from&&r.from<=today&&r.date>=today))li.classList.add('is-today');
     if(r.date){w.append(r.from?`${fmtDate(r.from).split(' ')[0]}–${fmtDate(r.date)}`:fmtDate(r.date));const d=new Date(r.date+'T00:00:00Z');w.append(el('small',null,r.from?'':DAYS[LANG][d.getUTCDay()]))}
     else{w.append(r.month?fmtDate(r.month):'—');w.append(el('small',null,t('tbd')))}
+    if(li.classList.contains('is-today'))w.append(el('span','today-chip',r.from&&r.date!==today?L('جارٍ الآن','Ongoing'):L('اليوم','Today')));
     const what=el('div','what'),zc=el('span','zchip',t(r.zone));zc.style.background=ZC[r.zone];if(r.zone==='world')zc.style.color='var(--bg)';
     what.append(zc,el('p',null,r[LANG]),srcLine(r.src));
     if(r.scn){const s=el('p','scn');s.append(el('b',null,t('scenario')+' ('+t('outlook_tag')+'): '),r.scn[LANG]);what.append(s)}

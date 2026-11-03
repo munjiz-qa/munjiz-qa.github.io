@@ -1,7 +1,7 @@
 /* Layout: ink app bar with the four-circle mark and a sticky tab row; one reading column; each circle is a section with items, then analysis, then outlook. */
 :root{
   --bg:#F5F6F3;--surface:#FFFFFF;--ink:#14212E;--mute:#566270;--line:#DFE3E0;
-  --dawn:#E39A2D;--dawn-soft:#FBF0DE;--sea:#1D7A70;--sea-soft:#E3F1EE;--nile:#3A5FB0;--nile-soft:#E7ECF7;
+  --dawn:#E39A2D;--dawn-ink:#9A5B00;--dawn-soft:#FBF0DE;--sea:#1D7A70;--sea-soft:#E3F1EE;--nile:#3A5FB0;--nile-soft:#E7ECF7;
   --deep:#14212E;--deep-ink:#F5F6F3;--urgent:#C4392F;--up:#1D7A70;--down:#C4392F;
   --display:'Reem Kufi','IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;
   --body:'IBM Plex Sans Arabic','Segoe UI',Tahoma,Arial,sans-serif;
@@ -9,11 +9,11 @@
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0C141C;--surface:#121D28;--ink:#E9EEE9;--mute:#9AA7B2;--line:#233140;
-  --dawn:#F0B04E;--dawn-soft:#2C2414;--sea:#4FB8AA;--sea-soft:#10282A;--nile:#86A5E8;--nile-soft:#16203A;
+  --dawn:#F0B04E;--dawn-ink:#F0B04E;--dawn-soft:#2C2414;--sea:#4FB8AA;--sea-soft:#10282A;--nile:#86A5E8;--nile-soft:#16203A;
   --deep:#08101A;--deep-ink:#E9EEE9;--urgent:#EC6A5E;--up:#4FB8AA;--down:#EC6A5E;color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0C141C;--surface:#121D28;--ink:#E9EEE9;--mute:#9AA7B2;--line:#233140;
-  --dawn:#F0B04E;--dawn-soft:#2C2414;--sea:#4FB8AA;--sea-soft:#10282A;--nile:#86A5E8;--nile-soft:#16203A;
+  --dawn:#F0B04E;--dawn-ink:#F0B04E;--dawn-soft:#2C2414;--sea:#4FB8AA;--sea-soft:#10282A;--nile:#86A5E8;--nile-soft:#16203A;
   --deep:#08101A;--deep-ink:#E9EEE9;--urgent:#EC6A5E;--up:#4FB8AA;--down:#EC6A5E;color-scheme:dark}
 
 *{box-sizing:border-box}
@@ -186,7 +186,7 @@ mark{background:var(--dawn-soft);color:inherit;border-radius:3px;padding:0 2px;b
 .trust .meter i{width:7px;height:7px;border-radius:50%;background:var(--line)}
 .trust .meter i.on{background:var(--sea)}
 .trust .ok{color:var(--sea);font-weight:500}
-.trust .warn{color:var(--dawn);font-weight:500}
+.trust .warn{color:var(--dawn-ink);font-weight:500}
 .trust:hover span{text-decoration:underline}
 .breaking .auto{font-size:.74rem;opacity:.85;border:1px solid rgba(255,255,255,.5);border-radius:6px;padding:0 6px}
 .listen{display:inline-flex;align-items:center;gap:6px;justify-self:start;margin-top:4px;background:none;border:1px solid var(--line);color:inherit;border-radius:999px;padding:5px 12px;font:inherit;font-size:.84rem;cursor:pointer}
@@ -203,3 +203,9 @@ mark{background:var(--dawn-soft);color:inherit;border-radius:3px;padding:0 2px;b
 .drops small{color:var(--mute)}
 .run span{font-size:.9rem}
 .auto-note{font-size:.86rem;color:var(--mute);border:1px dashed var(--line);border-radius:10px;padding:8px 12px;margin:0}
+
+.road li.is-today .when{color:var(--dawn-ink,#9A5B00)}
+.road .today-chip{display:inline-block;margin-top:4px;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:600;background:var(--dawn,#E39A2D);color:#14212E}
+
+/* لون الفجر للنصوص الصغيرة بتباين لا يقل عن 4.5:1 (WCAG AA) */
+.item[data-zone="qatar"] .cat{color:var(--dawn-ink)}

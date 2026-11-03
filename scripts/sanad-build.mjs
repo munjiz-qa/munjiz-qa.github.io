@@ -27,9 +27,9 @@ ar:{
   facts:[['24/7','ردود دون انقطاع'],['3–5 أيام عمل','للتشغيل الكامل'],['عربي وإنجليزي','بلهجة عملائك']],
   thread:{name:'سند · مساعد العيادة',status:'متصل الآن',msgs:[
     ['in','السلام عليكم، عندكم موعد تنظيف أسنان هذا الأسبوع؟','21:42'],
-    ['out','وعليكم السلام، أهلاً بك. المتاح يوم الأربعاء 29 أكتوبر:','21:42',['10:30','13:00','17:15']],
+    ['out','وعليكم السلام، أهلاً بك. المتاح يوم الخميس 29 أكتوبر:','21:42',['10:30','13:00','17:15']],
     ['in','17:15 مناسب','21:43'],
-    ['out','تم حجز موعدك يوم الأربعاء 29 أكتوبر 2026 الساعة 17:15. سأرسل لك تذكيراً قبلها بساعتين.','21:43'],
+    ['out','تم حجز موعدك يوم الخميس 29 أكتوبر 2026 الساعة 17:15. سأرسل لك تذكيراً قبلها بساعتين.','21:43'],
   ],sys:'سُجّل العميل في الجدول وأُبلغ المدير'},
   strip:['يعمل على','واتساب للأعمال','موقعك','تيليجرام','البريد','تقويم Google'],
   fh:'ماذا يفعل سند لمنشأتك',fp:'ست مهام يتولاها كل يوم، دون إجازات ودون أن ينسى عميلاً.',
@@ -91,9 +91,9 @@ en:{
   facts:[['24/7','replies without a break'],['3–5 working days','to go live'],['Arabic & English','in your customers\' tone']],
   thread:{name:'Sanad · Clinic assistant',status:'online',msgs:[
     ['in','Hi, do you have a cleaning appointment this week?','21:42'],
-    ['out','Hello and welcome. Available on Wednesday 29 October:','21:42',['10:30','13:00','17:15']],
+    ['out','Hello and welcome. Available on Thursday 29 October:','21:42',['10:30','13:00','17:15']],
     ['in','17:15 works','21:43'],
-    ['out','Booked: Wednesday 29 October 2026 at 17:15. I will send you a reminder two hours before.','21:43'],
+    ['out','Booked: Thursday 29 October 2026 at 17:15. I will send you a reminder two hours before.','21:43'],
   ],sys:'Lead saved to the sheet and manager notified'},
   strip:['Works on','WhatsApp Business','Your website','Telegram','E-mail','Google Calendar'],
   fh:'What Sanad does for your business',fp:'Six jobs it handles every day, with no days off and no forgotten customers.',

@@ -1,5 +1,6 @@
 // لوحة العميل في براق: الدخول والتسجيل، الخطط المحفوظة، الطلبات والمراسلة.
 import { READY, auth, db, A, F, loadProfile } from "./fb.js";
+import { printQuote } from "./quote.js?v=1";
 import { $, esc, fmtDate, normPhone, phoneHtml, money, STATUS, stBadge, TYPES, newRequestNo, toast, errMsg } from "./ui.js";
 
 let ME = null, PLANS = [], REQS = [], unsub = [];
@@ -140,7 +141,7 @@ function openReq(id) {
     <dt>السيارة</dt><dd>${esc(r.car || "—")}</dd>
     <dt>تاريخ الإرسال</dt><dd>${fmtDate(r.createdAt, true)}</dd>
     <dt>آخر تحديث</dt><dd>${fmtDate(r.updatedAt, true)}</dd>
-    <dt>عرض السعر</dt><dd>${r.price != null ? `<b>${money(r.price, r.currency)}</b>` : "لم يُرسل بعد"}</dd>
+    <dt>عرض السعر</dt><dd>${r.price != null ? `<b>${money(r.price, r.currency)}</b> <button type="button" class="btn sm" id="qPdf">تنزيل عرض السعر PDF</button>` : "لم يُرسل بعد"}</dd>
     ${r.adminNote ? `<dt>ملاحظة براق</dt><dd>${esc(r.adminNote)}</dd>` : ""}
     <dt>التفاصيل</dt><dd style="white-space:pre-wrap">${esc(r.details)}</dd>
     ${r.planSummary ? `<dt>الخطة المرفقة</dt><dd class="plan-sum">${esc(r.planSummary)}</dd>` : ""}
@@ -151,6 +152,7 @@ function openReq(id) {
   <form id="msgF" style="display:flex;gap:8px;align-items:flex-end"><textarea id="msgT" maxlength="2000" style="min-height:48px" placeholder="اكتب رسالتك" required></textarea><button class="btn pri" type="submit">إرسال</button></form>
   ${canCancel ? `<p style="margin:16px 0 0"><button class="btn sm bad" id="cancelReq">إلغاء الطلب</button></p>` : ""}`;
   $("reqDlg").showModal();
+  if ($("qPdf")) $("qPdf").onclick = () => printQuote(r, ME);
   if (msgUnsub) msgUnsub();
   msgUnsub = F.onSnapshot(F.query(F.collection(db, "requests", id, "msgs"), F.orderBy("at")), (s) => {
     const t = $("thread"); if (!t) return;

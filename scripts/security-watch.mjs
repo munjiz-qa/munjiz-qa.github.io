@@ -1,8 +1,9 @@
 // Security watch: runs every hour from .github/workflows/security-watch.yml.
 // It checks that the published site is up and matches this repository (catches defacement or a stuck deploy),
 // that every recent commit on the main branch comes from a known account, and that no secret key was committed.
-// Any problem opens an issue labelled «security-alert» assigned to the owner (GitHub emails it at once)
-// and, for high-risk problems, sends an instant Telegram message through CallMeBot.
+// Any problem opens an issue labelled «security-alert». Only high-risk problems are assigned to the owner
+// (GitHub emails it at once), send an instant Telegram message through CallMeBot and fail the run;
+// medium ones stay unassigned and reach the owner in the single daily email at 7:00 Doha.
 import { execSync } from 'node:child_process';
 import { readFileSync, appendFileSync, statSync } from 'node:fs';
 
@@ -14,7 +15,7 @@ const TELEGRAM = env.ALERT_TELEGRAM || '';
 const WINDOW_MIN = Number(env.WINDOW_MIN || 70);
 const LABEL = 'security-alert';
 // accounts allowed to change the main branch: the owner, Claude, the site's own data bots and GitHub's web editor
-const ALLOWED = new Set(['aboelezz2005@gmail.com', 'baseeratactions@users.noreply.github.com', 'noreply@anthropic.com',
+const ALLOWED = new Set(['aboelezz2005@gmail.com', 'munijizqa@gmail.com', 'baseeratactions@users.noreply.github.com', 'noreply@anthropic.com',
   'actions@users.noreply.github.com', 'noreply@github.com', '41898282+github-actions[bot]@users.noreply.github.com',
   ...String(env.ALLOWED_EMAILS || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean)]);
 const SECRETS = [
@@ -28,6 +29,7 @@ const SECRETS = [
 ];
 
 const findings = [];   // {level: 'high'|'medium', key, title, detail, recoverable}
+let newHigh = 0;   // high-risk findings reported for the first time in this run
 const add = f => findings.push(f);
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 // one date format everywhere: 2026-10-19 10:55 (Doha time)
@@ -122,12 +124,14 @@ async function report() {
     if (open.some(i => keyOf(i) === f.key)) continue;   // already reported and still open: no repeated alert
     const icon = f.level === 'high' ? '🚨' : '⚠️';
     const body = `<!-- sw:${f.key} -->\n**${icon} ${f.level === 'high' ? 'خطورة عالية' : 'خطورة متوسطة'}**\n\n**ما حدث:** ${f.title}\n\n${f.detail.replace(/\n/g, '  \n')}\n\n**الوقت (الدوحة):** ${now}\n\n` +
-      `**ما فعله النظام:** سجّل الحدث وأرسل هذا التنبيه${f.level === 'high' ? ' مع رسالة Telegram فورية' : ''}${f.recoverable ? '، وسيغلق التنبيه تلقائياً عند عودة الوضع طبيعياً' : ''}.\n\n` +
+      `**ما فعله النظام:** سجّل الحدث ${f.level === 'high' ? 'وأرسل هذا التنبيه فوراً مع رسالة Telegram' : 'وسيُدرج في البريد اليومي الموحد الساعة 7:00 صباحاً'}${f.recoverable ? '، وسيغلق التنبيه تلقائياً عند عودة الوضع طبيعياً' : ''}.\n\n` +
       `**ما يلزمك:** ${f.key.startsWith('commit:') ? 'إن لم يكن التعديل منك أو بطلبك، غيّر كلمة مرور GitHub وفعّل التحقق بخطوتين، وراجع «Settings ← Collaborators» و«Deploy keys»، ثم ألغِ التعديل.' : f.key.startsWith('secret:') ? 'ألغِ المفتاح من مصدره فوراً.' : 'افتح الرابط وتأكد من الموقع. إن ظهر محتوى غريب، أخبر Claude في مشروع المراجعة الأمنية.'}\n\n` +
       `[سجل الفحص](${env.GITHUB_SERVER_URL}/${REPO}/actions/runs/${env.GITHUB_RUN_ID})`;
     const issue = await gh(`/repos/${REPO}/issues`, { method: 'POST', body: JSON.stringify({ title: `${icon} تنبيه أمني: ${f.title}`, body, labels: [LABEL] }) });
+    if (f.level !== 'high') continue;   // medium: no email now, listed in the daily digest
+    newHigh++;
     try { await gh(`/repos/${REPO}/issues/${issue.number}/assignees`, { method: 'POST', body: JSON.stringify({ assignees: [OWNER] }) }); } catch {}
-    if (f.level === 'high') await telegram(`🚨 ${REPO}: ${f.title}\n${f.detail.split('\n')[0]}\n${now}\n${issue.html_url}`);
+    await telegram(`🚨 ${REPO}: ${f.title}\n${f.detail.split('\n')[0]}\n${now}\n${issue.html_url}`);
   }
   // site problems that cleared on their own are closed with a note
   for (const i of open) {
@@ -145,4 +149,5 @@ await report();
 const lines = findings.length ? findings.map(f => `- ${f.level === 'high' ? '🚨' : '⚠️'} ${f.title}`).join('\n') : '- ✅ لا مشكلات: الموقع يعمل ويطابق المستودع، ولا تعديلات من حسابات غير معروفة، ولا مفاتيح مكشوفة.';
 if (env.GITHUB_STEP_SUMMARY) appendFileSync(env.GITHUB_STEP_SUMMARY, `## الفحص الأمني ${doha(Date.now())}\n\n${lines}\n`);
 console.log(lines);
-if (findings.some(f => f.level === 'high')) process.exitCode = 1;
+// fail (and so email) only when a new high-risk problem was found, not every hour while it stays open
+if (newHigh) process.exitCode = 1;
