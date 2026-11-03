@@ -217,6 +217,7 @@
 <section class="ui dock" id="dock" aria-label="لوحة مشوار"></section>
 <div class="ui banner" id="banner" hidden></div>
 <div class="ui ask" id="ask" hidden></div>
+<button class="ui recenter" id="recenter" hidden>توسيط الخريطة</button>
 <div class="ui navbar" id="navbar" hidden></div>
 <div class="ui toast" id="toast" role="status" hidden></div>
 <div class="ui attr">© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></div>
@@ -407,7 +408,7 @@ ${NATIVE ? '' : `<a href="${CFG.SITE}download.html" ${ON_SITE ? '' : 'target="_b
     return { text: `أنا في الطريق إلى ${dest.label}، أصل تقريباً الساعة ${clock12(arr)} (بعد ${MSR.fmtDur(left)}). افتح الموقع على مشوار:`, link };
   }
 
-  // ---------- navigation ----------
+  // ---------- navigation (live GPS first; preview only on request) ----------
   function along(dist) {
     const c = R.coords; let acc = 0;
     for (let i = 0; i + 1 < c.length; i++) {
@@ -417,91 +418,171 @@ ${NATIVE ? '' : `<a href="${CFG.SITE}download.html" ${ON_SITE ? '' : 'target="_b
     }
     const l = c[c.length - 1]; return { lon: l[0], lat: l[1], seg: c.length - 2, brg: 0, end: 1 };
   }
-  function segSpeed(i) { const ei = i - 1; if (ei < 0 || ei >= R.edges.length) return mode === 'car' ? 4 : 1.4; const e = R.edges[ei], A = profile(mode); return A.len[e] / Math.max(A.cost[e], 0.1) / R.wf; }
-  function startNav(resume) {
-    const keep = resume && nav ? { pace: nav.pace, asked: nav.asked, gps: nav.gps, km: nav.km } : null;
+  function segEdge(i) { const ei = i - 1; return ei >= 0 && ei < R.edges.length ? R.edges[ei] : -1; }
+  function segSpeed(i) { const e = segEdge(i); if (e < 0) return mode === 'car' ? 4 : 1.4; const A = profile(mode); return A.len[e] / Math.max(A.cost[e], 0.1) / R.wf; }
+  function segLimit(i) { if (mode !== 'car') return 0; const e = segEdge(i); if (e < 0) return 0; const w = G.ways[profile(mode).way[e]]; return w ? w.ms || 0 : 0; }
+  // project a point on the route near the last known segment
+  function project(la, lo, from) {
+    const c = R.coords, kx = 111320 * Math.cos(la * Math.PI / 180), ky = 110540;
+    let best = { d: Infinity, i: 0, t: 0 };
+    const i0 = Math.max(0, (from || 0) - 4), i1 = Math.min(c.length - 1, (from || 0) + 60);
+    const scan = (a, b) => { for (let i = a; i < b; i++) {
+      const ax = (c[i][0] - lo) * kx, ay = (c[i][1] - la) * ky, bx = (c[i + 1][0] - lo) * kx, by = (c[i + 1][1] - la) * ky;
+      const dx = bx - ax, dy = by - ay, L = dx * dx + dy * dy; let t = L ? -(ax * dx + ay * dy) / L : 0; t = Math.max(0, Math.min(1, t));
+      const px = ax + t * dx, py = ay + t * dy, d = Math.sqrt(px * px + py * py);
+      if (d < best.d) best = { d, i, t };
+    } };
+    scan(i0, i1); if (best.d > 80) scan(0, c.length - 1);
+    const seglen = R.cumc[best.i + 1] - R.cumc[best.i];
+    best.along = R.cumc[best.i] + best.t * seglen;
+    best.brg = MSR.bearing(c[best.i][1], c[best.i][0], c[best.i + 1][1], c[best.i + 1][0]);
+    best.lon = c[best.i][0] + (c[best.i + 1][0] - c[best.i][0]) * best.t; best.lat = c[best.i][1] + (c[best.i + 1][1] - c[best.i][1]) * best.t;
+    return best;
+  }
+  function camZoom(v) { const k = v * 3.6; return mode !== 'car' ? 18 : k < 30 ? 17.4 : k < 70 ? 16.6 : 15.8; }
+  function follow(lon, lat, brg, v, dur) {
+    if (!nav || !nav.follow) return;
+    map.easeTo({ center: [lon, lat], bearing: brg, pitch: 60, zoom: camZoom(v || 0), duration: dur, offset: [0, Math.round(innerHeight * 0.18)], essential: true });
+  }
+  function firstLine() { let t = ST.list[0].text + (ST.list[1] ? '. ' + MSR.spoken(ST.list[1].at) + '، ' + ST.list[1].text : ''); const w = feed && feed.weather; if (w && w.warning && mode === 'car') t = 'تنبيه الطقس: ' + w.warning + '. ' + t; return t; }
+  function startNav(resume, announce) {
+    const keep = resume && nav ? { pace: nav.pace, asked: nav.asked, kind: nav.kind, km: nav.km, last: nav.lastFix } : null;
     if (nav && nav.watch != null) try { navigator.geolocation.clearWatch(nav.watch); } catch (e) {}
-    if (nav) cancelAnimationFrame(nav.raf);
-    nav = { d: 0, pace: keep ? keep.pace : 1, last: performance.now(), spoken: {}, gps: false, asked: keep ? keep.asked : {}, off: 0, km: keep ? keep.km : 0 };
-    document.body.classList.add('nav'); $('#dock').hidden = true; sizeDock(); startMk.remove();
-    try { if (navigator.wakeLock && !nav.lock) navigator.wakeLock.request('screen').then(l => { if (nav) nav.lock = l; else l.release(); }).catch(() => {}); } catch (e) {}
+    if (nav) { cancelAnimationFrame(nav.raf); clearTimeout(nav.waitT); }
+    nav = { d: 0, idx: 0, pace: keep ? keep.pace : 1, last: performance.now(), spoken: {}, kind: keep ? keep.kind : 'wait', asked: keep ? keep.asked : {}, off: 0, km: keep ? keep.km : 0, v: 0, follow: true, brg: 0, lastFix: keep ? keep.last : null };
+    document.body.classList.add('nav'); $('#dock').hidden = true; sizeDock(); startMk.remove(); meMk.remove();
+    try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then(l => { if (nav) nav.lock = l; else l.release(); }).catch(() => {}); } catch (e) {}
     R.cumc = [0]; for (let i = 1; i < R.coords.length; i++) R.cumc.push(R.cumc[i - 1] + MSR.hav(R.coords[i - 1][1], R.coords[i - 1][0], R.coords[i][1], R.coords[i][0]));
-    carMk.setLngLat(R.coords[0]).addTo(map);
-    map.easeTo({ center: R.coords[0], zoom: 17, pitch: 60, duration: 700 });
-    navBar();
-    if (!resume) {
-      let first = ST.list[0].text + (ST.list[1] ? '. ' + MSR.spoken(ST.list[1].at) + '، ' + ST.list[1].text : '');
-      const w = feed && feed.weather; if (w && w.warning && mode === 'car') first = 'تنبيه الطقس: ' + w.warning + '. ' + first;
-      say(first);
-    } else say('تم تحديث المسار');
-    const me0 = nav; let decided = !!(keep && !keep.gps);
-    const sim = () => { if (decided && !(keep && !keep.gps)) return; if (nav !== me0) return; decided = true; nav.raf = requestAnimationFrame(tick); if (!resume) toast('تحديد الموقع غير متاح: معاينة الرحلة على المسار'); };
-    if (keep && !keep.gps) { nav.raf = requestAnimationFrame(tick); return; }
-    if (navigator.geolocation) {
-      try {
-        nav.watch = navigator.geolocation.watchPosition(pos => { if (nav !== me0) return; if (!decided) { decided = true; nav.gps = true; navBar(); if (!resume) toast('ملاحة حية بموقعك الفعلي'); } gpsUpdate(pos); }, () => sim(), { enableHighAccuracy: true, maximumAge: 1000, timeout: 6000 });
-      } catch (e) { sim(); }
-      setTimeout(sim, 4000);
-    } else sim();
+    const c0 = R.coords[0], b0 = MSR.bearing(c0[1], c0[0], R.coords[1][1], R.coords[1][0]);
+    carMk.setLngLat(c0).setRotation(b0).addTo(map); nav.brg = b0;
+    map.easeTo({ center: c0, zoom: 17, pitch: 60, bearing: b0, duration: 700, offset: [0, Math.round(innerHeight * 0.18)] });
+    $('#ask').hidden = true; navBar();
+    if (announce === 'update') say('تم تحديث المسار'); else if (announce === 'first') say(firstLine());
+    if (nav.kind === 'demo') { navUpdate(along(0)); nav.raf = requestAnimationFrame(tick); return; }
+    if (nav.kind === 'gps' && keep && keep.last) { nav.kind = 'gps'; gpsUpdate(keep.last, true); }
+    else { nav.kind = 'wait'; waitBanner('جارٍ تحديد موقعك…', 'تأكد أن خدمة الموقع مفعّلة'); }
+    watchGps(!resume);
+  }
+  function waitBanner(t, sub) {
+    const b = $('#banner'); b.innerHTML = `${svg(I.loc, 2.2)}<div style="min-width:0"><div class="txt" style="font-weight:700">${E(t)}</div><div class="next">${E(sub || '')}</div></div>`; b.hidden = false;
+  }
+  function gpsProblem(msg) {
+    if (!nav || nav.kind === 'gps' || nav.kind === 'demo') return;
+    waitBanner('لا يمكن تحديد موقعك', msg);
+    const ask = $('#ask');
+    ask.innerHTML = `<span class="rp" style="background:#2f7cf6">${svg(I.loc)}</span><p><b>الملاحة تحتاج موقعك</b>فعّل خدمة الموقع واسمح لمشوار باستخدامها، أو شاهد معاينة للمسار.</p><button class="btn sm" data-act="gpsRetry">إعادة المحاولة</button><button class="btn ghost sm" data-act="demo">معاينة</button>`;
+    ask.hidden = false;
+  }
+  function watchGps(first) {
+    if (!navigator.geolocation) return gpsProblem('هذا الجهاز لا يدعم تحديد الموقع.');
+    const me0 = nav;
+    try {
+      nav.watch = navigator.geolocation.watchPosition(pos => {
+        if (nav !== me0 || nav.kind === 'demo') return;
+        if (nav.kind === 'wait') {
+          nav.kind = 'gps'; $('#ask').hidden = true;
+          // Waze-style: always drive from where you really are
+          const s0 = R.coords[0];
+          if (MSR.hav(pos.coords.latitude, pos.coords.longitude, s0[1], s0[0]) > 120) { nav.lastFix = pos; reroute({ lat: pos.coords.latitude, lon: pos.coords.longitude }, null, true); return; }
+          if (first) say(firstLine());
+        }
+        gpsUpdate(pos);
+      }, err => { if (nav === me0) gpsProblem(err && err.code === 1 ? 'لم يُسمح لمشوار باستخدام الموقع. اسمح به من إعدادات الجهاز أو المتصفح.' : 'إشارة الموقع ضعيفة. تأكد أن خدمة الموقع مفعّلة.'); },
+      { enableHighAccuracy: true, maximumAge: 1000, timeout: 15000 });
+    } catch (e) { gpsProblem('تعذّر تشغيل تحديد الموقع.'); }
+    clearTimeout(nav.waitT); nav.waitT = setTimeout(() => { if (nav === me0 && nav.kind === 'wait') gpsProblem('لم تصل إشارة الموقع بعد. اخرج إلى مكان مفتوح أو تأكد أن الموقع مفعّل.'); }, 15000);
+  }
+  function startDemo() {
+    if (!nav) return; if (nav.watch != null) try { navigator.geolocation.clearWatch(nav.watch); } catch (e) {}
+    nav.watch = null; nav.kind = 'demo'; nav.d = 0; $('#ask').hidden = true; clearTimeout(nav.waitT);
+    toast('معاينة المسار: السيارة تتحرك على الخريطة للتوضيح فقط');
+    navBar(); navUpdate(along(0)); nav.last = performance.now(); nav.raf = requestAnimationFrame(tick);
   }
   function stopNav(arrived) {
-    if (!nav) return; cancelAnimationFrame(nav.raf); if (nav.watch != null) try { navigator.geolocation.clearWatch(nav.watch); } catch (e) {}
+    if (!nav) return; cancelAnimationFrame(nav.raf); cancelAnimationFrame(nav.anim); clearTimeout(nav.waitT); if (nav.watch != null) try { navigator.geolocation.clearWatch(nav.watch); } catch (e) {}
     try { nav.lock && nav.lock.release(); } catch (e) {}
-    me.km += nav.km / 1000; LS.set('me', me); nav = null;
-    carMk.remove(); ['banner', 'navbar', 'ask'].forEach(id => $('#' + id).hidden = true); document.body.classList.remove('nav');
+    const was = nav.kind; if (was === 'gps') { me.km += nav.km / 1000; LS.set('me', me); }
+    const lastFix = nav.lastFix; nav = null;
+    carMk.remove(); ['banner', 'navbar', 'ask', 'recenter'].forEach(id => $('#' + id).hidden = true); document.body.classList.remove('nav');
     if (arrived) {
       say('وصلت إلى وجهتك'); const lbl = dest.label; setFrom({ lat: dest.lat, lon: dest.lon, label: lbl });
       ['route', 'done', 'alt'].forEach(s => map.getSource(s).setData(FC([]))); destMk.remove(); R = ST = null; dest = null; $('#q').value = '';
       home(); toast('وصلت إلى ' + lbl);
-    } else { startMk.addTo(map); routeSheet(); }
-    map.easeTo({ pitch: is3d ? 50 : 0, zoom: 14, bearing: 0, duration: 700 });
+    } else {
+      if (was === 'gps' && lastFix) setFrom({ lat: lastFix.coords.latitude, lon: lastFix.coords.longitude, label: 'موقعي الحالي' });
+      startMk.addTo(map); if (was === 'gps' && lastFix) plan(); else routeSheet();
+    }
+    map.easeTo({ pitch: is3d ? 50 : 0, zoom: 14, bearing: 0, duration: 700, offset: [0, 0] });
   }
   function tick(now) {
-    if (!nav) return;
+    if (!nav || nav.kind !== 'demo') return;
     const dt = Math.min(0.25, (now - nav.last) / 1000); nav.last = now;
-    const p0 = along(nav.d); nav.v = segSpeed(p0.seg); const step = nav.v * nav.pace * dt; nav.d += step; nav.km += step;
+    const p0 = along(nav.d); nav.v = segSpeed(p0.seg); nav.d += nav.v * nav.pace * dt;
     const p = along(nav.d);
     carMk.setLngLat([p.lon, p.lat]); carMk.setRotation(p.brg);
-    if (!nav.cam || now - nav.cam > 120) { nav.cam = now; map.jumpTo({ center: [p.lon, p.lat], bearing: p.brg, pitch: 60, zoom: mode === 'car' ? 17 : 18 }); }
+    if (nav.follow && (!nav.cam || now - nav.cam > 120)) { nav.cam = now; map.jumpTo({ center: [p.lon, p.lat], bearing: p.brg, pitch: 60, zoom: camZoom(nav.v), offset: [0, Math.round(innerHeight * 0.18)] }); }
     if (!nav.tr || now - nav.tr > 500) { nav.tr = now; trail(p); navUpdate(p); }
     if (!nav) return;
     if (p.end || nav.d >= R.total) return stopNav(true);
     nav.raf = requestAnimationFrame(tick);
   }
-  function gpsUpdate(pos) {
-    const la = pos.coords.latitude, lo = pos.coords.longitude, c = R.coords;
-    let bi = 0, bd = Infinity; for (let i = 0; i < c.length; i++) { const d = MSR.hav(la, lo, c[i][1], c[i][0]); if (d < bd) { bd = d; bi = i; } }
-    nav.v = pos.coords.speed != null && pos.coords.speed >= 0 ? pos.coords.speed : nav.v || 0;
-    const a = c[Math.max(0, bi - 1)], b = c[Math.min(c.length - 1, bi + 1)];
-    const brg = pos.coords.heading != null && !isNaN(pos.coords.heading) ? pos.coords.heading : MSR.bearing(a[1], a[0], b[1], b[0]);
-    carMk.setLngLat([lo, la]); carMk.setRotation(brg);
-    map.easeTo({ center: [lo, la], bearing: brg, pitch: 60, zoom: mode === 'car' ? 17 : 18, duration: 600 });
-    if (bd > 60) { if (++nav.off >= 2) { nav.off = 0; reroute({ lat: la, lon: lo }, 'خرجت عن المسار، جارٍ إعادة الحساب'); return; } } else nav.off = 0;
-    const nd = R.cumc[bi]; if (nd > nav.d) nav.km += nd - nav.d; nav.d = nd;
-    const p = { lat: la, lon: lo, seg: Math.max(0, bi - 1) }; trail(p); navUpdate(p);
-    if (nav && R.total - nav.d < 25) stopNav(true);
+  function animateCar(from, to, brg, ms) {
+    cancelAnimationFrame(nav.anim); const t0 = performance.now();
+    const step = now => { if (!nav) return; const f = Math.min(1, (now - t0) / ms);
+      carMk.setLngLat([from[0] + (to[0] - from[0]) * f, from[1] + (to[1] - from[1]) * f]); if (f < 1) nav.anim = requestAnimationFrame(step); };
+    carMk.setRotation(brg); nav.anim = requestAnimationFrame(step);
   }
-  function reroute(pos, why) {
+  function gpsUpdate(pos, silent) {
+    const la = pos.coords.latitude, lo = pos.coords.longitude, acc = pos.coords.accuracy || 20, t = pos.timestamp || Date.now();
+    const prev = nav.lastFix; nav.lastFix = pos;
+    if (acc > 120 && prev) return;                       // ignore very poor fixes
+    const pr = project(la, lo, nav.idx);
+    // speed: device speed, else distance over time between fixes
+    let v = pos.coords.speed;
+    if (v == null || isNaN(v) || v < 0) v = prev ? MSR.hav(prev.coords.latitude, prev.coords.longitude, la, lo) / Math.max(0.5, (t - (prev.timestamp || t)) / 1000) : 0;
+    if (!(v < 70)) v = nav.v || 0;                        // ignore impossible jumps (> 250 km/h)
+    v = nav.v ? nav.v * 0.4 + v * 0.6 : v;                // smooth the reading
+    nav.v = v < 0.8 ? 0 : v;                              // standing still = 0
+    const moving = nav.v > 1.5;
+    // off route: several consecutive fixes far from the line while moving
+    const tol = Math.max(40, acc * 1.5);
+    if (pr.d > tol && moving) { if (++nav.off >= 3) { nav.off = 0; reroute({ lat: la, lon: lo }, 'خرجت عن المسار، جارٍ إعادة الحساب'); return; } } else if (pr.d <= tol) nav.off = 0;
+    // progress only moves forward (small GPS jitter backwards is ignored)
+    if (pr.along > nav.d || nav.d - pr.along > 60) { if (nav.kind === 'gps' && prev && pr.along > nav.d) nav.km += pr.along - nav.d; nav.d = pr.along; nav.idx = pr.i; }
+    // snap the arrow to the road when close to it, keep heading when stopped
+    const onRoad = pr.d <= tol, show = onRoad ? [pr.lon, pr.lat] : [lo, la];
+    const hdg = pos.coords.heading;
+    if (moving) nav.brg = onRoad ? pr.brg : (hdg != null && !isNaN(hdg) ? hdg : nav.brg);
+    const cur = carMk.getLngLat(); animateCar([cur.lng, cur.lat], show, nav.brg, 900);
+    follow(show[0], show[1], nav.brg, nav.v, 900);
+    const p = { lat: show[1], lon: show[0], seg: pr.i + 1 };
+    trail(p); if (!silent) navUpdate(p); else navUpdate(p);
+    if (nav && (MSR.hav(la, lo, dest.lat, dest.lon) < 30 || R.total - nav.d < 20)) stopNav(true);
+  }
+  function reroute(pos, why, quiet) {
     start = { lat: pos.lat, lon: pos.lon, label: 'موقعي الحالي' }; $('#fromT').textContent = start.label;
     if (why) toast(why);
-    plan(true); if (R) startNav(true);
+    plan(true); if (R) startNav(true, quiet ? 'first' : 'update');
   }
   function trail(p) { map.getSource('done').setData(FC([{ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: R.coords.slice(0, p.seg + 1).concat([[p.lon, p.lat]]) } }])); }
   function navUpdate(p) {
+    if (!nav || nav.kind === 'wait') return;
     const off0 = R.extra ? MSR.hav(R.coords[0][1], R.coords[0][0], R.coords[1][1], R.coords[1][0]) : 0, rd = nav.d - off0;
     const i = ST.list.findIndex(s => s.at > rd + 5), s = ST.list[i < 0 ? ST.list.length - 1 : i], nx = ST.list[i + 1], to = Math.max(0, s.at - rd);
     const b = $('#banner');
-    b.innerHTML = `${svg(TURN[s.type] || TURN.straight, 2.4)}<div style="min-width:0"><div class="dist">${MSR.fmtDist(to)}</div><div class="txt">${E(s.text)}</div>${nx && nx.type !== 'arrive' ? `<div class="next">ثم ${E(nx.text)}</div>` : ''}</div>`;
+    b.innerHTML = `${svg(TURN[s.type] || TURN.straight, 2.4)}<div style="min-width:0"><div class="dist">${MSR.fmtDist(to)}</div><div class="txt">${E(s.text)}</div>${nx && nx.type !== 'arrive' ? `<div class="next">ثم ${E(nx.text)}</div>` : ''}</div>${nav.kind === 'demo' ? '<span class="demo-tag">معاينة</span>' : ''}`;
     b.hidden = false;
     const key = s.i + ':' + s.type, th = mode === 'car' ? [600, 180, 40] : [120, 40, 12];
     th.forEach((t, k) => { if (to <= t && !nav.spoken[key + k] && (k ? true : to > th[1])) { nav.spoken[key + k] = 1; say((to > 50 ? MSR.spoken(to) + '، ' : '') + s.text); } });
+    // speed limit of the current road
+    nav.limit = segLimit(p.seg);
+    if (nav.limit && nav.v * 3.6 > nav.limit + 5 && nav.kind === 'gps') { if (!nav.overSaid || performance.now() - nav.overSaid > 60000) { nav.overSaid = performance.now(); say('انتبه، تجاوزت السرعة المحددة ' + nav.limit); } }
     // new reports or closures that touch the remaining route → reroute once per change
     const A = profile(mode), pk = penalties(A).key;
     if (pk !== penKey && (!nav.rc || performance.now() - nav.rc > 8000)) {
       penKey = pk; nav.rc = performance.now();
       const { pen } = penalties(A), seg = Math.max(0, p.seg - 1);
-      const ahead = R.nodes.slice(seg).some(n => pen.has(n));
-      if (ahead) return reroute(p, 'بلاغ جديد على طريقك، اخترنا طريقاً أسرع');
+      if (R.nodes.slice(seg).some(n => pen.has(n))) return reroute(p, 'بلاغ جديد على طريقك، اخترنا طريقاً أسرع');
     }
     // ask about a report ahead (one question each)
     const near = activeReports().concat(official).find(r => !nav.asked[r.id] && MSR.hav(p.lat, p.lon, r.lat, r.lon) < (mode === 'car' ? 300 : 90));
@@ -515,10 +596,13 @@ ${NATIVE ? '' : `<a href="${CFG.SITE}download.html" ${ON_SITE ? '' : 'target="_b
     navBar();
   }
   function navBar() {
-    const left = Math.max(0, R.total - nav.d), tleft = R.ttotal * (R.total ? left / R.total : 0), n = qaNow(), kmh = Math.round((nav.v || 0) * 3.6);
-    $('#navbar').innerHTML = `<div class="spd" aria-label="السرعة">${kmh}<small>كم/س</small></div>
-<div class="eta2"><b>${clock12((n.h * 60 + n.m + tleft / 60) % 1440)}</b><span>${MSR.fmtDur(tleft)} · ${MSR.fmtDist(left).replace('الآن', '0 م')}</span></div>
-<div class="end">${nav.gps ? '' : `<div class="pace" role="group" aria-label="سرعة المعاينة">${[1, 4, 12].map(x => `<button data-pace="${x}" aria-pressed="${nav.pace === x}">×${x}</button>`).join('')}</div>`}
+    if (!nav) return;
+    const left = Math.max(0, R.total - nav.d), frac = R.total ? left / R.total : 0, n = qaNow();
+    // remaining time from the route model; while stopped the arrival clock moves on by itself
+    const tleft = R.ttotal * frac, kmh = Math.round((nav.v || 0) * 3.6), lim = nav.limit || 0, over = lim && kmh > lim + 5;
+    $('#navbar').innerHTML = `<div class="spd${over ? ' over' : ''}" aria-label="السرعة">${nav.kind === 'wait' ? '–' : kmh}<small>كم/س</small></div>${lim ? `<div class="lim" aria-label="السرعة المحددة">${lim}</div>` : ''}
+<div class="eta2"><b>${nav.kind === 'wait' ? '—' : clock12(n.h * 60 + n.m + tleft / 60)}</b><span>${MSR.fmtDur(tleft)} · ${MSR.fmtDist(left).replace('الآن', '0 م')}</span></div>
+<div class="end">${nav.kind === 'demo' ? `<div class="pace" role="group" aria-label="سرعة المعاينة">${[1, 4, 12].map(x => `<button data-pace="${x}" aria-pressed="${nav.pace === x}">×${x}</button>`).join('')}</div>` : ''}
 <button class="fab" data-act="shareEta" aria-label="شارك وقت وصولي">${svg(I.share)}</button>
 <button class="fab" data-act="voice" aria-label="${voice ? 'كتم الصوت' : 'تشغيل الصوت'}">${svg(voice ? I.vol : I.mute)}</button>
 <button class="btn coral sm" data-act="stop">إنهاء</button></div>`;
@@ -613,6 +697,16 @@ ${r.note ? `<p style="margin:8px 0 0">${E(r.note)}</p>` : ''}
   // ---------- misc ----------
   function streetUrl(la, lo, h) { return `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${la.toFixed(6)},${lo.toFixed(6)}${h != null ? '&heading=' + Math.round(h) : ''}`; }
   function updStreet() { const c = map.getCenter(); $('#bStreet').href = streetUrl(c.lat, c.lng, map.getBearing()); }
+  function autoLocate() {
+    if (!navigator.geolocation) return;
+    const go = () => navigator.geolocation.getCurrentPosition(p => {
+      const s = { lat: p.coords.latitude, lon: p.coords.longitude, label: 'موقعي الحالي' };
+      if (s.lat < 24.4 || s.lat > 26.3 || s.lon < 50.6 || s.lon > 52) return;   // outside Qatar: keep the default start
+      if (nav) return; setFrom(s); startMk.remove(); meMk.setLngLat([s.lon, s.lat]).addTo(map);
+      if (!R) map.easeTo({ center: [s.lon, s.lat], zoom: 15, duration: 800 }); else if (dest) plan();
+    }, () => {}, { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 });
+    try { navigator.permissions && navigator.permissions.query({ name: 'geolocation' }).then(r => { if (r.state !== 'denied') go(); }).catch(go); } catch (e) { go(); }
+  }
   function locate(asStart) {
     if (!navigator.geolocation) return toast('تحديد الموقع غير متاح في هذا المتصفح');
     navigator.geolocation.getCurrentPosition(p => {
@@ -657,6 +751,8 @@ ${r.note ? `<p style="margin:8px 0 0">${E(r.note)}</p>` : ''}
       const act = a.dataset.act;
       if (act === 'go') startNav(false);
       else if (act === 'stop') stopNav(false);
+      else if (act === 'demo') startDemo();
+      else if (act === 'gpsRetry') { $('#ask').hidden = true; waitBanner('جارٍ تحديد موقعك…', 'تأكد أن خدمة الموقع مفعّلة'); if (nav.watch != null) try { navigator.geolocation.clearWatch(nav.watch); } catch (e) {} watchGps(true); }
       else if (act === 'steps') { const s = $('#steps'); s.hidden = !s.hidden; requestAnimationFrame(sizeDock); }
       else if (act === 'clear') clearRoute();
       else if (act === 'home') home();
@@ -672,6 +768,9 @@ ${r.note ? `<p style="margin:8px 0 0">${E(r.note)}</p>` : ''}
     });
     map.on('click', e => { if (nav) return; $('#res').hidden = true; pointSheet(e.lngLat); });
     map.on('moveend', updStreet);
+    const free = e => { if (nav && e.originalEvent) { nav.follow = false; $('#recenter').hidden = false; } };
+    map.on('dragstart', free); map.on('zoomstart', free); map.on('rotatestart', free);
+    $('#recenter').addEventListener('click', () => { if (!nav) return; nav.follow = true; $('#recenter').hidden = true; const c = carMk.getLngLat(); follow(c.lng, c.lat, nav.brg, nav.v, 500); });
     addEventListener('resize', sizeDock);
     const mq = matchMedia('(prefers-color-scheme: dark)'); mq.addEventListener && mq.addEventListener('change', recolor);
     new MutationObserver(recolor).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
@@ -702,7 +801,8 @@ ${r.note ? `<p style="margin:8px 0 0">${E(r.note)}</p>` : ''}
       carMk = new maplibregl.Marker({ element: el('', '<svg viewBox="0 0 48 48" width="48" height="48"><circle cx="24" cy="24" r="22" fill="rgba(47,124,246,.18)"/><path d="M24 7l12 32-12-7-12 7z" fill="#0f2a3d" stroke="#fff" stroke-width="2.6" stroke-linejoin="round"/></svg>'), rotationAlignment: 'map', pitchAlignment: 'map' });
       map.on('load', () => {
         bar.style.width = '100%'; setTimeout(() => $('#load').hidden = true, 200);
-        const sv = LS.get('start', null); setFrom(sv || DEFAULT_START, false);
+        const sv = LS.get('start', null); setFrom(sv && sv.label !== 'موقعي الحالي' ? sv : DEFAULT_START, false);
+        autoLocate();
         wire(); updStreet(); home(); syncReports(); loadFeed(); deepLink();
         setInterval(syncReports, 60000); setInterval(loadFeed, 10 * 60000); setInterval(() => { if (!R && !nav) home(); }, 60000);
         setTimeout(() => profile(mode), 300);
