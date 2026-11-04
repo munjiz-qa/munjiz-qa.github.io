@@ -102,7 +102,7 @@ for goos,arch,dst,extra in (('windows','amd64','ShatirHassan-Windows.exe',['-H',
   ld='-s -w'+(' '+' '.join(extra) if extra else '')
   subprocess.run(['go','build','-trimpath','-ldflags',ld,'-o',OUT+'/'+dst,'.'],cwd=G,env=env,check=True)
   os.chmod(OUT+'/'+dst,0o755)
-open(OUT+'/0-READ-ME-FIRST.html','w',encoding='utf-8').write(open(X+'/readme.html',encoding='utf-8').read().replace('%FONT%',FONT))
+open(OUT+'/0-READ-ME-FIRST.html','w',encoding='utf-8').write(open(X+'/readme.html',encoding='utf-8').read().replace('%FONT%',FONT).replace('../../../shatirhassan/index.html','web/index.html'))
 shutil.copy(X+'/mac.command',OUT+'/ShatirHassan-Mac.command'); os.chmod(OUT+'/ShatirHassan-Mac.command',0o755)
 shutil.copy(SP+'/font/package/LICENSE',OUT+'/web/FONT-LICENSE.txt')
 import zipfile
