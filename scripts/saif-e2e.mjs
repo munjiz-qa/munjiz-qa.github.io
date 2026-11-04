@@ -27,7 +27,7 @@ function mkZip(files) {
   const cs = Buffer.concat(cen), e = Buffer.alloc(22); e.writeUInt32LE(0x06054b50, 0); e.writeUInt16LE(files.length, 8); e.writeUInt16LE(files.length, 10); e.writeUInt32LE(cs.length, 12); e.writeUInt32LE(off, 16);
   return Buffer.concat([...parts, cs, e]);
 }
-const DOCX = mkZip([["[Content_Types].xml", "<Types/>"], ["word/document.xml", "<w:document><w:body><w:p><w:r><w:t>للتواصل: sales@example.com</w:t></w:r></w:p></w:body></w:document>"]]);
+const DOCX = mkZip([["[Content_Types].xml", "<Types/>"], ["word/document.xml", "<w:document><w:body><w:p><w:r><w:t>للتواصل: sales@example.com</w:t></w:r></w:p><w:p><w:r><w:t>رقم الهوية: ٢٨٥٠١٢٣٤٥٦٧</w:t></w:r></w:p></w:body></w:document>"]]);
 (async () => {
   const br = await chromium.launch();
   for (const [name, opts] of [["desktop", { viewport: { width: 1366, height: 900 } }], ["mobile", devices["iPhone 13"]]]) {
@@ -51,6 +51,7 @@ const DOCX = mkZip([["[Content_Types].xml", "<Types/>"], ["word/document.xml", "
     // انتظار عبر محدد العنصر بدل waitForFunction: الأخيرة تحتاج تقييم نص برمجي تمنعه سياسة أمان المحتوى في الصفحة فتفشل المراقبة أحياناً
     await p.locator("#res", { hasText: "#2" }).first().waitFor({ timeout: 15000 });
     ok((await p.textContent("#res")).includes("بريد"), "فحص محتوى ملف Word");
+    ok((await p.textContent("#res")).includes("بطاقة شخصية"), "كشف رقم هوية مكتوب بالأرقام العربية");
     await p.goto(BASE + "#reports"); await p.waitForSelector(".banner"); ok((await p.textContent(".banner")).includes("سليمة"), "سلسلة الأختام سليمة"); await shot("client-reports");
     for (const h of ["users", "audit", "settings", "health"]) { await p.goto(BASE + "#" + h); await p.waitForTimeout(300); ok(!(await p.isVisible("h1:has-text('" + ({ users: "الحسابات", audit: "سجل التدقيق", settings: "الإعدادات", health: "صحة المنصة" })[h] + "')")), "العميل محجوب عن #" + h); }
     await p.goto(BASE + "#device"); await p.waitForSelector(".chk"); const n1 = await p.textContent("#dv"); await p.waitForTimeout(2200); const n2 = await p.textContent("#dv"); ok(n1 !== n2, "مراقبة الجهاز تتحدث لحظياً"); await shot("device");
