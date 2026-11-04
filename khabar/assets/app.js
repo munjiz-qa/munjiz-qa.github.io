@@ -235,7 +235,7 @@ function viewRoadmap(){
     if(r.date){w.append(r.from?`${fmtDate(r.from).split(' ')[0]}–${fmtDate(r.date)}`:fmtDate(r.date));const d=new Date(r.date+'T00:00:00Z');w.append(el('small',null,r.from?'':DAYS[LANG][d.getUTCDay()]))}
     else{w.append(r.month?fmtDate(r.month):'—');w.append(el('small',null,t('tbd')))}
     if(li.classList.contains('is-today'))w.append(el('span','today-chip',r.from&&r.date!==today?L('جارٍ الآن','Ongoing'):L('اليوم','Today')));
-    const what=el('div','what'),zc=el('span','zchip',t(r.zone));zc.style.background=ZC[r.zone];if(r.zone==='world')zc.style.color='var(--bg)';
+    const what=el('div','what'),zc=el('span','zchip',t(r.zone));zc.style.background=ZC[r.zone];zc.dataset.zone=r.zone;if(r.zone==='world')zc.style.color='var(--bg)';
     what.append(zc,el('p',null,r[LANG]),srcLine(r.src));
     if(r.scn){const s=el('p','scn');s.append(el('b',null,t('scenario')+' ('+t('outlook_tag')+'): '),r.scn[LANG]);what.append(s)}
     li.append(w,what);ol.append(li)});

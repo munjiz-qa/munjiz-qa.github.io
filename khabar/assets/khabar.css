@@ -1,7 +1,7 @@
 /* Layout: ink app bar with the four-circle mark and a sticky tab row; one reading column; each circle is a section with items, then analysis, then outlook. */
 :root{
   --bg:#F5F6F3;--surface:#FFFFFF;--ink:#14212E;--mute:#566270;--line:#DFE3E0;
-  --dawn:#E39A2D;--dawn-ink:#9A5B00;--dawn-soft:#FBF0DE;--sea:#1D7A70;--sea-soft:#E3F1EE;--nile:#3A5FB0;--nile-soft:#E7ECF7;
+  --dawn:#E39A2D;--dawn-ink:#9A5B00;--sea-ink:#17675F;--dawn-soft:#FBF0DE;--sea:#1D7A70;--sea-soft:#E3F1EE;--nile:#3A5FB0;--nile-soft:#E7ECF7;
   --deep:#14212E;--deep-ink:#F5F6F3;--urgent:#C4392F;--up:#1D7A70;--down:#C4392F;
   --display:'Reem Kufi','IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;
   --body:'IBM Plex Sans Arabic','Segoe UI',Tahoma,Arial,sans-serif;
@@ -9,11 +9,11 @@
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0C141C;--surface:#121D28;--ink:#E9EEE9;--mute:#9AA7B2;--line:#233140;
-  --dawn:#F0B04E;--dawn-ink:#F0B04E;--dawn-soft:#2C2414;--sea:#4FB8AA;--sea-soft:#10282A;--nile:#86A5E8;--nile-soft:#16203A;
+  --dawn:#F0B04E;--dawn-ink:#F0B04E;--sea-ink:#4FB8AA;--dawn-soft:#2C2414;--sea:#4FB8AA;--sea-soft:#10282A;--nile:#86A5E8;--nile-soft:#16203A;
   --deep:#08101A;--deep-ink:#E9EEE9;--urgent:#EC6A5E;--up:#4FB8AA;--down:#EC6A5E;color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0C141C;--surface:#121D28;--ink:#E9EEE9;--mute:#9AA7B2;--line:#233140;
-  --dawn:#F0B04E;--dawn-ink:#F0B04E;--dawn-soft:#2C2414;--sea:#4FB8AA;--sea-soft:#10282A;--nile:#86A5E8;--nile-soft:#16203A;
+  --dawn:#F0B04E;--dawn-ink:#F0B04E;--sea-ink:#4FB8AA;--dawn-soft:#2C2414;--sea:#4FB8AA;--sea-soft:#10282A;--nile:#86A5E8;--nile-soft:#16203A;
   --deep:#08101A;--deep-ink:#E9EEE9;--urgent:#EC6A5E;--up:#4FB8AA;--down:#EC6A5E;color-scheme:dark}
 
 *{box-sizing:border-box}
@@ -113,7 +113,7 @@ mark{background:var(--dawn-soft);color:inherit;border-radius:3px;padding:0 2px;b
 .box .k{font-size:.8rem;font-weight:700;letter-spacing:.03em;display:flex;align-items:center;gap:8px}
 .box .tag{font-size:.72rem;font-weight:700;border-radius:6px;padding:1px 8px}
 .analysis{background:var(--sea-soft)}
-.analysis .k{color:var(--sea)}
+.analysis .k{color:var(--sea-ink)}
 .analysis .tag{background:var(--sea);color:var(--bg)}
 .technical{background:var(--surface);border:1px dashed var(--line)}
 .technical .k{color:var(--ink)}
@@ -209,3 +209,7 @@ mark{background:var(--dawn-soft);color:inherit;border-radius:3px;padding:0 2px;b
 
 /* لون الفجر للنصوص الصغيرة بتباين لا يقل عن 4.5:1 (WCAG AA) */
 .item[data-zone="qatar"] .cat{color:var(--dawn-ink)}
+/* شارات الدوائر في خريطة الطريق: نص داكن على الألوان الفاتحة ليبقى التباين 4.5:1 أو أكثر */
+.zchip[data-zone="qatar"]{color:#14212E}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .zchip{color:#0C141C}}
+:root[data-theme="dark"] .zchip{color:#0C141C}
