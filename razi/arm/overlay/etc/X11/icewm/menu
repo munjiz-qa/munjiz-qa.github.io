@@ -1,0 +1,16 @@
+prog "مرحبًا بك في الرازي" /usr/share/pixmaps/razi.png razi-welcome
+separator
+prog "مدير الملفات" system-file-manager pcmanfm
+prog "الطرفية" utilities-terminal lxterminal
+prog "محرر النصوص" accessories-text-editor mousepad
+prog "الآلة الحاسبة" accessories-calculator galculator
+prog "عارض الصور" image-x-generic gpicview
+prog "ضغط الملفات وفكّها" package-x-generic xarchiver
+separator
+menu "النظام والإعدادات" preferences-system {
+    prog "مراقب النظام والمهام" utilities-system-monitor lxtask
+    prog "اتصالات الشبكة" network-workgroup nm-connection-editor
+    prog "التبديل إلى لوحة المفاتيح العربية" input-keyboard setxkbmap -layout ara,us -option grp:alt_shift_toggle
+    prog "التبديل إلى لوحة المفاتيح الإنجليزية" input-keyboard setxkbmap -layout us,ara -option grp:alt_shift_toggle
+    prog "معلومات النظام" dialog-information razi-about
+}

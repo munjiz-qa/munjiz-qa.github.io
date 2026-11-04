@@ -1,0 +1,3 @@
+#!/bin/sh
+# تشغيل مثبّت الرازي بصلاحيات المدير مع الحفاظ على اللغة العربية
+exec sudo -E env LANG=ar_EG.UTF-8 LANGUAGE=ar calamares

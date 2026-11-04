@@ -1,0 +1,29 @@
+#!/bin/sh
+# «البرامج والميزات»: كل طرق إضافة البرامج في مكان واحد
+set --
+command -v synaptic >/dev/null && set -- synaptic system-software-install "متجر البرامج: أكثر من 60 ألف برنامج مجاني"
+CH=$(yad --list --title="تثبيت برنامج جديد" --center --width=620 --height=420 --window-icon=system-software-install \
+  --text="<b>اختر طريقة الإضافة.</b>\nالملفات التي تنزّلها (‎.deb و‎.exe و‎.AppImage و‎.flatpakref) تُثبَّت بنقرة مزدوجة من مستكشف الملفات." \
+  --column=":HD" --column=":IMG" --column="الطريقة" --print-column=1 --separator="" \
+  "$@" \
+  flathub applications-internet "متجر Flathub: برامج حديثة مثل ONLYOFFICE وWPS Office وZoom" \
+  file document-open "تثبيت ملف من جهازي (‎.deb أو ‎.exe أو ‎.AppImage)" \
+  office x-office-document "دليل برامج الأوفيس" \
+  --button="إغلاق:1" --button="متابعة:0") || exit 0
+case "$CH" in
+  synaptic) exec sudo -E synaptic ;;
+  flathub)
+    lxterminal --title="تفعيل Flathub" -e sh -c 'sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo && echo "تم تفعيل Flathub." ; sleep 2'
+    exec xdg-open https://flathub.org/ar ;;
+  file)
+    F=$(yad --file --title="اختر ملف التثبيت" --center --width=760 --height=520 \
+      --file-filter="ملفات التثبيت | *.deb *.exe *.msi *.AppImage *.appimage *.flatpakref") || exit 0
+    exec razi-open "$F" ;;
+  office)
+    exec yad --info --title="برامج الأوفيس" --center --width=600 --window-icon=x-office-document --button="حسنًا:0" --text="<b>خيارات الأوفيس في الرازي</b>
+
+•  <b>LibreOffice</b>: مثبّت مسبقًا، ويفتح ملفات Word وExcel وPowerPoint ويحفظها بصيغها.
+•  <b>ONLYOFFICE</b> و<b>WPS Office</b>: واجهتهما قريبة جدًا من Microsoft Office، وتُثبَّتان مجانًا من متجر Flathub.
+•  <b>Microsoft 365</b>: يعمل مباشرة من المتصفح على office.com.
+•  <b>Microsoft Office لويندوز</b>: يمكن تجربة الإصدارات القديمة (2010 و2013) عبر طبقة تشغيل برامج ويندوز بنقرة مزدوجة على ملف الإعداد." ;;
+esac

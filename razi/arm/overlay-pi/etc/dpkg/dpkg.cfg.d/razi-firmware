@@ -1,0 +1,18 @@
+# الرازي لـ Raspberry Pi: الإبقاء فقط على البرمجيات الثابتة التي يحتاجها الجهاز ومحولات USB الشائعة
+path-exclude=/usr/lib/firmware/*
+path-include=/usr/lib/firmware/brcm/*
+path-include=/usr/lib/firmware/cypress/*
+path-include=/usr/lib/firmware/regulatory.db*
+path-include=/usr/lib/firmware/rtlwifi/*
+path-include=/usr/lib/firmware/rtl_nic/*
+path-include=/usr/lib/firmware/rtl_bt/*
+path-include=/usr/lib/firmware/rtw88/*
+path-include=/usr/lib/firmware/mediatek/*
+path-include=/usr/lib/firmware/ath9k_htc/*
+path-include=/usr/lib/firmware/rt2870.bin*
+path-include=/usr/lib/firmware/mt7601u.bin*
+path-include=/usr/lib/firmware/htc_*
+# لغات محرك المتصفح: العربية والإنجليزية فقط
+path-exclude=/usr/share/qt5/translations/qtwebengine_locales/*
+path-include=/usr/share/qt5/translations/qtwebengine_locales/ar.pak
+path-include=/usr/share/qt5/translations/qtwebengine_locales/en-US.pak

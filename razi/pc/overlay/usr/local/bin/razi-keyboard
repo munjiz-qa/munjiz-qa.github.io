@@ -1,0 +1,10 @@
+#!/bin/sh
+# اختيار ترتيب لغات لوحة المفاتيح، ويُحفظ للجلسات القادمة
+CH=$(yad --list --title="لوحة المفاتيح واللغة" --center --width=460 --height=260 --window-icon=input-keyboard \
+  --text="اختر لغة البدء. التبديل دائمًا بـ Alt + Shift أو بالنقر على مؤشر اللغة في شريط المهام." \
+  --column="الترتيب" --column="الرمز:HD" --print-column=2 --separator="" \
+  "الإنجليزية أولًا ثم العربية" "us,ara" "العربية أولًا ثم الإنجليزية" "ara,us" \
+  "الإنجليزية ثم العربية ثم الفرنسية" "us,ara,fr" --button="إلغاء:1" --button="تطبيق:0") || exit 0
+[ -z "$CH" ] && exit 0
+mkdir -p "$HOME/.config"; echo "$CH" > "$HOME/.config/razi-keyboard"
+setxkbmap -layout "$CH" -option "" -option grp:alt_shift_toggle -option grp_led:scroll

@@ -1,0 +1,2 @@
+#!/bin/sh
+exec lxterminal --title="التاريخ والوقت" -e sh -c 'sudo dpkg-reconfigure tzdata; echo; date; echo "اضغط Enter للإغلاق."; read x'

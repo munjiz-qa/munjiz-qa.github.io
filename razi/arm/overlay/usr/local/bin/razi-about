@@ -1,0 +1,16 @@
+#!/bin/sh
+. /etc/os-release
+MEM=$(free -m | awk '/Mem:/{print $2" ميجابايت (المستخدم: "$3")"}')
+CPU=$(grep -m1 "model name" /proc/cpuinfo | cut -d: -f2)
+yad --title="معلومات النظام" --window-icon=/usr/share/pixmaps/razi.png --image=/usr/share/razi/logo-96.png \
+ --width=500 --height=380 --fixed --center --button="إغلاق:0" --text="<b>$PRETTY_NAME</b>
+
+النواة: ⁦$(uname -r)⁩
+المعالج: ⁦$CPU⁩
+الذاكرة: $MEM
+المعمارية: ⁦$(uname -m)⁩
+
+التطوير والنشر: <b>منجز لخدمات الأعمال</b>
+البريد: ⁦munijizqa@gmail.com⁩
+الهاتف وواتساب: ⁦+974 5160 0498⁩
+الموقع: ⁦https://munjiz-qa.github.io⁩"

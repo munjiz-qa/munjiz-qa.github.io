@@ -1,0 +1,11 @@
+#!/bin/sh
+# نافذة «تشغيل» (Win + R)
+CMD=$(yad --entry --title="تشغيل" --window-icon=system-run --center --width=420 \
+  --text="اكتب اسم برنامج أو مجلد أو عنوان موقع، وسيفتحه الرازي لك." \
+  --button="إلغاء:1" --button="موافق:0") || exit 0
+[ -z "$CMD" ] && exit 0
+case "$CMD" in
+  http*://*|www.*) exec xdg-open "$CMD" ;;
+  /*|~*) exec pcmanfm "$CMD" ;;
+  *) exec sh -c "$CMD" ;;
+esac

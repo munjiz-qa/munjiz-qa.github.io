@@ -1,0 +1,30 @@
+name: Quran Lab health check
+# يتحقق يومياً وبعد كل تحديث أن «مختبر الأبحاث القرآنية» يعمل مستقلاً دون Claude، وأن البحث والتخريج وصفحات العميل والمدير تعمل.
+on:
+  push:
+    branches: [main]
+    paths: ['quran-lab/**', 'scripts/quran-lab-check.mjs']
+  schedule:
+    - cron: '20 5 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Wait for GitHub Pages to publish
+        if: github.event_name == 'push'
+        run: sleep 150
+      - run: npm i --no-save --no-package-lock playwright@1.47.2 && npx playwright install --with-deps chromium
+      - run: node scripts/quran-lab-check.mjs

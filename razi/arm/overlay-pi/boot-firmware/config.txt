@@ -1,0 +1,18 @@
+# الرازي لأجهزة Raspberry Pi 3 و4 و400 و5
+[all]
+kernel=vmlinuz
+cmdline=cmdline.txt
+initramfs initrd.img followkernel
+arm_64bit=1
+
+[pi4]
+max_framebuffers=2
+arm_boost=1
+
+[all]
+dtparam=audio=on
+dtoverlay=vc4-kms-v3d
+disable_overscan=1
+camera_auto_detect=1
+display_auto_detect=1
+dtoverlay=dwc2,dr_mode=host

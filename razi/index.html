@@ -1,0 +1,460 @@
+<!doctype html><html lang="ar"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>الرازي — سطح المكتب</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;700&family=Noto+Sans+Arabic:wght@400;600;700&family=Noto+Sans+Mono&display=swap">
+<style>
+/* التخطيط: سطح مكتب كامل الشاشة، شريط مهام سفلي، زر البدء يمينًا (اتجاه عربي)، نوافذ قابلة للسحب على الكمبيوتر وملء الشاشة على الجوال */
+:root{
+  --night:#0B1E2D; --dusk:#10283A; --plum:#12324A; --line:#1B4A63;
+  --ember:#2EC4B6; --flame:#0E7C7B; --glow:#F3CF72; --sand:#F7F3E8; --mist:#9FBFC9;
+  --ok:#5BC08A; --display:"Noto Kufi Arabic","Segoe UI",Tahoma,sans-serif;
+  --body:"Noto Sans Arabic","Segoe UI",Tahoma,sans-serif; --mono:"Noto Sans Mono",ui-monospace,Consolas,monospace;
+  --bar:52px; color-scheme:dark;
+}
+html,body{height:100%}
+[hidden]{display:none!important}
+body{background:var(--night);color:var(--sand);font-family:var(--body);font-size:15px;overflow:hidden;direction:rtl;user-select:none;-webkit-user-select:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
+#desk{position:fixed;inset:0 0 calc(var(--bar) + env(safe-area-inset-bottom,0px)) 0;overflow:hidden;
+  background:
+   radial-gradient(circle at 50% 42%,rgba(46,196,182,.22),transparent 34%),
+   url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='104' height='180'%3E%3Cg fill='none' stroke='%233FD1C1' stroke-opacity='.08' stroke-width='1.5'%3E%3Cpath d='M52 0L104 30V90L52 120L0 90V30Z'/%3E%3Cpath d='M52 120V180'/%3E%3C/g%3E%3Cg fill='%23F3CF72' fill-opacity='.12'%3E%3Ccircle cx='52' cy='0' r='3'/%3E%3Ccircle cx='0' cy='90' r='3'/%3E%3Ccircle cx='104' cy='90' r='3'/%3E%3C/g%3E%3C/svg%3E"),
+   radial-gradient(ellipse at 50% 45%,#123A4F,#0D2536 55%,#06131D);}
+body.wp-dawn #desk{background:radial-gradient(circle at 70% 30%,rgba(255,217,138,.35),transparent 40%),linear-gradient(160deg,#0B2F38,#0E7C7B 65%,#2EC4B6)}
+body.wp-sand #desk{background:radial-gradient(circle at 30% 70%,rgba(243,207,114,.25),transparent 45%),linear-gradient(200deg,#13232D,#4F4430 60%,#D9B66A)}
+#brand{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:6px;pointer-events:none;padding-bottom:6vh}
+#brand svg{width:clamp(110px,18vw,190px);filter:drop-shadow(0 0 28px rgba(46,196,182,.35))}
+#brand h1{font-family:var(--display);font-size:clamp(46px,8vw,86px);margin:0;line-height:1.2}
+#brand p{margin:0;color:var(--ember);font-size:clamp(15px,2vw,21px)}
+#icons{position:absolute;top:max(10px,env(safe-area-inset-top,0px));bottom:10px;right:max(10px,env(safe-area-inset-right,0px));display:grid;grid-auto-flow:column;grid-template-rows:repeat(auto-fill,100px);gap:2px 6px;z-index:1}
+.dicon{width:92px;display:grid;justify-items:center;gap:4px;padding:8px 4px;border-radius:10px;font-size:13px;text-align:center;text-shadow:0 1px 3px #000}
+.dicon:hover,.dicon:focus-visible{background:rgba(247,243,232,.1)}
+.dicon .ic{width:44px;height:44px}
+.ic{display:grid;place-items:center;border-radius:12px;background:linear-gradient(145deg,var(--plum),var(--dusk));border:1px solid var(--line)}
+.ic svg{width:60%;height:60%}
+/* شريط المهام */
+#bar{position:fixed;inset:auto 0 0 0;height:calc(var(--bar) + env(safe-area-inset-bottom,0px));padding:0 max(8px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(8px,env(safe-area-inset-left,0px));
+  background:rgba(17,31,40,.94);backdrop-filter:blur(10px);border-top:1px solid var(--line);display:flex;align-items:center;gap:8px;z-index:900}
+#startBtn{display:grid;place-items:center;width:46px;height:42px;border-radius:10px;flex:0 0 auto}
+#startBtn svg{width:28px;height:28px}
+#pins{display:flex;gap:4px;flex:0 0 auto;padding-inline-end:6px;border-inline-end:1px solid var(--line)}
+.pin{width:40px;height:40px;border-radius:9px;display:grid;place-items:center}
+.pin:hover{background:var(--plum)}
+.pin .ic{width:28px;height:28px;border-radius:7px}
+#startBtn:hover,#startBtn[aria-expanded=true]{background:var(--plum)}
+#tasks{flex:1;display:flex;gap:6px;overflow-x:auto;min-width:0;scrollbar-width:none}
+.task{flex:0 0 auto;max-width:170px;display:flex;align-items:center;gap:6px;height:38px;padding:0 10px;border-radius:8px;background:var(--dusk);border-bottom:2px solid transparent;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.task.active{background:var(--plum);border-color:var(--ember);color:var(--glow)}
+.task .ic{width:22px;height:22px;border-radius:6px;flex:0 0 auto}
+#tray{display:flex;align-items:center;gap:4px;font-size:13px}
+#tray button{height:38px;padding:0 9px;border-radius:8px}
+#tray button:hover{background:var(--plum)}
+#kbd{font-family:var(--display);font-weight:700;color:var(--glow);min-width:44px}
+#clock{text-align:center;line-height:1.25;font-variant-numeric:tabular-nums}
+#clock small{display:block;color:var(--mist);font-size:11px}
+/* قائمة البدء */
+#menu{position:fixed;bottom:calc(var(--bar) + env(safe-area-inset-bottom,0px) + 6px);right:max(6px,env(safe-area-inset-right,0px));width:min(340px,calc(100vw - 12px));max-height:calc(100% - var(--bar) - 24px);
+  background:rgba(22,41,53,.98);border:1px solid var(--line);border-radius:12px;box-shadow:0 18px 50px rgba(0,0,0,.55);z-index:950;display:flex;flex-direction:column;overflow:hidden}
+#menu header{flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:12px 14px;background:linear-gradient(90deg,var(--plum),var(--dusk))}
+#menu header svg{width:36px;height:36px;flex:0 0 auto}
+#menu header b{font-family:var(--display);font-size:16px;display:block}
+#menu header span{color:var(--mist);font-size:12px}
+#search{flex:0 0 auto;margin:10px 12px 4px;box-sizing:border-box;width:calc(100% - 24px);height:38px;border-radius:8px;border:1px solid var(--line);background:var(--night);color:var(--sand);padding:0 12px;font:inherit}
+#apps{overflow:auto;padding:4px 6px 8px;flex:1;min-height:0}
+.sep{font-size:11.5px;color:var(--ember);padding:10px 10px 4px;font-weight:700}
+.mrow{display:flex;align-items:center;gap:10px;width:100%;padding:6px 10px;border-radius:8px;font-size:14px;text-align:right;min-height:38px}
+.mrow:hover,.mrow:focus-visible{background:var(--plum)}
+.mrow .ic{width:28px;height:28px;border-radius:7px;flex:0 0 auto}
+.mrow .ar{margin-inline-start:auto;color:var(--mist);font-size:13px}
+.mrow.back{color:var(--glow);font-weight:600}
+/* النوافذ */
+.cp{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;padding:12px}
+.cp button{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;text-align:right;font-size:13.5px;background:var(--night)}
+.cp button:hover{background:var(--plum)}
+.cp .ic{width:34px;height:34px;flex:0 0 auto}
+.ga{display:grid;gap:14px}
+.ga h3{margin:0;color:var(--glow);font-size:15px}
+.ways{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.ways div{background:var(--night);border:1px solid var(--line);border-radius:10px;padding:10px;font-size:13px;line-height:1.7}
+.ways b{display:block;color:var(--ember);font-size:14px}
+.cat{display:grid;gap:6px}
+.cat .it{display:flex;align-items:center;gap:10px;background:var(--night);border-radius:10px;padding:8px 10px;font-size:13.5px}
+.cat .it span{flex:1}
+.cat .it small{color:var(--mist);display:block;font-size:12px}
+.cat .it button{padding:6px 12px;border-radius:8px;background:var(--ember);color:var(--night);font-weight:700;font-size:13px;white-space:nowrap}
+.cat .it button[disabled]{background:var(--ok);cursor:default}
+.dl{display:grid;gap:10px}
+.dl .ed2{background:var(--night);border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:4px}
+.dlbtn{display:inline-block;justify-self:start;margin-top:6px;padding:9px 16px;border-radius:999px;background:var(--glow);color:var(--night);font-weight:700;text-decoration:none;font-size:14px}.dlbtn:hover{filter:brightness(1.08)}.dlrow{display:flex;flex-wrap:wrap;gap:8px}.dl .ed2 b{font-family:var(--display);color:var(--glow)}
+.dl .ed2 code{font-family:var(--mono);font-size:12px;direction:ltr;text-align:left;color:var(--mist);word-break:break-all}
+.dl ol{margin:0;padding-inline-start:20px;line-height:1.9}
+.win{position:absolute;display:flex;flex-direction:column;background:var(--dusk);border:1px solid var(--line);border-radius:12px;box-shadow:0 22px 60px rgba(0,0,0,.55);overflow:hidden;min-width:260px;min-height:160px;resize:both}
+.win.focus{border-color:rgba(46,196,182,.6)}
+.win.max{inset:0!important;width:auto!important;height:auto!important;border-radius:0;resize:none}
+.tb{height:40px;flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:0 10px;background:var(--plum);cursor:move;touch-action:none}
+.win:not(.focus) .tb{background:#16303F;color:var(--mist)}
+.tb .ic{width:24px;height:24px;border-radius:6px}
+.tb b{flex:1;font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb .ctl{display:flex;gap:4px}
+.tb .ctl button{width:30px;height:28px;border-radius:7px;display:grid;place-items:center}
+.tb .ctl button:hover{background:rgba(247,243,232,.12)}
+.tb .ctl .x:hover{background:var(--flame)}
+.tb .ctl svg{width:12px;height:12px;stroke:currentColor;stroke-width:2;fill:none}
+.body{flex:1;min-height:0;overflow:auto;user-select:text;-webkit-user-select:text}
+@media (max-width:700px){
+  .win{inset:0!important;width:auto!important;height:auto!important;border-radius:0;resize:none;border:0}
+  .tb{cursor:default}.tb .mx{display:none}
+  #icons{grid-auto-flow:row;grid-template-rows:none;bottom:auto;grid-template-columns:repeat(4,1fr);left:max(14px,env(safe-area-inset-left,0px));justify-items:center}
+  .dicon{width:76px}
+  #clock small{display:none}
+  #brand{padding-top:30vh}
+}
+/* محتوى التطبيقات */
+.pad{padding:16px}
+.welcome{display:grid;gap:12px;line-height:1.85;max-width:62ch}
+.welcome h2{font-family:var(--display);margin:0;color:var(--glow);font-size:22px;text-wrap:balance}
+.welcome kbd{font-family:var(--mono);background:var(--night);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:12px;direction:ltr;display:inline-block}
+.welcome ul{margin:0;padding-inline-start:20px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:7px 12px;border-radius:999px;background:var(--plum);font-size:13px}
+.chip:hover{background:var(--ember);color:var(--night)}
+.fm{display:grid;grid-template-columns:150px 1fr;height:100%}
+.fm nav{background:var(--night);padding:8px;display:grid;align-content:start;gap:2px;border-inline-start:0;border-left:1px solid var(--line)}
+.fm nav button{text-align:right;padding:8px 10px;border-radius:8px;font-size:13px}
+.fm nav button.on{background:var(--plum);color:var(--glow)}
+.fm .files{padding:10px;display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px;align-content:start}
+.fm .path{grid-column:1/-1;font-size:12px;color:var(--mist);padding:2px 4px 8px;direction:ltr;text-align:right}
+.file{display:grid;justify-items:center;gap:4px;padding:8px 4px;border-radius:10px;font-size:12px;text-align:center;word-break:break-word}
+.file:hover,.file:focus-visible{background:var(--plum)}
+.file svg{width:42px;height:42px}
+@media (max-width:480px){.fm{grid-template-columns:1fr}.fm nav{display:flex;overflow-x:auto;border:0;border-bottom:1px solid var(--line)}.fm nav button{white-space:nowrap}}
+.ed{display:flex;flex-direction:column;height:100%}
+.ed .tools{display:flex;gap:6px;padding:6px 8px;background:var(--night);border-bottom:1px solid var(--line);flex-wrap:wrap;align-items:center;font-size:12px;color:var(--mist)}
+.ed .tools button{padding:5px 10px;border-radius:7px;background:var(--plum);color:var(--sand)}
+.ed .tools button:hover{background:var(--ember);color:var(--night)}
+.ed textarea{flex:1;resize:none;border:0;background:var(--dusk);color:var(--sand);padding:14px;font:16px/1.9 var(--body);outline:none}
+.calc{display:grid;gap:8px;padding:12px;height:100%;box-sizing:border-box;grid-template-rows:auto 1fr}
+.calc .scr{background:var(--night);border-radius:10px;padding:10px 14px;text-align:left;direction:ltr;font:600 30px var(--mono);min-height:44px;overflow-x:auto;white-space:nowrap}
+.calc .scr small{display:block;font-size:13px;color:var(--mist);min-height:18px}
+.calc .keys{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;direction:ltr}
+.calc .keys button{border-radius:10px;background:var(--plum);font:600 18px var(--mono);min-height:44px}
+.calc .keys button:hover{background:var(--line)}
+.calc .keys .op{background:#1B4A63;color:var(--glow)}
+.calc .keys .eq{background:var(--ember);color:var(--night)}
+.term{background:#071722;height:100%;padding:10px 12px;box-sizing:border-box;font:13.5px/1.6 var(--mono);direction:ltr;text-align:left;overflow:auto}
+.term .ln{white-space:pre-wrap;word-break:break-word}
+.term .p{color:var(--ember)}.term .c{color:var(--ok)}.term .m{color:var(--mist)}
+.term .row{display:flex;gap:8px}
+.term input{flex:1;min-width:0;background:none;border:0;color:var(--sand);font:inherit;outline:none}
+.set{display:grid;gap:18px;max-width:560px}
+.set h3{margin:0 0 8px;font-size:15px;color:var(--glow)}
+.swatches{display:flex;gap:10px;flex-wrap:wrap}
+.sw{width:96px;height:60px;border-radius:10px;border:2px solid transparent}
+.sw.on{border-color:var(--ember)}
+.opt{display:flex;gap:8px;flex-wrap:wrap}
+.opt button{padding:7px 14px;border-radius:8px;background:var(--plum)}
+.opt button.on{background:var(--ember);color:var(--night)}
+.spec{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:14px}
+.spec dt{color:var(--mist)}.spec dd{margin:0;font-variant-numeric:tabular-nums}
+.meter{height:8px;border-radius:5px;background:var(--night);overflow:hidden}
+.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--flame),var(--ember))}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--bar) + env(safe-area-inset-bottom,0px) + 14px);background:var(--sand);color:var(--night);padding:9px 16px;border-radius:10px;font-weight:600;z-index:999;font-size:14px}
+#boot{position:fixed;inset:0;background:var(--night);display:grid;place-content:center;justify-items:center;gap:14px;z-index:2000;transition:opacity .5s}
+#boot svg{width:96px}
+#boot .meter{width:180px}
+#boot .meter i{width:0;animation:load 1.1s ease-out forwards}
+@keyframes load{to{width:100%}}
+@media (prefers-reduced-motion:reduce){#boot{display:none}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="gF" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3FD1C1"/><stop offset="1" stop-color="#0E7C7B"/></linearGradient>
+    <linearGradient id="gB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F3CF72"/><stop offset="1" stop-color="#D99A2B"/></linearGradient>
+    <clipPath id="gC"><circle cx="314" cy="338" r="104"/></clipPath>
+    <symbol id="logo" viewBox="60 40 392 400">
+      <g clip-path="url(#gC)"><path d="M200 340C250 318 290 360 340 338C380 322 400 336 430 328L430 460L200 460Z" fill="url(#gB)"/><circle cx="286" cy="392" r="9" fill="#FFF4D6" opacity=".85"/><circle cx="338" cy="408" r="6" fill="#FFF4D6" opacity=".75"/></g>
+      <circle cx="314" cy="338" r="104" fill="none" stroke="url(#gF)" stroke-width="30"/>
+      <path d="M314 234L314 168C314 112 268 86 226 102C182 120 164 178 150 236C140 278 124 306 98 330" fill="none" stroke="url(#gF)" stroke-width="30" stroke-linecap="round"/>
+      <path d="M90 372C103 392 112 405 112 418C112 431 102 440 90 440C78 440 68 431 68 418C68 405 77 392 90 372Z" fill="#F3CF72"/>
+      <g transform="translate(420 112)" fill="#F3CF72"><rect x="-18" y="-18" width="36" height="36"/><rect x="-18" y="-18" width="36" height="36" transform="rotate(45)"/></g>
+    </symbol>
+  </defs>
+</svg>
+
+<div id="boot"><svg><use href="#logo"/></svg><div class="meter"><i></i></div></div>
+
+<main id="desk">
+  <div id="brand"><svg><use href="#logo"/></svg><h1>الرازي</h1><p>علمٌ يُحيي كل جهاز</p></div>
+  <div id="icons"></div>
+</main>
+
+<div id="menu" hidden>
+  <header><svg><use href="#logo"/></svg><div><b>razi</b><span>الرازي 1.2 «الإنبيق»</span></div></header>
+  <input id="search" type="search" placeholder="اكتب للبحث في كل البرامج…" autocomplete="off" aria-label="بحث في البرامج">
+  <div id="apps" role="menu"></div>
+</div>
+
+<nav id="bar">
+  <button id="startBtn" aria-expanded="false" aria-controls="menu" title="ابدأ (زر Windows)"><svg><use href="#logo"/></svg></button>
+  <div id="pins"></div>
+  <div id="tasks"></div>
+  <div id="tray">
+    <button id="kbd" title="تبديل لغة الإدخال (Alt+Shift)">عر</button>
+    <button id="clock" title="الوقت والتاريخ"></button>
+    <button id="showDesk" title="إظهار سطح المكتب (Windows + D)" aria-label="إظهار سطح المكتب" style="width:10px;padding:0;border-inline-start:1px solid var(--line);border-radius:0"></button>
+  </div>
+</nav>
+<div id="toast" hidden></div>
+
+<script>
+const $=s=>document.querySelector(s), el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e};
+const store={get(k,d){try{const v=localStorage.getItem('razi.'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('razi.'+k,JSON.stringify(v))}catch(e){}}};
+const ar=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+const I={ // أيقونات أصلية مبسطة
+ welcome:'<svg viewBox="60 40 392 400"><use href="#logo"/></svg>',
+ files:'<svg viewBox="0 0 24 24" fill="none" stroke="#2EC4B6" stroke-width="1.8"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+ editor:'<svg viewBox="0 0 24 24" fill="none" stroke="#F3CF72" stroke-width="1.8"><path d="M6 3h9l4 4v14H6z"/><path d="M9 11h7M9 15h7M9 7h3"/></svg>',
+ calc:'<svg viewBox="0 0 24 24" fill="none" stroke="#F7F3E8" stroke-width="1.8"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2M14 12h2M8 16h2M14 16h2"/></svg>',
+ term:'<svg viewBox="0 0 24 24" fill="none" stroke="#5BC08A" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3M12 15h5"/></svg>',
+ settings:'<svg viewBox="0 0 24 24" fill="none" stroke="#9FBFC9" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></svg>',
+ sys:'<svg viewBox="0 0 24 24" fill="none" stroke="#0E7C7B" stroke-width="1.8"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>',
+ folder:'<svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="#2EC4B6"/></svg>',
+ doc:'<svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z" fill="#F7F3E8"/><path d="M9 11h7M9 15h7" stroke="#12324A" stroke-width="1.5"/></svg>',
+ cp:'<svg viewBox="0 0 24 24" fill="none" stroke="#2EC4B6" stroke-width="1.8"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4M7 9h4M7 12h6M15 8v5"/></svg>',
+ pc:'<svg viewBox="0 0 24 24" fill="none" stroke="#F3CF72" stroke-width="1.8"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M9 20h6M12 16v4"/></svg>',
+ trash:'<svg viewBox="0 0 24 24" fill="none" stroke="#9FBFC9" stroke-width="1.8"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>',
+ web:'<svg viewBox="0 0 24 24" fill="none" stroke="#5BC08A" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>',
+ getapps:'<svg viewBox="0 0 24 24" fill="none" stroke="#0E7C7B" stroke-width="1.8"><path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2M12 11v6M9 14l3 3 3-3"/></svg>',
+ download:'<svg viewBox="0 0 24 24" fill="none" stroke="#F3CF72" stroke-width="1.8"><path d="M12 3v12M7 10l5 5 5-5M4 19h16"/></svg>',
+ power:'<svg viewBox="0 0 24 24" fill="none" stroke="#0E7C7B" stroke-width="2"><path d="M12 3v8M6.5 6.5a8 8 0 1 0 11 0"/></svg>',
+ media:'<svg viewBox="0 0 24 24" fill="none" stroke="#2EC4B6" stroke-width="1.8"><path d="M12 3l8 18H4z"/></svg>',
+ img:'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" fill="#2E8F9A"/><path d="M5 17l5-6 4 4 2-2 3 4z" fill="#F3CF72"/></svg>'
+};
+const FS={
+ 'المستندات':[{n:'رسالة ترحيب.txt',t:'doc',c:'مرحبًا بك في الرازي!\nهذا ملف نصي يمكنك فتحه وتعديله في محرر النصوص.\nكل ما تكتبه يُحفظ تلقائيًا في متصفحك.'},{n:'قائمة المهام.txt',t:'doc',c:'١. تجربة مدير الملفات\n٢. كتابة ملاحظة في المحرر\n٣. تشغيل أمر neofetch في الطرفية\n٤. تغيير الخلفية من الإعدادات'},{n:'تقارير',t:'folder'}],
+ 'الصور':[{n:'خلفية الرازي.png',t:'img'},{n:'الإنبيق.png',t:'img'},{n:'رحلة.jpg',t:'img'}],
+ 'التنزيلات':[{n:'razi-1.2-full-amd64.iso',t:'doc',c:'ملف صورة نظام الرازي القابل للإقلاع.\nاكتبه على ذاكرة USB باستخدام أداة مثل Ventoy أو balenaEtcher أو الأمر dd.'}],
+ 'الموسيقى':[],
+ 'سلة المحذوفات':[],
+};
+const APPS=[
+ {id:'welcome',name:'مرحبًا بك',w:520,h:470,open:welcomeApp},
+ {id:'files',name:'مدير الملفات',w:640,h:420,open:filesApp},
+ {id:'editor',name:'محرر النصوص',w:560,h:420,open:editorApp},
+ {id:'calc',name:'الآلة الحاسبة',w:300,h:430,open:calcApp},
+ {id:'term',name:'الطرفية',w:620,h:380,open:termApp},
+ {id:'settings',name:'الإعدادات',w:560,h:460,open:settingsApp},
+ {id:'sys',name:'معلومات النظام',w:470,h:520,open:sysApp},
+ {id:'cp',name:'لوحة التحكم',w:660,h:470,open:cpApp},
+ {id:'getapps',name:'تثبيت برنامج جديد',w:620,h:520,open:getApp},
+ {id:'download',name:'تنزيل الرازي',w:580,h:600,open:dlApp},
+ {id:'web',name:'متصفح الويب',w:560,h:300,open:b=>soon(b,'متصفح Falkon بمحرك Chromium، مع دعم كامل للعربية.')},
+];
+const app=id=>APPS.find(a=>a.id===id);
+let Z=10, wins={};
+
+function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(t._t);t._t=setTimeout(()=>t.hidden=true,2200)}
+function focusWin(id){Object.values(wins).forEach(w=>w.el.classList.remove('focus'));const w=wins[id];if(!w)return;w.el.hidden=false;w.el.style.zIndex=++Z;w.el.classList.add('focus');renderTasks(id)}
+function openApp(id,arg){
+  closeMenu();
+  if(wins[id]){focusWin(id);if(arg&&wins[id].onArg)wins[id].onArg(arg);return}
+  const a=app(id), d=$('#desk'), n=Object.keys(wins).length;
+  const w=el('section','win');w.setAttribute('role','dialog');w.setAttribute('aria-label',a.name);
+  const W=Math.min(a.w,d.clientWidth-20),H=Math.min(a.h,d.clientHeight-20);
+  Object.assign(w.style,{width:W+'px',height:H+'px',left:Math.max(10,(d.clientWidth-W)/2-60+n*28)+'px',top:Math.max(10,(d.clientHeight-H)/2-40+n*24)+'px'});
+  w.innerHTML=`<div class="tb"><span class="ic">${I[id]}</span><b>${a.name}</b><span class="ctl">
+   <button class="mn" title="تصغير"><svg viewBox="0 0 12 12"><path d="M2 9h8"/></svg></button>
+   <button class="mx" title="تكبير"><svg viewBox="0 0 12 12"><rect x="2" y="2" width="8" height="8"/></svg></button>
+   <button class="x" title="إغلاق"><svg viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8"/></svg></button></span></div><div class="body"></div>`;
+  d.appendChild(w);
+  const rec={el:w,app:a};wins[id]=rec;
+  w.addEventListener('pointerdown',()=>focusWin(id));
+  w.querySelector('.x').onclick=e=>{e.stopPropagation();w.remove();delete wins[id];renderTasks()};
+  w.querySelector('.mn').onclick=e=>{e.stopPropagation();w.hidden=true;w.classList.remove('focus');renderTasks()};
+  w.querySelector('.mx').onclick=()=>w.classList.toggle('max');
+  w.querySelector('.tb').addEventListener('dblclick',()=>w.classList.toggle('max'));
+  drag(w);
+  a.open(w.querySelector('.body'),rec,arg);
+  focusWin(id);
+}
+function drag(w){
+  const tb=w.querySelector('.tb');let sx,sy,ox,oy,on=false;
+  tb.addEventListener('pointerdown',e=>{if(e.target.closest('button')||innerWidth<=700||w.classList.contains('max'))return;on=true;sx=e.clientX;sy=e.clientY;ox=w.offsetLeft;oy=w.offsetTop;tb.setPointerCapture(e.pointerId)});
+  tb.addEventListener('pointermove',e=>{if(!on)return;const d=$('#desk');w.style.left=Math.min(d.clientWidth-80,Math.max(-w.offsetWidth+80,ox+e.clientX-sx))+'px';w.style.top=Math.min(d.clientHeight-40,Math.max(0,oy+e.clientY-sy))+'px'});
+  tb.addEventListener('pointerup',()=>on=false);
+}
+function renderTasks(active){
+  const t=$('#tasks');t.innerHTML='';
+  for(const [id,w] of Object.entries(wins)){
+    const b=el('button','task'+(w.el.classList.contains('focus')&&!w.el.hidden?' active':''),`<span class="ic">${I[id]}</span>${w.app.name}`);
+    b.onclick=()=>{if(w.el.classList.contains('focus')&&!w.el.hidden){w.el.hidden=true;w.el.classList.remove('focus');renderTasks()}else focusWin(id)};
+    t.appendChild(b);
+  }
+}
+/* قائمة ابدأ: نفس ترتيب القائمة في النظام الحقيقي */
+const R=(n,ic,go)=>({n,ic,go}); // go: معرّف برنامج، أو قائمة فرعية '>x'، أو أمر '!x'، أو غير ذلك = متاح في النظام الحقيقي
+const REAL='متاح في النظام الحقيقي';
+const MENU={
+ main:[['اكتب للبحث في كل البرامج'],R('مستكشف الملفات','files','files'),R('متصفح الويب','web','web'),R('معالج النصوص (Writer)','editor','editor'),R('الحاسبة','calc','calc'),R('موجه الأوامر (الطرفية)','term','term'),R('مرحبًا بك في الرازي','welcome','welcome'),
+  ['كل التطبيقات'],R('الملحقات','folder','>acc'),R('المكتب','folder','>office'),R('الإنترنت','folder','>net'),R('الوسائط المتعددة','folder','>media'),R('التعليم','folder','>edu'),R('البرمجة','folder','>dev'),R('أدوات النظام','folder','>sys'),R('برامج ويندوز','folder','>win'),
+  [''],R('هذا الكمبيوتر','pc','files'),R('لوحة التحكم','cp','cp'),R('تثبيت برنامج جديد','getapps','getapps'),R('تنزيل الرازي','download','download'),R('الطاقة','power','>power')],
+ acc:[R('المفكرة','editor','editor'),R('الحاسبة','calc','calc'),R('الرسام','img',REAL),R('أداة القص (لقطة الشاشة)','img',REAL),R('عارض الصور','img',REAL),R('ضغط الملفات وفكّها','folder',REAL)],
+ office:[R('معالج النصوص (Writer)','editor','editor'),R('الجداول الحسابية (Calc)','doc',REAL),R('العروض التقديمية (Impress)','doc',REAL),R('الرسم والمخططات (Draw)','doc',REAL),R('عارض PDF','doc',REAL),R('الماسح الضوئي','doc',REAL)],
+ net:[R('متصفح الويب','web','web'),R('البريد الإلكتروني','web',REAL),R('تنزيل الملفات (تورنت)','download',REAL)],
+ media:[R('مشغل الوسائط (VLC)','media',REAL),R('مشغل الموسيقى','media',REAL),R('تحرير الصور (GIMP)','img',REAL)],
+ edu:[R('جي كومبريس للأطفال','welcome',REAL)],
+ dev:[R('بيئة البرمجة Geany','editor',REAL),R('بايثون التفاعلية','term','term'),R('موجه الأوامر (الطرفية)','term','term')],
+ sys:[R('إدارة المهام','sys','sys'),R('معلومات النظام','sys','sys'),R('لوحة التحكم','cp','cp'),R('متجر البرامج','getapps','getapps')],
+ win:[R('تثبيت برنامج ويندوز (‎.exe)','getapps','getapps'),R('إعدادات برامج ويندوز','settings',REAL),R('مستكشف ملفات ويندوز','files',REAL)],
+ power:[R('قفل الشاشة','power','!lock'),R('تسجيل الخروج','power','!off'),R('إعادة التشغيل','power','!off'),R('إيقاف التشغيل','power','!off')]
+};
+const TITLES={acc:'الملحقات',office:'المكتب',net:'الإنترنت',media:'الوسائط المتعددة',edu:'التعليم',dev:'البرمجة',sys:'أدوات النظام',win:'برامج ويندوز',power:'الطاقة'};
+function go(x){if(x.go.startsWith('>'))return renderApps('',x.go.slice(1));closeMenu();if(x.go==='!lock')return toast('تم قفل الشاشة (محاكاة)');if(x.go==='!off')return restart();if(app(x.go))return openApp(x.go);toast('«'+x.n+'» '+REAL)}
+function rowBtn(x){const b=el('button','mrow',`<span class="ic">${I[x.ic]}</span>${x.n}${x.go.startsWith('>')?'<span class="ar">‹</span>':''}`);b.setAttribute('role','menuitem');b.onclick=()=>go(x);return b}
+function renderApps(q='',sub='main'){const box=$('#apps');box.innerHTML='';q=q.trim();
+  if(q){const seen=new Set();Object.entries(MENU).forEach(([k,l])=>k!=='power'&&l.forEach(x=>{if(x.n&&!x.go.startsWith('>')&&x.n.includes(q)&&!seen.has(x.n)){seen.add(x.n);box.appendChild(rowBtn(x))}}));if(!box.children.length)box.innerHTML='<p style="color:var(--mist);margin:10px">لا يوجد برنامج بهذا الاسم.</p>';return}
+  if(sub!=='main'){const b=el('button','mrow back','› رجوع');b.onclick=()=>renderApps();box.appendChild(b);box.appendChild(el('div','sep',TITLES[sub]))}
+  MENU[sub].forEach(x=>box.appendChild(Array.isArray(x)?el('div','sep',x[0]||'&nbsp;'):rowBtn(x)));box.scrollTop=0}
+function closeMenu(){$('#menu').hidden=true;$('#startBtn').setAttribute('aria-expanded','false')}
+function toggleMenu(){const m=$('#menu');m.hidden=!m.hidden;$('#startBtn').setAttribute('aria-expanded',String(!m.hidden));if(!m.hidden){$('#search').value='';renderApps();if(innerWidth>700)$('#search').focus()}}
+$('#startBtn').onclick=e=>{e.stopPropagation();toggleMenu()};
+$('#search').oninput=e=>renderApps(e.target.value);
+$('#search').onkeydown=e=>{if(e.key==='Enter'){const f=$('#apps .mrow:not(.back)');f&&f.click()}};
+document.addEventListener('pointerdown',e=>{if(!e.target.closest('#menu,#startBtn'))closeMenu()});
+function restart(){Object.keys(wins).forEach(id=>{wins[id].el.remove();delete wins[id]});renderTasks();const b=$('#boot');b.style.display='grid';b.style.opacity=1;const i=b.querySelector('.meter i');i.style.animation='none';i.offsetWidth;i.style.animation='';setTimeout(()=>{b.style.opacity=0;setTimeout(()=>b.style.display='none',500)},1300);toast('أُعيد تشغيل الجلسة التجريبية')}
+const showDesk=()=>{Object.values(wins).forEach(w=>{w.el.hidden=true;w.el.classList.remove('focus')});renderTasks()};
+$('#showDesk').onclick=showDesk;
+/* المثبّتة في شريط المهام */
+['files','web','editor','term'].forEach(id=>{const b=el('button','pin',`<span class="ic">${I[id]}</span>`);b.title=app(id).name;b.setAttribute('aria-label',app(id).name);b.onclick=()=>openApp(id);$('#pins').appendChild(b)});
+/* أيقونات سطح المكتب: عمود يمين كما في النظام */
+[['pc','هذا الكمبيوتر','files'],['folder','المستندات','files'],['trash','سلة المحذوفات','trash'],['cp','لوحة التحكم','cp'],['web','متصفح الويب','web'],['editor','معالج النصوص','editor'],['getapps','تثبيت برنامج جديد','getapps'],['download','تنزيل الرازي','download']].forEach(([ic,n,id])=>{const b=el('button','dicon',`<span class="ic">${I[ic]}</span>${n}`);const o=()=>id==='trash'?openApp('files','سلة المحذوفات'):openApp(id);b.ondblclick=o;b.onclick=()=>{if(matchMedia('(pointer:coarse)').matches||innerWidth<=700)o()};b.onkeydown=e=>{if(e.key==='Enter')o()};$('#icons').appendChild(b)});
+/* لوحة المفاتيح والساعة */
+let lay=store.get('kbd','ar');const setK=()=>{$('#kbd').textContent=lay==='ar'?'عر':'EN'};setK();
+const swapK=()=>{lay=lay==='ar'?'en':'ar';store.set('kbd',lay);setK();toast(lay==='ar'?'لغة الإدخال: العربية':'لغة الإدخال: الإنجليزية')};
+$('#kbd').onclick=swapK;let metaOnly=false;document.addEventListener('keyup',e=>{if(e.key==='Meta'&&metaOnly)toggleMenu();metaOnly=false});
+document.addEventListener('keydown',e=>{metaOnly=e.key==='Meta';if(e.key==='Escape')closeMenu();if(e.metaKey&&(e.key==='e'||e.key==='E')){e.preventDefault();metaOnly=false;openApp('files')}if(e.metaKey&&(e.key==='d'||e.key==='D')){e.preventDefault();metaOnly=false;showDesk()}if(e.ctrlKey&&e.key==='Escape'){e.preventDefault();toggleMenu()}if(e.altKey&&e.shiftKey&&(e.key==='Shift'||e.key==='Alt'))swapK();if(e.ctrlKey&&e.altKey&&(e.key==='t'||e.key==='T')){e.preventDefault();openApp('term')}});
+const days=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+function tick(){const d=new Date(),p=n=>String(n).padStart(2,'0');$('#clock').innerHTML=`${ar(p(d.getHours())+':'+p(d.getMinutes()))}<small>${days[d.getDay()]} ${ar(d.getFullYear()+'/'+p(d.getMonth()+1)+'/'+p(d.getDate()))}</small>`}
+tick();setInterval(tick,10000);
+$('#clock').onclick=()=>{const d=new Date();toast(d.toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'}))};
+
+/* ===== التطبيقات ===== */
+function welcomeApp(b){
+  b.innerHTML=`<div class="pad welcome"><h2>أهلًا بك في نظام الرازي</h2>
+  <p>هذه نسخة تجريبية تعمل داخل المتصفح تحاكي سطح مكتب الرازي الحقيقي: نظام تشغيل عربي خفيف ومفتوح المصدر، يعمل على الأجهزة القديمة بذاكرة تبدأ من ٥١٢ ميجابايت، وعلى الأجهزة الحديثة بسلاسة.</p>
+  <ul><li>زر <b>ابدأ</b> (شعار الرازي يمين شريط المهام) أو زر <kbd>Windows</kbd> يفتح قائمة ابدأ.</li><li><kbd>Windows</kbd> + <kbd>E</kbd> للملفات، و<kbd>Windows</kbd> + <kbd>D</kbd> لإظهار سطح المكتب.</li><li><kbd>Alt</kbd> + <kbd>Shift</kbd> للتبديل بين العربية والإنجليزية.</li><li><kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>T</kbd> لفتح الطرفية.</li><li>اسحب النوافذ من شريط العنوان، وانقر عليه مرتين للتكبير.</li></ul>
+  <div class="chips"><button class="chip" data-a="files">افتح الملفات</button><button class="chip" data-a="editor">اكتب ملاحظة</button><button class="chip" data-a="term">جرّب الطرفية</button><button class="chip" data-a="cp">لوحة التحكم</button><button class="chip" data-a="getapps">ثبّت برنامجًا</button><button class="chip" data-a="download">نزّل الرازي</button></div></div>`;
+  b.querySelectorAll('[data-a]').forEach(c=>c.onclick=()=>openApp(c.dataset.a));
+}
+function filesApp(b,rec,arg){
+  let cur=typeof arg==='string'&&FS[arg]?arg:'المستندات';
+  const draw=()=>{b.innerHTML=`<div class="fm"><nav>${Object.keys(FS).map(k=>`<button class="${k===cur?'on':''}" data-k="${k}">${k}</button>`).join('')}</nav><div class="files"><div class="path">/home/razi/${cur}</div></div></div>`;
+    b.querySelectorAll('nav button').forEach(x=>x.onclick=()=>{cur=x.dataset.k;draw()});
+    const f=b.querySelector('.files');
+    if(!FS[cur].length)f.insertAdjacentHTML('beforeend','<p style="grid-column:1/-1;color:var(--mist)">هذا المجلد فارغ.</p>');
+    FS[cur].forEach(x=>{const e=el('button','file',I[x.t]+'<span>'+x.n+'</span>');e.ondblclick=e.onclick=ev=>{if(ev.type==='click'&&!matchMedia('(pointer:coarse)').matches&&innerWidth>700)return;openFile(x)};f.appendChild(e)});};
+  draw();rec.onArg=k=>{if(FS[k]){cur=k;draw()}};
+}
+function openFile(x){if(x.t==='doc')openApp('editor',x);else if(x.t==='folder')toast('المجلد «'+x.n+'» فارغ حاليًا');else toast('عارض الصور متاح في النسخة الكاملة من الرازي')}
+function editorApp(b,rec,arg){
+  b.innerHTML=`<div class="ed"><div class="tools"><button data-c="new">جديد</button><button data-c="save">حفظ</button><span class="st"></span></div><textarea id="edText" spellcheck="false" aria-label="نص المستند"></textarea></div>`;
+  const ta=b.querySelector('textarea'),st=b.querySelector('.st');
+  const load=f=>{rec.file=f.n;ta.value=store.get('file.'+f.n,f.c||'');st.textContent='الملف: '+f.n};
+  load(arg||{n:'ملاحظة جديدة.txt',c:'اكتب هنا بحرية… يُحفظ النص تلقائيًا.'});
+  ta.oninput=()=>{store.set('file.'+rec.file,ta.value);st.textContent='الملف: '+rec.file+' · حُفظ تلقائيًا'};
+  b.querySelector('[data-c=new]').onclick=()=>{load({n:'ملاحظة جديدة.txt',c:''});ta.focus()};
+  b.querySelector('[data-c=save]').onclick=()=>{store.set('file.'+rec.file,ta.value);toast('تم حفظ «'+rec.file+'»')};
+  rec.onArg=load;
+}
+function calcApp(b){
+  b.innerHTML=`<div class="calc"><div class="scr"><small></small><span>0</span></div><div class="keys">${['C','(',')','÷','7','8','9','×','4','5','6','−','1','2','3','+','0','.','⌫','='].map(k=>`<button class="${'÷×−+'.includes(k)?'op':k==='='?'eq':''}">${k}</button>`).join('')}</div></div>`;
+  const out=b.querySelector('.scr span'),hist=b.querySelector('.scr small');let ex='';
+  const show=()=>out.textContent=ex||'0';
+  const press=k=>{if(k==='C')ex='';else if(k==='⌫')ex=ex.slice(0,-1);else if(k==='='){try{const v=Function('"use strict";return ('+ex.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-')+')')();if(!isFinite(v))throw 0;hist.textContent=ex+' =';ex=String(+v.toFixed(10))}catch(e){hist.textContent='تعبير غير صالح';ex=''}}else ex+=k;show()};
+  b.querySelectorAll('.keys button').forEach(x=>x.onclick=()=>press(x.textContent));
+}
+function termApp(b){
+  b.innerHTML='<div class="term"></div>';const t=b.firstChild;const hist=[];let hi=0;
+  const out=(h,c='')=>t.insertBefore(el('div','ln '+c,h),t.lastChild);
+  const row=el('div','row','<span class="p">razi@razi:~$</span><input aria-label="سطر الأوامر" autocomplete="off" autocapitalize="off" spellcheck="false">');t.appendChild(row);
+  const inp=row.querySelector('input');
+  out('<span class="m">الرازي 1.2 «الإنبيق» — اكتب help لعرض الأوامر المتاحة</span>');
+  const C={
+   help:()=>'الأوامر: help, ls, cat <ملف>, neofetch, uname, date, whoami, free, echo, apt, clear',
+   ls:()=>Object.keys(FS).join('   '),
+   whoami:()=>'razi', uname:a=>a.includes('-r')?'6.8.12-razi':a.includes('-a')?'Linux razi 6.8.12-razi #1 SMP x86_64 GNU/Linux':'Linux',
+   date:()=>new Date().toLocaleString('ar-EG'),
+   free:()=>'              الإجمالي   المستخدم   المتاح\nالذاكرة:        ٥١٢M      ١٧٨M      ٣٣٤M',
+   echo:a=>a.join(' '),
+   cat:a=>{for(const k in FS)for(const f of FS[k])if(f.n===a.join(' '))return store.get('file.'+f.n,f.c||'');return 'cat: '+(a.join(' ')||'؟')+': لا يوجد ملف بهذا الاسم'},
+   apt:a=>a[0]==='install'&&a[1]?`جارٍ تثبيت ${a[1]}…\n<span class="c">✔ اكتمل تثبيت ${a[1]} (محاكاة)</span>`:'الاستخدام: apt install <اسم الحزمة>',
+   neofetch:()=>`<span class="p">      ╭──╮       </span><b>razi</b>@razi\n<span class="p">     ╱   │       </span>النظام: الرازي 1.2 «الإنبيق»\n<span class="p">    ╱  ╭─┴─╮     </span>النواة: 6.8.12-razi (نواة الرازي)\n<span class="p">   ●   │▒▒▒│     </span>سطح المكتب: واجهة الرازي على طراز ويندوز\n<span class="p">       ╰───╯     </span>الذاكرة: ١٧٨ / ٥١٢ م.ب\n                 اللغة: العربية (ar_EG.UTF-8)\n                 التطوير والنشر: منجز لخدمات الأعمال`,
+   clear:()=>{t.querySelectorAll('.ln').forEach(x=>x.remove());return null}
+  };
+  inp.onkeydown=e=>{
+    if(e.key==='ArrowUp'){if(hi>0)inp.value=hist[--hi];e.preventDefault();return}
+    if(e.key==='ArrowDown'){inp.value=hist[++hi]||'';hi=Math.min(hi,hist.length);return}
+    if(e.key!=='Enter')return;const v=inp.value.trim();inp.value='';out(`<span class="p">razi@razi:~$</span> ${v.replace(/</g,'&lt;')}`);if(!v)return;hist.push(v);hi=hist.length;
+    const [cmd,...args]=v.split(/\s+/);const f=C[cmd];const r=f?f(args):`${cmd}: الأمر غير موجود. اكتب help`;if(r!=null)out(r);t.scrollTop=t.scrollHeight};
+  t.onclick=()=>inp.focus();setTimeout(()=>inp.focus(),50);
+}
+function settingsApp(b){
+  const wp=store.get('wp','night'),fs=store.get('fs','m');
+  b.innerHTML=`<div class="pad set">
+   <div><h3>خلفية سطح المكتب</h3><div class="swatches">
+    <button class="sw" data-w="night" style="background:radial-gradient(circle at 50% 40%,#1E5A63,#0D2536 60%)" title="ليل الفيروز"></button>
+    <button class="sw" data-w="dawn" style="background:linear-gradient(160deg,#0B2F38,#0E7C7B 65%,#2EC4B6)" title="واحة"></button>
+    <button class="sw" data-w="sand" style="background:linear-gradient(200deg,#13232D,#4F4430 60%,#D9B66A)" title="مخطوطة"></button></div></div>
+   <div><h3>حجم الخط</h3><div class="opt"><button data-f="s">صغير</button><button data-f="m">متوسط</button><button data-f="l">كبير</button></div></div>
+   <div><h3>لغة الإدخال الافتراضية</h3><div class="opt"><button data-k="ar">العربية</button><button data-k="en">الإنجليزية</button></div></div>
+   <p style="color:var(--mist);margin:0;font-size:13px">تُحفظ اختياراتك في هذا المتصفح فقط.</p></div>`;
+  const mark=()=>{b.querySelectorAll('[data-w]').forEach(x=>x.classList.toggle('on',x.dataset.w===store.get('wp','night')));b.querySelectorAll('[data-f]').forEach(x=>x.classList.toggle('on',x.dataset.f===store.get('fs','m')));b.querySelectorAll('[data-k]').forEach(x=>x.classList.toggle('on',x.dataset.k===lay))};
+  b.querySelectorAll('[data-w]').forEach(x=>x.onclick=()=>{store.set('wp',x.dataset.w);applyPrefs();mark();toast('تم تغيير الخلفية')});
+  b.querySelectorAll('[data-f]').forEach(x=>x.onclick=()=>{store.set('fs',x.dataset.f);applyPrefs();mark()});
+  b.querySelectorAll('[data-k]').forEach(x=>x.onclick=()=>{if(x.dataset.k!==lay)swapK();mark()});
+  mark();
+}
+function sysApp(b){
+  const cores=navigator.hardwareConcurrency||'—',mem=navigator.deviceMemory?navigator.deviceMemory+' جيجابايت':'غير معروف';
+  b.innerHTML=`<div class="pad" style="display:grid;gap:14px"><div style="display:flex;gap:14px;align-items:center"><svg style="width:64px" viewBox="60 40 392 400"><use href="#logo"/></svg><div><b style="font-family:var(--display);font-size:22px">الرازي 1.2</b><div style="color:var(--mist);font-size:13px">الإصدار «الإنبيق» · مفتوح المصدر (GPL)</div></div></div>
+  <dl class="spec"><dt>النواة</dt><dd>نواة الرازي ‎6.8.12-razi</dd><dt>سطح المكتب</dt><dd>واجهة على طراز ويندوز (IceWM و tint2)</dd><dt>الحد الأدنى للذاكرة</dt><dd>٥١٢ ميجابايت</dd><dt>المعالج</dt><dd>أي معالج 64 بت (x86-64)</dd><dt>أنوية جهازك</dt><dd>${ar(cores)}</dd><dt>ذاكرة جهازك</dt><dd>${mem}</dd><dt>التطوير والنشر</dt><dd>منجز لخدمات الأعمال</dd><dt>البريد</dt><dd><bdi>munijizqa@gmail.com</bdi></dd><dt>الهاتف وواتساب</dt><dd><bdi dir="ltr">+974 5160 0498</bdi></dd></dl>
+  <div><div style="font-size:13px;color:var(--mist);margin-bottom:6px">استهلاك الذاكرة بعد الإقلاع (مقيس في QEMU)</div><div class="meter"><i style="width:35%"></i></div></div></div>`;
+}
+function soon(b,t){b.innerHTML=`<div class="pad welcome"><h2>${t.split('،')[0]}</h2><p>${t}</p><p style="color:var(--mist)">هذا البرنامج ${REAL}؛ النسخة التجريبية في المتصفح تعرض الواجهة فقط.</p><div class="chips"><button class="chip">نزّل الرازي</button></div></div>`;b.querySelector('.chip').onclick=()=>openApp('download')}
+function cpApp(b){
+  const L=[['الشبكة والإنترنت','web'],['الصوت','media'],['البلوتوث','web'],['الطابعات والماسحات','doc'],['الشاشة والدقة','pc'],['المظهر والسمات','settings','settings'],['سطح المكتب والخلفية','img','settings'],['لوحة المفاتيح واللغة','settings','settings'],['التاريخ والوقت','calc'],['البرامج والميزات','getapps','getapps'],['التحديثات','download'],['إدارة الأقراص','folder','files'],['إدارة المهام','sys','sys'],['معلومات النظام','sys','sys'],['معلومات العتاد','pc','sys'],['برامج ويندوز','getapps','getapps'],['الطاقة','power']];
+  b.innerHTML='<div class="cp"></div>';const g=b.firstChild;
+  L.forEach(([n,ic,id])=>{const x=el('button','',`<span class="ic">${I[ic]}</span>${n}`);x.onclick=()=>id?openApp(id):toast('«'+n+'» '+REAL);g.appendChild(x)});
+}
+function getApp(b){
+  const C=[['ONLYOFFICE','بديل أوفيس متوافق مع ملفات Word وExcel وPowerPoint','Flatpak'],['WPS Office','حزمة مكتبية بواجهة مألوفة','‎.deb'],['Google Chrome','متصفح جوجل','‎.deb'],['Zoom','الاجتماعات المرئية','‎.deb'],['Telegram','التراسل','Flatpak'],['Notepad++','محرر نصوص من ويندوز','‎.exe عبر Wine'],['Krita','الرسم الرقمي','AppImage']];
+  const done=store.get('installed',[]);
+  b.innerHTML=`<div class="pad ga"><div><h3>أربع طرق لتثبيت أي برنامج</h3><p style="margin:6px 0 0;color:var(--mist);font-size:13px">في الرازي يكفي النقر المزدوج على الملف المُنزَّل، فيتعرّف النظام على نوعه ويثبّته.</p></div>
+  <div class="ways"><div><b>‎.deb</b>حزم أوبونتو ولينكس، مثل Chrome وZoom وWPS.</div><div><b>Flatpak</b>متجر Flathub بآلاف البرامج، مثل ONLYOFFICE وTelegram.</div><div><b>AppImage</b>برنامج في ملف واحد يعمل فورًا دون تثبيت.</div><div><b>‎.exe و‎.msi</b>برامج ويندوز عبر Wine (في الإصدار الكامل).</div></div>
+  <div><h3>برامج مقترحة</h3></div><div class="cat"></div></div>`;
+  const c=b.querySelector('.cat');
+  C.forEach(([n,d,t])=>{const it=el('div','it',`<span class="ic" style="width:34px;height:34px;flex:0 0 auto">${I.getapps}</span><span>${n}<small>${d} · ${t}</small></span>`);const k=el('button','',done.includes(n)?'مثبّت':'تثبيت');if(done.includes(n))k.disabled=true;
+    k.onclick=()=>{k.textContent='جارٍ التثبيت…';setTimeout(()=>{k.textContent='مثبّت';k.disabled=true;done.push(n);store.set('installed',done);toast('تم تثبيت '+n+' (محاكاة)')},900)};it.appendChild(k);c.appendChild(it)});
+}
+function dlApp(b){
+  b.innerHTML=`<div class="pad dl"><div class="welcome"><h2>نزّل الرازي 1.2 «الإنبيق»</h2></div>
+  <div class="ed2"><b>الرازي الكامل · 2.07 جيجابايت</b><span>للاستخدام اليومي: مكتب وإنترنت ووسائط وبرامج ويندوز، مع مُثبّت على القرص.</span><code>razi-1.2-full-amd64.iso</code><a class="dlbtn" href="https://wa.me/97451600498?text=%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%AD%D8%B5%D9%88%D9%84%20%D8%B9%D9%84%D9%89%20%D9%86%D8%B3%D8%AE%D8%A9%20%D8%A7%D9%84%D8%B1%D8%A7%D8%B2%D9%8A%201.2%3A%20razi-1.2-full-amd64.iso" target="_blank" rel="noopener">اطلب الرازي الكامل</a></div>
+  <div class="ed2"><b>الرازي الخفيف · 1.35 جيجابايت</b><span>للأجهزة القديمة، من 512 ميجابايت ذاكرة.</span><code>razi-1.2-lite-amd64.iso</code><a class="dlbtn" href="https://wa.me/97451600498?text=%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%AD%D8%B5%D9%88%D9%84%20%D8%B9%D9%84%D9%89%20%D9%86%D8%B3%D8%AE%D8%A9%20%D8%A7%D9%84%D8%B1%D8%A7%D8%B2%D9%8A%201.2%3A%20razi-1.2-lite-amd64.iso" target="_blank" rel="noopener">اطلب الرازي الخفيف</a></div>
+  <p style="margin:0;color:var(--mist);font-size:13px">تُرسَل نسخ التثبيت مع بصمات التحقق SHA-256 عند الطلب عبر واتساب منجز، والمصدر الكامل منشور على <a href="https://github.com/munjiz-qa/munjiz-qa.github.io/tree/main/razi" target="_blank" rel="noopener" style="color:var(--glow)">GitHub</a>. تعمل على أجهزة الكمبيوتر 64 بت بنظامي BIOS و UEFI، ومع الإقلاع الآمن (Secure Boot).</p>
+  <div><b style="color:var(--glow)">التشغيل من ذاكرة USB</b><ol><li>احصل على ملف ISO بالزر أعلاه.</li><li>اكتب ملف ISO على ذاكرة USB ببرنامج Rufus أو balenaEtcher أو Ventoy.</li><li>أعد تشغيل الجهاز واختر الإقلاع من USB.</li><li>يبدأ الرازي بالعربية مباشرة، ومن سطح المكتب اختر «تثبيت الرازي» للتثبيت على القرص.</li></ol></div>
+  <div class="welcome"><h2 style="font-size:19px">الرازي على الهاتف و Raspberry Pi</h2></div>
+  <div class="ed2"><b>الهاتف (أندرويد)</b><ol><li>ثبّت تطبيق Termux من F-Droid (نسخة Google Play قديمة).</li><li>نزّل <code style="display:inline">razi-android.sh</code> إلى مجلد التنزيلات، ومعه اختياريًا النسخة الجاهزة للتثبيت السريع <code style="display:inline">razi-1.2-phone-arm64.tar.xz</code>.</li><li>في Termux الصق: <code style="display:inline">termux-setup-storage &amp;&amp; bash /sdcard/Download/razi-android.sh</code> ثم اكتب <code style="display:inline">razi</code> فيفتح سطح المكتب في متصفح الهاتف.</li></ol><span style="color:var(--mist);font-size:13px">لا يمسح أندرويد ولا يحتاج صلاحيات root. آيفون غير مدعوم لأن نظام iOS مغلق.</span><img src="img/phone.jpg" alt="قائمة ابدأ في الرازي على الهاتف" style="width:100%;border-radius:8px;margin-top:8px"></div>
+  <div class="ed2"><b>جهاز <bdi>Raspberry Pi</bdi>: الإصدارات 3 و4 و400 و5</b><span>اكتب الصورة <code style="display:inline">razi-1.2-raspberrypi-arm64.img.xz</code> (469 ميجابايت) على بطاقة الذاكرة ببرنامج Raspberry Pi Imager أو balenaEtcher، ثم شغّل الجهاز. المستخدم <code style="display:inline">razi</code> وكلمة المرور <code style="display:inline">razi</code>.</span><img src="img/pi.jpg" alt="سطح مكتب الرازي على Raspberry Pi" style="width:100%;border-radius:8px;margin-top:8px"></div>
+  <div class="dlrow"><a class="dlbtn" href="https://wa.me/97451600498?text=%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%AD%D8%B5%D9%88%D9%84%20%D8%B9%D9%84%D9%89%20%D9%86%D8%B3%D8%AE%D8%A9%20%D8%A7%D9%84%D8%B1%D8%A7%D8%B2%D9%8A%201.2%3A%20razi-android.sh" target="_blank" rel="noopener">سكربت الهاتف</a><a class="dlbtn" href="https://wa.me/97451600498?text=%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%AD%D8%B5%D9%88%D9%84%20%D8%B9%D9%84%D9%89%20%D9%86%D8%B3%D8%AE%D8%A9%20%D8%A7%D9%84%D8%B1%D8%A7%D8%B2%D9%8A%201.2%3A%20razi-1.2-phone-arm64.tar.xz" target="_blank" rel="noopener">حزمة الهاتف</a><a class="dlbtn" href="https://wa.me/97451600498?text=%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%AD%D8%B5%D9%88%D9%84%20%D8%B9%D9%84%D9%89%20%D9%86%D8%B3%D8%AE%D8%A9%20%D8%A7%D9%84%D8%B1%D8%A7%D8%B2%D9%8A%201.2%3A%20razi-1.2-raspberrypi-arm64.img.xz" target="_blank" rel="noopener">صورة Raspberry Pi</a></div>
+  <div class="ed2"><b>التطوير والنشر: منجز لخدمات الأعمال</b><span>البريد: <bdi>munijizqa@gmail.com</bdi></span><span>الهاتف وواتساب: <bdi dir="ltr">+974 5160 0498</bdi></span><span>الموقع: <bdi>munjiz-qa.github.io</bdi></span></div></div>`;
+}
+function applyPrefs(){document.body.classList.remove('wp-dawn','wp-sand');const w=store.get('wp','night');if(w!=='night')document.body.classList.add('wp-'+w);document.body.style.fontSize={s:'13px',m:'15px',l:'17px'}[store.get('fs','m')]}
+applyPrefs();renderApps();
+setTimeout(()=>{const b=$('#boot');b.style.opacity=0;setTimeout(()=>{b.style.display='none'},500);openApp('welcome')},1200);
+</script>
+
+</body></html>

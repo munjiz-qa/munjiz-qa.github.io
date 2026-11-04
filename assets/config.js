@@ -10,3 +10,7 @@ window.MUNJIZ_CONFIG = {
 
 // الوضع التجريبي أُلغي: نمسح أي بيانات تجريبية بقيت في متصفح زائر سابق
 try{['munjiz_demo','munjiz_demo_db','munjiz_demo_mail'].forEach(k=>localStorage.removeItem(k))}catch(e){}
+
+// منجز على الكمبيوتر: عند التشغيل من حزمة الكمبيوتر (localhost) يمكن اختيار «الوضع المحلي دون إنترنت» من صفحة desktop.html.
+// لا يؤثر هذا على الموقع المنشور، فهو يعمل على هذا الجهاز فقط.
+try{if(/^(localhost|127\.0\.0\.1|)$/.test(location.hostname)&&localStorage.getItem('munjiz_offline')==='1')window.MUNJIZ_CONFIG.API=""}catch(e){}

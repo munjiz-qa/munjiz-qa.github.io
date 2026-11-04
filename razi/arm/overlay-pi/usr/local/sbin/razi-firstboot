@@ -1,0 +1,7 @@
+#!/bin/sh
+# أول إقلاع: توسيع قسم النظام ليملأ بطاقة الذاكرة كاملة
+ROOTDEV=$(findmnt -n -o SOURCE /)
+DISK=/dev/$(lsblk -no PKNAME "$ROOTDEV")
+PART=$(echo "$ROOTDEV" | grep -o '[0-9]*$')
+growpart "$DISK" "$PART" && resize2fs "$ROOTDEV"
+systemctl disable razi-firstboot.service
