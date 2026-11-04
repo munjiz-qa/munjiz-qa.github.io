@@ -160,7 +160,7 @@
     <div class="panel"><h3>المستحق على العملاء</h3><div class="tbl" id="fnDue"></div></div>
   </section>
   <section id="v-pays" class="view" hidden>
-    <div class="bar"><h2>سندات القبض</h2><select id="pyP" class="per" aria-label="الفترة"><option value="month">هذا الشهر</option><option value="last">الشهر الماضي</option><option value="q">آخر 3 أشهر</option><option value="year">هذه السنة</option><option value="all">كل الفترات</option></select><input id="pyQ" type="search" placeholder="بحث بالعميل أو رقم السند أو المعاملة"><span class="sp"></span><button class="btn sm pri" type="button" data-pay="">تسجيل دفعة</button><button class="btn sm ghost" data-export="Payments" type="button">تصدير Excel</button></div>
+    <div class="bar"><h2>سندات القبض</h2><select id="pyP" class="per" aria-label="الفترة"><option value="month">هذا الشهر</option><option value="last">الشهر الماضي</option><option value="q">آخر 3 أشهر</option><option value="year">هذه السنة</option><option value="all">كل الفترات</option></select><input aria-label="بحث بالعميل أو رقم السند أو المعاملة" id="pyQ" type="search" placeholder="بحث بالعميل أو رقم السند أو المعاملة"><span class="sp"></span><button class="btn sm pri" type="button" data-pay="">تسجيل دفعة</button><button class="btn sm ghost" data-export="Payments" type="button">تصدير Excel</button></div>
     <div class="kpis" id="pyK"></div>
     <div class="tbl" id="fnPay"></div>
   </section>
@@ -192,7 +192,7 @@
     <div id="jrL"></div>
   </section>
   <section id="v-cbal" class="view" hidden>
-    <div class="bar"><h2>أرصدة العملاء</h2><input id="cbQ" type="search" placeholder="بحث باسم العميل"><select id="cbF" aria-label="عرض"><option value="due">عليهم مبالغ</option><option value="">كل العملاء</option></select><span class="sp"></span><button class="btn sm ghost" type="button" id="cbCsv">تصدير Excel</button></div>
+    <div class="bar"><h2>أرصدة العملاء</h2><input aria-label="بحث باسم العميل" id="cbQ" type="search" placeholder="بحث باسم العميل"><select id="cbF" aria-label="عرض"><option value="due">عليهم مبالغ</option><option value="">كل العملاء</option></select><span class="sp"></span><button class="btn sm ghost" type="button" id="cbCsv">تصدير Excel</button></div>
     <div class="kpis" id="cbK"></div>
     <div class="tbl" id="cbT"></div>
   </section>
@@ -273,12 +273,12 @@
   </section>
 
   <section id="v-req" class="view" hidden>
-    <div class="bar"><h2>الطلبات الواردة</h2><select id="reqF"><option value="">كل الحالات</option></select><input id="reqQ" type="search" placeholder="بحث بالاسم أو الجوال"><button class="btn sm ghost" data-export="Requests" type="button">تصدير Excel</button></div>
+    <div class="bar"><h2>الطلبات الواردة</h2><select aria-label="تصفية الطلبات حسب الحالة" id="reqF"><option value="">كل الحالات</option></select><input aria-label="بحث بالاسم أو الجوال" id="reqQ" type="search" placeholder="بحث بالاسم أو الجوال"><button class="btn sm ghost" data-export="Requests" type="button">تصدير Excel</button></div>
     <div class="tbl" id="reqT"></div>
   </section>
 
   <section id="v-cli" class="view" hidden>
-    <div class="bar"><h2>العملاء</h2><input id="cliQ" type="search" placeholder="بحث بالاسم أو الجوال أو الرقم الشخصي أو السجل"><button class="btn sm pri" id="newCli" type="button">عميل جديد</button><button class="btn sm ghost" data-export="Clients" type="button">تصدير Excel</button></div>
+    <div class="bar"><h2>العملاء</h2><input aria-label="بحث بالاسم أو الجوال أو الرقم الشخصي أو السجل" id="cliQ" type="search" placeholder="بحث بالاسم أو الجوال أو الرقم الشخصي أو السجل"><button class="btn sm pri" id="newCli" type="button">عميل جديد</button><button class="btn sm ghost" data-export="Clients" type="button">تصدير Excel</button></div>
     <div class="tbl" id="cliT"></div>
   </section>
 
@@ -292,7 +292,7 @@
     <div class="panel"><h3>معاملات العميل وأعماله</h3><div class="tbl" id="cTx"></div></div>
     <div class="grid2">
       <div class="panel" id="cMsgP"><h3>المراسلات مع العميل</h3><div class="thread" id="cMsgs"></div>
-        <form id="replyF" class="stack"><textarea id="rBody" rows="3" placeholder="اكتب ردك على العميل. يظهر في حسابه ويصله بالبريد إن كان مسجلاً." required></textarea>
+        <form id="replyF" class="stack"><textarea aria-label="اكتب ردك على العميل. يظهر في حسابه ويصله بالبريد إن كان مسجلاً." id="rBody" rows="3" placeholder="اكتب ردك على العميل. يظهر في حسابه ويصله بالبريد إن كان مسجلاً." required></textarea>
         <div class="contact"><button class="btn sm pri" type="submit">إرسال الرد</button><label class="chk sm"><input type="checkbox" id="rMail" checked> إرسال نسخة بالبريد</label></div></form></div>
       <div class="panel"><h3>حساب العميل على الموقع</h3><div id="cAcc"></div></div>
     </div>
@@ -314,7 +314,7 @@
   <section id="v-emp" class="view" hidden>
     <div class="bar"><h2>الموظفون: الحضور والإنجاز</h2><span class="sp"></span><button class="btn sm pri" type="button" id="addEmp">إضافة موظف</button></div>
     <div class="panel"><div class="bar">
-      <select id="repP"><option value="today">اليوم</option><option value="yesterday">أمس</option><option value="week">آخر 7 أيام</option><option value="month">هذا الشهر</option><option value="custom">فترة محددة</option></select>
+      <select aria-label="فترة التقرير" id="repP"><option value="today">اليوم</option><option value="yesterday">أمس</option><option value="week">آخر 7 أيام</option><option value="month">هذا الشهر</option><option value="custom">فترة محددة</option></select>
       <label class="inl" id="repFL" hidden>من<input type="date" id="repF"></label><label class="inl" id="repTL" hidden>إلى<input type="date" id="repT"></label>
       <button class="btn sm pri" type="button" id="repGo">عرض التقرير</button><span class="sp"></span>
       <button class="btn sm ghost" type="button" id="repCsv">تصدير Excel</button><button class="btn sm ghost" type="button" id="repMail">إرسال بالبريد للمكتب</button></div>
@@ -370,7 +370,7 @@
   </section>
 
   <section id="v-txn" class="view" hidden>
-    <div class="bar"><h2>المعاملات</h2><select id="txF"><option value="">كل الحالات</option><option value="open">المفتوحة فقط</option></select><input id="txQ" type="search" placeholder="بحث بالعميل أو الخدمة أو رقم الطلب لدى الجهة"><button class="btn sm pri" id="newTx" type="button">معاملة جديدة</button><button class="btn sm ghost" data-export="Transactions" type="button">تصدير Excel</button></div>
+    <div class="bar"><h2>المعاملات</h2><select aria-label="تصفية المعاملات حسب الحالة" id="txF"><option value="">كل الحالات</option><option value="open">المفتوحة فقط</option></select><input aria-label="بحث بالعميل أو الخدمة أو رقم الطلب لدى الجهة" id="txQ" type="search" placeholder="بحث بالعميل أو الخدمة أو رقم الطلب لدى الجهة"><button class="btn sm pri" id="newTx" type="button">معاملة جديدة</button><button class="btn sm ghost" data-export="Transactions" type="button">تصدير Excel</button></div>
     <div class="tbl" id="txT"></div>
   </section>
 
@@ -421,7 +421,7 @@
     <label>تاريخ انتهاء المستند الناتج (للتذكير بالتجديد)<input name="expiryDate" type="date"></label>
     <label>تاريخ الإغلاق<input name="closed" type="date"></label>
     <fieldset class="full docs" id="tPayBox"><legend>الرسوم والتحصيل</legend><div id="tPays"></div></fieldset>
-    <fieldset class="full docs"><legend>المستندات المطلوبة (علّم ما استُلم)</legend><div id="tDocs"></div><div class="contact"><input id="tDocNew" placeholder="أضف مستنداً آخر"><button class="btn sm ghost" type="button" id="tDocAdd">إضافة</button></div></fieldset>
+    <fieldset class="full docs"><legend>المستندات المطلوبة (علّم ما استُلم)</legend><div id="tDocs"></div><div class="contact"><input aria-label="أضف مستنداً آخر" id="tDocNew" placeholder="أضف مستنداً آخر"><button class="btn sm ghost" type="button" id="tDocAdd">إضافة</button></div></fieldset>
     <label class="full">ملاحظات<textarea name="notes"></textarea></label>
   </div>
   <div class="contact"><button class="btn pri" value="save">حفظ</button><button class="btn ghost" value="cancel" formnovalidate>إلغاء</button><span class="sp"></span><button class="btn ghost danger" type="button" id="delT">حذف المعاملة</button></div>
@@ -438,7 +438,7 @@
 </form></dialog>
 
 <dialog id="dlgQ" aria-labelledby="qT"><form class="dlg crmform" id="fQ" method="dialog">
-  <h3 id="qT"></h3><textarea id="qIn" rows="4" hidden></textarea>
+  <h3 id="qT"></h3><textarea aria-label="نص الاستيراد" id="qIn" rows="4" hidden></textarea>
   <div class="contact"><button class="btn pri" value="ok" id="qOk">نعم</button><button class="btn ghost" value="cancel" formnovalidate>إلغاء</button></div>
 </form></dialog>
 <dialog id="dlgA" aria-labelledby="dlgAT"><form class="dlg crmform" id="fA" method="dialog">
