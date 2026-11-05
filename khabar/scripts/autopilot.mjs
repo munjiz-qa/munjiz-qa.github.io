@@ -1,5 +1,5 @@
 // «خبر»: الطيار الآلي. يعمل من GitHub Actions كل ساعة دون أي تدخل بشري أو جلسة محرر.
-//  1. إذا فات موعد الخلاصة (6:20 صباحاً أو 6:20 مساءً بتوقيت الدوحة) ولم تُنشر، يكتب «خلاصة آلية» من عناوين المصادر نفسها:
+//  1. إذا فات موعد الخلاصة (كل 6 ساعات: 06:20 و12:20 و18:20 و00:20 بتوقيت الدوحة) ولم تُنشر، يكتب «خلاصة آلية» من عناوين المصادر نفسها:
 //     كل خبر هو عنوان الجهة الناشرة كما نشرته، مع اسمها وتاريخها ورابط مقالها الأصلي (تُفك روابط أخبار Google إلى الرابط الأصلي، وما لا يُفك يُحذف).
 //  2. يفحص الموقع المنشور ولوحاته وحداثة البيانات، ويكتب النتيجة في data/health.json، ويخرج بخطأ إن وُجد عطل حتى يصل التنبيه.
 // الاستخدام: node khabar/scripts/autopilot.mjs [--force] [--dry] [--no-health]
@@ -16,11 +16,18 @@ const doha = (d = new Date()) => {
   const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', {timeZone: 'Asia/Qatar', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'}).formatToParts(d).map(x => [x.type, x.value]));
   return {day: `${p.year}-${p.month}-${p.day}`, min: +p.hour * 60 + +p.minute, iso: `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}:00+03:00`};
 };
-// الخلاصة المتوقعة الآن: الصباح من 6:20 إلى 18:19، والمساء من 18:20 إلى 6:19 من اليوم التالي
+// أربع خلاصات يومياً كل 6 ساعات: الصباح 5:41، الظهيرة 11:41، المساء 17:41، الليل 23:41 بتوقيت الدوحة.
+// الخلاصة المتوقعة بعد مهلة 40 دقيقة من موعدها: الصباح من 6:20، الظهيرة من 12:20، المساء من 18:20، الليل من 0:20 حتى 6:19.
+const ED = {am: 1, md: 2, pm: 3, nt: 4};
+const ED_AR = {am: 'الصباح', md: 'الظهيرة', pm: 'المساء', nt: 'الليل'}, ED_EN = {am: 'Morning', md: 'Midday', pm: 'Evening', nt: 'Night'};
+const rank = id => String(id || '').slice(0, 10) + (ED[String(id || '').slice(11)] || 0);
 function expected(now = new Date()) {
-  const t = doha(now), GRACE = 6 * 60 + 20;
-  if (t.min >= GRACE && t.min < 12 * 60 + GRACE) return {id: t.day + '-am', date: t.day, edition: 'am'};
-  if (t.min >= 12 * 60 + GRACE) return {id: t.day + '-pm', date: t.day, edition: 'pm'};
+  const t = doha(now), G = 20;
+  const at = edition => ({id: t.day + '-' + edition, date: t.day, edition});
+  if (t.min >= 18 * 60 + G) return at('pm');
+  if (t.min >= 12 * 60 + G) return at('md');
+  if (t.min >= 6 * 60 + G) return at('am');
+  if (t.min >= G) { const y = doha(new Date(now - 864e5)).day; return {id: y + '-nt', date: y, edition: 'nt'}; }
   const y = doha(new Date(now - 864e5)).day; return {id: y + '-pm', date: y, edition: 'pm'};
 }
 
@@ -126,8 +133,8 @@ async function autoBrief(exp, prev) {
   const first = l => zones.map(z => z.items.find(i => i[l])).filter(Boolean);
   const pick = (l, sep) => first(l).map(i => i[l]).join(sep);
   const thread = {
-    ar: `${exp.edition === 'am' ? 'صباح' : 'مساء'} اليوم بعناوين مصادره كما نشرتها: ${pick('ar', '؛ ')}.`,
-    en: `Today's ${exp.edition === 'am' ? 'morning' : 'evening'} in the outlets' own headlines: ${pick('en', '; ')}.`,
+    ar: `${ED_AR[exp.edition]} اليوم بعناوين مصادره كما نشرتها: ${pick('ar', '؛ ')}.`,
+    en: `Today's ${ED_EN[exp.edition].toLowerCase()} in the outlets' own headlines: ${pick('en', '; ')}.`,
     src: [...new Set([...first('ar'), ...first('en')].flatMap(i => i.src))]
   };
   // الأسواق والمواعيد من الخلاصة السابقة، بشرط حداثة المصدر وعدم فوات الموعد
@@ -137,7 +144,7 @@ async function autoBrief(exp, prev) {
   const roadmap = (prev?.roadmap || []).filter(r => (r.date || '9999') >= today && (r.src || []).every(s => prev?.sources?.[s]));
   for (const x of [...markets, ...roadmap]) for (const s of x.src || []) sources[s] = prev.sources[s];
   return {id: exp.id, edition: exp.edition, date: exp.date, published: doha().iso, auto: true,
-    title: {ar: exp.edition === 'am' ? 'خلاصة الصباح الآلية' : 'خلاصة المساء الآلية', en: exp.edition === 'am' ? 'Automatic Morning Brief' : 'Automatic Evening Brief'},
+    title: {ar: `خلاصة ${ED_AR[exp.edition]} الآلية`, en: `Automatic ${ED_EN[exp.edition]} Brief`},
     thread, markets, zones, roadmap, sources};
 }
 
@@ -145,7 +152,7 @@ function archive(b) {
   writeJSON(`archive/${b.id}.json`, b);
   const idx = readJSON('archive/index.json', {briefs: []});
   idx.briefs = [{id: b.id, date: b.date, edition: b.edition, ...(b.auto ? {auto: true} : {})}, ...idx.briefs.filter(x => x.id !== b.id)]
-    .sort((a, c) => c.id.localeCompare(a.id));
+    .sort((a, c) => rank(c.id).localeCompare(rank(a.id)));
   writeJSON('archive/index.json', idx);
 }
 
@@ -174,7 +181,7 @@ async function health(brief) {
 // ---------- التشغيل ----------
 const exp = expected(), cur = readJSON('brief.json', null);
 let wrote = false;
-if (ARGS.has('--force') || !cur || cur.id < exp.id) {
+if (ARGS.has('--force') || !cur || rank(cur.id) < rank(exp.id)) {
   console.log(`الخلاصة الحالية ${cur?.id || '—'}، المتوقعة ${exp.id}: أكتب خلاصة آلية.`);
   const b = await autoBrief(exp, cur);
   console.log('مصادر:', JSON.stringify(STATS));

@@ -30,7 +30,7 @@ const T={
  road_intro:['المواعيد المقررة القادمة في الدوائر الأربع، ولكل موعد مصدره. السيناريوهات توقّعات تحريرية وليست أخباراً.','Upcoming scheduled events across the four circles, each with its source. Scenarios are editorial forecasts, not news.'],
  all_sources:['كل مصادر هذه الخلاصة','All sources in this brief'],
  breaking:['عاجل','Breaking'],
- edition_am:['خلاصة الصباح','Morning Brief'],edition_pm:['خلاصة المساء','Evening Brief'],
+ edition_am:['خلاصة الصباح','Morning Brief'],edition_md:['خلاصة الظهيرة','Midday Brief'],edition_pm:['خلاصة المساء','Evening Brief'],edition_nt:['خلاصة الليل','Night Brief'],
  read_more:['اقرأ الخلاصة','Read brief'],current:['الحالية','current'],
  contact_email:['البريد','Email'],contact_phone:['الهاتف وواتساب','Phone & WhatsApp'],
  err:['تعذّر تحميل الخلاصة. تحقّق من اتصالك ثم أعد تحميل الصفحة.','The brief could not be loaded. Check your connection and reload the page.'],
@@ -174,7 +174,7 @@ function zoneSection(z,full){
   return sec;
 }
 function edHead(){
-  const w=el('div','ed-head');w.append(el('span','eyebrow',BRIEF.edition==='am'?t('edition_am'):t('edition_pm')));
+  const w=el('div','ed-head');w.append(el('span','eyebrow',t('edition_'+(BRIEF.edition||'am'))));
   w.append(el('h1',null,fmtDate(BRIEF.date,true)));
   const m=el('div','ed-meta');const n=BRIEF.zones.reduce((s,z)=>s+z.items.length,0);
   m.append(el('span',null,`${t('published')}: ${fmtTime(BRIEF.published)}`),el('span',null,`${n} ${t('items')}`),el('span',null,`${Object.keys(BRIEF.sources).length} ${L('مصدراً موثّقاً','cited sources')}`));
@@ -256,7 +256,7 @@ function viewLedger(){
   [[S.items,L('خبراً منشوراً','stories published')],[S.sources,L('مصدراً موثّقاً','cited sources')],[S.outlets,L('جهة مستقلة','independent outlets')],[S.multi_source,L('خبراً من جهتين فأكثر','multi-outlet stories')],
    [S.numbers_total?`${S.numbers_grounded}/${S.numbers_total}`:'—',L('رقماً مطابقاً لمصدره','figures matched to source')],[S.reachable+'/'+((S.reachable||0)+(S.blocked||0)+(S.broken||0)),L('رابطاً فُتح آلياً بنجاح','links opened by the checker')]]
    .forEach(([v,l])=>{const d=el('div','tick');d.append(el('b',null,String(v??'—')),el('small',null,l));k.append(d)});main.append(k);
-  main.append(el('p','basis',`${L('آخر فحص','Last check')}: ${fmtDate(LEDGER.checked.slice(0,10))}، ${fmtTime(LEDGER.checked)} · ${/-am$/.test(LEDGER.brief||'')?t('edition_am'):t('edition_pm')} ${fmtDate((LEDGER.brief||'').slice(0,10))}`.replace('، ',LANG==='en'?', ':'، ')));
+  main.append(el('p','basis',`${L('آخر فحص','Last check')}: ${fmtDate(LEDGER.checked.slice(0,10))}، ${fmtTime(LEDGER.checked)} · ${t('edition_'+(((LEDGER.brief||'').match(/-(am|md|pm|nt)$/)||[])[1]||'am'))} ${fmtDate((LEDGER.brief||'').slice(0,10))}`.replace('، ',LANG==='en'?', ':'، ')));
   if(S.blocked)main.append(el('p','mute',L('بعض المواقع تمنع الفحص الآلي لصفحاتها؛ تبقى روابطها منشورة لتتحقق منها بنفسك، ولا يُعدّ ذلك خللاً في المصدر.','Some sites block automated checks; their links stay published for you to verify yourself, and this is not counted as a fault in the source.')));
   const drops=[...(LEDGER.agent_dropped||[]),...(LEDGER.dropped||[]).map(d=>({stage:L('الفحص النهائي','Final check'),text:d.text,reason:d.reason,zone:d.zone}))];
   const dh=el('h2',null,L('ما حذفناه قبل النشر ولماذا','What we dropped before publishing, and why'));dh.style.marginTop='18px';main.append(dh);
@@ -280,7 +280,7 @@ function viewAbout(){
   const h=el('div','ed-head');h.append(el('span','eyebrow',t('about')),el('h1',null,L('خلاصة يومك، من الدوحة إلى العالم','Your daily brief, from Doha to the world')));w.append(h);
   const v=el('div','vision');
   const a=el('div');a.append(el('h2',null,L('الرؤية','Vision')),el('p',null,L('أن يكون «خبر» المرجع اليومي الأوثق للقارئ في قطر: يفهم به ما يجري حوله في دقائق، ويثق في كل كلمة لأنه يعرف من أين جاءت.','For Khabar to be the most trusted daily reference for readers in Qatar: a way to understand what is happening around them in minutes, and to trust every word because they know where it came from.')));
-  const b=el('div');b.append(el('h2',null,L('الهدف','Goal')),el('p',null,L('أن نقرأ عشرات المصادر نيابة عنك، ونكتب لك خلاصة دقيقة مرتين يومياً: قطر أولاً ثم الخليج ثم مصر ثم العالم، مع تحليل يشرح ما وراء الخبر، واستقراء لما قد يأتي، وخريطة للأحداث القادمة.','To read dozens of sources on your behalf and write you an accurate brief twice a day: Qatar first, then the Gulf, then Egypt, then the world, with analysis that explains what lies behind the news, an outlook on what may come, and a roadmap of upcoming events.')));
+  const b=el('div');b.append(el('h2',null,L('الهدف','Goal')),el('p',null,L('أن نقرأ عشرات المصادر نيابة عنك، ونكتب لك خلاصة دقيقة كل 6 ساعات: قطر أولاً ثم الخليج ثم مصر ثم العالم، مع تحليل يشرح ما وراء الخبر، واستقراء لما قد يأتي، وخريطة للأحداث القادمة.','To read dozens of sources on your behalf and write you an accurate brief every 6 hours: Qatar first, then the Gulf, then Egypt, then the world, with analysis that explains what lies behind the news, an outlook on what may come, and a roadmap of upcoming events.')));
   v.append(a,b);w.append(v);
   w.append(el('h2',null,L('ركائزنا','Our pillars')));
   const P=el('div','pillars');
@@ -290,9 +290,9 @@ function viewAbout(){
    [L('الاستقراء','Outlook'),L('نقرأ ما قد يترتب على أخبار اليوم، ونسمّيه توقّعاً لا خبراً، ونربطه بمصادره وبالمواعيد المقررة في خريطة الطريق.','We read what today\'s news may lead to, call it a forecast rather than news, and tie it to its sources and to scheduled dates on the roadmap.')]
   ].forEach(([h,p])=>{const d=el('div','pillar');d.append(el('h3',null,h),el('p',null,p));P.append(d)});w.append(P);
   w.append(el('h2',null,L('كيف نكتب','How we write')));
-  w.append(el('p',null,L('يكتب «خبر» وكيل ذكاء مستقل يعمل بإشراف تحريري: نقرأ المصادر الرسمية والصحف المعتمدة في قطر والخليج ومصر والعالم، ونجمع الخبر الواحد من مصادره المختلفة في فقرة واحدة بصياغتنا الخاصة، ونحيلك إلى المصدر الأصلي لقراءته كاملاً. ومسار التحقق كاملاً في صفحة «الشفافية». تُنشر خلاصة الصباح الساعة 6:00 وخلاصة المساء الساعة 6:00 بتوقيت الدوحة، وتُحدَّث العناوين الآلية كل 3 ساعات.','Khabar is written by an autonomous AI agent under editorial rules: we read official sources and established outlets in Qatar, the Gulf, Egypt and the world, combine each story from its different sources into one paragraph in our own words, and link you to the original to read it in full. The full verification trail is on the Transparency page. The morning brief is published at 6:00 and the evening brief at 18:00 Doha time; automatic headlines refresh every 3 hours.')));
+  w.append(el('p',null,L('يكتب «خبر» وكيل ذكاء مستقل يعمل بإشراف تحريري: نقرأ المصادر الرسمية والصحف المعتمدة في قطر والخليج ومصر والعالم، ونجمع الخبر الواحد من مصادره المختلفة في فقرة واحدة بصياغتنا الخاصة، ونحيلك إلى المصدر الأصلي لقراءته كاملاً. ومسار التحقق كاملاً في صفحة «الشفافية». تُنشر أربع خلاصات يومياً كل 6 ساعات بتوقيت الدوحة: الصباح 06:00، والظهيرة 12:00، والمساء 18:00، والليل 00:00، وتُحدَّث العناوين الآلية كل 3 ساعات.','Khabar is written by an autonomous AI agent under editorial rules: we read official sources and established outlets in Qatar, the Gulf, Egypt and the world, combine each story from its different sources into one paragraph in our own words, and link you to the original to read it in full. The full verification trail is on the Transparency page. Four briefs are published daily, every 6 hours, Doha time: morning at 06:00, midday at 12:00, evening at 18:00 and night at 00:00; automatic headlines refresh every 3 hours.')));
   if(ARCH&&ARCH.briefs&&ARCH.briefs.length){w.append(el('h2',null,t('archive')));const ul=el('ul','items');
-    ARCH.briefs.slice().reverse().forEach(x=>{const li=el('li','item');const a=el('a',null,`${x.edition==='am'?t('edition_am'):t('edition_pm')} · ${fmtDate(x.date,true)}`);a.href='#b-'+x.id;li.append(a);ul.append(li)});w.append(ul)}
+    ARCH.briefs.slice().reverse().forEach(x=>{const li=el('li','item');const a=el('a',null,`${t('edition_'+(x.edition||'am'))} · ${fmtDate(x.date,true)}`);a.href='#b-'+x.id;li.append(a);ul.append(li)});w.append(ul)}
   w.append(el('h2',null,L('تواصل معنا','Contact us')));
   const c=el('div','contact-card');
   [[t('contact_email'),CFG.EMAIL],[t('contact_phone'),CFG.PHONE]].forEach(([k,v])=>{const b=el('button','copy');b.type='button';b.append(k+':',el('span',null,v));b.onclick=()=>{try{navigator.clipboard.writeText(v).then(()=>toast(L('نُسخ','Copied')),()=>fallback(v,()=>toast(L('نُسخ','Copied'))))}catch(e){fallback(v,()=>toast(L('نُسخ','Copied')))}};c.append(b)});
