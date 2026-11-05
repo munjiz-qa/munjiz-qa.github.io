@@ -16,7 +16,7 @@
 /* Layout: a field of pale sage with petrol-ink structure; wheat gold marks growth. Public page = editorial bands, app = sidebar shell (desktop) / bottom bar (phone). */
 :root{
   --bg:#EFF2EC; --surface:#FFFFFF; --surface-2:#E4E9E1; --ink:#10282B; --muted:#576B68; --line:#D3DBD0;
-  --petrol:#14474D; --petrol-2:#1D5C63; --on-petrol:#F4F1E6; --wheat:#B98320; --wheat-soft:#F1E2BF; --wheat-ink:#6E4C0E;
+  --petrol:#14474D; --petrol-2:#1D5C63; --on-petrol:#F4F1E6; --wheat:#B98320; --wheat-soft:#F1E2BF; --wheat-ink:#6E4C0E; --wheat-text:#8A6114; --wheat-on-petrol:#E2AE52;
   --gain:#1C7A50; --gain-soft:#DCEFE4; --loss:#B23F35; --loss-soft:#F6E0DD; --warn:#9A6512; --warn-soft:#F5E8CF;
   --shadow:0 1px 2px rgba(16,40,43,.05),0 10px 28px rgba(16,40,43,.07);
   --f-display:"Reem Kufi","IBM Plex Sans Arabic",Tahoma,sans-serif;
@@ -26,12 +26,12 @@
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0B1819; --surface:#122427; --surface-2:#183034; --ink:#E6EEEA; --muted:#94A9A5; --line:#24403F;
-  --petrol:#1E6B72; --petrol-2:#2A8890; --on-petrol:#F4F1E6; --wheat:#E2AE52; --wheat-soft:#3A2E14; --wheat-ink:#F1D9A6;
+  --petrol:#1E6B72; --petrol-2:#2A8890; --on-petrol:#F4F1E6; --wheat:#E2AE52; --wheat-soft:#3A2E14; --wheat-ink:#F1D9A6; --wheat-text:#E2AE52; --wheat-on-petrol:#F4E2B8;
   --gain:#4EC28C; --gain-soft:#173A2A; --loss:#F07F72; --loss-soft:#432220; --warn:#E8AE52; --warn-soft:#3B2D14;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28); color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0B1819; --surface:#122427; --surface-2:#183034; --ink:#E6EEEA; --muted:#94A9A5; --line:#24403F;
-  --petrol:#1E6B72; --petrol-2:#2A8890; --on-petrol:#F4F1E6; --wheat:#E2AE52; --wheat-soft:#3A2E14; --wheat-ink:#F1D9A6;
+  --petrol:#1E6B72; --petrol-2:#2A8890; --on-petrol:#F4F1E6; --wheat:#E2AE52; --wheat-soft:#3A2E14; --wheat-ink:#F1D9A6; --wheat-text:#E2AE52; --wheat-on-petrol:#F4E2B8;
   --gain:#4EC28C; --gain-soft:#173A2A; --loss:#F07F72; --loss-soft:#432220; --warn:#E8AE52; --warn-soft:#3B2D14;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28); color-scheme:dark}
 *{box-sizing:border-box}
@@ -56,6 +56,10 @@ button,input,select,textarea{font:inherit;color:inherit}
 .btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)} .btn.ghost:hover{background:var(--surface-2)}
 .btn.danger{background:var(--loss);color:#fff}
 .btn.ok{background:var(--gain);color:#fff}
+:root[data-theme="dark"] .btn.ok{color:#0B1819}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn.ok{color:#0B1819}}
+:root[data-theme="dark"] .cinfo a.num{color:#5FB5BC}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .cinfo a.num{color:#5FB5BC}}
 .btn.sm{padding:6px 14px;font-size:13px}
 .btn.block{width:100%}
 .btn[disabled]{opacity:.5;cursor:not-allowed}
@@ -108,7 +112,7 @@ textarea.input{min-height:96px;resize:vertical}
 .hero{padding-block:56px 40px}
 .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
 .hero h1{font-size:clamp(34px,5.4vw,60px);font-weight:700;letter-spacing:-.015em;line-height:1.18}
-.hero h1 em{font-style:normal;color:var(--wheat)}
+.hero h1 em{font-style:normal;color:var(--wheat-text)}
 .hero p.lead{font-size:18px;color:var(--muted);margin-top:18px;max-width:34em}
 .hero .row{margin-top:28px}
 .facts{display:flex;gap:28px;flex-wrap:wrap;margin-top:34px;padding-top:22px;border-top:1px dashed var(--line)}
@@ -184,7 +188,7 @@ section.band.alt{background:var(--surface);border-block:1px solid var(--line)}
 .calc{display:grid;grid-template-columns:1fr 1fr;gap:24px}
 @media (max-width:760px){.calc{grid-template-columns:1fr}}
 .calc .res{background:var(--petrol);color:var(--on-petrol);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:14px}
-.calc .res .big{font-family:var(--f-num);font-size:clamp(30px,5vw,44px);font-weight:600;color:var(--wheat)}
+.calc .res .big{font-family:var(--f-num);font-size:clamp(30px,5vw,44px);font-weight:600;color:var(--wheat-on-petrol)}
 .calc .res .split{display:flex;gap:20px;flex-wrap:wrap;font-size:14px}
 .calc .res .split b{display:block;font-family:var(--f-num);font-size:17px}
 input[type=range]{width:100%;accent-color:var(--petrol)}
@@ -580,7 +584,7 @@ function renderPublic(){
     <div class="hero-card">
       <span class="tag">محفظة توضيحية</span>
       <div class="lbl">قيمة المحفظة</div><div class="big num">${mTxt(demoTotal)}</div>
-      <div class="num" style="color:var(--wheat);font-size:14px">+$1,180.40 (+11.69%)</div>
+      <div class="num" style="color:var(--wheat-on-petrol);font-size:14px">+$1,180.40 (+11.69%)</div>
       <div style="margin-top:10px">${lineSVG(priceSeries('DEMO',50,11280.4),{h:150,color:'var(--wheat)'})}</div>
       <div class="hold"><div><span>باقة العالم المتوازن</span><b class="num">$5,240.00</b></div><div><span>إنفيديا · <span class="num">12.40</span> سهم</span><b class="num" >$1,631.84</b></div><div><span>الرصيد النقدي</span><b class="num">$950.00</b></div></div>
     </div>

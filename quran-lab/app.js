@@ -214,6 +214,11 @@ function home() {
   const QUICK = ['الصبر على البلاء', 'بر الوالدين', 'التوكل على الله', 'الرزق', 'التوبة'];
   V(`<div class="stack home2">
   <div class="hero2">
+    <section class="daily stack tight"><div class="eyebrow">${siteCfg.featured ? 'آية مختارة' : 'آية اليوم'} · ${esc(ref(di))}</div>
+      ${ayahHTML(di, null, false)}
+      ${siteCfg.featuredNote ? `<p style="margin:0;opacity:.9">${esc(siteCfg.featuredNote)}</p>` : ''}
+      <div class="toolbar"><button class="btn" data-ayah="${di}">التفسير</button><button class="btn" data-card="${di}"><svg><use href="#i-image"/></svg>بطاقة للمشاركة</button><a class="btn" href="#a${Q.ayat[di][0]}-${Q.ayat[di][1]}">في سياقها</a></div>
+    </section>
     <section class="welcome">
       <div class="wl-pat" aria-hidden="true"></div>
       <div class="wl-top"><span class="eyebrow">${greet}${SESSION ? ' · ' + esc(SESSION.name) : ''}</span>${adhChip()}</div>
@@ -225,11 +230,6 @@ function home() {
     <section class="mindex" aria-label="أقسام مشكاة"><div class="mi-head"><b>أقسام مشكاة</b><span class="muted small">كل الأقسام بلمسة واحدة</span></div>
       ${PATHS.map(([pc, t, , items]) => `<div class="mi-group ${pc}"><div class="mi-t"><i class="dot"></i>${t}</div><div class="mi-grid">${items.map(([v, ic, tt]) => `<a class="mi-tile" href="#${v}"><svg><use href="#${ic}"/></svg><span>${tt}</span></a>`).join('')}</div></div>`).join('')}
       <div class="mi-more"><a href="#stats">القرآن بالأرقام</a><a href="#guide">دليل التطبيق</a><a href="#about">المنهج والمصادر</a></div>
-    </section>
-    <section class="daily stack tight"><div class="eyebrow">${siteCfg.featured ? 'آية مختارة' : 'آية اليوم'} · ${esc(ref(di))}</div>
-      ${ayahHTML(di, null, false)}
-      ${siteCfg.featuredNote ? `<p style="margin:0;opacity:.9">${esc(siteCfg.featuredNote)}</p>` : ''}
-      <div class="toolbar"><button class="btn" data-ayah="${di}">التفسير</button><button class="btn" data-card="${di}"><svg><use href="#i-image"/></svg>بطاقة للمشاركة</button><a class="btn" href="#a${Q.ayat[di][0]}-${Q.ayat[di][1]}">في سياقها</a></div>
     </section>
   </div>
   <div class="today">
