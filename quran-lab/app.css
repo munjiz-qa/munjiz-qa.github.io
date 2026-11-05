@@ -425,8 +425,8 @@ html[dir=ltr] .np-grid .scard .sft{margin:0 0 0 auto}
   .hfoot{flex-direction:column;align-items:flex-start}
 }
 .drawer .mm{display:block}.mm>*+*{margin-top:14px}
-.path-grid>.scard:nth-child(5){flex-basis:100%;flex-direction:row;align-items:center}
-.path-grid>.scard:nth-child(5) .sft{margin:0 auto 0 0}html[dir=ltr] .path-grid>.scard:nth-child(5) .sft{margin:0 0 0 auto}
+.path-grid>.scard:nth-child(5):last-child{flex-basis:100%;flex-direction:row;align-items:center}
+.path-grid>.scard:nth-child(5):last-child .sft{margin:0 auto 0 0}html[dir=ltr] .path-grid>.scard:nth-child(5):last-child .sft{margin:0 0 0 auto}
 
 /* ---------- القصص القرآني الموسّع */
 .qstory{display:grid;gap:16px;margin:10px 0 6px}
@@ -627,3 +627,34 @@ html[dir=ltr] .adh-txt,html[dir=ltr] .adh-pre{text-align:right}
 .th-more{margin-top:6px;font-size:.82rem}
 .th-use{border-inline-start:3px solid var(--ok);background:var(--ok-soft);border-radius:0 10px 10px 0;padding:10px 14px}
 .th-use b{color:var(--ok)}.th-use p{margin:4px 0 0;line-height:1.85}
+
+/* ---------- التداوي بالقرآن (#ruqya) */
+.ruq-hero{background:linear-gradient(135deg,var(--ok-soft),var(--accent-soft))}
+.ruq-stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.ruq-stats>span{background:var(--sheet);border:1px solid var(--line);border-radius:999px;padding:4px 14px;font-size:.88rem}
+.ruq-stats b{color:var(--ok);font-size:1.05rem}
+.ruq-alert{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--bad);background:var(--bad-soft);border-radius:14px;padding:12px 16px}
+.ruq-alert svg{flex:0 0 26px;width:26px;height:26px;color:var(--bad);margin-top:2px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+.ruq-alert b{color:var(--bad)}.ruq-alert p{margin:4px 0 0;line-height:1.85}
+.ruq-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr));align-items:start}
+.ruq-ay,.ruq-h{border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:8px;min-width:0;scroll-margin-top:80px}
+.ruq-ay h3,.ruq-h h3{margin:0;font-size:1.05rem;color:var(--ok)}
+.ruq-note{margin:0;line-height:1.85;color:var(--ink)}
+.ruq-links{display:flex;flex-wrap:wrap;gap:8px}.ruq-links:empty{display:none}
+.ruq-links .btn{font-size:.82rem}
+.ruq-matn{margin:0;font-family:var(--f-quran);font-size:1.12rem;line-height:2.05;background:var(--saffron-soft);border-inline-start:3px solid var(--saffron);border-radius:0 10px 10px 0;padding:10px 14px;overflow-wrap:anywhere;text-align:right}
+html[dir=ltr] .ruq-matn{border-radius:10px 0 0 10px}
+.ruq-en{background:var(--accent-soft);border-radius:10px;padding:8px 12px}.ruq-en b{font-size:.8rem;color:var(--accent)}.ruq-en p{margin:4px 0 0;line-height:1.7;text-align:left}
+.ruq-tx,.ruq-gr{margin:0;font-size:.86rem;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline}
+.ruq-tx>span:first-child,.ruq-gr>span:first-child{color:var(--muted)}
+.ruq-badge{font-style:normal;background:var(--ok-soft);color:var(--ok);border-radius:999px;padding:1px 10px;font-weight:700}
+.ruq-dg{color:var(--muted);font-size:.82rem}
+.ruq-q{margin:0}.ruq-q .ruq-note{font-size:.85rem;color:var(--muted);margin-top:6px}
+.ruq-qen{margin:8px 0 0;line-height:1.7;font-size:.92rem;text-align:left}
+.ruq-list{margin:0;padding:0;list-style:none;counter-reset:r;display:grid;gap:10px}
+.ruq-list li{counter-increment:r;position:relative;padding:10px 14px;padding-inline-start:48px;border:1px solid var(--line);border-radius:12px}
+.ruq-list li::before{content:counter(r);position:absolute;inset-inline-start:12px;top:11px;width:26px;height:26px;border-radius:50%;background:var(--ok-soft);color:var(--ok);font-weight:700;font-size:.85rem;display:grid;place-items:center}
+.ruq-list b{display:block}.ruq-list p{margin:4px 0 0;line-height:1.85}
+.ruq-warn li::before{background:var(--bad-soft);color:var(--bad)}
+@media (max-width:640px){.ruq-ay,.ruq-h{padding:12px}.ruq-matn{font-size:1.02rem;padding:8px 10px}.ruq-alert{padding:10px 12px}.ruq-list li{padding-inline-start:44px}}
+@media print{.ruq-alert{border-color:#000}}

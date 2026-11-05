@@ -14,11 +14,11 @@ ok(['client', 'admin'].every(u => cfg.users?.some(x => x.u === u && !x.off)), '�
 ok(cfg.users.every(x => /^pbkdf2\$\d{6,}\$/.test(x.h || '')), 'كلمات المرور محفوظة بتجزئة PBKDF2 مملّحة، لا نص صريح ولا تجزئة سريعة');
 await p.goto(B + '#home'); await p.waitForSelector('.daily', { timeout: 30000 });
 ok(!!(await p.$('meta[http-equiv="Content-Security-Policy"]')) && await p.evaluate(async () => (await fetch('https://example.com/').then(() => 'open', () => 'blocked')) === 'blocked'), 'سياسة أمان المحتوى (CSP) مفعّلة وتمنع الاتصال بمواقع غريبة');
-ok((await p.$$('.path')).length === 4 && (await p.$$('.path .scard')).length === 22, 'الرئيسية: أربعة مسارات و٢٢ بطاقة قسم (مع الأمراض والعلاج في القرآن)');
+ok((await p.$$('.path')).length === 4 && (await p.$$('.path .scard')).length === 23, 'الرئيسية: أربعة مسارات و٢٣ بطاقة قسم (مع الأمراض والعلاج في القرآن)');
 { // نسخة الجوال المبسطة: فهرس كل الأقسام في أول الشاشة، وركن الأطفال بقصصه وأسئلته
   const m = await b.newPage({ viewport: { width: 390, height: 844 } }); await m.goto(B + '#home'); await m.waitForSelector('.mindex .mi-tile', { timeout: 30000 }).catch(() => {});
   const mi = await m.evaluate(() => { const t = [...document.querySelectorAll('.mindex .mi-tile')]; return { n: t.length, top: t.length ? t[0].getBoundingClientRect().top : 9e9, paths: getComputedStyle(document.querySelector('.home2 .paths')).display }; });
-  ok(mi.n === 22 && mi.top < 844 && mi.paths === 'none', 'الجوال: فهرس الأقسام كلها يظهر في أول شاشة بدل البطاقات الطويلة');
+  ok(mi.n === 23 && mi.top < 844 && mi.paths === 'none', 'الجوال: فهرس الأقسام كلها يظهر في أول شاشة بدل البطاقات الطويلة');
   await m.evaluate(() => location.hash = 'kids'); await m.waitForTimeout(800);
   ok(await m.evaluate(() => document.querySelectorAll('.k-card .ksv').length >= 11), 'ركن الأطفال: ١١ قصة مصوّرة');
   await m.evaluate(() => location.hash = 'k-nuh'); await m.waitForTimeout(800);
@@ -35,10 +35,13 @@ ok((await p.$$('.path')).length === 4 && (await p.$$('.path .scard')).length ===
     const t = await m.evaluate(() => ({ n: document.querySelectorAll('.th-item').length, ix: document.querySelectorAll('.th-index li').length, a: document.querySelectorAll('.th-item .ayah').length, q: document.querySelectorAll('.th-item .u-tf blockquote').length }));
     ok(t.n >= min && t.ix === t.n && t.a >= t.n && t.q >= 1, `${nm}: ${t.n.toLocaleString("ar-EG")} مدخلاً مفهرساً بآياتها، ونقل التفسير يظهر عند الفتح`);
   }
+  await m.evaluate(() => location.hash = 'ruqya'); await m.waitForSelector('.ruq-h', { timeout: 30000 }).catch(() => {});
+  const rq = await m.evaluate(() => ({ ch: document.querySelectorAll('.ruq-ch').length, ix: document.querySelectorAll('.ruq .u-index li').length, h: document.querySelectorAll('.ruq-h .ruq-matn').length, tx: document.querySelectorAll('.ruq-h .ruq-tx .num').length, a: document.querySelectorAll('.ruq-ay .ayah').length, q: document.querySelectorAll('.ruq-q blockquote').length, al: document.querySelectorAll('.ruq-alert').length }));
+  ok(rq.ch >= 8 && rq.ix === rq.ch && rq.h >= 18 && rq.tx >= rq.h && rq.a >= 30 && rq.q >= 5 && rq.al >= 1, `التداوي بالقرآن: ${rq.h.toLocaleString("ar-EG")} حديثاً بتخريجها، و${rq.q.toLocaleString("ar-EG")} نقول للعلماء، وآيات الرقية، وتنبيه طبي`);
   await m.close();
 }
 ok(await p.evaluate(() => typeof window.claude === 'undefined'), 'لا يوجد أي مكوّن من Claude في الصفحة');
-for (const v of ['account', 'admin', 'search', 'hifz', 'map', 'awwalin', 'ijaz', 'research', 'kids', 'ulum', 'duaa', 'nisaa', 'rijal', 'shifa']) {
+for (const v of ['account', 'admin', 'search', 'hifz', 'map', 'awwalin', 'ijaz', 'research', 'kids', 'ulum', 'duaa', 'nisaa', 'rijal', 'shifa', 'ruqya']) {
   await p.evaluate(v => location.hash = v, v); await p.waitForTimeout(700);
   const t = await p.evaluate(() => document.body.innerText); ok(!/claude|anthropic/i.test(t) && t.length > 200, `صفحة ${v} تعمل ولا تذكر Claude`);
 }
