@@ -1,18 +1,18 @@
 {
- "brief": "2026-11-04-nt",
- "checked": "2026-11-05T04:26:28+03:00",
+ "brief": "2026-11-05-am",
+ "checked": "2026-11-05T07:23:06+03:00",
  "summary": {
   "items": 44,
   "sources": 130,
   "outlets": 78,
   "reachable": 113,
-  "blocked": 17,
-  "broken": 0,
+  "blocked": 16,
+  "broken": 1,
   "verified": 35,
   "review": 0,
   "multi_source": 0,
-  "numbers_total": 17,
-  "numbers_grounded": 17,
+  "numbers_total": 16,
+  "numbers_grounded": 16,
   "dropped": 0
  },
  "items": {
@@ -69,8 +69,8 @@
     "ok"
    ],
    "numbers": {
-    "total": 1,
-    "grounded": 1,
+    "total": 2,
+    "grounded": 2,
     "checked": true,
     "unseen": []
    },
@@ -96,15 +96,15 @@
    "sources": 1,
    "outlets": 1,
    "reach": [
-    "ok"
+    "blocked"
    ],
    "numbers": {
-    "total": 2,
-    "grounded": 2,
-    "checked": true,
+    "total": 0,
+    "grounded": 0,
+    "checked": false,
     "unseen": []
    },
-   "status": "verified"
+   "status": "blocked"
   },
   "qe1": {
    "zone": "qatar",
@@ -231,6 +231,21 @@
    "sources": 1,
    "outlets": 1,
    "reach": [
+    "ok"
+   ],
+   "numbers": {
+    "total": 3,
+    "grounded": 3,
+    "checked": true,
+    "unseen": []
+   },
+   "status": "verified"
+  },
+  "ga5": {
+   "zone": "gulf",
+   "sources": 1,
+   "outlets": 1,
+   "reach": [
     "blocked"
    ],
    "numbers": {
@@ -240,21 +255,6 @@
     "unseen": []
    },
    "status": "blocked"
-  },
-  "ga5": {
-   "zone": "gulf",
-   "sources": 1,
-   "outlets": 1,
-   "reach": [
-    "ok"
-   ],
-   "numbers": {
-    "total": 1,
-    "grounded": 1,
-    "checked": true,
-    "unseen": []
-   },
-   "status": "verified"
   },
   "ga6": {
    "zone": "gulf",
@@ -291,21 +291,6 @@
    "sources": 1,
    "outlets": 1,
    "reach": [
-    "blocked"
-   ],
-   "numbers": {
-    "total": 0,
-    "grounded": 0,
-    "checked": false,
-    "unseen": []
-   },
-   "status": "blocked"
-  },
-  "ge3": {
-   "zone": "gulf",
-   "sources": 1,
-   "outlets": 1,
-   "reach": [
     "ok"
    ],
    "numbers": {
@@ -315,6 +300,21 @@
     "unseen": []
    },
    "status": "verified"
+  },
+  "ge3": {
+   "zone": "gulf",
+   "sources": 1,
+   "outlets": 1,
+   "reach": [
+    "broken"
+   ],
+   "numbers": {
+    "total": 0,
+    "grounded": 0,
+    "checked": false,
+    "unseen": []
+   },
+   "status": "broken"
   },
   "ge4": {
    "zone": "gulf",
@@ -354,8 +354,8 @@
     "ok"
    ],
    "numbers": {
-    "total": 0,
-    "grounded": 0,
+    "total": 2,
+    "grounded": 2,
     "checked": true,
     "unseen": []
    },
@@ -366,15 +366,15 @@
    "sources": 1,
    "outlets": 1,
    "reach": [
-    "blocked"
+    "ok"
    ],
    "numbers": {
-    "total": 1,
+    "total": 0,
     "grounded": 0,
-    "checked": false,
+    "checked": true,
     "unseen": []
    },
-   "status": "blocked"
+   "status": "verified"
   },
   "ea3": {
    "zone": "egypt",
@@ -384,8 +384,8 @@
     "ok"
    ],
    "numbers": {
-    "total": 2,
-    "grounded": 2,
+    "total": 1,
+    "grounded": 1,
     "checked": true,
     "unseen": []
    },
@@ -399,8 +399,8 @@
     "ok"
    ],
    "numbers": {
-    "total": 1,
-    "grounded": 1,
+    "total": 0,
+    "grounded": 0,
     "checked": true,
     "unseen": []
    },
@@ -456,15 +456,15 @@
    "sources": 1,
    "outlets": 1,
    "reach": [
-    "blocked"
+    "ok"
    ],
    "numbers": {
     "total": 0,
     "grounded": 0,
-    "checked": false,
+    "checked": true,
     "unseen": []
    },
-   "status": "blocked"
+   "status": "verified"
   },
   "ee3": {
    "zone": "egypt",
@@ -534,7 +534,7 @@
     "blocked"
    ],
    "numbers": {
-    "total": 0,
+    "total": 1,
     "grounded": 0,
     "checked": false,
     "unseen": []
@@ -542,36 +542,6 @@
    "status": "blocked"
   },
   "wa3": {
-   "zone": "world",
-   "sources": 1,
-   "outlets": 1,
-   "reach": [
-    "ok"
-   ],
-   "numbers": {
-    "total": 1,
-    "grounded": 1,
-    "checked": true,
-    "unseen": []
-   },
-   "status": "verified"
-  },
-  "wa4": {
-   "zone": "world",
-   "sources": 1,
-   "outlets": 1,
-   "reach": [
-    "ok"
-   ],
-   "numbers": {
-    "total": 1,
-    "grounded": 1,
-    "checked": true,
-    "unseen": []
-   },
-   "status": "verified"
-  },
-  "wa5": {
    "zone": "world",
    "sources": 1,
    "outlets": 1,
@@ -586,7 +556,22 @@
    },
    "status": "blocked"
   },
-  "wa6": {
+  "wa4": {
+   "zone": "world",
+   "sources": 1,
+   "outlets": 1,
+   "reach": [
+    "blocked"
+   ],
+   "numbers": {
+    "total": 0,
+    "grounded": 0,
+    "checked": false,
+    "unseen": []
+   },
+   "status": "blocked"
+  },
+  "wa5": {
    "zone": "world",
    "sources": 1,
    "outlets": 1,
@@ -596,6 +581,21 @@
    "numbers": {
     "total": 1,
     "grounded": 1,
+    "checked": true,
+    "unseen": []
+   },
+   "status": "verified"
+  },
+  "wa6": {
+   "zone": "world",
+   "sources": 1,
+   "outlets": 1,
+   "reach": [
+    "ok"
+   ],
+   "numbers": {
+    "total": 0,
+    "grounded": 0,
     "checked": true,
     "unseen": []
    },
@@ -621,15 +621,15 @@
    "sources": 1,
    "outlets": 1,
    "reach": [
-    "ok"
+    "blocked"
    ],
    "numbers": {
     "total": 0,
     "grounded": 0,
-    "checked": true,
+    "checked": false,
     "unseen": []
    },
-   "status": "verified"
+   "status": "blocked"
   },
   "we3": {
    "zone": "world",
@@ -651,15 +651,15 @@
    "sources": 1,
    "outlets": 1,
    "reach": [
-    "blocked"
+    "ok"
    ],
    "numbers": {
     "total": 0,
     "grounded": 0,
-    "checked": false,
+    "checked": true,
     "unseen": []
    },
-   "status": "blocked"
+   "status": "verified"
   },
   "we5": {
    "zone": "world",
@@ -684,7 +684,7 @@
   "auto-qatar-ar3": "ok",
   "auto-qatar-ar4": "ok",
   "auto-qatar-ar5": "ok",
-  "auto-qatar-ar6": "ok",
+  "auto-qatar-ar6": "blocked",
   "auto-qatar-en1": "ok",
   "auto-qatar-en2": "ok",
   "auto-qatar-en3": "ok",
@@ -693,35 +693,35 @@
   "auto-gulf-ar1": "blocked",
   "auto-gulf-ar2": "ok",
   "auto-gulf-ar3": "ok",
-  "auto-gulf-ar4": "blocked",
-  "auto-gulf-ar5": "ok",
+  "auto-gulf-ar4": "ok",
+  "auto-gulf-ar5": "blocked",
   "auto-gulf-ar6": "ok",
   "auto-gulf-en1": "ok",
-  "auto-gulf-en2": "blocked",
-  "auto-gulf-en3": "ok",
+  "auto-gulf-en2": "ok",
+  "auto-gulf-en3": "broken",
   "auto-gulf-en4": "ok",
   "auto-gulf-en5": "ok",
   "auto-egypt-ar1": "ok",
-  "auto-egypt-ar2": "blocked",
+  "auto-egypt-ar2": "ok",
   "auto-egypt-ar3": "ok",
   "auto-egypt-ar4": "ok",
   "auto-egypt-ar5": "ok",
   "auto-egypt-ar6": "ok",
   "auto-egypt-en1": "ok",
-  "auto-egypt-en2": "blocked",
+  "auto-egypt-en2": "ok",
   "auto-egypt-en3": "ok",
   "auto-egypt-en4": "ok",
   "auto-egypt-en5": "ok",
   "auto-world-ar1": "ok",
   "auto-world-ar2": "blocked",
-  "auto-world-ar3": "ok",
-  "auto-world-ar4": "ok",
-  "auto-world-ar5": "blocked",
+  "auto-world-ar3": "blocked",
+  "auto-world-ar4": "blocked",
+  "auto-world-ar5": "ok",
   "auto-world-ar6": "ok",
   "auto-world-en1": "blocked",
-  "auto-world-en2": "ok",
+  "auto-world-en2": "blocked",
   "auto-world-en3": "ok",
-  "auto-world-en4": "blocked",
+  "auto-world-en4": "ok",
   "auto-world-en5": "ok",
   "5p-oil4": "ok",
   "ao-oil4": "ok",
