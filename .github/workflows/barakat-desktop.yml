@@ -1,0 +1,131 @@
+# حزمة «بركات على الكمبيوتر»: تُبنى من ملفات barakat/ ثم تُختبر بكل الأدوار على ويندوز وماك ولينكس حقيقيين، ثم تُنشر في
+# https://github.com/munjiz-qa/munjiz-qa.github.io/releases/download/barakat-desktop/Barakat-Desktop.zip
+name: Barakat desktop
+on:
+  push:
+    branches: [main, 'claude/**']
+    paths: ['barakat/index.html', 'barakat/document/**', 'scripts/barakat-desktop/**', '.github/workflows/barakat-desktop.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: barakat-desktop-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: { go-version: '1.24' }
+      - name: Build package
+        run: |
+          mkdir -p work/font && (cd work/font && npm pack @fontsource/ibm-plex-sans-arabic@5 >/dev/null && tar xzf *.tgz)
+          python3 scripts/barakat-desktop/build.py work
+      - uses: actions/upload-artifact@v4
+        with: { name: barakat-desktop, path: dist/Barakat-Desktop.zip }
+  site:
+    # الموقع نفسه: كل الأدوار على الكمبيوتر والجوال من ملفات المستودع
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm init -y >/dev/null && npm i playwright@1.48.2 >/dev/null && npx playwright install --with-deps chromium
+      - name: Test all roles on the site files
+        run: |
+          python3 -m http.server 8099 >/dev/null 2>&1 &
+          sleep 1
+          BASE=http://127.0.0.1:8099/barakat/ node scripts/barakat-desktop/e2e.cjs - shots-site
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shots-site
+          path: shots-site
+  test:
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { sparse-checkout: scripts/barakat-desktop }
+      - uses: actions/download-artifact@v4
+        with: { name: barakat-desktop, path: pkg }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm init -y >/dev/null && npm i playwright@1.48.2 >/dev/null && npx playwright install chromium
+        shell: bash
+      - name: Unpack
+        shell: bash
+        run: mkdir run && cd run && unzip -q ../pkg/Barakat-Desktop.zip
+      - name: Mac launcher starts the program
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          BARAKAT_NO_BROWSER=1 ./run/Barakat/Barakat-Mac.command
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:47840/api/ping && break; sleep 1; done
+          curl -sf http://127.0.0.1:47840/ >/dev/null && echo " launcher OK"
+          pkill -f barakat-mac; sleep 1; rm -rf run/Barakat/data
+      - name: Test all roles (visitor, new client, admin, client) + persistence + security
+        shell: bash
+        run: node scripts/barakat-desktop/e2e.cjs run/Barakat shots
+      - name: Reject foreign hosts
+        shell: bash
+        run: |
+          B=run/Barakat/Barakat-Linux
+          [ "$RUNNER_OS" = Windows ] && B=run/Barakat/Barakat-Windows.exe
+          [ "$RUNNER_OS" = macOS ] && B=run/Barakat/bin/barakat-mac-$([ "$(uname -m)" = arm64 ] && echo arm64 || echo intel)
+          BARAKAT_NO_BROWSER=1 "$B" & sleep 3
+          test "$(curl -s -o /dev/null -w '%{http_code}' -H 'Host: evil.example:47820' http://127.0.0.1:47840/api/db)" = 403
+          test "$(curl -s -o /dev/null -w '%{http_code}' -X PUT -H 'Origin: http://evil.example' -H 'Content-Type: application/json' -d '{"v":1}' http://127.0.0.1:47840/api/db)" = 403
+          echo "foreign requests rejected"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shots-${{ matrix.os }}
+          path: shots
+  publish:
+    needs: [test, site]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { name: barakat-desktop, path: dist }
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          N="بركات على الكمبيوتر: النظام المصرفي الإسلامي يعمل دون إنترنت على ويندوز وماك ولينكس. التعليمات: https://munjiz-qa.github.io/barakat/desktop/"
+          gh release view barakat-desktop >/dev/null 2>&1 || gh release create barakat-desktop --title "بركات على الكمبيوتر" --notes "$N" --latest=false
+          gh release upload barakat-desktop dist/Barakat-Desktop.zip --clobber
+          gh release edit barakat-desktop --notes "$N  آخر تحديث: $(date -u +'%Y-%m-%d %H:%M') UTC، واختُبرت بكل الأدوار على ويندوز وماك ولينكس."
+  live:
+    # بعد النشر: التحقق من أن الموقع المنشور مطابق للمستودع ثم اختباره بكل الأدوار
+    needs: publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm init -y >/dev/null && npm i playwright@1.48.2 >/dev/null && npx playwright install --with-deps chromium
+      - name: Wait until the published files match the repository
+        run: |
+          for f in barakat/index.html barakat/document/index.html barakat/desktop/index.html; do
+            for i in $(seq 1 40); do
+              curl -fsSL "https://munjiz-qa.github.io/$f?t=$(date +%s)" -o /tmp/live && cmp -s /tmp/live "$f" && echo "published: $f" && break
+              sleep 15
+            done
+            cmp "$f" /tmp/live
+          done
+          for old in shatirhassan/ shatirhassan/app/ baitalmal/ surra/; do curl -fsSL "https://munjiz-qa.github.io/$old" | grep -q "barakat" && echo "redirect ok: $old"; done
+          curl -fsIL "https://github.com/munjiz-qa/munjiz-qa.github.io/releases/download/barakat-desktop/Barakat-Desktop.zip" | grep -i "^HTTP" | tail -1
+      - name: Test all roles on the published site
+        run: BASE=https://munjiz-qa.github.io/barakat/ node scripts/barakat-desktop/e2e.cjs - shots-live
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shots-live
+          path: shots-live
