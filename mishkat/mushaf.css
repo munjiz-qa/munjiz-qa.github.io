@@ -1,0 +1,90 @@
+/* مشكاة · المصحف المتصل — صفحات على هيئة مصحف المدينة: ١٥ سطراً مضبوطة، بخط مجمع الملك فهد العثماني */
+@font-face{font-family:'KFGQPC Hafs';src:url(fonts/kfgqpc-hafs-uthmanic-v18.woff2) format('woff2');font-display:block}
+.mp-root{--paper:#fdf9ee;--paper-ink:#1d1a12;--rule:#b8862f;--rule-soft:#ecdcb6;--orn:#8a5a14;--mphl:#ffe39b;
+  --mpfs:24px;--mptw:30em;--mpw:680px;--mp-top:58px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .mp-root{--paper:#18160f;--paper-ink:#efe6cf;--rule:#a77a2c;--rule-soft:#3b3221;--orn:#e2b866;--mphl:#6a5214}}
+:root[data-theme="dark"] .mp-root{--paper:#18160f;--paper-ink:#efe6cf;--rule:#a77a2c;--rule-soft:#3b3221;--orn:#e2b866;--mphl:#6a5214}
+
+/* شريط التنقل */
+.mp-bar{position:sticky;top:var(--mp-top);z-index:9;background:color-mix(in srgb,var(--bg) 93%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+.mp-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.mp-bar select,.mp-bar input{border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:9px;padding:6px 8px;min-width:0;font:inherit;font-size:.9rem;height:36px;box-sizing:border-box}
+.mp-bar #mpSur{max-width:12em}
+.mp-bar .btn{padding:6px 11px;font-size:.9rem;height:36px;box-sizing:border-box}
+.mp-bar .seg button{padding:6px 12px;font-size:.88rem;height:34px}
+.mp-pg{display:inline-flex;align-items:center;gap:5px;font-size:.88rem;color:var(--muted)}
+.mp-pg input{width:4.4em;text-align:center}
+.mp-size{display:inline-flex;align-items:center;gap:6px}
+.mp-size .btn{min-width:40px;justify-content:center;font-weight:600}
+.mp-sizel{font-size:.8rem;color:var(--muted);min-width:7em;text-align:center}
+.mp-info{color:var(--muted);font-size:.85rem;margin-inline-start:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:24em}
+.mp-ix svg{width:18px;height:18px}
+.mp-more{display:none}
+
+/* الصفحة */
+.mp-scroller{display:flex;flex-direction:column;align-items:center;gap:16px}
+.mp-slot{display:flex;justify-content:center;width:100%}
+.mp-page{position:relative;box-sizing:border-box;font-size:var(--mpfs);width:var(--mpw);height:calc((1.75em + 1.75em + 15*1.98em + 1.1em));
+  padding:.55em .8em;background:var(--paper);color:var(--paper-ink);border-radius:.3em;overflow:hidden;
+  box-shadow:0 1px 2px rgba(40,30,10,.12),0 10px 28px rgba(40,30,10,.10);display:flex;flex-direction:column;contain:layout paint style}
+.mp-page::before{content:"";position:absolute;inset:.22em;border:1.5px solid var(--rule);border-radius:.22em;pointer-events:none;
+  box-shadow:inset 0 0 0 .1em var(--paper),inset 0 0 0 .15em var(--rule-soft)}
+.mp-ph{margin:auto;font-family:var(--f-body);font-size:max(14px,.7em);color:var(--rule);opacity:.55}
+.mp-top,.mp-foot{height:1.75em;display:flex;align-items:center;justify-content:space-between;gap:.4em;font-family:var(--f-body);flex:none;position:relative;padding-inline:.3em}
+.mp-top>span{font-size:max(10px,.5em);color:var(--orn);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.mp-top .mp-q{font-weight:500;background:var(--rule-soft);color:var(--paper-ink);padding:.1em .8em;border-radius:99px}
+.mp-top .mp-qj{background:var(--rule);color:var(--paper)}
+.mp-foot{justify-content:center}
+.mp-pn{font-size:max(10px,.5em);min-width:2.5em;height:2.5em;display:inline-grid;place-items:center;border:1.5px solid var(--rule);border-radius:50%;color:var(--orn);font-weight:600;
+  box-shadow:0 0 0 .22em var(--paper),0 0 0 .32em var(--rule-soft)}
+.mp-body{flex:1;display:flex;flex-direction:column;font-family:'KFGQPC Hafs',var(--f-quran);direction:rtl;min-height:0}
+.mp-l{height:1.98em;display:flex;align-items:center;white-space:nowrap;flex:none}
+.mp-t{justify-content:space-between;gap:.16em}
+.mp-open{justify-content:center}.mp-open .mp-t{justify-content:center;gap:.32em}
+.mp-t .w,.mp-n{cursor:pointer;border-radius:.2em}
+.mp-t .w:hover,.mp-n:hover{background:color-mix(in srgb,var(--rule-soft) 75%,transparent)}
+.mp-n{color:var(--orn)}
+.mp-hl{background:var(--mphl)!important;transition:background .4s}
+.mp-bas{justify-content:center}
+.mp-sh{justify-content:center;gap:.7em;position:relative;margin-inline:.05em;border:1.5px solid var(--rule);border-radius:.9em;
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--rule-soft) 75%,transparent) 16%,color-mix(in srgb,var(--rule-soft) 75%,transparent) 84%,transparent);
+  height:1.6em;margin-block:.19em;box-shadow:inset 0 0 0 .1em var(--paper),inset 0 0 0 .15em var(--rule-soft)}
+.mp-sh::before,.mp-sh::after{content:"";position:absolute;top:50%;width:.42em;height:.42em;border:1.5px solid var(--rule);transform:translateY(-50%) rotate(45deg);background:var(--paper)}
+.mp-sh::before{right:.7em}.mp-sh::after{left:.7em}
+.mp-shn{font-family:var(--f-brand);font-size:1em;color:var(--paper-ink);font-weight:700;line-height:1}
+.mp-shi{font-family:var(--f-body);font-size:max(9px,.4em);color:var(--orn)}
+.mp-src{text-align:center;margin:18px auto 0;max-width:760px}
+
+/* نص أكبر من عرض الشاشة: الصفحة وآياتها كما هي، والأسطر تلتف داخلها */
+.mp-flow .mp-body{display:block;text-align:justify;line-height:2.08}
+.mp-flow .mp-t{display:inline;height:auto;white-space:normal}
+.mp-flow .mp-sh,.mp-flow .mp-bas{display:flex;margin-block:.19em}
+.mp-flow .mp-open{display:block;text-align:center}
+
+/* تقليب الصفحات: صفحة على الجوال وصفحتان متقابلتان على الشاشات الواسعة */
+.mp-flip .mp-scroller{flex-direction:row;align-items:flex-start;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;gap:0;scrollbar-width:thin;overscroll-behavior-x:contain;width:100%;padding-bottom:6px}
+.mp-flip .mp-slot{flex:none;width:100%;scroll-snap-align:start;scroll-snap-stop:always}
+.mp-flip .mp-page{box-shadow:0 1px 3px rgba(40,30,10,.18)}
+.mp-flip.mp-spread .mp-slot{width:50%}
+.mp-flip.mp-spread .mp-slot:nth-child(odd){justify-content:flex-end}
+.mp-flip.mp-spread .mp-slot:nth-child(even){justify-content:flex-start;scroll-snap-align:none}
+:fullscreen.mp-root,.mp-root:fullscreen{background:var(--bg);overflow:auto;padding:8px 10px;margin:0;--mp-top:0px}
+
+@media (max-width:640px){
+  .mp-root{margin-inline:calc(-1 * max(18px,env(safe-area-inset-left,0px)) + 2px)}
+  .mp-bar{border-radius:0;border-inline:0;padding:6px 8px;gap:6px;margin-bottom:8px}
+  .mp-row{flex-wrap:nowrap}
+  .mp-bar #mpSur{flex:1;max-width:none}
+  .mp-bar #mpJuz{max-width:6.6em}
+  .mp-ix span,.mp-pgl,.mp-info{display:none}
+  .mp-more{display:inline-flex}
+  .mp-opts{display:none;flex-wrap:wrap}
+  .mp-showopts .mp-opts{display:flex}
+  .mp-bar .mp-opt{display:none}
+  .mp-scroller{gap:10px}
+  .mp-page{border-radius:.15em}
+  .mp-bar .btn,.mp-bar .seg button{padding:5px 9px;font-size:.85rem}
+  .mp-bar select,.mp-bar input{font-size:.86rem;padding:5px 6px}
+}
+@media print{.mp-bar,.mp-src{display:none}.mp-page{box-shadow:none;break-after:page;height:auto!important}}
