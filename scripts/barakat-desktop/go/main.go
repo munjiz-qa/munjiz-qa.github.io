@@ -1,4 +1,4 @@
-// شاطر حسن · برنامج التشغيل المستقل على الكمبيوتر
+// بركات · برنامج التشغيل المستقل على الكمبيوتر
 // يخدم واجهة النظام من داخل البرنامج نفسه على هذا الجهاز فقط (127.0.0.1)
 // ويحفظ بيانات النظام في ملف data/db.json بجوار البرنامج، مع نسخة احتياطية يومية تلقائية.
 package main
@@ -26,8 +26,8 @@ import (
 var webFS embed.FS
 
 const (
-	firstPort   = 47820
-	lastPort    = 47829
+	firstPort   = 47840
+	lastPort    = 47849
 	idleTimeout = 6 * time.Minute
 	keepBackups = 60
 )
@@ -79,7 +79,7 @@ func resolveDataDir() string {
 	if err != nil {
 		cfg, _ = os.UserHomeDir()
 	}
-	d := filepath.Join(cfg, "ShatirHassan", "data")
+	d := filepath.Join(cfg, "Barakat", "data")
 	os.MkdirAll(d, 0o755)
 	return d
 }
@@ -92,7 +92,7 @@ func isOurs(addr string) bool {
 	}
 	defer r.Body.Close()
 	b, _ := io.ReadAll(io.LimitReader(r.Body, 64))
-	return strings.HasPrefix(string(b), "shatirhassan")
+	return strings.HasPrefix(string(b), "barakat")
 }
 
 func dailyBackup(dbPath string) {
@@ -142,7 +142,7 @@ func handler(port int) http.Handler {
 			mu.Lock()
 			lastSeen = time.Now()
 			mu.Unlock()
-			io.WriteString(w, "shatirhassan-ok")
+			io.WriteString(w, "barakat-ok")
 			return
 		case "/api/info":
 			w.Header().Set("Content-Type", "application/json; charset=utf-8")
@@ -238,7 +238,7 @@ func browsers() []string {
 }
 
 func openUI(url string) {
-	if os.Getenv("SHATIRHASSAN_NO_BROWSER") != "" {
+	if os.Getenv("BARAKAT_NO_BROWSER") != "" {
 		return
 	}
 	prof := filepath.Join(dataDir, "browser")
@@ -267,14 +267,14 @@ func openUI(url string) {
 
 func main() {
 	dataDir = resolveDataDir()
-	logFile, _ = os.OpenFile(filepath.Join(dataDir, "shatirhassan.log"), os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0o644)
+	logFile, _ = os.OpenFile(filepath.Join(dataDir, "barakat.log"), os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0o644)
 	var ln net.Listener
 	var port int
 	for p := firstPort; p <= lastPort; p++ {
 		addr := fmt.Sprintf("127.0.0.1:%d", p)
 		if isOurs(addr) { // البرنامج يعمل مسبقاً: افتح نافذته فقط
 			logf("already running on %d", p)
-			openUI("http://" + addr + "/app/")
+			openUI("http://" + addr + "/")
 			return
 		}
 		l, err := net.Listen("tcp", addr)
@@ -287,16 +287,16 @@ func main() {
 		logf("no free port")
 		os.Exit(1)
 	}
-	url := fmt.Sprintf("http://127.0.0.1:%d/app/", port)
+	url := fmt.Sprintf("http://127.0.0.1:%d/", port)
 	logf("started on %s · data %s", url, dataDir)
-	fmt.Println("شاطر حسن يعمل على", url)
+	fmt.Println("بركات يعمل على", url)
 	fmt.Println("البيانات:", filepath.Join(dataDir, "db.json"))
 	go func() {
 		for range time.Tick(30 * time.Second) {
 			mu.Lock()
 			idle := time.Since(lastSeen)
 			mu.Unlock()
-			if idle > idleTimeout && os.Getenv("SHATIRHASSAN_STAY") == "" {
+			if idle > idleTimeout && os.Getenv("BARAKAT_STAY") == "" {
 				logf("idle, exiting")
 				os.Exit(0)
 			}

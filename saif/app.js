@@ -253,11 +253,15 @@ const RULES = [
   { type: "رقم بطاقة بنكية", sev: "high", re: /\b(?:\d[ -]?){13,19}\b/g, test: m => { const d = m.replace(/\D/g, ""); return d.length >= 13 && d.length <= 19 && luhn(d) && !/^(\d)\1+$/.test(d); } },
   { type: "رقم حساب بنكي دولي IBAN", sev: "mid", re: /\b[A-Z]{2}\d{2}(?: ?[A-Z0-9]{4}){3,7}(?: ?[A-Z0-9]{1,4})?\b/g, test: m => m.replace(/\s/g, "").length >= 15 },
   { type: "رقم بطاقة شخصية قطرية", sev: "mid", re: /\b[23]\d{10}\b/g },
+  { type: "رقم قومي مصري", sev: "mid", re: /\b[23]\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])\d{7}\b/g },
   { type: "رقم جواز سفر", sev: "mid", re: /(?:passport|جواز(?:\s*السفر)?)\s*(?:no\.?|رقم)?\s*[:#]?\s*[A-Z0-9]{6,9}\b/gi },
-  { type: "رقم هاتف", sev: "low", re: /(?:\+|00)\d{1,3}[\s-]?\d{3,4}[\s-]?\d{3,4}(?:[\s-]?\d{2,4})?\b|\b[3-7]\d{3}[\s-]?\d{4}\b/g },
+  { type: "رقم هاتف", sev: "low", re: /(?:\+|(?<!\d)00)\d{1,3}[\s-]?\d{3,4}[\s-]?\d{3,4}(?:[\s-]?\d{2,4})?\b|\b[3-7]\d{3}[\s-]?\d{4}\b|\b01[0125]\d[\s-]?\d{3}[\s-]?\d{4}\b/g },
   { type: "بريد إلكتروني", sev: "low", re: /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g }
 ];
+/* الأرقام العربية المشرقية (٠-٩) والفارسية (۰-۹) تُحوَّل إلى أرقام لاتينية قبل الفحص، فلا يفوت رقم هوية أو هاتف مكتوب بها */
+const normDigits = t => t.replace(/[\u0660-\u0669]/g, d => d.charCodeAt(0) - 0x0660).replace(/[\u06F0-\u06F9]/g, d => d.charCodeAt(0) - 0x06F0);
 function scanText(txt) {
+  txt = normDigits(txt);
   const res = [];
   RULES.forEach(r => { const m = (txt.match(r.re) || []).filter(x => !r.test || r.test(x)); if (m.length) res.push({ type: r.type, sev: r.sev, count: m.length, sample: mask(m[0]) }); });
   return res;

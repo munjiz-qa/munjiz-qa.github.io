@@ -14,11 +14,18 @@ ok(['client', 'admin'].every(u => cfg.users?.some(x => x.u === u && !x.off)), '�
 ok(cfg.users.every(x => /^pbkdf2\$\d{6,}\$/.test(x.h || '')), 'كلمات المرور محفوظة بتجزئة PBKDF2 مملّحة، لا نص صريح ولا تجزئة سريعة');
 await p.goto(B + '#home'); await p.waitForSelector('.daily', { timeout: 30000 });
 ok(!!(await p.$('meta[http-equiv="Content-Security-Policy"]')) && await p.evaluate(async () => (await fetch('https://example.com/').then(() => 'open', () => 'blocked')) === 'blocked'), 'سياسة أمان المحتوى (CSP) مفعّلة وتمنع الاتصال بمواقع غريبة');
+{ const r = await p.evaluate(() => { const g = s => document.querySelector(s)?.getBoundingClientRect(); return { m: g('.mphome'), a: g('.toprow .adhbar'), q: g('.toprow .prbar') }; });
+  ok(r.m && r.a && r.q && r.m.top < 260 && r.a.right <= r.m.left + 1 && r.q.top > r.a.top && Math.abs(r.a.top - r.m.top) < 4, 'الكمبيوتر: المصحف أعلى الرئيسية وبجواره الأذكار ومواقيت الصلاة'); }
+{ const d = await p.evaluate(() => { const r = x => { const o = dailyPick(new Date(x)); return Q.ayat[o.i][0] + ':' + Q.ayat[o.i][1] + ' ' + o.tag; };
+    return { why: document.querySelector('.daily .dl-why')?.textContent || '', arafa: r('2026-05-26T12:00'), ashura: r('2026-06-25T12:00'), fitr: r('2026-03-20T12:00') }; });
+  ok(d.why.startsWith('سبب الاختيار') && d.arafa === '5:3 يوم عرفة' && d.ashura === '26:65 يوم عاشوراء' && d.fitr === '2:185 عيد الفطر', `آية اليوم بسبب اختيارها وتتبع المناسبات الهجرية (${d.arafa} · ${d.ashura} · ${d.fitr})`); }
 ok((await p.$$('.path')).length === 4 && (await p.$$('.path .scard')).length === 21, 'الرئيسية: أربعة مسارات و٢١ بطاقة قسم (مع أدعية القرآن والمرأة والرجل)');
 { // نسخة الجوال المبسطة: فهرس كل الأقسام في أول الشاشة، وركن الأطفال بقصصه وأسئلته
   const m = await b.newPage({ viewport: { width: 390, height: 844 } }); await m.goto(B + '#home'); await m.waitForSelector('.mindex .mi-tile', { timeout: 30000 }).catch(() => {});
-  const mi = await m.evaluate(() => { const t = [...document.querySelectorAll('.mindex .mi-tile')]; return { n: t.length, top: t.length ? t[0].getBoundingClientRect().top : 9e9, paths: getComputedStyle(document.querySelector('.home2 .paths')).display }; });
-  ok(mi.n === 21 && mi.top < 844 && mi.paths === 'none', 'الجوال: فهرس الأقسام كلها يظهر في أول شاشة بدل البطاقات الطويلة');
+  const mi = await m.evaluate(() => { const t = [...document.querySelectorAll('.mindex .mi-tile')], y = s => document.querySelector(s)?.getBoundingClientRect().top ?? 9e9;
+    return { n: t.length, mp: y('.mphome'), ad: y('.toprow .adhbar'), pr: y('.toprow .prbar'), mx: t.length ? t[0].getBoundingClientRect().top : 9e9, paths: getComputedStyle(document.querySelector('.home2 .paths')).display }; });
+  ok(mi.n === 21 && mi.paths === 'none', 'الجوال: فهرس الأقسام كلها بدل البطاقات الطويلة');
+  ok(mi.mp < 200 && mi.mp < mi.ad && mi.ad < mi.pr && mi.pr < mi.mx, 'الجوال: المصحف أول الصفحة ثم الأذكار ثم مواقيت الصلاة ثم فهرس الأقسام');
   await m.evaluate(() => location.hash = 'kids'); await m.waitForTimeout(800);
   ok(await m.evaluate(() => document.querySelectorAll('.k-card .ksv').length >= 11), 'ركن الأطفال: ١١ قصة مصوّرة');
   await m.evaluate(() => location.hash = 'k-nuh'); await m.waitForTimeout(800);

@@ -1,0 +1,30 @@
+name: Mishkat mushaf check
+# يتحقق يومياً وبعد كل تحديث أن نص المصحف المتصل في «مشكاة» مطابق لنص مجمع الملك فهد حرفاً حرفاً وصفحةً صفحة.
+on:
+  push:
+    branches: [main]
+    paths: ['mishkat/mushaf.js', 'mishkat/mushaf.css', 'mishkat/data/mushaf.txt', 'mishkat/app.js', 'scripts/mishkat-mushaf-check.mjs']
+  schedule:
+    - cron: '30 5 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Wait for GitHub Pages to publish
+        if: github.event_name == 'push'
+        run: sleep 120
+      - run: npm i --no-save --no-package-lock playwright@1.47.2 && npx playwright install --with-deps chromium
+      - run: node scripts/mishkat-mushaf-check.mjs
