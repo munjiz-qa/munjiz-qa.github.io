@@ -80,6 +80,9 @@ jobs:
           script: |
             mkdir -p out
             adb install -r mishkat/android/mishkat.apk
+            adb shell 'echo "_ --disable-fre --no-default-browser-check --no-first-run" > /data/local/tmp/chrome-command-line'
+            adb shell am set-debug-app --persistent com.android.chrome
+            adb shell am force-stop com.android.chrome
             adb shell pm list packages | grep -E "mishkat|chrome"
             adb shell dumpsys package com.android.chrome | grep versionName | head -1
             adb shell am start -n app.mishkat.quran/.LauncherActivity

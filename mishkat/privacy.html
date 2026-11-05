@@ -17,7 +17,8 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.9 Readex,system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif}
 .wrap{max-width:860px;margin:0 auto;padding:24px 16px 56px}
-header{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+header{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-bottom:18px}
+@media (max-width:520px){.lang{margin-inline-start:0;width:100%}}
 header img{width:56px;height:56px;border-radius:14px}
 header b{display:block;font-size:22px;color:var(--brand)}
 header small{color:var(--muted)}
@@ -43,7 +44,7 @@ footer{color:var(--muted);font-size:14px;text-align:center}
 <div class="wrap">
 <header>
   <img src="icons/icon-192.png" alt="">
-  <div><b>مشكاة</b><small>موسوعة القرآن الذكية · Mishkat</small></div>
+  <div><b>مشكاة</b><small>موسوعة القرآن الذكية</small></div>
   <nav class="lang"><a href="#ar">العربية</a><a href="#en" lang="en">English</a></nav>
 </header>
 
