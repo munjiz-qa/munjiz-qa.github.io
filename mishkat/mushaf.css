@@ -1,5 +1,9 @@
 /* مشكاة · المصحف المتصل — صفحات على هيئة مصحف المدينة: ١٥ سطراً مضبوطة، بخط مجمع الملك فهد العثماني */
 @font-face{font-family:'KFGQPC Hafs';src:url(fonts/kfgqpc-hafs-uthmanic-v18.woff2) format('woff2');font-display:block}
+@font-face{font-family:'Noto Naskh Mushaf';src:url(fonts/noto-naskh-arabic-arabic-400-normal.woff2) format('woff2');font-display:block}
+.mp-root[data-font="amiri"] .mp-body{font-family:'Amiri Quran','KFGQPC Hafs',serif}
+.mp-root[data-font="noto"] .mp-body{font-family:'Noto Naskh Mushaf','KFGQPC Hafs',serif}
+.mp-root[data-font] .mp-n{font-family:'KFGQPC Hafs',serif} /* علامة نهاية الآية بزخرفة المصحف في كل الخطوط */
 .mp-root{--paper:#fdf9ee;--paper-ink:#1d1a12;--rule:#b8862f;--rule-soft:#ecdcb6;--orn:#8a5a14;--mphl:#ffe39b;
   --mpfs:24px;--mptw:30em;--mpw:680px;--mp-top:58px}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .mp-root{--paper:#18160f;--paper-ink:#efe6cf;--rule:#a77a2c;--rule-soft:#3b3221;--orn:#e2b866;--mphl:#6a5214}}
@@ -17,7 +21,10 @@
 .mp-pg input{width:4.4em;text-align:center}
 .mp-size{display:inline-flex;align-items:center;gap:6px}
 .mp-size .btn{min-width:40px;justify-content:center;font-weight:600}
-.mp-sizel{font-size:.8rem;color:var(--muted);text-align:center}.mp-sizel:empty{display:none}
+.mp-sizel{font-size:.8rem;color:var(--muted);text-align:center;min-width:3.2em}.mp-sizel:empty{display:none}
+.mp-size input[type=range]{width:120px;accent-color:var(--accent);height:auto;padding:0;border:0;background:none}
+.mp-fsel{display:inline-flex;align-items:center;gap:6px;font-size:.88rem;color:var(--muted)}
+.mp-bar .mp-fsel select{max-width:14em}
 #mpLay[hidden]{display:none}
 .mp-info{color:var(--muted);font-size:.85rem;margin-inline-start:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:24em}
 .mp-ix svg{width:18px;height:18px}
@@ -43,6 +50,7 @@
 .mp-l{height:1.98em;display:flex;align-items:center;white-space:nowrap;flex:none}
 .mp-t{justify-content:space-between;gap:.16em}
 .mp-t>span{font-size:calc(var(--lf,1)*1em)}
+.mp-root:not(.mp-flow) .mp-l{line-height:1.2}
 .mp-open{justify-content:center}.mp-open .mp-t{justify-content:center;gap:.32em}
 .mp-t .w,.mp-n{cursor:pointer;border-radius:.2em}
 .mp-t .w:hover,.mp-n:hover{background:color-mix(in srgb,var(--rule-soft) 75%,transparent)}

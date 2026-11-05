@@ -50,6 +50,14 @@ for (const [name, o] of [['الكمبيوتر', { viewport: { width: 1366, heigh
       return { over, n15, fill: fill / cnt }; });
     ok(!L.over.length && L.n15 === 602, `${name}: «سطور المصحف» ١٥ سطراً في كل صفحة دون تجاوز (${L.n15}/602، امتلاء السطر ${Math.round(L.fill * 100)}٪) ${L.over.slice(0, 6)}`);
     await p.click('#mpLay button[data-l="0"]'); await p.waitForTimeout(600);
+    // نوع الخط وحجمه: يتغيران من الخيارات ويُحفظان بعد إعادة الفتح، والنص لا يُقصّ
+    await p.selectOption('#mpFont', 'noto'); await p.waitForTimeout(900);
+    await p.evaluate(() => { const r = document.getElementById('mpZoom'); r.value = 150; r.dispatchEvent(new Event('change')); }); await p.waitForTimeout(900);
+    await p.reload(); let rd = false; for (let i = 0; i < 120 && !rd; i++) { rd = await p.evaluate(() => !!document.querySelector('.mp-page[data-ok] .mp-body')); if (!rd) await p.waitForTimeout(250); }
+    const F = await p.evaluate(() => { const ff = getComputedStyle(document.querySelector('.mp-page[data-ok] .mp-body')).fontFamily; let ov = 0; for (let pg = 1; pg <= 604; pg += 7) { const el = document.getElementById('mpg' + pg); delete el.dataset.ok; mpFill(el); const b = el.querySelector('.mp-body'); if (b.scrollHeight > b.clientHeight + 2) ov++; mpEmpty(el); }
+      return { ff, z: MPV.zoom, sel: document.getElementById('mpFont').value, ov }; });
+    ok(/Noto Naskh/.test(F.ff) && F.z === 150 && F.sel === 'noto' && !F.ov, `${name}: نوع الخط وحجمه يتغيران من الخيارات ويُحفظان (${F.sel} · ${F.z}٪)${F.ov ? ' صفحات مقصوصة: ' + F.ov : ''} ${/Noto Naskh/.test(F.ff) ? '' : F.ff}`);
+    await p.evaluate(() => { const f = document.getElementById('mpFont'); f.value = 'hafs'; f.dispatchEvent(new Event('change')); const r = document.getElementById('mpZoom'); r.value = 100; r.dispatchEvent(new Event('change')); }); await p.waitForTimeout(800);
     await p.evaluate(() => { const r = document.getElementById('mpRoot'); if (r?.classList.contains('mp-showopts')) document.getElementById('mpMore')?.click(); });
   }
   const go = async (sel, v) => { await p.selectOption(sel, String(v)); await p.waitForTimeout(1200); return p.evaluate(() => MPV.cur); };
