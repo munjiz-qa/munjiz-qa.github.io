@@ -19,7 +19,7 @@ const doha = (d = new Date()) => {
 // أربع خلاصات يومياً كل 6 ساعات: الصباح 5:41، الظهيرة 11:41، المساء 17:41، الليل 23:41 بتوقيت الدوحة.
 // الخلاصة المتوقعة بعد مهلة 40 دقيقة من موعدها: الصباح من 6:20، الظهيرة من 12:20، المساء من 18:20، الليل من 0:20 حتى 6:19.
 const ED = {am: 1, md: 2, pm: 3, nt: 4};
-const ED_AR = {am: 'الصباح', md: 'الظهيرة', pm: 'المساء', nt: 'الليل'}, ED_EN = {am: 'Morning', md: 'Midday', pm: 'Evening', nt: 'Night'};
+const ED_AR = {am: 'الصباح', md: 'الظهيرة', pm: 'المساء', nt: 'الليل'}, ED_WHEN = {am: 'صباح', md: 'ظهيرة', pm: 'مساء', nt: 'ليلة'}, ED_EN = {am: 'Morning', md: 'Midday', pm: 'Evening', nt: 'Night'};
 const rank = id => String(id || '').slice(0, 10) + (ED[String(id || '').slice(11)] || 0);
 function expected(now = new Date()) {
   const t = doha(now), G = 20;
@@ -133,8 +133,8 @@ async function autoBrief(exp, prev) {
   const first = l => zones.map(z => z.items.find(i => i[l])).filter(Boolean);
   const pick = (l, sep) => first(l).map(i => i[l]).join(sep);
   const thread = {
-    ar: `${ED_AR[exp.edition]} اليوم بعناوين مصادره كما نشرتها: ${pick('ar', '؛ ')}.`,
-    en: `Today's ${ED_EN[exp.edition].toLowerCase()} in the outlets' own headlines: ${pick('en', '; ')}.`,
+    ar: `${ED_WHEN[exp.edition]} اليوم بعناوين مصادره كما نشرتها: ${pick('ar', '؛ ')}.`,
+    en: `${exp.edition === 'nt' ? 'Tonight' : `This ${ED_EN[exp.edition].toLowerCase()}`} in the outlets' own headlines: ${pick('en', '; ')}.`,
     src: [...new Set([...first('ar'), ...first('en')].flatMap(i => i.src))]
   };
   // الأسواق والمواعيد من الخلاصة السابقة، بشرط حداثة المصدر وعدم فوات الموعد
