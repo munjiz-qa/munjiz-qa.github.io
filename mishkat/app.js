@@ -2831,4 +2831,9 @@ const i18nReady = i18nInit().catch(() => {});
     route(); connectCloud();
   } catch (err) { V(`<p class="loading">تعذّر تحميل البيانات. يتطلب التطبيق متصفحاً حديثاً (كروم أو سفاري أو فايرفوكس أو إيدج). ${esc(err.message)}</p>`); }
 })();
-if (IS_PWA && 'serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+/* التحديث التلقائي: عند نشر نسخة جديدة يثبّتها عامل الخدمة ثم تُعاد الصفحة مرة واحدة، فيرى الزائر الجديد دون إعادة تحميل يدوية */
+if (IS_PWA && 'serviceWorker' in navigator && !FILE_MODE) {
+  const hadSW = !!navigator.serviceWorker.controller; let swReloaded = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (!hadSW || swReloaded) return; swReloaded = true; location.reload(); });
+  navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then(reg => { const up = () => reg.update().catch(() => {}); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') up(); }); setInterval(up, 30 * 60 * 1000); }).catch(() => {});
+}
