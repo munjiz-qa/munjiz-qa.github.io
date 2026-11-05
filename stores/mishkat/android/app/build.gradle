@@ -55,7 +55,7 @@ android {
     namespace "app.mishkat.quran"
     defaultConfig {
         applicationId "app.mishkat.quran"
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 36
         versionCode = Integer.parseInt(System.getenv("VERSION_CODE") ?: "1")
         versionName = System.getenv("VERSION_NAME") ?: "1.0.0"
