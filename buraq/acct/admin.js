@@ -1,10 +1,12 @@
 // لوحة إدارة براق: صلاحيات كاملة على الطلبات والمستخدمين والخطط والكتالوج والمحتوى.
 import { printQuote } from "./quote.js?v=1";
 import { insightsHtml, INS_CSS } from "./insights.js?v=1";
+import { createUnread, titleBadge } from "./unread.js?v=1";
 import { READY, auth, db, A, F, loadProfile, createUserAsAdmin } from "./fb.js";
 import { $, esc, fmtDate, normPhone, phoneHtml, money, STATUS, stBadge, TYPES, toast, errMsg } from "./ui.js";
 import { CATALOG, KIND, CONTENT } from "./seed.js?v=2";
 
+let U = null;
 let ME = null, USERS = [], REQS = [], PLANS = [], CAT = [], unsub = [];
 $("boot").hidden = true;
 if (!READY) { $("notReady").hidden = false; throw new Error("not configured"); }
@@ -36,7 +38,9 @@ const byDate = (a, b) => (b.createdAt?.seconds || 9e9) - (a.createdAt?.seconds |
 function watch() {
   const live = (name, set) => unsub.push(F.onSnapshot(F.collection(db, name), (s) => { set(s.docs.map((d) => ({ id: d.id, ...d.data() }))); render(); }, (e) => toast(errMsg(e), true)));
   live("users", (v) => (USERS = v.sort(byDate)));
-  live("requests", (v) => (REQS = v.sort(byDate)));
+  U = createUnread({ db, F, uid: ME.id, side: "admin", onChange: () => { renderOv(); renderReqs(); titleBadge(U.count()); } });
+  unsub.push(() => { U.stop(); titleBadge(0); });
+  live("requests", (v) => { REQS = v.sort(byDate); U.sync(REQS.filter((r) => !["done", "cancelled"].includes(r.status))); });
   live("plans", (v) => (PLANS = v.sort(byDate)));
   live("catalog", (v) => (CAT = v.sort((a, b) => (a.order ?? 999) - (b.order ?? 999))));
   loadContent();
@@ -57,13 +61,14 @@ function renderOv() {
   $("kpis").innerHTML = [
     [REQS.length, "كل الطلبات"], [c("new"), "طلبات جديدة"], [open, "طلبات مفتوحة"], [c("quoted"), "عروض بانتظار العميل"],
     [USERS.filter((u) => u.role === "customer").length, "العملاء"], [USERS.filter((u) => u.role === "admin").length, "المديرون"],
-    [PLANS.length, "خطط محفوظة"], [money(val), "قيمة الطلبات المعتمدة"]
+    [PLANS.length, "خطط محفوظة"], [money(val), "قيمة الطلبات المعتمدة"], [U ? U.count() : 0, "رسائل بانتظار ردك"]
   ].map(([v, l]) => `<div class="kpi"><b>${v}</b><span>${l}</span></div>`).join("");
   $("insights").innerHTML = insightsHtml(REQS);
   $("latest").innerHTML = REQS.slice(0, 6).map(reqItem).join("") || `<div class="empty">لا توجد طلبات بعد.</div>`;
-  $("nReq").textContent = REQS.length; $("nUsr").textContent = USERS.length; $("nPlan").textContent = PLANS.length;
+  { const nu = U ? U.count() : 0; $("nReq").textContent = REQS.length + (nu ? ` · ${nu} بانتظار ردك` : ""); } $("nUsr").textContent = USERS.length; $("nPlan").textContent = PLANS.length;
 }
-const reqItem = (r) => `<article class="item"><div><h3>${esc(r.name)} · ${esc(TYPES[r.type] || r.type)} ${stBadge(r.status)}</h3><div class="meta"><span dir="ltr">${esc(r.no)}</span><span>${esc(r.car || "—")}</span><span>${fmtDate(r.createdAt, true)}</span></div></div><div class="acts"><button class="btn sm pri" data-open="${r.id}">إدارة الطلب</button></div></article>`;
+const waitBadge = (r) => (U && U.isUnread(r.id) ? ` <span class="badge msg-new" data-unread>رسالة بانتظار ردك</span>` : "");
+const reqItem = (r) => `<article class="item"><div><h3>${esc(r.name)} · ${esc(TYPES[r.type] || r.type)} ${stBadge(r.status)}${waitBadge(r)}</h3><div class="meta"><span dir="ltr">${esc(r.no)}</span><span>${esc(r.car || "—")}</span><span>${fmtDate(r.createdAt, true)}</span></div></div><div class="acts"><button class="btn sm pri" data-open="${r.id}">إدارة الطلب</button></div></article>`;
 { const st = document.createElement("style"); st.textContent = INS_CSS; document.head.appendChild(st); }
 $("insights").onclick = (e) => { const b = e.target.closest("[data-open]"); if (b) openReq(b.dataset.open); };
 $("latest").onclick = (e) => { const b = e.target.closest("[data-open]"); if (b) openReq(b.dataset.open); };
@@ -77,7 +82,7 @@ function filteredReqs() {
 }
 function renderReqs() {
   const L = filteredReqs();
-  $("reqRows").innerHTML = L.length ? L.map((r) => `<tr><td dir="ltr" style="text-align:right">${esc(r.no)}</td><td>${esc(r.name)}<div class="mute sm" dir="ltr" style="text-align:right">${esc(r.email)}</div></td><td>${phoneHtml(r.phone)}</td><td>${esc(TYPES[r.type] || r.type)}</td><td>${esc(r.car || "—")}</td><td>${stBadge(r.status)}</td><td>${money(r.price, r.currency)}</td><td>${fmtDate(r.createdAt)}</td><td><button class="btn sm pri" data-open="${r.id}">إدارة</button></td></tr>`).join("")
+  $("reqRows").innerHTML = L.length ? L.map((r) => `<tr${U && U.isUnread(r.id) ? ' class="unread"' : ""}><td dir="ltr" style="text-align:right">${esc(r.no)}${waitBadge(r)}</td><td>${esc(r.name)}<div class="mute sm" dir="ltr" style="text-align:right">${esc(r.email)}</div></td><td>${phoneHtml(r.phone)}</td><td>${esc(TYPES[r.type] || r.type)}</td><td>${esc(r.car || "—")}</td><td>${stBadge(r.status)}</td><td>${money(r.price, r.currency)}</td><td>${fmtDate(r.createdAt)}</td><td><button class="btn sm pri" data-open="${r.id}">إدارة</button></td></tr>`).join("")
     : `<tr><td colspan="9" class="mute" style="text-align:center;padding:24px">لا توجد طلبات مطابقة.</td></tr>`;
 }
 $("reqRows").onclick = (e) => { const b = e.target.closest("[data-open]"); if (b) openReq(b.dataset.open); };
@@ -109,6 +114,7 @@ function openReq(id) {
   <div class="thread" id="thread"></div>
   <form id="msgF" style="display:flex;gap:8px;align-items:flex-end"><textarea id="msgT" maxlength="2000" style="min-height:48px" placeholder="اكتب ردك للعميل" required></textarea><button class="btn pri" type="submit">إرسال</button></form>`;
   $("dlg").showModal();
+  if (U) U.setOpen(id);
   if (msgUnsub) msgUnsub();
   msgUnsub = F.onSnapshot(F.query(F.collection(db, "requests", id, "msgs"), F.orderBy("at")), (s) => {
     const t = $("thread"); if (!t) return;
@@ -133,7 +139,7 @@ function openReq(id) {
     try { await F.addDoc(F.collection(db, "requests", id, "msgs"), { uid: ME.id, name: ME.name, fromAdmin: true, text, at: F.serverTimestamp() }); $("msgT").value = ""; } catch (err) { toast(errMsg(err), true); }
   };
 }
-$("dlg").addEventListener("close", () => { if (msgUnsub) { msgUnsub(); msgUnsub = null; } });
+$("dlg").addEventListener("close", () => { if (msgUnsub) { msgUnsub(); msgUnsub = null; } if (U) U.setOpen(null); });
 $("csvReq").onclick = () => {
   const rows = [["رقم الطلب", "العميل", "البريد", "الجوال", "المدينة", "النوع", "السيارة", "الحالة", "عرض السعر USD", "التاريخ", "التفاصيل"]]
     .concat(filteredReqs().map((r) => [r.no, r.name, r.email, r.phone, r.city, TYPES[r.type] || r.type, r.car, STATUS[r.status]?.[0], r.price ?? "", fmtDate(r.createdAt, true), r.details]));
