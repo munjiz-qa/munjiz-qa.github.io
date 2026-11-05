@@ -283,12 +283,69 @@ async function ooxmlText(buf) {
   }
   return out;
 }
+/* نص ملفات PDF: تُفك ضغط تدفقات المحتوى (FlateDecode) داخل المتصفح، ويُستخرج النص المكتوب بخطوط قياسية من أوامر Tj وTJ ومن البيانات الوصفية.
+   ملفات PDF الممسوحة ضوئياً أو ذات الخطوط المضمّنة بترميز خاص قد لا يُستخرج نصها، فتُحسب بصمتها فقط. */
+/* فك ضغط متسامح: كثير من ملفات PDF تضيف سطراً أو بايتات بعد نهاية البيانات المضغوطة، فيُحتفظ بما فُكّ قبل الخطأ */
+async function zinflate(u8) {
+  const rd = new Blob([u8]).stream().pipeThrough(new DecompressionStream("deflate")).getReader(), parts = []; let n = 0;
+  try { for (;;) { const { done, value } = await rd.read(); if (done) break; parts.push(value); n += value.length; } } catch (e) { if (!n) throw e; }
+  const out = new Uint8Array(n); let o = 0; for (const p of parts) { out.set(p, o); o += p.length; } return out;
+}
+function a85(u8) {
+  const s = new TextDecoder("latin1").decode(u8).replace(/^\s*<~/, "").replace(/~>[\s\S]*$/, "").replace(/\s+/g, ""), out = []; let t = [];
+  for (const ch of s) {
+    if (ch === "z" && !t.length) { out.push(0, 0, 0, 0); continue; }
+    const v = ch.charCodeAt(0) - 33; if (v < 0 || v > 84) throw new Error("a85"); t.push(v);
+    if (t.length === 5) { let n = 0; for (const x of t) n = n * 85 + x; out.push(n >>> 24 & 255, n >>> 16 & 255, n >>> 8 & 255, n & 255); t = []; }
+  }
+  if (t.length) { const k = t.length; while (t.length < 5) t.push(84); let n = 0; for (const x of t) n = n * 85 + x; out.push(...[n >>> 24 & 255, n >>> 16 & 255, n >>> 8 & 255, n & 255].slice(0, k - 1)); }
+  return new Uint8Array(out);
+}
+function pdfStrings(src) {
+  let out = "", i = 0; const n = src.length;
+  while (i < n) {
+    const c = src[i];
+    if (c === "(") {
+      let d = 1, t = ""; i++;
+      while (i < n && d > 0) {
+        const ch = src[i];
+        if (ch === "\\") { const nx = src[i + 1]; const m = { n: "\n", r: "\n", t: " ", b: "", f: "", "(": "(", ")": ")", "\\": "\\" }; if (nx in m) { t += m[nx]; i += 2; continue; } if (/[0-7]/.test(nx)) { const o = /^[0-7]{1,3}/.exec(src.slice(i + 1, i + 4))[0]; t += String.fromCharCode(parseInt(o, 8)); i += 1 + o.length; continue; } i += 2; continue; }
+        if (ch === "(") d++; else if (ch === ")") { d--; if (!d) break; }
+        t += ch; i++;
+      }
+      out += t; i++;
+    } else if (c === "]" || (c === "T" && (src[i + 1] === "*" || src[i + 1] === "J" || src[i + 1] === "j"))) { out += " "; i++; }
+    else if (c === "E" && src[i + 1] === "T") { out += "\n"; i += 2; }
+    else i++;
+  }
+  return out;
+}
+async function pdfText(buf) {
+  const u8 = new Uint8Array(buf), lat = new TextDecoder("latin1").decode(u8); let out = "", total = 0, got = false;
+  const meta = lat.match(/\/(?:Title|Author|Subject|Keywords|Creator)\s*\([^)]{0,500}\)/g); if (meta) out += pdfStrings(meta.join(" ").replace(/\/\w+\s*/g, " ")) + "\n";
+  const re = />>\s*stream\r?\n/g; let m;
+  while ((m = re.exec(lat)) && total < 8 * 1048576) {
+    const st = m.index + m[0].length, en = lat.indexOf("endstream", st); if (en < 0) break;
+    const ob = lat.lastIndexOf(" obj", m.index), dict = lat.slice(ob < 0 ? Math.max(0, m.index - 2000) : ob, m.index); if (/\/(?:Subtype\s*\/Image|Type\s*\/(?:XObject|Font|FontDescriptor|ObjStm|XRef))/.test(dict) || /\/(?:DCTDecode|JPXDecode|CCITTFaxDecode|JBIG2Decode)/.test(dict)) { re.lastIndex = en; continue; }
+    let e2 = en; while (e2 > st && (u8[e2 - 1] === 10 || u8[e2 - 1] === 13)) e2--;
+    let data = u8.subarray(st, e2);
+    const fl = (dict.match(/\/Filter\s*(\[[^\]]*\]|\/\w+)/) || [, ""])[1].match(/\/\w+/g) || [];
+    if (fl.some(f => f !== "/FlateDecode" && f !== "/ASCII85Decode")) { re.lastIndex = en; continue; }
+    try { for (const f of fl) data = f === "/ASCII85Decode" ? a85(data) : await zinflate(data); } catch (e) { re.lastIndex = en; continue; }
+    total += data.length; const s = new TextDecoder("latin1").decode(data);
+    if (/\bBT\b/.test(s)) { const x = pdfStrings(s); if (x.trim()) { got = true; out += x + "\n"; } }
+    re.lastIndex = en;
+  }
+  /* إن لم يُستخرج نص الصفحات (ملف ممسوح أو بخطوط مرمّزة) يُعامل كملف غير مقروء المحتوى، فلا يُوصف بأنه خالٍ من البيانات الحساسة */
+  return got ? out : null;
+}
 async function analyze(file) {
   const buf = await file.arrayBuffer();
   const sha = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", buf)), b => b.toString(16).padStart(2, "0")).join("");
   let txt = null;
   if (file.size <= 20 * 1048576) {
     if (OOXML.test(file.name)) txt = await ooxmlText(buf);
+    else if (/\.pdf$/i.test(file.name) || file.type === "application/pdf") txt = await pdfText(buf);
     else if (TEXT_EXT.test(file.name) || /^text\//.test(file.type) || file.type === "application/json") txt = new TextDecoder().decode(buf);
   }
   return { name: file.name, size: file.size, sha, kind: txt != null ? "text" : "binary", findings: txt != null ? scanText(txt) : [] };
@@ -308,7 +365,7 @@ password = Test-Only-123
 /* ---------- عرض التقارير ---------- */
 const sevPill = s => pill(s === "high" ? "alert" : s === "mid" ? "warn" : "na", C.SEV[s]);
 function repDetail(r) {
-  return `<div class="scroll"><table><thead><tr><th>الملف</th><th>الحجم</th><th>الحالة</th><th>نتيجة الفحص</th></tr></thead><tbody>${r.files.map(f => `<tr><td>${esc(f.name)}<div class="mono mute">${f.sha.slice(0, 16)}…</div></td><td class="num">${size(f.size)}</td><td>${pill(f.status === "changed" ? "warn" : f.status === "new" ? "na" : "ok", FST[f.status])}</td><td>${f.kind === "binary" ? '<span class="mute small">بصمة فقط (المحتوى غير نصي)</span>' : f.findings.length ? f.findings.map(g => `<div>${sevPill(g.sev)} ${esc(g.type)} × <span class="num">${g.count}</span> <span class="mono mute">${esc(g.sample)}</span></div>`).join("") : pill("ok", "لا بيانات حساسة")}</td></tr>`).join("")}</tbody></table></div>
+  return `<div class="scroll"><table><thead><tr><th>الملف</th><th>الحجم</th><th>الحالة</th><th>نتيجة الفحص</th></tr></thead><tbody>${r.files.map(f => `<tr><td>${esc(f.name)}<div class="mono mute">${f.sha.slice(0, 16)}…</div></td><td class="num">${size(f.size)}</td><td>${pill(f.status === "changed" ? "warn" : f.status === "new" ? "na" : "ok", FST[f.status])}</td><td>${f.kind === "binary" ? '<span class="mute small">بصمة فقط (لم يُقرأ المحتوى: صورة أو ملف مضغوط أو أكبر من 20 م.ب)</span>' : f.findings.length ? f.findings.map(g => `<div>${sevPill(g.sev)} ${esc(g.type)} × <span class="num">${g.count}</span> <span class="mono mute">${esc(g.sample)}</span></div>`).join("") : pill("ok", "لا بيانات حساسة")}</td></tr>`).join("")}</tbody></table></div>
   <div class="note">الختم: <span class="mono">${r.seal}</span><br>الختم السابق: <span class="mono">${r.prev || "— (أول تقرير)"}</span></div>
   <div class="row noprint" style="margin-top:8px"><button class="sm" data-print="${r.n}" type="button">طباعة أو حفظ PDF</button></div>`;
 }
@@ -349,7 +406,7 @@ const PAGES = {
     v.innerHTML = `<h1 class="pg">فحص الملفات <small>المحتوى يُقرأ داخل متصفحك فقط ولا يُرسل إلى أي مكان</small></h1>
       <div class="card"><div class="drop" id="drop"><p style="margin:0 0 10px;font-size:16px"><b>اسحب الملفات هنا</b> أو اخترها من جهازك</p>
         <div class="row" style="justify-content:center"><label class="btn pri" style="margin:0">اختيار ملفات<input type="file" id="fi" multiple></label><button type="button" id="demo">تجربة بملف اختبار وهمي</button></div>
-        <p class="note">يُفحص محتوى النصوص والجداول وملفات Word وExcel وPowerPoint حتى 20 م.ب للملف، وتُحسب بصمة كل الملفات أياً كان نوعها.</p></div>
+        <p class="note">يُفحص محتوى النصوص والجداول وملفات Word وExcel وPowerPoint وPDF النصية حتى 20 م.ب للملف، وتُحسب بصمة كل الملفات أياً كان نوعها.</p></div>
         <div id="prog" class="small mute" style="margin-top:10px" aria-live="polite"></div></div><div id="res" style="margin-top:14px"></div>`;
     const go = async files => {
       files = Array.from(files).slice(0, 200); if (!files.length) return;
