@@ -265,9 +265,9 @@ async function seed(){
   const d=(m,day=5)=>{const x=new Date(t0);x.setMonth(x.getMonth()+m);x.setDate(day);x.setHours(10,30,0,0);return x.toISOString()};
   db={v:1,seq:1000,users:[],tx:[],reqs:[],cash:[],dist:[],policies:[],claims:[],msgs:[],fundOut:[],funds:{zakat:0,sadaqa:0,waqf:0,qard:250000,takaful:42000,takafulFee:0},log:[],
       settings:{murabahaRate:5,ijaraRate:5.5,musharakaRate:5,mudaribShare:30,goldPrice:245,qardMax:20000,minDown:20,takafulFee:20}};
-  const mk=async(o)=>{const salt=Math.random().toString(36).slice(2);const u={id:uid('u'),acct:'BR-'+(++db.seq)+String(Math.floor(Math.random()*9000+1000)),salt,pass:await hash(o.pw,salt),
+  const mk=async(o)=>{const salt=Math.random().toString(36).slice(2);const u={id:uid('u'),acct:'BR-'+(++db.seq)+String(Math.floor(Math.random()*9000+1000)),salt,pass:o.pw?await hash(o.pw,salt):null,
     name:o.name,email:o.email,phone:phoneDigits(o.phone),nid:o.nid||'',role:o.role||'customer',status:o.status||'active',created:o.created||d(0,1),bal:{current:0,invest:0}};delete u.pw;db.users.push(u);return u};
-  await mk({name:'مدير النظام',email:'admin@barakat.qa',phone:'55000001',pw:'Barakat@Admin2026',role:'admin'});
+  await mk({name:'مدير النظام',email:'admin@barakat.qa',phone:'55000001',pw:null,role:'admin'});
   const c=await mk({name:'عبدالله محمد الكواري',email:'client@barakat.qa',phone:'55123456',nid:'28763400001',pw:'Client@2026'});
   const c2=await mk({name:'مريم أحمد السليطي',email:'maryam@barakat.qa',phone:'66234567',nid:'29063400002',pw:'Client@2026'});
   await mk({name:'يوسف خالد العلي',email:'yousef@barakat.qa',phone:'33456789',nid:'29563400003',pw:'Client@2026',status:'pending',created:d(4,1)});
@@ -916,6 +916,11 @@ const FORMS={
   async login(f){
     const id=f.id.trim().toLowerCase();const pd=phoneDigits(id);
     const u=db.users.find(x=>x.email.toLowerCase()===id||(pd.length>=8&&x.phone===pd)||x.acct.toLowerCase()===id);
+    if(u&&u.role==='admin'&&u.pass==null){
+      // أول تشغيل: لا كلمة مرور مثبّتة في المصدر؛ أول كلمة مرور قوية يكتبها المدير تصبح كلمة مرور الإدارة.
+      need(f.pw.length>=8&&/[A-Za-z\u0600-\u06FF]/.test(f.pw)&&/\d/.test(f.pw),'هذا أول دخول للإدارة: اختر كلمة مرور من 8 أحرف على الأقل تجمع حروفاً وأرقاماً.');
+      u.pass=await hash(f.pw,u.salt);logA('تعيين كلمة مرور الإدارة عند أول تشغيل',u.name);toast('حُفظت كلمة مرور الإدارة. احتفظ بها في مكان آمن.');
+    }
     need(u&&u.pass===await hash(f.pw,u.salt),'بيانات الدخول غير صحيحة.');
     store.set(SKEY,u.id);logA('تسجيل دخول',u.name);save();toast(`مرحباً ${u.name.split(' ')[0]}`);go(u.role==='admin'?'#/a/home':'#/c/home');
   },
