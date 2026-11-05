@@ -39,6 +39,19 @@ for (const [name, o] of [['الكمبيوتر', { viewport: { width: 1366, heigh
   ok(pg === 6236, `${name}: صفحة كل آية تطابق مصحف المدينة (${pg}/6236)`);
   ok(nm === 6236 && R.seq && R.last === 6235, `${name}: الآيات متتابعة ورقم كل آية مرة واحدة (${nm}/6236)`);
   ok(R.over.length === 0, `${name}: لا سطر يتجاوز صفحته ${R.over.slice(0, 6)}`);
+  { // «سطور المصحف»: ١٥ سطراً في كل صفحة، والسطور ممتلئة دون أن تتجاوز العرض
+    await p.evaluate(() => { const r = document.getElementById('mpRoot'); if (r && !r.querySelector('#mpLay')?.offsetParent) document.getElementById('mpMore')?.click(); });
+    await p.click('#mpLay button[data-l="1"]'); await p.waitForTimeout(800);
+    const L = await p.evaluate(() => { const over = []; let n15 = 0, fill = 0, cnt = 0;
+      for (let pg = 3; pg <= 604; pg++) { const el = document.getElementById('mpg' + pg); delete el.dataset.ok; mpFill(el);
+        const ls = el.querySelectorAll('.mp-body > .mp-l'); if (ls.length === 15) n15++;
+        el.querySelectorAll('.mp-t').forEach((l, li) => { if (l.scrollWidth > l.clientWidth + 1) over.push(pg + ':' + (li + 1)); const k = l.children; let t = 0; for (const c of k) t += c.getBoundingClientRect().width; fill += t / l.clientWidth; cnt++; });
+        const bd = el.querySelector('.mp-body'); if (bd.scrollHeight > bd.clientHeight + 2) over.push(pg + ':h'); mpEmpty(el); }
+      return { over, n15, fill: fill / cnt }; });
+    ok(!L.over.length && L.n15 === 602, `${name}: «سطور المصحف» ١٥ سطراً في كل صفحة دون تجاوز (${L.n15}/602، امتلاء السطر ${Math.round(L.fill * 100)}٪) ${L.over.slice(0, 6)}`);
+    await p.click('#mpLay button[data-l="0"]'); await p.waitForTimeout(600);
+    await p.evaluate(() => { const r = document.getElementById('mpRoot'); if (r?.classList.contains('mp-showopts')) document.getElementById('mpMore')?.click(); });
+  }
   const go = async (sel, v) => { await p.selectOption(sel, String(v)); await p.waitForTimeout(1200); return p.evaluate(() => MPV.cur); };
   ok(await go('#mpSur', 18) === 293 && await go('#mpJuz', 30) === 582, `${name}: الانتقال إلى سورة وجزء`);
   await p.fill('#mpPage', '201'); await p.press('#mpPage', 'Enter'); await p.waitForTimeout(1500);

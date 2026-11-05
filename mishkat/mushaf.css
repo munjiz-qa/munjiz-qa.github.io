@@ -17,7 +17,8 @@
 .mp-pg input{width:4.4em;text-align:center}
 .mp-size{display:inline-flex;align-items:center;gap:6px}
 .mp-size .btn{min-width:40px;justify-content:center;font-weight:600}
-.mp-sizel{font-size:.8rem;color:var(--muted);min-width:7em;text-align:center}
+.mp-sizel{font-size:.8rem;color:var(--muted);text-align:center}.mp-sizel:empty{display:none}
+#mpLay[hidden]{display:none}
 .mp-info{color:var(--muted);font-size:.85rem;margin-inline-start:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:24em}
 .mp-ix svg{width:18px;height:18px}
 .mp-more{display:none}
@@ -41,6 +42,7 @@
 .mp-body{flex:1;display:flex;flex-direction:column;font-family:'KFGQPC Hafs',var(--f-quran);direction:rtl;min-height:0}
 .mp-l{height:1.98em;display:flex;align-items:center;white-space:nowrap;flex:none}
 .mp-t{justify-content:space-between;gap:.16em}
+.mp-t>span{font-size:calc(var(--lf,1)*1em)}
 .mp-open{justify-content:center}.mp-open .mp-t{justify-content:center;gap:.32em}
 .mp-t .w,.mp-n{cursor:pointer;border-radius:.2em}
 .mp-t .w:hover,.mp-n:hover{background:color-mix(in srgb,var(--rule-soft) 75%,transparent)}

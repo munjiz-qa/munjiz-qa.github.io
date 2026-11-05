@@ -60,6 +60,16 @@ main{padding-block:26px 70px}
 .searchbar input{flex:1;min-width:0;border:1px solid var(--line);background:var(--sheet);border-radius:999px;padding:8px 16px}
 .iconbtn{border:1px solid var(--line);background:var(--sheet);border-radius:999px;width:40px;height:40px;display:inline-grid;place-items:center;cursor:pointer;flex:none}
 .iconbtn[hidden]{display:none}a.iconbtn{color:inherit}
+.instbtn{width:auto;padding-inline:12px 14px;gap:6px;display:inline-flex;align-items:center;background:var(--accent);color:var(--accent-ink);border-color:transparent;font:inherit;font-size:.88rem;font-weight:600;white-space:nowrap}
+.instbtn[hidden]{display:none}
+.instbtn svg{stroke:currentColor}
+@media (max-width:760px){.instbtn{width:40px;padding:0;justify-content:center}.instbtn span{display:none}}
+.instsheet h2{margin:0 0 4px}.instsheet h3{margin:6px 0 2px;font-size:1rem}
+.in-head{display:flex;gap:14px;align-items:center}.in-head img{border-radius:16px;flex:none;box-shadow:var(--shadow)}
+.in-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.in-steps li{display:flex;gap:10px;align-items:flex-start;line-height:1.7}
+.in-n{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:.85rem}
+.in-more summary{cursor:pointer;color:var(--muted);margin-top:4px}
 .iconbtn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .tabbar{display:none}
 .banner{background:var(--saffron-soft);color:var(--ink);border-bottom:1px solid var(--line)}

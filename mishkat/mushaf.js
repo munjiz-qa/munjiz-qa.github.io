@@ -6,7 +6,8 @@
 const MPV = { data: null, mode: 'scroll', size: 0, cur: 1, io: null, posIO: null, fs: 24, flow: false, jumping: 0 };
 const MP_AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
 const MP_PART = ['الحزب', 'ربع الحزب', 'نصف الحزب', 'ثلاثة أرباع الحزب'];
-const MP_SCALE = { '-1': 0.8, 0: 1, 1: 1.25, 2: 1.5, 3: 1.8 }; // درجات حجم الخط
+const MP_SCALE = { '-1': 0.8, 0: 1, 1: 1.25, 2: 1.5, 3: 1.8 };
+const MP_COMF = { '-1': 21, 0: 26, 1: 30, 2: 35, 3: 41 }; // «قراءة مريحة»: حجم الخط بالبكسل لكل درجة // درجات حجم الخط
 const MP_LINE = 1.98, MP_FLOW_LINE = 2.08, MP_HEAD = 1.75, MP_FOOT = 1.75, MP_PAD = 0.55, MP_SIDE = 0.8; // مقاييس الصفحة بوحدة حجم الخط
 
 async function mpData() {
@@ -55,7 +56,16 @@ function mpPageInner(p) {
   <div class="mp-body${p <= 2 ? ' mp-open' : ''}"${sc ? ` style="font-size:${sc}em"` : ''}>${D.p[p - 1].map(mpLine).join('')}</div>
   <footer class="mp-foot"><span class="mp-pn">${MP_AR(p)}</span></footer>`;
 }
-function mpFill(el) { if (el.dataset.ok) return; el.dataset.ok = 1; el.innerHTML = mpPageInner(+el.dataset.p); }
+function mpFill(el) { if (el.dataset.ok) return; el.dataset.ok = 1; el.innerHTML = mpPageInner(+el.dataset.p); if (!MPV.flow) mpFit(el); }
+/* ملء السطر كما في المصحف: خط المجمع الحاسوبي لا يمدّ الحروف (الكشيدة) كما يفعل الخطاط، فيكبر خط الصفحة كلها حتى يملأ أطول سطورها العرض،
+   ويكبر كل سطر قصير قليلاً فوق ذلك، فتضيق الفراغات بين الكلمات. السطور الخمسة عشر وارتفاعها لا يتغيران، والنص نفسه لا يُمسّ. */
+function mpFit(el) {
+  const L = [...el.querySelectorAll('.mp-body:not(.mp-open) .mp-t')]; if (!L.length) return;
+  const W = L[0].clientWidth; if (!W) return;
+  const nat = L.map(l => { const k = l.children; if (!k.length) return 0; let t = 0; for (const c of k) t += c.getBoundingClientRect().width; return t + parseFloat(getComputedStyle(l).columnGap || 0) * (k.length - 1); });
+  const pg = Math.min(1.16, 0.985 * W / Math.max(...nat));
+  L.forEach((l, i) => { const f = nat[i] ? Math.min(pg * 1.07, 0.985 * W / nat[i]) : pg; if (f > 1.005) l.style.setProperty('--lf', f.toFixed(3)); });
+}
 function mpEmpty(el) { if (!el.dataset.ok) return; delete el.dataset.ok; el.innerHTML = `<span class="mp-ph">${MP_AR(el.dataset.p)}</span>`; }
 function mpRefill() { $$('#mpRoot .mp-page[data-ok]').forEach(el => { delete el.dataset.ok; mpFill(el); }); }
 
@@ -76,7 +86,8 @@ function mpMeasure() {
     widthPx = fs * pageEm;
   } else {
     const base = Math.min(box, 760), want = base * MP_SCALE[MPV.size];
-    if (want <= box + 1) { widthPx = want; fs = want / pageEm; }
+    if (!MPV.lines) { flow = true; widthPx = Math.min(box, 840); fs = MP_COMF[MPV.size] * (innerWidth < 700 ? 0.78 : 1); }
+    else if (want <= box + 1) { widthPx = want; fs = want / pageEm; }
     else { flow = true; widthPx = box; fs = Math.min(40, want / pageEm); }
   }
   MPV.fs = Math.max(10, fs);
@@ -90,10 +101,11 @@ function mpMeasure() {
   const inner = widthPx / MPV.fs - 2 * MP_SIDE;
   $$('#mpRoot .mp-page').forEach((el, k) => {
     let h = fixed;
-    if (flow) { const L = D.p[k], hd = L.filter(x => typeof x[0] !== 'number').length; const segs = [].concat(D.ws[k]); h = (MP_HEAD + MP_FOOT + 2 * MP_PAD + hd * (MP_LINE + 0.4) + (segs.reduce((t, w) => t + Math.ceil(w * 1.06 / inner), 0) + 1) * MP_FLOW_LINE) * MPV.fs; }
+    if (flow) { const L = D.p[k], hd = L.filter(x => typeof x[0] !== 'number').length; const segs = [].concat(D.ws[k]); h = (MP_HEAD + MP_FOOT + 2 * MP_PAD + hd * (MP_LINE + 0.4) + (segs.reduce((t, w) => t + Math.ceil(w * (1 + 1.4 / inner) / inner), 0) + 1) * MP_FLOW_LINE) * MPV.fs; }
     el.style.height = h.toFixed(1) + 'px';
   });
-  $('#mpSizeLbl').textContent = flip ? '' : MPV.flow ? 'نص منساب داخل الصفحة' : 'سطور المصحف';
+  $('#mpSizeLbl').textContent = flip ? '' : !MPV.lines ? '' : MPV.flow ? 'نص منساب داخل الصفحة' : 'سطور المصحف';
+  $$('#mpLay button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.l === +MPV.lines))); $('#mpLay').hidden = flip;
 }
 function mpSetMode(mode) {
   const root = $('#mpRoot'), p = MPV.cur; MPV.mode = mode;
@@ -154,7 +166,7 @@ async function mushafRead(p, opt = {}) {
   let D; try { [D] = await Promise.all([mpData(), new Promise(r => { const l = $('#mpCss'); if (l.sheet) r(); else { l.addEventListener('load', r); l.addEventListener('error', r); } }).then(() => document.fonts.load('20px "KFGQPC Hafs"', 'بِسۡمِ'))]); }
   catch (e) { V(`<p class="loading">تعذّر فتح المصحف: ${esc(e.message)}</p>`); return; }
   if (!/^#p/.test(location.hash)) return; // انتقل الزائر إلى قسم آخر أثناء التحميل
-  MPV.mode = ST.prefs.mpMode === 'flip' ? 'flip' : 'scroll'; MPV.size = [-1, 0, 1, 2, 3].includes(ST.prefs.mpSize) ? ST.prefs.mpSize : 0; MPV.flow = false;
+  MPV.mode = ST.prefs.mpMode === 'flip' ? 'flip' : 'scroll'; MPV.size = [-1, 0, 1, 2, 3].includes(ST.prefs.mpSize) ? ST.prefs.mpSize : 0; MPV.flow = false; MPV.lines = ST.prefs.mpLines === true; // الافتراضي «قراءة مريحة»، و«سطور المصحف» اختيار
   if (opt.surah) p = D.hdr[opt.surah][0]; else if (opt.ayah != null) p = D.pageOf[opt.ayah];
   const sOpts = Q.surahs.map(s => `<option value="${s.n}">${MP_AR(s.n)}. ${s.name}</option>`).join('');
   const jOpts = Array.from({ length: 30 }, (_, j) => `<option value="${j + 1}">الجزء ${MP_AR(j + 1)}</option>`).join('');
@@ -171,6 +183,7 @@ async function mushafRead(p, opt = {}) {
     </div>
     <div class="mp-row mp-opts" id="mpOpts">
       <div class="seg" id="mpMode" role="group" aria-label="طريقة العرض"><button data-m="scroll" aria-pressed="false">قراءة متصلة</button><button data-m="flip" aria-pressed="false">تقليب الصفحات</button></div>
+      <div class="seg" id="mpLay" role="group" aria-label="هيئة النص"><button data-l="0" aria-pressed="false">قراءة مريحة</button><button data-l="1" aria-pressed="false">سطور المصحف</button></div>
       <div class="mp-size" id="mpSize" role="group" aria-label="حجم الخط"><button class="btn" data-d="-1" aria-label="تصغير الخط">أ−</button><span id="mpSizeLbl" class="mp-sizel"></span><button class="btn" data-d="1" aria-label="تكبير الخط">أ+</button></div>
       <button class="btn" id="mpPrev" aria-label="الصفحة السابقة">→ السابقة</button><button class="btn" id="mpNext" aria-label="الصفحة التالية">التالية ←</button>
       <button class="btn" id="mpFull" aria-label="ملء الشاشة">ملء الشاشة</button>
@@ -183,6 +196,7 @@ async function mushafRead(p, opt = {}) {
   const root = $('#mpRoot');
   $('#mpMore').onclick = () => { const on = !root.classList.contains('mp-showopts'); root.classList.toggle('mp-showopts', on); $('#mpMore').setAttribute('aria-expanded', on); };
   $('#mpMode').onclick = e => { const b = e.target.closest('button'); if (b && b.dataset.m !== MPV.mode) mpSetMode(b.dataset.m); };
+  $('#mpLay').onclick = e => { const b = e.target.closest('button'); if (!b) return; const v = b.dataset.l === '1'; if (v === MPV.lines) return; MPV.lines = v; ST.prefs.mpLines = v; save(); const p0 = MPV.cur; mpMeasure(); mpRefill(); mpGo(p0, null, true); };
   $('#mpSize').onclick = e => { const b = e.target.closest('button'); if (!b) return; const s = Math.max(-1, Math.min(3, MPV.size + +b.dataset.d)); if (s === MPV.size) return; MPV.size = s; ST.prefs.mpSize = s; save(); const p0 = MPV.cur; mpMeasure(); mpGo(p0, null, true); };
   $('#mpSur').onchange = e => { const s = +e.target.value; mpGo(D.hdr[s][0], Q.surahs[s - 1].first); };
   $('#mpJuz').onchange = e => { const a = D.q[(+e.target.value - 1) * 8]; mpGo(D.pageOf[a], a); };
