@@ -142,7 +142,7 @@ function drawNav() { $('#nav').innerHTML = navHTML(); }
 /* مسارات مشكاة: كل قسم بوصفه ولونه ومساره، تُبنى منها الرئيسية وروابط «تابع الاستكشاف» */
 const PATHS = [
   ['p1', 'اقرأ وتدبّر', 'النص الكريم ومعانيه: تلاوة، وبحث بالفكرة، وموضوعات مفهرسة.', [
-    ['mushaf', 'i-book', 'المصحف', 'رواية حفص بخط واضح، مع التفسير والمعاني لكل آية.', () => `${n(Q.surahs.length)} سورة`],
+    ['mushaf', 'i-book', 'المصحف', 'صفحات مصحف المدينة متصلة بخط مجمع الملك فهد، مع التفسير والمعاني لكل آية.', () => `${n(Q.surahs.length)} سورة`],
     ['search', 'i-search', 'البحث بالمعنى', 'اكتب الفكرة بلغتك، فتظهر الآيات الأقرب إليها مرتبةً.', () => `${n(Q.ayat.length)} آية`],
     ['ask', 'i-spark', 'اسأل مشكاة', 'سؤالك يُجاب من الآيات وأقوال المفسرين والمداخل الموضوعية.', () => ''],
     ['topics', 'i-grid', 'الموسوعة الموضوعية', 'الأنبياء والأقوام والأماكن والأحكام، كل موضوع بآياته.', () => `${n(T.length)} فهرساً`],
@@ -181,16 +181,19 @@ const views = { prayer, adhkar, home: LAB ? research : home, mine: () => researc
 function route() {
   const h = (location.hash || '#' + HOME).slice(1);
   let m, cur;
-  curRoute = /^(s|a)\d/.test(h) ? 'mushaf' : /^k-/.test(h) ? 'kids' : /^t-/.test(h) ? 'topics' : /^(root|lem)\d/.test(h) ? 'words' : h;
+  curRoute = /^(s|a|p|ps|pa)\d/.test(h) ? 'mushaf' : /^k-/.test(h) ? 'kids' : /^t-/.test(h) ? 'topics' : /^(root|lem)\d/.test(h) ? 'words' : h;
   if (m = h.match(/^s(\d+)$/)) { cur = 'mushaf'; surah(+m[1]); }
   else if (m = h.match(/^a(\d+)-(\d+)$/)) { cur = 'mushaf'; surah(+m[1], +m[2]); }
+  else if (m = h.match(/^p(\d+)$/)) { cur = 'mushaf'; mpOpen(+m[1]); }
+  else if (m = h.match(/^ps(\d+)$/)) { cur = 'mushaf'; mpOpen(1, { surah: Math.max(1, Math.min(114, +m[1])) }); }
+  else if (m = h.match(/^pa(\d+)$/)) { cur = 'mushaf'; mpOpen(1, { ayah: Math.min(6235, +m[1]) }); }
   else if (m = h.match(/^t-([a-z]+)$/)) { cur = 'topics'; topic(m[1]); }
   else if (!LAB && (m = h.match(/^k-([a-z]+)$/))) { cur = 'kids'; kids(m[1]); }
   else if (m = h.match(/^root(\d+)$/)) { cur = 'words'; rootView(+m[1]); }
   else if (m = h.match(/^lem(\d+)$/)) { cur = 'words'; lemmaView(+m[1]); }
   else { cur = views[h] ? h : HOME; if (LAB && cur === 'home') cur = 'research'; if (LAB && cur === 'about') cur = 'guide'; if (LAB && !['research', 'mine', 'prayer', 'adhkar', 'mushaf', 'words', 'guide', 'account', 'settings', 'admin'].includes(cur)) cur = 'research'; views[cur](); }
   setCur(cur);
-  if (!/^a\d/.test(h)) window.scrollTo(0, 0);
+  if (!/^(a|p|ps|pa)\d/.test(h)) window.scrollTo(0, 0);
 }
 function setCur(v) { $$('#nav a,#tabbar a').forEach(a => { if (a.dataset.v === v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }); }
 function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 2600); }
@@ -234,7 +237,7 @@ function home() {
   <div class="today">
     <div class="prrow">${prHomeCard()}${adhHomeCard()}</div>
     <div class="mine3">
-      ${last != null ? `<a class="mcard" href="#a${Q.ayat[last][0]}-${Q.ayat[last][1]}"><svg><use href="#i-book"/></svg><span><small>أكمل القراءة</small><b>${esc(ref(last))}</b></span></a>` : `<a class="mcard" href="#mushaf"><svg><use href="#i-book"/></svg><span><small>ابدأ القراءة</small><b>افتح المصحف</b></span></a>`}
+      ${last != null ? `<a class="mcard" href="#pa${last}"><svg><use href="#i-book"/></svg><span><small>أكمل القراءة</small><b>${esc(ref(last))}</b></span></a>` : `<a class="mcard" href="#p1"><svg><use href="#i-book"/></svg><span><small>ابدأ القراءة</small><b>افتح المصحف</b></span></a>`}
       <a class="mcard" href="#hifz"><svg><use href="#i-mic"/></svg><span><small>مراجعة اليوم</small><b>${n(due.length)} مقطع</b></span></a>
       <a class="mcard" href="#saved"><svg><use href="#i-bookmark"/></svg><span><small>علاماتك</small><b>${n(ST.bookmarks.length)} آية</b></span></a>
     </div>
@@ -794,17 +797,27 @@ function mushaf() {
   let sort = 'n', dir = 1, filt = '';
   const draw = () => {
     const rows = Q.surahs.filter(s => !filt || s.type === filt).sort((a, b) => (a[sort] > b[sort] ? 1 : -1) * dir);
-    $('#stbl').innerHTML = rows.map(s => `<tr class="clk" data-surah="${s.n}"><td>${n(s.n)}</td><td><b>${s.name}</b></td><td>${s.type}</td><td>${n(s.ayas)}</td><td>${n(s.words)}</td><td>${n(s.letters)}</td><td>${n(Q.ayat[s.first][5])}</td><td>${n(Q.ayat[s.first][6])}</td></tr>`).join('');
+    $('#stbl').innerHTML = rows.map(s => `<tr class="clk" data-mps="${s.n}"><td>${n(s.n)}</td><td><b>${s.name}</b> <a class="chip" href="#s${s.n}">دراسة</a></td><td>${s.type}</td><td>${n(s.ayas)}</td><td>${n(s.words)}</td><td>${n(s.letters)}</td><td>${n(Q.ayat[s.first][5])}</td><td>${n(Q.ayat[s.first][6])}</td></tr>`).join('');
   };
   V(`<div class="stack"><div><div class="eyebrow">المصحف وفهرس السور</div><h1>السور المئة والأربع عشرة</h1><p class="lead">اضغط على السورة لقراءتها، وعلى أي كلمة لمعرفة جذرها ومعناها، وعلى رقم الآية لتفسيرها وحفظها ومشاركتها.</p></div>
-  ${ST.last != null ? `<a class="btn pri" style="align-self:flex-start" href="#a${Q.ayat[ST.last][0]}-${Q.ayat[ST.last][1]}">أكمل القراءة: ${esc(ref(ST.last))}</a>` : ''}
+  <div class="toolbar"><a class="btn pri" href="${ST.last != null ? `#pa${ST.last}` : '#p1'}"><svg><use href="#i-book"/></svg>${ST.last != null ? `أكمل القراءة في المصحف: ${esc(ref(ST.last))}` : 'اقرأ المصحف متصلاً من أوله'}</a>${ST.last != null ? '<a class="btn" href="#p1">من أول المصحف</a>' : ''}</div>
+  <p class="muted small" style="margin:0">القراءة المتصلة على صفحات مصحف المدينة النبوية (٦٠٤ صفحات)، بخط مجمع الملك فهد ونصه. اضغط اسم السورة لقراءتها في المصحف، أو «دراسة» لعرض ألفاظها وتفسيرها آيةً آية.</p>
   <div class="toolbar"><div class="seg" id="tseg"><button aria-pressed="true" data-f="">الكل</button><button aria-pressed="false" data-f="مكية">المكية</button><button aria-pressed="false" data-f="مدنية">المدنية</button></div>
    <select id="juzSel" aria-label="الانتقال إلى جزء"><option value="">الانتقال إلى جزء…</option>${Array.from({length: 30}, (_, j) => `<option value="${j+1}">الجزء ${n(j+1)}</option>`).join('')}</select></div>
   <div class="tablebox"><table><thead><tr>${[['n','م'],['name','السورة'],['type','النزول'],['ayas','الآيات'],['words','الكلمات'],['letters','الحروف'],['juz','الجزء'],['page','الصفحة']].map(([k, l]) => `<th data-sort="${k}">${l}</th>`).join('')}</tr></thead><tbody id="stbl"></tbody></table></div></div>`);
   draw();
   $('#view thead').onclick = e => { const k = e.target.dataset.sort; if (!k || k === 'juz' || k === 'page') return; dir = sort === k ? -dir : 1; sort = k; draw(); };
+  $('#stbl').onclick = e => { if (e.target.closest('a')) return; const r = e.target.closest('[data-mps]'); if (r) location.hash = 'ps' + r.dataset.mps; };
   $('#tseg').onclick = e => { const b = e.target.closest('button'); if (!b) return; filt = b.dataset.f; $('#tseg').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); draw(); };
-  $('#juzSel').onchange = e => { const j = +e.target.value; if (!j) return; const i = Q.ayat.findIndex(a => a[5] === j); location.hash = `a${Q.ayat[i][0]}-${Q.ayat[i][1]}`; };
+  $('#juzSel').onchange = e => { const j = +e.target.value; if (!j) return; const i = Q.ayat.findIndex(a => a[5] === j); location.hash = `pa${i}`; };
+}
+/* المصحف المتصل (صفحات مصحف المدينة): يُحمَّل عند أول فتح من mushaf.js */
+function mpOpen(p, opt) {
+  INTEGRITY['data/mushaf.txt'] = '9d64334e85b17572178c2d93d21f4b3a'; // بصمة ملف المصحف المتصل: نص مجمع الملك فهد وصفحات مصحف المدينة
+  if (window.mushafRead) return mushafRead(p, opt);
+  if (!mpOpen.s) { V(`<p class="loading">جارٍ فتح المصحف…</p>`); mpOpen.s = document.createElement('script'); mpOpen.s.src = 'mushaf.js'; document.head.appendChild(mpOpen.s); }
+  mpOpen.s.addEventListener('load', () => mushafRead(p, opt), { once: true });
+  mpOpen.s.addEventListener('error', () => { mpOpen.s.remove(); mpOpen.s = null; V(`<p class="loading">تعذّر فتح المصحف، تحقق من الاتصال ثم أعد المحاولة.</p>`); }, { once: true });
 }
 let readObs = null;
 function surah(sn, focusA) {
@@ -816,7 +829,7 @@ function surah(sn, focusA) {
   V(`<div class="stack"><div><div class="eyebrow">سورة رقم ${n(sn)} · ${s.type}</div><h1>سورة ${s.name}</h1>
     <div class="pill-row" style="margin-top:8px"><span class="chip">${n(s.ayas)} آية</span><span class="chip">${n(s.words)} كلمة</span><span class="chip">${n(s.letters)} حرف</span><span class="chip">${n(lc.size)} لفظاً مختلفاً</span><span class="chip">الجزء ${n(Q.ayat[s.first][5])} · الصفحة ${n(Q.ayat[s.first][6])}</span></div>
     <div class="toolbar" style="margin-top:10px">${sn > 1 ? `<a class="btn" href="#s${sn-1}">→ ${Q.surahs[sn-2].name}</a>` : ''}${sn < 114 ? `<a class="btn" href="#s${sn+1}">${Q.surahs[sn].name} ←</a>` : ''}
-    <a class="btn" href="#hifz" data-hifz="${sn}"><svg><use href="#i-mic"/></svg>احفظ هذه السورة</a>${IS_PWA ? `<button class="btn" id="playSurah"><svg><use href="#i-play"/></svg>استمع</button>` : ''}</div></div>
+    <a class="btn pri" href="#ps${sn}"><svg><use href="#i-book"/></svg>اقرأها في المصحف</a><a class="btn" href="#hifz" data-hifz="${sn}"><svg><use href="#i-mic"/></svg>احفظ هذه السورة</a>${IS_PWA ? `<button class="btn" id="playSurah"><svg><use href="#i-play"/></svg>استمع</button>` : ''}</div></div>
     <section class="panel"><h3>أكثر ألفاظ السورة وروداً</h3><div class="pill-row" style="margin-top:8px">${top.map(([l, c]) => `<a class="chip acc" data-lem="${l}">${esc(W.lemmas[l][0])} · ${n(c)}</a>`).join('')}</div></section>
     <section class="panel" id="reader"><p class="muted small" style="margin:0 0 6px">اضغط أي كلمة لمعرفة جذرها ووزنها ومواضعها، أو رقم الآية لعرض تفسيرها.</p>${bas}
     ${ay.map(i => `<div class="occ" id="ay${i}" data-i="${i}">${ayahHTML(i)}</div>`).join('')}</section></div>`);
