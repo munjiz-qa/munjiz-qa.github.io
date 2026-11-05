@@ -358,7 +358,7 @@ function home() {
       <a class="mcard" href="#hifz"><svg><use href="#i-mic"/></svg><span><small>مراجعة اليوم</small><b>${n(due.length)} مقطع</b></span></a>
       <a class="mcard" href="#saved"><svg><use href="#i-bookmark"/></svg><span><small>علاماتك</small><b>${n(ST.bookmarks.length)} آية</b></span></a>
     </div>
-    <div class="pill-row acct-row">${cloud ? '<span class="chip ok">تقدّمك محفوظ في حسابك ويتزامن بين أجهزتك</span>' : SESSION ? `<a class="chip ok" href="#account">حسابك: ${esc(SESSION.name)} · ${ROLE[SESSION.role]}</a>` : IS_PWA ? '<span class="chip">تقدّمك محفوظ على هذا الجهاز</span><a class="chip acc" href="#account">ادخل إلى حسابك</a>' : '<span class="chip">تقدّمك محفوظ على هذا الجهاز</span>'}${IS_PWA && installEvt ? '<button class="chip acc" id="homeInst">ثبّت مشكاة على جهازك</button>' : ''}</div>
+    <div class="pill-row acct-row">${cloud ? '<span class="chip ok">تقدّمك محفوظ في حسابك ويتزامن بين أجهزتك</span>' : SESSION ? `<a class="chip ok" href="#account">حسابك: ${esc(SESSION.name)} · ${ROLE[SESSION.role]}</a>` : IS_PWA ? '<span class="chip">تقدّمك محفوظ على هذا الجهاز</span><a class="chip acc" href="#account">ادخل إلى حسابك</a>' : '<span class="chip">تقدّمك محفوظ على هذا الجهاز</span>'}${IS_PWA && !FILE_MODE && !isStandalone() ? '<button class="chip acc" id="homeInst">ثبّت مشكاة على جهازك</button>' : ''}</div>
   </div>
   <section class="paths">
     <div class="sec-head"><div><span class="eyebrow">مسارات مشكاة</span><h2>اختر طريقك في الموسوعة</h2></div><a class="btn" href="#guide">دليل التطبيق</a></div>
@@ -382,7 +382,7 @@ function home() {
   $('#mhSur').onchange = e => { if (+e.target.value) location.hash = 'ps' + e.target.value; };
   $('#mhJuz').onchange = e => { const j = +e.target.value; if (j) location.hash = 'pa' + Q.ayat.findIndex(a => a[5] === j); };
   $$('[data-hq]').forEach(b => b.onclick = () => go(b.dataset.hq));
-  const hi = $('#homeInst'); if (hi) hi.onclick = async () => { installEvt.prompt(); await installEvt.userChoice; installEvt = null; hi.remove(); };
+  const hi = $('#homeInst'); if (hi) hi.onclick = installApp;
 }
 
 
@@ -932,7 +932,7 @@ function mushaf() {
 }
 /* المصحف المتصل (صفحات مصحف المدينة): يُحمَّل عند أول فتح من mushaf.js */
 function mpOpen(p, opt) {
-  INTEGRITY['data/mushaf.txt'] = '9d64334e85b17572178c2d93d21f4b3a'; // بصمة ملف المصحف المتصل: نص مجمع الملك فهد وصفحات مصحف المدينة
+  INTEGRITY['data/mushaf.txt'] = '183ddc3b7ae7fdc81416991f24f580cd'; // بصمة ملف المصحف المتصل: نص مجمع الملك فهد وصفحات مصحف المدينة
   if (window.mushafRead) return mushafRead(p, opt);
   if (!mpOpen.s) { V(`<p class="loading">جارٍ فتح المصحف…</p>`); mpOpen.s = document.createElement('script'); mpOpen.s.src = 'mushaf.js'; document.head.appendChild(mpOpen.s); }
   mpOpen.s.addEventListener('load', () => mushafRead(p, opt), { once: true });
@@ -1590,7 +1590,26 @@ async function cardDrawer(i) {
 
 /* ================= settings */
 let installEvt = null;
-window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; });
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; instTopShow(); });
+/* زر «ثبّت التطبيق» في أعلى كل صفحة: يثبّت مشكاة أيقونةً على الجوال والكمبيوتر، ويختفي بعد التثبيت أو عند الفتح من الأيقونة */
+const isStandalone = () => { try { return matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: window-controls-overlay)').matches || navigator.standalone === true; } catch (e) { return false; } };
+function instTopShow() { const b = $('#instTop'); if (b) b.hidden = !IS_PWA || FILE_MODE || isStandalone(); }
+window.addEventListener('appinstalled', () => { installEvt = null; const b = $('#instTop'); if (b) b.hidden = true; toast('ثُبّتت مشكاة على جهازك، وتجدها بين تطبيقاتك'); });
+async function installApp() {
+  if (installEvt) { const e = installEvt; e.prompt(); const r = await e.userChoice.catch(() => null); if (r && r.outcome === 'accepted') { installEvt = null; instTopShow(); } return; }
+  const ua = navigator.userAgent, ios = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1), android = /Android/.test(ua);
+  const safariMac = !ios && /Macintosh/.test(ua) && /Safari/.test(ua) && !/Chrome|Chromium|Edg|Firefox/.test(ua), firefox = /Firefox|FxiOS/.test(ua);
+  const step = (n, t) => `<li><span class="in-n">${n}</span><span>${t}</span></li>`;
+  const ios_ = `<h3>على آيفون وآيباد (سفاري)</h3><ol class="in-steps">${step(1, 'اضغط زر المشاركة <b>⬆︎</b> أسفل الشاشة أو أعلاها.')}${step(2, 'اختر <b>«إضافة إلى الشاشة الرئيسية»</b>.')}${step(3, 'اضغط <b>«إضافة»</b>، فتظهر أيقونة مشكاة بين تطبيقاتك.')}</ol>`;
+  const and_ = `<h3>على أندرويد (كروم أو سامسونج)</h3><ol class="in-steps">${step(1, 'افتح قائمة المتصفح <b>⋮</b> أعلى الشاشة.')}${step(2, 'اختر <b>«تثبيت التطبيق»</b> أو <b>«إضافة إلى الشاشة الرئيسية»</b>.')}${step(3, 'اضغط <b>«تثبيت»</b>، فتظهر أيقونة مشكاة بين تطبيقاتك.')}</ol>`;
+  const pc_ = `<h3>على الكمبيوتر (كروم أو إيدج)</h3><ol class="in-steps">${step(1, 'اضغط أيقونة التثبيت <b>⊕</b> في نهاية شريط العنوان، أو افتح القائمة <b>⋮</b>.')}${step(2, 'اختر <b>«تثبيت مشكاة»</b>، وفي إيدج: التطبيقات ← تثبيت هذا الموقع كتطبيق.')}${step(3, 'تفتح مشكاة في نافذتها الخاصة، وتجد أيقونتها في قائمة البرامج وسطح المكتب.')}</ol>`;
+  const mac_ = `<h3>على ماك (سفاري)</h3><ol class="in-steps">${step(1, 'من قائمة <b>«ملف»</b> اختر <b>«إضافة إلى Dock»</b>.')}${step(2, 'اضغط <b>«إضافة»</b>، فتظهر أيقونة مشكاة في شريط Dock.')}</ol>`;
+  const first = ios ? ios_ : android ? and_ : safariMac ? mac_ : pc_;
+  const others = [ios_, and_, pc_, mac_].filter(x => x !== first).join('');
+  openDrawer(`<div class="stack instsheet"><div class="in-head"><img src="icons/icon-192.png" alt="" width="64" height="64"><div><h2>ثبّت مشكاة على جهازك</h2><p class="muted small" style="margin:0">أيقونة على الشاشة تفتح التطبيق مباشرة في نافذته الخاصة، ويعمل دون إنترنت بعد أول فتح. التثبيت مجاني ولا يحتاج إلى متجر.</p></div></div>
+    ${firefox ? '<p class="note">متصفح فايرفوكس لا يدعم تثبيت التطبيقات على الكمبيوتر. افتح الموقع في كروم أو إيدج ثم اضغط زر التثبيت.</p>' : ''}
+    ${first}<details class="in-more"><summary>طريقة التثبيت على الأجهزة الأخرى</summary>${others}</details></div>`);
+}
 function settings() {
   V(`<div class="stack" style="max-width:860px"><div><div class="eyebrow">الإعدادات</div><h1>الإعدادات والتنزيل</h1></div>
   <section class="panel stack tight"><h3>العرض</h3>
@@ -1600,7 +1619,7 @@ function settings() {
   <section class="panel stack tight"><h3>التثبيت والعمل دون إنترنت</h3>
     ${IS_PWA ? `<p style="margin:0">التطبيق يحفظ نص المصحف والإحصاءات والموسوعة والتفسير الميسر وغريب القرآن تلقائياً، فيعمل دون إنترنت. ولتنزيل التفاسير الكبيرة كلها (نحو ٦٠ ميغابايت) اضغط الزر.</p>
       <div class="toolbar"><button class="btn pri" id="dlAll">تنزيل كل التفاسير للعمل دون إنترنت</button><span id="dlStat" class="muted small"></span></div><div class="meter"><i id="dlBar" style="width:0"></i></div>
-      <div class="toolbar"><button class="btn" id="instBtn" ${installEvt ? '' : 'hidden'}>ثبّت ${BRAND} على هذا الجهاز</button></div>
+      <div class="toolbar"><button class="btn" id="instBtn" ${!FILE_MODE && !isStandalone() ? '' : 'hidden'}>ثبّت ${BRAND} على هذا الجهاز</button></div>
       <p class="muted small" style="margin:0">على آيفون: افتح الرابط في سفاري، ثم «مشاركة» ثم «إضافة إلى الشاشة الرئيسية». على أندرويد والكمبيوتر: زر التثبيت في المتصفح أو الزر أعلاه.</p>`
       : `<p style="margin:0">هذه نسخة مشكاة على claude.ai. توجد نسخة قابلة للتثبيت على الجوال والكمبيوتر تعمل دون إنترنت وتدعم التسميع بالصوت والاستماع للتلاوة.</p>`}
   </section>
@@ -1615,7 +1634,7 @@ function settings() {
   $('#impBtn').onclick = () => { $('#impBox').hidden = false; $('#impRow').hidden = false; $('#impBox').focus(); };
   $('#impGo').onclick = () => { try { const d = cleanState(JSON.parse(decodeURIComponent(escape(atob($('#impBox').value.trim()))))); ST.bookmarks = [...new Set([...ST.bookmarks, ...d.bookmarks])]; Object.assign(ST.hifz, d.hifz); if (d.last != null) ST.last = d.last; save(); $('#dataMsg').textContent = 'استُورد تقدّمك بنجاح.'; } catch (e) { $('#dataMsg').textContent = 'الرمز غير صحيح. انسخه كاملاً ثم أعد المحاولة.'; } };
   let armed = false; $('#clrBtn').onclick = () => { if (!armed) { armed = true; $('#clrBtn').textContent = 'اضغط مرة أخرى للتأكيد'; return; } ST.bookmarks = []; ST.hifz = {}; ST.last = null; save(); $('#dataMsg').textContent = 'مُسحت بياناتك.'; $('#clrBtn').textContent = 'مسح كل بياناتي'; armed = false; };
-  const ib = $('#instBtn'); if (ib) ib.onclick = async () => { if (!installEvt) return; installEvt.prompt(); await installEvt.userChoice; installEvt = null; ib.hidden = true; };
+  const ib = $('#instBtn'); if (ib) ib.onclick = installApp;
   const da = $('#dlAll'); if (da) da.onclick = async () => {
     const files = [...TF.flatMap(b => Array.from({ length: b.chunks }, (_, k) => `data/t/${b.key}/${k}.txt`)), ...Object.keys(HAD_BOOKS).map(k => `data/hadith/${k}.txt`)]; let done = 0; da.disabled = true;
     const cache = await caches.open('mishkat-data-v1');
@@ -2801,7 +2820,7 @@ async function connectCloud() {
     const h = (location.hash || '#' + HOME).slice(1); if (['home', 'saved', 'settings', 'hifz', 'research', 'mine'].includes(h)) route();
   } catch (e) {}
 }
-applyPrefs(); drawNav(); if (IS_PWA) $('#acctBtn').hidden = false;
+applyPrefs(); drawNav(); if (IS_PWA) $('#acctBtn').hidden = false; { const b = $('#instTop'); if (b) { b.onclick = installApp; instTopShow(); } }
 const i18nReady = i18nInit().catch(() => {});
 (async () => {
   try {
