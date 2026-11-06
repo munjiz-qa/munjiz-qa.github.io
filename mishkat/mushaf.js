@@ -6,8 +6,14 @@
 const MPV = { data: null, mode: 'scroll', size: 0, cur: 1, io: null, posIO: null, fs: 24, flow: false, jumping: 0 };
 const MP_AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
 const MP_PART = ['الحزب', 'ربع الحزب', 'نصف الحزب', 'ثلاثة أرباع الحزب'];
-const MP_SCALE = { '-1': 0.8, 0: 1, 1: 1.25, 2: 1.5, 3: 1.8 };
-const MP_COMF = { '-1': 21, 0: 26, 1: 30, 2: 35, 3: 41 }; // «قراءة مريحة»: حجم الخط بالبكسل لكل درجة // درجات حجم الخط
+/* حجم الخط: نسبة مئوية من الحجم الأساسي (٢٦ بكسل على الكمبيوتر و٢٠ على الجوال في «قراءة مريحة»، وعرض الصفحة في «سطور المصحف») */
+const MP_ZMIN = 70, MP_ZMAX = 200, MP_ZSTEP = 10;
+/* أنواع الخط: كلها مرخّصة للاستعمال والنشر، والنص المعروض واحد لا يتغير. w = نسبة عرض نص كل صفحة بهذا الخط إلى خط المجمع، مقيسة لكل صفحة ومرمّزة حرفاً لكل صفحة: (رمز الحرف − ٤٨ + ٩٠) ÷ ١٠٠ */
+const MP_FONTS = [
+  { k: 'hafs', n: 'المجمع (حفص)', w: 1 },
+  { k: 'amiri', n: 'أميري قرآن', w: '79:;:::5:89988;:=<<;<<:<=<<:9;<=;9:;;:<:;;<=:;=9;:;9<;;999;9;::=:;==8:==<==;8:::567:::;;::;89;:;>;>;:<;<:8667:9<<;989;;9;78::<;8<:;:;:9;=:9;==:;<;;:;=6:8::9<:8;;;=A><:=>=;===<?8:9799;<89:9:9:::8;::8:;<:;=<=<99:9;;;;<9;;>9:;;:=9;;;::@==:;<:9;<:;9;=?9;<;=<:8;9;=<9;==;;9;:;;::;88;<=>8:<>;;;:==>=;9<;>;<<<==<==<;<>;@<;;:<@>@9<=;;:9=<=8;=<8<:;::8::=<>>=99899;;86::;:<<>:;=<>ACDABB:<>:;;<=;<;<;;:9;:;:8;9<<:<:;;;:<;9<;::;<8:;;9;9::;:;<::9;8:<:<;:;=;==<<=@CB;<>=>:7<:<<;<;::=;;;;::<8<:;;;:;<;<;:<;=<9;<<=9:9::::;9;<799::987;>=<<<;<><=<=<:9:>:<99::799;:;878897:999:9699<:;:>;><<;=;:=<>;<<==?>?:<><;><=;>9:97898:' },
+  { k: 'noto', n: 'نوتو نسخ', w: 'AAEDDCD?ECECBCCDFGDDFEDDFDEDCFFHFCEDDDFEEEFFDEGBEBDCGFECBCEBDDDFCDGGCFGHGEEDBDCE??@DEEEFDEEDEFCEGFGDDFEEDDABCDDEFFBCEDDCFADBDFEBEDFEDCCEEDDDEFEEEGFDCF?CCEDDECBDCEDIFGEGHGFFEEEGBCDBCDCFADECEBDDEBDFDCFEECEHFGFACCDDCEDFDHCFCDEDDFCFEDDFGFDDEDCBCFDEDEFHBDEEFCCCDCDFEBCFEECCEEDEDCDAAEDEHACCEEEDCEDFFDDEDFDEFFGFDEFEDDFDFFDDCEHGGBDFDCDEEDEBEFFBEEFCDBCDFEFFFBCDDCEFC@DBEEEDFDBDDFHJIHIIDEFCFDDFDEEFEDDBEDDBBDDFDBEEDDDDEDCEDDBEDACDEDECCEDCEECDBEBECCCDDDFEEDDEFHKICFDDEBAEDDFDEDCCFCDEDADDCGCEDFFCEEFD@EEEDCDBDGBDDBDFCFCEGBBDDEDCBCEEEGDEDDDEDEA@>@FEDCCEEDEDEEDCACCCCDACCCB@DCDCCCGBFEBDECDCCEDBDCCECC@DDD@EADBC>A@?@???' }];
+const mpFontW = k => { const w = (MP_FONTS.find(f => f.k === MPV.font) || MP_FONTS[0]).w; return typeof w === 'string' ? (w.charCodeAt(k) - 48 + 90) / 100 + (MPV.font === 'amiri' ? 0.06 : 0.02) : w; };
 const MP_LINE = 1.98, MP_FLOW_LINE = 2.08, MP_HEAD = 1.75, MP_FOOT = 1.75, MP_PAD = 0.55, MP_SIDE = 0.8; // مقاييس الصفحة بوحدة حجم الخط
 
 async function mpData() {
@@ -56,7 +62,12 @@ function mpPageInner(p) {
   <div class="mp-body${p <= 2 ? ' mp-open' : ''}"${sc ? ` style="font-size:${sc}em"` : ''}>${D.p[p - 1].map(mpLine).join('')}</div>
   <footer class="mp-foot"><span class="mp-pn">${MP_AR(p)}</span></footer>`;
 }
-function mpFill(el) { if (el.dataset.ok) return; el.dataset.ok = 1; el.innerHTML = mpPageInner(+el.dataset.p); if (!MPV.flow) mpFit(el); }
+function mpFill(el) { if (el.dataset.ok) return; el.dataset.ok = 1; el.innerHTML = mpPageInner(+el.dataset.p); if (!MPV.flow) mpFit(el); else mpGrow(el); }
+/* «قراءة مريحة»: ارتفاع الصفحة مقدَّر مسبقاً، فإن احتاج نصها بخط ما إلى مساحة أكبر طالت الصفحة بقدره، وبقي موضع القارئ ثابتاً */
+function mpGrow(el) {
+  const bd = el.querySelector('.mp-body'); if (!bd) return; const d = bd.scrollHeight - bd.clientHeight; if (d <= 1) return;
+  const above = (+el.dataset.p < MPV.cur || el.getBoundingClientRect().bottom < 0) && el.getBoundingClientRect().top < 0; el.style.height = (el.offsetHeight + d + 4) + 'px'; if (above) scrollBy(0, d + 4);
+}
 /* ملء السطر كما في المصحف: خط المجمع الحاسوبي لا يمدّ الحروف (الكشيدة) كما يفعل الخطاط، فيكبر خط الصفحة كلها حتى يملأ أطول سطورها العرض،
    ويكبر كل سطر قصير قليلاً فوق ذلك، فتضيق الفراغات بين الكلمات. السطور الخمسة عشر وارتفاعها لا يتغيران، والنص نفسه لا يُمسّ. */
 function mpFit(el) {
@@ -85,8 +96,8 @@ function mpMeasure() {
     fs = Math.min(slot / pageEm, Math.max(240, avail) / (MP_HEAD + MP_FOOT + 15 * MP_LINE + 2 * MP_PAD));
     widthPx = fs * pageEm;
   } else {
-    const base = Math.min(box, 760), want = base * MP_SCALE[MPV.size];
-    if (!MPV.lines) { flow = true; widthPx = Math.min(box, 840); fs = MP_COMF[MPV.size] * (innerWidth < 700 ? 0.78 : 1); }
+    const z = MPV.zoom / 100, base = Math.min(box, 760), want = base * z;
+    if (!MPV.lines) { flow = true; widthPx = Math.min(box, 840); fs = (innerWidth < 700 ? 20 : 26) * z; }
     else if (want <= box + 1) { widthPx = want; fs = want / pageEm; }
     else { flow = true; widthPx = box; fs = Math.min(40, want / pageEm); }
   }
@@ -98,13 +109,14 @@ function mpMeasure() {
   root.style.setProperty('--mptw', D.tw + 'em');
   // ارتفاع كل صفحة ثابت محسوب مسبقاً، فلا يقفز التمرير عند رسم الصفحات
   const fixed = (MP_HEAD + MP_FOOT + 15 * MP_LINE + 2 * MP_PAD) * MPV.fs;
-  const inner = widthPx / MPV.fs - 2 * MP_SIDE;
+  const inner = widthPx / MPV.fs - 2 * MP_SIDE, fw = mpFontW;
   $$('#mpRoot .mp-page').forEach((el, k) => {
     let h = fixed;
-    if (flow) { const L = D.p[k], hd = L.filter(x => typeof x[0] !== 'number').length; const segs = [].concat(D.ws[k]); h = (MP_HEAD + MP_FOOT + 2 * MP_PAD + hd * (MP_LINE + 0.4) + (segs.reduce((t, w) => t + Math.ceil(w * (1 + 1.4 / inner) / inner), 0) + 1) * MP_FLOW_LINE) * MPV.fs; }
+    if (flow) { const L = D.p[k], hd = L.filter(x => typeof x[0] !== 'number').length; const segs = [].concat(D.ws[k]); h = (MP_HEAD + MP_FOOT + 2 * MP_PAD + hd * (MP_LINE + 0.4) + (segs.reduce((t, w) => t + Math.ceil(w * fw(k) * (1 + 1.4 / inner) / inner), 0) + 1) * MP_FLOW_LINE) * MPV.fs; }
     el.style.height = h.toFixed(1) + 'px';
   });
-  $('#mpSizeLbl').textContent = flip ? '' : !MPV.lines ? '' : MPV.flow ? 'نص منساب داخل الصفحة' : 'سطور المصحف';
+  $('#mpSizeLbl').textContent = flip ? '' : MP_AR(MPV.zoom) + '٪'; const zr = $('#mpZoom'); if (zr) zr.value = MPV.zoom;
+  root.dataset.font = MPV.font; const fsel = $('#mpFont'); if (fsel) fsel.value = MPV.font;
   $$('#mpLay button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.l === +MPV.lines))); $('#mpLay').hidden = flip;
 }
 function mpSetMode(mode) {
@@ -166,7 +178,7 @@ async function mushafRead(p, opt = {}) {
   let D; try { [D] = await Promise.all([mpData(), new Promise(r => { const l = $('#mpCss'); if (l.sheet) r(); else { l.addEventListener('load', r); l.addEventListener('error', r); } }).then(() => document.fonts.load('20px "KFGQPC Hafs"', 'بِسۡمِ'))]); }
   catch (e) { V(`<p class="loading">تعذّر فتح المصحف: ${esc(e.message)}</p>`); return; }
   if (!/^#p/.test(location.hash)) return; // انتقل الزائر إلى قسم آخر أثناء التحميل
-  MPV.mode = ST.prefs.mpMode === 'flip' ? 'flip' : 'scroll'; MPV.size = [-1, 0, 1, 2, 3].includes(ST.prefs.mpSize) ? ST.prefs.mpSize : 0; MPV.flow = false; MPV.lines = ST.prefs.mpLines === true; // الافتراضي «قراءة مريحة»، و«سطور المصحف» اختيار
+  MPV.mode = ST.prefs.mpMode === 'flip' ? 'flip' : 'scroll'; MPV.zoom = Math.max(MP_ZMIN, Math.min(MP_ZMAX, Math.round(+ST.prefs.mpZoom || ({ '-1': 80, 1: 120, 2: 150, 3: 180 })[ST.prefs.mpSize] || 100))); MPV.font = MP_FONTS.some(f => f.k === ST.prefs.mpFont) ? ST.prefs.mpFont : 'hafs'; MPV.flow = false; MPV.lines = ST.prefs.mpLines === true; // الافتراضي «قراءة مريحة»، و«سطور المصحف» اختيار
   if (opt.surah) p = D.hdr[opt.surah][0]; else if (opt.ayah != null) p = D.pageOf[opt.ayah];
   const sOpts = Q.surahs.map(s => `<option value="${s.n}">${MP_AR(s.n)}. ${s.name}</option>`).join('');
   const jOpts = Array.from({ length: 30 }, (_, j) => `<option value="${j + 1}">الجزء ${MP_AR(j + 1)}</option>`).join('');
@@ -184,7 +196,8 @@ async function mushafRead(p, opt = {}) {
     <div class="mp-row mp-opts" id="mpOpts">
       <div class="seg" id="mpMode" role="group" aria-label="طريقة العرض"><button data-m="scroll" aria-pressed="false">قراءة متصلة</button><button data-m="flip" aria-pressed="false">تقليب الصفحات</button></div>
       <div class="seg" id="mpLay" role="group" aria-label="هيئة النص"><button data-l="0" aria-pressed="false">قراءة مريحة</button><button data-l="1" aria-pressed="false">سطور المصحف</button></div>
-      <div class="mp-size" id="mpSize" role="group" aria-label="حجم الخط"><button class="btn" data-d="-1" aria-label="تصغير الخط">أ−</button><span id="mpSizeLbl" class="mp-sizel"></span><button class="btn" data-d="1" aria-label="تكبير الخط">أ+</button></div>
+      <label class="mp-fsel"><span>الخط</span><select id="mpFont" aria-label="نوع الخط">${MP_FONTS.map(f => `<option value="${f.k}">${f.n}</option>`).join('')}</select></label>
+      <div class="mp-size" id="mpSize" role="group" aria-label="حجم الخط"><button class="btn" data-d="-1" aria-label="تصغير الخط">أ−</button><input type="range" id="mpZoom" min="${MP_ZMIN}" max="${MP_ZMAX}" step="${MP_ZSTEP}" aria-label="حجم الخط"><span id="mpSizeLbl" class="mp-sizel" aria-live="polite"></span><button class="btn" data-d="1" aria-label="تكبير الخط">أ+</button></div>
       <button class="btn" id="mpPrev" aria-label="الصفحة السابقة">→ السابقة</button><button class="btn" id="mpNext" aria-label="الصفحة التالية">التالية ←</button>
       <button class="btn" id="mpFull" aria-label="ملء الشاشة">ملء الشاشة</button>
       <span class="mp-info" id="mpInfo"></span>
@@ -197,7 +210,13 @@ async function mushafRead(p, opt = {}) {
   $('#mpMore').onclick = () => { const on = !root.classList.contains('mp-showopts'); root.classList.toggle('mp-showopts', on); $('#mpMore').setAttribute('aria-expanded', on); };
   $('#mpMode').onclick = e => { const b = e.target.closest('button'); if (b && b.dataset.m !== MPV.mode) mpSetMode(b.dataset.m); };
   $('#mpLay').onclick = e => { const b = e.target.closest('button'); if (!b) return; const v = b.dataset.l === '1'; if (v === MPV.lines) return; MPV.lines = v; ST.prefs.mpLines = v; save(); const p0 = MPV.cur; mpMeasure(); mpRefill(); mpGo(p0, null, true); };
-  $('#mpSize').onclick = e => { const b = e.target.closest('button'); if (!b) return; const s = Math.max(-1, Math.min(3, MPV.size + +b.dataset.d)); if (s === MPV.size) return; MPV.size = s; ST.prefs.mpSize = s; save(); const p0 = MPV.cur; mpMeasure(); mpGo(p0, null, true); };
+  const setZoom = z => { z = Math.max(MP_ZMIN, Math.min(MP_ZMAX, Math.round(z / MP_ZSTEP) * MP_ZSTEP)); if (z === MPV.zoom) return; MPV.zoom = z; ST.prefs.mpZoom = z; save(); const p0 = MPV.cur; mpMeasure(); mpRefill(); mpGo(p0, null, true); setTimeout(() => mpGo(p0, null, true), 200); };
+  $('#mpSize').onclick = e => { const b = e.target.closest('button'); if (b) setZoom(MPV.zoom + MP_ZSTEP * +b.dataset.d); };
+  $('#mpZoom').onchange = e => setZoom(+e.target.value);
+  $('#mpZoom').oninput = e => { $('#mpSizeLbl').textContent = MP_AR(e.target.value) + '٪'; };
+  $('#mpFont').onchange = async e => { MPV.font = e.target.value; ST.prefs.mpFont = MPV.font; save(); const p0 = MPV.cur; root.dataset.font = MPV.font;
+    try { await document.fonts.load(`20px "${({ hafs: 'KFGQPC Hafs', amiri: 'Amiri Quran', noto: 'Noto Naskh Mushaf' })[MPV.font]}"`, 'بسم'); } catch (er) {}
+    mpMeasure(); mpRefill(); mpGo(p0, null, true); setTimeout(() => mpGo(p0, null, true), 200); };
   $('#mpSur').onchange = e => { const s = +e.target.value; mpGo(D.hdr[s][0], Q.surahs[s - 1].first); };
   $('#mpJuz').onchange = e => { const a = D.q[(+e.target.value - 1) * 8]; mpGo(D.pageOf[a], a); };
   $('#mpHizb').onchange = e => { const a = D.q[(+e.target.value - 1) * 4]; mpGo(D.pageOf[a], a); };
