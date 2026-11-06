@@ -207,8 +207,10 @@ async function khabarStats(p, o, add) {
     const br = b.value, items = (br.zones || []).reduce((n, z) => n + (z.items || []).length, 0), srcs = Object.keys(br.sources || {}).length;
     const ls = l.value?.summary;
     o.stats = [[num(items), 'خبر في الخلاصة'], [ls ? Math.round(100 * ls.verified / Math.max(1, ls.items)) + '%' : '—', 'موثّق بميزان الثقة'], [num(srcs), 'مصدراً موثّقاً']];
-    o.rows.unshift(['الخلاصة الحالية', `${br.edition === 'pm' ? 'المساء' : 'الصباح'} · ${fmtDate(br.date + 'T12:00:00+03:00', false)} · ${ago(br.published)}`]);
-    if (hoursSince(br.published) > 14) add('warn', `${p.name}: الخلاصة لم تتجدد منذ ${ago(br.published).replace('قبل ', '')}`);
+    o.rows.unshift(['الخلاصة الحالية', `${({am: 'الصباح', md: 'الظهيرة', pm: 'المساء', nt: 'الليل'})[br.edition] || 'الصباح'}${br.auto ? ' (آلية)' : ''} · ${fmtDate(br.date + 'T12:00:00+03:00', false)} · ${ago(br.published)}`]);
+    // الخلاصة تتجدد كل 6 ساعات (الصباح والظهيرة والمساء والليل)، فالتأخر أكثر من 8 ساعات يستحق التنبيه
+    if (hoursSince(br.published) > 8) add('warn', `${p.name}: الخلاصة لم تتجدد منذ ${ago(br.published).replace('قبل ', '')}`);
+    if (br.auto) add('info', `${p.name}: الخلاصة الحالية آلية من الطيار الآلي، وستحل محلها الخلاصة التحريرية في موعدها التالي`, p.site);
     if (ls?.broken) add('warn', `${p.name}: ${plural(ls.broken, 'رابط مصدر معطّل', 'رابطا مصدر معطّلان', 'روابط مصادر معطّلة', 'رابط مصدر معطّلاً')} في الخلاصة`, p.site + '#ledger');
   } else o.rows.unshift(['الخلاصة الحالية', '<span class="skel">تعذّرت القراءة</span>']);
   if (k.status === 'fulfilled') {

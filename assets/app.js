@@ -174,6 +174,8 @@ function renderCart(){
     i.oninput=()=>{const v=Math.max(1,Math.min(999,parseInt(i.value)||1));cart.set(code,v);r.querySelector('.lt').textContent=fmt(s.p*v);updateTotals()};
     const x=document.createElement('button');x.className='x';x.type='button';x.textContent='×';x.setAttribute('aria-label',T.rmA+s.n);x.onclick=()=>{cart.delete(code);renderCart();render();renderCon()};
     r.append(i,x);c.appendChild(r)});
+  const withDocs=[...cart.keys()].filter(k=>byCode[k]&&byCode[k].d&&(byCode[k].d.docs||[]).length);
+  if(withDocs.length){const a=document.createElement('a');a.className='btn ghost sm cklink';a.style.cssText='margin-top:10px;display:inline-block';a.href='checklist.html?s='+withDocs.join(',');a.textContent='📋 '+L(`جهّز مستندات ${withDocs.length} خدمة في قائمة واحدة`,`Prepare documents for ${withDocs.length} service${withDocs.length>1?'s':''} in one list`);c.appendChild(a)}
   updateTotals();
 }
 function updateTotals(){
@@ -212,7 +214,7 @@ function openSvc(code){const s=byCode[code];if(!s||!dlg)return;const d=s.d||{};
    <div class="dprice">${T.fee}: ${priceHTML(s)}${isOnce(s)&&s.kind==='setup'?` <small>${T.once}</small>`:''}${s.core?` <span class="tag">${T.core}</span>`:''}</div>
    ${d.about?`<h4>${T.about}</h4><p>${esc(d.about)}</p>`:''}
    <h4>${T.inc}</h4><ol>${steps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>
-   ${d.docs&&d.docs.length?`<h4>${T.docs}</h4><ul>${d.docs.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}
+   ${d.docs&&d.docs.length?`<h4>${T.docs}</h4><ul>${d.docs.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><p><a class="btn ghost sm" href="checklist.html?s=${s.c}">📋 ${L('جهّز هذه المستندات في قائمة تؤشّر عليها','Prepare these documents as a tick list')}</a></p>`:''}
    ${d.out?`<h4>${T.out}</h4><p>${esc(d.out)}</p>`:''}
    ${d.time?`<h4>${T.time}</h4><p>${esc(d.time)}</p>`:''}
    ${d.note?`<p class="dnote">${esc(d.note)}</p>`:''}
@@ -247,6 +249,10 @@ document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');i
   if(h===location.hash){e.preventDefault();route(h)}});
 function route(h){h=h||location.hash||'#home';let m;
   if(dlg&&dlg.open)dlg.close();
+  if((m=h.match(/^#req=([A-Z]{2}-\d{2}(?:,[A-Z]{2}-\d{2})*)$/))){const cs=m[1].split(',').filter(c=>byCode[c]);
+    // a list prepared elsewhere (the document checklist) arrives in the calculator and the request form together
+    if(cs.length){if(isSample())cart.clear();cs.forEach(c=>{if(!cart.has(c))cart.set(c,1)});renderCart();render();renderCon();$('fSvc').value=cartText()}
+    history.replaceState(null,'','#request');route('#request');return}
   if((m=h.match(/^#svc=([A-Z]{2}-\d{2})$/))&&byCode[m[1]]){const s=byCode[m[1]];
     // a shared service link opens its group behind the details
     history.replaceState(null,'',(s.kind==='consult'?'#cat=':'#ent=')+s.ent);route();openSvc(m[1]);return}
@@ -309,7 +315,7 @@ function buildQuote(c){const d=new Date(),pad=x=>String(x).padStart(2,'0');
    ${custom.length?`<p><b>${L('تُسعَّر بعد المراجعة','Priced after review')}:</b><br>${custom.map(esc).join('<br>')}</p>`:''}
    <ul class="qnotes"><li>${L('الرسوم الحكومية غير مشمولة، وتُدفع منفصلة بإيصالها الرسمي.','Government fees are not included and are paid separately with the official receipt.')}</li>${c.plan?`<li>${L('إن اشتركت في الباقة تُخصم الخدمات المشمولة من رصيدها الشهري.','If you subscribe to the package, covered services are deducted from its monthly balance.')}</li>`:''}<li>${L('هذا عرض مبدئي، ويُعتمد بعد مراجعة المستندات.','This is a preliminary quote, confirmed after reviewing the documents.')}</li><li>${L('صالح لمدة 14 يوماً من تاريخه.','Valid for 14 days from its date.')}</li></ul>
    <div class="qsign"><div class="sigline">${L('الاعتماد والتوقيع','Approval and signature')}</div><img src="${EN?'../':''}assets/stamp.svg" alt="${L('ختم منجز لخدمات الأعمال','Munjiz Business Services stamp')}"></div>
-   <div class="qfoot">${L('منجز لخدمات الأعمال ذ.م.م · الدوحة، قطر · واتساب','Munjiz Business Services LLC · Doha, Qatar · WhatsApp')} <span dir="ltr">${esc(phone)}</span> · ${esc(MAIL)} · munjiz-qa.github.io</div>`;
+   <div class="qfoot">${L('منجز لخدمات الأعمال ذ.م.م · لوسيل، قطر · واتساب','Munjiz Business Services LLC · Lusail, Qatar · WhatsApp')} <span dir="ltr">${esc(phone)}</span> · ${esc(MAIL)} · munjiz-qa.github.io</div>`;
   const text=[`${L('عرض سعر مبدئي','Preliminary quote')} ${no} (${date})`,...rows.map(({s,q})=>`- ${s.n} (${s.c}) × ${q}: ${fmt(s.p*q)} ${T.cur}`),...(custom.length?[L('تُسعَّر بعد المراجعة:','Priced after review:'),...custom.map(x=>'- '+x)]:[]),...(rows.length?[`${L('إجمالي أتعاب منجز','Total Munjiz fees')}: ${fmt(sum)} ${T.cur}`]:[]),L('الرسوم الحكومية غير مشمولة.','Government fees not included.'),L('صالح لمدة 14 يوماً من تاريخه.','Valid for 14 days.')].join('\n');
   // the same quotation as a PDF file on the letterhead (assets/quote-pdf.js)
   const pdf={lang:EN?'en':'ar',prelim:true,no,date,validDays:14,validUntil:(()=>{const v=new Date(d);v.setDate(v.getDate()+14);return `${pad(v.getDate())}/${pad(v.getMonth()+1)}/${v.getFullYear()}`})(),
