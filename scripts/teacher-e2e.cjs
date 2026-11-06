@@ -11,7 +11,7 @@ const results = []; const ok = (name, cond, extra = '') => results.push({ name, 
     ADMIN = [...ADMIN0]; STUDENT = [...STUDENT0]; forced.length = 0;
     const ctx = await b.newContext({ ...opts, acceptDownloads: true });
     const p = await ctx.newPage(); const errs = [], hosts = new Set();
-    p.on('pageerror', e => errs.push(e.message)); p.on('console', m => m.type() === 'error' && errs.push(m.text()));
+    p.on('pageerror', e => errs.push(e.message)); let offline = false; p.on('console', m => m.type() === 'error' && !offline && errs.push(m.text()));
     p.on('request', r => hosts.add(new URL(r.url()).host));
     let promptVal = 'NewPass-2026!'; p.on('dialog', d => d.accept(d.type() === 'prompt' ? promptVal : undefined));
     const L = (action, body) => p.evaluate(([a, bd]) => window.TeacherLocal.call(a, bd).catch(e => ({ ok: false, error: e.code })), [action, body || {}]);
@@ -31,6 +31,15 @@ const results = []; const ok = (name, cond, extra = '') => results.push({ name, 
     await p.goto(base + '#admin'); await p.waitForTimeout(300);
     ok(`${dev} زائر: رابط الإدارة لا يفتح اللوحة`, !(await p.textContent('#view')).includes('لوحة الإدارة'));
     await p.screenshot({ path: `${shots}/${dev}-1-visitor.png` });
+    // installable app + offline
+    const man = await p.evaluate(async () => { const l = document.querySelector('link[rel=manifest]'); if (!l) return null; const r = await fetch(l.href); return r.ok ? r.json() : null; });
+    ok(`${dev} قابل للتثبيت كتطبيق (manifest وأيقونات)`, man && man.short_name && man.icons.some(i => i.sizes === '512x512'));
+    const swOk = await p.evaluate(() => navigator.serviceWorker ? navigator.serviceWorker.ready.then(r => !!r.active) : false);
+    ok(`${dev} عامل الخدمة يعمل`, swOk);
+    await p.waitForTimeout(800); offline = true; await ctx.setOffline(true);
+    await p.goto(base, { waitUntil: 'domcontentloaded' }).catch(() => {}); await p.waitForTimeout(800);
+    ok(`${dev} يفتح دون إنترنت`, ((await p.textContent('#view').catch(() => '')) || '').includes('خطوتك اليوم'));
+    await ctx.setOffline(false); await p.goto(base, { waitUntil: 'networkidle' }); offline = false;
 
     // wrong password
     await p.goto(base + '#account'); await p.waitForSelector('#loginF');
