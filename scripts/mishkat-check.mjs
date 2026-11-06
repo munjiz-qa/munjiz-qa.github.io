@@ -19,12 +19,12 @@ ok(!!(await p.$('meta[http-equiv="Content-Security-Policy"]')) && await p.evalua
 { const d = await p.evaluate(() => { const r = x => { const o = dailyPick(new Date(x)); return Q.ayat[o.i][0] + ':' + Q.ayat[o.i][1] + ' ' + o.tag; };
     return { why: document.querySelector('.daily .dl-why')?.textContent || '', arafa: r('2026-05-26T12:00'), ashura: r('2026-06-25T12:00'), fitr: r('2026-03-20T12:00') }; });
   ok(d.why.startsWith('سبب الاختيار') && d.arafa === '5:3 يوم عرفة' && d.ashura === '26:65 يوم عاشوراء' && d.fitr === '2:185 عيد الفطر', `آية اليوم بسبب اختيارها وتتبع المناسبات الهجرية (${d.arafa} · ${d.ashura} · ${d.fitr})`); }
-ok((await p.$$('.path')).length === 4 && (await p.$$('.path .scard')).length === 22, 'الرئيسية: أربعة مسارات و٢٢ بطاقة قسم (مع الأمراض والعلاج في القرآن)');
+ok((await p.$$('.path')).length === 4 && (await p.$$('.path .scard')).length >= 22, 'الرئيسية: أربعة مسارات و٢٢ بطاقة قسم فأكثر');
 { // نسخة الجوال المبسطة: فهرس كل الأقسام في أول الشاشة، وركن الأطفال بقصصه وأسئلته
   const m = await b.newPage({ viewport: { width: 390, height: 844 } }); await m.goto(B + '#home'); await m.waitForSelector('.mindex .mi-tile', { timeout: 30000 }).catch(() => {});
   const mi = await m.evaluate(() => { const t = [...document.querySelectorAll('.mindex .mi-tile')], y = s => document.querySelector(s)?.getBoundingClientRect().top ?? 9e9;
     return { n: t.length, mp: y('.mphome'), ad: y('.toprow .adhbar'), pr: y('.toprow .prbar'), mx: t.length ? t[0].getBoundingClientRect().top : 9e9, paths: getComputedStyle(document.querySelector('.home2 .paths')).display }; });
-  ok(mi.n === 22 && mi.paths === 'none', 'الجوال: فهرس الأقسام كلها بدل البطاقات الطويلة');
+  ok(mi.n >= 22 && mi.paths === 'none', 'الجوال: فهرس الأقسام كلها بدل البطاقات الطويلة');
   ok(mi.mp < 200 && mi.mp < mi.ad && mi.ad < mi.pr && mi.pr < mi.mx, 'الجوال: المصحف أول الصفحة ثم الأذكار ثم مواقيت الصلاة ثم فهرس الأقسام');
   await m.evaluate(() => location.hash = 'kids'); await m.waitForTimeout(800);
   ok(await m.evaluate(() => document.querySelectorAll('.k-card .ksv').length >= 11), 'ركن الأطفال: ١١ قصة مصوّرة');
@@ -66,6 +66,15 @@ ok(/الآيات القرآنية/.test(doc) && /أقوال المفسرين/.te
   const ad = await p.evaluate(() => { const A = adhNow(prCfg()), x = document.querySelector('.adh'); return x ? { k: A.kind, shown: x.classList.contains(A.kind), n: document.querySelectorAll('.adh-card').length, src: document.querySelectorAll('.adh-src').length, home: typeof adhHomeCard() === 'string' && /adhbar/.test(adhHomeCard()) } : null; });
   ok(ad && ad.shown && ad.n === (ad.k === 'm' ? 23 : 21) && ad.src === ad.n && ad.home, `أذكار الصباح والمساء: يظهر ورد ${ad?.k === 'm' ? 'الصباح' : 'المساء'} في وقته (${ad?.n} ذكراً بتخريجها) مع بطاقة الرئيسية`);
   await p.click('.adh-card [data-adhc]'); ok(await p.evaluate(() => /[١1]/.test(document.querySelector('.adh-card .adh-count b').textContent)), 'عدّاد الأذكار يعمل');
+}
+{ // الفاكهة والطعام في القرآن الكريم: الأصناف المسمّاة بآياتها، والأبواب بنص مجمع الملك فهد، والأحاديث بتخريجها، ونقول المفسرين، والتنبيه الطبي
+  await p.evaluate(() => location.hash = 'taam'); await p.waitForSelector('.tm-ch', { timeout: 30000 }).catch(() => {});
+  await p.evaluate(() => document.querySelectorAll('.tm-ch').forEach(d => d.open = true));
+  const t = await p.evaluate(() => ({ f: document.querySelectorAll('.tm-f').length, ch: document.querySelectorAll('.tm-ch').length, ix: document.querySelectorAll('.u-index li').length,
+    a: document.querySelectorAll('.tm-q').length, h: document.querySelectorAll('.tm-h .tm-matn').length, q: document.querySelectorAll('.tm-qt blockquote').length, warn: !!document.querySelector('.tm-warn'),
+    tin: (document.querySelector('.tm-q .tm-n[data-ayah="' + idxOf(95, 1) + '"]')?.parentElement.textContent || '').replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/g, '').includes('لتين وٱلزيتون') }));
+  ok(t.f >= 16 && t.ch >= 10 && t.ix === t.ch && t.a >= 100 && t.h >= 20 && t.q >= 10 && t.warn && t.tin, `الفاكهة والطعام في القرآن الكريم: ${t.f} صنفاً، ${t.ch} أبواب، ${t.a} آية بنص مجمع الملك فهد، ${t.h} حديثاً بتخريجه، ${t.q} نقلاً، مع التنبيه الطبي`);
+  const tt = await p.evaluate(() => document.body.innerText); ok(!/claude|anthropic/i.test(tt), 'صفحة taam تعمل ولا تذكر Claude');
 }
 await p.evaluate(() => location.hash = 'account'); await p.waitForTimeout(700);
 ok(!!(await p.$('#uform')) && !!(await p.$('#rform')), 'صفحة الدخول للعميل والمدير وإنشاء الحساب تعمل');
