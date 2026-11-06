@@ -480,6 +480,50 @@ html[dir=ltr] .np-grid .scard .sft{margin:0 0 0 auto}
 .path-grid>.scard:nth-child(5):last-child{flex-basis:100%;flex-direction:row;align-items:center}
 .path-grid>.scard:nth-child(5):last-child .sft{margin:0 auto 0 0}html[dir=ltr] .path-grid>.scard:nth-child(5):last-child .sft{margin:0 0 0 auto}
 
+/* ---------- الفاكهة والطعام في القرآن الكريم (#taam) */
+@font-face{font-family:'KFGQPC Hafs';src:url(fonts/kfgqpc-hafs-uthmanic-v18.woff2) format('woff2');font-display:swap}
+.tm-hero{background:radial-gradient(120% 140% at 0 0,var(--ok-soft),transparent 62%),linear-gradient(135deg,var(--saffron-soft),var(--sheet));position:relative;overflow:hidden}
+.tm-hero::after{content:"";position:absolute;inset-inline-end:-30px;bottom:-46px;width:150px;height:190px;border-radius:50% 50% 46% 46%/60% 60% 40% 40%;background:radial-gradient(circle at 38% 34%,var(--saffron) 0 12%,transparent 13%),radial-gradient(circle at 62% 46%,var(--ok) 0 11%,transparent 12%),radial-gradient(circle at 44% 62%,var(--accent) 0 10%,transparent 11%);border:2px solid var(--ok);opacity:.3;transform:rotate(-14deg)}
+.tm-hero>*{position:relative;z-index:1}
+.tm-stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.tm-stats>span{background:var(--sheet);border:1px solid var(--line);border-radius:999px;padding:4px 14px;font-size:.88rem}
+.tm-stats b{color:var(--accent);font-size:1.05rem}
+.tm-warn{border:1px solid var(--saffron);background:var(--saffron-soft);border-radius:14px;padding:10px 14px;display:flex;gap:10px;align-items:baseline}
+.tm-warn b{color:var(--saffron);white-space:nowrap}.tm-warn p{margin:0;line-height:1.8;font-size:.92rem}
+.tm-foods h2{margin:0 0 4px}
+.tm-chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 12px}
+.tm-chip{font:inherit;font-size:.86rem;border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:999px;padding:4px 14px;cursor:pointer;min-height:34px}
+.tm-chip.on{background:var(--ok);border-color:var(--ok);color:#fff;font-weight:700}
+.tm-chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tm-fgrid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(min(100%,210px),1fr))}
+.tm-f{--fc:var(--ok);display:grid;gap:6px;align-content:start;border:1px solid var(--line);border-inline-start:4px solid var(--fc);border-radius:14px;padding:12px 14px;background:var(--sheet);min-width:0}
+.tm-f[hidden]{display:none}
+.tm-c-nakhl{--fc:var(--saffron)}.tm-c-sharab{--fc:var(--accent)}.tm-c-aqwat{--fc:var(--bad)}.tm-c-qasas{--fc:var(--muted)}
+.tm-fc{justify-self:start;font-size:.74rem;font-weight:700;color:var(--fc);border:1px solid var(--fc);border-radius:999px;padding:0 9px}
+.tm-f b{font-size:1.04rem;color:var(--ink)}.tm-f p{margin:0;line-height:1.75;font-size:.9rem}
+.tm-kay{font-size:.86rem}.tm-kay small{color:var(--muted)}
+.tm-kgo{justify-self:start;font-size:.85rem;font-weight:700;color:var(--fc,var(--accent));text-decoration:none}.tm-kgo::after{content:" ←"}html[dir=ltr] .tm-kgo::after{content:" →"}
+.tm-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr));align-items:start}
+.tm-ay,.tm-h{border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:8px;min-width:0;scroll-margin-top:80px}
+.tm-ay h3,.tm-h h3{margin:0;font-size:1.05rem;color:var(--accent)}
+.tm-ays{background:var(--saffron-soft);border-radius:12px;padding:6px 12px}
+.tm-q{font-family:'KFGQPC Hafs',var(--f-quran);font-size:1.6rem;line-height:2.2}
+.tm-q .tm-n{font-family:'KFGQPC Hafs',var(--f-quran);color:var(--saffron);cursor:pointer;font-size:1em}
+.tm-note{margin:0;line-height:1.85;color:var(--ink)}
+.tm-links{display:flex;flex-wrap:wrap;gap:8px}.tm-links .btn{font-size:.82rem}
+.tm-sub{display:flex;align-items:center;gap:8px;margin:14px 0 2px;font-size:1rem;color:var(--muted)}
+.tm-sub svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8}
+.tm-matn{margin:0;font-family:var(--f-quran);font-size:1.12rem;line-height:2.05;background:var(--accent-soft);border-inline-start:3px solid var(--accent);border-radius:0 10px 10px 0;padding:10px 14px;overflow-wrap:anywhere;text-align:right}
+html[dir=ltr] .tm-matn{border-radius:10px 0 0 10px}
+.tm-en{background:var(--ok-soft);border-radius:10px;padding:8px 12px}.tm-en b{font-size:.8rem;color:var(--ok)}.tm-en p{margin:4px 0 0;line-height:1.7;text-align:left}
+.tm-tx,.tm-gr{margin:0;font-size:.86rem;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline}
+.tm-tx>span:first-child,.tm-gr>span:first-child{color:var(--muted)}
+.tm-badge{font-style:normal;background:var(--ok-soft);color:var(--ok);border-radius:999px;padding:1px 10px;font-weight:700}
+.tm-dg{color:var(--muted);font-size:.82rem}
+.tm-qt{margin:0}.tm-qt .tm-note{color:var(--muted);margin-top:6px}
+.tm-qen{margin:8px 0 0;line-height:1.7;font-size:.92rem;text-align:left}
+@media (max-width:640px){.tm-ay,.tm-h,.tm-f{padding:12px}.tm-fgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.tm-f p{font-size:.86rem}.tm-q{font-size:1.35rem;line-height:2.1}.tm-ays{padding:4px 10px}.tm-matn{font-size:1.02rem;padding:8px 10px}.tm-hero::after{width:110px;height:110px}}
+@media print{.tm-links,.tm-kgo,.tm-chips{display:none}.tm-f[hidden]{display:grid}.tm-ays{background:none}}
 /* ---------- القصص القرآني الموسّع */
 .qstory{display:grid;gap:16px;margin:10px 0 6px}
 .qstory section{background:var(--sheet);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
@@ -584,6 +628,57 @@ html[dir=ltr] .adh-txt,html[dir=ltr] .adh-pre{text-align:right}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .adh-chip.m{--adh-soft:#3a2b14}:root:not([data-theme="light"]) .adh-chip.e{--adh:#9aabff;--adh-soft:#1f2850}}
 .adh-chip svg{width:18px;height:18px;fill:none;stroke:var(--adh);stroke-width:1.9}.adh-chip em{font-style:normal;font-size:.72rem;font-weight:600;color:var(--ok);background:var(--ok-soft);border-radius:99px;padding:0 8px}
 
+/* ---------- وصف الجنة وأنواعها في القرآن الكريم (#jannah) */
+@font-face{font-family:'KFGQPC Hafs';src:url(fonts/kfgqpc-hafs-uthmanic-v18.woff2) format('woff2');font-display:swap}
+.jn{--jn-g:#1f7a5a;--jn-gs:rgba(31,122,90,.1);--jn-au:#b8892c;--jn-aus:rgba(184,137,44,.13);--jn-ag:#7d8794;--jn-ags:rgba(125,135,148,.13)}
+.jn-hero{background:radial-gradient(90% 120% at 0 0,var(--jn-aus),transparent 60%),radial-gradient(120% 140% at 100% 100%,var(--jn-gs),transparent 65%),var(--sheet);position:relative;overflow:hidden}
+.jn-hero::before,.jn-hero::after{content:"";position:absolute;border-radius:50% 50% 0 0;border:2px solid var(--jn-g);border-bottom:0;opacity:.22;pointer-events:none}
+.jn-hero::before{inset-inline-end:28px;bottom:0;width:120px;height:150px}
+.jn-hero::after{inset-inline-end:58px;bottom:0;width:60px;height:96px;border-color:var(--jn-au);opacity:.35}
+.jn-hero>*{position:relative;z-index:1}
+.jn-stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.jn-stats>span{background:var(--sheet);border:1px solid var(--line);border-radius:999px;padding:4px 14px;font-size:.88rem}
+.jn-stats b{color:var(--jn-g);font-size:1.05rem}
+.jn-names h2,.jn-tiers h2{margin:0 0 10px}
+.jn-ngrid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr))}
+.jn-k{display:grid;gap:6px;align-content:start;border:1px solid var(--line);border-top:4px solid var(--jn-g);border-radius:14px;padding:14px;background:var(--sheet);min-width:0;scroll-margin-top:80px}
+.jn-k:nth-child(3n+2){border-top-color:var(--jn-au)}.jn-k:nth-child(3n){border-top-color:var(--accent)}
+.jn-kn{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--jn-g);color:#fff;font-weight:700;font-size:.9rem}
+.jn-k b{font-size:1.1rem;color:var(--jn-g)}.jn-k p{margin:0;line-height:1.85}
+.jn-kq{background:var(--jn-gs);border-radius:10px;padding:4px 10px;font-size:1.3rem!important;line-height:2!important}
+.jn-kay{font-size:.88rem}.jn-kay small{color:var(--muted)}
+.jn-tl{list-style:none;margin:0;padding:0;display:grid;gap:8px;justify-items:center}
+.jn-tr{display:flex;gap:12px;align-items:flex-start;border-radius:14px;padding:12px 14px;border:1px solid var(--line);width:100%;box-sizing:border-box}
+.jn-tr1{max-width:62%;background:linear-gradient(135deg,var(--jn-aus),var(--jn-gs));border-color:var(--jn-au)}
+.jn-tr2{max-width:76%;background:var(--jn-gs)}
+.jn-tr3{max-width:88%;background:var(--jn-aus)}
+.jn-tr4{max-width:100%;background:var(--jn-ags)}
+.jn-tn{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;background:var(--jn-g)}
+.jn-tr1 .jn-tn,.jn-tr3 .jn-tn{background:var(--jn-au)}.jn-tr4 .jn-tn{background:var(--jn-ag)}
+.jn-tr b{display:block;font-size:1.02rem}.jn-tr p{margin:2px 0;line-height:1.8}.jn-tr small{color:var(--muted)}
+.jn-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr));align-items:start}
+.jn-ay,.jn-h{border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:8px;min-width:0;scroll-margin-top:80px}
+.jn-ay h3,.jn-h h3{margin:0;font-size:1.05rem;color:var(--jn-g)}
+.jn-ays{background:var(--jn-aus);border-radius:12px;padding:6px 12px}
+.jn-q{font-family:'KFGQPC Hafs',var(--f-quran);font-size:1.6rem;line-height:2.2}
+.jn-q .jn-n{font-family:'KFGQPC Hafs',var(--f-quran);color:var(--jn-au);cursor:pointer;font-size:1em}
+.jn-note{margin:0;line-height:1.85;color:var(--ink)}
+.jn-links{display:flex;flex-wrap:wrap;gap:8px}.jn-links .btn{font-size:.82rem}
+.jn-sub{display:flex;align-items:center;gap:8px;margin:14px 0 2px;font-size:1rem;color:var(--muted)}
+.jn-sub svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8}
+.jn-matn{margin:0;font-family:var(--f-quran);font-size:1.12rem;line-height:2.05;background:var(--jn-gs);border-inline-start:3px solid var(--jn-g);border-radius:0 10px 10px 0;padding:10px 14px;overflow-wrap:anywhere;text-align:right}
+html[dir=ltr] .jn-matn{border-radius:10px 0 0 10px}
+.jn-en{background:var(--ok-soft);border-radius:10px;padding:8px 12px}.jn-en b{font-size:.8rem;color:var(--ok)}.jn-en p{margin:4px 0 0;line-height:1.7;text-align:left}
+.jn-tx,.jn-gr{margin:0;font-size:.86rem;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline}
+.jn-tx>span:first-child,.jn-gr>span:first-child{color:var(--muted)}
+.jn-badge{font-style:normal;background:var(--ok-soft);color:var(--ok);border-radius:999px;padding:1px 10px;font-weight:700}
+.jn-qt{margin:0}.jn-qt .jn-note{color:var(--muted);margin-top:6px}
+.jn-qen{margin:8px 0 0;line-height:1.7;font-size:.92rem;text-align:left}
+.jn-dua{text-align:center;font-family:var(--f-quran);font-size:1.25rem;color:var(--jn-g);margin:6px 0 0}
+@media (max-width:640px){.jn-ay,.jn-h,.jn-k{padding:12px}.jn-q{font-size:1.35rem;line-height:2.1}.jn-ays{padding:4px 10px}.jn-matn{font-size:1.02rem;padding:8px 10px}
+  .jn-tr1{max-width:86%}.jn-tr2{max-width:92%}.jn-tr3{max-width:96%}.jn-tr{padding:10px 12px;gap:10px}.jn-hero::before{width:80px;height:100px;inset-inline-end:12px}.jn-hero::after{width:40px;height:64px;inset-inline-end:32px}}
+@media print{.jn-links{display:none}.jn-ays,.jn-kq{background:none}}
+
 /* ---------- نسخة الجوال المبسّطة: فهرس أقسام مختصر في أول الشاشة */
 .mindex{display:none}
 .mi-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px}
@@ -611,6 +706,45 @@ html[dir=ltr] .adh-txt,html[dir=ltr] .adh-pre{text-align:right}
   .tabbar a,.tabbar button{font-size:.74rem}
 }
 
+/* ---------- الصور الجمالية في القرآن الكريم (#jamal) */
+@font-face{font-family:'KFGQPC Hafs';src:url(fonts/kfgqpc-hafs-uthmanic-v18.woff2) format('woff2');font-display:swap}
+.jm-hero{background:radial-gradient(110% 130% at 0 0,var(--saffron-soft),transparent 62%),radial-gradient(90% 120% at 100% 100%,var(--accent-soft),transparent 60%),var(--sheet);position:relative;overflow:hidden}
+.jm-hero::after{content:"";position:absolute;inset-inline-end:-30px;bottom:-30px;width:160px;height:160px;border-radius:42% 58% 50% 50%/55% 45% 55% 45%;border:2px solid var(--saffron);opacity:.3;transform:rotate(18deg);box-shadow:0 0 0 14px var(--saffron-soft),0 0 0 30px var(--accent-soft)}
+.jm-hero>*{position:relative;z-index:1}
+.jm-stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.jm-stats>span{background:var(--sheet);border:1px solid var(--line);border-radius:999px;padding:4px 14px;font-size:.88rem}
+.jm-stats b{color:var(--accent);font-size:1.05rem}
+.jm-kinds h2{margin:0 0 10px}
+.jm-kgrid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.jm-k{--kc:var(--accent);display:grid;gap:6px;align-content:start;border:1px solid var(--line);border-top:4px solid var(--kc);border-radius:14px;padding:14px;background:var(--sheet);min-width:0}
+.jm-k2{--kc:var(--ok)}.jm-k3{--kc:var(--saffron)}.jm-k4{--kc:var(--bad)}
+.jm-kn{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--kc);color:#fff;font-weight:700;font-size:.9rem}
+.jm-k b{font-size:1.08rem;color:var(--kc)}.jm-k p{margin:0;line-height:1.85}
+.jm-kay{font-size:.88rem}.jm-kay small{color:var(--muted)}
+.jm-ko{font-size:.88rem;color:var(--ink);background:var(--saffron-soft);border-radius:8px;padding:4px 10px;font-family:var(--f-quran)}
+.jm-kgo{justify-self:start;font-size:.85rem;font-weight:700;color:var(--kc);text-decoration:none}.jm-kgo::after{content:" ←"}html[dir=ltr] .jm-kgo::after{content:" →"}
+.jm-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr));align-items:start}
+.jm-ay,.jm-h{border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:8px;min-width:0;scroll-margin-top:80px}
+.jm-ay h3,.jm-h h3{margin:0;font-size:1.05rem;color:var(--accent)}
+.jm-ays{background:var(--saffron-soft);border-radius:12px;padding:6px 12px}
+.jm-q{font-family:'KFGQPC Hafs',var(--f-quran);font-size:1.6rem;line-height:2.2}
+.jm-q .jm-n{font-family:'KFGQPC Hafs',var(--f-quran);color:var(--saffron);cursor:pointer;font-size:1em}
+.jm-note{margin:0;line-height:1.85;color:var(--ink)}
+.jm-links{display:flex;flex-wrap:wrap;gap:8px}.jm-links .btn{font-size:.82rem}
+.jm-sub{display:flex;align-items:center;gap:8px;margin:14px 0 2px;font-size:1rem;color:var(--muted)}
+.jm-sub svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8}
+.jm-matn{margin:0;font-family:var(--f-quran);font-size:1.12rem;line-height:2.05;background:var(--accent-soft);border-inline-start:3px solid var(--accent);border-radius:0 10px 10px 0;padding:10px 14px;overflow-wrap:anywhere;text-align:right}
+html[dir=ltr] .jm-matn{border-radius:10px 0 0 10px}
+.jm-en{background:var(--ok-soft);border-radius:10px;padding:8px 12px}.jm-en b{font-size:.8rem;color:var(--ok)}.jm-en p{margin:4px 0 0;line-height:1.7;text-align:left}
+.jm-tx,.jm-gr{margin:0;font-size:.86rem;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline}
+.jm-tx>span:first-child,.jm-gr>span:first-child{color:var(--muted)}
+.jm-badge{font-style:normal;background:var(--ok-soft);color:var(--ok);border-radius:999px;padding:1px 10px;font-weight:700}
+.jm-dg{color:var(--muted);font-size:.82rem}
+.jm-qt{margin:0}.jm-qt .jm-note{color:var(--muted);margin-top:6px}
+.jm-qen{margin:8px 0 0;line-height:1.7;font-size:.92rem;text-align:left}
+@media (max-width:640px){.jm-ay,.jm-h,.jm-k{padding:12px}.jm-q{font-size:1.35rem;line-height:2.1}.jm-ays{padding:4px 10px}.jm-matn{font-size:1.02rem;padding:8px 10px}.jm-hero::after{width:110px;height:110px}}
+@media print{.jm-links,.jm-kgo{display:none}.jm-ays{background:none}}
+.jm-lbl{display:inline-block;font-size:.76rem;color:var(--saffron);background:var(--saffron-soft);border-radius:999px;padding:0 9px;margin-inline-end:4px;font-weight:700}
 /* ---------- ركن الأطفال */
 .ksv{display:block;width:100%;height:100%}
 .kids{--kc:var(--accent)}
