@@ -50,7 +50,7 @@
 .mp-l{height:1.98em;display:flex;align-items:center;white-space:nowrap;flex:none}
 .mp-t{justify-content:space-between;gap:.16em}
 .mp-t>span{font-size:calc(var(--lf,1)*1em)}
-.mp-root:not(.mp-flow) .mp-l{line-height:1.2}
+.mp-root:not(.mp-flow) .mp-l{line-height:1.2}.mp-root:not(.mp-flow) .mp-t{height:1.96em} /* يترك ٠٫٣em أسفل الصفحة لذيول الحروف في السطر الأخير فلا تتجاوز الصفحة */
 .mp-open{justify-content:center}.mp-open .mp-t{justify-content:center;gap:.32em}
 .mp-t .w,.mp-n{cursor:pointer;border-radius:.2em}
 .mp-t .w:hover,.mp-n:hover{background:color-mix(in srgb,var(--rule-soft) 75%,transparent)}
