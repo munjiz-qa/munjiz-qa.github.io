@@ -70,6 +70,7 @@
     <button class="iconbtn langbtn notranslate" translate="no" id="langBtn" type="button" aria-label="اللغة · Language" title="اللغة · Language"><svg><use href="#i-globe"/></svg><span id="langCode">ع</span></button>
     <button class="iconbtn" id="themeBtn" aria-label="تبديل الوضع الليلي" title="الوضع الليلي"><svg><use href="#i-moon"/></svg></button>
   </div></div>
+  <div class="instbar" id="instBar" hidden><div class="wrap"><img src="icons/icon-192.png" alt="" width="40" height="40"><span class="ib-t"><b>ثبّت مشكاة على جوالك</b><small>بضغطة واحدة · يعمل دون إنترنت</small></span><button class="btn pri" id="instBarGo" type="button">تثبيت</button><button class="ib-x" id="instBarX" type="button" aria-label="إخفاء">×</button></div></div>
   <main class="wrap" id="view"><p class="loading">جارٍ تحميل نص المصحف وبيانات الموسوعة…</p></main>
 </div>
 
@@ -83,6 +84,7 @@
 
 <div id="drawer" class="drawer" hidden><div class="scrim" data-close></div><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
 <div id="toast" class="toast" hidden></div>
+<div id="offPill" class="offpill" role="status" aria-live="polite" hidden></div>
 
 <script>window.MISHKAT_BUILD='pwa';</script>
 <script src="app.js"></script>

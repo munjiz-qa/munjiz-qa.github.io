@@ -75,5 +75,6 @@ let ev;addEventListener('beforeinstallprompt',e=>{e.preventDefault();ev=e;docume
 document.getElementById('inst').onclick=async()=>{if(!ev)return;ev.prompt();await ev.userChoice;ev=null;document.getElementById('inst').hidden=true};
 if('serviceWorker' in navigator&&location.hostname==='munjiz-qa.github.io')navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
+<script src="pwa-install.js" defer></script>
 </body>
 </html>

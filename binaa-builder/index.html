@@ -2039,4 +2039,5 @@ window.MDK = Object.freeze({quote, conv, bestPlan, normPhone, sanitizeOrder, san
 (() => { bootApp(); const h = (location.hash || "").slice(1); renderChrome(); if (h.startsWith("view=")) openShared(h); else go(ROUTES.includes(h) && h !== "view" ? h : "home"); connect(); })();
 
 })();</script>
+<script src="pwa-install.js" defer></script>
 </body></html>
