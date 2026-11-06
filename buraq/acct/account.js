@@ -1,7 +1,7 @@
 // لوحة العميل في براق: الدخول والتسجيل، الخطط المحفوظة، الطلبات والمراسلة.
 import { READY, auth, db, A, F, loadProfile } from "./fb.js";
 import { printQuote } from "./quote.js?v=1";
-import { createUnread, titleBadge } from "./unread.js?v=1";
+import { createUnread, titleBadge } from "./unread.js?v=2";
 import { $, esc, fmtDate, normPhone, phoneHtml, money, STATUS, stBadge, TYPES, newRequestNo, toast, errMsg } from "./ui.js";
 
 let ME = null, PLANS = [], REQS = [], unsub = [], U = null;
