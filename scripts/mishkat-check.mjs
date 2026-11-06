@@ -75,6 +75,15 @@ ok(/الآيات القرآنية/.test(doc) && /أقوال المفسرين/.te
   ok(ad && ad.shown && ad.n === (ad.k === 'm' ? 23 : 21) && ad.src === ad.n && ad.home, `أذكار الصباح والمساء: يظهر ورد ${ad?.k === 'm' ? 'الصباح' : 'المساء'} في وقته (${ad?.n} ذكراً بتخريجها) مع بطاقة الرئيسية`);
   await p.click('.adh-card [data-adhc]'); ok(await p.evaluate(() => /[١1]/.test(document.querySelector('.adh-card .adh-count b').textContent)), 'عدّاد الأذكار يعمل');
 }
+{ // الفاكهة والطعام في القرآن الكريم: الأصناف المسمّاة بآياتها، والأبواب بنص مجمع الملك فهد، والأحاديث بتخريجها، ونقول المفسرين، والتنبيه الطبي
+  await p.evaluate(() => location.hash = 'taam'); await p.waitForSelector('.tm-ch', { timeout: 30000 }).catch(() => {});
+  await p.evaluate(() => document.querySelectorAll('.tm-ch').forEach(d => d.open = true));
+  const t = await p.evaluate(() => ({ f: document.querySelectorAll('.tm-f').length, ch: document.querySelectorAll('.tm-ch').length, ix: document.querySelectorAll('.u-index li').length,
+    a: document.querySelectorAll('.tm-q').length, h: document.querySelectorAll('.tm-h .tm-matn').length, q: document.querySelectorAll('.tm-qt blockquote').length, warn: !!document.querySelector('.tm-warn'),
+    tin: (document.querySelector('.tm-q .tm-n[data-ayah="' + idxOf(95, 1) + '"]')?.parentElement.textContent || '').replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/g, '').includes('لتين وٱلزيتون') }));
+  ok(t.f >= 16 && t.ch >= 10 && t.ix === t.ch && t.a >= 100 && t.h >= 20 && t.q >= 10 && t.warn && t.tin, `الفاكهة والطعام في القرآن الكريم: ${t.f} صنفاً، ${t.ch} أبواب، ${t.a} آية بنص مجمع الملك فهد، ${t.h} حديثاً بتخريجه، ${t.q} نقلاً، مع التنبيه الطبي`);
+  const tt = await p.evaluate(() => document.body.innerText); ok(!/claude|anthropic/i.test(tt), 'صفحة taam تعمل ولا تذكر Claude');
+}
 await p.evaluate(() => location.hash = 'account'); await p.waitForTimeout(700);
 ok(!!(await p.$('#uform')) && !!(await p.$('#rform')), 'صفحة الدخول للعميل والمدير وإنشاء الحساب تعمل');
 { // اللغات ومواقيت الصلاة: الإنجليزية مضمّنة، ومعاني الآيات بالترجمة المعتمدة، والمواقيت تُحسب على الجهاز
