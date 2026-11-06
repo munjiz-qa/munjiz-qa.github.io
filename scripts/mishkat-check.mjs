@@ -58,10 +58,13 @@ ok((await p.$$('.path')).length === 4 && (await p.$$('.path .scard')).length >= 
       firdaws: (document.querySelector('#jnk-firdaws .jn-t')?.textContent || '').includes('ٱلۡفِرۡدَوۡسِ'), wide: document.documentElement.scrollWidth <= innerWidth + 1 }));
     ok(t.k >= 11 && t.tr === 4 && t.ch >= 9 && t.ix === t.ch && t.a >= 100 && t.h >= 20 && t.q >= 18 && t.firdaws && t.wide, `وصف الجنة في القرآن: ${t.k} اسماً، ${t.ch} أبواب، ${t.a} آية بنص مجمع الملك فهد، ${t.h} حديثاً، ${t.q} نقلاً، دون تمدد أفقي على الجوال`);
   }
+  await m.evaluate(() => location.hash = 'ruqya'); await m.waitForSelector('.ruq-h', { timeout: 30000 }).catch(() => {});
+  const rq = await m.evaluate(() => ({ ch: document.querySelectorAll('.ruq-ch').length, ix: document.querySelectorAll('.ruq .u-index li').length, h: document.querySelectorAll('.ruq-h .ruq-matn').length, tx: document.querySelectorAll('.ruq-h .ruq-tx .num').length, a: document.querySelectorAll('.ruq-ay .ayah').length, q: document.querySelectorAll('.ruq-q blockquote').length, al: document.querySelectorAll('.ruq-alert').length }));
+  ok(rq.ch >= 8 && rq.ix === rq.ch && rq.h >= 18 && rq.tx >= rq.h && rq.a >= 30 && rq.q >= 5 && rq.al >= 1, `التداوي بالقرآن: ${rq.h.toLocaleString("ar-EG")} حديثاً بتخريجها، و${rq.q.toLocaleString("ar-EG")} نقول للعلماء، وآيات الرقية، وتنبيه طبي`);
   await m.close();
 }
 ok(await p.evaluate(() => typeof window.claude === 'undefined'), 'لا يوجد أي مكوّن من Claude في الصفحة');
-for (const v of ['account', 'admin', 'search', 'hifz', 'map', 'awwalin', 'ijaz', 'research', 'kids', 'ulum', 'duaa', 'nisaa', 'rijal', 'shifa', 'tawhid', 'jannah']) {
+for (const v of ['account', 'admin', 'search', 'hifz', 'map', 'awwalin', 'ijaz', 'research', 'kids', 'ulum', 'duaa', 'nisaa', 'rijal', 'shifa', 'tawhid', 'jannah', 'ruqya']) {
   await p.evaluate(v => location.hash = v, v); await p.waitForTimeout(700);
   const t = await p.evaluate(() => document.body.innerText); ok(!/claude|anthropic/i.test(t) && t.length > 200, `صفحة ${v} تعمل ولا تذكر Claude`);
 }
