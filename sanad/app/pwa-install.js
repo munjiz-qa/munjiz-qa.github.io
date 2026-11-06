@@ -109,6 +109,7 @@
     if (!('serviceWorker' in navigator) || !window.caches || warm.busy) return; warm.busy = true;
     try { await navigator.storage?.persist?.(); } catch (e) {}
     try { await Promise.race([navigator.serviceWorker.ready, new Promise(r => setTimeout(r, 8000))]); } catch (e) {}
+    for (let i = 0; i < 40 && !navigator.serviceWorker.controller; i++) await new Promise(r => setTimeout(r, 250)); // حتى يمر كل طلب عبر عامل خدمة المنصة فيحفظه
     const inScope = u => { try { const x = new URL(u, location.href); return x.origin === location.origin && x.pathname.startsWith(base.pathname) && !/\/(api|server)\//.test(x.pathname); } catch (e) { return false; } };
     const extra = (me?.dataset.precache || '').split(/[\s,]+/).filter(Boolean);
     const urls = new Set([base.href, location.href.split('#')[0], ...extra.map(x => new URL(x, base).href)]);

@@ -1,0 +1,38 @@
+name: Install and offline check
+# قاعدة لكل المنصات: زر تثبيت بضغطة واحدة، والعمل دون إنترنت بعد التثبيت. يفحص الموقع المنشور بعد كل تحديث ويومياً،
+# وينشر لقطات الجوال في الإصدار install-check.
+on:
+  push:
+    branches: [main]
+    paths: ['**/pwa-install.js', '**/sw.js', 'mishkat/app.js', 'quran-lab/app.js', 'scripts/install-check.mjs', '.github/workflows/install-check.yml']
+  schedule:
+    - cron: '30 5 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Wait for GitHub Pages to publish
+        if: github.event_name == 'push'
+        run: sleep 150
+      - run: npm i --no-save --no-package-lock playwright@1.47.2 && npx playwright install --with-deps chromium
+      - run: node scripts/install-check.mjs
+      - name: Publish screenshots
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view install-check -R "$GITHUB_REPOSITORY" >/dev/null 2>&1 || gh release create install-check -R "$GITHUB_REPOSITORY" --title "Install check screenshots" --notes "Live install/offline check screenshots" --prerelease
+          gh release upload install-check shots/install/*.png -R "$GITHUB_REPOSITORY" --clobber
