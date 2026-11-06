@@ -227,10 +227,12 @@
       version: 8, glyphs: 'mishwar://{fontstack}/{range}',
       sources: {
         omt: { type: 'vector', url: 'pmtiles://' + new URL(MAPBASE + 'map/qatar.pmtiles', location.href).href, attribution: '© OpenStreetMap' },
+        ...(VECTOR.land ? { qland: { type: 'geojson', data: new URL(MAPBASE + 'map/land.geojson?v=' + encodeURIComponent(VECTOR.updated), location.href).href, tolerance: 0.3 } } : {}),
         gov: { type: 'geojson', data: FC(gj.gov) }, route: { type: 'geojson', data: FC([]) }, done: { type: 'geojson', data: FC([]) }, alt: { type: 'geojson', data: FC([]) }
       },
       layers: [
-        { id: 'v-bg', type: 'background', paint: { 'background-color': c('--m-land') } },
+        { id: 'v-bg', type: 'background', paint: { 'background-color': c(VECTOR.land ? '--m-sea' : '--m-land') } },
+        ...(VECTOR.land ? [{ id: 'v-land', type: 'fill', source: 'qland', paint: { 'fill-color': c('--m-land'), 'fill-antialias': false } }] : []),
         { id: 'v-landcover', type: 'fill', source: 'omt', 'source-layer': 'landcover', filter: ['match', ['get', 'class'], ['grass', 'wood', 'farmland'], true, false], paint: { 'fill-color': c('--m-park'), 'fill-opacity': 0.7 } },
         { id: 'v-sand', type: 'fill', source: 'omt', 'source-layer': 'landcover', filter: ['==', ['get', 'class'], 'sand'], paint: { 'fill-color': c('--m-sand'), 'fill-opacity': 0.6 } },
         { id: 'v-park', type: 'fill', source: 'omt', 'source-layer': 'park', paint: { 'fill-color': c('--m-park'), 'fill-opacity': 0.8 } },
@@ -258,7 +260,7 @@
   function recolor() {
     if (VECTOR && map && map.isStyleLoaded()) {
       const c = css, set = (l, p, v) => { try { map.setPaintProperty(l, p, v); } catch (e) {} };
-      set('v-bg', 'background-color', c('--m-land')); set('v-water', 'fill-color', c('--m-sea')); set('v-park', 'fill-color', c('--m-park')); set('v-landcover', 'fill-color', c('--m-park'));
+      set('v-bg', 'background-color', c(VECTOR.land ? '--m-sea' : '--m-land')); set('v-land', 'fill-color', c('--m-land')); set('v-water', 'fill-color', c('--m-sea')); set('v-park', 'fill-color', c('--m-park')); set('v-landcover', 'fill-color', c('--m-park'));
       set('v-sand', 'fill-color', c('--m-sand')); set('v-landuse', 'fill-color', c('--m-civic')); set('v-road-case', 'line-color', c('--m-casing')); set('v-path', 'line-color', c('--m-casing')); set('v-aeroway', 'line-color', c('--m-casing'));
       set('v-road', 'line-color', ['case', ['==', ['match', ['get', 'class'], ['motorway', 'trunk', 'primary'], 1, 0], 1], c('--m-major'), c('--m-road')]); set('v-bld', 'fill-extrusion-color', c('--m-bld')); set('route', 'line-color', c('--m-route'));
       ['v-road-label', 'v-poi', 'v-place-minor', 'v-place', 'v-water-label', 'gov-label'].forEach(l => set(l, 'text-halo-color', c('--m-halo')));
@@ -696,7 +698,7 @@ ${NATIVE ? '' : `<a href="${CFG.SITE}download.html" ${ON_SITE ? '' : 'target="_b
 
   // ---------- options: map type, view, voice, route ----------
   const SAT_URL = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
-  const G_FILL = ['v-landcover', 'v-sand', 'v-park', 'v-landuse', 'v-water', 'v-aeroway', 'land', 'park', 'water'];
+  const G_FILL = ['v-land', 'v-landcover', 'v-sand', 'v-park', 'v-landuse', 'v-water', 'v-aeroway', 'land', 'park', 'water'];
   const G_ROAD = ['v-road-case', 'v-road', 'v-path', 'road-case', 'road', 'road-path'];
   const G_BLD = ['v-bld', 'bld'];
   let forcedTheme = false;

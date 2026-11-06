@@ -42,7 +42,7 @@ jobs:
         run: |
           mkdir -p data/sources
           pip install -q shapely pyproj pyshp
-          python3 scripts/mishwar-map/sea_from_osm.py qatar.osm.pbf 50.70,24.45,51.70,26.20 data/sources/water-polygons-split-3857.zip \
+          LAND_OUT=land.geojson python3 scripts/mishwar-map/sea_from_osm.py qatar.osm.pbf 50.70,24.45,51.70,26.20 data/sources/water-polygons-split-3857.zip \
             || cp scripts/mishwar-map/qatar-sea-3857.zip data/sources/water-polygons-split-3857.zip
       - name: Build the vector map (Arabic labels, 3D buildings)
         run: |
@@ -70,8 +70,9 @@ jobs:
         run: |
           mkdir -p mishwar/map
           cp qatar.pmtiles mishwar/map/qatar.pmtiles
+          if [ -s land.geojson ]; then cp land.geojson mishwar/map/land.geojson; LAND=true; else LAND=false; fi
           cp out/graph.bin out/names.json out/poi.json mishwar/data/
-          date -u +'{"updated":"%Y-%m-%dT%H:%M:%SZ","source":"OpenStreetMap contributors"}' > mishwar/map/info.json
+          echo "{\"updated\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"land\":$LAND,\"source\":\"OpenStreetMap contributors\"}" > mishwar/map/info.json
           git config user.name "munjiz-mishwar-bot"
           git config user.email "actions@users.noreply.github.com"
           git add mishwar/map mishwar/data/graph.bin mishwar/data/names.json mishwar/data/poi.json

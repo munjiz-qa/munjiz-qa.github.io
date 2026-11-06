@@ -67,6 +67,22 @@ assert water, 'no sea polygons produced'
 for nm, (x, y) in [('Doha bay', (51.545, 25.305)), ('Gulf east of Doha', (51.70, 25.30)), ('Doha inland', (51.45, 25.28))]:
     if frame.contains(Point(x, y)): print('check', nm, 'sea' if any(w.contains(Point(x, y)) for w in water) else 'land')
 
+# land polygons (lon/lat) for the app to draw over a sea-coloured background
+import json
+land = [f for f, (wv, lv) in zip(faces, votes) if not wv > lv]
+LAND_OUT = os.environ.get('LAND_OUT')
+if LAND_OUT:
+    feats = []
+    for g in land:
+        g = g.simplify(0.00008, preserve_topology=True)
+        if g.is_empty or g.area < 2e-8: continue
+        geo = g.__geo_interface__
+        def rnd(c): return [[round(x, 5), round(y, 5)] for x, y in c]
+        coords = [rnd(geo['coordinates'][0])] + [rnd(r) for r in geo['coordinates'][1:]]
+        feats.append({'type': 'Feature', 'properties': {}, 'geometry': {'type': 'Polygon', 'coordinates': coords}})
+    json.dump({'type': 'FeatureCollection', 'features': feats}, open(LAND_OUT, 'w'), separators=(',', ':'))
+    print('land polygons', len(feats), os.path.getsize(LAND_OUT))
+
 tr = Transformer.from_crs(4326, 3857, always_xy=True)
 tmp = tempfile.mkdtemp(); base = os.path.join(tmp, 'water_polygons')
 w = shapefile.Writer(base, shapeType=shapefile.POLYGON); w.field('FID', 'N')
