@@ -4,6 +4,7 @@
 import { createRequire } from "node:module";
 import { randomBytes } from "node:crypto";
 import fs from "node:fs";
+import zlib from "node:zlib";
 const require = createRequire(import.meta.url);
 const { chromium, devices } = require("playwright");
 const C = require("../saif/core.js");
@@ -52,6 +53,12 @@ const DOCX = mkZip([["[Content_Types].xml", "<Types/>"], ["word/document.xml", "
     await p.locator("#res", { hasText: "#2" }).first().waitFor({ timeout: 15000 });
     ok((await p.textContent("#res")).includes("بريد"), "فحص محتوى ملف Word");
     ok((await p.textContent("#res")).includes("بطاقة شخصية"), "كشف رقم هوية مكتوب بالأرقام العربية");
+    // ملف PDF نصي صغير مضغوط بـ FlateDecode كما تنتجه برامج المكتب
+    const pdfStream = zlib.deflateSync(Buffer.from("BT /F1 12 Tf 72 720 Td (IBAN QA58DOHB00001234567890ABCDEFG) Tj ET"));
+    const PDF = Buffer.concat([Buffer.from("%PDF-1.4\n1 0 obj\n<< /Length " + pdfStream.length + " /Filter /FlateDecode >>\nstream\n"), pdfStream, Buffer.from("\nendstream\nendobj\n%%EOF\n")]);
+    await p.setInputFiles("#fi", { name: "كشف.pdf", mimeType: "application/pdf", buffer: PDF });
+    await p.locator("#res", { hasText: "#3" }).first().waitFor({ timeout: 15000 });
+    ok((await p.textContent("#res")).includes("IBAN"), "فحص محتوى ملف PDF");
     await p.goto(BASE + "#reports"); await p.waitForSelector(".banner"); ok((await p.textContent(".banner")).includes("سليمة"), "سلسلة الأختام سليمة"); await shot("client-reports");
     for (const h of ["users", "audit", "settings", "health"]) { await p.goto(BASE + "#" + h); await p.waitForTimeout(300); ok(!(await p.isVisible("h1:has-text('" + ({ users: "الحسابات", audit: "سجل التدقيق", settings: "الإعدادات", health: "صحة المنصة" })[h] + "')")), "العميل محجوب عن #" + h); }
     await p.goto(BASE + "#device"); await p.waitForSelector(".chk"); const n1 = await p.textContent("#dv"); await p.waitForTimeout(2200); const n2 = await p.textContent("#dv"); ok(n1 !== n2, "مراقبة الجهاز تتحدث لحظياً"); await shot("device");

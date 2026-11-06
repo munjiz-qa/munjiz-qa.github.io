@@ -142,7 +142,7 @@ function drawNav() { $('#nav').innerHTML = navHTML(); }
 /* مسارات مشكاة: كل قسم بوصفه ولونه ومساره، تُبنى منها الرئيسية وروابط «تابع الاستكشاف» */
 const PATHS = [
   ['p1', 'اقرأ وتدبّر', 'النص الكريم ومعانيه: تلاوة، وبحث بالفكرة، وموضوعات مفهرسة.', [
-    ['mushaf', 'i-book', 'المصحف', 'رواية حفص بخط واضح، مع التفسير والمعاني لكل آية.', () => `${n(Q.surahs.length)} سورة`],
+    ['mushaf', 'i-book', 'المصحف', 'صفحات مصحف المدينة متصلة بخط مجمع الملك فهد، مع التفسير والمعاني لكل آية.', () => `${n(Q.surahs.length)} سورة`],
     ['search', 'i-search', 'البحث بالمعنى', 'اكتب الفكرة بلغتك، فتظهر الآيات الأقرب إليها مرتبةً.', () => `${n(Q.ayat.length)} آية`],
     ['ask', 'i-spark', 'اسأل مشكاة', 'سؤالك يُجاب من الآيات وأقوال المفسرين والمداخل الموضوعية.', () => ''],
     ['topics', 'i-grid', 'الموسوعة الموضوعية', 'الأنبياء والأقوام والأماكن والأحكام، كل موضوع بآياته.', () => `${n(T.length)} فهرساً`],
@@ -183,41 +183,162 @@ const views = { prayer, adhkar, home: LAB ? research : home, mine: () => researc
 function route() {
   const h = (location.hash || '#' + HOME).slice(1);
   let m, cur;
-  curRoute = /^(s|a)\d/.test(h) ? 'mushaf' : /^k-/.test(h) ? 'kids' : /^t-/.test(h) ? 'topics' : /^(root|lem)\d/.test(h) ? 'words' : h;
+  curRoute = /^(s|a|p|ps|pa)\d/.test(h) ? 'mushaf' : /^k-/.test(h) ? 'kids' : /^t-/.test(h) ? 'topics' : /^(root|lem)\d/.test(h) ? 'words' : h;
   if (m = h.match(/^s(\d+)$/)) { cur = 'mushaf'; surah(+m[1]); }
   else if (m = h.match(/^a(\d+)-(\d+)$/)) { cur = 'mushaf'; surah(+m[1], +m[2]); }
+  else if (m = h.match(/^p(\d+)$/)) { cur = 'mushaf'; mpOpen(+m[1]); }
+  else if (m = h.match(/^ps(\d+)$/)) { cur = 'mushaf'; mpOpen(1, { surah: Math.max(1, Math.min(114, +m[1])) }); }
+  else if (m = h.match(/^pa(\d+)$/)) { cur = 'mushaf'; mpOpen(1, { ayah: Math.min(6235, +m[1]) }); }
   else if (m = h.match(/^t-([a-z]+)$/)) { cur = 'topics'; topic(m[1]); }
   else if (!LAB && (m = h.match(/^k-([a-z]+)$/))) { cur = 'kids'; kids(m[1]); }
   else if (m = h.match(/^root(\d+)$/)) { cur = 'words'; rootView(+m[1]); }
   else if (m = h.match(/^lem(\d+)$/)) { cur = 'words'; lemmaView(+m[1]); }
   else { cur = views[h] ? h : HOME; if (LAB && cur === 'home') cur = 'research'; if (LAB && cur === 'about') cur = 'guide'; if (LAB && !['research', 'mine', 'prayer', 'adhkar', 'mushaf', 'words', 'guide', 'account', 'settings', 'admin'].includes(cur)) cur = 'research'; views[cur](); }
   setCur(cur);
-  if (!/^a\d/.test(h)) window.scrollTo(0, 0);
+  if (!/^(a|p|ps|pa)\d/.test(h)) window.scrollTo(0, 0);
 }
 function setCur(v) { $$('#nav a,#tabbar a').forEach(a => { if (a.dataset.v === v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }); }
 function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 2600); }
 async function copyText(s) { try { await navigator.clipboard.writeText(s); toast('نُسخ النص'); } catch (e) { toast('تعذّر النسخ، حدّد النص يدوياً'); } }
 
 /* ================= daily ayah */
-const DAILY = [[2,255],[2,286],[3,190],[3,200],[13,28],[14,7],[16,97],[17,23],[18,10],[20,114],[21,87],[24,35],[25,63],[29,69],[31,17],[33,41],[39,53],[40,60],[49,13],[55,13],[57,4],[59,22],[65,2],[67,1],[94,5],[2,152],[2,186],[3,8],[3,139],[4,58],[5,8],[6,162],[7,56],[9,51],[10,62],[11,88],[12,87],[15,9],[16,128],[17,9],[18,46],[19,96],[22,46],[23,1],[28,77],[30,21],[35,28],[41,34],[42,30],[50,16],[51,56],[58,11],[64,16],[73,20],[89,27],[93,5],[103,1]];
 let siteCfg = {};
-function dailyIndex() {
-  if (siteCfg.featured) { const i = idxOf(siteCfg.featured.s, siteCfg.featured.a); if (i >= 0) return i; }
-  const d = Math.floor(Date.now() / 864e5); const [s, a] = DAILY[d % DAILY.length]; return idxOf(s, a);
+/* آية اليوم: تُختار بحسب المناسبة الإسلامية في التاريخ الهجري (تقويم أم القرى) أو يوم الأسبوع، وإلا فمن قائمة مختارة،
+   ومع كل آية سبب اختيارها ومصدره. الأحاديث المذكورة من الصحيحين أو السنن بدرجتها. */
+const DAILY = [
+  [2,255,'آية الكرسي، وهي أعظم آية في كتاب الله (صحيح مسلم، عن أُبيّ بن كعب).'],
+  [2,286,'خاتمة سورة البقرة: «لا يكلف الله نفساً إلا وسعها»، و«من قرأ بالآيتين من آخر سورة البقرة في ليلة كفتاه» (البخاري ومسلم).'],
+  [3,190,'آيات التفكر في خلق السماوات والأرض، قرأها النبي ﷺ حين قام من الليل (البخاري ومسلم، عن ابن عباس).'],
+  [3,200,'الوصية بالصبر والمصابرة والمرابطة والتقوى طريقاً إلى الفلاح.'],
+  [13,28,'طمأنينة القلوب بذكر الله.'],
+  [14,7,'وعد الله بالزيادة لمن شكر نعمه.'],
+  [16,97,'الحياة الطيبة جزاءُ العمل الصالح مع الإيمان، للرجال والنساء.'],
+  [17,23,'برّ الوالدين مقروناً بتوحيد الله وعبادته.'],
+  [18,10,'دعاء أصحاب الكهف: الرحمة والرشد من عند الله.'],
+  [20,114,'«وقل ربِّ زدني علماً»: أمرٌ بطلب الزيادة من العلم والدعاء به.'],
+  [21,87,'دعوة ذي النون، «لم يدعُ بها رجل مسلم في شيء قط إلا استجاب الله له» (الترمذي، وصححه الألباني).'],
+  [24,35,'آية النور: «الله نور السماوات والأرض».'],
+  [25,63,'من صفات عباد الرحمن: التواضع والحلم.'],
+  [29,69,'وعد الله بالهداية لمن جاهد نفسه في سبيله.'],
+  [31,17,'وصية لقمان لابنه: الصلاة، والأمر بالمعروف، والصبر.'],
+  [33,41,'الأمر بذكر الله ذكراً كثيراً.'],
+  [39,53,'من أرجى آيات القرآن: «لا تقنطوا من رحمة الله».'],
+  [40,60,'«ادعوني أستجب لكم»: وعد الله بإجابة الدعاء.'],
+  [49,13,'ميزان الكرامة عند الله: التقوى، لا النسب ولا اللون.'],
+  [55,13,'«فبأي آلاء ربكما تكذبان»: تذكير متكرر بنعم الله.'],
+  [57,4,'معيّة الله وعلمه بكل ما نعمل أينما كنا.'],
+  [59,22,'من أسماء الله الحسنى في خاتمة سورة الحشر.'],
+  [65,2,'«ومن يتق الله يجعل له مخرجاً»: وعد بالفرج لأهل التقوى.'],
+  [67,1,'مطلع سورة الملك، «سورة من القرآن ثلاثون آية شفعت لرجل حتى غُفر له» (الترمذي وحسّنه).'],
+  [94,5,'«فإن مع العسر يسراً»: بشارة بأن الفرج يصحب الشدة.'],
+  [2,152,'«فاذكروني أذكركم»: فضل ذكر الله.'],
+  [2,186,'قرب الله من عباده وإجابته دعاءهم.'],
+  [3,8,'دعاء الراسخين في العلم بالثبات على الهداية.'],
+  [3,139,'«ولا تهنوا ولا تحزنوا»: علوّ المؤمنين بإيمانهم.'],
+  [4,58,'أداء الأمانات إلى أهلها والعدل في الحكم.'],
+  [5,8,'العدل مع الناس ولو كان بيننا وبينهم خصومة.'],
+  [6,162,'الإخلاص: الصلاة والنسك والحياة والممات كلها لله.'],
+  [7,56,'«إن رحمت الله قريب من المحسنين».'],
+  [9,51,'التوكل والرضا بما كتب الله.'],
+  [10,62,'أولياء الله لا خوف عليهم ولا هم يحزنون.'],
+  [11,88,'«وما توفيقي إلا بالله»: نسبة التوفيق إلى الله وحده.'],
+  [12,87,'«ولا تيأسوا من روح الله»: الأمل في رحمة الله.'],
+  [15,9,'تكفّل الله بحفظ القرآن.'],
+  [16,128,'معيّة الله للمتقين والمحسنين.'],
+  [17,9,'القرآن يهدي للتي هي أقوم.'],
+  [18,46,'الباقيات الصالحات خير من زينة الدنيا.'],
+  [19,96,'محبة يجعلها الرحمن للمؤمنين العاملين.'],
+  [22,46,'العمى الحقيقي عمى القلوب لا الأبصار.'],
+  [23,1,'«قد أفلح المؤمنون»: مطلع صفات أهل الفلاح.'],
+  [28,77,'التوازن بين طلب الآخرة ونصيب الدنيا، مع الإحسان.'],
+  [30,21,'المودة والرحمة بين الزوجين من آيات الله.'],
+  [35,28,'«إنما يخشى الله من عباده العلماء»: العلم طريق الخشية.'],
+  [41,34,'«ادفع بالتي هي أحسن»: مقابلة الإساءة بالإحسان.'],
+  [42,30,'ما يصيب الإنسان بما كسبت يداه، والله يعفو عن كثير.'],
+  [50,16,'قرب الله من الإنسان وعلمه بما توسوس به نفسه.'],
+  [51,56,'الغاية من خلق الجن والإنس: عبادة الله.'],
+  [58,11,'رفعة الذين آمنوا والذين أوتوا العلم درجات.'],
+  [64,16,'«فاتقوا الله ما استطعتم»: التكليف على قدر الطاقة.'],
+  [73,20,'«فاقرؤوا ما تيسّر من القرآن»: تيسير القراءة والقيام.'],
+  [89,27,'خطاب النفس المطمئنة.'],
+  [93,5,'«ولسوف يعطيك ربك فترضى»: بشارة للنبي ﷺ.'],
+  [103,1,'سورة العصر، قال الإمام الشافعي: لو تدبّر الناس هذه السورة لوسعتهم (ذكره ابن كثير).']];
+const HM = ['', 'المحرّم', 'صفر', 'ربيع الأول', 'ربيع الآخر', 'جمادى الأولى', 'جمادى الآخرة', 'رجب', 'شعبان', 'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'];
+function hijriParts(d) {
+  try { const o = {}; new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn', { day: 'numeric', month: 'numeric', year: 'numeric' }).formatToParts(d).forEach(x => o[x.type] = parseInt(x.value, 10)); return o.month ? { d: o.day, m: o.month, y: o.year } : null; } catch (e) { return null; }
 }
+/* المناسبة بحسب التاريخ الهجري ويوم الأسبوع: [عنوان, سورة, آية, سبب الاختيار] */
+function dailyOccasion(h, wd, k) {
+  const pick = a => a[k % a.length];
+  if (h) {
+    const { d, m } = h;
+    if (m === 9) {
+      if (d === 1) return ['أول أيام رمضان', 2, 185, 'بداية شهر رمضان، الشهر الذي أُنزل فيه القرآن، وفي الآية الأمر بصيامه.'];
+      if (d === 17) return ['ذكرى غزوة بدر', 3, 123, 'السابع عشر من رمضان يوم غزوة بدر الكبرى سنة ٢ هـ على المشهور عند أهل السيرة، والآية تذكّر بنصر الله فيها.'];
+      if (d === 20) return ['ذكرى فتح مكة', 110, 1, 'فُتحت مكة في رمضان سنة ٨ هـ (البخاري)، وأرّخه ابن إسحاق بالعشرين منه، وسورة النصر تبشّر بالفتح.'];
+      if (d >= 21) return ['العشر الأواخر من رمضان', 97, 3, 'العشر الأواخر التي تُتحرّى فيها ليلة القدر، قال ﷺ: «تحرَّوا ليلة القدر في الوتر من العشر الأواخر من رمضان» (البخاري).'];
+      const x = pick([[2, 183], [2, 184], [2, 185], [2, 186], [2, 187]]);
+      return ['شهر رمضان', x[0], x[1], 'من آيات الصيام في سورة البقرة، نقرؤها في شهر رمضان المبارك.'];
+    }
+    if (m === 10 && d === 1) return ['عيد الفطر', 2, 185, 'يوم عيد الفطر، وفي الآية: «ولتكملوا العدة ولتكبروا الله على ما هداكم»، وهي أصل التكبير في العيد.'];
+    if (m === 10 && d <= 8) return ['ست من شوال', 6, 160, 'أيام صيام الست من شوال، قال ﷺ: «من صام رمضان ثم أتبعه ستاً من شوال كان كصيام الدهر» (مسلم)، والحسنة بعشر أمثالها.'];
+    if (m === 12) {
+      if (d === 8) return ['يوم التروية', 2, 197, 'الثامن من ذي الحجة يوم التروية، يتوجه فيه الحجاج إلى منى، والآية في أحكام الحج وآدابه.'];
+      if (d === 9) return ['يوم عرفة', 5, 3, 'يوم عرفة، وفيه نزلت هذه الآية على النبي ﷺ وهو قائم بعرفة في حجة الوداع (البخاري ومسلم، عن عمر بن الخطاب).'];
+      if (d === 10) return ['عيد الأضحى', 108, 2, 'يوم النحر عيد الأضحى، والآية تأمر بالصلاة لله والنحر له.'];
+      if (d <= 13 && d >= 11) return ['أيام التشريق', 2, 203, 'أيام التشريق هي «الأيام المعدودات» (ابن عباس، علّقه البخاري)، وقال ﷺ: «أيام التشريق أيام أكل وشرب وذكر لله» (مسلم).'];
+      if (d <= 7) { const x = pick([[89, 2, 'أقسم الله بالليالي العشر، وهي عشر ذي الحجة عند جمهور المفسرين (ابن كثير).'], [22, 28, '«ويذكروا اسم الله في أيام معلومات»، والأيام المعلومات أيام العشر (ابن عباس، علّقه البخاري).'], [22, 27, 'آية الأذان بالحج، نقرؤها في أيام الحج.']]);
+        return ['العشر الأوائل من ذي الحجة', x[0], x[1], x[2] + ' وقال ﷺ: «ما العمل في أيام أفضل منها في هذه» (البخاري).']; }
+    }
+    if (m === 1) {
+      if (d === 1) return ['رأس السنة الهجرية', 9, 40, 'بداية سنة هجرية جديدة، والتقويم الهجري يبدأ بهجرة النبي ﷺ، والآية تذكر خروجه مع صاحبه في الغار.'];
+      if (d === 9) return ['تاسوعاء', 10, 90, 'التاسع من المحرّم، قال ﷺ: «لئن بقيت إلى قابل لأصومنّ التاسع» (مسلم)، والآية في نجاة بني إسرائيل بعبور البحر.'];
+      if (d === 10) return ['يوم عاشوراء', 26, 65, 'يوم عاشوراء نجّى الله فيه موسى وقومه، فصامه النبي ﷺ وأمر بصيامه (البخاري ومسلم).'];
+      return ['شهر الله المحرّم', 9, 36, 'المحرّم أول الأشهر الحُرُم في العام الهجري، قال ﷺ: «أفضل الصيام بعد رمضان شهر الله المحرّم» (مسلم).'];
+    }
+    if (m === 3 && d === 12) return ['ربيع الأول', 21, 107, 'الثاني عشر من ربيع الأول هو المشهور عند كثير من أهل السيرة يوماً لمولد النبي ﷺ، والآية في بعثته رحمةً للعالمين.'];
+    if (m === 3) { const x = pick([[33, 21], [68, 4], [9, 128], [3, 164], [48, 29]]); return ['شهر ربيع الأول', x[0], x[1], 'في ربيع الأول وُلد النبي ﷺ وفيه وصل إلى المدينة مهاجراً، فاخترنا آية في صفته ﷺ.']; }
+    if (m === 7 && d === 27) return ['الإسراء والمعراج', 17, 1, 'يذكر كثير من الناس أن الإسراء والمعراج كان في ٢٧ رجب، وتاريخه مختلف فيه عند العلماء، والآية أول سورة الإسراء.'];
+    if ((m === 7 && d === 1) || (m === 11 && d === 1)) return ['من الأشهر الحُرُم', 9, 36, 'بداية شهر ' + HM[m] + '، وهو من الأشهر الحُرُم الأربعة التي ذكرتها الآية.'];
+    if (m === 8 && d >= 20) return ['استقبال رمضان', 2, 183, 'اقتراب شهر رمضان، والآية فاتحة آيات الصيام.'];
+  }
+  if (wd === 5) { const x = pick([[62, 9, 'يوم الجمعة، والآية تأمر بالسعي إلى ذكر الله عند النداء لصلاتها.'], [62, 10, 'يوم الجمعة، والآية في الانتشار في الأرض بعد الصلاة مع ذكر الله كثيراً.'], [18, 10, 'يوم الجمعة، ويُستحب فيه قراءة سورة الكهف لحديث أبي سعيد الخدري (الحاكم والبيهقي، وصححه الألباني).']]); return ['يوم الجمعة', x[0], x[1], x[2]]; }
+  if (wd === 1) return ['يوم الاثنين', 96, 1, 'سُئل النبي ﷺ عن صوم الاثنين فقال: «ذاك يوم وُلدت فيه، ويوم بُعثت، أو أُنزل عليّ فيه» (مسلم)، و«اقرأ» أول ما نزل من القرآن.'];
+  return null;
+}
+function dailyPick(date) {
+  const now = date || new Date();
+  if (siteCfg.featured) { const i = idxOf(siteCfg.featured.s, siteCfg.featured.a); if (i >= 0) return { i, tag: 'آية مختارة', why: siteCfg.featuredNote || '' , h: hijriParts(now) }; }
+  const k = Math.floor((now.getTime() - now.getTimezoneOffset() * 6e4) / 864e5), h = hijriParts(now);
+  const o = dailyOccasion(h, now.getDay(), k);
+  if (o) { const i = idxOf(o[1], o[2]); if (i >= 0) return { i, tag: o[0], why: o[3], h, occ: true }; }
+  const [s, a, w] = DAILY[k % DAILY.length]; return { i: idxOf(s, a), tag: 'آية اليوم', why: w, h };
+}
+function dailyIndex() { return dailyPick().i; }
 
 /* ================= home */
+/* بطاقة المصحف في أعلى الرئيسية: متابعة القراءة والانتقال إلى سورة أو جزء */
+function mpHomeCard(last) {
+  return `<section class="mphome" aria-label="المصحف الشريف"><div class="mh-pat" aria-hidden="true"></div>
+    <div class="mh-head"><span class="mh-ic"><svg><use href="#i-book"/></svg></span><span><span class="eyebrow">مصحف المدينة النبوية · ٦٠٤ صفحات</span><h2>المصحف الشريف</h2></span></div>
+    <p class="mh-lead">${last != null ? `توقفت عند <b>${esc(ref(last))}</b>` : 'اقرأ القرآن متصلاً صفحةً بعد صفحة، بخط مجمع الملك فهد ونصّه.'}</p>
+    <div class="mh-go"><a class="btn mh-pri" href="${last != null ? `#pa${last}` : '#p1'}"><svg><use href="#i-book"/></svg>${last != null ? 'أكمل القراءة' : 'ابدأ القراءة'}</a>${last != null ? '<a class="btn mh-sec" href="#p1">من الفاتحة</a>' : '<a class="btn mh-sec" href="#mushaf">فهرس السور</a>'}</div>
+    <div class="mh-sel"><select id="mhSur" aria-label="اختر سورة"><option value="">اختر سورة…</option>${Q.surahs.map(s => `<option value="${s.n}">${n(s.n)}. ${s.name}</option>`).join('')}</select>
+    <select id="mhJuz" aria-label="اختر جزءاً"><option value="">اختر جزءاً…</option>${Array.from({ length: 30 }, (_, j) => `<option value="${j + 1}">الجزء ${n(j + 1)}</option>`).join('')}</select></div>
+  </section>`;
+}
 function home() {
-  const di = dailyIndex();
+  const dp = dailyPick(), di = dp.i;
   const last = ST.last != null ? ST.last : null;
   const due = dueList();
   const hr = new Date().getHours(), greet = hr < 12 ? 'صباح الخير' : 'مساء الخير';
   const QUICK = ['الصبر على البلاء', 'بر الوالدين', 'التوكل على الله', 'الرزق', 'التوبة'];
   V(`<div class="stack home2">
+  <div class="toprow">${mpHomeCard(last)}<div class="tr-side">${adhHomeCard()}${prHomeCard()}</div></div>
   <div class="hero2">
-    <section class="daily stack tight"><div class="eyebrow">${siteCfg.featured ? 'آية مختارة' : 'آية اليوم'} · ${esc(ref(di))}</div>
+    <section class="daily stack tight"><div class="dl-top"><span class="eyebrow">${dp.occ ? 'آية اليوم' : esc(dp.tag)} · ${esc(ref(di))}</span>${dp.occ ? `<span class="dl-occ">${esc(dp.tag)}</span>` : ''}${dp.h ? `<span class="dl-hj">${n(dp.h.d)} ${HM[dp.h.m]} ${String(dp.h.y).replace(/\d/g, x => '٠١٢٣٤٥٦٧٨٩'[x])} هـ</span>` : ''}</div>
       ${ayahHTML(di, null, false)}
-      ${siteCfg.featuredNote ? `<p style="margin:0;opacity:.9">${esc(siteCfg.featuredNote)}</p>` : ''}
+      ${dp.why ? `<p class="dl-why"><b>${siteCfg.featured ? 'تعليق' : 'سبب الاختيار'}:</b> ${esc(dp.why)}</p>` : ''}
       <div class="toolbar"><button class="btn" data-ayah="${di}">التفسير</button><button class="btn" data-card="${di}"><svg><use href="#i-image"/></svg>بطاقة للمشاركة</button><a class="btn" href="#a${Q.ayat[di][0]}-${Q.ayat[di][1]}">في سياقها</a></div>
     </section>
     <section class="welcome">
@@ -234,13 +355,12 @@ function home() {
     </section>
   </div>
   <div class="today">
-    <div class="prrow">${prHomeCard()}${adhHomeCard()}</div>
     <div class="mine3">
-      ${last != null ? `<a class="mcard" href="#a${Q.ayat[last][0]}-${Q.ayat[last][1]}"><svg><use href="#i-book"/></svg><span><small>أكمل القراءة</small><b>${esc(ref(last))}</b></span></a>` : `<a class="mcard" href="#mushaf"><svg><use href="#i-book"/></svg><span><small>ابدأ القراءة</small><b>افتح المصحف</b></span></a>`}
+      ${last != null ? `<a class="mcard" href="#pa${last}"><svg><use href="#i-book"/></svg><span><small>أكمل القراءة</small><b>${esc(ref(last))}</b></span></a>` : `<a class="mcard" href="#p1"><svg><use href="#i-book"/></svg><span><small>ابدأ القراءة</small><b>افتح المصحف</b></span></a>`}
       <a class="mcard" href="#hifz"><svg><use href="#i-mic"/></svg><span><small>مراجعة اليوم</small><b>${n(due.length)} مقطع</b></span></a>
       <a class="mcard" href="#saved"><svg><use href="#i-bookmark"/></svg><span><small>علاماتك</small><b>${n(ST.bookmarks.length)} آية</b></span></a>
     </div>
-    <div class="pill-row acct-row">${cloud ? '<span class="chip ok">تقدّمك محفوظ في حسابك ويتزامن بين أجهزتك</span>' : SESSION ? `<a class="chip ok" href="#account">حسابك: ${esc(SESSION.name)} · ${ROLE[SESSION.role]}</a>` : IS_PWA ? '<span class="chip">تقدّمك محفوظ على هذا الجهاز</span><a class="chip acc" href="#account">ادخل إلى حسابك</a>' : '<span class="chip">تقدّمك محفوظ على هذا الجهاز</span>'}${IS_PWA && installEvt ? '<button class="chip acc" id="homeInst">ثبّت مشكاة على جهازك</button>' : ''}</div>
+    <div class="pill-row acct-row">${cloud ? '<span class="chip ok">تقدّمك محفوظ في حسابك ويتزامن بين أجهزتك</span>' : SESSION ? `<a class="chip ok" href="#account">حسابك: ${esc(SESSION.name)} · ${ROLE[SESSION.role]}</a>` : IS_PWA ? '<span class="chip">تقدّمك محفوظ على هذا الجهاز</span><a class="chip acc" href="#account">ادخل إلى حسابك</a>' : '<span class="chip">تقدّمك محفوظ على هذا الجهاز</span>'}${IS_PWA && !FILE_MODE && !isStandalone() ? '<button class="chip acc" id="homeInst">ثبّت مشكاة على جهازك</button>' : ''}</div>
   </div>
   <section class="paths">
     <div class="sec-head"><div><span class="eyebrow">مسارات مشكاة</span><h2>اختر طريقك في الموسوعة</h2></div><a class="btn" href="#guide">دليل التطبيق</a></div>
@@ -261,8 +381,10 @@ function home() {
   </div>`);
   const go = q => { if (!q.trim()) return; window.scrollTo(0, 0); $('#qinput').value = q; history.replaceState(null, '', '#search'); curRoute = 'search'; setCur('search'); search(q); };
   $('#homeQ').onsubmit = e => { e.preventDefault(); go($('#homeQi').value); };
+  $('#mhSur').onchange = e => { if (+e.target.value) location.hash = 'ps' + e.target.value; };
+  $('#mhJuz').onchange = e => { const j = +e.target.value; if (j) location.hash = 'pa' + Q.ayat.findIndex(a => a[5] === j); };
   $$('[data-hq]').forEach(b => b.onclick = () => go(b.dataset.hq));
-  const hi = $('#homeInst'); if (hi) hi.onclick = async () => { installEvt.prompt(); await installEvt.userChoice; installEvt = null; hi.remove(); };
+  const hi = $('#homeInst'); if (hi) hi.onclick = installApp;
 }
 
 
@@ -936,17 +1058,27 @@ function mushaf() {
   let sort = 'n', dir = 1, filt = '';
   const draw = () => {
     const rows = Q.surahs.filter(s => !filt || s.type === filt).sort((a, b) => (a[sort] > b[sort] ? 1 : -1) * dir);
-    $('#stbl').innerHTML = rows.map(s => `<tr class="clk" data-surah="${s.n}"><td>${n(s.n)}</td><td><b>${s.name}</b></td><td>${s.type}</td><td>${n(s.ayas)}</td><td>${n(s.words)}</td><td>${n(s.letters)}</td><td>${n(Q.ayat[s.first][5])}</td><td>${n(Q.ayat[s.first][6])}</td></tr>`).join('');
+    $('#stbl').innerHTML = rows.map(s => `<tr class="clk" data-mps="${s.n}"><td>${n(s.n)}</td><td><b>${s.name}</b> <a class="chip" href="#s${s.n}">دراسة</a></td><td>${s.type}</td><td>${n(s.ayas)}</td><td>${n(s.words)}</td><td>${n(s.letters)}</td><td>${n(Q.ayat[s.first][5])}</td><td>${n(Q.ayat[s.first][6])}</td></tr>`).join('');
   };
   V(`<div class="stack"><div><div class="eyebrow">المصحف وفهرس السور</div><h1>السور المئة والأربع عشرة</h1><p class="lead">اضغط على السورة لقراءتها، وعلى أي كلمة لمعرفة جذرها ومعناها، وعلى رقم الآية لتفسيرها وحفظها ومشاركتها.</p></div>
-  ${ST.last != null ? `<a class="btn pri" style="align-self:flex-start" href="#a${Q.ayat[ST.last][0]}-${Q.ayat[ST.last][1]}">أكمل القراءة: ${esc(ref(ST.last))}</a>` : ''}
+  <div class="toolbar"><a class="btn pri" href="${ST.last != null ? `#pa${ST.last}` : '#p1'}"><svg><use href="#i-book"/></svg>${ST.last != null ? `أكمل القراءة في المصحف: ${esc(ref(ST.last))}` : 'اقرأ المصحف متصلاً من أوله'}</a>${ST.last != null ? '<a class="btn" href="#p1">من أول المصحف</a>' : ''}</div>
+  <p class="muted small" style="margin:0">القراءة المتصلة على صفحات مصحف المدينة النبوية (٦٠٤ صفحات)، بخط مجمع الملك فهد ونصه. اضغط اسم السورة لقراءتها في المصحف، أو «دراسة» لعرض ألفاظها وتفسيرها آيةً آية.</p>
   <div class="toolbar"><div class="seg" id="tseg"><button aria-pressed="true" data-f="">الكل</button><button aria-pressed="false" data-f="مكية">المكية</button><button aria-pressed="false" data-f="مدنية">المدنية</button></div>
    <select id="juzSel" aria-label="الانتقال إلى جزء"><option value="">الانتقال إلى جزء…</option>${Array.from({length: 30}, (_, j) => `<option value="${j+1}">الجزء ${n(j+1)}</option>`).join('')}</select></div>
   <div class="tablebox"><table><thead><tr>${[['n','م'],['name','السورة'],['type','النزول'],['ayas','الآيات'],['words','الكلمات'],['letters','الحروف'],['juz','الجزء'],['page','الصفحة']].map(([k, l]) => `<th data-sort="${k}">${l}</th>`).join('')}</tr></thead><tbody id="stbl"></tbody></table></div></div>`);
   draw();
   $('#view thead').onclick = e => { const k = e.target.dataset.sort; if (!k || k === 'juz' || k === 'page') return; dir = sort === k ? -dir : 1; sort = k; draw(); };
+  $('#stbl').onclick = e => { if (e.target.closest('a')) return; const r = e.target.closest('[data-mps]'); if (r) location.hash = 'ps' + r.dataset.mps; };
   $('#tseg').onclick = e => { const b = e.target.closest('button'); if (!b) return; filt = b.dataset.f; $('#tseg').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); draw(); };
-  $('#juzSel').onchange = e => { const j = +e.target.value; if (!j) return; const i = Q.ayat.findIndex(a => a[5] === j); location.hash = `a${Q.ayat[i][0]}-${Q.ayat[i][1]}`; };
+  $('#juzSel').onchange = e => { const j = +e.target.value; if (!j) return; const i = Q.ayat.findIndex(a => a[5] === j); location.hash = `pa${i}`; };
+}
+/* المصحف المتصل (صفحات مصحف المدينة): يُحمَّل عند أول فتح من mushaf.js */
+function mpOpen(p, opt) {
+  INTEGRITY['data/mushaf.txt'] = '183ddc3b7ae7fdc81416991f24f580cd'; // بصمة ملف المصحف المتصل: نص مجمع الملك فهد وصفحات مصحف المدينة
+  if (window.mushafRead) return mushafRead(p, opt);
+  if (!mpOpen.s) { V(`<p class="loading">جارٍ فتح المصحف…</p>`); mpOpen.s = document.createElement('script'); mpOpen.s.src = 'mushaf.js'; document.head.appendChild(mpOpen.s); }
+  mpOpen.s.addEventListener('load', () => mushafRead(p, opt), { once: true });
+  mpOpen.s.addEventListener('error', () => { mpOpen.s.remove(); mpOpen.s = null; V(`<p class="loading">تعذّر فتح المصحف، تحقق من الاتصال ثم أعد المحاولة.</p>`); }, { once: true });
 }
 let readObs = null;
 function surah(sn, focusA) {
@@ -958,7 +1090,7 @@ function surah(sn, focusA) {
   V(`<div class="stack"><div><div class="eyebrow">سورة رقم ${n(sn)} · ${s.type}</div><h1>سورة ${s.name}</h1>
     <div class="pill-row" style="margin-top:8px"><span class="chip">${n(s.ayas)} آية</span><span class="chip">${n(s.words)} كلمة</span><span class="chip">${n(s.letters)} حرف</span><span class="chip">${n(lc.size)} لفظاً مختلفاً</span><span class="chip">الجزء ${n(Q.ayat[s.first][5])} · الصفحة ${n(Q.ayat[s.first][6])}</span></div>
     <div class="toolbar" style="margin-top:10px">${sn > 1 ? `<a class="btn" href="#s${sn-1}">→ ${Q.surahs[sn-2].name}</a>` : ''}${sn < 114 ? `<a class="btn" href="#s${sn+1}">${Q.surahs[sn].name} ←</a>` : ''}
-    <a class="btn" href="#hifz" data-hifz="${sn}"><svg><use href="#i-mic"/></svg>احفظ هذه السورة</a>${IS_PWA ? `<button class="btn" id="playSurah"><svg><use href="#i-play"/></svg>استمع</button>` : ''}</div></div>
+    <a class="btn pri" href="#ps${sn}"><svg><use href="#i-book"/></svg>اقرأها في المصحف</a><a class="btn" href="#hifz" data-hifz="${sn}"><svg><use href="#i-mic"/></svg>احفظ هذه السورة</a>${IS_PWA ? `<button class="btn" id="playSurah"><svg><use href="#i-play"/></svg>استمع</button>` : ''}</div></div>
     <section class="panel"><h3>أكثر ألفاظ السورة وروداً</h3><div class="pill-row" style="margin-top:8px">${top.map(([l, c]) => `<a class="chip acc" data-lem="${l}">${esc(W.lemmas[l][0])} · ${n(c)}</a>`).join('')}</div></section>
     <section class="panel" id="reader"><p class="muted small" style="margin:0 0 6px">اضغط أي كلمة لمعرفة جذرها ووزنها ومواضعها، أو رقم الآية لعرض تفسيرها.</p>${bas}
     ${ay.map(i => `<div class="occ" id="ay${i}" data-i="${i}">${ayahHTML(i)}</div>`).join('')}</section></div>`);
@@ -1600,7 +1732,26 @@ async function cardDrawer(i) {
 
 /* ================= settings */
 let installEvt = null;
-window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; });
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; instTopShow(); });
+/* زر «ثبّت التطبيق» في أعلى كل صفحة: يثبّت مشكاة أيقونةً على الجوال والكمبيوتر، ويختفي بعد التثبيت أو عند الفتح من الأيقونة */
+const isStandalone = () => { try { return matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: window-controls-overlay)').matches || navigator.standalone === true; } catch (e) { return false; } };
+function instTopShow() { const b = $('#instTop'); if (b) b.hidden = !IS_PWA || FILE_MODE || isStandalone(); }
+window.addEventListener('appinstalled', () => { installEvt = null; const b = $('#instTop'); if (b) b.hidden = true; toast('ثُبّتت مشكاة على جهازك، وتجدها بين تطبيقاتك'); });
+async function installApp() {
+  if (installEvt) { const e = installEvt; e.prompt(); const r = await e.userChoice.catch(() => null); if (r && r.outcome === 'accepted') { installEvt = null; instTopShow(); } return; }
+  const ua = navigator.userAgent, ios = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1), android = /Android/.test(ua);
+  const safariMac = !ios && /Macintosh/.test(ua) && /Safari/.test(ua) && !/Chrome|Chromium|Edg|Firefox/.test(ua), firefox = /Firefox|FxiOS/.test(ua);
+  const step = (n, t) => `<li><span class="in-n">${n}</span><span>${t}</span></li>`;
+  const ios_ = `<h3>على آيفون وآيباد (سفاري)</h3><ol class="in-steps">${step(1, 'اضغط زر المشاركة <b>⬆︎</b> أسفل الشاشة أو أعلاها.')}${step(2, 'اختر <b>«إضافة إلى الشاشة الرئيسية»</b>.')}${step(3, 'اضغط <b>«إضافة»</b>، فتظهر أيقونة مشكاة بين تطبيقاتك.')}</ol>`;
+  const and_ = `<h3>على أندرويد (كروم أو سامسونج)</h3><ol class="in-steps">${step(1, 'افتح قائمة المتصفح <b>⋮</b> أعلى الشاشة.')}${step(2, 'اختر <b>«تثبيت التطبيق»</b> أو <b>«إضافة إلى الشاشة الرئيسية»</b>.')}${step(3, 'اضغط <b>«تثبيت»</b>، فتظهر أيقونة مشكاة بين تطبيقاتك.')}</ol>`;
+  const pc_ = `<h3>على الكمبيوتر (كروم أو إيدج)</h3><ol class="in-steps">${step(1, 'اضغط أيقونة التثبيت <b>⊕</b> في نهاية شريط العنوان، أو افتح القائمة <b>⋮</b>.')}${step(2, 'اختر <b>«تثبيت مشكاة»</b>، وفي إيدج: التطبيقات ← تثبيت هذا الموقع كتطبيق.')}${step(3, 'تفتح مشكاة في نافذتها الخاصة، وتجد أيقونتها في قائمة البرامج وسطح المكتب.')}</ol>`;
+  const mac_ = `<h3>على ماك (سفاري)</h3><ol class="in-steps">${step(1, 'من قائمة <b>«ملف»</b> اختر <b>«إضافة إلى Dock»</b>.')}${step(2, 'اضغط <b>«إضافة»</b>، فتظهر أيقونة مشكاة في شريط Dock.')}</ol>`;
+  const first = ios ? ios_ : android ? and_ : safariMac ? mac_ : pc_;
+  const others = [ios_, and_, pc_, mac_].filter(x => x !== first).join('');
+  openDrawer(`<div class="stack instsheet"><div class="in-head"><img src="icons/icon-192.png" alt="" width="64" height="64"><div><h2>ثبّت مشكاة على جهازك</h2><p class="muted small" style="margin:0">أيقونة على الشاشة تفتح التطبيق مباشرة في نافذته الخاصة، ويعمل دون إنترنت بعد أول فتح. التثبيت مجاني ولا يحتاج إلى متجر.</p></div></div>
+    ${firefox ? '<p class="note">متصفح فايرفوكس لا يدعم تثبيت التطبيقات على الكمبيوتر. افتح الموقع في كروم أو إيدج ثم اضغط زر التثبيت.</p>' : ''}
+    ${first}<details class="in-more"><summary>طريقة التثبيت على الأجهزة الأخرى</summary>${others}</details></div>`);
+}
 function settings() {
   V(`<div class="stack" style="max-width:860px"><div><div class="eyebrow">الإعدادات</div><h1>الإعدادات والتنزيل</h1></div>
   <section class="panel stack tight"><h3>العرض</h3>
@@ -1610,7 +1761,7 @@ function settings() {
   <section class="panel stack tight"><h3>التثبيت والعمل دون إنترنت</h3>
     ${IS_PWA ? `<p style="margin:0">التطبيق يحفظ نص المصحف والإحصاءات والموسوعة والتفسير الميسر وغريب القرآن تلقائياً، فيعمل دون إنترنت. ولتنزيل التفاسير الكبيرة كلها (نحو ٦٠ ميغابايت) اضغط الزر.</p>
       <div class="toolbar"><button class="btn pri" id="dlAll">تنزيل كل التفاسير للعمل دون إنترنت</button><span id="dlStat" class="muted small"></span></div><div class="meter"><i id="dlBar" style="width:0"></i></div>
-      <div class="toolbar"><button class="btn" id="instBtn" ${installEvt ? '' : 'hidden'}>ثبّت ${BRAND} على هذا الجهاز</button></div>
+      <div class="toolbar"><button class="btn" id="instBtn" ${!FILE_MODE && !isStandalone() ? '' : 'hidden'}>ثبّت ${BRAND} على هذا الجهاز</button></div>
       <p class="muted small" style="margin:0">على آيفون: افتح الرابط في سفاري، ثم «مشاركة» ثم «إضافة إلى الشاشة الرئيسية». على أندرويد والكمبيوتر: زر التثبيت في المتصفح أو الزر أعلاه.</p>`
       : `<p style="margin:0">هذه نسخة مشكاة على claude.ai. توجد نسخة قابلة للتثبيت على الجوال والكمبيوتر تعمل دون إنترنت وتدعم التسميع بالصوت والاستماع للتلاوة.</p>`}
   </section>
@@ -1625,7 +1776,7 @@ function settings() {
   $('#impBtn').onclick = () => { $('#impBox').hidden = false; $('#impRow').hidden = false; $('#impBox').focus(); };
   $('#impGo').onclick = () => { try { const d = cleanState(JSON.parse(decodeURIComponent(escape(atob($('#impBox').value.trim()))))); ST.bookmarks = [...new Set([...ST.bookmarks, ...d.bookmarks])]; Object.assign(ST.hifz, d.hifz); if (d.last != null) ST.last = d.last; save(); $('#dataMsg').textContent = 'استُورد تقدّمك بنجاح.'; } catch (e) { $('#dataMsg').textContent = 'الرمز غير صحيح. انسخه كاملاً ثم أعد المحاولة.'; } };
   let armed = false; $('#clrBtn').onclick = () => { if (!armed) { armed = true; $('#clrBtn').textContent = 'اضغط مرة أخرى للتأكيد'; return; } ST.bookmarks = []; ST.hifz = {}; ST.last = null; save(); $('#dataMsg').textContent = 'مُسحت بياناتك.'; $('#clrBtn').textContent = 'مسح كل بياناتي'; armed = false; };
-  const ib = $('#instBtn'); if (ib) ib.onclick = async () => { if (!installEvt) return; installEvt.prompt(); await installEvt.userChoice; installEvt = null; ib.hidden = true; };
+  const ib = $('#instBtn'); if (ib) ib.onclick = installApp;
   const da = $('#dlAll'); if (da) da.onclick = async () => {
     const files = [...TF.flatMap(b => Array.from({ length: b.chunks }, (_, k) => `data/t/${b.key}/${k}.txt`)), ...Object.keys(HAD_BOOKS).map(k => `data/hadith/${k}.txt`)]; let done = 0; da.disabled = true;
     const cache = await caches.open('mishkat-data-v1');
@@ -2811,7 +2962,7 @@ async function connectCloud() {
     const h = (location.hash || '#' + HOME).slice(1); if (['home', 'saved', 'settings', 'hifz', 'research', 'mine'].includes(h)) route();
   } catch (e) {}
 }
-applyPrefs(); drawNav(); if (IS_PWA) $('#acctBtn').hidden = false;
+applyPrefs(); drawNav(); if (IS_PWA) $('#acctBtn').hidden = false; { const b = $('#instTop'); if (b) { b.onclick = installApp; instTopShow(); } }
 const i18nReady = i18nInit().catch(() => {});
 (async () => {
   try {
@@ -2822,4 +2973,9 @@ const i18nReady = i18nInit().catch(() => {});
     route(); connectCloud();
   } catch (err) { V(`<p class="loading">تعذّر تحميل البيانات. يتطلب التطبيق متصفحاً حديثاً (كروم أو سفاري أو فايرفوكس أو إيدج). ${esc(err.message)}</p>`); }
 })();
-if (IS_PWA && 'serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+/* التحديث التلقائي: عند نشر نسخة جديدة يثبّتها عامل الخدمة ثم تُعاد الصفحة مرة واحدة، فيرى الزائر الجديد دون إعادة تحميل يدوية */
+if (IS_PWA && 'serviceWorker' in navigator && !FILE_MODE) {
+  const hadSW = !!navigator.serviceWorker.controller; let swReloaded = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (!hadSW || swReloaded) return; swReloaded = true; location.reload(); });
+  navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then(reg => { const up = () => reg.update().catch(() => {}); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') up(); }); setInterval(up, 30 * 60 * 1000); }).catch(() => {});
+}
