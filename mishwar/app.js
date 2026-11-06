@@ -432,14 +432,16 @@ ${NATIVE ? '' : `<a href="${CFG.SITE}download.html" ${ON_SITE ? '' : 'target="_b
     if (!s || !t) return msgSheet('خارج نطاق الخريطة', 'الوجهة خارج نطاق الطرق المتوفرة حالياً.');
     const { pen, key } = penalties(A);
     const RO = { shortest: OPT.route === 'short', avoidHwy: mode === 'car' && OPT.avoidHwy, avoidDirt: OPT.avoidDirt };
-    let r = MSR.route(G, A, s.node, t.node, pen.size ? pen : null, RO), base = null;
+    let r = MSR.route(G, A, s, t, pen.size ? pen : null, RO), base = null;
     if (!r) return msgSheet('تعذّر إيجاد مسار', 'لا يوجد طريق متصل بين النقطتين لهذه الوسيلة، أو أن الطرق المؤدية مغلقة الآن. جرّب وسيلة أخرى.');
-    if (pen.size) { base = MSR.route(G, A, s.node, t.node, null, RO); }
+    if (pen.size) { base = MSR.route(G, A, s, t, null, RO); }
     // time on the chosen route including penalties it passes through
     let penT = 0; const hitIds = new Set();
     r.nodes.slice(1, -1).forEach(n => { const v = pen.get(n); if (v && v !== Infinity) penT += v; });
     activeReports().concat(official).forEach(x => { if (RT[x.type] && r.nodes.some(n => MSR.hav(x.lat, x.lon, G.lat[n], G.lon[n]) < (x.radius || RT[x.type][5]))) hitIds.add(x.id); });
-    r.coords = [[start.lon, start.lat]].concat(r.nodes.map(n => [G.lon[n], G.lat[n]]), [[dest.lon, dest.lat]]);
+    const sp = s.edge ? [[s.edge.lon, s.edge.lat]] : [], tp = t.edge ? [[t.edge.lon, t.edge.lat]] : [];
+    r.k0 = 1 + sp.length;   // index of the first network node inside coords
+    r.coords = [[start.lon, start.lat]].concat(sp, r.nodes.map(n => [G.lon[n], G.lat[n]]), tp, [[dest.lon, dest.lat]]);
     r.extra = s.dist + t.dist; r.total = r.dist + r.extra;
     const wf = weatherFactor();
     r.ttotal = (r.time - penT) * wf + penT + r.extra / 1.3;
@@ -500,7 +502,7 @@ ${NATIVE ? '' : `<a href="${CFG.SITE}download.html" ${ON_SITE ? '' : 'target="_b
     }
     const l = c[c.length - 1]; return { lon: l[0], lat: l[1], seg: c.length - 2, brg: 0, end: 1 };
   }
-  function segEdge(i) { const ei = i - 1; return ei >= 0 && ei < R.edges.length ? R.edges[ei] : -1; }
+  function segEdge(i) { const ei = i - (R.k0 || 1); return ei >= 0 && ei < R.edges.length ? R.edges[ei] : -1; }
   function segSpeed(i) { const e = segEdge(i); if (e < 0) return mode === 'car' ? 4 : 1.4; const A = profile(mode); return A.len[e] / Math.max(A.cost[e], 0.1) / R.wf; }
   function segLimit(i) { if (mode !== 'car') return 0; const e = segEdge(i); if (e < 0) return 0; const w = G.ways[profile(mode).way[e]]; return w ? w.ms || 0 : 0; }
   // project a point on the route near the last known segment
@@ -650,7 +652,7 @@ ${NATIVE ? '' : `<a href="${CFG.SITE}download.html" ${ON_SITE ? '' : 'target="_b
   function trail(p) { map.getSource('done').setData(FC([{ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: R.coords.slice(0, p.seg + 1).concat([[p.lon, p.lat]]) } }])); }
   function navUpdate(p) {
     if (!nav || nav.kind === 'wait') return;
-    const off0 = R.extra ? MSR.hav(R.coords[0][1], R.coords[0][0], R.coords[1][1], R.coords[1][0]) : 0, rd = nav.d - off0;
+    const off0 = R.cumc ? R.cumc[Math.min(R.k0 || 1, R.cumc.length - 1)] : 0, rd = nav.d - off0;
     const i = ST.list.findIndex(s => s.at > rd + 5), s = ST.list[i < 0 ? ST.list.length - 1 : i], nx = ST.list[i + 1], to = Math.max(0, s.at - rd);
     const b = $('#banner');
     b.innerHTML = `${svg(TURN[s.type] || TURN.straight, 2.4)}<div style="min-width:0"><div class="dist">${MSR.fmtDist(to)}</div><div class="txt">${E(s.text)}</div>${nx && nx.type !== 'arrive' ? `<div class="next">ثم ${E(nx.text)}</div>` : ''}</div>${nav.kind === 'demo' ? '<span class="demo-tag">معاينة</span>' : ''}`;

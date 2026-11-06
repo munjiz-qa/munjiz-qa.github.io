@@ -31,12 +31,51 @@ IMP2 = {'hospital', 'university', 'mall', 'museum', 'stadium', 'aerodrome', 'tow
 KINDS = ('amenity', 'shop', 'tourism', 'office', 'leisure', 'government', 'healthcare', 'place', 'aeroway',
          'railway', 'public_transport', 'historic')
 
+SKIP_SERVICE = {'parking_aisle', 'driveway', 'drive-through', 'emergency_access'}
+def routable(t):
+    hw = t.get('highway')
+    if hw not in CI or hw == 'track' or t.get('area') == 'yes': return False   # desert tracks are not used for routing
+    if hw == 'service' and t.get('service') in SKIP_SERVICE: return False
+    return True
+
+class Count(osmium.SimpleHandler):
+    # first pass: how many routable ways use each node (junctions must be kept)
+    def __init__(self):
+        super().__init__(); self.n = {}
+    def way(self, w):
+        if routable(w.tags):
+            nn = w.nodes
+            for i, n in enumerate(nn):
+                k = n.ref; self.n[k] = self.n.get(k, 0) + (2 if i == 0 or i == len(nn) - 1 else 1)
+
+def simplify(pts, keep, tol=4.0):
+    # Douglas-Peucker in metres, never removing junction nodes
+    import math
+    if len(pts) < 3: return list(range(len(pts)))
+    lat0 = math.radians(pts[0][1]); kx = 111320 * math.cos(lat0); ky = 110540
+    out = {0, len(pts) - 1} | {i for i in range(len(pts)) if keep[i]}
+    anchors = sorted(out)
+    for a, b in zip(anchors, anchors[1:]):
+        stack = [(a, b)]
+        while stack:
+            i, j = stack.pop()
+            if j - i < 2: continue
+            ax, ay = pts[i][0] * kx, pts[i][1] * ky; bx, by = pts[j][0] * kx, pts[j][1] * ky
+            dx, dy = bx - ax, by - ay; L = math.hypot(dx, dy) or 1e-9
+            best, bi = -1, -1
+            for m in range(i + 1, j):
+                px, py = pts[m][0] * kx, pts[m][1] * ky
+                d = abs(dy * (px - ax) - dx * (py - ay)) / L
+                if d > best: best, bi = d, m
+            if best > tol: out.add(bi); stack += [(i, bi), (bi, j)]
+    return sorted(out)
+
 def latin(s):
     return bool(s) and all(ord(ch) < 0x0600 for ch in s)
 
 class H(osmium.SimpleHandler):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, use):
+        super().__init__(); self.use = use
         self.ways, self.pois, self.used = [], [], {}
         self.lat, self.lon = [], []
 
@@ -65,9 +104,12 @@ class H(osmium.SimpleHandler):
 
     def way(self, w):
         t = w.tags; hw = t.get('highway')
-        if hw in CI and len(w.nodes) > 1 and t.get('area') != 'yes':
+        if routable(t) and len(w.nodes) > 1:
             nodes = [n for n in w.nodes if n.location.valid()]
             if len(nodes) < 2: return
+            keep = [self.use.get(n.ref, 0) > 1 for n in nodes]
+            idx = simplify([(n.location.lon, n.location.lat) for n in nodes], keep)
+            nodes = [nodes[i] for i in idx]
             ow = t.get('oneway')
             one = 1 if ow in ('yes', '1', 'true') else (2 if ow == '-1' else 0)
             if (hw in ('motorway', 'motorway_link') or t.get('junction') == 'roundabout') and ow != 'no': one = one or 1
@@ -87,7 +129,8 @@ class H(osmium.SimpleHandler):
             if pts:
                 self.poi({x.k: x.v for x in t}, sum(n.location.lat for n in pts) / len(pts), sum(n.location.lon for n in pts) / len(pts))
 
-h = H()
+c = Count(); c.apply_file(SRC)
+h = H(c.n)
 h.apply_file(SRC, locations=True, idx='flex_mem')
 
 names, nidx = [], {}

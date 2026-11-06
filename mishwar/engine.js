@@ -97,40 +97,87 @@ const MSR = (() => {
         for (const n of c) { const d = hav(la, lo, G.lat[n], G.lon[n]); if (d < bd) { bd = d; best = n; } }
       }
     }
-    return best < 0 ? null : { node: best, dist: bd };
+    if (best < 0) return null;
+    // refine: project onto the road segments around the candidate nodes
+    const kx = 111320 * Math.cos(la * D2R), ky = 110540;
+    let e = null, ed = Infinity;
+    for (let i = gi - 2; i <= gi + 2; i++) for (let j = gj - 2; j <= gj + 2; j++) {
+      const c = A.grid.get(i + ':' + j); if (!c) continue;
+      for (const u of c) for (let k = A.off[u]; k < A.off[u + 1]; k++) {
+        const v = A.to[k];
+        const ax = (G.lon[u] - lo) * kx, ay = (G.lat[u] - la) * ky, bx = (G.lon[v] - lo) * kx, by = (G.lat[v] - la) * ky;
+        const dx = bx - ax, dy = by - ay, L = dx * dx + dy * dy; let t = L ? -(ax * dx + ay * dy) / L : 0; t = t < 0 ? 0 : t > 1 ? 1 : t;
+        const px = ax + t * dx, py = ay + t * dy, d = Math.sqrt(px * px + py * py);
+        if (d < ed) { ed = d; e = { j: k, u, v, t, lat: G.lat[u] + (G.lat[v] - G.lat[u]) * t, lon: G.lon[u] + (G.lon[v] - G.lon[u]) * t }; }
+      }
+    }
+    if (e && ed + 0.5 < bd) return Object.assign({ node: e.t < 0.5 ? e.u : e.v, dist: ed, edge: e });
+    return { node: best, dist: bd };
   }
+  function revEdge(A, from, to) { for (let k = A.off[from]; k < A.off[from + 1]; k++) if (A.to[k] === to) return k; return -1; }
 
   // o: { shortest: true } to minimise distance, { avoidHwy, avoidDirt } to steer away from motorways or unpaved tracks
-  function route(G, A, s, t, pen, o) {
+  function route(G, A, S, T, pen, o) {
+    if (typeof S === 'object' || typeof T === 'object') return routeSnap(G, A, S, T, pen, o);
+    return routeCore(G, A, [[S, 0, -1]], new Map([[T, [0, -1]]]), pen, o, S, T);
+  }
+  // start/target in the middle of a road: seed both ends of the segment with the partial cost
+  function routeSnap(G, A, S, T, pen, o) {
+    const sObj = typeof S === 'object' ? S : { node: S }, tObj = typeof T === 'object' ? T : { node: T };
+    const starts = [], targets = new Map();
+    const sc = (j, f) => (o && o.shortest ? A.len[j] : A.cost[j]) * f;
+    if (sObj.edge) {
+      const e = sObj.edge, rk = revEdge(A, e.v, e.u);
+      starts.push([e.v, sc(e.j, 1 - e.t), e.j, (1 - e.t)]);
+      if (rk >= 0) starts.push([e.u, sc(rk, e.t), rk, e.t]);
+    } else starts.push([sObj.node, 0, -1, 0]);
+    if (tObj.edge) {
+      const e = tObj.edge, rk = revEdge(A, e.v, e.u);
+      targets.set(e.u, [sc(e.j, e.t), e.j, e.t]);
+      if (rk >= 0) { const c = sc(rk, 1 - e.t), x = targets.get(e.v); if (!x || c < x[0]) targets.set(e.v, [c, rk, 1 - e.t]); }
+    } else targets.set(tObj.node, [0, -1, 0]);
+    // same segment, travelling forward along it
+    if (sObj.edge && tObj.edge && sObj.edge.j === tObj.edge.j && tObj.edge.t >= sObj.edge.t) {
+      const j = sObj.edge.j, f = tObj.edge.t - sObj.edge.t;
+      return { nodes: [], edges: [], dist: A.len[j] * f, time: A.cost[j] * f, iters: 0, head: null, tail: null };
+    }
+    return routeCore(G, A, starts, targets, pen, o, sObj.node, tObj.node);
+  }
+  function routeCore(G, A, starts, targets, pen, o, s0, t0) {
     o = o || {}; const byLen = !!o.shortest, HW = o.avoidHwy, DIRT = o.avoidDirt;
     const nN = G.lat.length;
-    const g = new Float64Array(nN).fill(Infinity), prev = new Int32Array(nN).fill(-1), pe = new Int32Array(nN).fill(-1);
+    const g = new Float64Array(nN).fill(Infinity), prev = new Int32Array(nN).fill(-1), pe = new Int32Array(nN).fill(-1), seed = new Map();
     const closed = new Uint8Array(nN);
     const heap = [], hk = [];
     const push = (n, k) => { heap.push(n); hk.push(k); let i = heap.length - 1; while (i) { const p = (i - 1) >> 1; if (hk[p] <= hk[i]) break; [heap[p], heap[i]] = [heap[i], heap[p]]; [hk[p], hk[i]] = [hk[i], hk[p]]; i = p; } };
     const pop = () => { const n = heap[0], last = heap.pop(), lk = hk.pop(); if (heap.length) { heap[0] = last; hk[0] = lk; let i = 0; for (;;) { const l = 2 * i + 1, r = l + 1; let m = i; if (l < heap.length && hk[l] < hk[m]) m = l; if (r < heap.length && hk[r] < hk[m]) m = r; if (m === i) break; [heap[m], heap[i]] = [heap[i], heap[m]]; [hk[m], hk[i]] = [hk[i], hk[m]]; i = m; } } return n; };
-    const tl = G.lat[t], to2 = G.lon[t];
-    g[s] = 0; push(s, 0);
-    let iters = 0;
+    const tl = G.lat[t0], to2 = G.lon[t0];
+    const H = v => byLen ? hav(G.lat[v], G.lon[v], tl, to2) * 0.9 : hav(G.lat[v], G.lon[v], tl, to2) / A.vmax * 0.9;
+    starts.forEach(([n, c, j, f]) => { if (c < g[n]) { g[n] = c; seed.set(n, [j, f]); push(n, c + H(n)); } });
+    let best = Infinity, bestEnd = -1, iters = 0;
     while (heap.length) {
+      if (hk[0] >= best) break;
       const u = pop(); if (closed[u]) continue; closed[u] = 1; iters++;
-      if (u === t) break;
+      const tg = targets.get(u); if (tg && g[u] + tg[0] < best) { best = g[u] + tg[0]; bestEnd = u; }
       for (let j = A.off[u]; j < A.off[u + 1]; j++) {
-        const v = A.to[j]; let add = 0; if (pen && v !== t) { add = pen.get(v) || 0; if (add === Infinity) continue; }
+        const v = A.to[j]; let add = 0; if (pen && !targets.has(v)) { add = pen.get(v) || 0; if (add === Infinity) continue; }
         let c = byLen ? A.len[j] : A.cost[j];
         if (HW || DIRT) { const k = G.ways[A.way[j]].cls; if (HW && (k <= 1 || k === 15 || k === 16)) c *= 4; if (DIRT && k === 14) c *= 6; }
         const nd = g[u] + c + (byLen ? add * 10 : add);
-        if (nd < g[v]) { g[v] = nd; prev[v] = u; pe[v] = j; push(v, nd + (byLen ? hav(G.lat[v], G.lon[v], tl, to2) : hav(G.lat[v], G.lon[v], tl, to2) / A.vmax)); }
+        if (nd < g[v]) { g[v] = nd; prev[v] = u; pe[v] = j; seed.delete(v); push(v, nd + H(v)); }
       }
     }
-    if (!isFinite(g[t])) return null;
-    const edges = [];
-    for (let v = t; v !== s; v = prev[v]) edges.push(pe[v]);
+    if (bestEnd < 0) return null;
+    const edges = []; let v = bestEnd;
+    while (prev[v] >= 0) { edges.push(pe[v]); v = prev[v]; }
     edges.reverse();
-    const nodes = [s]; let dist = 0;
-    let time = 0;
-    edges.forEach(e => { const v = A.to[e]; nodes.push(v); dist += A.len[e]; time += A.cost[e]; if (pen && v !== t) { const x = pen.get(v); if (x && x !== Infinity) time += x; } });
-    return { nodes, edges, dist, time, iters };
+    const first = v, sd = seed.get(first) || [-1, 0], td = targets.get(bestEnd);
+    const nodes = [first]; let dist = 0, time = 0;
+    edges.forEach(e => { const w = A.to[e]; nodes.push(w); dist += A.len[e]; time += A.cost[e]; if (pen && w !== bestEnd) { const x = pen.get(w); if (x && x !== Infinity) time += x; } });
+    // partial segments at both ends
+    if (sd[0] >= 0) { dist += A.len[sd[0]] * sd[1]; time += A.cost[sd[0]] * sd[1]; }
+    if (td && td[1] >= 0) { dist += A.len[td[1]] * td[2]; time += A.cost[td[1]] * td[2]; }
+    return { nodes, edges, dist, time, iters, headEdge: sd[0], tailEdge: td ? td[1] : -1 };
   }
 
   // ---------- Arabic turn-by-turn ----------
@@ -147,6 +194,7 @@ const MSR = (() => {
 
   function steps(G, A, r) {
     const { nodes, edges } = r, out = [];
+    if (!edges.length) return { list: [{ i: 0, type: 'depart', text: 'انطلق', name: '', at: 0 }, { i: 0, type: 'arrive', text: 'وصلت إلى وجهتك', name: '', at: r.dist }], cum: [0] };
     const cum = [0];
     for (let i = 0; i < edges.length; i++) cum.push(cum[i] + A.len[edges[i]]);
     const way = i => A.way[edges[i]];
@@ -208,7 +256,7 @@ const MSR = (() => {
     if (m < 1000) return 'بعد ' + (Math.round(m / 50) * 50) + ' متر';
     return 'بعد ' + (m / 1000).toFixed(1).replace('.0', '') + ' كيلومتر';
   }
-  return { CLS, ROAD_RANK, hav, bearing, parse, build, nearest, route, steps, speed, allowed, fmtDist, fmtDur, fmtClock, spoken, roadName };
+  return { CLS, ROAD_RANK, hav, bearing, parse, build, nearest, route, revEdge, steps, speed, allowed, fmtDist, fmtDur, fmtClock, spoken, roadName };
 })();
 if (typeof module !== 'undefined') module.exports = MSR;
 //ENGINE_END

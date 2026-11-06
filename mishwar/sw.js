@@ -1,5 +1,5 @@
 // مشوار: يحفظ الخريطة والتطبيق للعمل السريع ودون إنترنت. البلاغات والطقس تُجلب من الشبكة أولاً.
-const V='mishwar-v7';
+const V='mishwar-v8';
 const CORE=['./','index.html','app.js','engine.js','config.js','assets/mishwar.css','assets/mark.svg','vendor/maplibre-gl.js','vendor/pmtiles.js','vendor/maplibre-gl.css','vendor/rtl-text.js','data/graph.bin','data/names.json','data/poi.json','data/land.json','data/bld.json','manifest.webmanifest','download.html','privacy.html','pwa-install.js'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x.startsWith('mishwar-')&&x!==V).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});

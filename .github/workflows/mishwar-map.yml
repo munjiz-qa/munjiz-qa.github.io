@@ -38,10 +38,12 @@ jobs:
           osmium extract --bbox 50.70,24.45,51.70,26.20 --strategy smart -o qatar.osm.pbf gcc.osm.pbf
           osmium fileinfo -e qatar.osm.pbf | grep -E "Number of (nodes|ways|relations)|Timestamp" || true
           ls -la qatar.osm.pbf
-      - name: Sea polygons for Qatar (from the official land boundary)
+      - name: Sea polygons for Qatar (from OpenStreetMap coastlines)
         run: |
           mkdir -p data/sources
-          cp scripts/mishwar-map/qatar-sea-3857.zip data/sources/water-polygons-split-3857.zip
+          pip install -q shapely pyproj pyshp
+          python3 scripts/mishwar-map/sea_from_osm.py qatar.osm.pbf 50.70,24.45,51.70,26.20 data/sources/water-polygons-split-3857.zip \
+            || cp scripts/mishwar-map/qatar-sea-3857.zip data/sources/water-polygons-split-3857.zip
       - name: Build the vector map (Arabic labels, 3D buildings)
         run: |
           java -Xmx5g -jar planetiler.jar --osm-path=qatar.osm.pbf --download --download_threads=4 --http_timeout=300s --output=qatar.pmtiles \
