@@ -720,6 +720,39 @@ html[dir=ltr] .jn-matn{border-radius:10px 0 0 10px}
 }
 @media print{.k-quiz,.k-next{display:none}}
 
+/* ---------- وظيفة الإنسان في القرآن (#wazifa) */
+.wz-hero{background:linear-gradient(135deg,var(--accent-soft),var(--saffron-soft))}
+.wz-stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.wz-stats>span{background:var(--sheet);border:1px solid var(--line);border-radius:999px;padding:4px 14px;font-size:.88rem}
+.wz-stats b{color:var(--accent);font-size:1.05rem}
+.wz-sum{border-inline-start:4px solid var(--saffron)}.wz-sum h2{margin:0 0 6px;font-size:1.1rem}.wz-sum p{margin:0;line-height:1.95}
+.u-index li.wz-hl a{font-weight:700;color:var(--saffron)}
+.wz-st{margin:6px 0 0;font-size:1rem;color:var(--accent);display:flex;align-items:center;gap:8px}
+.wz-st::after{content:"";flex:1;height:1px;background:var(--line)}
+.wz-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr));align-items:start}
+.wz-ay,.wz-h{border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:8px;min-width:0;scroll-margin-top:80px;background:var(--sheet)}
+.wz-ay h4,.wz-h h4{margin:0;font-size:1.02rem;color:var(--accent)}
+.wz-note{margin:0;line-height:1.85}
+.wz-tf>summary{cursor:pointer;font-size:.86rem;color:var(--accent);font-weight:700;padding:4px 0}
+.wz-tf[open]>summary{margin-bottom:6px}
+.wz-matn{margin:0;font-family:var(--f-quran);font-size:1.12rem;line-height:2.05;background:var(--saffron-soft);border-inline-start:3px solid var(--saffron);border-radius:0 10px 10px 0;padding:10px 14px;overflow-wrap:anywhere;text-align:right}
+html[dir=ltr] .wz-matn{border-radius:10px 0 0 10px}
+.wz-en{background:var(--accent-soft);border-radius:10px;padding:8px 12px}.wz-en b{font-size:.8rem;color:var(--accent)}.wz-en p{margin:4px 0 0;line-height:1.7;text-align:left}
+.wz-tx,.wz-gr{margin:0;font-size:.86rem;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline}
+.wz-tx>span:first-child,.wz-gr>span:first-child{color:var(--muted)}
+.wz-badge{font-style:normal;background:var(--ok-soft);color:var(--ok);border-radius:999px;padding:1px 10px;font-weight:700}
+.wz-dg{color:var(--muted);font-size:.82rem}
+.wz-q{margin:0}.wz-qen{margin:8px 0 0;line-height:1.7;font-size:.92rem;text-align:left}
+.wz-layt{border:2px solid var(--saffron);background:linear-gradient(180deg,var(--saffron-soft),var(--sheet) 240px)}
+.wz-layt>summary .u-t{font-size:1.2rem;color:var(--saffron)}
+.wz-send{border:1px dashed var(--saffron);border-radius:14px;padding:14px;display:grid;gap:8px}
+.wz-send h3{margin:0;color:var(--accent)}.wz-send>p{margin:0}
+.wz-list{margin:0;padding:0;list-style:none;counter-reset:w;display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))}
+.wz-list li{counter-increment:w;position:relative;padding:10px 14px;padding-inline-start:48px;border:1px solid var(--line);border-radius:12px;background:var(--sheet)}
+.wz-list li::before{content:counter(w,arabic-indic);position:absolute;inset-inline-start:12px;top:11px;width:26px;height:26px;border-radius:50%;background:var(--saffron-soft);color:var(--saffron);font-weight:700;font-size:.85rem;display:grid;place-items:center}
+.wz-list b{display:block}.wz-list p{margin:4px 0}.wz-ev{font-size:.82rem;display:flex;gap:6px;flex-wrap:wrap}.wz-ev>span{color:var(--muted)}
+html[dir=ltr] .wz-list li::before{content:counter(w)}
+@media (max-width:640px){.wz-ay,.wz-h{padding:12px}.wz-matn{font-size:1.02rem;padding:8px 10px}.wz-list li{padding-inline-start:44px}.wz-layt>summary .u-t{font-size:1.1rem}}
 /* ---------- علوم القرآن */
 .u-hero h1{margin:4px 0}.u-hero .lead{margin:0}
 .u-index ol{list-style:none;margin:8px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px}
@@ -751,3 +784,41 @@ html[dir=ltr] .jn-matn{border-radius:10px 0 0 10px}
 .th-more{margin-top:6px;font-size:.82rem}
 .th-use{border-inline-start:3px solid var(--ok);background:var(--ok-soft);border-radius:0 10px 10px 0;padding:10px 14px}
 .th-use b{color:var(--ok)}.th-use p{margin:4px 0 0;line-height:1.85}
+/* ---------- التوحيد في القرآن الكريم (#tawhid) */
+@font-face{font-family:'KFGQPC Hafs';src:url(fonts/kfgqpc-hafs-uthmanic-v18.woff2) format('woff2');font-display:swap}
+.tw-hero{background:radial-gradient(120% 140% at 100% 0,var(--accent-soft),transparent 60%),linear-gradient(135deg,var(--saffron-soft),var(--sheet));position:relative;overflow:hidden}
+.tw-hero::after{content:"";position:absolute;inset-inline-end:-38px;bottom:-38px;width:170px;height:170px;border-radius:50%;border:2px solid var(--saffron);opacity:.28;box-shadow:0 0 0 18px var(--saffron-soft)}
+.tw-hero>*{position:relative;z-index:1}
+.tw-stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.tw-stats>span{background:var(--sheet);border:1px solid var(--line);border-radius:999px;padding:4px 14px;font-size:.88rem}
+.tw-stats b{color:var(--accent);font-size:1.05rem}
+.tw-kinds h2{margin:0 0 10px}
+.tw-kgrid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+.tw-k{--kc:var(--accent);display:grid;gap:6px;align-content:start;border:1px solid var(--line);border-top:4px solid var(--kc);border-radius:14px;padding:14px;background:var(--sheet);min-width:0}
+.tw-k2{--kc:var(--ok)}.tw-k3{--kc:var(--saffron)}
+.tw-kn{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--kc);color:#fff;font-weight:700;font-size:.9rem}
+.tw-k b{font-size:1.08rem;color:var(--kc)}.tw-k p{margin:0;line-height:1.85}
+.tw-kay{font-size:.88rem}.tw-kay small{color:var(--muted)}
+.tw-ko{font-size:.84rem;color:var(--bad);background:var(--bad-soft);border-radius:8px;padding:4px 10px}
+.tw-kgo{justify-self:start;font-size:.85rem;font-weight:700;color:var(--kc);text-decoration:none}.tw-kgo::after{content:" ←"}html[dir=ltr] .tw-kgo::after{content:" →"}
+.tw-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr));align-items:start}
+.tw-ay,.tw-h{border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:8px;min-width:0;scroll-margin-top:80px}
+.tw-ay h3,.tw-h h3{margin:0;font-size:1.05rem;color:var(--accent)}
+.tw-ays{background:var(--saffron-soft);border-radius:12px;padding:6px 12px}
+.tw-q{font-family:'KFGQPC Hafs',var(--f-quran);font-size:1.6rem;line-height:2.2}
+.tw-q .tw-n{font-family:'KFGQPC Hafs',var(--f-quran);color:var(--saffron);cursor:pointer;font-size:1em}
+.tw-note{margin:0;line-height:1.85;color:var(--ink)}
+.tw-links{display:flex;flex-wrap:wrap;gap:8px}.tw-links .btn{font-size:.82rem}
+.tw-sub{display:flex;align-items:center;gap:8px;margin:14px 0 2px;font-size:1rem;color:var(--muted)}
+.tw-sub svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8}
+.tw-matn{margin:0;font-family:var(--f-quran);font-size:1.12rem;line-height:2.05;background:var(--accent-soft);border-inline-start:3px solid var(--accent);border-radius:0 10px 10px 0;padding:10px 14px;overflow-wrap:anywhere;text-align:right}
+html[dir=ltr] .tw-matn{border-radius:10px 0 0 10px}
+.tw-en{background:var(--ok-soft);border-radius:10px;padding:8px 12px}.tw-en b{font-size:.8rem;color:var(--ok)}.tw-en p{margin:4px 0 0;line-height:1.7;text-align:left}
+.tw-tx,.tw-gr{margin:0;font-size:.86rem;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline}
+.tw-tx>span:first-child,.tw-gr>span:first-child{color:var(--muted)}
+.tw-badge{font-style:normal;background:var(--ok-soft);color:var(--ok);border-radius:999px;padding:1px 10px;font-weight:700}
+.tw-dg{color:var(--muted);font-size:.82rem}
+.tw-qt{margin:0}.tw-qt .tw-note{color:var(--muted);margin-top:6px}
+.tw-qen{margin:8px 0 0;line-height:1.7;font-size:.92rem;text-align:left}
+@media (max-width:640px){.tw-ay,.tw-h,.tw-k{padding:12px}.tw-q{font-size:1.35rem;line-height:2.1}.tw-ays{padding:4px 10px}.tw-matn{font-size:1.02rem;padding:8px 10px}.tw-hero::after{width:110px;height:110px}}
+@media print{.tw-links,.tw-kgo{display:none}.tw-ays{background:none}}
