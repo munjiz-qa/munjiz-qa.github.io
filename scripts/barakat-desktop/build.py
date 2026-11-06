@@ -63,7 +63,7 @@ for goos,arch,dst,extra in (('windows','amd64','Barakat-Windows.exe',['-H','wind
   ld='-s -w'+(' '+' '.join(extra) if extra else '')
   subprocess.run(['go','build','-trimpath','-ldflags',ld,'-o',OUT+'/'+dst,'.'],cwd=G,env=env,check=True)
   os.chmod(OUT+'/'+dst,0o755)
-open(OUT+'/0-READ-ME-FIRST.html','w',encoding='utf-8').write(open(X+'/readme.html',encoding='utf-8').read().replace('%FONT%',FONT))
+open(OUT+'/0-READ-ME-FIRST.html','w',encoding='utf-8').write(open(X+'/readme.html',encoding='utf-8').read().replace('%FONT%',FONT).replace('../../../barakat/document/index.html','web/document/index.html'))
 shutil.copy(X+'/mac.command',OUT+'/Barakat-Mac.command'); os.chmod(OUT+'/Barakat-Mac.command',0o755)
 os.makedirs(REPO+'/dist',exist_ok=True); z=REPO+'/dist/Barakat-Desktop.zip'
 with zipfile.ZipFile(z,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as zf:
