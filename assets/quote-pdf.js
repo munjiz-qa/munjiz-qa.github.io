@@ -6,7 +6,7 @@
 const SRC=(document.currentScript&&document.currentScript.src)||'';
 const BASE=SRC?SRC.replace(/[^/]*$/,''):'assets/';
 const CFG=window.MUNJIZ_CONFIG||{};
-const CO={ar:'منجز لخدمات الأعمال ذ.م.م',en:'Munjiz Business Services LLC',city_ar:'الدوحة، قطر',city_en:'Doha, Qatar',cr:'',
+const CO={ar:'منجز لخدمات الأعمال ذ.م.م',en:'Munjiz Business Services LLC',city_ar:'لوسيل، قطر',city_en:'Lusail, Qatar',cr:'',
   phone:CFG.PHONE||'+974 5160 0498',email:CFG.EMAIL||'munijizqa@gmail.com',web:'munjiz-qa.github.io'};
 const C1='#7a1e3a',C2='#b8923a',INK='#1d252c',MUTE='#5b6670',LINE='#dfe5e2';
 const T={
@@ -21,7 +21,7 @@ const T={
     tStart:'يبدأ العمل بعد اعتماد العرض واستلام المستندات المطلوبة كاملة.',
     tPrelim:'هذا عرض مبدئي، ويُعتمد بعد مراجعة المستندات ونوع المعاملة.',
     tValid:n=>`هذا العرض صالح لمدة ${n} يوماً من تاريخ إصداره.`,
-    accept:'اعتماد العميل',aName:'الاسم',aSign:'التوقيع',aDate:'التاريخ',for:'عن منجز لخدمات الأعمال',stampName:'منجز لخدمات الأعمال ذ.م.م',stampCity:'الدوحة · قطر',est:'تأسست 2026',
+    accept:'اعتماد العميل',aName:'الاسم',aSign:'التوقيع',aDate:'التاريخ',for:'عن منجز لخدمات الأعمال',stampName:'منجز لخدمات الأعمال ذ.م.م',stampCity:'لوسيل · قطر',est:'تأسست 2026',
     page:(i,n)=>`صفحة ${i} من ${n}`},
   en:{title:'Quotation',prelim:'Preliminary quotation',no:'Quote no.',date:'Issue date',valid:'Valid until',to:'Prepared for',from:'Prepared by',
     co:'Company',phone:'Mobile',email:'Email',cr:'C.R. No.',
@@ -34,7 +34,7 @@ const T={
     tStart:'Work starts once the quotation is approved and all required documents are received.',
     tPrelim:'This is a preliminary quotation, confirmed after we review the documents and the transaction type.',
     tValid:n=>`This quotation is valid for ${n} days from its issue date.`,
-    accept:'Client approval',aName:'Name',aSign:'Signature',aDate:'Date',for:'For Munjiz Business Services',stampName:'MUNJIZ BUSINESS SERVICES',stampCity:'DOHA · QATAR',est:'EST. 2026',
+    accept:'Client approval',aName:'Name',aSign:'Signature',aDate:'Date',for:'For Munjiz Business Services',stampName:'MUNJIZ BUSINESS SERVICES',stampCity:'LUSAIL · QATAR',est:'EST. 2026',
     page:(i,n)=>`Page ${i} of ${n}`}};
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fmt=n=>(Math.round((Number(n)||0)*100)/100).toLocaleString('en-US');

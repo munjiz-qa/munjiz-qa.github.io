@@ -42,7 +42,7 @@ function open(){
   const n=BRIEF.zones.reduce((s,z)=>s+z.items.length,0);
   const k=$('#kpis');k.textContent='';
   [[n,'خبر في الخلاصة الحالية'],[Object.keys(BRIEF.sources).length,'مصدراً موثّقاً'],[BRIEF.roadmap.length,'موعداً في خريطة الطريق'],[ADMIN.hidden.length,'خبراً مخفياً']].forEach(([v,l])=>{const d=el('div');d.append(el('b',null,String(v)),el('small',null,l));k.append(d)});
-  const pub=el('p','mute');pub.style.fontSize='.88rem';pub.textContent=`الخلاصة الحالية: ${BRIEF.edition==='am'?'خلاصة الصباح':'خلاصة المساء'} ليوم ${BRIEF.date}`+(HEAD&&HEAD.updated?` · آخر تحديث آلي للعناوين: ${new Date(HEAD.updated).toLocaleString('ar-QA',{timeZone:'Asia/Qatar',numberingSystem:'latn'})}`:'');k.after(pub);
+  const pub=el('p','mute');pub.style.fontSize='.88rem';pub.textContent=`الخلاصة الحالية: خلاصة ${({am:'الصباح',md:'الظهيرة',pm:'المساء',nt:'الليل'}[BRIEF.edition]||'المساء')} ليوم ${BRIEF.date}`+(HEAD&&HEAD.updated?` · آخر تحديث آلي للعناوين: ${new Date(HEAD.updated).toLocaleString('ar-QA',{timeZone:'Asia/Qatar',numberingSystem:'latn'})}`:'');k.after(pub);
   const b=ADMIN.breaking;$('#b-on').checked=!!b.on;$('#b-ar').value=b.text_ar||'';$('#b-en').value=b.text_en||'';$('#b-src').value=b.source||'';$('#b-url').value=b.url||'';
   if(b.until){const d=new Date(b.until);if(!isNaN(d)){const z=new Date(d-d.getTimezoneOffset()*6e4);$('#b-until').value=z.toISOString().slice(0,16)}}
   const ul=$('#hide-list');ul.textContent='';const hid=new Set(ADMIN.hidden);
