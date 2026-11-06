@@ -1,0 +1,34 @@
+name: Jamal live check
+# مؤقت: يختبر قسم «الصور الجمالية» على الموقع المنشور ويلتقط صوره (يُحذف الفرع بعد الاستعمال)
+on:
+  push:
+    branches: ['claude/jamal-live']
+    paths: ['scripts/jamal-live/**', '.github/workflows/jamal-live.yml']
+permissions:
+  contents: write
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Wait for GitHub Pages to publish the section
+        run: |
+          for i in $(seq 1 40); do
+            if curl -s "https://munjiz-qa.github.io/mishkat/app.js?nocache=$i$RANDOM" | grep -q "const JAMAL = "; then echo published; exit 0; fi
+            sleep 20
+          done
+          echo "not published yet"; exit 1
+      - run: npm i --no-save --no-package-lock playwright@1.47.2 && npx playwright install --with-deps chromium
+      - run: mkdir -p live-shots && B=https://munjiz-qa.github.io/mishkat/ node scripts/jamal-live/test.mjs | tee live-shots/test.txt
+      - run: node scripts/jamal-live/shots.mjs
+        if: always()
+      - if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898+github-actions[bot]@users.noreply.github.com"
+          git add live-shots
+          git commit -m "صور واختبار من الموقع المنشور" && git push
