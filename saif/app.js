@@ -339,6 +339,15 @@ async function pdfText(buf) {
   /* إن لم يُستخرج نص الصفحات (ملف ممسوح أو بخطوط مرمّزة) يُعامل كملف غير مقروء المحتوى، فلا يُوصف بأنه خالٍ من البيانات الحساسة */
   return got ? out : null;
 }
+/* ترميز الملفات النصية: UTF-16 (ملفات «نص يونيكود» من Excel) وUTF-8، ثم Windows-1256 للملفات العربية القديمة (CSV من Excel على ويندوز العربي).
+   بدون ذلك تظهر هذه الملفات حروفاً مشوّهة فتفلت منها البيانات الحساسة. */
+function decodeText(buf) {
+  const u = new Uint8Array(buf);
+  if (u[0] === 0xFF && u[1] === 0xFE) return new TextDecoder("utf-16le").decode(u.subarray(2));
+  if (u[0] === 0xFE && u[1] === 0xFF) return new TextDecoder("utf-16be").decode(u.subarray(2));
+  try { return new TextDecoder("utf-8", { fatal: true }).decode(u); } catch (e) { }
+  try { return new TextDecoder("windows-1256").decode(u); } catch (e) { return new TextDecoder().decode(u); }
+}
 async function analyze(file) {
   const buf = await file.arrayBuffer();
   const sha = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", buf)), b => b.toString(16).padStart(2, "0")).join("");
@@ -346,7 +355,7 @@ async function analyze(file) {
   if (file.size <= 20 * 1048576) {
     if (OOXML.test(file.name)) txt = await ooxmlText(buf);
     else if (/\.pdf$/i.test(file.name) || file.type === "application/pdf") txt = await pdfText(buf);
-    else if (TEXT_EXT.test(file.name) || /^text\//.test(file.type) || file.type === "application/json") txt = new TextDecoder().decode(buf);
+    else if (TEXT_EXT.test(file.name) || /^text\//.test(file.type) || file.type === "application/json") txt = decodeText(buf);
   }
   return { name: file.name, size: file.size, sha, kind: txt != null ? "text" : "binary", findings: txt != null ? scanText(txt) : [] };
 }

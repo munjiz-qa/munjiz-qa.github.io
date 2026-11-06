@@ -59,6 +59,10 @@ const DOCX = mkZip([["[Content_Types].xml", "<Types/>"], ["word/document.xml", "
     await p.setInputFiles("#fi", { name: "كشف.pdf", mimeType: "application/pdf", buffer: PDF });
     await p.locator("#res", { hasText: "#3" }).first().waitFor({ timeout: 15000 });
     ok((await p.textContent("#res")).includes("IBAN"), "فحص محتوى ملف PDF");
+    // ملفات CSV بترميز UTF-16 (نص يونيكود من Excel) وWindows-1256 (ويندوز العربي)
+    await p.setInputFiles("#fi", [{ name: "عملاء-يونيكود.csv", mimeType: "text/csv", buffer: Buffer.concat([Buffer.from([0xFF, 0xFE]), Buffer.from("الهوية," + ["285", "0123", "4567"].join("") + "\n", "utf16le")]) }, { name: "عملاء-ويندوز.csv", mimeType: "text/csv", buffer: Buffer.from("x+HH0+Ms3+HjySDH4ePR5tE6IFF4LTc3ODgK", "base64") }]);
+    await p.locator("#res", { hasText: "#4" }).first().waitFor({ timeout: 15000 });
+    { const t = await p.textContent("#res"); ok(t.includes("بطاقة شخصية") && t.includes("كلمة مرور مكتوبة"), "فحص ملفات CSV بترميز UTF-16 وWindows-1256"); }
     await p.goto(BASE + "#reports"); await p.waitForSelector(".banner"); ok((await p.textContent(".banner")).includes("سليمة"), "سلسلة الأختام سليمة"); await shot("client-reports");
     for (const h of ["users", "audit", "settings", "health"]) { await p.goto(BASE + "#" + h); await p.waitForTimeout(300); ok(!(await p.isVisible("h1:has-text('" + ({ users: "الحسابات", audit: "سجل التدقيق", settings: "الإعدادات", health: "صحة المنصة" })[h] + "')")), "العميل محجوب عن #" + h); }
     await p.goto(BASE + "#device"); await p.waitForSelector(".chk"); const n1 = await p.textContent("#dv"); await p.waitForTimeout(2200); const n2 = await p.textContent("#dv"); ok(n1 !== n2, "مراقبة الجهاز تتحدث لحظياً"); await shot("device");
