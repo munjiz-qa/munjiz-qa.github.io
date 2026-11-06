@@ -24,6 +24,19 @@ c = C(); c.apply_file(SRC, locations=True, idx='flex_mem')
 print('coastline ways', len(c.lines))
 assert c.lines, 'no coastline found'
 
+# close small gaps between coastline pieces (broken or unconnected ways would merge sea and land)
+merged = linemerge(c.lines)
+pieces = list(merged.geoms) if merged.geom_type == 'MultiLineString' else [merged]
+inner = frame.buffer(-0.01)
+ends = [(i, Point(g.coords[-1])) for i, g in enumerate(pieces) if not g.is_closed and inner.contains(Point(g.coords[-1]))]
+starts = [(i, Point(g.coords[0])) for i, g in enumerate(pieces) if not g.is_closed and inner.contains(Point(g.coords[0]))]
+bridges = 0
+for i, e in ends:
+    best = min(((e.distance(sp), j, sp) for j, sp in starts), default=None, key=lambda t: t[0])
+    if best and best[0] < 0.003:            # about 300 m
+        c.lines.append(LineString([e.coords[0], best[2].coords[0]])); bridges += 1
+print('coastline pieces', len(pieces), 'open ends inside', len(ends), 'bridged', bridges)
+
 # oriented segments for the land/water test
 segs, dirs = [], []
 for ln in c.lines:
@@ -51,6 +64,8 @@ for (ax, ay), (bx, by) in dirs:
 water = [f for f, (w, l) in zip(faces, votes) if w > l]
 print('water faces', len(water), 'area', round(sum(w.area for w in water), 4), 'of', round(frame.area, 4))
 assert water, 'no sea polygons produced'
+for nm, (x, y) in [('Doha bay', (51.545, 25.305)), ('Gulf east of Doha', (51.70, 25.30)), ('Doha inland', (51.45, 25.28))]:
+    if frame.contains(Point(x, y)): print('check', nm, 'sea' if any(w.contains(Point(x, y)) for w in water) else 'land')
 
 tr = Transformer.from_crs(4326, 3857, always_xy=True)
 tmp = tempfile.mkdtemp(); base = os.path.join(tmp, 'water_polygons')
