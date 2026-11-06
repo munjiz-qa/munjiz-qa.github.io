@@ -32,7 +32,7 @@ jobs:
         run: |
           set -e
           base=https://munjiz-qa.github.io/teacher
-          for f in index.html local.js config.js favicon.svg; do
+          for f in index.html local.js config.js favicon.svg manifest.webmanifest sw.js icon-512.png; do
             code=$(curl -s -o /tmp/f -w '%{http_code}' --retry 3 --retry-delay 10 "$base/$f?t=$(date +%s)")
             echo "$code $base/$f"
             [ "$code" = "200" ] || { echo "::error::الملف $f غير متاح ($code)"; exit 1; }
