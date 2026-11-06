@@ -35,13 +35,20 @@ tree = STRtree(segs)
 clipped = unary_union(c.lines).intersection(frame)
 faces = list(polygonize(unary_union([clipped, frame.exterior])))
 print('faces', len(faces))
-water = []
-for f in faces:
-    p = f.representative_point()
-    i = tree.nearest(p)
-    (ax, ay), (bx, by) = dirs[int(i)]
-    cross = (bx - ax) * (p.y - ay) - (by - ay) * (p.x - ax)
-    if cross < 0: water.append(f)          # right of the coastline → sea
+# vote: every coastline segment marks the face on its right as sea and the face on its left as land
+import math
+ftree = STRtree(faces)
+votes = [[0, 0] for _ in faces]
+eps = 2e-5
+for (ax, ay), (bx, by) in dirs:
+    dx, dy = bx - ax, by - ay; L = math.hypot(dx, dy)
+    if L == 0: continue
+    mx, my = (ax + bx) / 2, (ay + by) / 2; nx, ny = dy / L, -dx / L      # right-hand normal
+    for side, (px, py) in ((0, (mx + nx * eps, my + ny * eps)), (1, (mx - nx * eps, my - ny * eps))):
+        pt = Point(px, py)
+        for k in ftree.query(pt):
+            if faces[int(k)].contains(pt): votes[int(k)][side] += 1; break
+water = [f for f, (w, l) in zip(faces, votes) if w > l]
 print('water faces', len(water), 'area', round(sum(w.area for w in water), 4), 'of', round(frame.area, 4))
 assert water, 'no sea polygons produced'
 
