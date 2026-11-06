@@ -4,8 +4,8 @@
 // every value is written into the contract with textContent only.
 (function(){
 const CFG=window.MUNJIZ_CONFIG||{};
-const CO={ar:'منجز لخدمات الأعمال ذ.م.م',en:'Munjiz Business Services LLC',sign_ar:'د. مصطفى أبوسعد',sign_en:'Dr. Moustafa Abousaad',
-  title_ar:'المدير العام',title_en:'General Manager',addr_ar:'الدوحة، دولة قطر',addr_en:'Doha, State of Qatar',cr:'',
+const CO={ar:'منجز لخدمات الأعمال ذ.م.م',en:'Munjiz Business Services LLC',
+  title_ar:'المدير العام',title_en:'General Manager',addr_ar:'لوسيل، دولة قطر',addr_en:'Lusail, State of Qatar',cr:'',
   phone:CFG.PHONE||'+974 5160 0498',email:CFG.EMAIL||'munijizqa@gmail.com',prefix:'MNJ-CT'};
 const KEY='munjiz_contract',DRAFT=KEY+'_draft';
 // item registration: fee per item (includes the first 5 sales outlets) plus a fee per item in every extra outlet

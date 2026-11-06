@@ -1,0 +1,153 @@
+# شريط مهام الرازي على طراز ويندوز (من اليمين إلى اليسار)
+# 1 الشريط
+rounded = 0
+border_width = 0
+background_color = #0B1E2D 96
+border_color = #1B4A63 100
+# 2 أزرار المهام
+rounded = 6
+border_width = 0
+background_color = #FFFFFF 0
+border_color = #000000 0
+background_color_hover = #12324A 100
+border_color_hover = #000000 0
+background_color_pressed = #1B4A63 100
+border_color_pressed = #000000 0
+# 3 المهمة النشطة
+rounded = 6
+border_width = 0
+border_sides = B
+background_color = #12324A 100
+border_color = #2EC4B6 100
+background_color_hover = #1B4A63 100
+border_color_hover = #2EC4B6 100
+# 4 زر ابدأ
+rounded = 6
+border_width = 0
+background_color = #FFFFFF 0
+border_color = #000000 0
+background_color_hover = #12324A 100
+border_color_hover = #000000 0
+background_color_pressed = #2EC4B6 60
+border_color_pressed = #000000 0
+# 5 التلميحات
+rounded = 6
+border_width = 1
+background_color = #F7F3E8 100
+border_color = #1B4A63 100
+
+panel_items = CESBTLP
+panel_size = 100% 46
+panel_margin = 0 0
+panel_padding = 4 0 4
+panel_background_id = 1
+wm_menu = 1
+panel_dock = 0
+panel_position = bottom center horizontal
+panel_layer = top
+panel_monitor = all
+autohide = 0
+strut_policy = follow_size
+panel_window_name = tint2
+disable_transparency = 0
+mouse_effects = 1
+font_shadow = 0
+
+taskbar_mode = single_desktop
+taskbar_padding = 2 0 2
+taskbar_background_id = 0
+taskbar_active_background_id = 0
+taskbar_name = 0
+taskbar_hide_inactive_tasks = 0
+taskbar_distribute_size = 0
+taskbar_sort_order = none
+task_align = right
+
+task_text = 1
+task_icon = 1
+task_centered = 0
+urgent_nb_of_blink = 100000
+task_maximum_size = 200 38
+task_padding = 8 4 6
+task_font = Noto Sans Arabic 10
+task_tooltip = 1
+task_font_color = #D3E6EA 100
+task_active_font_color = #F3CF72 100
+task_iconified_font_color = #7FA3AE 100
+task_background_id = 2
+task_active_background_id = 3
+task_urgent_background_id = 3
+task_iconified_background_id = 2
+mouse_left = toggle_iconify
+mouse_middle = close
+mouse_right = close
+mouse_scroll_up = prev_task
+mouse_scroll_down = next_task
+
+systray_padding = 6 0 6
+systray_background_id = 0
+systray_sort = ascending
+systray_icon_size = 20
+systray_icon_asb = 100 0 0
+
+launcher_padding = 4 4 4
+launcher_background_id = 0
+launcher_icon_background_id = 2
+launcher_icon_size = 26
+launcher_icon_theme_override = 0
+launcher_tooltip = 1
+launcher_item_app = /usr/share/razi/start/pin-files.desktop
+launcher_item_app = /usr/share/razi/start/pin-browser.desktop
+launcher_item_app = /usr/share/razi/start/pin-writer.desktop
+launcher_item_app = /usr/share/razi/start/pin-terminal.desktop
+
+time1_format = %H:%M
+time2_format = %Y/%m/%d
+time1_font = Noto Sans Arabic Bold 10
+time2_font = Noto Sans Arabic 8
+clock_font_color = #F7F3E8 100
+clock_padding = 8 0
+clock_background_id = 0
+clock_tooltip = %A %d %B %Y
+clock_lclick_command = razi-calendar
+
+execp = new
+execp_command = razi-kbd-indicator
+execp_interval = 1
+execp_continuous = 0
+execp_markup = 1
+execp_font = Noto Sans Arabic Bold 10
+execp_font_color = #F3CF72 100
+execp_padding = 8 0
+execp_background_id = 2
+execp_lclick_command = xdotool key ISO_Next_Group
+execp_tooltip = لغة الكتابة: انقر أو اضغط Alt + Shift للتبديل
+execp_centered = 1
+
+button = new
+button_icon = /usr/share/razi/start/start.svg
+button_tooltip = ابدأ
+button_lclick_command = razi-start
+button_padding = 10 4
+button_background_id = 4
+button_centered = 1
+button_max_icon_size = 30
+
+tooltip_show_timeout = 0.4
+tooltip_hide_timeout = 0.1
+tooltip_padding = 8 6
+tooltip_background_id = 5
+tooltip_font_color = #0B1E2D 100
+tooltip_font = Noto Sans Arabic 10
+
+battery_tooltip = 1
+battery_low_status = 10
+battery_low_cmd = notify-send "البطارية منخفضة"
+battery_hide = 101
+bat1_font = Noto Sans Arabic 9
+bat2_font = Noto Sans Arabic 8
+battery_font_color = #F7F3E8 100
+bat1_format = %p
+bat2_format = %t
+battery_padding = 4 0
+battery_background_id = 0

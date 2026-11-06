@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>منجز على الكمبيوتر | منجز لخدمات الأعمال</title>
+<meta name="theme-color" content="#7a1e3a">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://munjiz-qa.github.io/desktop.html">
+<link rel="alternate" hreflang="ar" href="https://munjiz-qa.github.io/desktop.html">
+<link rel="alternate" hreflang="en" href="https://munjiz-qa.github.io/en/desktop.html">
+<meta name="description" content="شغّل منجز على الكمبيوتر كتطبيق مستقل: تثبيت بنقرة، أو حزمة تشغيل تعمل دون إنترنت على ويندوز وماك ولينكس.">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+<link rel="manifest" href="crm.webmanifest">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect x='4' y='4' width='72' height='72' rx='18' fill='%237a1e3a'/%3E%3Cpath d='M22 42l12 12 24-28' fill='none' stroke='%23b8923a' stroke-width='8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="assets/style.css?v=20261105a">
+<script src="assets/theme.js?v=20261018w"></script>
+<script src="assets/config.js?v=20261101d"></script>
+<script src="assets/pwa.js?v=20261101d"></script>
+<style>
+.dk{padding-block:28px 56px}
+.dk h1{font-size:clamp(28px,4vw,40px);color:var(--hero-em)}
+.dk .lead{font-size:18px;color:var(--mute);max-width:720px;margin:8px 0 24px}
+.dk h2{font-size:22px;margin:0 0 6px}
+.dkgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.dkc{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px 22px}
+.dkc.hi{border:2px solid var(--amber);background:var(--amber-soft)}
+.dkc p{margin:6px 0}
+.dkc ol{margin:8px 0 0;padding-inline-start:22px}
+.dkc li{margin:4px 0}
+.dkc .btn{margin-top:12px}
+.dkc .tag{display:inline-block;background:var(--navy);color:var(--navy-ink);border-radius:999px;padding:2px 10px;font-size:13px;font-weight:700;margin-bottom:6px}
+.dk code{font-family:var(--mono);background:var(--chip);border-radius:6px;padding:1px 6px;font-size:14px;direction:ltr;unicode-bidi:isolate}
+.dk .note{font-size:14px;color:var(--mute)}
+.modes{display:grid;gap:10px;margin-top:10px}
+.dk .modes label{display:flex;flex-direction:row;font-weight:400;gap:10px;align-items:flex-start;border:1.5px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;background:var(--surface)}
+.modes label:has(input:checked){border-color:var(--navy)}
+.dk .modes input{width:auto;flex:none;margin:6px 0 0;accent-color:#7a1e3a}
+.modes b{display:block}
+.quick{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.state{font-weight:700;color:var(--ok)}
+.dksec{margin-top:22px}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="index.html"><svg width="34" height="34" viewBox="0 0 80 80" aria-hidden="true"><rect x="5" y="5" width="70" height="70" rx="18" fill="none" stroke="#b8923a" stroke-width="5"/><path d="M22 42l12 12 24-28" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>منجز لخدمات الأعمال</a>
+  <div class="plainnav"><a href="index.html">الصفحة الرئيسية</a></div>
+  <div class="langsw" role="group" aria-label="اللغة · Language"><span class="cur" aria-current="true" lang="ar">ع</span><a href="en/desktop.html" lang="en" hreflang="en" title="English">EN</a></div>
+</div></header>
+<main class="wrap dk">
+<p class="kick">منجز لخدمات الأعمال ذ.م.م · لوسيل، قطر</p>
+<h1>منجز على الكمبيوتر</h1>
+<p class="lead">شغّل منجز من جهازك كتطبيق مستقل في نافذته الخاصة، يفتح من سطح المكتب بنقرة، ويعمل دون الحاجة إلى أي أداة أو خدمة خارجية.</p>
+
+<section class="dkc hi" id="localBox" hidden aria-labelledby="h-local">
+  <span class="tag">يعمل الآن من جهازك</span>
+  <h2 id="h-local">منجز يعمل من هذا الكمبيوتر</h2>
+  <p>العنوان المحلي: <code id="here"></code>. أبقِ نافذة التشغيل السوداء مفتوحة ما دمت تستخدم منجز، وأغلقها عند الانتهاء.</p>
+  <p>طريقة عمل لوحة الإدارة: <span class="state" id="modeNow"></span></p>
+  <div class="modes" role="radiogroup" aria-label="طريقة العمل">
+    <label><input type="radio" name="mode" value="online"><span><b>متصل بخادم المكتب (موصى به)</b>نفس بيانات الموقع المنشور، ويصل البريد والردود للعملاء تلقائياً. يحتاج اتصالاً بالإنترنت.</span></label>
+    <label><input type="radio" name="mode" value="offline"><span><b>محلي دون إنترنت</b>البيانات تُحفظ في هذا الكمبيوتر وحده، ولا تختلط ببيانات الخادم. خذ نسخة احتياطية من «الإعدادات ← السجل والنسخ الاحتياطي» بانتظام.</span></label>
+  </div>
+  <div class="quick">
+    <a class="btn pri" href="crm.html">🔐 لوحة الإدارة</a>
+    <a class="btn ghost" href="index.html">🌐 الموقع</a>
+    <a class="btn ghost" href="portal.html">👤 حسابي (العملاء)</a>
+    <button class="btn ghost" type="button" data-install hidden>⬇ ثبّت كتطبيق على سطح المكتب</button>
+  </div>
+</section>
+
+<div class="dkgrid dksec">
+  <section class="dkc" aria-labelledby="h-app">
+    <span class="tag">الأسهل · دقيقة واحدة</span>
+    <h2 id="h-app">١. ثبّت منجز كتطبيق</h2>
+    <p>يعمل على ويندوز وماك ولينكس من متصفح Chrome أو Edge، وعلى ماك من Safari أيضاً. يظهر منجز بأيقونته في قائمة البرامج وسطح المكتب ويفتح في نافذته الخاصة.</p>
+    <button class="btn pri" type="button" data-install hidden>⬇ ثبّت لوحة الإدارة الآن</button>
+    <p data-installed hidden class="state">منجز مثبّت ويعمل كتطبيق على هذا الجهاز.</p>
+    <ol>
+      <li>افتح <a href="crm.html">لوحة الإدارة</a> في Chrome أو Edge.</li>
+      <li>اضغط أيقونة التثبيت <b>⊕</b> في آخر شريط العنوان، ثم <b>تثبيت</b>.</li>
+      <li>في Safari على ماك: قائمة <b>ملف</b> ثم <b>إضافة إلى Dock</b>.</li>
+    </ol>
+    <p class="note">للعملاء بالطريقة نفسها من صفحة <a href="portal.html">حسابي</a>. الصفحات التي فُتحت مرة تبقى متاحة للقراءة عند انقطاع الإنترنت.</p>
+  </section>
+
+  <section class="dkc" aria-labelledby="h-pack">
+    <span class="tag">مستقل تماماً · دون إنترنت</span>
+    <h2 id="h-pack">٢. حزمة منجز للكمبيوتر</h2>
+    <p>نسخة كاملة من الموقع ولوحة الإدارة تعمل من جهازك، ويمكن تشغيلها دون إنترنت. تتحدّث الحزمة تلقائياً مع كل تعديل على الموقع.</p>
+    <a class="btn pri" id="dlZip" href="https://github.com/munjiz-qa/munjiz-qa.github.io/releases/download/desktop/munjiz-desktop.zip">⬇ نزّل الحزمة (ZIP)</a>
+    <ol>
+      <li>فك الضغط عن الملف في مكان ثابت، مثل «المستندات».</li>
+      <li><b>ويندوز:</b> انقر مرتين على <code>Start-Munjiz-Windows.bat</code>. إن ظهر تنبيه حماية ويندوز فاختر «مزيد من المعلومات» ثم «تشغيل على أي حال».</li>
+      <li><b>ماك:</b> انقر بالزر الأيمن على <code>Start-Munjiz-Mac.command</code> ثم «فتح».</li>
+      <li><b>لينكس:</b> شغّل <code>Start-Munjiz-Linux.sh</code>.</li>
+    </ol>
+    <p class="note">يفتح منجز في المتصفح على العنوان <code>http://localhost:8765</code>. لا يحتاج ويندوز أي برنامج إضافي.</p>
+  </section>
+</div>
+
+<section class="dkc dksec" aria-labelledby="h-data">
+  <h2 id="h-data">أين تُحفظ بياناتك؟</h2>
+  <p><b>متصل بخادم المكتب:</b> كل البيانات في خادم منجز المركزي، فتظهر نفسها على الكمبيوتر والجوال والموقع المنشور، ومن أي جهاز.</p>
+  <p><b>محلي دون إنترنت:</b> البيانات في متصفح هذا الكمبيوتر فقط. لا تمسح بيانات المتصفح، وخذ نسخة احتياطية أسبوعياً على الأقل، ويمكن استعادتها من القسم نفسه.</p>
+  <p class="note">الدخول الأول للإدارة في الوضع المحلي: اسم المستخدم <code>123</code> وكلمة المرور <code>123</code>، وتطلب اللوحة تغييرهما فوراً. في الوضع المتصل تستخدم بيانات دخولك المعتادة.</p>
+</section>
+</main>
+<footer><div class="wrap fc"><b>للتواصل</b><a href="tel:+97451600498" dir="ltr">☎ +974 5160 0498</a><a href="https://wa.me/97451600498" target="_blank" rel="noopener">واتساب</a><a href="mailto:munijizqa@gmail.com" dir="ltr">✉ munijizqa@gmail.com</a></div><div class="wrap"><span>منجز لخدمات الأعمال ذ.م.م · لوسيل، قطر</span><span><a href="index.html">العودة إلى الموقع</a> · <a href="privacy.html">سياسة الخصوصية</a> · <a href="legal.html">المستندات القانونية</a> · <a href="portal.html">حسابي</a></span></div></footer>
+<script src="assets/desktop.js?v=20261101d"></script>
+</body></html>

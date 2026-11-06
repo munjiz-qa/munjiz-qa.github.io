@@ -377,7 +377,7 @@ def assemble(ctx, results, kept, dropped):
     edition = ctx['edition']
     brief = {'id': f"{today.isoformat()}-{edition}", 'edition': edition, 'date': today.isoformat(),
              'published': now.isoformat(timespec='seconds'),
-             'title': {'ar': ctx['edition_ar'], 'en': 'Morning Brief' if edition == 'am' else 'Evening Brief'},
+             'title': {'ar': ctx['edition_ar'], 'en': ED_EN[edition] + ' Brief'},
              'thread': {'ar': '', 'en': '', 'src': []}, 'markets': markets, 'zones': zones,
              'roadmap': sorted(roadmap, key=lambda x: x.get('date') or x.get('month') or '9999'), 'sources': sources,
              'agent': {'model': MODEL, 'checker': CHECK_MODEL}}
@@ -404,11 +404,16 @@ def publish(brief, run):
     log(f"نُشرت {brief['id']}: {n} خبراً، {len(brief['sources'])} مصدراً.")
 
 
+ED_AR = {'am': 'الصباح', 'md': 'الظهيرة', 'pm': 'المساء', 'nt': 'الليل'}
+ED_EN = {'am': 'Morning', 'md': 'Midday', 'pm': 'Evening', 'nt': 'Night'}
+
+
 def run_brief():
     t0 = time.time()
     now = V.now_doha()
-    edition = 'am' if now.hour < 12 else 'pm'
-    ctx = {'now': now, 'edition': edition, 'edition_ar': 'خلاصة الصباح' if edition == 'am' else 'خلاصة المساء',
+    # أربع خلاصات يومياً كل 6 ساعات: الصباح والظهيرة والمساء والليل
+    edition = 'am' if 3 <= now.hour < 9 else 'md' if 9 <= now.hour < 15 else 'pm' if 15 <= now.hour < 21 else 'nt'
+    ctx = {'now': now, 'edition': edition, 'edition_ar': 'خلاصة ' + ED_AR[edition],
            'headlines': json.loads((DATA / 'headlines.json').read_text(encoding='utf-8')),
            'prev': json.loads((DATA / 'brief.json').read_text(encoding='utf-8'))}
     if ctx['prev'].get('id') == f"{now.date().isoformat()}-{edition}" and not os.environ.get('KHABAR_FORCE'):

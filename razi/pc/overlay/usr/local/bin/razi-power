@@ -1,0 +1,4 @@
+#!/bin/sh
+yad --title="الطاقة" --center --window-icon=system-shutdown --text="<b>ماذا تريد أن تفعل؟</b>" --width=420 \
+  --button="قفل:2" --button="تسجيل الخروج:3" --button="إعادة التشغيل:4" --button="إيقاف التشغيل:5"
+case $? in 2) razi-lock;; 3) razi-logout;; 4) systemctl reboot;; 5) systemctl poweroff;; esac

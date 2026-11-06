@@ -1,0 +1,49 @@
+name: مراقبة منصة معلّم
+# يتحقق يومياً ومع كل تحديث من أن منصة معلّم المنشورة تعمل دون Claude ودون خادم بكل الأدوار (زائر، وعميل، ومدير شامل) على الكمبيوتر والجوال
+on:
+  schedule:
+    - cron: '17 1 * * *'
+  push:
+    branches: [main]
+    paths: ['teacher/**', 'scripts/teacher-e2e.cjs', '.github/workflows/teacher-health.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: تجهيز متصفح الاختبار
+        run: npm i --no-save --no-package-lock playwright@1.48.2 && npx playwright install --with-deps chromium
+      - name: اختبار ملفات المستودع
+        run: |
+          python3 -m http.server 8080 >/dev/null 2>&1 &
+          sleep 2
+          node scripts/teacher-e2e.cjs http://localhost:8080/teacher/ shots-repo
+      - name: انتظار النشر عند التحديث
+        if: github.event_name == 'push'
+        run: sleep 90
+      - name: التحقق من أن الملفات المنشورة مطابقة للمستودع
+        run: |
+          set -e
+          base=https://munjiz-qa.github.io/teacher
+          for f in index.html local.js config.js favicon.svg manifest.webmanifest sw.js icon-512.png; do
+            code=$(curl -s -o /tmp/f -w '%{http_code}' --retry 3 --retry-delay 10 "$base/$f?t=$(date +%s)")
+            echo "$code $base/$f"
+            [ "$code" = "200" ] || { echo "::error::الملف $f غير متاح ($code)"; exit 1; }
+            cmp -s /tmp/f "teacher/$f" && echo "مطابق" || echo "::warning::$f المنشور يختلف عن المستودع (قد يكون النشر جارياً)"
+          done
+      - name: اختبار الموقع المنشور بكل الأدوار على الكمبيوتر والجوال
+        run: node scripts/teacher-e2e.cjs https://munjiz-qa.github.io/teacher/ shots-live
+      - name: حفظ لقطات الشاشة
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: teacher-shots
+          path: shots-*
+          retention-days: 7

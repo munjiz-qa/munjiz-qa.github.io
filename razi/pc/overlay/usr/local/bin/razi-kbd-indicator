@@ -1,0 +1,4 @@
+#!/bin/sh
+# مؤشر لغة الكتابة في شريط المهام: يقرأ مجموعة لوحة المفاتيح النشطة من مؤشر Scroll Lock
+MASK=$(xset -q 2>/dev/null | sed -n 's/.*LED mask: *\([0-9a-f]*\).*/\1/p')
+if [ -n "$MASK" ] && [ $(( 0x$MASK & 4 )) -ne 0 ]; then echo "ع"; else echo "EN"; fi

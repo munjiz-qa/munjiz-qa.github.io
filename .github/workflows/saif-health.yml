@@ -1,0 +1,57 @@
+name: مراقبة سيف
+on:
+  schedule:
+    - cron: '17 * * * *'
+  push:
+    branches: [main]
+    paths: ['saif/**', 'scripts/saif-test.mjs', 'scripts/saif-e2e.mjs', '.github/workflows/saif-health.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: اختبار نواة المنصة (الدخول والصلاحيات والفحص والأختام)
+        run: node scripts/saif-test.mjs
+      - name: انتظار النشر عند التحديث
+        if: github.event_name == 'push'
+        run: sleep 90
+      - name: التحقق من الموقع المنشور
+        run: |
+          set -e
+          base=https://munjiz-qa.github.io/saif
+          for f in "" index.html core.js app.js config.js sw.js manifest.webmanifest icon.svg; do
+            code=$(curl -s -o /tmp/f -w '%{http_code}' --retry 3 --retry-delay 10 "$base/$f?t=$(date +%s)")
+            echo "$code $base/$f"
+            [ "$code" = "200" ] || { echo "::error::الملف $f غير متاح ($code)"; exit 1; }
+          done
+          curl -fsS "$base/core.js" -o /tmp/core.js
+          curl -fsS "$base/index.html" | grep -q 'app.js' || { echo "::error::الصفحة المنشورة لا تحمّل التطبيق"; exit 1; }
+          cmp -s /tmp/core.js saif/core.js && echo "النواة المنشورة مطابقة للمستودع" || echo "::warning::النواة المنشورة تختلف عن المستودع (قد يكون النشر جارياً)"
+
+  browser:
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: تجهيز متصفح الاختبار
+        run: npm i --no-save --no-package-lock playwright@1.48.2 && npx playwright install --with-deps chromium
+      - name: اختبار الموقع المنشور بكل الأدوار على الكمبيوتر والجوال
+        run: node scripts/saif-e2e.mjs https://munjiz-qa.github.io/saif/ shots
+      - name: حفظ لقطات الشاشة
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: saif-shots
+          path: shots
+          retention-days: 7

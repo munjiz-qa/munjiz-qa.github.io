@@ -1,0 +1,8 @@
+[Unit]
+Description=Razi first boot: expand root filesystem
+After=local-fs.target
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/razi-firstboot
+[Install]
+WantedBy=multi-user.target

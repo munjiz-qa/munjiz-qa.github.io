@@ -1,0 +1,2 @@
+#!/bin/sh
+exec lxterminal --title="تحديث الرازي" -e sh -c 'echo "جارٍ تحديث النظام والبرامج…"; sudo apt-get update && sudo apt-get -y full-upgrade; command -v flatpak >/dev/null && flatpak update -y; echo; echo "اكتمل التحديث. اضغط Enter للإغلاق."; read x'

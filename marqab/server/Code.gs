@@ -658,6 +658,14 @@ function mqHandle(req, env) {
       a0.user = env.seed.user; a0.role = "admin"; a0.salt = env.seed.salt; a0.hash = env.seed.hash; a0.mustChange = true;
       W("sys/users", u); kv.del("sys/fails"); kv.set("sys/seedv", sv);
     }
+    /* حساب العميل الافتراضي: يُنشأ أو تُعاد كلمة مروره عند تغيير إصداره في الإعدادات */
+    var cv = String(env.seed.cV || "");
+    if (env.seed.cUser && cv && (kv.get("sys/seedc") || "") !== cv) {
+      var c0 = u.filter(function (y) { return y.user.toLowerCase() === String(env.seed.cUser).toLowerCase(); })[0];
+      if (!c0) { var cn = 1; u.forEach(function (y) { var k = +String(y.id).slice(1); if (k >= cn) cn = k + 1; }); c0 = { id: "u" + cn, user: env.seed.cUser, at: env.now() }; u.push(c0); }
+      c0.name = env.seed.cName || "حساب العميل"; c0.role = "member"; c0.lvl = +(env.seed.cLvl || 2); c0.sectors = []; c0.salt = env.seed.cSalt; c0.hash = env.seed.cHash; c0.mustChange = false;
+      W("sys/users", u); kv.set("sys/seedc", cv);
+    }
     return u;
   }
   function pub(u) { return { id: u.id, user: u.user, name: u.name, role: u.role, lvl: u.lvl || 5, sectors: u.sectors || [], unit: u.unit || "", mustChange: !!u.mustChange, at: u.at, last: u.last || null }; }
@@ -800,9 +808,8 @@ function mqHandle(req, env) {
 
 /* ================= خادم بيانات مَرقَب على Google Apps Script =================
    الإعداد مختصر في دليل التشغيل (README): الصق هذا الملف كاملاً في محرر Apps Script
-   لجدول Google جديد، ثم انشره تطبيق ويب، وضع رابط /exec في assets/config.js.
-   المحرك المتقدم للمساعد: أضف في Project Settings > Script properties المفتاح LLM_KEY.  */
-const SEED = {"user":"admin","name":"مدير المنصة","v":"1","salt":"tWQJR7469zXaN6ue","hash":"66c86336b3aaa0837ad640a4f8731866f6f2773d25b1492415a95f64eee1a007"};
+   لجدول Google جديد، ثم انشره تطبيق ويب، وضع رابط /exec في assets/config.js.  */
+const SEED = {"user":"admin","name":"مدير المنصة","v":"2","salt":"TyymWFLjL7E2QuC3","hash":"564b4172753fbc4045f083e3a359e1beefc3e6d84d3c33d628881c279de0ddce","cUser":"client","cName":"حساب العميل","cLvl":3,"cV":"1","cSalt":"HhFevAwP7u6kwSDN","cHash":"1f7d9a51a1a9f2e9e2d0d6500b5cb432a5d77711fd2b5aff12eae74cb9552880"};
 const SHEET = "Store", CHUNK = 45000, PARTS = 10;
 
 function sheet_() {
@@ -831,89 +838,17 @@ function kv_() {
 function rand_(n) { let s = ""; while (s.length < n) s += Utilities.getUuid().replace(/-/g, ""); return s.slice(0, n); }
 function out_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
 function prop_(k) { return PropertiesService.getScriptProperties().getProperty(k); }
-function env_() { return { kv: kv_(), now: () => new Date().toISOString(), rand: rand_, seed: SEED, data: MQ_SEED, server: true, agentReady: !!prop_("LLM_KEY") }; }
+function env_() { return { kv: kv_(), now: () => new Date().toISOString(), rand: rand_, seed: SEED, data: MQ_SEED, server: true, agentReady: false }; }
 
 function doPost(e) {
   let req = {};
   try { req = JSON.parse((e && e.postData && e.postData.contents) || "{}"); } catch (x) { return out_({ ok: false, code: "bad", error: "طلب غير صالح." }); }
-  if (req.action === "agent") return out_(agent_(req));
   const lock = LockService.getScriptLock();
   try { lock.waitLock(20000); return out_(mqHandle(req, env_())); }
   catch (x) { return out_({ ok: false, code: "server", error: "تعذّر تنفيذ الطلب على الخادم. أعد المحاولة بعد قليل." }); }
   finally { try { lock.releaseLock(); } catch (y) { } }
 }
 function doGet() { return out_({ ok: true, app: "marqab", time: new Date().toISOString() }); }
-
-/* ---------- المحرك المتقدم للمساعد: حلقة أدوات مع استشهاد موثق ---------- */
-const TOOLS = [
-  { name: "search_knowledge", description: "البحث الدلالي في بطاقات المعلومات والوثائق والمؤشرات والقرارات المصرح بها للمستخدم. استخدمه قبل أي إجابة.", input_schema: { type: "object", properties: { query: { type: "string" }, k: { type: "integer" } }, required: ["query"] } },
-  { name: "get_indicator", description: "تحليل مؤشر بالاسم: آخر قيمة والتغير والمستوى والتغير المفاجئ والاتجاه والتوقع بنطاق ثقة والعوامل المؤثرة فيه.", input_schema: { type: "object", properties: { name: { type: "string" } }, required: ["name"] } },
-  { name: "list_alerts", description: "تنبيهات الإنذار المبكر الحالية مرتبة حسب المستوى (3 أحمر، 2 برتقالي، 1 أصفر) مع أسبابها.", input_schema: { type: "object", properties: { min_level: { type: "integer" } } } },
-  { name: "compute_indices", description: "مؤشر الضغط الاستراتيجي ومكوناته، ومؤشر الفرص، ومتوسط جودة المعلومات.", input_schema: { type: "object", properties: {} } },
-  { name: "run_scenario", description: "محاكاة ماذا لو: صدمات نسبية على مؤشرات بمعرفاتها (مثل ext-freight: 20) وانتشار أثرها عبر شبكة الترابط مع نطاق عدم اليقين.", input_schema: { type: "object", properties: { shocks: { type: "object", additionalProperties: { type: "number" } } }, required: ["shocks"] } },
-  { name: "find_gaps", description: "فجوات المعلومات: بيانات متأخرة، معلومات تنتظر التحقق، تعارضات، موضوعات بلا مؤشرات، مصادر لم تُراجع.", input_schema: { type: "object", properties: {} } },
-  { name: "review_decisions", description: "سجل القرارات وقياس أثرها الفعلي مقارنة بالمتوقع والدروس المستفادة.", input_schema: { type: "object", properties: {} } },
-  { name: "read_card", description: "قراءة بطاقة معلومات كاملة بمعرفها مع تقييم جودتها والبطاقات الداعمة والمتعارضة.", input_schema: { type: "object", properties: { id: { type: "string" } }, required: ["id"] } }
-];
-const SYSTEM = [
-  "أنت المساعد التحليلي في منصة داخلية للذكاء المؤسسي والاستشراف ودعم القرار. تخدم قيادات ومحللين في جهة حكومية.",
-  "منهجك: افهم السؤال، ثم خطط واستدع الأدوات المناسبة (يمكن عدة أدوات بالتوازي)، ثم حلل وربط، ثم راجع نفسك بحثاً عن الأدلة المعاكسة، ثم أجب.",
-  "القواعد: لا تذكر رقماً أو معلومة إلا من نتائج الأدوات. أحل كل معلومة إلى مصدرها بالصيغة [النوع:المعرف] كما وردت في نتائج الأدوات حرفياً، مثل [card:c3] أو [ind:int-stock] أو [doc:k1] أو [dec:d1].",
-  "إذا لم تجد ما يكفي في المصادر فقل ذلك صراحة واقترح ما يلزم جمعه. قدّم التوقعات نطاقات مرتبطة بافتراضات، لا حقائق. التوصيات تحليلية مقترحة، والقرار لمتخذ القرار.",
-  "الصياغة: عربية فصحى مهنية موجزة. اكتب أقساماً يبدأ كل منها بسطر \"## العنوان\" وتحته نقاط تبدأ بـ \"- \". اجعل آخر قسمين: \"## رأي مخالف ونقاط للتحقق\" ثم \"## البيانات الناقصة\". واختم بسطر \"الثقة: NN%\" يعكس جودة المصادر واكتمالها.",
-  "لا تتحدث عن نفسك ولا عن طريقة عملك الداخلية ولا عن أي نموذج أو تقنية."
-].join("\n");
-function agent_(req) {
-  const env = env_(), boot = mqHandle({ action: "boot", token: req.token }, env);
-  if (!boot.ok) return boot;
-  if (!MQ_CAN.agent(boot.user)) return { ok: false, code: "perm", error: "المساعد غير متاح لمستوى صلاحيتك." };
-  const key = prop_("LLM_KEY"); if (!key) return { ok: false, code: "noagent", error: "المحرك المتقدم غير مفعل." };
-  const db = { now: new Date().toISOString().slice(0, 10) }; MQ_COLS.forEach(c => db[c] = boot[c] || []);
-  const steps = [{ tool: "فهم السؤال والتخطيط", input: req.q, out: "بدء حلقة التحليل ضمن صلاحيات " + MQ_META.levels[boot.user.lvl] }];
-  const seen = {};
-  const tag = (t, id) => { seen[t + ":" + id] = 1; return "[" + t + ":" + id + "]"; };
-  function run(name, inp) {
-    const nowM = db.now.slice(0, 7);
-    if (name === "search_knowledge") return MQE.search(db, String(inp.query || ""), Math.min(10, inp.k || 6)).map(r => ({ ref: tag(r.type, r.id), title: r.title, date: r.date, text: r.text.slice(0, 600) }));
-    if (name === "get_indicator") { const x = MQE.matchInd(db, String(inp.name || "")) || MQE.byId(db.indicators, inp.name); if (!x) return { error: "لم يُعثر على المؤشر", available: db.indicators.map(i => i.name) }; const a = MQE.analyzeInd(x, nowM); return { ref: tag("ind", x.id), name: x.name, unit: x.unit, source: x.src, series: x.series.slice(-8), last: a.last, change_pct: a.chgPct, level: a.level, sudden: !!a.sudden, trend_bad: !!a.trendBad, reversal: !!a.reversal, forecast_80pct: a.forecast, thresholds: x.th, target: x.target, drivers: db.links.filter(l => l.to === x.id).map(l => ({ ref: tag("ind", l.from), elasticity: l.w, note: l.note })) }; }
-    if (name === "list_alerts") return MQE.alerts(db).filter(a => a.level >= (inp.min_level || 1)).slice(0, 12).map(a => ({ level: a.level, title: a.title, reason: a.reason, owner: a.owner, urgency: a.urgency, refs: (a.ref ? [tag(a.kind === "ind" ? "ind" : "card", a.ref)] : []).concat((a.why.support || []).slice(0, 3).map(id => tag("card", id))), confidence: a.why.confidence }));
-    if (name === "compute_indices") { const I = MQE.indices(db); return { spi: I.spi, components: I.comp.map(c => ({ name: c.k, value: c.v, weight: c.w })), opportunity: I.opp, opportunity_refs: I.oppDrivers.map(id => tag("card", id)), info_quality_avg: I.iqsAvg }; }
-    if (name === "run_scenario") { const r = MQE.scenario(db, inp.shocks || {}); return { nodes: r.nodes.slice(0, 12).map(n => ({ ref: tag("ind", n.id), name: n.name, change_pct: n.d, range: [n.lo, n.hi], level_from: n.lv0, level_to: n.lv1 })), risks: r.risks, resources: r.resources, sectors: r.sectors, uncertainty: r.uncertainty }; }
-    if (name === "find_gaps") return MQE.gaps(db).slice(0, 12).map(g => ({ severity: g.sev, text: g.text, action: g.act }));
-    if (name === "review_decisions") { const L = MQE.learning(db); return { rate: L.rate, rows: L.rows.map(r => ({ ref: tag("dec", r.d.id), title: r.d.title, status: r.r.status, result: r.r.text })), lessons: L.lessons }; }
-    if (name === "read_card") { const c = MQE.byId(db.cards, inp.id); if (!c) return { error: "البطاقة غير متاحة" }; const q = MQE.iqs(c, db); return { ref: tag("card", c.id), card: c, quality: q.score, supporting: q.support.map(id => tag("card", id)), conflicting: q.conflict.map(id => tag("card", id)) }; }
-    return { error: "أداة غير معروفة" };
-  }
-  const messages = [];
-  (req.hist || []).slice(-4).forEach(h => { messages.push({ role: "user", content: String(h.q).slice(0, 500) }); messages.push({ role: "assistant", content: String(h.a).slice(0, 1500) }); });
-  messages.push({ role: "user", content: String(req.q || "").slice(0, 1500) });
-  let text = "";
-  for (let turn = 0; turn < 7; turn++) {
-    const res = UrlFetchApp.fetch("https://api.anthropic.com/v1/messages", { method: "post", contentType: "application/json", muteHttpExceptions: true,
-      headers: { "x-api-key": key, "anthropic-version": "2023-06-01", "anthropic-beta": "server-side-fallback-2026-07-01" },
-      payload: JSON.stringify({ model: prop_("LLM_MODEL") || "claude-opus-5-5", max_tokens: 8000, system: SYSTEM, tools: TOOLS, messages: messages, output_config: { effort: prop_("LLM_EFFORT") || "medium" }, fallbacks: "default" }) });
-    if (res.getResponseCode() !== 200) return { ok: false, code: "upstream", error: "تعذر الوصول إلى المحرك المتقدم." };
-    const m = JSON.parse(res.getContentText());
-    if (m.stop_reason === "refusal") return { ok: false, code: "refusal", error: "تعذر على المحرك المتقدم معالجة السؤال." };
-    messages.push({ role: "assistant", content: m.content });
-    const uses = m.content.filter(b => b.type === "tool_use");
-    if (m.stop_reason === "tool_use" && uses.length) {
-      const results = uses.map(u => { let r; try { r = run(u.name, u.input || {}); } catch (x) { r = { error: String(x) }; } steps.push({ tool: u.name, input: JSON.stringify(u.input || {}).slice(0, 120), out: Array.isArray(r) ? r.length + " نتائج" : r.error ? r.error : "تم" }); return { type: "tool_result", tool_use_id: u.id, content: JSON.stringify(r).slice(0, 12000) }; });
-      messages.push({ role: "user", content: results }); continue;
-    }
-    text = m.content.filter(b => b.type === "text").map(b => b.text).join("\n"); break;
-  }
-  if (!text) return { ok: false, code: "upstream", error: "لم تكتمل الإجابة." };
-  /* التحقق من الاستشهادات: لا يُقبل إلا ما ورد فعلاً في نتائج الأدوات */
-  const cites = [], idx = {}; let dropped = 0;
-  const titleOf = (t, id) => { const L = { card: db.cards, doc: db.docs, ind: db.indicators, dec: db.decisions, topic: db.topics }[t] || [], o = MQE.byId(L, id); return o ? (o.title || o.name) : null; };
-  text = text.replace(/\[(card|doc|ind|dec|topic):([A-Za-z0-9_-]+)\]/g, (s, t, id) => { const k = t + ":" + id, ti = titleOf(t, id); if (!seen[k] || !ti) { dropped++; return ""; } if (!idx[k]) { cites.push({ type: t, id, title: ti }); idx[k] = cites.length; } return "[" + idx[k] + "]"; });
-  let conf = 60; text = text.replace(/^\s*الثقة\s*:\s*(\d{1,3})\s*%?\s*$/m, (s, n) => { conf = Math.max(20, Math.min(95, +n)); return ""; });
-  const blocks = []; let cur = null;
-  text.split(/\n/).forEach(line => { const l = line.trim(); if (!l) return; if (/^#{1,4}\s/.test(l)) { cur = { h: l.replace(/^#+\s*/, ""), items: [] }; if (/رأي مخالف/.test(cur.h)) cur.tone = "counter"; blocks.push(cur); return; } if (!cur) { cur = { h: "الخلاصة", items: [] }; blocks.push(cur); } if (/^[-•*]\s/.test(l)) cur.items.push(l.replace(/^[-•*]\s*/, "").replace(/\*\*/g, "")); else cur.text = ((cur.text || "") + " " + l.replace(/\*\*/g, "")).trim(); });
-  steps.push({ tool: "التحقق من الاستشهادات", input: "", out: cites.length + " مصادر موثقة" + (dropped ? "، واستُبعدت " + dropped + " إحالات غير مطابقة" : "") });
-  return { ok: true, answer: { blocks, cites, steps, confidence: conf, follow: [], engine: "remote" } };
-}
 
 /* ---------- المهام المجدولة: الفحص اليومي والرصد الخارجي ---------- */
 function dailyScan() {

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>حسابي في خبر</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#14212E">
+<link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&family=IBM+Plex+Mono:wght@500&family=Reem+Kufi:wght@500;700&display=swap">
+<link rel="stylesheet" href="../assets/khabar.css">
+<script>try{var t=localStorage.getItem('khabar-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<style>
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:14px}
+.panel h2{font-size:1.2rem}
+.field{display:grid;gap:4px}
+.field label{font-size:.88rem;font-weight:700}
+.field input{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 12px;width:100%}
+.login{max-width:420px;margin:40px auto}
+.msg{padding:10px 14px;border-radius:10px;font-size:.92rem}
+.msg.ok{background:var(--sea-soft);color:var(--ink)}
+.msg.err{background:var(--dawn-soft);color:var(--ink);border:1px solid var(--urgent)}
+.keep{display:flex;gap:8px;align-items:center;font-size:.9rem}
+.keep input{width:18px;height:18px;accent-color:var(--sea)}
+.hello{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px}
+.hello h1{font-size:clamp(1.4rem,4vw,2rem)}
+.badge{display:inline-block;font-size:.78rem;font-weight:700;border-radius:999px;padding:2px 10px;background:var(--sea-soft);color:var(--ink)}
+.meta{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.meta div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.meta b{display:block;font-size:1.05rem}
+.meta small{color:var(--mute);font-size:.8rem}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.auto-note{font-size:.88rem;color:var(--mute);border:1px dashed var(--line);border-radius:10px;padding:8px 12px}
+@media (max-width:640px){.meta{grid-template-columns:1fr 1fr}}
+@media print{.top,.no-print,.foot{display:none!important}.panel{border:0;padding:0}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap top-row">
+    <a class="brand" href="../">
+      <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="6.5" fill="#E39A2D"/><path d="M32 19.5 A12.5 12.5 0 1 1 19.7 29.8" fill="none" stroke="#1D7A70" stroke-width="4.6" stroke-linecap="round"/><path d="M51.5 32 A19.5 19.5 0 1 1 41.75 15.1" fill="none" stroke="#3A5FB0" stroke-width="4.6" stroke-linecap="round"/><path d="M32 58.5 A26.5 26.5 0 1 1 58.1 27.4" fill="none" stroke="currentColor" stroke-width="4.6" stroke-linecap="round"/></svg>
+      <span class="brand-word">خبر</span>
+    </a>
+    <div class="top-meta"><span>حسابي</span><span class="mute" id="who"></span></div>
+    <div class="top-actions"><button class="icon-btn" id="logout" type="button" hidden>خروج</button></div>
+  </div>
+</header>
+
+<main class="wrap" id="main" style="padding-block:20px">
+  <form class="panel login" id="login-form">
+    <h1 style="font-size:1.5rem">الدخول إلى حسابك</h1>
+    <p class="mute" style="font-size:.9rem">تابع دوائرك المفضّلة، واقرأ خلاصتك الخاصة، واحتفظ بمحفوظاتك في مكان واحد.</p>
+    <div class="field"><label for="u">اسم المستخدم</label><input id="u" dir="ltr" autocomplete="username" required></div>
+    <div class="field"><label for="p">كلمة المرور</label><input id="p" type="password" dir="ltr" autocomplete="current-password" required></div>
+    <label class="keep"><input type="checkbox" id="keep" checked> تذكّرني على هذا الجهاز لمدة 30 يوماً</label>
+    <p class="msg err" id="login-err" hidden></p>
+    <button class="btn" type="submit">دخول</button>
+    <p class="mute" style="font-size:.85rem">لطلب حساب: <span id="contact"></span></p>
+  </form>
+
+  <div id="app" hidden style="display:grid;gap:20px">
+    <section class="panel">
+      <div class="hello"><div><span class="badge" id="role"></span><h1 id="hello"></h1></div>
+        <div class="btns no-print"><a class="btn ghost" href="../">الخلاصة الكاملة</a><a class="btn ghost" id="admin-link" href="../admin/" hidden>لوحة الإدارة</a><button class="btn ghost" type="button" id="print">طباعة خلاصتي</button></div></div>
+      <div class="meta" id="meta"></div>
+    </section>
+    <section class="panel no-print">
+      <h2>دوائري</h2>
+      <p class="mute" style="font-size:.9rem">اختر الدوائر التي تتابعها، فتظهر أخبارها وحدها في خلاصتك.</p>
+      <div class="chips" id="follow"></div>
+    </section>
+    <section class="panel">
+      <h2 id="mine-title">خلاصتي</h2>
+      <div id="mine"></div>
+    </section>
+    <section class="panel no-print">
+      <h2>محفوظاتي</h2>
+      <div id="saved"></div>
+    </section>
+  </div>
+</main>
+<script src="../assets/config.js"></script>
+<script src="../assets/auth.js"></script>
+<script src="account.js"></script>
+</body>
+</html>
