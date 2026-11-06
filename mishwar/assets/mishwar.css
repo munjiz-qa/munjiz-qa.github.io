@@ -193,3 +193,31 @@ body.nav .attr{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
 .ask{flex-wrap:wrap}
 .ask p{flex:1 1 calc(100% - 60px)}
 .ask .btn{flex:1 1 auto}
+/* options panel */
+.opts{inset-inline:0;bottom:0;max-height:86vh;overflow:auto;overscroll-behavior:contain;background:var(--glass);border-radius:24px 24px 0 0;box-shadow:var(--shadow);padding:10px max(16px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));z-index:9}
+@media (min-width:900px){.opts{inset-inline-start:auto;inset-inline-end:16px;bottom:16px;width:400px;border-radius:24px;max-height:calc(100vh - 32px)}}
+.opts-head{display:flex;align-items:center;justify-content:space-between;position:sticky;top:-10px;background:var(--glass);padding:6px 0;z-index:1}
+.opts-head h3{margin:0;font:600 20px var(--f-display)}
+.opts h4{margin:16px 0 8px;font:600 13px var(--f-display);color:var(--ink2);letter-spacing:.02em}
+.mtypes{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.mtypes button{border:2px solid transparent;background:none;border-radius:16px;padding:4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:12px}
+.mtypes button span{display:block;width:100%;aspect-ratio:1;border-radius:12px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.mtypes button[aria-pressed="true"]{border-color:var(--sand);font-weight:700}
+.seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:3px;gap:3px;margin-bottom:8px}
+.seg button{flex:1;border:0;background:none;border-radius:11px;padding:9px 6px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:13px;white-space:nowrap}
+.seg button svg{width:16px;height:16px}
+.seg button[aria-checked="true"]{background:var(--night);color:var(--paper);font-weight:600}
+.sw{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 2px;border-bottom:1px solid var(--line);cursor:pointer}
+.sw b{display:block;font-weight:600;font-size:14px}.sw small{display:block;color:var(--ink2);font-size:12px}
+.sw input{position:absolute;opacity:0;pointer-events:none}
+.sw i{flex:none;width:46px;height:28px;border-radius:14px;background:var(--line);position:relative;transition:background .2s}
+.sw i::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:inset-inline-start .2s}
+.sw input:checked+i{background:var(--mint)}
+.sw input:checked+i::after{inset-inline-start:21px}
+.sw input:focus-visible+i{outline:2px solid var(--sand);outline-offset:2px}
+.fld{display:flex;flex-direction:column;gap:4px;margin-bottom:8px;font-size:13px;color:var(--ink2)}
+.fld select{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px}
+body.nav .rail .fab#b3d,body.nav .rail .fab#bOpt{display:grid}
+/* install bar from the shared install helper: keep it below the search capsule and under the app panels */
+.pwi-bar{position:fixed!important;top:calc(132px + env(safe-area-inset-top,0px))!important;bottom:auto!important;inset-inline:12px!important;border-radius:16px;z-index:4!important;max-width:540px}
+body.nav .pwi-bar,body.searching .pwi-bar{display:none!important}

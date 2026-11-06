@@ -100,7 +100,9 @@ const MSR = (() => {
     return best < 0 ? null : { node: best, dist: bd };
   }
 
-  function route(G, A, s, t, pen) {
+  // o: { shortest: true } to minimise distance, { avoidHwy, avoidDirt } to steer away from motorways or unpaved tracks
+  function route(G, A, s, t, pen, o) {
+    o = o || {}; const byLen = !!o.shortest, HW = o.avoidHwy, DIRT = o.avoidDirt;
     const nN = G.lat.length;
     const g = new Float64Array(nN).fill(Infinity), prev = new Int32Array(nN).fill(-1), pe = new Int32Array(nN).fill(-1);
     const closed = new Uint8Array(nN);
@@ -114,8 +116,11 @@ const MSR = (() => {
       const u = pop(); if (closed[u]) continue; closed[u] = 1; iters++;
       if (u === t) break;
       for (let j = A.off[u]; j < A.off[u + 1]; j++) {
-        const v = A.to[j]; let add = 0; if (pen && v !== t) { add = pen.get(v) || 0; if (add === Infinity) continue; } const nd = g[u] + A.cost[j] + add;
-        if (nd < g[v]) { g[v] = nd; prev[v] = u; pe[v] = j; push(v, nd + hav(G.lat[v], G.lon[v], tl, to2) / A.vmax); }
+        const v = A.to[j]; let add = 0; if (pen && v !== t) { add = pen.get(v) || 0; if (add === Infinity) continue; }
+        let c = byLen ? A.len[j] : A.cost[j];
+        if (HW || DIRT) { const k = G.ways[A.way[j]].cls; if (HW && (k <= 1 || k === 15 || k === 16)) c *= 4; if (DIRT && k === 14) c *= 6; }
+        const nd = g[u] + c + (byLen ? add * 10 : add);
+        if (nd < g[v]) { g[v] = nd; prev[v] = u; pe[v] = j; push(v, nd + (byLen ? hav(G.lat[v], G.lon[v], tl, to2) : hav(G.lat[v], G.lon[v], tl, to2) / A.vmax)); }
       }
     }
     if (!isFinite(g[t])) return null;
@@ -123,8 +128,9 @@ const MSR = (() => {
     for (let v = t; v !== s; v = prev[v]) edges.push(pe[v]);
     edges.reverse();
     const nodes = [s]; let dist = 0;
-    edges.forEach(e => { nodes.push(A.to[e]); dist += A.len[e]; });
-    return { nodes, edges, dist, time: g[t], iters };
+    let time = 0;
+    edges.forEach(e => { const v = A.to[e]; nodes.push(v); dist += A.len[e]; time += A.cost[e]; if (pen && v !== t) { const x = pen.get(v); if (x && x !== Infinity) time += x; } });
+    return { nodes, edges, dist, time, iters };
   }
 
   // ---------- Arabic turn-by-turn ----------
