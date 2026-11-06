@@ -36,9 +36,24 @@ jobs:
           osmium extract --bbox 50.70,24.45,51.70,26.20 --strategy smart -o qatar.osm.pbf gcc.osm.pbf
           osmium fileinfo -e qatar.osm.pbf | grep -E "Number of (nodes|ways|relations)|Timestamp" || true
           ls -la qatar.osm.pbf
+      - name: Cache coastline and world base data
+        uses: actions/cache@v4
+        with:
+          path: data/sources
+          key: planetiler-sources-v1
+      - name: Coastline (sea) polygons
+        run: |
+          mkdir -p data/sources
+          if [ ! -s data/sources/water-polygons-split-3857.zip ]; then
+            for i in 1 2 3 4 5; do
+              curl -fL --connect-timeout 60 --retry 3 --retry-delay 20 -o data/sources/water-polygons-split-3857.zip https://osmdata.openstreetmap.de/download/water-polygons-split-3857.zip && break
+              echo "retry $i"; sleep 30
+            done
+          fi
+          ls -la data/sources
       - name: Build the vector map (Arabic labels, 3D buildings)
         run: |
-          java -Xmx5g -jar planetiler.jar --osm-path=qatar.osm.pbf --download --output=qatar.pmtiles \
+          java -Xmx5g -jar planetiler.jar --osm-path=qatar.osm.pbf --download --download_threads=4 --http_timeout=300s --output=qatar.pmtiles \
             --bounds=50.70,24.45,51.70,26.20 --maxzoom=14 --languages=ar,en --exclude_layers=housenumber \
             --building_merge_z13=true --force
           ls -la qatar.pmtiles
