@@ -936,3 +936,19 @@ html[dir=ltr] .ruq-matn{border-radius:10px 0 0 10px}
 .ruq-warn li::before{background:var(--bad-soft);color:var(--bad)}
 @media (max-width:640px){.ruq-ay,.ruq-h{padding:12px}.ruq-matn{font-size:1.02rem;padding:8px 10px}.ruq-alert{padding:10px 12px}.ruq-list li{padding-inline-start:44px}}
 @media print{.ruq-alert{border-color:#000}}
+
+/* التثبيت بضغطة: شريط بارز على الجوال، ومؤشر تجهيز العمل دون إنترنت */
+.instbar{display:none}
+@media (max-width:760px){
+  .instbar:not([hidden]){display:block;background:linear-gradient(90deg,var(--accent),color-mix(in srgb,var(--accent) 78%,#000));color:var(--accent-ink)}
+  .instbar .wrap{display:flex;align-items:center;gap:10px;padding-block:8px}
+  .instbar img{border-radius:10px;flex:none;background:#fff2}
+  .instbar .ib-t{flex:1;display:flex;flex-direction:column;line-height:1.35;min-width:0}
+  .instbar .ib-t b{font-size:.95rem}.instbar .ib-t small{opacity:.85;font-size:.78rem}
+  .instbar .btn{flex:none;background:#f3c06b;color:#1b1b1b;border-color:transparent;font-weight:700;padding:7px 16px}
+  .instbar .ib-x{flex:none;background:none;border:0;color:inherit;font-size:1.4rem;line-height:1;padding:4px 6px;cursor:pointer;opacity:.8}
+}
+.instbtn.ready{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 30%,transparent)}
+.offpill{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(76px + env(safe-area-inset-bottom));z-index:60;background:var(--ink,#1b1b1b);color:var(--bg,#fff);padding:8px 16px;border-radius:999px;font-size:.85rem;box-shadow:var(--shadow)}
+.offpill[hidden]{display:none}
+.in-apk{margin:4px 0 0}
