@@ -119,8 +119,17 @@
   }
 
   // ---------- data ----------
+  const MAPBASE = ON_SITE || (/^(localhost|127\.0\.0\.1)$/.test(location.hostname) && !NATIVE) ? '' : CFG.SITE;
+  let VECTOR = null;   // details of the full Qatar vector map when it is reachable
+  async function hasVectorMap() {
+    try {
+      const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 5000);
+      const r = await fetch(MAPBASE + 'map/info.json?t=' + Math.floor(Date.now() / 3600000), { signal: ctl.signal, cache: 'no-cache' }); clearTimeout(t);
+      if (!r.ok) return null; const j = await r.json(); return j && j.updated ? j : null;
+    } catch (e) { return null; }
+  }
   async function loadData(progress) {
-    const files = ['graph.bin', 'names.json', 'poi.json', 'land.json', 'bld.json'], out = {}; let done = 0;
+    const files = VECTOR ? ['graph.bin', 'names.json', 'poi.json'] : ['graph.bin', 'names.json', 'poi.json', 'land.json', 'bld.json'], out = {}; let done = 0;
     await Promise.all(files.map(async f => { const r = await fetch(D + f); if (!r.ok) throw new Error(f); out[f] = f.endsWith('.bin') ? await r.arrayBuffer() : await r.json(); progress(++done / files.length); }));
     return out;
   }
@@ -131,10 +140,12 @@
     const roads = [], labels = new Map();
     G.ways.forEach(w => {
       const n = G.names[w.nm] || ['', ''];
-      roads.push({ type: 'Feature', properties: { r: MSR.ROAD_RANK[w.cls], n: clean(n[0] || n[1]) }, geometry: { type: 'LineString', coordinates: Array.from(w.refs, r => [G.lon[r], G.lat[r]]) } });
+      if (!VECTOR) roads.push({ type: 'Feature', properties: { r: MSR.ROAD_RANK[w.cls], n: clean(n[0] || n[1]) }, geometry: { type: 'LineString', coordinates: Array.from(w.refs, r => [G.lon[r], G.lat[r]]) } });
       const nm = n[0] || n[1]; if (nm && !labels.has(nm)) { const m = w.refs[w.refs.length >> 1]; labels.set(nm, { name: nm, en: n[1], lat: G.lat[m], lon: G.lon[m] }); }
     });
     STREETS = [...labels.values()];
+    POI = raw['poi.json'].map(p => ({ lat: p[0], lon: p[1], ar: p[2], en: p[3], type: p[4], imp: p[5] }));
+    if (VECTOR) return { gov: GOV.map(g => ({ type: 'Feature', properties: { n: g[0] }, geometry: { type: 'Point', coordinates: [g[5], g[4]] } })) };
     const poly = (a, s) => { const r = []; for (let i = s; i < a.length; i += 2) r.push([a[i], a[i + 1]]); return r; };
     const bld = raw['bld.json'].map(b => ({ type: 'Feature', properties: { h: b[0] }, geometry: { type: 'Polygon', coordinates: [poly(b, 1)] } }));
     const land = [], muni = [];
@@ -144,7 +155,6 @@
       if (big) { let x = 0, y = 0; big.forEach(p => { x += p[0]; y += p[1]; }); muni.push({ type: 'Feature', properties: { n: m.n }, geometry: { type: 'Point', coordinates: [x / big.length, y / big.length] } }); }
     });
     const areas = raw['land.json'].areas.map(a => ({ type: 'Feature', properties: { k: a[0] }, geometry: { type: 'Polygon', coordinates: [poly(a, 1)] } }));
-    POI = raw['poi.json'].map(p => ({ lat: p[0], lon: p[1], ar: p[2], en: p[3], type: p[4], imp: p[5] }));
     const poiF = POI.filter(p => p.type !== 'منطقة').map(p => ({ type: 'Feature', properties: { n: clean(p.ar || p.en), i: p.imp }, geometry: { type: 'Point', coordinates: [p.lon, p.lat] } }));
     GOV.forEach(g => poiF.push({ type: 'Feature', properties: { n: g[0], i: 3, g: 1 }, geometry: { type: 'Point', coordinates: [g[5], g[4]] } }));
     const places = POI.filter(p => ['منطقة', 'حي', 'مدينة'].includes(p.type)).map(p => ({ type: 'Feature', properties: { n: (p.ar || p.en).replace(/\s*\(\d+\)/, '') }, geometry: { type: 'Point', coordinates: [p.lon, p.lat] } }));
@@ -185,7 +195,59 @@
       ]
     };
   }
+  // full Qatar map (OpenMapTiles schema) with Arabic names first
+  function vstyle(gj) {
+    const c = n => css(n) || '#888';
+    const NAME = ['coalesce', ['get', 'name:ar'], ['get', 'name'], ['get', 'name:latin'], ['get', 'name_en'], ''];
+    const halo = { 'text-halo-color': c('--m-halo'), 'text-halo-width': 1.6 };
+    const T = extra => Object.assign({ 'text-font': ['m'] }, extra);
+    const rw = (base) => ['interpolate', ['exponential', 1.5], ['zoom'], 6, base * 0.3, 10, base * 0.8, 14, base * 2.6, 18, base * 14];
+    const RC = ['match', ['get', 'class'], 'motorway', 3.2, 'trunk', 2.9, 'primary', 2.5, 'secondary', 2.1, 'tertiary', 1.7, 'minor', 1.1, 'service', 0.7, 0.5];
+    const width = add => ['interpolate', ['exponential', 1.5], ['zoom'], 7, ['+', ['*', RC, 0.25], add * 0.3], 10, ['+', ['*', RC, 0.8], add * 0.6], 14, ['+', ['*', RC, 2.4], add], 18, ['+', ['*', RC, 12], add * 1.6]];
+    const roadCls = ['motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'minor', 'service'];
+    const major = ['match', ['get', 'class'], ['motorway', 'trunk', 'primary'], 1, 0];
+    return {
+      version: 8, glyphs: 'mishwar://{fontstack}/{range}',
+      sources: {
+        omt: { type: 'vector', url: 'pmtiles://' + new URL(MAPBASE + 'map/qatar.pmtiles', location.href).href, attribution: '© OpenStreetMap' },
+        gov: { type: 'geojson', data: FC(gj.gov) }, route: { type: 'geojson', data: FC([]) }, done: { type: 'geojson', data: FC([]) }, alt: { type: 'geojson', data: FC([]) }
+      },
+      layers: [
+        { id: 'v-bg', type: 'background', paint: { 'background-color': c('--m-land') } },
+        { id: 'v-landcover', type: 'fill', source: 'omt', 'source-layer': 'landcover', filter: ['match', ['get', 'class'], ['grass', 'wood', 'farmland'], true, false], paint: { 'fill-color': c('--m-park'), 'fill-opacity': 0.7 } },
+        { id: 'v-sand', type: 'fill', source: 'omt', 'source-layer': 'landcover', filter: ['==', ['get', 'class'], 'sand'], paint: { 'fill-color': c('--m-sand'), 'fill-opacity': 0.6 } },
+        { id: 'v-park', type: 'fill', source: 'omt', 'source-layer': 'park', paint: { 'fill-color': c('--m-park'), 'fill-opacity': 0.8 } },
+        { id: 'v-landuse', type: 'fill', source: 'omt', 'source-layer': 'landuse', filter: ['match', ['get', 'class'], ['hospital', 'school', 'university', 'stadium', 'pitch', 'cemetery'], true, false], paint: { 'fill-color': c('--m-civic'), 'fill-opacity': 0.6 } },
+        { id: 'v-water', type: 'fill', source: 'omt', 'source-layer': 'water', paint: { 'fill-color': c('--m-sea') } },
+        { id: 'v-aeroway', type: 'line', source: 'omt', 'source-layer': 'aeroway', minzoom: 11, paint: { 'line-color': c('--m-casing'), 'line-width': ['interpolate', ['linear'], ['zoom'], 11, 2, 15, 18] } },
+        { id: 'v-path', type: 'line', source: 'omt', 'source-layer': 'transportation', minzoom: 15, filter: ['match', ['get', 'class'], ['path', 'track'], true, false], paint: { 'line-color': c('--m-casing'), 'line-width': 1.2, 'line-dasharray': [2, 1.5] } },
+        { id: 'v-road-case', type: 'line', source: 'omt', 'source-layer': 'transportation', minzoom: 11, filter: ['all', ['match', ['get', 'class'], roadCls, true, false], ['!=', ['get', 'brunnel'], 'tunnel']], layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': c('--m-casing'), 'line-width': width(1.6) } },
+        { id: 'v-road', type: 'line', source: 'omt', 'source-layer': 'transportation', filter: ['match', ['get', 'class'], roadCls, true, false], layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': ['case', ['==', major, 1], c('--m-major'), c('--m-road')], 'line-width': width(0), 'line-opacity': ['case', ['==', ['get', 'brunnel'], 'tunnel'], 0.55, 1] } },
+        { id: 'v-bld', type: 'fill-extrusion', source: 'omt', 'source-layer': 'building', minzoom: 13, paint: { 'fill-extrusion-color': c('--m-bld'), 'fill-extrusion-height': ['interpolate', ['linear'], ['zoom'], 13, 0, 14.5, ['coalesce', ['get', 'render_height'], 6]], 'fill-extrusion-base': ['coalesce', ['get', 'render_min_height'], 0], 'fill-extrusion-opacity': 0.88 } },
+        { id: 'alt', type: 'line', source: 'alt', layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': '#8a96a6', 'line-width': ['interpolate', ['linear'], ['zoom'], 10, 3, 16, 7], 'line-dasharray': [1.5, 1.2], 'line-opacity': .8 } },
+        { id: 'done', type: 'line', source: 'done', layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': '#9aa3b5', 'line-width': ['interpolate', ['linear'], ['zoom'], 10, 4, 16, 10], 'line-opacity': 0.7 } },
+        { id: 'route-case', type: 'line', source: 'route', layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': '#ffffff', 'line-width': ['interpolate', ['linear'], ['zoom'], 10, 7, 16, 15] } },
+        { id: 'route', type: 'line', source: 'route', layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': c('--m-route'), 'line-width': ['interpolate', ['linear'], ['zoom'], 10, 4.5, 16, 10] } },
+        { id: 'v-road-label', type: 'symbol', source: 'omt', 'source-layer': 'transportation_name', minzoom: 12, layout: T({ 'symbol-placement': 'line', 'text-field': NAME, 'text-size': ['interpolate', ['linear'], ['zoom'], 12, 10, 17, 14], 'symbol-spacing': 320, 'text-max-angle': 30 }), paint: Object.assign({ 'text-color': c('--m-label') }, halo) },
+        { id: 'v-water-label', type: 'symbol', source: 'omt', 'source-layer': 'water_name', layout: T({ 'text-field': NAME, 'text-size': 13, 'text-letter-spacing': 0.05 }), paint: { 'text-color': c('--m-water-label'), 'text-halo-color': c('--m-halo'), 'text-halo-width': 1.2 } },
+        { id: 'v-poi', type: 'symbol', source: 'omt', 'source-layer': 'poi', minzoom: 14, filter: ['any', ['<=', ['get', 'rank'], 12], ['>=', ['zoom'], 16]], layout: T({ 'text-field': NAME, 'text-size': 11, 'text-max-width': 9, 'text-optional': true, 'text-anchor': 'top', 'text-offset': [0, 0.6] }), paint: Object.assign({ 'text-color': c('--m-poi') }, halo) },
+        { id: 'v-place-minor', type: 'symbol', source: 'omt', 'source-layer': 'place', minzoom: 11, filter: ['match', ['get', 'class'], ['suburb', 'neighbourhood', 'quarter', 'hamlet', 'locality', 'isolated_dwelling'], true, false], layout: T({ 'text-field': NAME, 'text-size': ['interpolate', ['linear'], ['zoom'], 11, 11, 15, 14], 'text-max-width': 8 }), paint: Object.assign({ 'text-color': c('--ink2') }, halo) },
+        { id: 'v-place', type: 'symbol', source: 'omt', 'source-layer': 'place', filter: ['match', ['get', 'class'], ['city', 'town', 'village'], true, false], layout: T({ 'text-field': NAME, 'text-size': ['match', ['get', 'class'], 'city', 18, 'town', 15, 13], 'text-max-width': 8 }), paint: Object.assign({ 'text-color': c('--night') }, halo) },
+        { id: 'gov', type: 'circle', source: 'gov', minzoom: 11, paint: { 'circle-radius': 6, 'circle-color': '#0f2a3d', 'circle-stroke-color': '#fff', 'circle-stroke-width': 1.8 } },
+        { id: 'gov-label', type: 'symbol', source: 'gov', minzoom: 12, layout: T({ 'text-field': ['get', 'n'], 'text-size': 13, 'text-offset': [0, 1.1], 'text-anchor': 'top', 'text-max-width': 9 }), paint: Object.assign({ 'text-color': c('--night') }, halo) }
+      ]
+    };
+  }
   function recolor() {
+    if (VECTOR && map && map.isStyleLoaded()) {
+      const c = css, set = (l, p, v) => { try { map.setPaintProperty(l, p, v); } catch (e) {} };
+      set('v-bg', 'background-color', c('--m-land')); set('v-water', 'fill-color', c('--m-sea')); set('v-park', 'fill-color', c('--m-park')); set('v-landcover', 'fill-color', c('--m-park'));
+      set('v-sand', 'fill-color', c('--m-sand')); set('v-landuse', 'fill-color', c('--m-civic')); set('v-road-case', 'line-color', c('--m-casing')); set('v-path', 'line-color', c('--m-casing')); set('v-aeroway', 'line-color', c('--m-casing'));
+      set('v-road', 'line-color', ['case', ['==', ['match', ['get', 'class'], ['motorway', 'trunk', 'primary'], 1, 0], 1], c('--m-major'), c('--m-road')]); set('v-bld', 'fill-extrusion-color', c('--m-bld')); set('route', 'line-color', c('--m-route'));
+      ['v-road-label', 'v-poi', 'v-place-minor', 'v-place', 'v-water-label', 'gov-label'].forEach(l => set(l, 'text-halo-color', c('--m-halo')));
+      set('v-road-label', 'text-color', c('--m-label')); set('v-poi', 'text-color', c('--m-poi')); set('v-place-minor', 'text-color', c('--ink2')); set('v-place', 'text-color', c('--night')); set('gov-label', 'text-color', c('--night')); set('v-water-label', 'text-color', c('--m-water-label'));
+      return;
+    }
     if (!map || !map.isStyleLoaded()) return;
     const c = css, set = (l, p, v) => { try { map.setPaintProperty(l, p, v); } catch (e) {} };
     set('sea', 'background-color', c('--m-sea')); set('land', 'fill-color', c('--m-land')); set('park', 'fill-color', c('--m-park')); set('water', 'fill-color', c('--m-water'));
@@ -787,6 +849,7 @@ ${r.note ? `<p style="margin:8px 0 0">${E(r.note)}</p>` : ''}
     shell(); markModes();
     const bar = $('#barI');
     try {
+      if (window.pmtiles) { VECTOR = await hasVectorMap(); if (VECTOR) maplibregl.addProtocol('pmtiles', new pmtiles.Protocol().tile); }
       const raw = await loadData(f => bar.style.width = Math.round(f * 85) + '%');
       G = MSR.parse(raw['graph.bin'], raw['names.json']);
       const gj = geo(raw);
@@ -794,7 +857,7 @@ ${r.note ? `<p style="margin:8px 0 0">${E(r.note)}</p>` : ''}
       const EMPTY = new Uint8Array([10, 7, 10, 1, 109, 18, 2, 48, 48]).buffer; // valid empty glyph set
       maplibregl.addProtocol('mishwar', async params => { const range = params.url.split('/').pop(); if (!HAVE.has(range)) return { data: EMPTY.slice(0) }; try { const r = await fetch(D + 'glyphs/' + range + '.pbf'); if (r.ok) return { data: await r.arrayBuffer() }; } catch (e) {} return { data: EMPTY.slice(0) }; });
       try { const pr = maplibregl.setRTLTextPlugin(new URL('vendor/rtl-text.js', location.href).href, false); if (pr && pr.catch) pr.catch(() => {}); } catch (e) {}
-      map = new maplibregl.Map({ container: 'map', style: style(gj), center: [51.522, 25.305], zoom: 12.4, pitch: 50, bearing: -12, maxBounds: [[50.6, 24.4], [52.0, 26.3]], attributionControl: false, maxPitch: 70 });
+      map = new maplibregl.Map({ container: 'map', style: VECTOR ? vstyle(gj) : style(gj), center: [51.522, 25.305], zoom: 12.4, pitch: 50, bearing: -12, maxBounds: [[50.4, 24.3], [52.0, 26.4]], minZoom: 7, attributionControl: false, maxPitch: 70 });
       const el = (cls, html) => { const d = document.createElement('div'); d.className = cls; d.innerHTML = html; return d; };
       startMk = new maplibregl.Marker({ element: el('me-dot', '') }); meMk = new maplibregl.Marker({ element: el('me-dot', '') });
       destMk = new maplibregl.Marker({ element: el('', '<svg viewBox="0 0 30 40" width="32" height="42"><path d="M15 39s13-14 13-24A13 13 0 0 0 2 15c0 10 13 24 13 24z" fill="#ef6a4c" stroke="#fff" stroke-width="2"/><circle cx="15" cy="15" r="5" fill="#fff"/></svg>'), anchor: 'bottom' });
@@ -814,6 +877,6 @@ ${r.note ? `<p style="margin:8px 0 0">${E(r.note)}</p>` : ''}
       window.__mishwarErr = [String(e)];
     }
   }
-  window.MISHWAR = { state: () => ({ R, ST, nav, mode, start, dest, reports, official, feed, me }), setDest: p => setDest(p), plan: () => plan(), addReport: (t, at) => addReport(t, at), get map() { return map; } };
+  window.MISHWAR = { state: () => ({ R, ST, nav, mode, start, dest, reports, official, feed, me, vector: VECTOR }), setDest: p => setDest(p), plan: () => plan(), addReport: (t, at) => addReport(t, at), get map() { return map; } };
   boot();
 })();

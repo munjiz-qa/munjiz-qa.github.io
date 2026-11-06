@@ -1,0 +1,70 @@
+# خريطة قطر الكاملة لتطبيق «مشوار»: تُبنى أسبوعياً من أحدث بيانات OpenStreetMap
+# - mishwar/map/qatar.pmtiles : خريطة قطر كاملة (طرق، مبانٍ بارتفاعاتها، أحياء، أماكن، مياه) بالعربية
+# - mishwar/data/graph.bin, names.json, poi.json : شبكة الطرق للتوجيه ونقاط البحث لكل قطر
+name: Mishwar Qatar map
+on:
+  schedule:
+    - cron: '17 1 * * 5'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['scripts/mishwar-map/**', '.github/workflows/mishwar-map.yml']
+permissions:
+  contents: write
+concurrency: mishwar-map
+jobs:
+  map:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Tools
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq osmium-tool >/dev/null
+          pip install -q osmium
+          curl -sSL -o planetiler.jar https://github.com/onthegomap/planetiler/releases/download/v0.8.4/planetiler.jar
+      - name: Download the latest OpenStreetMap data for Qatar
+        run: |
+          curl -sSL --retry 3 -o gcc.osm.pbf https://download.geofabrik.de/asia/gcc-states-latest.osm.pbf
+          osmium extract --bbox 50.70,24.45,51.70,26.20 --strategy smart -o qatar.osm.pbf gcc.osm.pbf
+          osmium fileinfo -e qatar.osm.pbf | grep -E "Number of (nodes|ways|relations)|Timestamp" || true
+          ls -la qatar.osm.pbf
+      - name: Build the vector map (Arabic labels, 3D buildings)
+        run: |
+          java -Xmx5g -jar planetiler.jar --osm-path=qatar.osm.pbf --download --output=qatar.pmtiles \
+            --bounds=50.70,24.45,51.70,26.20 --maxzoom=14 --languages=ar,en --exclude_layers=housenumber \
+            --building_merge_z13=true --force
+          ls -la qatar.pmtiles
+      - name: Build the routing network and search places
+        run: |
+          python3 scripts/mishwar-map/osm_to_mishwar.py qatar.osm.pbf out
+          ls -la out
+      - name: Sanity checks
+        run: |
+          python3 - <<'EOF'
+          import os, json, struct
+          s = os.path.getsize('qatar.pmtiles'); g = open('out/graph.bin','rb').read(12)
+          magic, nodes, ways = struct.unpack('<4sII', g)
+          pois = json.load(open('out/poi.json'))
+          print('pmtiles MB', round(s/1e6,1), 'nodes', nodes, 'ways', ways, 'pois', len(pois))
+          assert magic == b'MSR1' and nodes > 150000 and ways > 30000, 'routing network looks too small'
+          assert 5e6 < s < 95e6, 'map file size is out of the expected range'
+          assert len(pois) > 3000
+          EOF
+      - name: Publish
+        run: |
+          mkdir -p mishwar/map
+          cp qatar.pmtiles mishwar/map/qatar.pmtiles
+          cp out/graph.bin out/names.json out/poi.json mishwar/data/
+          date -u +'{"updated":"%Y-%m-%dT%H:%M:%SZ","source":"OpenStreetMap contributors"}' > mishwar/map/info.json
+          git config user.name "munjiz-mishwar-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add mishwar/map mishwar/data/graph.bin mishwar/data/names.json mishwar/data/poi.json
+          git diff --cached --quiet || (git commit -q -m "مشوار: تحديث خريطة قطر من OpenStreetMap" && git pull --rebase -q && git push)

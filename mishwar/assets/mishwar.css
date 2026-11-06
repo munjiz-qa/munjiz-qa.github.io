@@ -3,14 +3,14 @@
   --ink:#10202e;--ink2:#4c5d6c;--paper:#f6f3ec;--card:#ffffff;--line:#e4ded1;
   --night:#0f2a3d;--sand:#e2b259;--coral:#ef6a4c;--mint:#1fa57a;--sky:#2f7cf6;--amber:#e39a1d;
   --glass:rgba(255,255,255,.97);--shadow:0 10px 30px rgba(15,42,61,.18);--shadow2:0 2px 8px rgba(15,42,61,.12);
-  --m-sea:#cfe1ea;--m-land:#f3efe6;--m-park:#d7e7c8;--m-water:#b9d6e4;--m-road:#ffffff;--m-major:#f2cf86;--m-casing:#d8d0bd;--m-bld:#e2dccd;--m-label:#3b3a36;--m-halo:#ffffff;--m-route:#0f2a3d;
+  --m-sea:#cfe1ea;--m-land:#f3efe6;--m-park:#d7e7c8;--m-water:#b9d6e4;--m-road:#ffffff;--m-major:#f2cf86;--m-casing:#d8d0bd;--m-bld:#e2dccd;--m-label:#3b3a36;--m-halo:#ffffff;--m-route:#0f2a3d;--m-sand:#efe3c4;--m-civic:#ece4f2;--m-poi:#6b5b3e;--m-water-label:#3f7fa6;
   --f-display:"Alexandria","IBM Plex Sans Arabic",Tahoma,sans-serif;--f-body:"IBM Plex Sans Arabic",Tahoma,Arial,sans-serif;
   --dock-h:200px;color-scheme:light}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --ink:#e8eef4;--ink2:#9fb0c0;--paper:#0b1824;--card:#132636;--line:#21384b;--night:#9cc7ea;--glass:rgba(17,34,49,.97);--shadow:0 10px 30px rgba(0,0,0,.5);--shadow2:0 2px 8px rgba(0,0,0,.4);
-  --m-sea:#081521;--m-land:#13212f;--m-park:#15301f;--m-water:#0c2236;--m-road:#2a3c50;--m-major:#8c6a2a;--m-casing:#0c1622;--m-bld:#22344a;--m-label:#dbe5ef;--m-halo:#0b1824;--m-route:#7cc1ff;color-scheme:dark}}
+  --m-sea:#081521;--m-land:#13212f;--m-park:#15301f;--m-water:#0c2236;--m-road:#2a3c50;--m-major:#8c6a2a;--m-casing:#0c1622;--m-bld:#22344a;--m-label:#dbe5ef;--m-halo:#0b1824;--m-route:#7cc1ff;--m-sand:#2a2a22;--m-civic:#1d2340;--m-poi:#d7c49b;--m-water-label:#7fb3d9;color-scheme:dark}}
 :root[data-theme="dark"]{--ink:#e8eef4;--ink2:#9fb0c0;--paper:#0b1824;--card:#132636;--line:#21384b;--night:#9cc7ea;--glass:rgba(17,34,49,.97);--shadow:0 10px 30px rgba(0,0,0,.5);--shadow2:0 2px 8px rgba(0,0,0,.4);
-  --m-sea:#081521;--m-land:#13212f;--m-park:#15301f;--m-water:#0c2236;--m-road:#2a3c50;--m-major:#8c6a2a;--m-casing:#0c1622;--m-bld:#22344a;--m-label:#dbe5ef;--m-halo:#0b1824;--m-route:#7cc1ff;color-scheme:dark}
+  --m-sea:#081521;--m-land:#13212f;--m-park:#15301f;--m-water:#0c2236;--m-road:#2a3c50;--m-major:#8c6a2a;--m-casing:#0c1622;--m-bld:#22344a;--m-label:#dbe5ef;--m-halo:#0b1824;--m-route:#7cc1ff;--m-sand:#2a2a22;--m-civic:#1d2340;--m-poi:#d7c49b;--m-water-label:#7fb3d9;color-scheme:dark}
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
 body{background:var(--paper);color:var(--ink);font-family:var(--f-body);overflow:hidden;-webkit-tap-highlight-color:transparent}
