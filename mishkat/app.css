@@ -611,6 +611,45 @@ html[dir=ltr] .adh-txt,html[dir=ltr] .adh-pre{text-align:right}
   .tabbar a,.tabbar button{font-size:.74rem}
 }
 
+/* ---------- الصور الجمالية في القرآن الكريم (#jamal) */
+@font-face{font-family:'KFGQPC Hafs';src:url(fonts/kfgqpc-hafs-uthmanic-v18.woff2) format('woff2');font-display:swap}
+.jm-hero{background:radial-gradient(110% 130% at 0 0,var(--saffron-soft),transparent 62%),radial-gradient(90% 120% at 100% 100%,var(--accent-soft),transparent 60%),var(--sheet);position:relative;overflow:hidden}
+.jm-hero::after{content:"";position:absolute;inset-inline-end:-30px;bottom:-30px;width:160px;height:160px;border-radius:42% 58% 50% 50%/55% 45% 55% 45%;border:2px solid var(--saffron);opacity:.3;transform:rotate(18deg);box-shadow:0 0 0 14px var(--saffron-soft),0 0 0 30px var(--accent-soft)}
+.jm-hero>*{position:relative;z-index:1}
+.jm-stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.jm-stats>span{background:var(--sheet);border:1px solid var(--line);border-radius:999px;padding:4px 14px;font-size:.88rem}
+.jm-stats b{color:var(--accent);font-size:1.05rem}
+.jm-kinds h2{margin:0 0 10px}
+.jm-kgrid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.jm-k{--kc:var(--accent);display:grid;gap:6px;align-content:start;border:1px solid var(--line);border-top:4px solid var(--kc);border-radius:14px;padding:14px;background:var(--sheet);min-width:0}
+.jm-k2{--kc:var(--ok)}.jm-k3{--kc:var(--saffron)}.jm-k4{--kc:var(--bad)}
+.jm-kn{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--kc);color:#fff;font-weight:700;font-size:.9rem}
+.jm-k b{font-size:1.08rem;color:var(--kc)}.jm-k p{margin:0;line-height:1.85}
+.jm-kay{font-size:.88rem}.jm-kay small{color:var(--muted)}
+.jm-ko{font-size:.88rem;color:var(--ink);background:var(--saffron-soft);border-radius:8px;padding:4px 10px;font-family:var(--f-quran)}
+.jm-kgo{justify-self:start;font-size:.85rem;font-weight:700;color:var(--kc);text-decoration:none}.jm-kgo::after{content:" ←"}html[dir=ltr] .jm-kgo::after{content:" →"}
+.jm-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr));align-items:start}
+.jm-ay,.jm-h{border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:8px;min-width:0;scroll-margin-top:80px}
+.jm-ay h3,.jm-h h3{margin:0;font-size:1.05rem;color:var(--accent)}
+.jm-ays{background:var(--saffron-soft);border-radius:12px;padding:6px 12px}
+.jm-q{font-family:'KFGQPC Hafs',var(--f-quran);font-size:1.6rem;line-height:2.2}
+.jm-q .jm-n{font-family:'KFGQPC Hafs',var(--f-quran);color:var(--saffron);cursor:pointer;font-size:1em}
+.jm-note{margin:0;line-height:1.85;color:var(--ink)}
+.jm-links{display:flex;flex-wrap:wrap;gap:8px}.jm-links .btn{font-size:.82rem}
+.jm-sub{display:flex;align-items:center;gap:8px;margin:14px 0 2px;font-size:1rem;color:var(--muted)}
+.jm-sub svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8}
+.jm-matn{margin:0;font-family:var(--f-quran);font-size:1.12rem;line-height:2.05;background:var(--accent-soft);border-inline-start:3px solid var(--accent);border-radius:0 10px 10px 0;padding:10px 14px;overflow-wrap:anywhere;text-align:right}
+html[dir=ltr] .jm-matn{border-radius:10px 0 0 10px}
+.jm-en{background:var(--ok-soft);border-radius:10px;padding:8px 12px}.jm-en b{font-size:.8rem;color:var(--ok)}.jm-en p{margin:4px 0 0;line-height:1.7;text-align:left}
+.jm-tx,.jm-gr{margin:0;font-size:.86rem;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline}
+.jm-tx>span:first-child,.jm-gr>span:first-child{color:var(--muted)}
+.jm-badge{font-style:normal;background:var(--ok-soft);color:var(--ok);border-radius:999px;padding:1px 10px;font-weight:700}
+.jm-dg{color:var(--muted);font-size:.82rem}
+.jm-qt{margin:0}.jm-qt .jm-note{color:var(--muted);margin-top:6px}
+.jm-qen{margin:8px 0 0;line-height:1.7;font-size:.92rem;text-align:left}
+@media (max-width:640px){.jm-ay,.jm-h,.jm-k{padding:12px}.jm-q{font-size:1.35rem;line-height:2.1}.jm-ays{padding:4px 10px}.jm-matn{font-size:1.02rem;padding:8px 10px}.jm-hero::after{width:110px;height:110px}}
+@media print{.jm-links,.jm-kgo{display:none}.jm-ays{background:none}}
+.jm-lbl{display:inline-block;font-size:.76rem;color:var(--saffron);background:var(--saffron-soft);border-radius:999px;padding:0 9px;margin-inline-end:4px;font-weight:700}
 /* ---------- ركن الأطفال */
 .ksv{display:block;width:100%;height:100%}
 .kids{--kc:var(--accent)}
