@@ -49,11 +49,12 @@ function showCalc(){const c=calcItems(),el=$('iOut');
   el.textContent=EN?`${c.n} items × QAR ${fmt(c.p)} (first ${ITEM.incl} outlets included) = ${fmt(c.a)} · ${c.n} items × ${c.x} extra outlets × QAR ${ITEM.outlet} = ${fmt(c.b)} · Total fees QAR ${fmt(c.t)} (government fees excluded)`
     :`${c.n} صنفاً × ${fmt(c.p)} ر.ق (تشمل أول ${ITEM.incl} منافذ) = ${fmt(c.a)} · ${c.n} صنفاً × ${c.x} منفذاً إضافياً × ${ITEM.outlet} ر.ق = ${fmt(c.b)} · إجمالي الأتعاب ${fmt(c.t)} ر.ق (دون الرسوم الحكومية)`}
 
-function vals(){const o={};['no','date','start','days','cName','cCr','cEst','cAddr','cRep','cRepTitle','cQid','cPhone','cEmail','special'].forEach(k=>o[k]=E[k].value.trim());return o}
+function vals(){const o={};['no','date','start','days','cName','cCr','cEst','cAddr','cRep','cRepTitle','cQid','cPhone','cEmail','special','rOtob','rMarkup','rExcel','kName','kEmail','kPhone'].forEach(k=>o[k]=E[k].value.trim());return o}
 function render(){const v=vals(),t=total();
   const put=(k,val)=>document.querySelectorAll(`#doc [data-f="${k}"]`).forEach(el=>{el.textContent=val||BLANK;el.classList.toggle('blank',!val)});
   ['no','cName','cCr','cEst','cAddr','cRep','cRepTitle','cQid','cEmail','special'].forEach(k=>put(k,v[k]));
-  put('cPhone',v.cPhone?phone(v.cPhone):'');put('dateTxt',dmy(v.date));put('startTxt',dmy(v.start));put('daysTxt',v.days?String(num(v.days,1,720)):'');
+  put('cPhone',v.cPhone?phone(v.cPhone):'');put('rOtob',v.rOtob?phone(v.rOtob):'');put('kPhone',v.kPhone?phone(v.kPhone):'');['kName','kEmail'].forEach(k=>put(k,v[k]));
+  put('rMarkup',v.rMarkup?`${num(v.rMarkup,0,1000)}%`:'');put('rExcel',v.rExcel==='prep'?'تُعدّه الشركة مقابل 300 ر.ق إضافية · Prepared by the Company for an extra QAR 300':v.rExcel==='client'?'يسلّمه العميل · Provided by the Client':'');put('dateTxt',dmy(v.date));put('startTxt',dmy(v.start));put('daysTxt',v.days?String(num(v.days,1,720)):'');
   $('specialWrap').hidden=!v.special;
   const tb=$('aRows');tb.textContent='';
   rows.filter(r=>r.n||r.c).forEach((r,i)=>{const tr=document.createElement('tr');
@@ -72,7 +73,8 @@ function save(){try{sessionStorage.setItem(DRAFT,JSON.stringify({v:vals(),rows})
 
 function load(o){if(!o||typeof o!=='object')return;const c=o.client||o.v||{},map={name:'cName',cName:'cName',cr:'cCr',cCr:'cCr',estCard:'cEst',cEst:'cEst',address:'cAddr',cAddr:'cAddr',
     rep:'cRep',cRep:'cRep',repTitle:'cRepTitle',cRepTitle:'cRepTitle',qid:'cQid',cQid:'cQid',phone:'cPhone',cPhone:'cPhone',email:'cEmail',cEmail:'cEmail',
-    no:'no',date:'date',start:'start',days:'days',special:'special'};
+    no:'no',date:'date',start:'start',days:'days',special:'special',otob:'rOtob',rOtob:'rOtob',markup:'rMarkup',rMarkup:'rMarkup',excel:'rExcel',rExcel:'rExcel',
+    contactName:'kName',kName:'kName',contactEmail:'kEmail',kEmail:'kEmail',contactPhone:'kPhone',kPhone:'kPhone'};
   Object.entries(c).forEach(([k,v])=>{const n=map[k];if(n&&E[n]&&typeof v!=='object')E[n].value=str(v,n==='special'?1500:200)});
   const list=Array.isArray(o.items)?o.items:Array.isArray(o.rows)?o.rows:[];
   rows=list.slice(0,80).map(r=>({c:str(r.c||r.code,12),n:str(r.n||r.name,200),en:str(r.en,200),q:num(r.q||r.qty||1,1,100000),p:num(r.p!=null?r.p:r.price,0,10000000)})).filter(r=>r.c||r.n)}
@@ -109,6 +111,9 @@ $('iAdd').onclick=()=>{const c=calcItems(),it=SVC[ITEM.code]||{},ot=SVC[ITEM.out
   if(c.x)addRow({c:ITEM.outletCode,n:ot.n||'منفذ بيع إضافي بعد المنافذ الخمسة (لكل صنف في كل منفذ إضافي)',en:ot.en||'Extra sales outlet beyond the first 5',q:c.n*c.x,p:ITEM.outlet});
   else{rows=rows.filter(r=>r.c!==ITEM.outletCode);drawRows();render()}
   toast(EN?'Added to Annex (1)':'أُضيفت إلى الملحق رقم (1)')};
+// items Excel file: prepared by the Company adds a fixed QAR 300 line to Annex (1)
+const XL={c:'XLS-300',n:'إعداد ملف الأصناف Excel',en:'Preparing the items Excel file',q:1,p:300};
+E.rExcel.onchange=()=>{if(E.rExcel.value==='prep')addRow(Object.assign({},XL));else{rows=rows.filter(r=>r.c!==XL.c);drawRows();render()}};
 $('agree').onchange=render;
 $('doPrint').onclick=()=>{if(!E.cName.value.trim()){toast(EN?'Enter the client company name first':'أدخل اسم الشركة العميلة أولاً');E.cName.focus();return}
   if(!rows.some(r=>r.n||r.c)){toast(EN?'Add at least one service':'أضف خدمة واحدة على الأقل');return}render();window.print()};
