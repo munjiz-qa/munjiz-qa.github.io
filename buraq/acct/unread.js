@@ -5,7 +5,7 @@ const ms = (v) => (v ? (v.toMillis ? v.toMillis() : v.seconds ? v.seconds * 1000
 export function createUnread({ db, F, uid, side, max = 80, onChange }) {
   const KEY = `bq.seen.${side}.${uid}`;
   let seen = {}; try { seen = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) {}
-  const last = {}, subs = {}; let openId = null;
+  const last = {}, subs = {}, tries = {}; let openId = null, stopped = false, lastReqs = null;
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(seen)); } catch (e) {} };
   const fromOther = (m) => (side === "admin" ? m.fromAdmin !== true : m.fromAdmin === true);
   // المدير: الطلب «بانتظار ردك» ما دامت آخر رسالة من العميل. العميل: رد جديد من براق لم يفتحه بعد.
@@ -20,6 +20,7 @@ export function createUnread({ db, F, uid, side, max = 80, onChange }) {
     markSeen(id) { const m = last[id]; seen[id] = Math.max(Date.now(), m ? ms(m.at) : 0); save(); emit(); },
     setOpen(id) { openId = id; if (id) api.markSeen(id); else emit(); },
     sync(reqs) {
+      lastReqs = reqs;
       const want = new Set(reqs.slice(0, max).map((r) => r.id));
       for (const id of Object.keys(subs)) if (!want.has(id)) { subs[id](); delete subs[id]; delete last[id]; }
       for (const id of want) if (!subs[id]) {
@@ -31,11 +32,16 @@ export function createUnread({ db, F, uid, side, max = 80, onChange }) {
           if (fresh && !(id in seen)) { seen[id] = m ? ms(m.at) : Date.now(); save(); }
           if (id === openId && m) { seen[id] = Math.max(Date.now(), ms(m.at)); save(); }
           emit();
-        }, () => {});
+        }, () => {
+          // الطلب قد يُنشأ محلياً قبل اكتماله على الخادم فترفض القواعد القراءة لحظة: نعيد المحاولة بعد قليل
+          if (subs[id]) { subs[id](); delete subs[id]; }
+          const n = (tries[id] = (tries[id] || 0) + 1);
+          if (n <= 5 && !stopped) setTimeout(() => { if (!stopped && lastReqs) api.sync(lastReqs); }, 1200 * n);
+        });
       }
       initial = false; emit();
     },
-    stop() { Object.values(subs).forEach((u) => u()); for (const k in subs) delete subs[k]; },
+    stop() { stopped = true; Object.values(subs).forEach((u) => u()); for (const k in subs) delete subs[k]; },
   };
   return api;
 }

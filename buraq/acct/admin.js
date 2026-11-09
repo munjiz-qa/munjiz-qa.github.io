@@ -1,7 +1,7 @@
 // لوحة إدارة براق: صلاحيات كاملة على الطلبات والمستخدمين والخطط والكتالوج والمحتوى.
 import { printQuote } from "./quote.js?v=1";
 import { insightsHtml, INS_CSS } from "./insights.js?v=1";
-import { createUnread, titleBadge } from "./unread.js?v=1";
+import { createUnread, titleBadge } from "./unread.js?v=2";
 import { READY, auth, db, A, F, loadProfile, createUserAsAdmin } from "./fb.js";
 import { $, esc, fmtDate, normPhone, phoneHtml, money, STATUS, stBadge, TYPES, toast, errMsg } from "./ui.js";
 import { CATALOG, KIND, CONTENT } from "./seed.js?v=2";
