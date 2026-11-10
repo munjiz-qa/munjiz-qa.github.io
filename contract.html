@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@500;700&family=Tajawal:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="assets/style.css?v=20261105a">
-<link rel="stylesheet" href="assets/contract.css?v=20261023a">
+<link rel="stylesheet" href="assets/contract.css?v=20261110a">
 <script src="assets/theme.js?v=20261018w"></script>
 <script src="assets/pwa.js?v=20261101d" defer></script>
 </head>
@@ -45,6 +45,15 @@
       <label><span data-en="Representative QID / passport no.">رقم البطاقة الشخصية أو الجواز للممثل</span><input name="cQid" dir="ltr" maxlength="40"></label>
       <label><span data-en="Mobile">الجوال</span><input name="cPhone" dir="ltr" inputmode="tel" maxlength="20" placeholder="+974 XXXX XXXX"></label>
       <label><span data-en="Email">البريد الإلكتروني</span><input name="cEmail" dir="ltr" type="email" maxlength="120"></label>
+    </fieldset>
+
+    <fieldset><legend data-en="Contact person and item requirements">المسؤول عن التواصل ومتطلبات الأصناف</legend>
+      <label><span data-en="Contact person name">اسم المسؤول عن التواصل</span><input name="kName" maxlength="120"></label>
+      <label><span data-en="Contact person mobile">جوال المسؤول عن التواصل</span><input name="kPhone" dir="ltr" inputmode="tel" maxlength="20" placeholder="+974 XXXX XXXX"></label>
+      <label><span data-en="Contact person email">بريد المسؤول عن التواصل</span><input name="kEmail" dir="ltr" type="email" maxlength="120"></label>
+      <label><span data-en="Phone of the person in charge of the autobook or work card">هاتف المسؤول عن الأوتوب أو بطاقة العمل</span><input name="rOtob" dir="ltr" inputmode="tel" maxlength="20" placeholder="+974 XXXX XXXX"></label>
+      <label><span data-en="Markup percentage for all items (%)">نسبة الزيادة لكل الأصناف (%)</span><input name="rMarkup" type="number" min="0" max="1000" step="any" inputmode="decimal"></label>
+      <label><span data-en="Items Excel file">ملف الأصناف Excel</span><select name="rExcel"><option value="" data-en="Choose">اختر</option><option value="client" data-en="Provided by the client">يسلّمه العميل</option><option value="prep" data-en="Prepared by Munjiz (+ QAR 300)">يُعدّه منجز (+ 300 ر.ق)</option></select></label>
     </fieldset>
 
     <fieldset class="calc"><legend data-en="Item registration calculator">حاسبة تسجيل الأصناف</legend>
@@ -279,6 +288,13 @@
         <tr><td>نهائية · Final</td><td>عند استكمال الأعمال وقبل التسليم · On completion, before hand-over</td><td class="num">25%</td><td class="num" id="p3"></td></tr>
       </tbody></table></div>
     <p class="sm mute" id="calcNote"></p>
+    <h3 class="req-h"><span lang="ar">متطلبات بدء العمل من العميل</span> · <span lang="en" dir="ltr">Client deliverables to start work</span></h3>
+    <div class="tblwrap"><table class="atbl req"><tbody>
+      <tr><th>المسؤول عن التواصل<br><small>Contact person</small></th><td><b data-f="kName"></b> · <span dir="ltr" data-f="kPhone"></span> · <span dir="ltr" data-f="kEmail"></span></td></tr>
+      <tr><th>هاتف المسؤول عن الأوتوب أو بطاقة العمل<br><small>Autobook / work card contact phone</small></th><td dir="ltr" data-f="rOtob"></td></tr>
+      <tr><th>نسبة الزيادة لكل الأصناف<br><small>Markup percentage for all items</small></th><td dir="ltr" data-f="rMarkup"></td></tr>
+      <tr><th>ملف الأصناف Excel<br><small>Items Excel file</small></th><td data-f="rExcel"></td></tr>
+    </tbody></table></div>
   </section>
 
   <section class="sigs">
@@ -302,5 +318,5 @@
 <script src="assets/data.js?v=20261024j"></script>
 <script src="assets/details.js?v=20261024i"></script>
 <script src="assets/catalog.js?v=20261024i"></script>
-<script src="assets/contract.js?v=20261102n"></script>
+<script src="assets/contract.js?v=20261110a"></script>
 </body></html>

@@ -71,6 +71,12 @@ const DOCX = mkZip([["[Content_Types].xml", "<Types/>"], ["word/document.xml", "
     await login("admin", A); ok((await p.textContent("h1.pg")).includes("المدير الشامل"), "دخول المدير الشامل");
     const tA = await p.$$eval("nav.tabs a", a => a.length); ok(tA === 9, "قائمة المدير 9 أقسام"); await shot("admin-home"); ok(!(await overflow()), "لا تمرير أفقي (مدير)");
     ok((await p.textContent("main")).includes("العميل الافتراضي"), "المدير يرى العميل وحالته في اللوحة");
+    // إتاحة النوافذ المنبثقة: عنوان للقارئات الصوتية، وTab يبقى داخلها، وEsc يغلقها ويعيد التركيز للزر
+    await p.goto(BASE + "#users"); await p.waitForSelector("#nu"); await p.focus("#nu"); await p.click("#nu");
+    ok(!!(await p.getAttribute(".modal [role=dialog]", "aria-labelledby")), "النافذة المنبثقة لها عنوان للقارئات الصوتية");
+    let inside = true; for (let i = 0; i < 40; i++) { await p.keyboard.press("Tab"); if (!(await p.evaluate(() => !!document.activeElement.closest(".modal [role=dialog]")))) { inside = false; break; } }
+    ok(inside, "التنقل بـ Tab يبقى داخل النافذة المنبثقة");
+    await p.keyboard.press("Escape"); ok((await p.$$(".modal")).length === 0 && (await p.evaluate(() => document.activeElement.id)) === "nu", "Esc يغلق النافذة ويعيد التركيز إلى زر فتحها");
     await p.goto(BASE + "#users"); await p.waitForSelector("#nu"); await p.click("#nu"); await p.fill("[name=name]", "شركة النور"); await p.fill("[name=user]", "alnoor"); await p.fill("[name=phone]", "0097455001234"); await p.click("#gp"); const npw = await p.inputValue("[name=pw]"); await p.click("#us"); await p.waitForTimeout(600);
     ok((await p.textContent("main")).includes("alnoor") && (await p.textContent("main")).includes("+974 5500 1234"), "المدير ينشئ عميلاً جديداً"); await shot("admin-users");
     await p.goto(BASE + "#reports?uid=u2"); await p.waitForSelector(".banner"); ok((await p.$$("details.rep")).length >= 2, "المدير يرى تقارير العميل");
