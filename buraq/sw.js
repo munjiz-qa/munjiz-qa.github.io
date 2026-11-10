@@ -1,7 +1,7 @@
 // براق · عامل الخدمة: يجعل الموقع قابلاً للتثبيت كتطبيق ويفتح دون اتصال بعد أول زيارة.
 // الشبكة أولاً للصفحات والسكربتات (لا تظهر نسخة قديمة وأنت متصل)، والنسخة المحفوظة عند انقطاع الإنترنت فقط.
 // لا يلمس Firebase ولا واجهات الصرف والموقع الجغرافي إطلاقاً.
-const CACHE = 'buraq-v20261106b';
+const CACHE = 'buraq-v20261110a';
 const CORE = ['./', 'index.html', 'account.html', 'admin.html', 'manifest.webmanifest',
   'app/icon.svg', 'app/icon-192.png', 'app/icon-512.png', 'app/maskable-512.png', 'app/apple-touch-icon.png', 'app/pwa.js?v=1',
   'ux/ux.css?v=3', 'ux/ux.js?v=3', 'ux/share.js?v=1', 'acct/cur.js?v=2', 'acct/acct.css?v=3', 'acct/hook.js?v=4',
