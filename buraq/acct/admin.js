@@ -23,7 +23,7 @@ $("logout").onclick = () => A.signOut(auth);
 
 A.onAuthStateChanged(auth, async (user) => {
   unsub.forEach((u) => u()); unsub = [];
-  if (!user) { $("dash").hidden = true; $("auth").hidden = false; $("logout").hidden = true; $("whoName").textContent = ""; return; }
+  if (!user) { $("dash").hidden = true; $("auth").hidden = false; $("logout").hidden = true; if ($("notifyBtn")) $("notifyBtn").hidden = true; $("whoName").textContent = ""; return; }
   try { ME = await loadProfile(user); } catch (err) { showErr("loginErr", errMsg(err)); return; }
   if (ME.role !== "admin" || ME.disabled) {
     await A.signOut(auth);
@@ -35,12 +35,33 @@ A.onAuthStateChanged(auth, async (user) => {
 });
 
 const byDate = (a, b) => (b.createdAt?.seconds || 9e9) - (a.createdAt?.seconds || 9e9);
+// تنبيهات المتصفح (اختيارية): طلب جديد أو رسالة عميل بانتظار الرد، حين تكون الصفحة في الخلفية.
+// الحالة الأولية بعد الدخول تُعدّ معلومة سابقة فلا تُنبَّه، وكل تنبيه يظهر مرة واحدة فقط.
+const NOTE = typeof Notification !== "undefined";
+let noteBase = 0; const noted = new Set();
+function notifyNew() {
+  if (!NOTE || Notification.permission !== "granted" || !U) return;
+  const fresh = [];
+  REQS.filter((r) => r.status === "new").forEach((r) => fresh.push([`n:${r.id}`, `طلب جديد ${r.no}`, `${r.name || ""} · ${TYPES[r.type] || r.type}`]));
+  U.ids().forEach((id) => { const r = REQS.find((x) => x.id === id), m = U.lastOf(id); if (r && m) fresh.push([`m:${id}:${m.at && (m.at.seconds || m.at)}`, `رسالة من العميل · ${r.no}`, String(m.text || "").slice(0, 120)]); });
+  fresh.forEach(([k, t, b]) => {
+    if (noted.has(k)) return; noted.add(k);
+    if (Date.now() < noteBase || !document.hidden) return;
+    try { new Notification(t, { body: b, tag: k, icon: "app/icon-192.png", dir: "rtl", lang: "ar" }); } catch (e) {}
+  });
+}
+function noteBtn() {
+  const b = $("notifyBtn"); if (!b) return;
+  b.hidden = !NOTE || Notification.permission !== "default";
+  b.onclick = async () => { try { await Notification.requestPermission(); } catch (e) {} noteBase = Date.now() + 4000; b.hidden = Notification.permission !== "default"; if (Notification.permission === "granted") toast("فُعّلت تنبيهات المتصفح للطلبات والرسائل الجديدة."); };
+}
 function watch() {
+  noteBase = Date.now() + 5000; noteBtn();
   const live = (name, set) => unsub.push(F.onSnapshot(F.collection(db, name), (s) => { set(s.docs.map((d) => ({ id: d.id, ...d.data() }))); render(); }, (e) => toast(errMsg(e), true)));
   live("users", (v) => (USERS = v.sort(byDate)));
-  U = createUnread({ db, F, uid: ME.id, side: "admin", onChange: () => { renderOv(); renderReqs(); titleBadge(U.count()); } });
+  U = createUnread({ db, F, uid: ME.id, side: "admin", onChange: () => { renderOv(); renderReqs(); titleBadge(U.count()); notifyNew(); } });
   unsub.push(() => { U.stop(); titleBadge(0); });
-  live("requests", (v) => { REQS = v.sort(byDate); U.sync(REQS.filter((r) => !["done", "cancelled"].includes(r.status))); });
+  live("requests", (v) => { REQS = v.sort(byDate); notifyNew(); U.sync(REQS.filter((r) => !["done", "cancelled"].includes(r.status))); });
   live("plans", (v) => (PLANS = v.sort(byDate)));
   live("catalog", (v) => (CAT = v.sort((a, b) => (a.order ?? 999) - (b.order ?? 999))));
   loadContent();
