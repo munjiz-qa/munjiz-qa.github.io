@@ -45,7 +45,7 @@
 .pwi-bar .pwi-t b{font-size:.95rem;font-weight:700}.pwi-bar .pwi-t small{font-size:.78rem;opacity:.9}
 .pwi-go{flex:none;font:inherit;font-weight:700;font-size:.95rem;border:0;border-radius:10px;padding:8px 18px;background:#fff;color:var(--pwi-c);cursor:pointer;min-height:40px}
 .pwi-x{flex:none;font:inherit;font-size:1.4rem;line-height:1;background:none;border:0;color:inherit;opacity:.85;cursor:pointer;padding:4px 6px;min-width:32px;min-height:40px}
-.pwi-pill{position:fixed;z-index:2147483000;inset-inline-start:18px;bottom:18px;display:none;align-items:center;gap:8px;font:inherit;font-weight:700;font-size:.95rem;border:0;border-radius:999px;padding:11px 18px 11px 14px;background:var(--pwi-c);color:#fff;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.pwi-pill{position:fixed;z-index:2147483000;inset-inline-end:18px;bottom:18px;display:none;align-items:center;gap:8px;font:inherit;font-weight:700;font-size:.95rem;border:0;border-radius:999px;padding:11px 18px 11px 14px;background:var(--pwi-c);color:#fff;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.25)}
 .pwi-pill svg,.pwi-go svg{width:20px;height:20px;flex:none}
 @media (max-width:760px){.pwi-on .pwi-bar{display:block}}
 @media (min-width:761px){.pwi-on .pwi-pill{display:inline-flex}}
