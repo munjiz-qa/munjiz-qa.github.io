@@ -8,8 +8,6 @@ const BASE=SRC?SRC.replace(/[^/]*$/,''):'assets/';
 const CFG=window.MUNJIZ_CONFIG||{};
 const CO={ar:'منجز لخدمات الأعمال ذ.م.م',en:'Munjiz Business Services LLC',city_ar:'لوسيل، قطر',city_en:'Lusail, Qatar',cr:'',
   phone:CFG.PHONE||'+974 5160 0498',email:CFG.EMAIL||'munijizqa@gmail.com',web:'munjiz-qa.github.io'};
-const EXEC={ar:'أحمد صلاح',en:'Ahmed Salah',tAr:'المدير التنفيذي',tEn:'Chief Executive Officer'};
-const SIGSVG=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80" width="124" height="50"><g fill="none" stroke="#14306e" stroke-linecap="round" stroke-linejoin="round"><path stroke-width="2.6" d="M46 10 C44 26 42 44 40 66 M40 62 C56 66 82 58 80 46 C78 36 56 38 46 38 C70 36 86 26 76 18 C68 10 52 10 44 14"/><path stroke-width="1.8" d="M80 44 C96 52 104 36 118 40 C128 43 134 52 148 44 C154 40 158 46 164 42"/><path stroke-width="1.9" d="M18 71 C60 63 120 66 186 60"/></g></svg>`;
 const C1='#7a1e3a',C2='#b8923a',INK='#1d252c',MUTE='#5b6670',LINE='#dfe5e2';
 const T={
   ar:{title:'عرض سعر',prelim:'عرض سعر مبدئي',no:'رقم العرض',date:'تاريخ الإصدار',valid:'صالح حتى',to:'مقدَّم إلى',from:'مقدَّم من',
@@ -25,9 +23,6 @@ const T={
     tValid:n=>`هذا العرض صالح لمدة ${n} يوماً من تاريخ إصداره.`,
     req:'متطلبات بدء العمل من العميل',reqs:['اسم المسؤول عن التواصل وبريده وجواله.','هاتف المسؤول عن الأوتوب أو بطاقة العمل.','نسبة الزيادة المطلوبة لكل الأصناف.','ملف الأصناف Excel، أو إعداده من منجز مقابل 300 ر.ق إضافية.'],
     accept:'اعتماد العميل',aName:'الاسم',aSign:'التوقيع',aDate:'التاريخ',for:'عن منجز لخدمات الأعمال',stampName:'منجز لخدمات الأعمال ذ.م.م',stampCity:'لوسيل · قطر',est:'تأسست 2026',
-    req:'متطلبات العمل: يقدّم العميل هاتف الشخص المسؤول عن الأوتوب، أو يسلّم بطاقة العمل الخاصة بالدخول على النظام، ويرسل نسبة الزيادة المطلوبة لكل الأصناف.',
-    itemsF:'ملف الأصناف: يرسل العميل ملف الأصناف (Excel) إن أمكن، وإن لم يتوفر يعدّه فريق الشركة مقابل مبلغ إضافي 300 ر.ق، لا يدخل في إجمالي العرض.',
-    contact:'الشخص المسؤول عن التواصل',cN:'الاسم',cM:'الجوال',cE:'البريد',cTitle:'الصفة',sigL:'التوقيع',
     page:(i,n)=>`صفحة ${i} من ${n}`},
   en:{title:'Quotation',prelim:'Preliminary quotation',no:'Quote no.',date:'Issue date',valid:'Valid until',to:'Prepared for',from:'Prepared by',
     co:'Company',phone:'Mobile',email:'Email',cr:'C.R. No.',
@@ -42,9 +37,6 @@ const T={
     tValid:n=>`This quotation is valid for ${n} days from its issue date.`,
     req:'What we need from the client to start',reqs:['Contact person: name, email and mobile.','Phone of the person in charge of the autobook or work card.','Markup percentage for all items.','Items Excel file, or Munjiz prepares it for an extra QAR 300.'],
     accept:'Client approval',aName:'Name',aSign:'Signature',aDate:'Date',for:'For Munjiz Business Services',stampName:'MUNJIZ BUSINESS SERVICES',stampCity:'LUSAIL · QATAR',est:'EST. 2026',
-    req:'Work requirements: the client provides the phone number of the person responsible for the OTP, or hands over the work card used to access the system, and sends the requested increase percentage for all items.',
-    itemsF:'Items file: the client sends the items file (Excel) if possible; if unavailable, the Company team prepares it for an additional QAR 300, not included in the offer total.',
-    contact:'Contact person',cN:'Name',cM:'Mobile',cE:'Email',cTitle:'Title',sigL:'Signature',
     page:(i,n)=>`Page ${i} of ${n}`}};
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fmt=n=>(Math.round((Number(n)||0)*100)/100).toLocaleString('en-US');
@@ -89,9 +81,7 @@ const CSS=`
 .bq-sec h3{margin:0 0 4px;font:700 13px/1.5 "Readex Pro","Tajawal",Tahoma,sans-serif;color:${C1}}
 .bq-li{display:flex;gap:8px;align-items:baseline;color:#36424c;font-size:12.3px;line-height:1.6}.bq-li i{flex:0 0 5px;width:5px;height:5px;border-radius:50%;background:${C2};transform:translateY(-2px)}
 .bq-sec p{margin:0;color:#36424c;font-size:12.5px;white-space:pre-line}
-.bq-sign{display:grid;direction:ltr;grid-template-columns:1fr 1fr;gap:24px;align-items:end;margin-top:auto;padding-top:6px}
-.bq-ct{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:#36424c;border:1px dashed #b9c4bf;border-radius:10px;padding:7px 12px}.bq-ct span b{color:${MUTE};font-weight:600}
-.bq-sg{display:block;height:50px;margin:2px 0 0}
+.bq-sign{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:end;margin-top:auto;padding-top:6px}
 .bq-acc{border:1px dashed #b9c4bf;border-radius:10px;padding:8px 14px;font-size:12.5px}
 .bq-acc h3{margin:0 0 6px;font:700 12.5px/1.5 "Readex Pro","Tajawal",Tahoma,sans-serif;color:${C1}}
 .bq-acc div{display:flex;gap:8px;padding:3px 0;border-bottom:1px dotted #c7cfcb}.bq-acc div:last-child{border:0}
@@ -116,7 +106,7 @@ function totals(d){const fees=(d.lines||[]).reduce((a,l)=>a+(+l.p||0)*(Math.max(
   return {fees:Math.round(fees*100)/100,gov,grand:Math.round((fees+gov)*100)/100,from:(d.lines||[]).some(l=>l.from)}}
 function html(d){const en=d.lang==='en',t=T[en?'en':'ar'],c=d.client||{},s=totals(d),cur=t.cur,F=s.from?t.fromP+' ':'';
   const lines=d.lines||[],custom=(d.custom||[]).filter(Boolean);
-  const terms=[t.tCur,s.gov?t.tGovIn:t.tGovOut,...(s.from?[t.tFrom]:[]),t.tStart,...(d.prelim?[]:[t.req]),...(!d.prelim&&lines.some(l=>/^MC-/.test(l.c||''))?[t.itemsF]:[]),...(d.prelim?[t.tPrelim]:[]),t.tValid(d.validDays||14)];
+  const terms=[t.tCur,s.gov?t.tGovIn:t.tGovOut,...(s.from?[t.tFrom]:[]),t.tStart,...(d.prelim?[t.tPrelim]:[]),t.tValid(d.validDays||14)];
   return `<div class="bq-doc" dir="${en?'ltr':'rtl'}" lang="${en?'en':'ar'}">
   <div class="bq-head" data-brk><div class="bq-brand">${LOGO}<div><b>${esc(en?CO.en:CO.ar)}</b><small>${esc(en?CO.ar:CO.en)}</small><small>${CO.cr?t.cr+' '+ltr(CO.cr)+' · ':''}${esc(en?CO.city_en:CO.city_ar)}</small></div></div>
     <div class="bq-ttl"><h1>${d.prelim?t.prelim:t.title}</h1><table><tr><td>${t.no}</td><td>${ltr(d.no)}</td></tr><tr><td>${t.date}</td><td>${ltr(d.date)}</td></tr>${d.validUntil?`<tr><td>${t.valid}</td><td>${ltr(d.validUntil)}</td></tr>`:''}</table></div></div>
@@ -132,10 +122,9 @@ function html(d){const en=d.lang==='en',t=T[en?'en':'ar'],c=d.client||{},s=total
   ${d.notes?`<div class="bq-sec" data-brk><h3>${t.notes}</h3><p dir="auto">${esc(d.notes)}</p></div>`:''}
   <div class="bq-sec" data-brk><h3>${t.req}</h3>${t.reqs.map(li).join('')}</div>
   <div class="bq-sec" data-brk><h3>${t.terms}</h3>${terms.map(li).join('')}</div>
-  ${d.prelim?'':`<div class="bq-sec" data-brk><h3>${t.contact}</h3><div class="bq-ct"><span><b>${t.cN}:</b> ${esc(c.contact||c.name||'')||'.................'}</span><span><b>${t.cM}:</b> ${c.phone?ltr(c.phone):'.................'}</span><span><b>${t.cE}:</b> ${c.email?ltr(c.email):'.................'}</span></div></div>`}
   <div class="bq-sign" data-brk>
-    ${d.prelim?'<div></div>':`<div class="bq-acc" style="direction:${en?'ltr':'rtl'}"><h3>${t.accept}</h3><div><span>${t.aName}</span></div><div><span>${t.aSign}</span></div><div><span>${t.aDate}</span></div></div>`}
-    <div class="bq-st" style="direction:${en?'ltr':'rtl'}"><div><b>${t.for}</b>${d.prelim?'':`<span class="bq-ln">${t.aName}: <b style="display:inline">${esc(en?EXEC.en:EXEC.ar)}</b></span><span class="bq-ln">${t.cTitle}: ${esc(en?EXEC.tEn:EXEC.tAr)}</span><span class="bq-sg">${SIGSVG}</span>`}</div>${stamp(t,en)}</div>
+    ${d.prelim?'<div></div>':`<div class="bq-acc"><h3>${t.accept}</h3><div><span>${t.aName}</span></div><div><span>${t.aSign}</span></div><div><span>${t.aDate}</span></div></div>`}
+    <div class="bq-st"><div><b>${t.for}</b>${d.prelim?'':`<span class="bq-ln">${t.aName}: ....................</span><span class="bq-ln">${t.aSign}: ....................</span>`}</div>${stamp(t,en)}</div>
   </div>
   <div class="bq-foot" data-brk>${esc(en?CO.en:CO.ar)} · ${CO.cr?t.cr+' '+ltr(CO.cr)+' · ':''}${ltr(CO.phone)} · ${ltr(CO.email)} · ${ltr(CO.web)}</div>
 </div>`}
