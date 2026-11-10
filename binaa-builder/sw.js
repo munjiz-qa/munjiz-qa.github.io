@@ -1,6 +1,6 @@
 /* بناء بيلدر app service worker: app shell offline, fonts cached, config and backend link network-first */
-const V = "mdk-3.2.1";
-const SHELL = ["./", "index.html", "manifest.webmanifest", "config.json", "icons/icon-192.png", "icons/icon-512.png"];
+const V = "mdk-3.2.2";
+const SHELL = ["./", "index.html", "manifest.webmanifest", "config.json", "icons/icon-192.png", "icons/icon-512.png", "pwa-install.js"];
 self.addEventListener("install", e => e.waitUntil(caches.open(V).then(c => c.addAll(SHELL))));
 self.addEventListener("activate", e => e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith("mdk-") && k !== V && k !== "mdk-fonts").map(k => caches.delete(k)))).then(() => self.clients.claim())));
 self.addEventListener("message", e => { if (e.data === "skip-waiting") self.skipWaiting(); });

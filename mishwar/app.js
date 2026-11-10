@@ -52,7 +52,7 @@
     news: 'M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M8 9h5M8 13h5', shield: 'M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z',
     ok: 'M5 12l5 5 9-10', warn: 'M12 3l9 16H3L12 3zm0 6v4m0 3v.01', rain: 'M7 16a4 4 0 0 1 0-8 5 5 0 0 1 9.6-1A4 4 0 0 1 17 16M8 19l-1 2m5-2l-1 2m5-2l-1 2',
     mail: 'M3 6h18v12H3zM3 7l9 6 9-6', phone: 'M5 4h4l2 5-3 2a11 11 0 0 0 5 5l2-3 5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2', wa: 'M4 20l1.5-4A8 8 0 1 1 8 18.5zM9 9c0 3 3 6 6 6l1-1.5-2-1-1 .8a5 5 0 0 1-2.3-2.3l.8-1-1-2z',
-    info: 'M12 8h.01M11 12h1v5h1M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z', star: 'M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z',
+    info: 'M12 8h.01M11 12h1v5h1M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z', layers: 'M12 3l9 5-9 5-9-5 9-5zM3 13l9 5 9-5M3 17l9 5 9-5', compass: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM15 9l-2 5-4 1 2-5z', star: 'M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z',
     sun: 'M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM12 1v2m0 18v2M4.2 4.2l1.4 1.4m12.8 12.8l1.4 1.4M1 12h2m18 0h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4',
     cloud: 'M7 18a4 4 0 0 1 0-8 5 5 0 0 1 9.6-1A4.5 4.5 0 0 1 17 18z', fog: 'M4 10h16M3 14h18M5 18h14M7 6h10', wind: 'M3 8h11a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h8',
     storm: 'M7 15a4 4 0 0 1 0-8 5 5 0 0 1 9.6-1A4 4 0 0 1 17 15M12 13l-2 4h3l-2 4'
@@ -94,12 +94,29 @@
     if (action) $('#toastAct').onclick = () => { el.hidden = true; action[1](); };
     clearTimeout(toastT); toastT = setTimeout(() => el.hidden = true, action ? 5000 : 2800);
   }
-  function say(t) {
-    if (!voice) return;
+  // user options (kept on this device)
+  const OPT = Object.assign({ mapType: 'std', view3d: true, headingUp: true, buildings: true, voiceMode: 'full', voiceName: '', rate: 1, route: 'fast', avoidHwy: false, avoidDirt: true, speedAlert: true, repAlert: true }, LS.get('opts', {}));
+  const saveOpt = () => LS.set('opts', OPT);
+  let VOICES = [];
+  async function listVoices() {
     const tts = PLUG().TextToSpeech;
-    if (tts) { try { tts.stop().catch(() => {}); tts.speak({ text: t, lang: 'ar-SA', rate: 1, pitch: 1, volume: 1, category: 'playback' }).catch(() => {}); } catch (e) {} return; }
+    if (tts && tts.getSupportedVoices) { try { const r = await tts.getSupportedVoices(); VOICES = (r.voices || []).map((v, i) => ({ id: String(i), name: v.name || v.voiceURI || ('صوت ' + (i + 1)), lang: v.lang || '' })).filter(v => /^ar/i.test(v.lang)); return VOICES; } catch (e) {} }
+    if ('speechSynthesis' in window) VOICES = speechSynthesis.getVoices().filter(v => /^ar/i.test(v.lang)).map(v => ({ id: v.name, name: v.name, lang: v.lang }));
+    return VOICES;
+  }
+  if ('speechSynthesis' in window) try { speechSynthesis.onvoiceschanged = () => listVoices(); } catch (e) {}
+  // kind: 'guide' for turn instructions, 'alert' for safety warnings (reports, speed, weather)
+  function say(t, kind) {
+    if (!voice || OPT.voiceMode === 'mute') return;
+    if (OPT.voiceMode === 'alerts' && kind !== 'alert') return;
+    const tts = PLUG().TextToSpeech;
+    if (tts) { try { tts.stop().catch(() => {}); const o = { text: t, lang: 'ar-SA', rate: OPT.rate, pitch: 1, volume: 1, category: 'playback' }; if (OPT.voiceName !== '' && !isNaN(+OPT.voiceName)) o.voice = +OPT.voiceName; tts.speak(o).catch(() => {}); } catch (e) {} return; }
     if (!('speechSynthesis' in window)) return;
-    try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'ar-SA'; const v = speechSynthesis.getVoices().find(v => /^ar/i.test(v.lang)); if (v) u.voice = v; speechSynthesis.speak(u); } catch (e) {}
+    try {
+      speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'ar-SA'; u.rate = OPT.rate;
+      const all = speechSynthesis.getVoices(), v = (OPT.voiceName && all.find(x => x.name === OPT.voiceName)) || all.find(x => /^ar/i.test(x.lang)); if (v) { u.voice = v; u.lang = v.lang; }
+      speechSynthesis.speak(u);
+    } catch (e) {}
   }
   function award(n, why) {
     me.pts += n; LS.set('me', me);
@@ -119,8 +136,17 @@
   }
 
   // ---------- data ----------
+  const MAPBASE = ON_SITE || (/^(localhost|127\.0\.0\.1)$/.test(location.hostname) && !NATIVE) ? '' : CFG.SITE;
+  let VECTOR = null;   // details of the full Qatar vector map when it is reachable
+  async function hasVectorMap() {
+    try {
+      const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 5000);
+      const r = await fetch(MAPBASE + 'map/info.json?t=' + Math.floor(Date.now() / 3600000), { signal: ctl.signal, cache: 'no-cache' }); clearTimeout(t);
+      if (!r.ok) return null; const j = await r.json(); return j && j.updated ? j : null;
+    } catch (e) { return null; }
+  }
   async function loadData(progress) {
-    const files = ['graph.bin', 'names.json', 'poi.json', 'land.json', 'bld.json'], out = {}; let done = 0;
+    const files = VECTOR ? ['graph.bin', 'names.json', 'poi.json'] : ['graph.bin', 'names.json', 'poi.json', 'land.json', 'bld.json'], out = {}; let done = 0;
     await Promise.all(files.map(async f => { const r = await fetch(D + f); if (!r.ok) throw new Error(f); out[f] = f.endsWith('.bin') ? await r.arrayBuffer() : await r.json(); progress(++done / files.length); }));
     return out;
   }
@@ -131,10 +157,12 @@
     const roads = [], labels = new Map();
     G.ways.forEach(w => {
       const n = G.names[w.nm] || ['', ''];
-      roads.push({ type: 'Feature', properties: { r: MSR.ROAD_RANK[w.cls], n: clean(n[0] || n[1]) }, geometry: { type: 'LineString', coordinates: Array.from(w.refs, r => [G.lon[r], G.lat[r]]) } });
+      if (!VECTOR) roads.push({ type: 'Feature', properties: { r: MSR.ROAD_RANK[w.cls], n: clean(n[0] || n[1]) }, geometry: { type: 'LineString', coordinates: Array.from(w.refs, r => [G.lon[r], G.lat[r]]) } });
       const nm = n[0] || n[1]; if (nm && !labels.has(nm)) { const m = w.refs[w.refs.length >> 1]; labels.set(nm, { name: nm, en: n[1], lat: G.lat[m], lon: G.lon[m] }); }
     });
     STREETS = [...labels.values()];
+    POI = raw['poi.json'].map(p => ({ lat: p[0], lon: p[1], ar: p[2], en: p[3], type: p[4], imp: p[5] }));
+    if (VECTOR) return { gov: GOV.map(g => ({ type: 'Feature', properties: { n: g[0] }, geometry: { type: 'Point', coordinates: [g[5], g[4]] } })) };
     const poly = (a, s) => { const r = []; for (let i = s; i < a.length; i += 2) r.push([a[i], a[i + 1]]); return r; };
     const bld = raw['bld.json'].map(b => ({ type: 'Feature', properties: { h: b[0] }, geometry: { type: 'Polygon', coordinates: [poly(b, 1)] } }));
     const land = [], muni = [];
@@ -144,7 +172,6 @@
       if (big) { let x = 0, y = 0; big.forEach(p => { x += p[0]; y += p[1]; }); muni.push({ type: 'Feature', properties: { n: m.n }, geometry: { type: 'Point', coordinates: [x / big.length, y / big.length] } }); }
     });
     const areas = raw['land.json'].areas.map(a => ({ type: 'Feature', properties: { k: a[0] }, geometry: { type: 'Polygon', coordinates: [poly(a, 1)] } }));
-    POI = raw['poi.json'].map(p => ({ lat: p[0], lon: p[1], ar: p[2], en: p[3], type: p[4], imp: p[5] }));
     const poiF = POI.filter(p => p.type !== 'منطقة').map(p => ({ type: 'Feature', properties: { n: clean(p.ar || p.en), i: p.imp }, geometry: { type: 'Point', coordinates: [p.lon, p.lat] } }));
     GOV.forEach(g => poiF.push({ type: 'Feature', properties: { n: g[0], i: 3, g: 1 }, geometry: { type: 'Point', coordinates: [g[5], g[4]] } }));
     const places = POI.filter(p => ['منطقة', 'حي', 'مدينة'].includes(p.type)).map(p => ({ type: 'Feature', properties: { n: (p.ar || p.en).replace(/\s*\(\d+\)/, '') }, geometry: { type: 'Point', coordinates: [p.lon, p.lat] } }));
@@ -185,7 +212,61 @@
       ]
     };
   }
+  // full Qatar map (OpenMapTiles schema) with Arabic names first
+  function vstyle(gj) {
+    const c = n => css(n) || '#888';
+    const NAME = ['coalesce', ['get', 'name:ar'], ['get', 'name'], ['get', 'name:latin'], ['get', 'name_en'], ''];
+    const halo = { 'text-halo-color': c('--m-halo'), 'text-halo-width': 1.6 };
+    const T = extra => Object.assign({ 'text-font': ['m'] }, extra);
+    const rw = (base) => ['interpolate', ['exponential', 1.5], ['zoom'], 6, base * 0.3, 10, base * 0.8, 14, base * 2.6, 18, base * 14];
+    const RC = ['match', ['get', 'class'], 'motorway', 3.2, 'trunk', 2.9, 'primary', 2.5, 'secondary', 2.1, 'tertiary', 1.7, 'minor', 1.1, 'service', 0.7, 0.5];
+    const width = add => ['interpolate', ['exponential', 1.5], ['zoom'], 7, ['+', ['*', RC, 0.25], add * 0.3], 10, ['+', ['*', RC, 0.8], add * 0.6], 14, ['+', ['*', RC, 2.4], add], 18, ['+', ['*', RC, 12], add * 1.6]];
+    const roadCls = ['motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'minor', 'service'];
+    const major = ['match', ['get', 'class'], ['motorway', 'trunk', 'primary'], 1, 0];
+    return {
+      version: 8, glyphs: 'mishwar://{fontstack}/{range}',
+      sources: {
+        omt: { type: 'vector', url: 'pmtiles://' + new URL(MAPBASE + 'map/qatar.pmtiles', location.href).href, attribution: '© OpenStreetMap' },
+        ...(VECTOR.land ? { qland: { type: 'geojson', data: new URL(MAPBASE + 'map/land.geojson?v=' + encodeURIComponent(VECTOR.updated), location.href).href, tolerance: 0.3 } } : {}),
+        gov: { type: 'geojson', data: FC(gj.gov) }, route: { type: 'geojson', data: FC([]) }, done: { type: 'geojson', data: FC([]) }, alt: { type: 'geojson', data: FC([]) }
+      },
+      layers: [
+        { id: 'v-bg', type: 'background', paint: { 'background-color': c(VECTOR.land ? '--m-sea' : '--m-land') } },
+        ...(VECTOR.land ? [{ id: 'v-land', type: 'fill', source: 'qland', paint: { 'fill-color': c('--m-land'), 'fill-antialias': false } }] : []),
+        { id: 'v-landcover', type: 'fill', source: 'omt', 'source-layer': 'landcover', filter: ['match', ['get', 'class'], ['grass', 'wood', 'farmland'], true, false], paint: { 'fill-color': c('--m-park'), 'fill-opacity': 0.7 } },
+        { id: 'v-sand', type: 'fill', source: 'omt', 'source-layer': 'landcover', filter: ['==', ['get', 'class'], 'sand'], paint: { 'fill-color': c('--m-sand'), 'fill-opacity': 0.6 } },
+        { id: 'v-park', type: 'fill', source: 'omt', 'source-layer': 'park', paint: { 'fill-color': c('--m-park'), 'fill-opacity': 0.8 } },
+        { id: 'v-landuse', type: 'fill', source: 'omt', 'source-layer': 'landuse', filter: ['match', ['get', 'class'], ['hospital', 'school', 'university', 'stadium', 'pitch', 'cemetery'], true, false], paint: { 'fill-color': c('--m-civic'), 'fill-opacity': 0.6 } },
+        { id: 'v-water', type: 'fill', source: 'omt', 'source-layer': 'water', paint: { 'fill-color': c('--m-sea') } },
+        { id: 'v-aeroway', type: 'line', source: 'omt', 'source-layer': 'aeroway', minzoom: 11, paint: { 'line-color': c('--m-casing'), 'line-width': ['interpolate', ['linear'], ['zoom'], 11, 2, 15, 18] } },
+        { id: 'v-path', type: 'line', source: 'omt', 'source-layer': 'transportation', minzoom: 15, filter: ['match', ['get', 'class'], ['path', 'track'], true, false], paint: { 'line-color': c('--m-casing'), 'line-width': 1.2, 'line-dasharray': [2, 1.5] } },
+        { id: 'v-road-case', type: 'line', source: 'omt', 'source-layer': 'transportation', minzoom: 11, filter: ['all', ['match', ['get', 'class'], roadCls, true, false], ['!=', ['get', 'brunnel'], 'tunnel']], layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': c('--m-casing'), 'line-width': width(1.6) } },
+        { id: 'v-road', type: 'line', source: 'omt', 'source-layer': 'transportation', filter: ['match', ['get', 'class'], roadCls, true, false], layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': ['case', ['==', major, 1], c('--m-major'), c('--m-road')], 'line-width': width(0), 'line-opacity': ['case', ['==', ['get', 'brunnel'], 'tunnel'], 0.55, 1] } },
+        { id: 'v-bld', type: 'fill-extrusion', source: 'omt', 'source-layer': 'building', minzoom: 13, paint: { 'fill-extrusion-color': c('--m-bld'), 'fill-extrusion-height': ['interpolate', ['linear'], ['zoom'], 13, 0, 14.5, ['coalesce', ['get', 'render_height'], 6]], 'fill-extrusion-base': ['coalesce', ['get', 'render_min_height'], 0], 'fill-extrusion-opacity': 0.88 } },
+        { id: 'alt', type: 'line', source: 'alt', layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': '#8a96a6', 'line-width': ['interpolate', ['linear'], ['zoom'], 10, 3, 16, 7], 'line-dasharray': [1.5, 1.2], 'line-opacity': .8 } },
+        { id: 'done', type: 'line', source: 'done', layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': '#9aa3b5', 'line-width': ['interpolate', ['linear'], ['zoom'], 10, 4, 16, 10], 'line-opacity': 0.7 } },
+        { id: 'route-case', type: 'line', source: 'route', layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': '#ffffff', 'line-width': ['interpolate', ['linear'], ['zoom'], 10, 7, 16, 15] } },
+        { id: 'route', type: 'line', source: 'route', layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': c('--m-route'), 'line-width': ['interpolate', ['linear'], ['zoom'], 10, 4.5, 16, 10] } },
+        { id: 'v-road-label', type: 'symbol', source: 'omt', 'source-layer': 'transportation_name', minzoom: 12, layout: T({ 'symbol-placement': 'line', 'text-field': NAME, 'text-size': ['interpolate', ['linear'], ['zoom'], 12, 10, 17, 14], 'symbol-spacing': 320, 'text-max-angle': 30 }), paint: Object.assign({ 'text-color': c('--m-label') }, halo) },
+        { id: 'v-water-label', type: 'symbol', source: 'omt', 'source-layer': 'water_name', layout: T({ 'text-field': NAME, 'text-size': 13, 'text-letter-spacing': 0.05 }), paint: { 'text-color': c('--m-water-label'), 'text-halo-color': c('--m-halo'), 'text-halo-width': 1.2 } },
+        { id: 'v-poi', type: 'symbol', source: 'omt', 'source-layer': 'poi', minzoom: 14, filter: ['any', ['<=', ['get', 'rank'], 12], ['>=', ['zoom'], 16]], layout: T({ 'text-field': NAME, 'text-size': 11, 'text-max-width': 9, 'text-optional': true, 'text-anchor': 'top', 'text-offset': [0, 0.6] }), paint: Object.assign({ 'text-color': c('--m-poi') }, halo) },
+        { id: 'v-place-minor', type: 'symbol', source: 'omt', 'source-layer': 'place', minzoom: 11, filter: ['match', ['get', 'class'], ['suburb', 'neighbourhood', 'quarter', 'hamlet', 'locality', 'isolated_dwelling'], true, false], layout: T({ 'text-field': NAME, 'text-size': ['interpolate', ['linear'], ['zoom'], 11, 11, 15, 14], 'text-max-width': 8 }), paint: Object.assign({ 'text-color': c('--ink2') }, halo) },
+        { id: 'v-place', type: 'symbol', source: 'omt', 'source-layer': 'place', filter: ['match', ['get', 'class'], ['city', 'town', 'village'], true, false], layout: T({ 'text-field': NAME, 'text-size': ['match', ['get', 'class'], 'city', 18, 'town', 15, 13], 'text-max-width': 8 }), paint: Object.assign({ 'text-color': c('--night') }, halo) },
+        { id: 'gov', type: 'circle', source: 'gov', minzoom: 11, paint: { 'circle-radius': 6, 'circle-color': '#0f2a3d', 'circle-stroke-color': '#fff', 'circle-stroke-width': 1.8 } },
+        { id: 'gov-label', type: 'symbol', source: 'gov', minzoom: 12, layout: T({ 'text-field': ['get', 'n'], 'text-size': 13, 'text-offset': [0, 1.1], 'text-anchor': 'top', 'text-max-width': 9 }), paint: Object.assign({ 'text-color': c('--night') }, halo) }
+      ]
+    };
+  }
   function recolor() {
+    if (VECTOR && map && map.isStyleLoaded()) {
+      const c = css, set = (l, p, v) => { try { map.setPaintProperty(l, p, v); } catch (e) {} };
+      set('v-bg', 'background-color', c(VECTOR.land ? '--m-sea' : '--m-land')); set('v-land', 'fill-color', c('--m-land')); set('v-water', 'fill-color', c('--m-sea')); set('v-park', 'fill-color', c('--m-park')); set('v-landcover', 'fill-color', c('--m-park'));
+      set('v-sand', 'fill-color', c('--m-sand')); set('v-landuse', 'fill-color', c('--m-civic')); set('v-road-case', 'line-color', c('--m-casing')); set('v-path', 'line-color', c('--m-casing')); set('v-aeroway', 'line-color', c('--m-casing'));
+      set('v-road', 'line-color', ['case', ['==', ['match', ['get', 'class'], ['motorway', 'trunk', 'primary'], 1, 0], 1], c('--m-major'), c('--m-road')]); set('v-bld', 'fill-extrusion-color', c('--m-bld')); set('route', 'line-color', c('--m-route'));
+      ['v-road-label', 'v-poi', 'v-place-minor', 'v-place', 'v-water-label', 'gov-label'].forEach(l => set(l, 'text-halo-color', c('--m-halo')));
+      set('v-road-label', 'text-color', c('--m-label')); set('v-poi', 'text-color', c('--m-poi')); set('v-place-minor', 'text-color', c('--ink2')); set('v-place', 'text-color', c('--night')); set('gov-label', 'text-color', c('--night')); set('v-water-label', 'text-color', c('--m-water-label'));
+      return;
+    }
     if (!map || !map.isStyleLoaded()) return;
     const c = css, set = (l, p, v) => { try { map.setPaintProperty(l, p, v); } catch (e) {} };
     set('sea', 'background-color', c('--m-sea')); set('land', 'fill-color', c('--m-land')); set('park', 'fill-color', c('--m-park')); set('water', 'fill-color', c('--m-water'));
@@ -209,7 +290,8 @@
   <div class="res" id="res" hidden></div>
 </div>
 <div class="ui rail" id="rail">
-  <button class="fab hide-nav" id="b3d" aria-label="تبديل العرض ثلاثي الأبعاد">3D</button>
+  <button class="fab" id="bOpt" aria-label="خيارات الخريطة والصوت والمسار">${svg(I.layers)}</button>
+  <button class="fab" id="b3d" aria-label="تبديل العرض ثلاثي الأبعاد">3D</button>
   <button class="fab" id="bLoc" aria-label="موقعي">${svg(I.loc)}</button>
   <a class="fab hide-nav" id="bStreet" target="_blank" rel="noopener" aria-label="عرض الشارع">${svg(I.street)}</a>
 </div>
@@ -217,6 +299,7 @@
 <section class="ui dock" id="dock" aria-label="لوحة مشوار"></section>
 <div class="ui banner" id="banner" hidden></div>
 <div class="ui ask" id="ask" hidden></div>
+<section class="ui opts" id="opts" hidden role="dialog" aria-label="الخيارات"></section>
 <button class="ui recenter" id="recenter" hidden>توسيط الخريطة</button>
 <div class="ui navbar" id="navbar" hidden></div>
 <div class="ui toast" id="toast" role="status" hidden></div>
@@ -314,7 +397,7 @@ ${NATIVE ? '' : `<a href="${CFG.SITE}download.html" ${ON_SITE ? '' : 'target="_b
     box.innerHTML = h; box.hidden = false;
   }
   function pick(btn) {
-    $('#res').hidden = true; $('#q').blur();
+    $('#res').hidden = true; $('#q').blur(); document.body.classList.remove('searching');
     if (btn.dataset.me) return locate(true);
     const p = { lat: +btn.dataset.la, lon: +btn.dataset.lo, label: btn.dataset.n };
     if (searchFor === 'start') { setFrom(p); searchFor = 'dest'; $('#q').placeholder = 'وين مشوارك اليوم؟'; dest ? plan() : map.flyTo({ center: [p.lon, p.lat], zoom: 15 }); }
@@ -350,14 +433,17 @@ ${NATIVE ? '' : `<a href="${CFG.SITE}download.html" ${ON_SITE ? '' : 'target="_b
     const A = profile(mode), s = MSR.nearest(G, A, start.lat, start.lon), t = MSR.nearest(G, A, dest.lat, dest.lon);
     if (!s || !t) return msgSheet('خارج نطاق الخريطة', 'الوجهة خارج نطاق الطرق المتوفرة حالياً.');
     const { pen, key } = penalties(A);
-    let r = MSR.route(G, A, s.node, t.node, pen.size ? pen : null), base = null;
+    const RO = { shortest: OPT.route === 'short', avoidHwy: mode === 'car' && OPT.avoidHwy, avoidDirt: OPT.avoidDirt };
+    let r = MSR.route(G, A, s, t, pen.size ? pen : null, RO), base = null;
     if (!r) return msgSheet('تعذّر إيجاد مسار', 'لا يوجد طريق متصل بين النقطتين لهذه الوسيلة، أو أن الطرق المؤدية مغلقة الآن. جرّب وسيلة أخرى.');
-    if (pen.size) { base = MSR.route(G, A, s.node, t.node); }
+    if (pen.size) { base = MSR.route(G, A, s, t, null, RO); }
     // time on the chosen route including penalties it passes through
     let penT = 0; const hitIds = new Set();
-    r.nodes.forEach(n => { const v = pen.get(n); if (v && v !== Infinity) penT += v; });
+    r.nodes.slice(1, -1).forEach(n => { const v = pen.get(n); if (v && v !== Infinity) penT += v; });
     activeReports().concat(official).forEach(x => { if (RT[x.type] && r.nodes.some(n => MSR.hav(x.lat, x.lon, G.lat[n], G.lon[n]) < (x.radius || RT[x.type][5]))) hitIds.add(x.id); });
-    r.coords = [[start.lon, start.lat]].concat(r.nodes.map(n => [G.lon[n], G.lat[n]]), [[dest.lon, dest.lat]]);
+    const sp = s.edge ? [[s.edge.lon, s.edge.lat]] : [], tp = t.edge ? [[t.edge.lon, t.edge.lat]] : [];
+    r.k0 = 1 + sp.length;   // index of the first network node inside coords
+    r.coords = [[start.lon, start.lat]].concat(sp, r.nodes.map(n => [G.lon[n], G.lat[n]]), tp, [[dest.lon, dest.lat]]);
     r.extra = s.dist + t.dist; r.total = r.dist + r.extra;
     const wf = weatherFactor();
     r.ttotal = (r.time - penT) * wf + penT + r.extra / 1.3;
@@ -370,7 +456,7 @@ ${NATIVE ? '' : `<a href="${CFG.SITE}download.html" ${ON_SITE ? '' : 'target="_b
     if (keepNav) return;
     const b = r.coords.reduce((bb, c) => [[Math.min(bb[0][0], c[0]), Math.min(bb[0][1], c[1])], [Math.max(bb[1][0], c[0]), Math.max(bb[1][1], c[1])]], [[180, 90], [-180, -90]]);
     const wide = innerWidth >= 900;
-    map.fitBounds(b, { padding: wide ? { top: 140, bottom: 60, left: 480, right: 80 } : { top: 170, bottom: Math.round(innerHeight * .45), left: 40, right: 70 }, pitch: is3d ? 40 : 0, duration: 900 });
+    map.fitBounds(b, { padding: wide ? { top: 140, bottom: 60, left: 480, right: 80 } : { top: 170, bottom: Math.round(innerHeight * .45), left: 40, right: 70 }, pitch: OPT.view3d ? 40 : 0, duration: 900 });
     routeSheet();
   }
   function govFor(p) { return GOV.find(g => Math.abs(g[4] - p.lat) < 1e-4 && Math.abs(g[5] - p.lon) < 1e-4); }
@@ -418,7 +504,7 @@ ${NATIVE ? '' : `<a href="${CFG.SITE}download.html" ${ON_SITE ? '' : 'target="_b
     }
     const l = c[c.length - 1]; return { lon: l[0], lat: l[1], seg: c.length - 2, brg: 0, end: 1 };
   }
-  function segEdge(i) { const ei = i - 1; return ei >= 0 && ei < R.edges.length ? R.edges[ei] : -1; }
+  function segEdge(i) { const ei = i - (R.k0 || 1); return ei >= 0 && ei < R.edges.length ? R.edges[ei] : -1; }
   function segSpeed(i) { const e = segEdge(i); if (e < 0) return mode === 'car' ? 4 : 1.4; const A = profile(mode); return A.len[e] / Math.max(A.cost[e], 0.1) / R.wf; }
   function segLimit(i) { if (mode !== 'car') return 0; const e = segEdge(i); if (e < 0) return 0; const w = G.ways[profile(mode).way[e]]; return w ? w.ms || 0 : 0; }
   // project a point on the route near the last known segment
@@ -439,10 +525,11 @@ ${NATIVE ? '' : `<a href="${CFG.SITE}download.html" ${ON_SITE ? '' : 'target="_b
     best.lon = c[best.i][0] + (c[best.i + 1][0] - c[best.i][0]) * best.t; best.lat = c[best.i][1] + (c[best.i + 1][1] - c[best.i][1]) * best.t;
     return best;
   }
+  const navPitch = () => OPT.view3d ? 60 : 0, navBrg = b => OPT.headingUp ? b : 0;
   function camZoom(v) { const k = v * 3.6; return mode !== 'car' ? 18 : k < 30 ? 17.4 : k < 70 ? 16.6 : 15.8; }
   function follow(lon, lat, brg, v, dur) {
     if (!nav || !nav.follow) return;
-    map.easeTo({ center: [lon, lat], bearing: brg, pitch: 60, zoom: camZoom(v || 0), duration: dur, offset: [0, Math.round(innerHeight * 0.18)], essential: true });
+    map.easeTo({ center: [lon, lat], bearing: navBrg(brg), pitch: navPitch(), zoom: camZoom(v || 0), duration: dur, offset: [0, Math.round(innerHeight * (OPT.view3d ? 0.18 : 0.08))], essential: true });
   }
   function firstLine() { let t = ST.list[0].text + (ST.list[1] ? '. ' + MSR.spoken(ST.list[1].at) + '، ' + ST.list[1].text : ''); const w = feed && feed.weather; if (w && w.warning && mode === 'car') t = 'تنبيه الطقس: ' + w.warning + '. ' + t; return t; }
   function startNav(resume, announce) {
@@ -455,7 +542,7 @@ ${NATIVE ? '' : `<a href="${CFG.SITE}download.html" ${ON_SITE ? '' : 'target="_b
     R.cumc = [0]; for (let i = 1; i < R.coords.length; i++) R.cumc.push(R.cumc[i - 1] + MSR.hav(R.coords[i - 1][1], R.coords[i - 1][0], R.coords[i][1], R.coords[i][0]));
     const c0 = R.coords[0], b0 = MSR.bearing(c0[1], c0[0], R.coords[1][1], R.coords[1][0]);
     carMk.setLngLat(c0).setRotation(b0).addTo(map); nav.brg = b0;
-    map.easeTo({ center: c0, zoom: 17, pitch: 60, bearing: b0, duration: 700, offset: [0, Math.round(innerHeight * 0.18)] });
+    map.easeTo({ center: c0, zoom: 17, pitch: navPitch(), bearing: navBrg(b0), duration: 700, offset: [0, Math.round(innerHeight * (OPT.view3d ? 0.18 : 0.08))] });
     $('#ask').hidden = true; navBar();
     if (announce === 'update') say('تم تحديث المسار'); else if (announce === 'first') say(firstLine());
     if (nav.kind === 'demo') { navUpdate(along(0)); nav.raf = requestAnimationFrame(tick); return; }
@@ -512,7 +599,7 @@ ${NATIVE ? '' : `<a href="${CFG.SITE}download.html" ${ON_SITE ? '' : 'target="_b
       if (was === 'gps' && lastFix) setFrom({ lat: lastFix.coords.latitude, lon: lastFix.coords.longitude, label: 'موقعي الحالي' });
       startMk.addTo(map); if (was === 'gps' && lastFix) plan(); else routeSheet();
     }
-    map.easeTo({ pitch: is3d ? 50 : 0, zoom: 14, bearing: 0, duration: 700, offset: [0, 0] });
+    map.easeTo({ pitch: OPT.view3d ? 50 : 0, zoom: 14, bearing: 0, duration: 700, offset: [0, 0] });
   }
   function tick(now) {
     if (!nav || nav.kind !== 'demo') return;
@@ -520,7 +607,7 @@ ${NATIVE ? '' : `<a href="${CFG.SITE}download.html" ${ON_SITE ? '' : 'target="_b
     const p0 = along(nav.d); nav.v = segSpeed(p0.seg); nav.d += nav.v * nav.pace * dt;
     const p = along(nav.d);
     carMk.setLngLat([p.lon, p.lat]); carMk.setRotation(p.brg);
-    if (nav.follow && (!nav.cam || now - nav.cam > 120)) { nav.cam = now; map.jumpTo({ center: [p.lon, p.lat], bearing: p.brg, pitch: 60, zoom: camZoom(nav.v), offset: [0, Math.round(innerHeight * 0.18)] }); }
+    if (nav.follow && (!nav.cam || now - nav.cam > 120)) { nav.cam = now; map.jumpTo({ center: [p.lon, p.lat], bearing: navBrg(p.brg), pitch: navPitch(), zoom: camZoom(nav.v), offset: [0, Math.round(innerHeight * (OPT.view3d ? 0.18 : 0.08))] }); }
     if (!nav.tr || now - nav.tr > 500) { nav.tr = now; trail(p); navUpdate(p); }
     if (!nav) return;
     if (p.end || nav.d >= R.total) return stopNav(true);
@@ -567,7 +654,7 @@ ${NATIVE ? '' : `<a href="${CFG.SITE}download.html" ${ON_SITE ? '' : 'target="_b
   function trail(p) { map.getSource('done').setData(FC([{ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: R.coords.slice(0, p.seg + 1).concat([[p.lon, p.lat]]) } }])); }
   function navUpdate(p) {
     if (!nav || nav.kind === 'wait') return;
-    const off0 = R.extra ? MSR.hav(R.coords[0][1], R.coords[0][0], R.coords[1][1], R.coords[1][0]) : 0, rd = nav.d - off0;
+    const off0 = R.cumc ? R.cumc[Math.min(R.k0 || 1, R.cumc.length - 1)] : 0, rd = nav.d - off0;
     const i = ST.list.findIndex(s => s.at > rd + 5), s = ST.list[i < 0 ? ST.list.length - 1 : i], nx = ST.list[i + 1], to = Math.max(0, s.at - rd);
     const b = $('#banner');
     b.innerHTML = `${svg(TURN[s.type] || TURN.straight, 2.4)}<div style="min-width:0"><div class="dist">${MSR.fmtDist(to)}</div><div class="txt">${E(s.text)}</div>${nx && nx.type !== 'arrive' ? `<div class="next">ثم ${E(nx.text)}</div>` : ''}</div>${nav.kind === 'demo' ? '<span class="demo-tag">معاينة</span>' : ''}`;
@@ -576,7 +663,7 @@ ${NATIVE ? '' : `<a href="${CFG.SITE}download.html" ${ON_SITE ? '' : 'target="_b
     th.forEach((t, k) => { if (to <= t && !nav.spoken[key + k] && (k ? true : to > th[1])) { nav.spoken[key + k] = 1; say((to > 50 ? MSR.spoken(to) + '، ' : '') + s.text); } });
     // speed limit of the current road
     nav.limit = segLimit(p.seg);
-    if (nav.limit && nav.v * 3.6 > nav.limit + 5 && nav.kind === 'gps') { if (!nav.overSaid || performance.now() - nav.overSaid > 60000) { nav.overSaid = performance.now(); say('انتبه، تجاوزت السرعة المحددة ' + nav.limit); } }
+    if (OPT.speedAlert && nav.limit && nav.v * 3.6 > nav.limit + 5 && nav.kind === 'gps') { if (!nav.overSaid || performance.now() - nav.overSaid > 60000) { nav.overSaid = performance.now(); say('انتبه، تجاوزت السرعة المحددة ' + nav.limit, 'alert'); } }
     // new reports or closures that touch the remaining route → reroute once per change
     const A = profile(mode), pk = penalties(A).key;
     if (pk !== penKey && (!nav.rc || performance.now() - nav.rc > 8000)) {
@@ -585,10 +672,10 @@ ${NATIVE ? '' : `<a href="${CFG.SITE}download.html" ${ON_SITE ? '' : 'target="_b
       if (R.nodes.slice(seg).some(n => pen.has(n))) return reroute(p, 'بلاغ جديد على طريقك، اخترنا طريقاً أسرع');
     }
     // ask about a report ahead (one question each)
-    const near = activeReports().concat(official).find(r => !nav.asked[r.id] && MSR.hav(p.lat, p.lon, r.lat, r.lon) < (mode === 'car' ? 300 : 90));
+    const near = OPT.repAlert && activeReports().concat(official).find(r => !nav.asked[r.id] && MSR.hav(p.lat, p.lon, r.lat, r.lon) < (mode === 'car' ? 300 : 90));
     if (near) {
       nav.asked[near.id] = 1; const t = RT[near.type], d = MSR.hav(p.lat, p.lon, near.lat, near.lon);
-      say('انتبه، ' + t[0] + ' ' + MSR.spoken(d));
+      if (OPT.repAlert) say('انتبه، ' + t[0] + ' ' + MSR.spoken(d), 'alert');
       const ask = $('#ask');
       ask.innerHTML = `<span class="rp" style="background:${t[1]}">${svg(t[2])}</span><p><b>${t[0]} بعد ${MSR.fmtDist(d)}</b>${near.official ? 'إعلان رسمي' : 'هل ما زال موجوداً؟'}</p>${near.official ? '' : `<button class="btn sm" data-vote="up" data-id="${E(near.id)}">نعم</button><button class="btn ghost sm" data-vote="down" data-id="${E(near.id)}">لا</button>`}`;
       ask.hidden = false; clearTimeout(nav.askT); nav.askT = setTimeout(() => ask.hidden = true, 12000);
@@ -607,6 +694,83 @@ ${NATIVE ? '' : `<a href="${CFG.SITE}download.html" ${ON_SITE ? '' : 'target="_b
 <button class="fab" data-act="voice" aria-label="${voice ? 'كتم الصوت' : 'تشغيل الصوت'}">${svg(voice ? I.vol : I.mute)}</button>
 <button class="btn coral sm" data-act="stop">إنهاء</button></div>`;
     $('#navbar').hidden = false;
+  }
+
+  // ---------- options: map type, view, voice, route ----------
+  const SAT_URL = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+  const G_FILL = ['v-land', 'v-landcover', 'v-sand', 'v-park', 'v-landuse', 'v-water', 'v-aeroway', 'land', 'park', 'water'];
+  const G_ROAD = ['v-road-case', 'v-road', 'v-path', 'road-case', 'road', 'road-path'];
+  const G_BLD = ['v-bld', 'bld'];
+  let forcedTheme = false;
+  function vis(ids, on) { ids.forEach(id => { if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', on ? 'visible' : 'none'); }); }
+  function ensureSat() {
+    if (map.getSource('sat')) return;
+    map.addSource('sat', { type: 'raster', tiles: [SAT_URL], tileSize: 256, maxzoom: 19, attribution: 'صور: Esri, Maxar, Earthstar Geographics' });
+    const first = map.getStyle().layers.find(l => l.type !== 'background');
+    map.addLayer({ id: 'sat', type: 'raster', source: 'sat', layout: { visibility: 'none' }, paint: { 'raster-fade-duration': 150 } }, first && first.id);
+  }
+  function applyMapType() {
+    if (!map || !map.isStyleLoaded()) return;
+    const t = OPT.mapType, sat = t === 'sat' || t === 'hybrid';
+    // night look: force the dark palette only while this choice is active
+    if (t === 'night') { document.documentElement.setAttribute('data-theme', 'dark'); forcedTheme = true; }
+    else if (forcedTheme) { document.documentElement.removeAttribute('data-theme'); forcedTheme = false; }
+    recolor();
+    if (sat) ensureSat();
+    if (map.getLayer('sat')) vis(['sat'], sat);
+    vis(G_FILL, !sat); vis(G_BLD, !sat && OPT.buildings); vis(G_ROAD, t !== 'sat');
+    if (sat) {
+      G_ROAD.forEach(id => { if (map.getLayer(id) && map.getLayer(id).type === 'line') try { map.setPaintProperty(id, 'line-opacity', id.includes('case') ? 0.35 : 0.6); } catch (e) {} });
+      map.getStyle().layers.filter(l => l.type === 'symbol').forEach(l => { try { map.setPaintProperty(l.id, 'text-color', '#ffffff'); map.setPaintProperty(l.id, 'text-halo-color', 'rgba(0,0,0,.8)'); } catch (e) {} });
+    } else {
+      G_ROAD.forEach(id => { if (map.getLayer(id) && map.getLayer(id).type === 'line') try { map.setPaintProperty(id, 'line-opacity', id === 'v-road' ? ['case', ['==', ['get', 'brunnel'], 'tunnel'], 0.55, 1] : 1); } catch (e) {} });
+    }
+    $('.attr').innerHTML = (sat ? 'صور: Esri, Maxar · ' : '') + '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>';
+  }
+  function applyView(animate) {
+    $('#b3d').textContent = OPT.view3d ? '3D' : '2D';
+    vis(G_BLD, OPT.buildings && OPT.mapType !== 'sat' && OPT.mapType !== 'hybrid');
+    if (nav) { const c = carMk.getLngLat(); nav.follow = true; $('#recenter').hidden = true; follow(c.lng, c.lat, nav.brg, nav.v, 500); }
+    else if (animate) map.easeTo({ pitch: OPT.view3d ? 55 : 0, bearing: OPT.view3d ? map.getBearing() : 0, duration: 600 });
+  }
+  function optsSheet() {
+    const seg = (key, items) => `<div class="seg" role="radiogroup">${items.map(([v, l, ic]) => `<button role="radio" aria-checked="${OPT[key] === v}" data-opt="${key}" data-v="${v}">${ic ? svg(ic) : ''}${l}</button>`).join('')}</div>`;
+    const sw = (key, l, sub) => `<label class="sw"><span><b>${l}</b>${sub ? `<small>${sub}</small>` : ''}</span><input type="checkbox" data-opt="${key}" ${OPT[key] ? 'checked' : ''}><i></i></label>`;
+    const types = [['std', 'عادية', 'linear-gradient(135deg,#f3efe6 0 55%,#f2cf86 55% 62%,#cfe1ea 62%)'], ['sat', 'قمر صناعي', 'linear-gradient(135deg,#3b4a2f,#6b6a4a 45%,#2e4f63)'], ['hybrid', 'هجين', 'linear-gradient(135deg,#3b4a2f 0 50%,#f2cf86 50% 56%,#2e4f63 56%)'], ['night', 'ليلية', 'linear-gradient(135deg,#13212f 0 55%,#8c6a2a 55% 62%,#081521 62%)']];
+    const vopts = ['<option value="">صوت الجهاز العربي الافتراضي</option>'].concat(VOICES.map(v => `<option value="${E(v.id)}" ${OPT.voiceName === v.id ? 'selected' : ''}>${E(v.name)} (${E(v.lang)})</option>`)).join('');
+    const o = $('#opts');
+    o.innerHTML = `<div class="opts-head"><h3>الخيارات</h3><button class="fab" data-oact="close" aria-label="إغلاق">${svg(I.close)}</button></div>
+<h4>نوع الخريطة</h4><div class="mtypes">${types.map(([v, l, bg]) => `<button data-opt="mapType" data-v="${v}" aria-pressed="${OPT.mapType === v}"><span style="background:${bg}"></span>${l}</button>`).join('')}</div>
+<h4>العرض</h4>${seg('view3d', [[true, 'ثلاثي الأبعاد', I.layers], [false, 'مسطح', I.gov]])}
+${seg('headingUp', [[true, 'باتجاه السير', I.car], [false, 'الشمال للأعلى', I.compass]])}
+${sw('buildings', 'المباني المجسّمة', 'تظهر بارتفاعاتها عند التكبير')}
+<h4>الصوت</h4>${seg('voiceMode', [['full', 'كل الإرشادات', I.vol], ['alerts', 'التنبيهات فقط', I.warn], ['mute', 'صامت', I.mute]])}
+<label class="fld"><span>صوت المرشد</span><select data-opt="voiceName">${vopts}</select></label>
+${seg('rate', [[0.85, 'هادئ'], [1, 'عادي'], [1.2, 'سريع']])}
+<button class="btn ghost sm" data-oact="test">${svg(I.vol)}جرّب الصوت</button>
+<h4>المسار</h4>${seg('route', [['fast', 'الأسرع', I.clock], ['short', 'الأقصر', I.street]])}
+${sw('avoidHwy', 'تجنّب الطرق السريعة', 'للسيارة فقط')}${sw('avoidDirt', 'تجنّب الطرق الترابية')}
+<h4>التنبيهات</h4>${sw('speedAlert', 'تنبيه تجاوز السرعة', 'يظهر حد السرعة ويُنبّه صوتياً عند تجاوزه')}${sw('repAlert', 'تنبيهات بلاغات الطريق', 'حوادث وإغلاقات وكاميرات أمامك')}
+<p class="note">${VECTOR ? 'خريطة قطر محدّثة بتاريخ ' + fmtDate(VECTOR.updated) + ' من OpenStreetMap.' : 'خريطة الدوحة الكبرى المضمّنة.'} صور القمر الصناعي من Esri.</p>`;
+    o.hidden = false;
+    if (!VOICES.length) listVoices().then(v => { if (v.length && !o.hidden) optsSheet(); });
+  }
+  function optClick(e) {
+    const a = e.target.closest('[data-oact],button[data-opt]'); if (!a) return;
+    if (a.dataset.oact === 'close') { $('#opts').hidden = true; return; }
+    if (a.dataset.oact === 'test') { const m = OPT.voiceMode; OPT.voiceMode = 'full'; say('بعد ٣٠٠ متر، انعطف يميناً إلى شارع الكورنيش'); OPT.voiceMode = m; return; }
+    const k = a.dataset.opt; let v = a.dataset.v; v = v === 'true' ? true : v === 'false' ? false : (!isNaN(+v) && k === 'rate') ? +v : v;
+    OPT[k] = v; saveOpt(); onOpt(k); optsSheet();
+  }
+  function optChange(e) {
+    const i = e.target; if (!i.dataset.opt) return;
+    OPT[i.dataset.opt] = i.type === 'checkbox' ? i.checked : i.value; saveOpt(); onOpt(i.dataset.opt);
+  }
+  function onOpt(k) {
+    if (k === 'mapType') applyMapType();
+    else if (k === 'view3d' || k === 'headingUp' || k === 'buildings') applyView(true);
+    else if (k === 'voiceMode') { voice = OPT.voiceMode !== 'mute'; LS.set('voice', voice); if (nav) navBar(); }
+    else if (k === 'route' || k === 'avoidHwy' || k === 'avoidDirt') { if (nav && nav.kind === 'gps' && nav.lastFix) reroute({ lat: nav.lastFix.coords.latitude, lon: nav.lastFix.coords.longitude }, 'تم تحديث المسار حسب اختيارك'); else if (R && !nav) plan(); }
   }
 
   // ---------- reports ----------
@@ -728,12 +892,15 @@ ${r.note ? `<p style="margin:8px 0 0">${E(r.note)}</p>` : ''}
 
   function wire() {
     const q = $('#q');
-    q.addEventListener('focus', () => results(q.value)); q.addEventListener('input', () => results(q.value));
+    q.addEventListener('focus', () => { document.body.classList.add('searching'); results(q.value); }); q.addEventListener('input', () => results(q.value));
+    q.addEventListener('blur', () => setTimeout(() => { if ($('#res').hidden) document.body.classList.remove('searching'); }, 300));
     q.addEventListener('keydown', e => { if (e.key === 'Enter') { const b = $('#res button[data-la]'); if (b) pick(b); } if (e.key === 'Escape') $('#res').hidden = true; });
     $('#fromBtn').addEventListener('click', () => { searchFor = 'start'; q.value = ''; q.placeholder = 'من أين تنطلق؟'; q.focus(); results(''); });
     $('#res').addEventListener('click', e => { const b = e.target.closest('button'); if (b) pick(b); });
     document.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => { mode = b.dataset.mode; LS.set('mode', mode); markModes(); if (dest && !nav) setTimeout(() => plan(), 20); }));
-    $('#b3d').addEventListener('click', () => { is3d = !is3d; $('#b3d').textContent = is3d ? '3D' : '2D'; map.easeTo({ pitch: is3d ? 55 : 0, duration: 600 }); });
+    $('#b3d').addEventListener('click', () => { OPT.view3d = !OPT.view3d; saveOpt(); applyView(true); });
+    $('#bOpt').addEventListener('click', () => { const o = $('#opts'); if (o.hidden) optsSheet(); else o.hidden = true; });
+    $('#opts').addEventListener('click', optClick); $('#opts').addEventListener('change', optChange);
     $('#bLoc').addEventListener('click', () => locate(false));
     $('#bRep').addEventListener('click', () => reportSheet());
     $('#markBtn').addEventListener('click', () => { if (R || nav) return; dockOpen = true; tab = 'about'; home(); });
@@ -758,7 +925,7 @@ ${r.note ? `<p style="margin:8px 0 0">${E(r.note)}</p>` : ''}
       else if (act === 'home') home();
       else if (act === 'back') R ? routeSheet() : home();
       else if (act === 'closeDock') $('#dock').hidden = true;
-      else if (act === 'voice') { voice = !voice; LS.set('voice', voice); if (!voice && 'speechSynthesis' in window) speechSynthesis.cancel(); navBar(); }
+      else if (act === 'voice') { voice = !voice; LS.set('voice', voice); OPT.voiceMode = voice ? (OPT.voiceMode === 'mute' ? 'full' : OPT.voiceMode) : 'mute'; saveOpt(); if (!voice) { try { speechSynthesis.cancel(); } catch (e) {} try { PLUG().TextToSpeech && PLUG().TextToSpeech.stop(); } catch (e) {} } navBar(); }
       else if (act === 'shareEta') { const t = etaText(); share('مشوار', t.text, t.link); }
       else if (act === 'invite') invite();
       else if (act === 'repHere') reportSheet({ lat: +a.dataset.la, lon: +a.dataset.lo });
@@ -787,6 +954,7 @@ ${r.note ? `<p style="margin:8px 0 0">${E(r.note)}</p>` : ''}
     shell(); markModes();
     const bar = $('#barI');
     try {
+      if (window.pmtiles) { VECTOR = await hasVectorMap(); if (VECTOR) maplibregl.addProtocol('pmtiles', new pmtiles.Protocol().tile); }
       const raw = await loadData(f => bar.style.width = Math.round(f * 85) + '%');
       G = MSR.parse(raw['graph.bin'], raw['names.json']);
       const gj = geo(raw);
@@ -794,7 +962,7 @@ ${r.note ? `<p style="margin:8px 0 0">${E(r.note)}</p>` : ''}
       const EMPTY = new Uint8Array([10, 7, 10, 1, 109, 18, 2, 48, 48]).buffer; // valid empty glyph set
       maplibregl.addProtocol('mishwar', async params => { const range = params.url.split('/').pop(); if (!HAVE.has(range)) return { data: EMPTY.slice(0) }; try { const r = await fetch(D + 'glyphs/' + range + '.pbf'); if (r.ok) return { data: await r.arrayBuffer() }; } catch (e) {} return { data: EMPTY.slice(0) }; });
       try { const pr = maplibregl.setRTLTextPlugin(new URL('vendor/rtl-text.js', location.href).href, false); if (pr && pr.catch) pr.catch(() => {}); } catch (e) {}
-      map = new maplibregl.Map({ container: 'map', style: style(gj), center: [51.522, 25.305], zoom: 12.4, pitch: 50, bearing: -12, maxBounds: [[50.6, 24.4], [52.0, 26.3]], attributionControl: false, maxPitch: 70 });
+      map = new maplibregl.Map({ container: 'map', style: VECTOR ? vstyle(gj) : style(gj), center: [51.522, 25.305], zoom: 12.4, pitch: 50, bearing: -12, maxBounds: [[50.4, 24.3], [52.0, 26.4]], minZoom: 7, attributionControl: false, maxPitch: 70 });
       const el = (cls, html) => { const d = document.createElement('div'); d.className = cls; d.innerHTML = html; return d; };
       startMk = new maplibregl.Marker({ element: el('me-dot', '') }); meMk = new maplibregl.Marker({ element: el('me-dot', '') });
       destMk = new maplibregl.Marker({ element: el('', '<svg viewBox="0 0 30 40" width="32" height="42"><path d="M15 39s13-14 13-24A13 13 0 0 0 2 15c0 10 13 24 13 24z" fill="#ef6a4c" stroke="#fff" stroke-width="2"/><circle cx="15" cy="15" r="5" fill="#fff"/></svg>'), anchor: 'bottom' });
@@ -803,7 +971,8 @@ ${r.note ? `<p style="margin:8px 0 0">${E(r.note)}</p>` : ''}
         bar.style.width = '100%'; setTimeout(() => $('#load').hidden = true, 200);
         const sv = LS.get('start', null); setFrom(sv && sv.label !== 'موقعي الحالي' ? sv : DEFAULT_START, false);
         autoLocate();
-        wire(); updStreet(); home(); syncReports(); loadFeed(); deepLink();
+        wire(); updStreet(); home(); syncReports(); loadFeed(); deepLink(); listVoices();
+        voice = OPT.voiceMode !== 'mute' && voice; applyMapType(); if (!OPT.view3d) map.jumpTo({ pitch: 0 }); applyView(false);
         setInterval(syncReports, 60000); setInterval(loadFeed, 10 * 60000); setInterval(() => { if (!R && !nav) home(); }, 60000);
         setTimeout(() => profile(mode), 300);
         window.__mishwarReady = true;
@@ -814,6 +983,6 @@ ${r.note ? `<p style="margin:8px 0 0">${E(r.note)}</p>` : ''}
       window.__mishwarErr = [String(e)];
     }
   }
-  window.MISHWAR = { state: () => ({ R, ST, nav, mode, start, dest, reports, official, feed, me }), setDest: p => setDest(p), plan: () => plan(), addReport: (t, at) => addReport(t, at), get map() { return map; } };
+  window.MISHWAR = { state: () => ({ R, ST, nav, mode, start, dest, reports, official, feed, me, vector: VECTOR }), setDest: p => setDest(p), plan: () => plan(), addReport: (t, at) => addReport(t, at), get map() { return map; } };
   boot();
 })();

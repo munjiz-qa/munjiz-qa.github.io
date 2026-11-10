@@ -425,8 +425,8 @@ html[dir=ltr] .np-grid .scard .sft{margin:0 0 0 auto}
   .hfoot{flex-direction:column;align-items:flex-start}
 }
 .drawer .mm{display:block}.mm>*+*{margin-top:14px}
-.path-grid>.scard:nth-child(5){flex-basis:100%;flex-direction:row;align-items:center}
-.path-grid>.scard:nth-child(5) .sft{margin:0 auto 0 0}html[dir=ltr] .path-grid>.scard:nth-child(5) .sft{margin:0 0 0 auto}
+.path-grid>.scard:nth-child(5):last-child{flex-basis:100%;flex-direction:row;align-items:center}
+.path-grid>.scard:nth-child(5):last-child .sft{margin:0 auto 0 0}html[dir=ltr] .path-grid>.scard:nth-child(5):last-child .sft{margin:0 0 0 auto}
 
 /* ---------- القصص القرآني الموسّع */
 .qstory{display:grid;gap:16px;margin:10px 0 6px}
@@ -627,3 +627,61 @@ html[dir=ltr] .adh-txt,html[dir=ltr] .adh-pre{text-align:right}
 .th-more{margin-top:6px;font-size:.82rem}
 .th-use{border-inline-start:3px solid var(--ok);background:var(--ok-soft);border-radius:0 10px 10px 0;padding:10px 14px}
 .th-use b{color:var(--ok)}.th-use p{margin:4px 0 0;line-height:1.85}
+
+/* ---------- التداوي بالقرآن (#ruqya) */
+.ruq-hero{background:linear-gradient(135deg,var(--ok-soft),var(--accent-soft))}
+.ruq-stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.ruq-stats>span{background:var(--sheet);border:1px solid var(--line);border-radius:999px;padding:4px 14px;font-size:.88rem}
+.ruq-stats b{color:var(--ok);font-size:1.05rem}
+.ruq-alert{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--bad);background:var(--bad-soft);border-radius:14px;padding:12px 16px}
+.ruq-alert svg{flex:0 0 26px;width:26px;height:26px;color:var(--bad);margin-top:2px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+.ruq-alert b{color:var(--bad)}.ruq-alert p{margin:4px 0 0;line-height:1.85}
+.ruq-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr));align-items:start}
+.ruq-ay,.ruq-h{border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:8px;min-width:0;scroll-margin-top:80px}
+.ruq-ay h3,.ruq-h h3{margin:0;font-size:1.05rem;color:var(--ok)}
+.ruq-note{margin:0;line-height:1.85;color:var(--ink)}
+.ruq-links{display:flex;flex-wrap:wrap;gap:8px}.ruq-links:empty{display:none}
+.ruq-links .btn{font-size:.82rem}
+.ruq-matn{margin:0;font-family:var(--f-quran);font-size:1.12rem;line-height:2.05;background:var(--saffron-soft);border-inline-start:3px solid var(--saffron);border-radius:0 10px 10px 0;padding:10px 14px;overflow-wrap:anywhere;text-align:right}
+html[dir=ltr] .ruq-matn{border-radius:10px 0 0 10px}
+.ruq-en{background:var(--accent-soft);border-radius:10px;padding:8px 12px}.ruq-en b{font-size:.8rem;color:var(--accent)}.ruq-en p{margin:4px 0 0;line-height:1.7;text-align:left}
+.ruq-tx,.ruq-gr{margin:0;font-size:.86rem;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline}
+.ruq-tx>span:first-child,.ruq-gr>span:first-child{color:var(--muted)}
+.ruq-badge{font-style:normal;background:var(--ok-soft);color:var(--ok);border-radius:999px;padding:1px 10px;font-weight:700}
+.ruq-dg{color:var(--muted);font-size:.82rem}
+.ruq-q{margin:0}.ruq-q .ruq-note{font-size:.85rem;color:var(--muted);margin-top:6px}
+.ruq-qen{margin:8px 0 0;line-height:1.7;font-size:.92rem;text-align:left}
+.ruq-list{margin:0;padding:0;list-style:none;counter-reset:r;display:grid;gap:10px}
+.ruq-list li{counter-increment:r;position:relative;padding:10px 14px;padding-inline-start:48px;border:1px solid var(--line);border-radius:12px}
+.ruq-list li::before{content:counter(r);position:absolute;inset-inline-start:12px;top:11px;width:26px;height:26px;border-radius:50%;background:var(--ok-soft);color:var(--ok);font-weight:700;font-size:.85rem;display:grid;place-items:center}
+.ruq-list b{display:block}.ruq-list p{margin:4px 0 0;line-height:1.85}
+.ruq-warn li::before{background:var(--bad-soft);color:var(--bad)}
+@media (max-width:640px){.ruq-ay,.ruq-h{padding:12px}.ruq-matn{font-size:1.02rem;padding:8px 10px}.ruq-alert{padding:10px 12px}.ruq-list li{padding-inline-start:44px}}
+@media print{.ruq-alert{border-color:#000}}
+
+.instbtn{width:auto;padding-inline:12px 14px;gap:6px;display:inline-flex;align-items:center;background:var(--accent);color:var(--accent-ink);border-color:transparent;font:inherit;font-size:.88rem;font-weight:600;white-space:nowrap}
+.instbtn[hidden]{display:none}
+.instbtn svg{stroke:currentColor}
+@media (max-width:760px){.instbtn{width:40px;padding:0;justify-content:center}.instbtn span{display:none}}
+.instsheet h2{margin:0 0 4px}.instsheet h3{margin:6px 0 2px;font-size:1rem}
+.in-head{display:flex;gap:14px;align-items:center}.in-head img{border-radius:16px;flex:none;box-shadow:var(--shadow)}
+.in-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.in-steps li{display:flex;gap:10px;align-items:flex-start;line-height:1.7}
+.in-n{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:.85rem}
+.in-more summary{cursor:pointer;color:var(--muted);margin-top:4px}
+
+/* التثبيت بضغطة: شريط بارز على الجوال، ومؤشر تجهيز العمل دون إنترنت */
+.instbar{display:none}
+@media (max-width:760px){
+  .instbar:not([hidden]){display:block;background:linear-gradient(90deg,var(--accent),color-mix(in srgb,var(--accent) 78%,#000));color:var(--accent-ink)}
+  .instbar .wrap{display:flex;align-items:center;gap:10px;padding-block:8px}
+  .instbar img{border-radius:10px;flex:none;background:#fff2}
+  .instbar .ib-t{flex:1;display:flex;flex-direction:column;line-height:1.35;min-width:0}
+  .instbar .ib-t b{font-size:.95rem}.instbar .ib-t small{opacity:.85;font-size:.78rem}
+  .instbar .btn{flex:none;background:#f3c06b;color:#1b1b1b;border-color:transparent;font-weight:700;padding:7px 16px}
+  .instbar .ib-x{flex:none;background:none;border:0;color:inherit;font-size:1.4rem;line-height:1;padding:4px 6px;cursor:pointer;opacity:.8}
+}
+.instbtn.ready{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 30%,transparent)}
+.offpill{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(76px + env(safe-area-inset-bottom));z-index:60;background:var(--ink,#1b1b1b);color:var(--bg,#fff);padding:8px 16px;border-radius:999px;font-size:.85rem;box-shadow:var(--shadow)}
+.offpill[hidden]{display:none}
+.in-apk{margin:4px 0 0}

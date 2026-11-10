@@ -1,7 +1,7 @@
 // معلم Teacher: عامل الخدمة لتثبيت المنصة على الجوال والكمبيوتر والعمل دون إنترنت.
 // يخدم ملفات /teacher/ وحدها. الشبكة أولاً دائماً، والنسخة المحفوظة تُستخدم فقط عند انقطاع الإنترنت.
-const CACHE = 'teacher-v20261103';
-const CORE = ['./', 'index.html', 'config.js', 'local.js', 'favicon.svg', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png'];
+const CACHE = 'teacher-v20261106';
+const CORE = ['./', 'index.html', 'config.js', 'local.js', 'favicon.svg', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'pwa-install.js'];
 const BASE = new URL('./', self.location).pathname;
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => Promise.all(CORE.map(u => c.add(u).catch(() => {})))).then(() => self.skipWaiting()));
