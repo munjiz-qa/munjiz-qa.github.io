@@ -150,7 +150,7 @@ function mpObserve() {
 function mpSetCur(p) {
   if (!$('#mpRoot')) return;
   const D = MPV.data, a = mpFirstAyah(p), lb = mpLabels(p);
-  MPV.cur = p; $('#mpPage').value = p; $('#mpInfo').textContent = `${lb.sur} · ${lb.juz}`;
+  MPV.cur = p; logReadPage(p); $('#mpPage').value = p; $('#mpInfo').textContent = `${lb.sur} · ${lb.juz}`;
   $('#mpSur').value = Q.ayat[a][0]; $('#mpJuz').value = D.j[a];
   let k = 0; for (let x = 0; x < D.q.length && D.pageOf[D.q[x]] <= p; x++) k = x; $('#mpHizb').value = (k >> 2) + 1;
   if (location.hash !== '#p' + p) history.replaceState(null, '', '#p' + p);

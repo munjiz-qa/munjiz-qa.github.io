@@ -953,6 +953,114 @@ html[dir=ltr] .ruq-matn{border-radius:10px 0 0 10px}
 .offpill[hidden]{display:none}
 .in-apk{margin:4px 0 0}
 
+/* ركن التفاسير وأسباب النزول */
+.tf-row{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-bottom:8px}
+.tf-row label{display:flex;flex-direction:column;gap:4px;font-size:.85rem;color:var(--muted);flex:1;min-width:8em}
+.tf-pick select,.tf-pick input{border:1px solid var(--line);background:var(--sheet,var(--bg));color:var(--ink);border-radius:10px;padding:0 10px;height:42px;font:inherit;font-size:1rem;min-width:0;box-sizing:border-box}
+.tf-row>input[type=search]{flex:1;min-width:12em}
+.tf-pick .btn{height:42px}
+.tf-ay{font-size:1.35em;line-height:2.1;margin:6px 0}
+.tf-tabs{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:4px;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.tf-tabs button{flex:none;white-space:nowrap}
+.tf-sec{margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.tf-sec h3{margin:0 0 2px}.tf-sec p,.tf-txt p{line-height:2;margin:.5em 0;font-size:1.02rem}
+.tf-hr{border:0;border-top:1px dashed var(--line);margin:10px 0}
+.tf-full{margin-top:6px}
+.tf-hit{display:flex;flex-direction:column;gap:2px;padding:10px 6px;border-bottom:1px solid var(--line);text-decoration:none;color:inherit}
+.tf-hit:hover{background:color-mix(in srgb,var(--accent,#1b2559) 8%,transparent)}
+.tf-hit small{color:var(--muted)}.tf-hit span{line-height:1.8;font-size:.95rem}
+.tf-types details{border:1px solid var(--line);border-radius:12px;padding:8px 12px;margin:8px 0}
+.tf-types summary{cursor:pointer;font-weight:700;display:flex;gap:8px;align-items:center;flex-wrap:wrap;min-height:34px}
+.tf-types p{line-height:1.9;margin:.4em 0}
+.tf-lvl{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:4px 0}.tf-lvl>span{color:var(--muted);font-size:.9rem}
+.tf-layer h3{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tf-bk{border:1px solid var(--line);border-radius:12px;padding:6px 12px;margin:8px 0}
+.tf-bk>summary{cursor:pointer;font-weight:700;min-height:36px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tf-bk>summary small{font-weight:400}
+.tf-load,.tf-bk>p,.tf-bk>.tf-hr{margin-top:6px}
+.tf-txt{max-height:60vh;overflow:auto}
+.tf-soon{opacity:.8;border-style:dashed}
+.tf-cmp{border-bottom:1px solid var(--line);padding:8px 0}.tf-cmp h4{margin:0 0 4px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.tf-cmp p{margin:0;line-height:1.9}
+.tf-sum{border-inline-start:4px solid var(--saffron);margin:10px 0}.tf-sum .tf-s{margin:4px 0 0;font-size:1.05rem;line-height:1.9}
+.tg{display:inline-block;border:1px solid var(--line);background:var(--sheet);border-radius:999px;padding:1px 10px;font-size:.8rem;margin-inline-end:6px}.tg b{color:var(--accent)}
+.tf-layer .pill-row .chip{white-space:normal;max-width:100%;overflow-wrap:anywhere}
+.k-from{display:inline-block;margin-inline-start:8px;padding:1px 10px;border-radius:99px;background:color-mix(in srgb,var(--kc) 14%,transparent);color:var(--kc);font-size:.78rem;font-weight:600;vertical-align:middle}
+.k-cta{align-self:flex-start;min-height:44px;font-size:1.05rem}
+/* وردي وتقدّمي وما الجديد */
+.pgrow{margin-top:10px}.wn-new{grid-column:1/-1;display:flex;gap:8px;align-items:center;padding:9px 14px;border:1px dashed var(--accent);border-radius:12px;background:var(--accent-soft);color:var(--accent);text-decoration:none;font-size:.9rem}.wn-new b{background:var(--accent);color:var(--accent-ink);border-radius:99px;padding:1px 9px;font-size:.78rem}
+.wbars{display:grid;grid-template-columns:repeat(14,minmax(0,1fr));gap:4px;align-items:end;height:130px;margin-top:6px}.wbar{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;font-size:.7rem;color:var(--muted)}.wbar i{display:block;width:100%;max-width:26px;min-height:2px;background:var(--line);border-radius:5px 5px 0 0}.wbar.met i{background:var(--ok)}.wbar b{font-weight:600;color:var(--ink)}.wbar span{white-space:nowrap;overflow:hidden;max-width:100%}
+.okmsg{color:var(--ok)}.errmsg{color:#b3261e}:root[data-theme="dark"] .errmsg{color:#ff9a90}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .errmsg{color:#ff9a90}}
+.wn-list{margin:0;padding-inline-start:1.2em;display:grid;gap:6px}.wnote{color:var(--muted);white-space:pre-wrap;overflow-wrap:anywhere}
+@media (max-width:640px){.wbars{gap:2px}}
+/* ===== أطلس القرآن: طبقات ومسارات ووسم الاجتهاد */
+.mlay{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mlay .chip{cursor:pointer;border:1px solid var(--line);background:var(--sheet);color:var(--muted)}
+.mlay .chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.mlay .field{flex:1 1 200px;min-width:160px;max-width:320px}
+.legend .rl{display:inline-block;width:22px;height:0;border-top:3px solid var(--accent);vertical-align:middle;margin-inline-end:4px}
+.legend .rl.j{border-top-style:dashed;border-color:var(--saffron)}
+.mapbox .route{fill:none;stroke:var(--accent);stroke-width:2.6;vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round;opacity:.85}
+.mapbox .rt.j .route{stroke:var(--saffron);stroke-dasharray:7 6}
+.mapbox .rhit{fill:none;stroke:transparent;stroke-width:16;vector-effect:non-scaling-stroke;cursor:pointer;pointer-events:stroke}
+.mapbox .rt.sel .route{stroke-width:4.4;opacity:1}
+.mapbox .rarr{fill:var(--accent)}
+.mapbox .pin.k-s circle{fill:var(--accent)}
+.mapbox .pin.k-h circle{fill:var(--ink)}
+.mapbox .pin.unsure circle{fill:var(--sheet)!important}
+.mapbox .pin.sel circle{fill:var(--accent)!important}
+.mp-ij{font-size:.7rem;padding:1px 7px}
+.row.ij .t{font-style:normal}
+.mp-why{border-inline-start:4px solid var(--saffron)}
+
+/* ===== الخط الزمني التفاعلي للقصص والحضارات */
+.tlq{max-width:1180px}
+.tlq-tools{display:flex;flex-direction:column;gap:10px}
+.tlq-sep{width:1px;height:22px;background:var(--line);margin:0 4px}
+.mlay .chip.l-p[aria-pressed="true"]{background:var(--accent);border-color:var(--accent)}
+.mlay .chip.l-q[aria-pressed="true"]{background:var(--saffron);border-color:var(--saffron);color:#201808}
+.mlay .chip.l-v[aria-pressed="true"]{background:#5b6b86;border-color:#5b6b86;color:#fff}
+.tlq-eras{display:flex;gap:6px;flex-wrap:wrap}
+.tlq-eras .chip{cursor:pointer}
+.tlq-era{position:relative;margin-top:8px;padding-top:6px}
+.tlq-era>header{display:flex;gap:12px;align-items:center;margin:14px 0 10px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+.tlq-era>header h2{margin:0;font-size:1.15rem}
+.tlq-era>header p{margin:2px 0 0}
+.tlq-en{flex:none;width:34px;height:34px;border-radius:50%;background:var(--saffron);color:#201808;display:grid;place-items:center;font-weight:700}
+.tlq-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:start}
+.tlq-col{display:flex;flex-direction:column;gap:10px}
+.tlq-col.p{grid-column:1}.tlq-col.q{grid-column:2}.tlq-col.v{grid-column:3}
+.tlq-card{background:var(--sheet);border:1px solid var(--line);border-inline-start:5px solid var(--accent);border-radius:var(--r);padding:10px 12px;display:flex;flex-direction:column;gap:6px;transition:box-shadow .2s}
+.tlq-card.q{border-inline-start-color:var(--saffron)}
+.tlq-card.v{border-inline-start-color:#5b6b86}
+.tlq-card.ij{background:repeating-linear-gradient(135deg,transparent 0 9px,color-mix(in srgb,var(--saffron) 9%,transparent) 9px 10px),var(--sheet)}
+.tlq-card.hl{box-shadow:0 0 0 3px var(--saffron)}
+.tlq-card>header{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.tlq-k{font-size:.72rem;color:var(--muted)}
+.tlq-c{font-size:.7rem;border-radius:999px;padding:1px 8px;border:1px solid var(--accent);color:var(--accent)}
+.tlq-c.j{border-color:var(--saffron);color:color-mix(in srgb,var(--saffron) 70%,var(--ink));border-style:dashed}
+.tlq-card h3{margin:0;font-size:1.05rem}
+.tlq-t{all:unset;cursor:pointer;color:var(--ink);font-weight:700;display:inline-flex;gap:6px;align-items:center;padding:2px 0}
+.tlq-t::after{content:"▾";font-size:.8rem;color:var(--muted);transition:transform .2s}
+.tlq-t[aria-expanded="true"]::after{transform:rotate(180deg)}
+.tlq-t:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.tlq-d{margin:0;font-size:.92rem;line-height:1.7}
+.tlq-est{margin:0;font-size:.82rem;color:var(--muted)}
+.tlq-x{display:flex;flex-direction:column;gap:8px;border-top:1px dashed var(--line);padding-top:8px;font-size:.88rem}
+.tlq-x[hidden]{display:none}
+.tlq-row{display:flex;gap:6px 8px;flex-wrap:wrap;align-items:center}
+.tlq-why{margin:0;padding:8px 10px;background:color-mix(in srgb,var(--saffron) 12%,transparent);border-radius:8px}
+.tlq-r{white-space:nowrap}
+@media (max-width:900px){
+  .tlq-grid{grid-template-columns:1fr}
+  .tlq-col.p,.tlq-col.q,.tlq-col.v{grid-column:1}
+  .tlq-sep{display:none}
+  .mlay .field{max-width:none}
+}
+@media (max-width:700px){
+  .legend{gap:4px 12px;font-size:.76rem}
+  .mapbox .pin text{display:none}
+  .mapbox.zoomed .pin text,.mapbox .pin.sel text{display:block}
+}
 /* ---------- الآية الجارية في التلاوة */
 .rec-on{background:color-mix(in srgb,var(--saffron) 24%,transparent);border-radius:6px;box-shadow:0 0 0 2px color-mix(in srgb,var(--saffron) 55%,transparent)}
 .occ.rec-on{box-shadow:inset 3px 0 0 var(--saffron)}

@@ -3,7 +3,7 @@
    لا يحتاج Claude ولا أي خادم، والبيانات محفوظة في هذا المتصفح. */
 (() => {
 'use strict';
-const VERSION = '1.1.0-web';
+const VERSION = '1.2.0-web';
 const KEY = 'sanad:local:v1', SID = 'sanad:local:sid';
 const DEFAULTS = {
   admin: { name: 'المدير العام', email: 'admin@sanad.local', phone: '+974 5160 0498', password: 'Sanad@Admin2026' },
@@ -138,9 +138,15 @@ async function handle(method, path, q, b) {
     ]
   });
   if (path === 'login' && method === 'POST') {
-    const x = findUser(b.login);
-    if (!x || !(await checkPw(x, b.password || ''))) return fail(401, 'bad_login', 'بيانات الدخول غير صحيحة.');
-    ls.set(SID, x.id); return json(200, { ok: true, user: pub(x) });
+    const x = findUser(b.login), LK = 'sanad:local:lock:' + (x ? x.id : String(b.login || '').trim().toLowerCase().slice(0, 80));
+    const lock = (() => { try { return JSON.parse(ls.get(LK)) || { n: 0, until: 0 }; } catch { return { n: 0, until: 0 }; } })();
+    if (lock.until > Date.now()) return fail(429, 'rate_limited', `محاولات كثيرة. أعد المحاولة بعد ${Math.ceil((lock.until - Date.now()) / 60000)} دقيقة.`);
+    if (!x || !(await checkPw(x, b.password || ''))) {
+      lock.n++; if (lock.n >= 5) { lock.n = 0; lock.until = Date.now() + 5 * 60000; }
+      ls.set(LK, JSON.stringify(lock));
+      return fail(401, 'bad_login', 'بيانات الدخول غير صحيحة.');
+    }
+    ls.del(LK); ls.set(SID, x.id); return json(200, { ok: true, user: pub(x) });
   }
   if (path === 'register' && method === 'POST') {
     if (!S.cfg.registration) return fail(403, 'closed', 'التسجيل مغلق حالياً. تواصل مع النشاط.');
@@ -214,6 +220,15 @@ async function handle(method, path, q, b) {
       S.users[id] = { id, name, email, phone, role: r, ...(await hashPw(b.password)), createdAt: new Date().toISOString() };
       if (r === 'client' && !S.db[`portal/${id}`]) S.db[`portal/${id}`] = { profile: { name, phone, email }, bookings: [], updatedAt: new Date().toISOString() };
       save(); return json(200, { ok: true, user: pub(S.users[id]) });
+    }
+    if (/^users\/[^/]+\/password$/.test(a) && method === 'POST') {
+      const id = decodeURIComponent(a.slice(6, -9)), x = S.users[id];
+      if (!x) return fail(404, 'not_found', 'الحساب غير موجود.');
+      if (id === u.id) return fail(400, 'self', 'غيّر كلمة مرورك من بطاقة «كلمة مرورك».');
+      if (x.super) return fail(403, 'forbidden', 'لا يمكن تغيير كلمة مرور المدير الشامل من هنا.');
+      if (x.role === 'admin' && !isSuper(u)) return fail(403, 'forbidden', 'تغيير كلمات مرور المديرين للمدير الشامل فقط.');
+      if (String(b.password || '').length < 8) return fail(400, 'weak', 'كلمة المرور 8 أحرف على الأقل.');
+      Object.assign(x, await hashPw(b.password)); delete x.seedPw; save(); return json(200, { ok: true });
     }
     if (a.startsWith('users/') && method === 'DELETE') {
       const id = decodeURIComponent(a.slice(6)), x = S.users[id];
