@@ -152,7 +152,7 @@ function openReq(id) {
   </dl>
   <ul class="timeline">${(r.history || []).map((h) => `<li>${STATUS[h.s]?.[0] || esc(h.s)} · ${fmtDate(h.at, true)}</li>`).join("<li>←</li>")}</ul>
   <h3>المراسلة مع فريق براق</h3>
-  <div class="thread" id="thread"><div class="mute sm">جارٍ التحميل…</div></div>
+  <div class="thread" id="thread" role="log" tabindex="0" aria-label="رسائل الطلب"><div class="mute sm">جارٍ التحميل…</div></div>
   <form id="msgF" style="display:flex;gap:8px;align-items:flex-end"><textarea id="msgT" maxlength="2000" style="min-height:48px" placeholder="اكتب رسالتك" required></textarea><button class="btn pri" type="submit">إرسال</button></form>
   ${canCancel ? `<p style="margin:16px 0 0"><button class="btn sm bad" id="cancelReq">إلغاء الطلب</button></p>` : ""}`;
   $("reqDlg").showModal();
