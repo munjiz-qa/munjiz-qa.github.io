@@ -7,6 +7,7 @@
   const OK_LIC = ['CC0-1.0', 'PD', 'CC-BY-4.0', 'CC-BY-3.0', 'CC-BY-SA-4.0', 'CC-BY-SA-3.0', 'Own-permission'];
   const cfgA = () => Object.assign({ on: false, p: { fajr: 1, dhuhr: 1, asr: 1, maghrib: 1, isha: 1 }, s: 'chime', v: 0.8 }, LS.get(KEY, {}) || {});
   const saveA = c => LS.set(KEY, c);
+  const effSound = async c => { if ((LS.get(KEY, {}) || {}).s) return c.s; const d = (await loadManifest()).find(m => m.default && !m.pending); return d ? d.id : 'chime'; };
   const supportsTrigger = () => typeof window.TimestampTrigger === 'function' && 'showTrigger' in Notification.prototype;
   let timers = [], manifest = null, lastAudio = null;
 
@@ -20,6 +21,7 @@
     }
     return out.sort((a, b) => a.at - b.at);
   }
+  const mName = m => (AR ? m.name : (m.en || m.name)) + (m.country ? ' · ' + (AR ? m.country : (m.country_en || m.country)) : '');
   const prObj = key => PR_NAMES.find(x => x[0] === key);
   const msgFor = key => { const P = prPlace(prCfg()), nm = prName(prObj(key));
     return { title: T(`حان وقت صلاة ${nm}`, `It is time for ${nm} prayer`), body: T(`حيّ على الصلاة · حسب مواقيت ${P.city}`, `Prayer times for ${P.city}`) }; };
@@ -37,7 +39,7 @@
   async function loadManifest() {
     if (manifest) return manifest;
     try { const j = await (await fetch('data/adhan/manifest.json', { cache: 'no-cache' })).json();
-      manifest = (j.muadhdhins || []).filter(m => m && /^[\w-]+$/.test(m.id || '') && /^[\w-]+\.(mp3|ogg|m4a|opus)$/.test(m.file || '') && OK_LIC.includes(m.license) && /^https:\/\//.test(m.source || '') && m.name && m.author); }
+      manifest = (j.muadhdhins || []).filter(m => m && /^[\w-]+$/.test(m.id || '') && m.name && (m.pending === true || (/^[\w-]+\.(mp3|ogg|m4a|opus)$/.test(m.file || '') && OK_LIC.includes(m.license) && /^https:\/\//.test(m.source || '') && m.author))); }
     catch (e) { manifest = []; }
     return manifest;
   }
@@ -58,7 +60,7 @@
   function fire(ev) {
     const c = cfgA(); if (!c.on || !c.p[ev.key]) return;
     if (!supportsTrigger() && 'Notification' in window && Notification.permission === 'granted') show(ev).catch(() => {});
-    if (document.visibilityState === 'visible') play(c.s, c.v);
+    if (document.visibilityState === 'visible') effSound(c).then(sd => play(sd, c.v));
   }
   async function schedule() {
     timers.forEach(clearTimeout); timers = []; const c = cfgA(), reg = await swReg();
@@ -80,7 +82,7 @@
   const esc2 = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   async function ui() {
     const box = document.getElementById('adhanBox'); if (!box) { schedule(); return; }
-    const c = cfgA(), ms = await loadManifest(), perm = 'Notification' in window ? Notification.permission : 'unsupported';
+    const c = cfgA(), ms = await loadManifest(); c.s = await effSound(c); const perm = 'Notification' in window ? Notification.permission : 'unsupported';
     const status = !c.on ? T('التنبيه متوقف.', 'Alerts are off.')
       : perm === 'denied' ? T('الإشعارات محجوبة في إعدادات المتصفح؛ فعّلها ليصلك التنبيه.', 'Notifications are blocked in your browser settings; allow them to get alerts.')
       : perm === 'unsupported' ? T('هذا المتصفح لا يدعم الإشعارات؛ يعمل الصوت والتطبيق مفتوح.', 'This browser has no notifications; sound plays while the app is open.')
@@ -92,12 +94,12 @@
       <div class="prform"><label class="field"><span>${T('الصوت', 'Sound')}</span><select id="adS">
         <option value="chime"${c.s === 'chime' ? ' selected' : ''}>${T('نغمة تنبيه هادئة (أصلية)', 'Soft alert tone (original)')}</option>
         <option value="none"${c.s === 'none' ? ' selected' : ''}>${T('إشعار صامت بلا صوت', 'Silent notification')}</option>
-        ${ms.map(m => `<option value="${esc2(m.id)}"${c.s === m.id ? ' selected' : ''}>${esc2(AR ? m.name : (m.en || m.name))}</option>`).join('')}</select></label>
+        ${ms.map(m => `<option value="${esc2(m.id)}"${m.pending ? ' disabled' : ''}${c.s === m.id ? ' selected' : ''}>${esc2(mName(m))}${m.pending ? T(' (بانتظار التسجيل المرخّص)', ' (awaiting licensed recording)') : ''}</option>`).join('')}</select></label>
         <label class="field"><span>${T('مستوى الصوت', 'Volume')}</span><input type="range" id="adV" min="0.1" max="1" step="0.05" value="${c.v}"></label></div>
       <div class="toolbar"><button class="btn" id="adT" type="button">${T('جرّب الصوت الآن', 'Test the sound')}</button><button class="btn" id="adN" type="button">${T('جرّب إشعاراً', 'Test a notification')}</button><span class="muted small" id="adMsg"></span></div>
       <p class="muted small" id="adSt" style="margin:0">${esc2(status)}</p>
-      <p class="muted small" style="margin:0">${ms.length ? ms.map(m => esc2(`${AR ? m.name : (m.en || m.name)}: ${m.author} · ${m.license} · ${m.source}`)).join('<br>')
-        : T('لا تتضمن المنصة بعدُ تسجيلات مؤذنين؛ لا يُضاف تسجيل إلا بعد التحقق من رخصته (ملك عام أو رخصة مفتوحة أو إذن صاحبه)، وتُنشر بياناته هنا.', 'No muezzin recordings are bundled yet. A recording is added only after its licence is verified (public domain, open licence or owner permission), with credits shown here.')}</p></section>`;
+      <p class="muted small" style="margin:0">${ms.filter(m => !m.pending).length ? ms.filter(m => !m.pending).map(m => esc2(`${mName(m)}: ${m.author} · ${m.license} · ${m.source}`)).join('<br>')
+        : T('أذانات الحرمين والأقصى ومصر وتركيا والمغرب والشام وغيرها قيد الإضافة: لا يُفعَّل إلا بتسجيل ثابت الرخصة أو بإذن صاحبه، وحتى ذلك الحين تُستعمل نغمة تنبيه هادئة. لا يُضاف تسجيل إلا بعد التحقق من رخصته (ملك عام أو رخصة مفتوحة أو إذن صاحبه)، وتُنشر بياناته هنا.', 'Adhans of Makkah, Madinah, Al-Aqsa, Egypt, Türkiye, Morocco, the Levant and more are being added: each is enabled only with a verified licence or the owner\'s permission; until then a soft alert tone is used. A recording is added only after its licence is verified (public domain, open licence or owner permission), with credits shown here.')}</p></section>`;
     const upd = ch => { const x = Object.assign(cfgA(), ch); saveA(x); schedule().then(() => ui()); };
     box.querySelector('#adOn').onchange = async e => { if (e.target.checked) { const p = await enable(); if (p === 'denied') $('#adMsg') && ($('#adMsg').textContent = ''); } upd({ on: e.target.checked }); };
     box.querySelectorAll('[data-adk]').forEach(el => el.onchange = () => upd({ p: Object.assign({}, cfgA().p, { [el.dataset.adk]: el.checked ? 1 : 0 }) }));

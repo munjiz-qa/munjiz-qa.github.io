@@ -29,6 +29,13 @@ for (const [name, opts] of [['الكمبيوتر', { viewport: { width: 1280, he
   ok(await p.evaluate(() => window.__shown.filter(s => s[2]).length >= 14), 'الإشعارات المجدولة (Triggers) تُسجَّل للأوقات القادمة حيث يدعمها المتصفح');
   ok(/والتطبيق مغلق/.test(await p.textContent('#adSt')), 'الواجهة تذكر أن الإشعار يصل والتطبيق مغلق عند دعم المتصفح');
   await ctx.close(); }
+{ const ctx = await b.newContext({ serviceWorkers: 'block' }), p = await ctx.newPage(); await p.goto(B + '#prayer'); await p.waitForSelector('#adS');
+  const o = await p.$$eval('#adS option', x => x.map(e => [e.value, e.disabled, e.selected]));
+  ok(['haram-makki', 'haram-madani', 'aqsa', 'misr', 'turkiye', 'maghrib', 'sham'].every(k => o.some(r => r[0] === k && r[1])) && o.length >= 10, 'أذانات العالم (الحرمان والأقصى ومصر وتركيا والمغرب والشام…) مدرجة وتنتظر التسجيل المرخّص ولا يمكن اختياره بلا ملف');
+  ok(o.find(r => r[2])?.[0] === 'chime', 'الصوت الافتراضي نغمة التنبيه حتى يتوفر تسجيل مرخّص');
+  await p.route('**/data/adhan/manifest.json', r => r.fulfill({ json: { muadhdhins: [{ id: 'haram-makki', name: 'أذان الحرم المكي', default: true, author: 'x', file: 'haram.mp3', license: 'CC0-1.0', source: 'https://example.org/h' }] } }));
+  await p.reload(); await p.waitForSelector('#adS');
+  ok(await p.$eval('#adS', e => e.value) === 'haram-makki', 'يصير أذان الحرم المكي الافتراضي فور توفر تسجيله المرخّص'); await ctx.close(); }
 { const ctx = await b.newContext(), p = await ctx.newPage(); await p.goto(B + '#prayer'); await p.waitForSelector('#adOn');
   const lic = await p.evaluate(async () => { const j = await (await fetch('data/adhan/manifest.json')).json(); return j.licenses_allowed.join(); });
   ok(/CC0-1.0/.test(lic) && !/All-Rights/.test(lic), 'قائمة الرخص المقبولة مفتوحة فقط'); await ctx.close(); }
