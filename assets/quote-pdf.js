@@ -8,6 +8,8 @@ const BASE=SRC?SRC.replace(/[^/]*$/,''):'assets/';
 const CFG=window.MUNJIZ_CONFIG||{};
 const CO={ar:'منجز لخدمات الأعمال ذ.م.م',en:'Munjiz Business Services LLC',city_ar:'لوسيل، قطر',city_en:'Lusail, Qatar',cr:'',
   phone:CFG.PHONE||'+974 5160 0498',email:CFG.EMAIL||'munijizqa@gmail.com',web:'munjiz-qa.github.io'};
+const EXEC={ar:'أحمد صلاح',en:'Ahmed Salah',tAr:'المدير التنفيذي',tEn:'Chief Executive Officer'};
+const SIGSVG=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80" width="124" height="50"><g fill="none" stroke="#14306e" stroke-linecap="round" stroke-linejoin="round"><path stroke-width="2.6" d="M46 10 C44 26 42 44 40 66 M40 62 C56 66 82 58 80 46 C78 36 56 38 46 38 C70 36 86 26 76 18 C68 10 52 10 44 14"/><path stroke-width="1.8" d="M80 44 C96 52 104 36 118 40 C128 43 134 52 148 44 C154 40 158 46 164 42"/><path stroke-width="1.9" d="M18 71 C60 63 120 66 186 60"/></g></svg>`;
 const C1='#7a1e3a',C2='#b8923a',INK='#1d252c',MUTE='#5b6670',LINE='#dfe5e2';
 const T={
   ar:{title:'عرض سعر',prelim:'عرض سعر مبدئي',no:'رقم العرض',date:'تاريخ الإصدار',valid:'صالح حتى',to:'مقدَّم إلى',from:'مقدَّم من',
@@ -81,13 +83,14 @@ const CSS=`
 .bq-sec h3{margin:0 0 4px;font:700 13px/1.5 "Readex Pro","Tajawal",Tahoma,sans-serif;color:${C1}}
 .bq-li{display:flex;gap:8px;align-items:baseline;color:#36424c;font-size:12.3px;line-height:1.6}.bq-li i{flex:0 0 5px;width:5px;height:5px;border-radius:50%;background:${C2};transform:translateY(-2px)}
 .bq-sec p{margin:0;color:#36424c;font-size:12.5px;white-space:pre-line}
-.bq-sign{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:end;margin-top:auto;padding-top:6px}
+.bq-sign{display:grid;direction:ltr;grid-template-columns:1fr 1fr;gap:24px;align-items:end;margin-top:auto;padding-top:6px}
 .bq-acc{border:1px dashed #b9c4bf;border-radius:10px;padding:8px 14px;font-size:12.5px}
 .bq-acc h3{margin:0 0 6px;font:700 12.5px/1.5 "Readex Pro","Tajawal",Tahoma,sans-serif;color:${C1}}
 .bq-acc div{display:flex;gap:8px;padding:3px 0;border-bottom:1px dotted #c7cfcb}.bq-acc div:last-child{border:0}
 .bq-acc span{color:${MUTE};min-width:62px}
 .bq-st{display:flex;align-items:center;gap:12px;justify-content:flex-end}
 .bq-st div{text-align:center;font-size:12.5px}.bq-st b{display:block;font-size:13.5px}.bq-st .bq-ln{display:block;margin-top:10px;color:#5b6670}
+.bq-sg{display:block;height:50px;margin:2px 0 0}
 .bq-foot{border-top:2px solid ${C2};padding-top:6px;color:${MUTE};font-size:11px;text-align:center}
 `;
 function style(){if(document.getElementById('bq-css'))return;const s=document.createElement('style');s.id='bq-css';s.textContent=CSS;document.head.appendChild(s)}
@@ -123,8 +126,8 @@ function html(d){const en=d.lang==='en',t=T[en?'en':'ar'],c=d.client||{},s=total
   <div class="bq-sec" data-brk><h3>${t.req}</h3>${t.reqs.map(li).join('')}</div>
   <div class="bq-sec" data-brk><h3>${t.terms}</h3>${terms.map(li).join('')}</div>
   <div class="bq-sign" data-brk>
-    ${d.prelim?'<div></div>':`<div class="bq-acc"><h3>${t.accept}</h3><div><span>${t.aName}</span></div><div><span>${t.aSign}</span></div><div><span>${t.aDate}</span></div></div>`}
-    <div class="bq-st"><div><b>${t.for}</b>${d.prelim?'':`<span class="bq-ln">${t.aName}: ....................</span><span class="bq-ln">${t.aSign}: ....................</span>`}</div>${stamp(t,en)}</div>
+    ${d.prelim?'<div></div>':`<div class="bq-acc" style="direction:${en?'ltr':'rtl'}"><h3>${t.accept}</h3><div><span>${t.aName}</span></div><div><span>${t.aSign}</span></div><div><span>${t.aDate}</span></div></div>`}
+    <div class="bq-st" style="direction:${en?'ltr':'rtl'}"><div><b>${t.for}</b>${d.prelim?'':`<span class="bq-ln">${t.aName}: <b style="display:inline">${esc(en?EXEC.en:EXEC.ar)}</b></span><span class="bq-ln">${en?'Title':'الصفة'}: ${esc(en?EXEC.tEn:EXEC.tAr)}</span><span class="bq-sg">${SIGSVG}</span>`}</div>${stamp(t,en)}</div>
   </div>
   <div class="bq-foot" data-brk>${esc(en?CO.en:CO.ar)} · ${CO.cr?t.cr+' '+ltr(CO.cr)+' · ':''}${ltr(CO.phone)} · ${ltr(CO.email)} · ${ltr(CO.web)}</div>
 </div>`}
