@@ -6,7 +6,7 @@ let fail = 0; const ok = (c, m) => { console.log((c ? '✓ ' : '✗ ') + m); if 
 const b = await chromium.launch(); const p = await b.newPage(); const bad = [], errs = [];
 p.on('request', r => { if (/claude|anthropic/i.test(new URL(r.url()).host)) bad.push(r.url()); });
 p.on('pageerror', e => errs.push(e.message));
-for (const f of ['', 'app.js', 'tools.js', 'app.css', 'sw.js', 'manifest.webmanifest', 'config.json', 'data/quran.txt', 'mods/qtl.js', 'mods/qatlas.js', ...['taam', 'asnaf', 'jannah', 'jamal', 'tawhid', 'ruqya', 'wazifa', 'rusul'].map(k => `mods/${k}.js`), 'data/t/muyassar/0.txt', ...['bukhari', 'muslim', 'abudawud', 'tirmidhi', 'nasai', 'ibnmajah'].map(k => `data/hadith/${k}.txt`), 'data/tr/index.json', 'data/tr/en.txt', 'data/tr/fr.txt', 'data/i18n/en.json', 'data/i18n/fr.json', 'data/i18n/ur.json']) {
+for (const f of ['', 'app.js', 'tools.js', 'app.css', 'sw.js', 'manifest.webmanifest', 'config.json', 'data/quran.txt', 'mods/qtl.js', 'mods/qatlas.js', ...['taam', 'asnaf', 'jannah', 'jamal', 'tawhid', 'ruqya', 'wazifa', 'rusul', 'mawdui'].map(k => `mods/${k}.js`), 'data/t/muyassar/0.txt', ...['bukhari', 'muslim', 'abudawud', 'tirmidhi', 'nasai', 'ibnmajah'].map(k => `data/hadith/${k}.txt`), 'data/tr/index.json', 'data/tr/en.txt', 'data/tr/fr.txt', 'data/i18n/en.json', 'data/i18n/fr.json', 'data/i18n/ur.json']) {
   const r = await p.request.get(B + f); ok(r.ok(), `${f || 'index.html'} → ${r.status()}`);
 }
 const cfg = await (await p.request.get(B + 'config.json')).json();
@@ -41,6 +41,13 @@ ok((await p.$$('.path')).length === 6 && (await p.$$('.path .scard')).length >= 
     await m.evaluate(() => { const d = document.querySelector('.th-item'); if (d) d.open = true; }); await m.waitForSelector('.th-item .u-tf blockquote', { timeout: 60000 }).catch(() => {});
     const t = await m.evaluate(() => ({ n: document.querySelectorAll('.th-item').length, ix: document.querySelectorAll('.th-index li').length, a: document.querySelectorAll('.th-item .ayah').length, q: document.querySelectorAll('.th-item .u-tf blockquote').length }));
     ok(t.n >= min && t.ix === t.n && t.a >= t.n && t.q >= 1, `${nm}: ${t.n.toLocaleString("ar-EG")} مدخلاً مفهرساً بآياتها، ونقل التفسير يظهر عند الفتح`);
+  }
+  { // التفسير الموضوعي: ٢٧ موضوعاً في أربعة أبواب، آياتها، وطبقتا التعمق بالرأي واللطائف بنقول موسومة بلفظها
+    await m.evaluate(() => location.hash = 'mawdui'); await m.waitForSelector('.mw-tp', { timeout: 30000 }).catch(() => {});
+    await m.evaluate(() => document.querySelectorAll('.mw-tp').forEach(d => d.open = true));
+    const t = await m.evaluate(() => ({ th: document.querySelectorAll('.mw-th').length, tp: document.querySelectorAll('.mw-tp').length, ix: document.querySelectorAll('.mw-ixc li a').length,
+      ay: document.querySelectorAll('.mw-tp .th-ay .ayah').length, q: document.querySelectorAll('.mw-q').length, tag: [...document.querySelectorAll('.mw-q figcaption .mw-tag')].every(x => x.textContent.includes('·')), warn: !!document.querySelector('.mw-warn'), wide: document.documentElement.scrollWidth <= innerWidth + 1 }));
+    ok(t.th === 4 && t.tp >= 27 && t.ix === t.tp && t.ay >= 100 && t.q >= 100 && t.tag && t.warn && t.wide, `التفسير الموضوعي: ${t.tp.toLocaleString("ar-EG")} موضوعاً، ${t.q.toLocaleString("ar-EG")} نقلاً موسوماً بنوعه وكتابه، وتنبيه اللطائف ظاهر`);
   }
   { // التوحيد في القرآن الكريم: أقسامه الثلاثة، وأبوابه بآياتها بنص مجمع الملك فهد، وأحاديثها بتخريجها، ونقول المفسرين
     await m.evaluate(() => location.hash = 'tawhid'); await m.waitForSelector('.tw-ch', { timeout: 30000 }).catch(() => {});
