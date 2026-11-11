@@ -127,7 +127,7 @@ const NAV = LAB ? [
   ['التطبيق', [['guide','دليل المختبر','i-info'],['account','حسابي','i-user'],['settings','الإعدادات','i-gear'],['admin','لوحة الإدارة','i-shield']]],
 ] : [
   ['', [['home','الرئيسية','i-home']]],
-  ['اقرأ وتدبّر', [['mushaf','المصحف','i-book'],['search','البحث بالمعنى','i-search'],['ask','اسأل مشكاة','i-spark'],['topics','الموسوعة الموضوعية','i-grid'],['kids','ركن الأطفال','i-kids',1],['tawhid','التوحيد في القرآن','i-tawhid',1],['jannah','وصف الجنة في القرآن','i-jannah',1]], 'p1'],
+  ['اقرأ وتدبّر', [['mushaf','المصحف','i-book'],['tafasir','التفاسير وأسباب النزول','i-book',1],['search','البحث بالمعنى','i-search'],['ask','اسأل مشكاة','i-spark'],['topics','الموسوعة الموضوعية','i-grid'],['kids','ركن الأطفال','i-kids',1],['tawhid','التوحيد في القرآن','i-tawhid',1],['jannah','وصف الجنة في القرآن','i-jannah',1]], 'p1'],
   ['احفظ وتعبّد', [['adhkar','أذكار الصباح والمساء','i-sun'],['duaa','أدعية القرآن','i-hands',1],['ruqya','التداوي بالقرآن','i-ruqya',1],['hifz','الحفظ والتسميع','i-mic'],['saved','محفوظاتي','i-bookmark'],['prayer','مواقيت الصلاة','i-time']], 'p2'],
   ['ابحث وحقّق', [['research','مختبر الأبحاث','i-flask'],['ulum','علوم القرآن','i-ulum',1],['jamal','الصور الجمالية في القرآن','i-jamal',1],['words','المعجم المفهرس','i-abc'],['stats','الإحصاء العام','i-chart'],['taam','الفاكهة والطعام في القرآن','i-taam',1]], 'p3'],
   ['اكتشف وتأمّل', [['awwalin','أخبار الأولين والآخرين','i-scroll'],['ijaz','الإعجاز العلمي','i-atom'],['map','أطلس القرآن','i-map'],['timeline','الخط الزمني','i-time'],['graph','شبكة المعرفة','i-graph'],['nisaa','المرأة في القرآن','i-flower',1],['rijal','الرجل في القرآن','i-user',1],['shifa','الأمراض والعلاج','i-heal',1],['wazifa','وظيفة الإنسان','i-wazifa',1]], 'p4'],
@@ -143,6 +143,7 @@ function drawNav() { $('#nav').innerHTML = navHTML(); }
 const PATHS = [
   ['p1', 'اقرأ وتدبّر', 'النص الكريم ومعانيه: تلاوة، وبحث بالفكرة، وموضوعات مفهرسة.', [
     ['mushaf', 'i-book', 'المصحف', 'صفحات مصحف المدينة متصلة بخط مجمع الملك فهد، مع التفسير والمعاني لكل آية.', () => `${n(Q.surahs.length)} سورة`],
+    ['tafasir', 'i-book', 'التفاسير وأسباب النزول', 'ثمانية تفاسير لكل آية، وأسباب النزول مقتطفة من نصوص المفسرين مع نسبتها إلى كتبها، وبحث فيها.', () => `${n(TF.length)} كتب`],
     ['search', 'i-search', 'البحث بالمعنى', 'اكتب الفكرة بلغتك، فتظهر الآيات الأقرب إليها مرتبةً.', () => `${n(Q.ayat.length)} آية`],
     ['ask', 'i-spark', 'اسأل مشكاة', 'سؤالك يُجاب من الآيات وأقوال المفسرين والمداخل الموضوعية.', () => ''],
     ['topics', 'i-grid', 'الموسوعة الموضوعية', 'الأنبياء والأقوام والأماكن والأحكام، كل موضوع بآياته.', () => `${n(T.length)} فهرساً`],
@@ -202,12 +203,13 @@ function needMod(key) {
 function route() {
   const h = (location.hash || '#' + HOME).slice(1);
   let m, cur;
-  curRoute = /^(s|a|p|ps|pa)\d/.test(h) ? 'mushaf' : /^k-/.test(h) ? 'kids' : /^t-/.test(h) ? 'topics' : /^(root|lem)\d/.test(h) ? 'words' : h;
+  curRoute = /^(s|a|p|ps|pa)\d/.test(h) ? 'mushaf' : /^tf\d/.test(h) || h === 'tafasir' ? 'tafasir' : /^k-/.test(h) ? 'kids' : /^t-/.test(h) ? 'topics' : /^(root|lem)\d/.test(h) ? 'words' : h;
   if (m = h.match(/^s(\d+)$/)) { cur = 'mushaf'; surah(+m[1]); }
   else if (m = h.match(/^a(\d+)-(\d+)$/)) { cur = 'mushaf'; surah(+m[1], +m[2]); }
   else if (m = h.match(/^p(\d+)$/)) { cur = 'mushaf'; mpOpen(+m[1]); }
   else if (m = h.match(/^ps(\d+)$/)) { cur = 'mushaf'; mpOpen(1, { surah: Math.max(1, Math.min(114, +m[1])) }); }
   else if (m = h.match(/^pa(\d+)$/)) { cur = 'mushaf'; mpOpen(1, { ayah: Math.min(6235, +m[1]) }); }
+  else if (m = h.match(/^tf(\d+)(?:-(\d+))?$/)) { cur = 'tafasir'; tafasirOpen2(Math.max(1, Math.min(114, +m[1])), +m[2] || 0); }
   else if (m = h.match(/^t-([a-z]+)$/)) { cur = 'topics'; topic(m[1]); }
   else if (!LAB && (m = h.match(/^k-([a-z]+)$/))) { cur = 'kids'; kids(m[1]); }
   else if (m = h.match(/^root(\d+)$/)) { cur = 'words'; rootView(+m[1]); }
@@ -1934,8 +1936,16 @@ async function installApp() {
 }
 /* حزمة العمل دون إنترنت: بعد التثبيت (أو عند الفتح من الأيقونة) تُنزَّل في الخلفية كل التفاسير والأحاديث والقصص ولغة الواجهة ومعاني لغتك، فيعمل التطبيق كاملاً دون اتصال */
 const OFF_CACHE = APPK + '-data-v1';
+/* ركن التفاسير وأسباب النزول: يُحمَّل عند أول فتحه من tafasir.js */
+function tafasirOpen2(sn, an) {
+  if (window.tafasirOpen) return tafasirOpen(sn, an);
+  if (!tafasirOpen2.s) { V(`<p class="loading">جارٍ فتح الركن…</p>`); tafasirOpen2.s = document.createElement('script'); tafasirOpen2.s.src = 'tafasir.js'; document.head.appendChild(tafasirOpen2.s); }
+  tafasirOpen2.s.addEventListener('load', () => tafasirOpen(sn, an), { once: true });
+  tafasirOpen2.s.addEventListener('error', () => { tafasirOpen2.s.remove(); tafasirOpen2.s = null; V(`<p class="loading">تعذّر فتح الركن، تحقق من الاتصال ثم أعد المحاولة.</p>`); }, { once: true });
+}
+views.tafasir = () => tafasirOpen2(0, 0);
 function offlineFiles() {
-  const f = [...TF.flatMap(b => Array.from({ length: b.chunks }, (_, k) => `data/t/${b.key}/${k}.txt`)), ...Object.keys(HAD_BOOKS).map(k => `data/hadith/${k}.txt`), 'data/qasas.txt'];
+  const f = [...TF.flatMap(b => Array.from({ length: b.chunks }, (_, k) => `data/t/${b.key}/${k}.txt`)), ...Object.keys(HAD_BOOKS).map(k => `data/hadith/${k}.txt`), 'data/qasas.txt', 'tafasir.js', 'data/asbab.txt'];
   if (LANG !== 'ar') f.push(`data/i18n/${LANG}.json`, 'data/i18n/en.json');
   if (I18N.meanCode) f.push(`data/tr/${I18N.meanCode}.txt`);
   return [...new Set(f)];

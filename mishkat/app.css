@@ -952,3 +952,32 @@ html[dir=ltr] .ruq-matn{border-radius:10px 0 0 10px}
 .offpill{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(76px + env(safe-area-inset-bottom));z-index:60;background:var(--ink,#1b1b1b);color:var(--bg,#fff);padding:8px 16px;border-radius:999px;font-size:.85rem;box-shadow:var(--shadow)}
 .offpill[hidden]{display:none}
 .in-apk{margin:4px 0 0}
+
+/* ركن التفاسير وأسباب النزول */
+.tf-row{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-bottom:8px}
+.tf-row label{display:flex;flex-direction:column;gap:4px;font-size:.85rem;color:var(--muted);flex:1;min-width:8em}
+.tf-pick select,.tf-pick input{border:1px solid var(--line);background:var(--sheet,var(--bg));color:var(--ink);border-radius:10px;padding:0 10px;height:42px;font:inherit;font-size:1rem;min-width:0;box-sizing:border-box}
+.tf-row>input[type=search]{flex:1;min-width:12em}
+.tf-pick .btn{height:42px}
+.tf-ay{font-size:1.35em;line-height:2.1;margin:6px 0}
+.tf-tabs{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:4px;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.tf-tabs button{flex:none;white-space:nowrap}
+.tf-sec{margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.tf-sec h3{margin:0 0 2px}.tf-sec p,.tf-txt p{line-height:2;margin:.5em 0;font-size:1.02rem}
+.tf-hr{border:0;border-top:1px dashed var(--line);margin:10px 0}
+.tf-full{margin-top:6px}
+.tf-hit{display:flex;flex-direction:column;gap:2px;padding:10px 6px;border-bottom:1px solid var(--line);text-decoration:none;color:inherit}
+.tf-hit:hover{background:color-mix(in srgb,var(--accent,#1b2559) 8%,transparent)}
+.tf-hit small{color:var(--muted)}.tf-hit span{line-height:1.8;font-size:.95rem}
+.tf-types details{border:1px solid var(--line);border-radius:12px;padding:8px 12px;margin:8px 0}
+.tf-types summary{cursor:pointer;font-weight:700;display:flex;gap:8px;align-items:center;flex-wrap:wrap;min-height:34px}
+.tf-types p{line-height:1.9;margin:.4em 0}
+.tf-lvl{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:4px 0}.tf-lvl>span{color:var(--muted);font-size:.9rem}
+.tf-layer h3{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tf-bk{border:1px solid var(--line);border-radius:12px;padding:6px 12px;margin:8px 0}
+.tf-bk>summary{cursor:pointer;font-weight:700;min-height:36px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tf-bk>summary small{font-weight:400}
+.tf-load,.tf-bk>p,.tf-bk>.tf-hr{margin-top:6px}
+.tf-txt{max-height:60vh;overflow:auto}
+.tf-soon{opacity:.8;border-style:dashed}
+.tf-cmp{border-bottom:1px solid var(--line);padding:8px 0}.tf-cmp h4{margin:0 0 4px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.tf-cmp p{margin:0;line-height:1.9}
