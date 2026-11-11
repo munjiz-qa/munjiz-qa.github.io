@@ -6,7 +6,7 @@ let fail = 0; const ok = (c, m) => { console.log((c ? '✓ ' : '✗ ') + m); if 
 const b = await chromium.launch(); const p = await b.newPage(); const bad = [], errs = [];
 p.on('request', r => { if (/claude|anthropic/i.test(new URL(r.url()).host)) bad.push(r.url()); });
 p.on('pageerror', e => errs.push(e.message));
-for (const f of ['', 'app.js', 'tools.js', 'app.css', 'sw.js', 'manifest.webmanifest', 'config.json', 'data/quran.txt', 'mods/qtl.js', 'mods/qatlas.js', ...['taam', 'asnaf', 'jannah', 'jamal', 'tawhid', 'ruqya', 'wazifa'].map(k => `mods/${k}.js`), 'data/t/muyassar/0.txt', ...['bukhari', 'muslim', 'abudawud', 'tirmidhi', 'nasai', 'ibnmajah'].map(k => `data/hadith/${k}.txt`), 'data/tr/index.json', 'data/tr/en.txt', 'data/tr/fr.txt', 'data/i18n/en.json', 'data/i18n/fr.json', 'data/i18n/ur.json']) {
+for (const f of ['', 'app.js', 'tools.js', 'app.css', 'sw.js', 'manifest.webmanifest', 'config.json', 'data/quran.txt', 'mods/qtl.js', 'mods/qatlas.js', ...['taam', 'asnaf', 'jannah', 'jamal', 'tawhid', 'ruqya', 'wazifa', 'rusul'].map(k => `mods/${k}.js`), 'data/t/muyassar/0.txt', ...['bukhari', 'muslim', 'abudawud', 'tirmidhi', 'nasai', 'ibnmajah'].map(k => `data/hadith/${k}.txt`), 'data/tr/index.json', 'data/tr/en.txt', 'data/tr/fr.txt', 'data/i18n/en.json', 'data/i18n/fr.json', 'data/i18n/ur.json']) {
   const r = await p.request.get(B + f); ok(r.ok(), `${f || 'index.html'} → ${r.status()}`);
 }
 const cfg = await (await p.request.get(B + 'config.json')).json();
@@ -112,6 +112,13 @@ ok(/الآيات القرآنية/.test(doc) && /أقوال المفسرين/.te
   const m2 = await b.newPage({ viewport: { width: 390, height: 844 } }); const e3 = []; m2.on('pageerror', e => e3.push(e.message));
   for (const v of ['timeline', 'map']) { await m2.goto(B + '#' + v); await m2.waitForSelector(v === 'map' ? '.pin' : '.tlq-card', { timeout: 30000 }).catch(() => {}); ok(await m2.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `الجوال: صفحة ${v} بلا تمرير أفقي`); }
   ok(!e3.length, 'الجوال: لا أخطاء برمجية في الخط الزمني والخريطة ' + e3.join(' | ')); await m2.close();
+}
+{ // الأنبياء والمرسلون: ٢٥ نبياً بترتيبهم، النبي والرسول وأولو العزم، من ذُكروا بلا اسم، بنص الآيات ونقول المفسرين وأحاديث البخاري
+  await p.evaluate(() => location.hash = 'rusul'); await p.waitForSelector('.rs-ch', { timeout: 30000 }).catch(() => {});
+  await p.evaluate(() => document.querySelectorAll('.rs-ch,.rs-p').forEach(d => d.open = true));
+  const t = await p.evaluate(() => ({ ch: document.querySelectorAll('.rs-ch').length, ix: document.querySelectorAll('.u-index li').length, p: document.querySelectorAll('.rs-p').length, a: document.querySelectorAll('.rs-q').length, h: document.querySelectorAll('.rs-h .rs-matn').length, q: document.querySelectorAll('.rs-qt blockquote').length, ulu: document.querySelectorAll('.rs-p[data-ulu="1"]').length, warn: !!document.querySelector('.rs-warn') }));
+  ok(t.ch === 8 && t.ix === t.ch && t.p === 25 && t.ulu === 5 && t.a >= 150 && t.h >= 14 && t.q >= 40 && t.warn, `الأنبياء والمرسلون: ${t.p} نبياً (${t.ulu} من أولي العزم)، ${t.ch} أبواب، ${t.a} آية بخط المصحف، ${t.h} حديثاً، ${t.q} نقلاً`);
+  const tt = await p.evaluate(() => document.body.innerText); ok(!/claude|anthropic/i.test(tt), 'صفحة rusul تعمل ولا تذكر Claude');
 }
 await p.evaluate(() => location.hash = 'account'); await p.waitForTimeout(700);
 ok(!!(await p.$('#uform')) && !!(await p.$('#rform')), 'صفحة الدخول للعميل والمدير وإنشاء الحساب تعمل');
