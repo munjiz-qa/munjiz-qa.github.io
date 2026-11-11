@@ -11,6 +11,9 @@ const load = async () => AS || (AS = await gz('data/asbab.txt').catch(e => { AS 
 const BOOKT = k => (TF.find(b => b.key === k) || { title: k }).title;
 const BOOKA = k => (TF.find(b => b.key === k) || { author: '' }).author;
 
+const KIND = { muyassar: 'إجمالي', jalalayn: 'إجمالي', tabari: 'مأثور', ibnkathir: 'مأثور', baghawi: 'مأثور', qurtubi: 'فقهي', saadi: 'تربوي', gharib: 'لغوي' };
+const KSHORT = { muyassar: 'الميسر', jalalayn: 'الجلالين', tabari: 'الطبري', ibnkathir: 'ابن كثير', baghawi: 'البغوي', qurtubi: 'القرطبي', saadi: 'السعدي', gharib: 'غريب القرآن' };
+const brief = t => { const ss = String(t || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().split(/(?<=[.؟!])\s+/).filter(Boolean); let o = ''; for (const x of ss) { if (o && (o + ' ' + x).length > 260) break; o += (o ? ' ' : '') + x; if (o.length > 120) break; } return o.length > 300 ? o.slice(0, 297) + '…' : o; };
 const BT = { muyassar: 'إجمالي ميسّر', jalalayn: 'وجيز (إجمالي)', saadi: 'بالمأثور مع استنباط الهدايات', baghawi: 'بالمأثور', qurtubi: 'فقهي (أحكام القرآن)', tabari: 'بالمأثور مع الترجيح', ibnkathir: 'بالمأثور', gharib: 'لغوي' };
 const TYPES = [
   ['التفسير بالمأثور', 'تفسير القرآن بالقرآن، ثم بصحيح السنة، ثم بأقوال الصحابة والتابعين. هو أوثق الطرق وأولاها بالتقديم، ويُحذر فيه من الروايات الضعيفة والإسرائيليات.', 'الطبري، البغوي، ابن كثير', ['tabari', 'baghawi', 'ibnkathir']],
@@ -88,7 +91,7 @@ async function ayahView(sn, an) {
   const su = Q.surahs[sn - 1]; if (!su) return home(); an = Math.max(1, Math.min(su.ayas, an)); const i = idxOf(sn, an);
   V(`<div class="stack">${head(sn)}<div id="tfHome"><p class="loading">جارٍ التحميل…</p></div></div>`); wire(sn); $('#tfA').value = an; $('#tfA').max = su.ayas;
   const D = await load(), as = (D[sn] || {})[an] || {}, lv = getLvl(), L = LVL.indexOf(lv);
-  const bt = k => `<summary>${esc(BOOKT(k))} <small class="muted">${esc(BOOKA(k))}${BT[k] ? ' · ' + esc(BT[k]) : ''}</small></summary>`;
+  const bt = k => `<summary><span class="tg"><b>${KIND[k]}</b> · <span>${KSHORT[k]}</span></span> ${esc(BOOKT(k))} <small class="muted">${esc(BOOKA(k))}${BT[k] ? ' · ' + esc(BT[k]) : ''}</small></summary>`;
   const bk = (k, open) => `<details class="tf-bk" data-k="${k}"${open ? ' open' : ''}>${bt(k)}<div class="tf-load"><p class="loading">جارٍ التحميل…</p></div></details>`;
   const sec = (title, badge, body, note) => `<section class="panel tf-layer"><h3>${title} <span class="chip acc">${badge}</span></h3>${note ? `<p class="muted small">${note}</p>` : ''}${body}</section>`;
   const parts = [];
@@ -105,7 +108,7 @@ async function ayahView(sn, an) {
   }
   // ٥ الأحكام
   if (L >= 1) parts.push(sec('الأحكام الفقهية', 'فقهي', bk('qurtubi', false), 'يتوسع القرطبي في الأحكام وخلاف الفقهاء حيث تكون للآية أحكام.'));
-  if (L >= 2) parts.push(`<section class="panel tf-layer tf-soon"><h3>التعمّق بالرأي واللطائف <span class="chip">قريبًا</span></h3><p class="muted small">سيُضاف التفسير بالرأي المحمود (الرازي والبيضاوي) والمناسبات والتفسير الإشاري والعلمي بوسم تنبيه، متى توفرت نصوصها بترخيص مناسب.</p></section>`);
+  if (L >= 2) parts.push(`<section class="panel tf-layer tf-soon"><h3>التعمّق بالرأي واللطائف <span class="chip">قريبًا</span></h3><p class="muted small">سيُضاف التفسير بالرأي المحمود (الرازي والبيضاوي) والمناسبات والتفسير الإشاري والعلمي بوسم تنبيه، متى توفرت نصوصها بترخيص مناسب.</p><p class="muted small">وكل ما يُعرض فيهما من الإشارات والعلميات اجتهاد لا يُجزم به.</p></section>`);
   // ٦ الهدايات
   parts.push(sec('الهدايات والتدبّر', 'تربوي', bk('saadi', L === 0), 'السعدي يستنبط الهدايات والفوائد بعبارة قريبة.'));
   // ٧ الموضوع
@@ -115,8 +118,10 @@ async function ayahView(sn, an) {
   const lvBtn = LVL.map(x => `<button data-l="${x}" aria-pressed="${x === lv}">${LVN[x]}</button>`).join('');
   const nav = `<div class="toolbar">${an > 1 ? `<a class="btn" href="#tf${sn}-${an - 1}">→ السابقة</a>` : ''}${an < su.ayas ? `<a class="btn" href="#tf${sn}-${an + 1}">التالية ←</a>` : ''}<a class="btn" href="#tf${sn}">آيات السورة</a><a class="btn" href="#pa${i}">في المصحف</a></div>`;
   $('#tfHome').innerHTML = `<section class="panel"><div class="eyebrow">${esc(su.name)} · آية ${AR(an)} · ${su.type}</div><div class="ayah tf-ay">${ayahHTML(i, null, false)}</div>${nav}</section>
+  <section class="panel tf-sum"><b class="muted small">خلاصة الآية</b><p id="tfSum" class="tf-s">جارٍ التحميل…</p></section>
   <div class="tf-lvl"><span>مستوى القراءة:</span><div class="seg" id="tfL" role="group" aria-label="مستوى القراءة">${lvBtn}</div></div>
   ${parts.join('')}`;
+  getTxt('muyassar', sn, an).then(r => { const e = $('#tfSum'); if (e) e.textContent = r.txt ? brief(r.txt) : 'لا خلاصة لهذه الآية.'; }).catch(() => { const e = $('#tfSum'); if (e) e.textContent = 'تعذّر تحميل الخلاصة.'; });
   const loadBk = async d => { if (d.dataset.ok) return; d.dataset.ok = 1; const k = d.dataset.k, box = d.querySelector('.tf-load'); try { box.innerHTML = bookHTML(k, await getTxt(k, sn, an), an); } catch (e) { d.dataset.ok = ''; box.innerHTML = '<p class="muted">تعذّر تحميل التفسير، تحقق من الاتصال.</p>'; } };
   $$('#tfHome details.tf-bk[data-k]').forEach(d => { d.addEventListener('toggle', () => { if (d.open) loadBk(d); }); if (d.open) loadBk(d); });
   $('#tfL').onclick = e => { const b = e.target.closest('button'); if (!b) return; ST.prefs = ST.prefs || {}; ST.prefs.tfLevel = b.dataset.l; try { save(); } catch (er) {} ayahView(sn, an); };
