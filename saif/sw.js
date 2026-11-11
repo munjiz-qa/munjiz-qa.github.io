@@ -1,5 +1,5 @@
 /* سَيْف: يحفظ نسخة من المنصة على الجهاز فتفتح دون إنترنت. يجلب الأحدث من الموقع دائماً عند توفر الاتصال */
-const CACHE = "saif-v6", SHELL = ["./", "index.html", "core.js", "app.js", "config.js", "manifest.webmanifest", "icon.svg", "pwa-install.js"];
+const CACHE = "saif-v7", SHELL = ["./", "index.html", "core.js", "app.js", "config.js", "manifest.webmanifest", "icon.svg", "pwa-install.js"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith("saif-") && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener("fetch", e => {

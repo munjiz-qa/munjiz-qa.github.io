@@ -41,6 +41,16 @@ function isAyahIx(v) { return Number.isInteger(v) && v >= 0 && v < 6236; }
 function cleanHifz(h) { const o = {}; if (h && typeof h === 'object') for (const [k, v] of Object.entries(h)) { if (!/^\d{1,3}:\d{1,3}-\d{1,3}$/.test(k) || !v || typeof v !== 'object') continue; const r = {}; for (const f of ['ef', 'int', 'reps', 'due', 'last']) if (Number.isFinite(+v[f])) r[f] = +v[f]; o[k] = r; } return o; }
 function cleanNotes(h) { const o = {}; if (h && typeof h === 'object') for (const [k, v] of Object.entries(h)) { if (!/^\d{1,4}$/.test(k) || !isAyahIx(+k) || !v || typeof v.t !== 'string') continue; const t = v.t.trim().slice(0, 800); if (t) o[k] = { t, at: Number.isFinite(+v.at) ? +v.at : 0 }; } return o; }
 function cleanLog(h) { const o = {}; if (h && typeof h === 'object') for (const k of Object.keys(h).sort().slice(-400)) { if (!/^\d{4}-\d{2}-\d{2}$/.test(k) || !Array.isArray(h[k])) continue; const p = [...new Set(h[k].map(Number).filter(v => Number.isInteger(v) && v >= 1 && v <= 604))]; if (p.length) o[k] = p; } return o; }
+/* خطة الختمة والأعمال اليومية: تواريخ وأرقام ومعرّفات قصيرة فقط */
+function cleanKplan(w) {
+  const D = /^\d{4}-\d{2}-\d{2}$/, I = /^[a-z0-9]{1,24}$/, o = { goal: null, count: 0, items: [], done: {} };
+  if (!w || typeof w !== 'object') return o;
+  if (w.goal && D.test(w.goal.start) && Number.isInteger(w.goal.days) && w.goal.days >= 1 && w.goal.days <= 1000) o.goal = { start: w.goal.start, days: w.goal.days };
+  o.count = Number.isInteger(w.count) && w.count >= 0 && w.count <= 500 ? w.count : 0;
+  o.items = (Array.isArray(w.items) ? w.items : []).filter(i => i && typeof i.id === 'string' && I.test(i.id) && typeof i.t === 'string').map(i => ({ id: i.id, t: i.t.slice(0, 40) })).slice(0, 12);
+  if (w.done && typeof w.done === 'object') for (const [k, v] of Object.entries(w.done).slice(-150)) if (D.test(k) && Array.isArray(v)) o.done[k] = v.filter(x => typeof x === 'string' && I.test(x)).slice(0, 12);
+  return o;
+}
 function cleanState(x) {
   x.bookmarks = [...new Set((Array.isArray(x.bookmarks) ? x.bookmarks : []).map(Number).filter(isAyahIx))];
   x.last = isAyahIx(x.last) ? x.last : null;
@@ -49,6 +59,7 @@ function cleanState(x) {
   x.notes = cleanNotes(x.notes); x.log = cleanLog(x.log);
   x.goal = x.goal && Number.isInteger(+x.goal.pages) && +x.goal.pages >= 1 && +x.goal.pages <= 100 ? { pages: +x.goal.pages, at: Number.isFinite(+x.goal.at) ? +x.goal.at : 0 } : null;
   x.khatma = typeof x.khatma === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(x.khatma) ? x.khatma : null;
+  x.kplan = cleanKplan(x.kplan);
   x.research = (Array.isArray(x.research) ? x.research : []).filter(r => r && typeof r.q === 'string').slice(0, 200);
   const p = x.prefs || {}; x.prefs = { ...p, tafsir: /^[a-z0-9_-]{1,32}$/.test(p.tafsir) ? p.tafsir : 'muyassar', size: [0.9, 1, 1.2, 1.45].includes(+p.size) ? +p.size : 1, theme: ['auto', 'light', 'dark'].includes(p.theme) ? p.theme : 'auto' };
   return x;
@@ -160,8 +171,8 @@ const NAV = LAB ? [
 ] : [
   ['', [['home','الرئيسية','i-home']]],
   ['اقرأ وتدبّر', [['mushaf','المصحف','i-book'],['tafasir','التفاسير وأسباب النزول','i-book',1],['search','البحث بالمعنى','i-search'],['ask','اسأل مشكاة','i-spark'],['topics','الموسوعة الموضوعية','i-grid'],['kids','ركن الأطفال','i-kids',1],['tawhid','التوحيد في القرآن','i-tawhid',1],['jannah','وصف الجنة في القرآن','i-jannah',1]], 'p1'],
-  ['احفظ وتعبّد', [['adhkar','أذكار الصباح والمساء','i-sun'],['duaa','أدعية القرآن','i-hands',1],['ruqya','التداوي بالقرآن','i-ruqya',1],['arbain','الأحاديث الأربعون النووية','i-arbain',1],['hifz','الحفظ والتسميع','i-mic'],['wird','وردي وتقدّمي','i-time'],['saved','محفوظاتي','i-bookmark'],['prayer','مواقيت الصلاة','i-time']], 'p2'],
-  ['ابحث وحقّق', [['research','مختبر الأبحاث','i-flask'],['ulum','علوم القرآن','i-ulum',1],['jamal','الصور الجمالية في القرآن','i-jamal',1],['naskh','الناسخ والمنسوخ ومتشابه الآيات','i-naskh',1],['words','المعجم المفهرس','i-abc'],['stats','الإحصاء العام','i-chart'],['taam','الفاكهة والطعام في القرآن','i-taam',1]], 'p3'],
+  ['احفظ وتعبّد', [['adhkar','أذكار الصباح والمساء','i-sun'],['duaa','أدعية القرآن','i-hands',1],['ruqya','التداوي بالقرآن','i-ruqya',1],['arbain','الأحاديث الأربعون النووية','i-arbain',1],['hijri','التقويم الهجري','i-cal',1],['khatma','خطة الختمة والأوسمة','i-check',1],['hifz','الحفظ والتسميع','i-mic'],['wird','وردي وتقدّمي','i-time'],['saved','محفوظاتي','i-bookmark'],['prayer','مواقيت الصلاة','i-time']], 'p2'],
+  ['ابحث وحقّق', [['research','مختبر الأبحاث','i-flask'],['ulum','علوم القرآن','i-ulum',1],['jamal','الصور الجمالية في القرآن','i-jamal',1],['naskh','الناسخ والمنسوخ ومتشابه الآيات','i-naskh',1],['words','المعجم المفهرس','i-abc'],['stats','الإحصاء العام','i-chart'],['taam','الفاكهة والطعام في القرآن','i-taam',1],['zakat','حاسبة الزكاة','i-calc',1],['mawarith','حاسبة المواريث','i-calc',1],['lafz','عدّاد الألفاظ','i-chart',1]], 'p3'],
   ['اكتشف وتأمّل', [['awwalin','أخبار الأولين والآخرين','i-scroll'],['ijaz','الإعجاز العلمي','i-atom'],['map','أطلس القرآن','i-map'],['timeline','الخط الزمني','i-time'],['sira','السيرة النبوية والغزوات','i-sira',1],['graph','شبكة المعرفة','i-graph'],['nisaa','المرأة في القرآن','i-flower',1],['rijal','الرجل في القرآن','i-user',1],['shifa','الأمراض والعلاج','i-heal',1],['wazifa','وظيفة الإنسان','i-wazifa',1]], 'p4'],
   ['التطبيق', [['guide','دليل التطبيق','i-info'],['whatsnew','ما الجديد','i-spark'],['about','المنهج والمصادر','i-info'],['account','حسابي','i-user'],['settings','الإعدادات','i-gear'],['admin','لوحة الإدارة','i-shield']]],
 ];
@@ -190,7 +201,9 @@ const PATHS = [
     ['adhkar', 'i-sun', 'أذكار الصباح والمساء', 'تظهر في وقتها حسب مدينتك، بنصوص حصن المسلم وتخريجها، مع عدّاد لكل ذكر.', () => ''],
     ['duaa', 'i-hands', 'أدعية القرآن', 'كل دعاء في القرآن بموضوعه ومن دعا به وسبب نزوله، وكيف تستعمله في يومك.', () => `${n(THEMES.duaa.groups.reduce((t, g) => t + g[1].length, 0))} دعاءً`],
     ['arbain', 'i-arbain', 'الأحاديث الأربعون النووية', 'الأحاديث الأربعون النووية، كل حديث بتخريجه ودرجته وشرح موجز لمعناه.', () => `${n(40)} حديثاً`],
-    ['ruqya', 'i-ruqya', 'التداوي بالقرآن', 'آيات الشفاء والرقية الشرعية بأدلتها: الأحاديث الصحيحة بتخريجها، وأقوال العلماء بمصادرها، وضوابط الرقية وكيفيتها.', () => `${n(RUQYA.h.length)} حديثاً`]]],
+    ['ruqya', 'i-ruqya', 'التداوي بالقرآن', 'آيات الشفاء والرقية الشرعية بأدلتها: الأحاديث الصحيحة بتخريجها، وأقوال العلماء بمصادرها، وضوابط الرقية وكيفيتها.', () => `${n(RUQYA.h.length)} حديثاً`],
+    ['hijri', 'i-cal', 'التقويم الهجري', 'الأيام الفاضلة والأيام البيض وأيام لا يُصام فيها، مع المناسبات بأدلتها وتذكير بصيام الغد.', () => ''],
+    ['khatma', 'i-check', 'خطة الختمة والأوسمة', 'قسّم ختمتك على الأيام، وتابع أوسمتك وأعمالك اليومية، مبنية على ما تقرؤه في المصحف.', () => '']]],
   ['p3', 'ابحث وحقّق', 'أدوات الباحث: أبحاث موثقة، ومعجم الألفاظ والجذور، والإحصاء.', [
     ['research', 'i-flask', 'مختبر الأبحاث', 'بحث كامل في أي موضوع من الآيات والتفاسير والصحاح، بمصادره.', () => ''],
     ['ulum', 'i-ulum', 'علوم القرآن', 'أبواب مسلسلة مفهرسة: النزول، والمكي والمدني، وأسباب النزول، والجمع، والقراءات، والرسم، والنسخ، والمحكم والمتشابه، والعام والخاص، والمطلق والمقيد، والمنطوق والمفهوم، والأمثال، والأقسام، والجدل، والقصص، والإعجاز، والتفسير، وآداب التلاوة.', () => `${n(ULUM.length)} ${ULUM.length > 10 ? 'باباً' : 'أبواب'}`],
@@ -198,7 +211,10 @@ const PATHS = [
     ['naskh', 'i-naskh', 'الناسخ والمنسوخ ومتشابه الآيات', 'حقيقة النسخ وأقسامه وأمثلته بأقوال المفسرين، ومتشابه ألفاظ الآيات مع إبراز مواضع الاختلاف.', () => `${n(9)} أحكام منسوخة`],
     ['words', 'i-abc', 'المعجم المفهرس', 'كل لفظ وجذر في المصحف بمواضعه وصيغه.', () => `${n(W.roots.length)} جذراً`],
     ['stats', 'i-chart', 'الإحصاء العام', 'السور والكلمات والحروف وأقسام الكلم بالأرقام الموثقة.', () => `${n(W.w.length)} كلمة`],
-    ['taam', 'i-taam', 'الفاكهة والطعام في القرآن الكريم', 'التين والزيتون والنخل والعسل واللبن والمن والسلوى بآياتها، وأحكام الحلال والطيبات وآداب الطعام وترك الإسراف، بالأحاديث الصحيحة وأقوال المفسرين.', () => `${n(TAAM.k.length)} صنفاً`]]],
+    ['taam', 'i-taam', 'الفاكهة والطعام في القرآن الكريم', 'التين والزيتون والنخل والعسل واللبن والمن والسلوى بآياتها، وأحكام الحلال والطيبات وآداب الطعام وترك الإسراف، بالأحاديث الصحيحة وأقوال المفسرين.', () => `${n(TAAM.k.length)} صنفاً`],
+    ['zakat', 'i-calc', 'حاسبة الزكاة', 'نصاب الذهب والفضة والعروض والأنعام والزروع وزكاة الفطر بمقاديرها الشرعية.', () => ''],
+    ['mawarith', 'i-calc', 'حاسبة المواريث', 'أنصبة الورثة بالكسور والمبلغ، مع الحجب والعَول والردّ، وأدلتها من سورة النساء.', () => ''],
+    ['lafz', 'i-chart', 'عدّاد الألفاظ', 'كم مرة ورد أي جذر أو لفظ في القرآن، وتوزيعه على السور مكيّها ومدنيّها.', () => '']]],
   ['p4', 'اكتشف وتأمّل', 'رحلة في أخبار القرآن وآياته الكونية، على الخريطة والزمن.', [
     ['awwalin', 'i-scroll', 'أخبار الأولين والآخرين', 'قصص الأمم السابقة وأخبار الغيب الآتي، من الآيات.', () => ''],
     ['ijaz', 'i-atom', 'الإعجاز العلمي', 'آيات الكون والإنسان مع درجة كل قول ومصادره.', () => ''],
@@ -231,7 +247,15 @@ function progLoad(fn, ...a) {
 }
 const wird = () => { V(`<p class="loading">جارٍ التحميل…</p>`); progLoad('wird'); };
 const whatsnew = () => { V(`<p class="loading">جارٍ التحميل…</p>`); progLoad('whatsnew'); };
-const views = { wird, whatsnew, prayer, adhkar, home: LAB ? research : home, mine: () => research(null, true), mushaf, stats, words, topics, search, ask, hifz, saved, map: atlas, timeline, graph, settings, about, admin, guide, account, awwalin, ijaz, research, kids, ulum, duaa, nisaa, rijal, shifa, ruqya };
+/* أدوات المسلم (التقويم الهجري، الزكاة، المواريث، عدّاد الألفاظ، خطة الختمة): ملف tools.js يُحمَّل عند أول فتح ويعمل دون اتصال */
+function toolsLoad(then) {
+  if (window.MTOOLS) return then();
+  if (!toolsLoad.s) { toolsLoad.s = document.createElement('script'); toolsLoad.s.src = 'tools.js'; document.head.appendChild(toolsLoad.s); }
+  toolsLoad.s.addEventListener('load', then, { once: true });
+  toolsLoad.s.addEventListener('error', () => { toolsLoad.s.remove(); toolsLoad.s = null; V(`<p class="loading">تعذّر فتح القسم، تحقق من الاتصال ثم أعد المحاولة.</p>`); }, { once: true });
+}
+const tool = k => () => { if (window.MTOOLS) return MTOOLS[k](); V(`<p class="loading">جارٍ فتح القسم…</p>`); toolsLoad(() => { if (curRoute === k) MTOOLS[k](); }); };
+const views = { hijri: tool('hijri'), khatma: tool('khatma'), zakat: tool('zakat'), mawarith: tool('mawarith'), lafz: tool('lafz'), wird, whatsnew, prayer, adhkar, home: LAB ? research : home, mine: () => research(null, true), mushaf, stats, words, topics, search, ask, hifz, saved, map: atlas, timeline, graph, settings, about, admin, guide, account, awwalin, ijaz, research, kids, ulum, duaa, nisaa, rijal, shifa, ruqya };
 /* وحدات البيانات الكبيرة (mods/*.js): لا تُحمَّل إلا عند أول فتح للقسم، فيخفّ app.js ويبدأ التطبيق أسرع */
 const MODS = {};
 function needMod(key) {
@@ -248,8 +272,9 @@ function needMod(key) {
 function route() {
   const h = (location.hash || '#' + HOME).slice(1);
   let m, cur;
-  curRoute = /^(s|a|p|ps|pa)\d/.test(h) ? 'mushaf' : /^tf\d/.test(h) || h === 'tafasir' ? 'tafasir' : /^k-/.test(h) ? 'kids' : /^t-/.test(h) ? 'topics' : /^(root|lem)\d/.test(h) ? 'words' : h;
-  if (m = h.match(/^s(\d+)$/)) { cur = 'mushaf'; surah(+m[1]); }
+  curRoute = /^lafz\//.test(h) ? 'lafz' : /^(s|a|p|ps|pa)\d/.test(h) ? 'mushaf' : /^tf\d/.test(h) || h === 'tafasir' ? 'tafasir' : /^k-/.test(h) ? 'kids' : /^t-/.test(h) ? 'topics' : /^(root|lem)\d/.test(h) ? 'words' : h;
+  if (/^lafz\//.test(h)) { cur = 'lafz'; views.lafz(); }
+  else if (m = h.match(/^s(\d+)$/)) { cur = 'mushaf'; surah(+m[1]); }
   else if (m = h.match(/^a(\d+)-(\d+)$/)) { cur = 'mushaf'; surah(+m[1], +m[2]); }
   else if (m = h.match(/^p(\d+)$/)) { cur = 'mushaf'; mpOpen(+m[1]); }
   else if (m = h.match(/^ps(\d+)$/)) { cur = 'mushaf'; mpOpen(1, { surah: Math.max(1, Math.min(114, +m[1])) }); }
@@ -3735,7 +3760,7 @@ const i18nReady = i18nInit().catch(() => {});
     [Q, W, T, TF, GEO] = await Promise.all([gz('data/quran.txt'), gz('data/words.txt'), gz('data/topics.txt'), getJSON('data/tafsir.json'), getJSON('data/geo.json')]);
     prep();
     if (IS_PWA) { try { const base = await getJSON('config.json').catch(() => ({})), pv = LS.get('cfgPreview', null); siteCfg = pv && (pv.updated || 0) > (base.updated || 0) ? pv : base; applyCfg(); } catch (e) {} checkSession(); }
-    route(); connectCloud(); i18nReady.then(offlineAuto);
+    route(); connectCloud(); i18nReady.then(offlineAuto); try { if (localStorage.getItem('mishkat:fastremind')) setTimeout(() => toolsLoad(() => MTOOLS.remind()), 2500); } catch (e) {}
   } catch (err) { V(`<p class="loading">تعذّر تحميل البيانات. يتطلب التطبيق متصفحاً حديثاً (كروم أو سفاري أو فايرفوكس أو إيدج). ${esc(err.message)}</p>`); }
 })();
 /* التحديث التلقائي: عند نشر نسخة جديدة يثبّتها عامل الخدمة ثم تُعاد الصفحة مرة واحدة، فيرى الزائر الجديد دون إعادة تحميل يدوية */
