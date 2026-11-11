@@ -15,21 +15,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
         with: { go-version: '1.24' }
       - name: Build package
         run: |
           mkdir -p work/font && (cd work/font && npm pack @fontsource/ibm-plex-sans-arabic@5 >/dev/null && tar xzf *.tgz)
           python3 scripts/barakat-desktop/build.py work
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with: { name: barakat-desktop, path: dist/Barakat-Desktop.zip }
   site:
     # الموقع نفسه: كل الأدوار على الكمبيوتر والجوال من ملفات المستودع
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with: { node-version: 22 }
       - run: npm init -y >/dev/null && npm i playwright@1.48.2 >/dev/null && npx playwright install --with-deps chromium
       - name: Test all roles on the site files
@@ -37,7 +37,7 @@ jobs:
           python3 -m http.server 8099 >/dev/null 2>&1 &
           sleep 1
           BASE=http://127.0.0.1:8099/barakat/ node scripts/barakat-desktop/e2e.cjs - shots-site
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: shots-site
@@ -50,11 +50,11 @@ jobs:
         os: [windows-latest, macos-latest, ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with: { sparse-checkout: scripts/barakat-desktop }
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with: { name: barakat-desktop, path: pkg }
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with: { node-version: 22 }
       - run: npm init -y >/dev/null && npm i playwright@1.48.2 >/dev/null && npx playwright install chromium
         shell: bash
@@ -82,7 +82,7 @@ jobs:
           test "$(curl -s -o /dev/null -w '%{http_code}' -H 'Host: evil.example:47820' http://127.0.0.1:47840/api/db)" = 403
           test "$(curl -s -o /dev/null -w '%{http_code}' -X PUT -H 'Origin: http://evil.example' -H 'Content-Type: application/json' -d '{"v":1}' http://127.0.0.1:47840/api/db)" = 403
           echo "foreign requests rejected"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: shots-${{ matrix.os }}
@@ -92,7 +92,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with: { name: barakat-desktop, path: dist }
       - env:
           GH_TOKEN: ${{ github.token }}
@@ -107,8 +107,8 @@ jobs:
     needs: publish
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with: { node-version: 22 }
       - run: npm init -y >/dev/null && npm i playwright@1.48.2 >/dev/null && npx playwright install --with-deps chromium
       - name: Wait until the published files match the repository
@@ -124,7 +124,7 @@ jobs:
           curl -fsIL "https://github.com/munjiz-qa/munjiz-qa.github.io/releases/download/barakat-desktop/Barakat-Desktop.zip" | grep -i "^HTTP" | tail -1
       - name: Test all roles on the published site
         run: BASE=https://munjiz-qa.github.io/barakat/ node scripts/barakat-desktop/e2e.cjs - shots-live
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: shots-live
