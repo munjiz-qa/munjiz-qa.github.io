@@ -48,6 +48,9 @@ const DOCX = mkZip([["[Content_Types].xml", "<Types/>"], ["word/document.xml", "
     await shot("client-home"); ok(!(await overflow()), "لا تمرير أفقي (عميل)");
     await p.goto(BASE + "#scan"); await p.click("#demo"); await p.waitForSelector("text=نتيجة الفحص", { timeout: 10000 });
     const res = await p.textContent("#res"); ok(res.includes("كلمة مرور مكتوبة") && res.includes("IBAN") && res.includes("بطاقة شخصية") && res.includes("بريد"), "الفحص اكتشف البيانات الحساسة في ملف الاختبار"); ok(!res.includes("Test-Only-123"), "القيم الحساسة مقنّعة"); await shot("client-scan");
+    // جدول نتائج الفحص: على الجوال يُعرض كبطاقات (رؤوس الأعمدة مخفية وكل خلية تحمل عنوانها)، وعلى الكمبيوتر جدولاً عادياً
+    { const st = await p.evaluate(() => { const t = document.querySelector("#res table.stack"); return t ? { cells: t.querySelectorAll("td[data-l]").length, head: getComputedStyle(t.querySelector("thead")).display } : null; });
+      ok(!!st && st.cells >= 4 && (name === "mobile" ? st.head === "none" : st.head !== "none"), "جدول نتائج الفحص: بطاقات على الجوال وجدول على الكمبيوتر"); }
     await p.setInputFiles("#fi", { name: "عرض.docx", mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", buffer: DOCX });
     // انتظار عبر محدد العنصر بدل waitForFunction: الأخيرة تحتاج تقييم نص برمجي تمنعه سياسة أمان المحتوى في الصفحة فتفشل المراقبة أحياناً
     await p.locator("#res", { hasText: "#2" }).first().waitFor({ timeout: 15000 });
