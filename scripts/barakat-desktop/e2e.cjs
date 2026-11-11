@@ -73,6 +73,12 @@ const ADMIN=['admin@barakat.qa','Barakat@Admin2026'],CLIENT=['client@barakat.qa'
  T(await p.evaluate(id=>db.msgs.find(m=>m.id===id).status==='replied',mid),'المدير: الرد على رسالة العميل');
  await p.goto(APP+'#/a/profit');await p.fill('form[data-form=dist] [name=period]','الربع الرابع 2026');await p.fill('form[data-form=dist] [name=gross]','3000');await p.click('form[data-form=dist] button');
  await p.click('[data-act=doDist]');await p.waitForTimeout(300);T(await p.evaluate(()=>db.dist.length===2),'المدير: توزيع أرباح المضاربة');
+ await p.goto(APP+'#/a/reports');await p.waitForTimeout(200);const ck=await p.evaluate(()=>compliance().map(c=>c[1]));
+ T(ck.length===6&&ck.every(Boolean)&&(await p.textContent('#view')).includes('تقرير الامتثال الشرعي'),'المدير: تقرير الامتثال الشرعي 6 من 6');
+ T(await p.isVisible('.cbar'),'المدير: رسم الإيداعات والسحوبات ظاهر');
+ {const [d]=await Promise.all([p.waitForEvent('download'),p.click('[data-act=repCsv]')]);const f=path.join(SHOTS,'..',d.suggestedFilename());await d.saveAs(f);const t=fs.readFileSync(f,'utf8');
+  T(d.suggestedFilename().startsWith('barakat-ledger-')&&t.charCodeAt(0)===0xfeff&&t.includes('التاريخ,العميل')&&t.split('\n').length>15,'المدير: تنزيل دفتر الحركات CSV يفتح في Excel')}
+ {const [d]=await Promise.all([p.waitForEvent('download'),p.click('[data-act=portCsv]')]);T(d.suggestedFilename().startsWith('barakat-portfolio-'),'المدير: تنزيل محفظة التمويل')}
  await p.goto(APP+'#/a/settings');T(await p.isVisible('text=النسخ الاحتياطي والاستعادة'),'المدير: قسم النسخ الاحتياطي ظاهر');
  const [dl]=await Promise.all([p.waitForEvent('download'),p.click('[data-act=backup]')]);const bk=path.join(SHOTS,'..',dl.suggestedFilename());await dl.saveAs(bk);
  const bj=JSON.parse(fs.readFileSync(bk,'utf8'));T(bj.v===1&&bj.users.some(u=>u.email==='sara@test.qa')&&dl.suggestedFilename().startsWith('barakat-backup-'),'المدير: ملف النسخة الاحتياطية صحيح ('+dl.suggestedFilename()+')');
@@ -94,8 +100,17 @@ const ADMIN=['admin@barakat.qa','Barakat@Admin2026'],CLIENT=['client@barakat.qa'
  await p.goto(APP+'#/c/zakat');await p.waitForTimeout(200);const zk=await p.evaluate(()=>+$('#zk').dataset.due);
  if(zk>0){await p.click('#zkBtn');await p.waitForTimeout(300);T(await p.evaluate(()=>db.tx.filter(t=>t.uid===me().id&&t.type==='zakat').length>=2),'العميل: إخراج الزكاة')}
  await p.goto(APP+'#/c/invest');T((await p.textContent('#view')).includes('الربع الرابع 2026'),'العميل: يرى توزيع الربح الجديد');
+ const nb=+(await p.textContent('#authBtns .bell .n').catch(()=>'0'));T(nb>=2,`العميل: جرس الإشعارات يعرض ${nb} جديدة`);
+ await p.click('#authBtns .bell');await p.waitForTimeout(300);T(p.url().includes('#/c/notes')&&(await p.textContent('#view')).includes('الربع الرابع 2026'),'العميل: إشعار توزيع الربح في صفحة الإشعارات');
+ T(!(await p.$('#authBtns .bell .n'))&&await p.evaluate(()=>unseen(me())===0),'العميل: الإشعارات أصبحت مقروءة');
+ await p.goto(APP+'#/c/accounts');await p.selectOption('form[data-form=stmt] [name=per]','m1');await p.fill('form[data-form=stmt] [name=q]','تحويل');await p.click('form[data-form=stmt] button');await p.waitForTimeout(300);
+ const rows=await p.$$eval('.tbl.txl tbody tr',t=>t.map(r=>r.textContent));T(rows.length>0&&rows.every(r=>r.includes('تحويل')),`العميل: كشف الحساب يُصفّى بالفترة والبحث (${rows.length} حركة)`);
+ {const [d]=await Promise.all([p.waitForEvent('download'),p.click('[data-act=stmtCsv]')]);const f=path.join(SHOTS,'..',d.suggestedFilename());await d.saveAs(f);const t=fs.readFileSync(f,'utf8');
+  T(d.suggestedFilename().startsWith('barakat-statement-BR-')&&t.includes('-750.00'),'العميل: تنزيل كشف الحساب CSV')}
+ await p.emulateMedia({media:'print'});T(await p.isVisible('.printhead')&&!(await p.isVisible('header.top')),'العميل: نسخة الطباعة و PDF فيها ترويسة بركات دون القوائم');await p.emulateMedia({media:'screen'});
  await logout(p);
- await login(p,'maryam@barakat.qa','Client@2026');const mb=await p.evaluate(()=>me().bal.current);await p.goto(APP+'#/c/finance/'+qid);await p.click('[data-act=accept]');await p.waitForTimeout(300);
+ await login(p,'maryam@barakat.qa','Client@2026');const mb=await p.evaluate(()=>me().bal.current);T(await p.evaluate(id=>db.notes.some(n=>n.to===me().id&&n.text.includes(id)&&n.text.includes('صدر عرض')),qid),'العميلة مريم: وصلها إشعار بصدور العرض');
+ await p.goto(APP+'#/c/finance/'+qid);await p.click('[data-act=accept]');await p.waitForTimeout(300);
  T(await p.evaluate(([id,b])=>db.reqs.find(r=>r.id===id).status==='active'&&Math.abs(me().bal.current-(b+6000))<0.01,[qid,mb]),'العميلة مريم: قبول القرض الحسن وصرف 6,000.00 ر.ق إلى حسابها');
  T(await p.evaluate(()=>me().bal.current>0&&db.tx.some(t=>t.uid===me().id&&t.note.startsWith('تعويض تكافل'))),'العميلة مريم: تعويض التكافل وصل إلى حسابها');await logout(p);
  await login(p,'sara@test.qa','Sara@2026');await p.goto(APP+'#/c/help');T((await p.textContent('#view')).includes('فُعّل حسابك'),'العميل الجديد: يرى رد الإدارة');await logout(p);
@@ -119,9 +134,11 @@ const ADMIN=['admin@barakat.qa','Barakat@Admin2026'],CLIENT=['client@barakat.qa'
  c=await ctx({width:390,height:844});p=c.pages()[0]||await c.newPage();
  for(const h of ['#/','#/p/finance','#/p/takaful','#/p/contact']){await p.goto(APP+h);await p.waitForTimeout(250);T(await p.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),`الجوال: ${h} بلا تمرير أفقي`)}
  await p.goto(APP);await p.waitForTimeout(300);await p.screenshot({path:SHOTS+'/3-home-mobile.png'});
- await login(p,...CLIENT);for(const h of ['home','takaful','finance','help']){await p.goto(APP+'#/c/'+h);await p.waitForTimeout(200);T(await p.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),`الجوال: صفحة العميل ${h} بلا تمرير أفقي`)}
+ await login(p,...CLIENT);for(const h of ['home','accounts','notes','takaful','finance','help']){await p.goto(APP+'#/c/'+h);await p.waitForTimeout(200);T(await p.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),`الجوال: صفحة العميل ${h} بلا تمرير أفقي`)}
  await p.goto(APP+'#/c/home');await p.waitForTimeout(200);await p.screenshot({path:SHOTS+'/4-customer-mobile.png'});
- await login(p,...ADMIN);await p.goto(APP+'#/a/takaful');await p.waitForTimeout(200);T(await p.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),'الجوال: لوحة الإدارة بلا تمرير أفقي');await p.screenshot({path:SHOTS+'/5-admin-mobile.png'});
+ await login(p,...ADMIN);await p.goto(APP+'#/a/takaful');await p.waitForTimeout(200);T(await p.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),'الجوال: لوحة الإدارة بلا تمرير أفقي');
+ await p.goto(APP+'#/a/reports');await p.waitForTimeout(200);T(await p.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),'الجوال: صفحة التقارير بلا تمرير أفقي');await p.screenshot({path:SHOTS+'/6-reports-mobile.png',fullPage:true});
+ if(WEB){const m=await p.evaluate(async()=>{const r=await fetch('manifest.webmanifest');const j=await r.json();const i=await fetch(j.icons[1].src);return j.short_name==='بركات'&&i.ok});T(m,'التطبيق قابل للتثبيت على الجوال (manifest والأيقونات)')}await p.screenshot({path:SHOTS+'/5-admin-mobile.png'});
  if(!WEB){await p.goto(require('url').pathToFileURL(path.join(PKG,'0-READ-ME-FIRST.html')).href);T((await p.textContent('h1')).includes('طريقة التشغيل'),'دليل التشغيل يفتح')}
  await c.close();await stop();
  if(!WEB)T(net.length===0,'صفر طلبات إنترنت طوال الاختبار ('+net.length+')');
