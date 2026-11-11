@@ -285,7 +285,7 @@ function route() {
   else if (m = h.match(/^root(\d+)$/)) { cur = 'words'; rootView(+m[1]); }
   else if (m = h.match(/^lem(\d+)$/)) { cur = 'words'; lemmaView(+m[1]); }
   else { cur = views[h] ? h : HOME; if (LAB && cur === 'home') cur = 'research'; if (LAB && cur === 'about') cur = 'guide'; if (LAB && !['research', 'mine', 'prayer', 'adhkar', 'mushaf', 'words', 'guide', 'account', 'settings', 'admin'].includes(cur)) cur = 'research'; views[cur](); }
-  setCur(cur);
+  setCur(cur); noteRecent(cur);
   if (!/^(a|p|ps|pa)\d/.test(h)) window.scrollTo(0, 0);
 }
 function setCur(v) { $$('#nav a,#tabbar a').forEach(a => { if (a.dataset.v === v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }); }
@@ -440,7 +440,7 @@ function home() {
       <form class="wl-search" id="homeQ" role="search"><svg><use href="#i-search"/></svg><input type="search" id="homeQi" placeholder="عمّ تبحث في القرآن؟ اكتب فكرة أو كلمة" aria-label="ابحث في القرآن"><button class="btn primary" type="submit">ابحث</button></form>
       <div class="wl-chips"><span class="muted small">جرّب:</span>${QUICK.map(q => `<button type="button" class="chip" data-hq="${esc(q)}">${esc(q)}</button>`).join('')}</div>
     </section>
-    <section class="mindex" aria-label="أقسام مشكاة"><div class="mi-head"><b>أقسام مشكاة</b><span class="muted small">كل الأقسام بلمسة واحدة</span></div>
+    <section class="mindex" aria-label="أقسام مشكاة"><div class="mi-head"><b>أقسام مشكاة</b><span class="muted small">كل الأقسام بلمسة واحدة</span></div>${recentHTML()}
       ${PATHS.map(([pc, t, , items]) => `<div class="mi-group ${pc}"><div class="mi-t"><i class="dot"></i>${t}</div><div class="mi-grid">${items.map(([v, ic, tt]) => `<a class="mi-tile" href="#${v}"><svg><use href="#${ic}"/></svg><span>${tt}</span></a>`).join('')}</div></div>`).join('')}
       <div class="mi-more"><a href="#stats">القرآن بالأرقام</a><a href="#guide">دليل التطبيق</a><a href="#about">المنهج والمصادر</a></div>
     </section>
@@ -3751,6 +3751,51 @@ async function connectCloud() {
     else if (ST.updated) save();
     const h = (location.hash || '#' + HOME).slice(1); if (['home', 'saved', 'settings', 'hifz', 'research', 'mine'].includes(h)) route();
   } catch (e) {}
+}
+/* ================= سجل الأقسام الموحّد: ست فئات، والقائمة والرئيسية تُبنيان من مصدر واحد.
+   لإضافة قسم جديد: views.x = fn؛ ثم أضفه إلى PATHS بأي فئة، ثم registerSection('x', 'p3') أو أضف معرّفه إلى SEC_ORDER.
+   كل قسم غير مسجّل يقع تلقائياً في «الأدوات والاستكشاف» فلا يضيع من القائمة ولا من الرئيسية. */
+const SEC_CATS = [
+  ['p1', 'القرآن الكريم', 'اقرأ المصحف، وابحث بالمعنى، واحفظ واسأل.', ['mushaf', 'search', 'ask', 'topics', 'hifz', 'saved']],
+  ['p4', 'التفسير والعلوم', 'التفاسير وأسباب النزول وعلوم القرآن والبلاغة والإعجاز والمعجم.', ['tafasir', 'ulum', 'jamal', 'ijaz', 'words', 'stats']],
+  ['p3', 'موضوعات في القرآن', 'دراسات موثّقة بالآيات والأحاديث الصحيحة وأقوال المفسرين.', ['tawhid', 'jannah', 'wazifa', 'asnaf', 'taam', 'awwalin']],
+  ['p2', 'العبادات والأذكار', 'رفيقك اليومي: أذكار ومواقيت وأدعية وتداوٍ بالقرآن.', ['adhkar', 'prayer', 'duaa', 'ruqya', 'shifa']],
+  ['p5', 'الأسرة والأطفال', 'قصص مصوّرة للأطفال، والمرأة والرجل في القرآن.', ['kids', 'nisaa', 'rijal']],
+  ['p6', 'الأدوات والاستكشاف', 'بحث موثّق، وخرائط وخطوط زمنية وشبكة معرفة.', ['research', 'map', 'timeline', 'graph']],
+];
+const SEC_PIN = {};
+function registerSection(id, pc) { SEC_PIN[id] = pc; mkRegroup(); }
+function mkRegroup() {
+  if (LAB) return;
+  const items = {}, navOf = {};
+  PATHS.forEach(g => g[3].forEach(x => { items[x[0]] = x; }));
+  NAV.forEach(g => g[1].forEach(x => { navOf[x[0]] = x; }));
+  const home = {}; SEC_CATS.forEach(c => c[3].forEach(id => { home[id] = c[0]; }));
+  const buckets = SEC_CATS.map(c => [c[0], c[1], c[2], []]);
+  const at = pc => buckets.find(b => b[0] === pc) || buckets[buckets.length - 1];
+  SEC_CATS.forEach(c => c[3].forEach(id => { if (items[id]) at(c[0])[3].push(items[id]); }));
+  Object.keys(items).forEach(id => { if (!home[id]) at(SEC_PIN[id] || 'p6')[3].push(items[id]); });
+  PATHS.length = 0; buckets.forEach(b => PATHS.push(b));
+  const first = NAV[0], last = NAV[NAV.length - 1];
+  NAV.length = 0; NAV.push(first);
+  buckets.forEach(b => NAV.push([b[1], b[3].map(x => { const o = navOf[x[0]]; return [x[0], o ? o[1] : x[2], o ? o[2] : x[1], o ? o[3] : 1]; }), b[0]]));
+  NAV.push(last);
+  Object.keys(PATH_OF).forEach(k => delete PATH_OF[k]);
+  PATHS.forEach((p, gi) => p[3].forEach((x, i) => { PATH_OF[x[0]] = [gi, i]; }));
+}
+mkRegroup();
+/* أحدث ما زرته: آخر ٤ أقسام فُتحت، تُحفظ على الجهاز */
+const RECENT_KEY = 'recentSecs';
+function noteRecent(v) {
+  if (LAB || !PATH_OF[v] || v === 'home') return;
+  let r = []; try { r = JSON.parse(localStorage.getItem('mk_' + RECENT_KEY) || '[]'); } catch (e) {}
+  r = [v, ...r.filter(x => x !== v)].slice(0, 4);
+  try { localStorage.setItem('mk_' + RECENT_KEY, JSON.stringify(r)); } catch (e) {}
+}
+function recentHTML() {
+  let r = []; try { r = JSON.parse(localStorage.getItem('mk_' + RECENT_KEY) || '[]'); } catch (e) {}
+  const rows = r.map(v => { const at = PATH_OF[v]; if (!at) return ''; const g = PATHS[at[0]], x = g[3][at[1]]; return `<a class="chip rc ${g[0]}" href="#${v}"><svg><use href="#${x[1]}"/></svg>${x[2]}</a>`; }).join('');
+  return rows ? `<div class="recent"><b>أحدث ما زرته</b><div>${rows}</div></div>` : '';
 }
 applyPrefs(); drawNav(); if (IS_PWA) $('#acctBtn').hidden = false; { const b = $('#instTop'); if (b) b.onclick = installApp; instBarInit(); instTopShow(); }
 const i18nReady = i18nInit().catch(() => {});

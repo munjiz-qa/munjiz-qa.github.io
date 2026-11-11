@@ -386,12 +386,12 @@ html[dir=ltr] .ayah{text-align:right}
 @media (max-width:760px){.prgrid{grid-template-columns:repeat(3,1fr)}.prform{grid-template-columns:1fr}.prmini{gap:10px;width:100%;justify-content:space-between}}
 
 /* ---------- v3 layout: paths, home, section cards */
-.p1{--pc:#27378a}.p2{--pc:#1e7a4c}.p3{--pc:#a8651a}.p4{--pc:#8a3b7a}
+.p1{--pc:#27378a}.p2{--pc:#1e7a4c}.p3{--pc:#a8651a}.p4{--pc:#8a3b7a}.p5{--pc:#b83a63}.p6{--pc:#0f6f8a}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .p1{--pc:#9aabff}:root:not([data-theme="light"]) .p2{--pc:#5fd49a}:root:not([data-theme="light"]) .p3{--pc:#f0b45c}:root:not([data-theme="light"]) .p4{--pc:#e59ad6}}
-:root[data-theme="dark"] .p1{--pc:#9aabff}:root[data-theme="dark"] .p2{--pc:#5fd49a}:root[data-theme="dark"] .p3{--pc:#f0b45c}:root[data-theme="dark"] .p4{--pc:#e59ad6}
+:root[data-theme="dark"] .p1{--pc:#9aabff}:root[data-theme="dark"] .p2{--pc:#5fd49a}:root[data-theme="dark"] .p3{--pc:#f0b45c}:root[data-theme="dark"] .p4{--pc:#e59ad6}:root[data-theme="dark"] .p5{--pc:#f08fb0}:root[data-theme="dark"] .p6{--pc:#6fcfe8}@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .p5{--pc:#f08fb0}:root:not([data-theme="light"]) .p6{--pc:#6fcfe8}}
 .nav .sec{display:flex;align-items:center;gap:7px;font-weight:600;letter-spacing:0;padding:14px 10px 5px}
 .nav .sec .dot{width:8px;height:8px;border-radius:3px;background:var(--pc);transform:rotate(45deg);flex:none}
-.nav .sec.p1,.nav .sec.p2,.nav .sec.p3,.nav .sec.p4{color:var(--pc)}
+.nav .sec.p1,.nav .sec.p2,.nav .sec.p3,.nav .sec.p4,.nav .sec.p5,.nav .sec.p6{color:var(--pc)}
 .nav a .new{display:none}
 
 .home2{gap:26px}
@@ -1082,3 +1082,9 @@ html[dir=ltr] .ruq-matn{border-radius:10px 0 0 10px}
   .mapbox .pin text{display:none}
   .mapbox.zoomed .pin text,.mapbox .pin.sel text{display:block}
 }
+
+/* أحدث ما زرته */
+.recent{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0 10px}.recent>b{font-size:.85rem;color:var(--muted)}.recent>div{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.chip.rc{display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:var(--pc);border:1px solid color-mix(in srgb,var(--pc) 35%,var(--line));min-height:40px;white-space:nowrap}.chip.rc svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8}
+.mi-tile,.scard,.tabbar a,.tabbar button{min-height:48px}
+@media (prefers-reduced-motion:reduce){.scard,.mi-tile{transition:none!important}}
