@@ -29,6 +29,11 @@ for (const [name, opts] of [['الكمبيوتر', { viewport: { width: 1280, he
   ok(await p.evaluate(() => window.__shown.filter(s => s[2]).length >= 14), 'الإشعارات المجدولة (Triggers) تُسجَّل للأوقات القادمة حيث يدعمها المتصفح');
   ok(/والتطبيق مغلق/.test(await p.textContent('#adSt')), 'الواجهة تذكر أن الإشعار يصل والتطبيق مغلق عند دعم المتصفح');
   await ctx.close(); }
+{ const ctx = await b.newContext({ serviceWorkers: 'block' }), p = await ctx.newPage(); await p.goto(B + '#prayer'); await p.waitForSelector('#adF');
+  const wav = Buffer.concat([Buffer.from('RIFF$\0\0\0WAVEfmt \x10\0\0\0\x01\0\x01\0\x40\x1f\0\0\x40\x1f\0\0\x01\0\x08\0data\0\0\0\0', 'latin1')]);
+  await p.setInputFiles('#adF', { name: 'my-adhan.wav', mimeType: 'audio/wav', buffer: wav }); await p.waitForTimeout(1200);
+  ok(await p.$eval('#adS', e => e.value) === 'custom' && /my-adhan/.test(await p.$eval('#adS', e => e.selectedOptions[0].textContent)), 'ملف الأذان من جهاز المستخدم يُحفظ على جهازه ويُختار');
+  ok(await p.evaluate(async () => (await new Promise(r => { const q = indexedDB.open('mishkat-adhan', 1); q.onsuccess = () => { const g = q.result.transaction('f').objectStore('f').get('custom'); g.onsuccess = () => r(!!g.result); }; }))), 'الملف محفوظ في IndexedDB لا يغادر الجهاز'); await ctx.close(); }
 { const ctx = await b.newContext({ serviceWorkers: 'block' }), p = await ctx.newPage(); await p.goto(B + '#prayer'); await p.waitForSelector('#adS');
   const o = await p.$$eval('#adS option', x => x.map(e => [e.value, e.disabled, e.selected]));
   ok(['haram-makki', 'haram-madani', 'aqsa', 'misr', 'turkiye', 'maghrib', 'sham'].every(k => o.some(r => r[0] === k && r[1])) && o.length >= 10, 'أذانات العالم (الحرمان والأقصى ومصر وتركيا والمغرب والشام…) مدرجة وتنتظر التسجيل المرخّص ولا يمكن اختياره بلا ملف');
