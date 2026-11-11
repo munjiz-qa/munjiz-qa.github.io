@@ -65,7 +65,27 @@ function ring(score, st) {
   return `<svg class="ring" viewBox="0 0 120 120" role="img" aria-label="مؤشر السرية ${v}"><circle cx="60" cy="60" r="${r}" fill="none" stroke="var(--line)" stroke-width="11"/><circle cx="60" cy="60" r="${r}" fill="none" stroke="${scoreColor(v, st)}" stroke-width="11" stroke-linecap="round" stroke-dasharray="${c * v / 100} ${c}" transform="rotate(-90 60 60)"/><text x="60" y="58" text-anchor="middle" font-size="30" font-weight="700" fill="var(--ink)">${score == null ? "—" : v}</text><text x="60" y="80" text-anchor="middle" font-size="12" fill="var(--mute)">من 100</text></svg>`;
 }
 const LOGO = (s = 38) => `<svg width="${s}" height="${s}" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 3l17 7v12c0 11-7.3 19.6-17 23-9.7-3.4-17-12-17-23V10z" fill="none" stroke="var(--brand)" stroke-width="2.6"/><path d="M24 10l11 4.6v7.6c0 7.2-4.6 12.9-11 15.3-6.4-2.4-11-8.1-11-15.3v-7.6z" fill="var(--brand)" opacity=".14"/><circle cx="24" cy="21" r="4.2" fill="none" stroke="var(--gold)" stroke-width="2.6"/><path d="M24 25.2v7" stroke="var(--gold)" stroke-width="2.6" stroke-linecap="round"/></svg>`;
-function modal(html) { const m = document.createElement("div"); m.className = "modal"; m.innerHTML = `<div class="card" role="dialog" aria-modal="true">${html}</div>`; m.addEventListener("click", e => { if (e.target === m || e.target.closest("[data-close]")) m.remove(); }); document.body.appendChild(m); const f = m.querySelector("input,select,button"); if (f) f.focus(); return m; }
+/* النوافذ المنبثقة: Esc يغلقها، والتنقل بـ Tab يبقى داخلها، ويعود التركيز إلى الزر الذي فتحها عند الإغلاق، وتُسمّى بعنوانها للقارئات الصوتية */
+function modal(html) {
+  const prev = document.activeElement, m = document.createElement("div"); m.className = "modal"; m.innerHTML = `<div class="card" role="dialog" aria-modal="true">${html}</div>`;
+  const dlg = m.firstChild, h = dlg.querySelector("h1,h2,h3"); if (h) { h.id = h.id || "mdl" + Date.now(); dlg.setAttribute("aria-labelledby", h.id); }
+  const FOC = 'input:not([type=hidden]):not([disabled]),select:not([disabled]),textarea:not([disabled]),button:not([disabled]),a[href],[tabindex]:not([tabindex="-1"])';
+  const onKey = e => {
+    if (!m.isConnected) { document.removeEventListener("keydown", onKey, true); return; }
+    if (m !== [...document.querySelectorAll(".modal")].pop()) return;
+    if (e.key === "Escape") { e.preventDefault(); m.remove(); return; }
+    if (e.key !== "Tab") return;
+    const els = [...dlg.querySelectorAll(FOC)].filter(x => x.offsetParent !== null); if (!els.length) { e.preventDefault(); return; }
+    const first = els[0], last = els[els.length - 1];
+    if (!dlg.contains(document.activeElement)) { e.preventDefault(); first.focus(); }
+    else if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  };
+  const rm = m.remove.bind(m); m.remove = () => { document.removeEventListener("keydown", onKey, true); rm(); if (prev && prev.isConnected && prev.focus) prev.focus(); };
+  m.addEventListener("click", e => { if (e.target === m || e.target.closest("[data-close]")) m.remove(); });
+  document.addEventListener("keydown", onKey, true); document.body.appendChild(m);
+  const f = m.querySelector("input,select,button"); if (f) f.focus(); return m;
+}
 function busy(btn, on) { if (!btn) return; btn.disabled = on; if (on) { btn.dataset.t = btn.textContent; btn.textContent = "جارٍ التنفيذ…"; } else if (btn.dataset.t) btn.textContent = btn.dataset.t; }
 function download(name, text, type) { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([text], { type: type || "application/json" })); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500); }
 function theme(t) { if (t) { ls.set("saif-theme", t); } t = ls.get("saif-theme"); if (t) document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme; }
