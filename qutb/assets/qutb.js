@@ -207,8 +207,10 @@ async function khabarStats(p, o, add) {
     const br = b.value, items = (br.zones || []).reduce((n, z) => n + (z.items || []).length, 0), srcs = Object.keys(br.sources || {}).length;
     const ls = l.value?.summary;
     o.stats = [[num(items), 'خبر في الخلاصة'], [ls ? Math.round(100 * ls.verified / Math.max(1, ls.items)) + '%' : '—', 'موثّق بميزان الثقة'], [num(srcs), 'مصدراً موثّقاً']];
-    o.rows.unshift(['الخلاصة الحالية', `${br.edition === 'pm' ? 'المساء' : 'الصباح'} · ${fmtDate(br.date + 'T12:00:00+03:00', false)} · ${ago(br.published)}`]);
-    if (hoursSince(br.published) > 14) add('warn', `${p.name}: الخلاصة لم تتجدد منذ ${ago(br.published).replace('قبل ', '')}`);
+    o.rows.unshift(['الخلاصة الحالية', `${({am: 'الصباح', md: 'الظهيرة', pm: 'المساء', nt: 'الليل'})[br.edition] || 'الصباح'}${br.auto ? ' (آلية)' : ''} · ${fmtDate(br.date + 'T12:00:00+03:00', false)} · ${ago(br.published)}`]);
+    // الخلاصة تتجدد كل 6 ساعات (الصباح والظهيرة والمساء والليل)، فالتأخر أكثر من 8 ساعات يستحق التنبيه
+    if (hoursSince(br.published) > 8) add('warn', `${p.name}: الخلاصة لم تتجدد منذ ${ago(br.published).replace('قبل ', '')}`);
+    if (br.auto) add('info', `${p.name}: الخلاصة الحالية آلية من الطيار الآلي، وستحل محلها الخلاصة التحريرية في موعدها التالي`, p.site);
     if (ls?.broken) add('warn', `${p.name}: ${plural(ls.broken, 'رابط مصدر معطّل', 'رابطا مصدر معطّلان', 'روابط مصادر معطّلة', 'رابط مصدر معطّلاً')} في الخلاصة`, p.site + '#ledger');
   } else o.rows.unshift(['الخلاصة الحالية', '<span class="skel">تعذّرت القراءة</span>']);
   if (k.status === 'fulfilled') {
@@ -248,6 +250,7 @@ function renderCard(p) { const el = $('#card-' + p.id); if (el) el.outerHTML = c
 
 function allAlerts() {
   const a = Object.values(RESULTS).flatMap(r => r.alerts).concat(Object.values(BK).flatMap(b => b.alerts || []));
+  if (DISC.length) a.push({lvl: 'info', text: `${plural(DISC.length, 'منصة منشورة', 'منصتان منشورتان', 'منصات منشورة', 'منصة منشورة')} لم ${DISC.length === 2 ? 'تُسجَّلا' : 'تُسجَّل'} بعد في قُطب، وتجدها أسفل البطاقات.`});
   if (RATE_HIT) a.push({lvl: 'warn', text: 'بلغت اللوحة حد القراءة المجاني من GitHub (60 طلباً في الساعة)، فبعض الأرقام لم تُقرأ الآن. أضف مفتاح GitHub من الإعدادات ليرتفع الحد إلى 5,000.'});
   return a.sort((x, y) => RANK[y.lvl] - RANK[x.lvl]);
 }
@@ -287,6 +290,45 @@ async function renderFeed() {
     <time datetime="${esc(c.t)}" title="${esc(fmtDate(c.t))}">${ago(c.t)}</time></li>`).join('') : '<li><span></span><span class="muted">تعذّرت قراءة النشاط الآن.</span><span></span></li>';
 }
 
+
+// ---------- رصد المنصات المنشورة غير المسجّلة ----------
+// يقرأ مجلدات مستودع النشر الرئيسي (طلب واحد كل نصف ساعة) ويعرض كل مجلد فيه صفحة منشورة ولم يُسجَّل في السجل،
+// حتى لا تغيب منصة جديدة عن اللوحة الموحّدة.
+const DISC_REPO = 'munjiz-qa/munjiz-qa.github.io', DISC_SITE = 'https://munjiz-qa.github.io/';
+const DISC_SKIP = new Set(['assets', 'data', 'en', 'scripts', 'pc', 'qutb', 'docs', 'img', 'images', 'css', 'js', 'fonts']);
+let DISC = [];
+const pageTitle = (dir) => cached('ttl:' + dir, 3600, async () => {
+  const r = await fetch(DISC_SITE + dir + '/', {cache: 'no-store'});
+  if (!r.ok) return null;
+  const m = (await r.text()).match(/<title>([^<]*)<\/title>/i);
+  return m ? m[1].replace(/&amp;/g, '&').replace(/&#39;/g, "'").replace(/&quot;/g, '"').trim() : '';
+});
+async function discover() {
+  let dirs;
+  try { dirs = await cached('disc:' + DISC_REPO, 1800, async () => (await gh(`/repos/${DISC_REPO}/contents/`)).filter(x => x.type === 'dir').map(x => x.name)); }
+  catch (e) { return; }
+  const known = new Set(REG.platforms.filter(p => p.repo === DISC_REPO && p.path).map(p => p.path.replace(/^\/|\/$/g, '').split('/')[0]));
+  const cand = dirs.filter(d => !d.startsWith('.') && !d.startsWith('_') && !DISC_SKIP.has(d) && !known.has(d));
+  const found = await Promise.all(cand.map(async d => { try { const t = await pageTitle(d); return t === null ? null : {dir: d, title: t || d}; } catch (e) { return null; } }));
+  DISC = found.filter(Boolean).sort((a, b) => a.dir.localeCompare(b.dir));
+  renderDisc(); renderAlerts();
+}
+function renderDisc() {
+  const w = $('#discWrap'); if (!w) return;
+  w.hidden = !DISC.length;
+  $('#disc').innerHTML = DISC.map(x => `<li class="info"><span class="dot"></span><span class="nm"><a href="${esc(DISC_SITE + x.dir + '/')}" target="_blank" rel="noopener">${esc(x.title)}</a><br><span class="pth">${esc(x.dir)}/</span></span>${isSuper() ? `<button class="run-btn" data-reg="${esc(x.dir)}">تسجيل في قُطب</button>` : ''}</li>`).join('');
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-reg]'); if (!b) return;
+  const x = DISC.find(d => d.dir === b.dataset.reg); if (!x) return;
+  $('#setBtn').click();
+  const f = $('#addForm'), parts = x.title.split(/\s*[|·—–-]\s*/);
+  f.name.value = parts[0].slice(0, 40);
+  f.en.value = x.dir.replace(/[-_]+/g, ' ').replace(/\b\w/g, c => c.toUpperCase()).slice(0, 40);
+  f.site.value = DISC_SITE + x.dir + '/'; f.repo.value = DISC_REPO; f.path.value = x.dir;
+  f.scrollIntoView({block: 'start'}); f.pass.focus();
+});
+
 async function refresh() {
   if (busy) return; busy = true; $('#refresh').classList.add('spin');
   if (REFRESH_FORCE) { Object.keys(sessionStorage || {}).filter(k => k.startsWith('qc:')).forEach(k => SS.del(k)); REFRESH_FORCE = false; }
@@ -294,7 +336,8 @@ async function refresh() {
   await Promise.all([
     ...REG.platforms.map(async p => { RESULTS[p.id] = await evalPlatform(p).catch(() => ({rows: [], alerts: [{lvl: 'warn', text: `${p.name}: تعذّر الفحص`, p: p.id}], level: 'warn'})); renderCard(p); renderAlerts(); renderSummary(); }),
     ...REG.backends.map(b => SS.get('qutb-crm-' + b.id) ? loadBackend(b) : null),
-    renderFeed()
+    renderFeed(),
+    discover()
   ]);
   renderRate(); busy = false; $('#refresh').classList.remove('spin');
 }
@@ -303,7 +346,7 @@ $('#refresh').addEventListener('click', () => { REFRESH_FORCE = true; refresh();
 
 // تشغيل مهمة آلية الآن (يتطلب مفتاح GitHub لصاحب المستودع)
 document.addEventListener('click', async e => {
-  const b = e.target.closest('.run-btn'); if (!b) return;
+  const b = e.target.closest('.run-btn[data-run]'); if (!b) return;
   const [repo, file, inputs] = b.dataset.run.split('|');
   b.disabled = true; b.textContent = 'جارٍ الإرسال…';
   try {

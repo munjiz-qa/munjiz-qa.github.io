@@ -9,8 +9,12 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Crect x='1.5' y='1.5' width='27' height='27' rx='8' fill='%23F8FAFA' stroke='%2314202A' stroke-width='2'/%3E%3Cpath d='M19 4.5 10.5 16.8h5.6l-2.3 8.7 9.2-13.1h-5.6Z' fill='%23A9572A'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="acct/acct.css?v=1">
-<script src="acct/cur.js?v=1" defer></script>
+<link rel="stylesheet" href="acct/acct.css?v=3">
+<script src="acct/cur.js?v=2" defer></script>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="app/apple-touch-icon.png">
+<meta name="theme-color" content="#14202A">
+<script src="app/pwa.js?v=1" defer></script>
 </head>
 <body>
 <header class="top"><div class="wrap">
@@ -21,6 +25,7 @@
   <div class="who">
     <a class="btn sm" href="./">الموقع</a>
     <span class="nm" id="whoName"></span>
+    <button class="btn sm" id="notifyBtn" hidden>تفعيل التنبيهات</button>
     <button class="btn sm" id="logout" hidden>تسجيل الخروج</button>
   </div>
 </div></header>
@@ -55,6 +60,7 @@
 
     <div data-pane="ov">
       <div class="kpis" id="kpis"></div>
+      <div id="insights"></div>
       <h2>أحدث الطلبات</h2>
       <div class="list" id="latest"></div>
     </div>
@@ -62,7 +68,7 @@
     <div data-pane="reqs" hidden>
       <div class="toolbar">
         <input id="rq" type="search" placeholder="بحث برقم الطلب أو الاسم أو الجوال أو السيارة">
-        <select id="rs"><option value="">كل الحالات</option></select>
+        <select id="rs" aria-label="تصفية الطلبات حسب الحالة"><option value="">كل الحالات</option></select>
         <button class="btn sm" id="csvReq">تصدير CSV</button>
       </div>
       <div class="tbl-wrap"><table><thead><tr><th>رقم الطلب</th><th>العميل</th><th>الجوال</th><th>النوع</th><th>السيارة</th><th>الحالة</th><th>عرض السعر</th><th>التاريخ</th><th></th></tr></thead><tbody id="reqRows"></tbody></table></div>
@@ -71,7 +77,7 @@
     <div data-pane="users" hidden>
       <div class="toolbar">
         <input id="uq" type="search" placeholder="بحث بالاسم أو البريد أو الجوال">
-        <select id="ur"><option value="">كل الأدوار</option><option value="customer">عملاء</option><option value="admin">مديرون</option></select>
+        <select id="ur" aria-label="تصفية المستخدمين حسب الدور"><option value="">كل الأدوار</option><option value="customer">عملاء</option><option value="admin">مديرون</option></select>
         <button class="btn sm pri" id="addUser">إضافة مستخدم</button>
       </div>
       <div class="tbl-wrap"><table><thead><tr><th>الاسم</th><th>البريد</th><th>الجوال</th><th>المدينة</th><th>الدور</th><th>الحالة</th><th>تاريخ التسجيل</th><th></th></tr></thead><tbody id="usrRows"></tbody></table></div>
@@ -83,7 +89,7 @@
 
     <div data-pane="cat" hidden>
       <p class="mute sm">تظهر البنود المفعّلة في قسم «قائمة الأسعار» على الصفحة الرئيسية مباشرة بعد الحفظ. الأسعار بالدولار الأمريكي.</p>
-      <div class="toolbar"><button class="btn sm pri" id="addItem">إضافة بند</button><button class="btn sm" id="seedCat">استيراد الأسعار الافتراضية لبراق</button></div>
+      <div class="toolbar"><button class="btn sm pri" id="addItem">إضافة بند</button><button class="btn sm" id="seedCat">إضافة البنود الناقصة من أسعار براق</button></div>
       <div class="tbl-wrap"><table><thead><tr><th>الترتيب</th><th>الرمز</th><th>البند</th><th>الفئة</th><th>السعر ($)</th><th>نوع السعر</th><th>مفعّل</th><th></th></tr></thead><tbody id="catRows"></tbody></table></div>
     </div>
 
@@ -119,6 +125,6 @@
 <dialog id="dlg" aria-labelledby="dT"><div class="hd"><h2 id="dT"></h2><button class="btn sm" data-close>إغلاق</button></div><div class="bd" id="dB"></div></dialog>
 
 <footer class="ft"><div class="wrap"><span>براق BURAQ · لوحة الإدارة</span><span>التواريخ بصيغة يوم/شهر/سنة، والهواتف بالصيغة الدولية.</span></div></footer>
-<script type="module" src="acct/admin.js?v=2"></script>
+<script type="module" src="acct/admin.js?v=9"></script>
 </body>
 </html>

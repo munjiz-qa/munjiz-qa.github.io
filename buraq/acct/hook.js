@@ -21,7 +21,7 @@ css.textContent = `
 #prices td.p{font-weight:700;white-space:nowrap;direction:ltr;text-align:left}
 #prices .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
 #prices .k{font-size:.75rem;color:var(--muted)}
-#prices .cat td{background:var(--copper-soft);font-weight:700;color:var(--copper)}
+#prices .cat td{background:var(--copper-soft);font-weight:700;color:color-mix(in srgb,var(--copper) 82%,var(--ink))}
 #bqToast{position:fixed;inset-inline:16px;bottom:max(16px,env(safe-area-inset-bottom));margin:auto;max-width:440px;background:var(--ink);color:var(--bg);padding:12px 16px;border-radius:12px;text-align:center;z-index:99}
 `;
 document.head.append(css);
@@ -50,8 +50,8 @@ function capturePlan() {
     summary: [...kpis, "—", ...optLines].join("\n").slice(0, 3000), source: location.origin + location.pathname
   };
 }
-async function savePlan(action) {
-  const plan = capturePlan(); if (!plan) return;
+async function savePlan(action, src) {
+  const plan = src === "solar" ? (window.BQSOL ? window.BQSOL.plan() : null) : capturePlan(); if (!plan) return;
   if (!USER) {
     try { sessionStorage.setItem("bq_pending", JSON.stringify({ action, plan })); } catch (e) {}
     location.href = "account.html";
@@ -71,6 +71,12 @@ function mountPlanButtons() {
   d.innerHTML = `<button type="button" class="pri" data-a="save">احفظ الخطة في حسابي</button><button type="button" data-a="quote">اطلب عرض سعر رسمياً وتابعه من حسابك</button><small id="bqAcctHint">يلزم تسجيل الدخول أو إنشاء حساب مجاني، وتعود خطتك محفوظة كما هي.</small>`;
   d.onclick = (e) => { const b = e.target.closest("[data-a]"); if (b) savePlan(b.dataset.a); };
   acts.after(d);
+}
+function mountSolarButtons() {
+  const acts = $("solActs"); if (!acts || acts.childElementCount) return;
+  acts.className = "bq-acct";
+  acts.innerHTML = `<button type="button" class="pri" data-a="save">احفظ باقة الشحن الشمسي في حسابي</button><button type="button" data-a="quote">اطلب عرض سعر لها من حسابك</button><small class="bq-sol-hint">يلزم تسجيل الدخول أو إنشاء حساب مجاني.</small>`;
+  acts.onclick = (e) => { const b = e.target.closest("[data-a]"); if (b) savePlan(b.dataset.a, "solar"); };
 }
 
 // ===== فتح خطة محفوظة: ?plan=العلامة|الموديل|السنة =====
@@ -113,6 +119,7 @@ async function loadPublic() {
 
 if (READY) {
   mountPlanButtons();
+  mountSolarButtons();
   // المخطط يبني القوائم عند التحميل؛ ننتظره قليلاً ثم نطبق الخطة المطلوبة
   setTimeout(applyPlanParam, 300);
   loadPublic().catch(() => {});
@@ -120,8 +127,10 @@ if (READY) {
     USER = u;
     if (navA) navA.textContent = "حسابي";
     const hint = $("bqAcctHint");
-    if (!u) { if (hint) hint.hidden = false; return; }
+    const sh = document.querySelector(".bq-sol-hint");
+    if (!u) { if (hint) hint.hidden = false; if (sh) sh.hidden = false; return; }
     if (hint) hint.hidden = true;
+    if (sh) sh.hidden = true;
     try {
       const p = await loadProfile(u);
       if (navA) { navA.textContent = p.role === "admin" ? "لوحة الإدارة" : `حسابي · ${p.name.split(" ")[0]}`; if (p.role === "admin") navA.href = "admin.html"; }

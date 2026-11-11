@@ -1,8 +1,10 @@
 // لوحة العميل في براق: الدخول والتسجيل، الخطط المحفوظة، الطلبات والمراسلة.
 import { READY, auth, db, A, F, loadProfile } from "./fb.js";
+import { printQuote } from "./quote.js?v=1";
+import { createUnread, titleBadge } from "./unread.js?v=2";
 import { $, esc, fmtDate, normPhone, phoneHtml, money, STATUS, stBadge, TYPES, newRequestNo, toast, errMsg } from "./ui.js";
 
-let ME = null, PLANS = [], REQS = [], unsub = [];
+let ME = null, PLANS = [], REQS = [], unsub = [], U = null;
 const PKEY = "bq_pending";
 const pending = (() => { try { return JSON.parse(sessionStorage.getItem(PKEY) || "null"); } catch (e) { return null; } })();
 
@@ -81,7 +83,9 @@ function watch() {
   const qR = F.query(F.collection(db, "requests"), F.where("uid", "==", ME.id));
   const byDate = (a, b) => (b.createdAt?.seconds || 9e9) - (a.createdAt?.seconds || 9e9);
   unsub.push(F.onSnapshot(qP, (s) => { PLANS = s.docs.map((d) => ({ id: d.id, ...d.data() })).sort(byDate); renderPlans(); }, (e) => toast(errMsg(e), true)));
-  unsub.push(F.onSnapshot(qR, (s) => { REQS = s.docs.map((d) => ({ id: d.id, ...d.data() })).sort(byDate); renderReqs(); }, (e) => toast(errMsg(e), true)));
+  U = createUnread({ db, F, uid: ME.id, side: "customer", onChange: () => { renderReqs(); titleBadge(U.count()); } });
+  unsub.push(() => { U.stop(); titleBadge(0); });
+  unsub.push(F.onSnapshot(qR, (s) => { REQS = s.docs.map((d) => ({ id: d.id, ...d.data() })).sort(byDate); renderReqs(); U.sync(REQS); }, (e) => toast(errMsg(e), true)));
 }
 
 // ===== التبويبات =====
@@ -119,9 +123,10 @@ $("planList").onclick = async (e) => {
 };
 
 function renderReqs() {
-  $("nReq").textContent = REQS.length; renderKpis();
+  const nu = U ? U.count() : 0;
+  $("nReq").textContent = REQS.length + (nu ? ` · ${nu} رد جديد` : ""); renderKpis();
   $("reqList").innerHTML = REQS.length ? REQS.map((r) => `<article class="item">
-    <div><h3>${esc(TYPES[r.type] || r.type)} ${stBadge(r.status)}</h3>
+    <div><h3>${esc(TYPES[r.type] || r.type)} ${stBadge(r.status)}${U && U.isUnread(r.id) ? ` <span class="badge msg-new" data-unread>رد جديد من براق</span>` : ""}</h3>
       <div class="meta"><span dir="ltr">${esc(r.no)}</span><span>${esc(r.car || "—")}</span><span>أُرسل في ${fmtDate(r.createdAt)}</span>${r.price != null ? `<span>عرض السعر: <b>${money(r.price, r.currency)}</b></span>` : ""}</div></div>
     <div class="acts"><button class="btn sm pri" data-open="${r.id}">التفاصيل والمراسلة</button></div></article>`).join("")
     : `<div class="empty">لم ترسل أي طلب بعد. <button class="linkbtn" onclick="document.querySelector('[data-p=new]').click()">أرسل طلبك الأول</button></div>`;
@@ -140,24 +145,38 @@ function openReq(id) {
     <dt>السيارة</dt><dd>${esc(r.car || "—")}</dd>
     <dt>تاريخ الإرسال</dt><dd>${fmtDate(r.createdAt, true)}</dd>
     <dt>آخر تحديث</dt><dd>${fmtDate(r.updatedAt, true)}</dd>
-    <dt>عرض السعر</dt><dd>${r.price != null ? `<b>${money(r.price, r.currency)}</b>` : "لم يُرسل بعد"}</dd>
+    <dt>عرض السعر</dt><dd>${r.price != null ? `<b>${money(r.price, r.currency)}</b> <button type="button" class="btn sm" id="qPdf">تنزيل عرض السعر PDF</button>${r.status === "quoted" ? ` <button type="button" class="btn sm pri" id="qAcc" hidden>اعتماد العرض</button>` : ""}` : "لم يُرسل بعد"}</dd>
     ${r.adminNote ? `<dt>ملاحظة براق</dt><dd>${esc(r.adminNote)}</dd>` : ""}
     <dt>التفاصيل</dt><dd style="white-space:pre-wrap">${esc(r.details)}</dd>
     ${r.planSummary ? `<dt>الخطة المرفقة</dt><dd class="plan-sum">${esc(r.planSummary)}</dd>` : ""}
   </dl>
   <ul class="timeline">${(r.history || []).map((h) => `<li>${STATUS[h.s]?.[0] || esc(h.s)} · ${fmtDate(h.at, true)}</li>`).join("<li>←</li>")}</ul>
   <h3>المراسلة مع فريق براق</h3>
-  <div class="thread" id="thread"><div class="mute sm">جارٍ التحميل…</div></div>
+  <div class="thread" id="thread" role="log" tabindex="0" aria-label="رسائل الطلب"><div class="mute sm">جارٍ التحميل…</div></div>
   <form id="msgF" style="display:flex;gap:8px;align-items:flex-end"><textarea id="msgT" maxlength="2000" style="min-height:48px" placeholder="اكتب رسالتك" required></textarea><button class="btn pri" type="submit">إرسال</button></form>
   ${canCancel ? `<p style="margin:16px 0 0"><button class="btn sm bad" id="cancelReq">إلغاء الطلب</button></p>` : ""}`;
   $("reqDlg").showModal();
+  if (U) U.setOpen(id);
+  if ($("qPdf")) $("qPdf").onclick = () => printQuote(r, ME);
   if (msgUnsub) msgUnsub();
   msgUnsub = F.onSnapshot(F.query(F.collection(db, "requests", id, "msgs"), F.orderBy("at")), (s) => {
     const t = $("thread"); if (!t) return;
     t.innerHTML = s.empty ? `<div class="mute sm">لا رسائل بعد. اكتب سؤالك وسيرد فريق براق هنا.</div>` :
-      s.docs.map((d) => { const m = d.data(); return `<div class="bubble ${m.fromAdmin ? "adm" : ""}">${esc(m.text)}<small>${m.fromAdmin ? "فريق براق" : "أنت"} · ${fmtDate(m.at, true)}</small></div>`; }).join("");
+      s.docs.map((d) => { const m = d.data(); return `<div class="bubble ${m.fromAdmin ? "adm" : ""}${m.accept ? " acc" : ""}">${esc(m.text)}<small>${m.fromAdmin ? "فريق براق" : "أنت"} · ${fmtDate(m.at, true)}</small></div>`; }).join("");
     t.scrollTop = t.scrollHeight;
+    const acc = s.docs.some((d) => d.data().accept), qa = $("qAcc");
+    if (qa) qa.hidden = acc;
+    if (acc && !$("qAccNote") && $("qPdf")) $("qPdf").insertAdjacentHTML("afterend", ` <span class="badge st-ok" id="qAccNote">أرسلتَ اعتماد العرض</span>`);
   }, (e) => toast(errMsg(e), true));
+  if ($("qAcc")) $("qAcc").onclick = async () => {
+    const amount = document.querySelector("#rdB .kv b")?.textContent.trim() || money(r.price, r.currency);
+    if (!confirm(`اعتماد عرض السعر ${r.no} بقيمة ${amount}؟ سيُبلَّغ فريق براق فوراً لتحديد موعد الفحص.`)) return;
+    try {
+      await F.addDoc(F.collection(db, "requests", id, "msgs"), { uid: ME.id, name: ME.name, fromAdmin: false, accept: true,
+        text: `✓ أعتمد عرض السعر رقم \u2066${r.no}\u2069 بقيمة ${amount}، وأرغب في تحديد موعد الفحص والتركيب.`, at: F.serverTimestamp() });
+      toast("أُرسل اعتمادك إلى فريق براق، وسيتواصل معك لتحديد الموعد.");
+    } catch (err) { toast(errMsg(err), true); }
+  };
   $("msgF").onsubmit = async (e) => {
     e.preventDefault(); const text = $("msgT").value.trim(); if (!text) return;
     try { await F.addDoc(F.collection(db, "requests", id, "msgs"), { uid: ME.id, name: ME.name, fromAdmin: false, text, at: F.serverTimestamp() }); $("msgT").value = ""; }
@@ -172,7 +191,7 @@ function openReq(id) {
   };
 }
 document.querySelectorAll("[data-close]").forEach((b) => (b.onclick = () => b.closest("dialog").close()));
-$("reqDlg").addEventListener("close", () => { if (msgUnsub) { msgUnsub(); msgUnsub = null; } });
+$("reqDlg").addEventListener("close", () => { if (msgUnsub) { msgUnsub(); msgUnsub = null; } if (U) U.setOpen(null); });
 
 // ===== طلب جديد =====
 function fillTypes() { $("rType").innerHTML = Object.entries(TYPES).map(([k, v]) => `<option value="${k}">${v}</option>`).join(""); $("rPhone").value = ME.phone || ""; $("rCity").value = ME.city || ""; }

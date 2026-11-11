@@ -1,0 +1,102 @@
+# تطبيق «مشكاة» لأندرويد (Trusted Web Activity من Bubblewrap) لمتجر Google Play وHuawei AppGallery وSamsung Galaxy Store.
+# يبني هذا المسار نسخة غير موقّعة (AAB وAPK)، ثم توقَّع خارج المستودع بمفتاح الرفع الذي يحتفظ به المالك وحده.
+# النسخة الموقّعة للتثبيت المباشر محفوظة في mishkat/android/mishkat.apk، ويختبرها هذا المسار على محاكي أندرويد فيه Chrome.
+name: Mishkat Android
+on:
+  push:
+    branches: [main, 'claude/**']
+    paths: ['stores/mishkat/android/**', 'mishkat/android/**', '.well-known/assetlinks.json', '.github/workflows/mishkat-android.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: mishkat-android-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  TAG: mishkat-android-build
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: stores/mishkat/android } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 17 }
+      - name: Build unsigned AAB and APK
+        env:
+          VERSION_CODE: ${{ github.run_number }}
+          VERSION_NAME: 1.0.${{ github.run_number }}
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon bundleRelease assembleRelease
+      - name: Collect outputs and signing tools
+        run: |
+          mkdir -p out
+          cp app/build/outputs/bundle/release/app-release.aab out/Mishkat-unsigned.aab
+          cp app/build/outputs/apk/release/app-release-unsigned.apk out/Mishkat-unsigned.apk
+          BT=$(ls -d $ANDROID_HOME/build-tools/* | sort -V | tail -1)
+          cp $BT/lib/apksigner.jar out/apksigner.jar
+          cp $BT/zipalign out/zipalign
+          echo "versionCode=${{ github.run_number }} versionName=1.0.${{ github.run_number }} build-tools=$(basename $BT)" > out/build-info.txt
+          ls -la out; cat out/build-info.txt
+      - uses: actions/upload-artifact@v4
+        with: { name: mishkat-android, path: stores/mishkat/android/out }
+      - name: Publish build files
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release view $TAG >/dev/null 2>&1 || gh release create $TAG --prerelease --title "مشكاة لأندرويد (نسخة البناء)" --notes "ملفات بناء غير موقّعة لتطبيق مشكاة. النسخة الموقّعة تُرفع إلى المتاجر من حساب المالك."
+          gh release upload $TAG out/* --clobber
+
+  emulator-test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for a signed APK
+        id: apk
+        run: if [ -f mishkat/android/mishkat.apk ]; then echo "ok=1" >> $GITHUB_OUTPUT; else echo "No signed APK yet"; fi
+      - name: Digital Asset Links check
+        if: steps.apk.outputs.ok == '1'
+        run: |
+          curl -s https://munjiz-qa.github.io/.well-known/assetlinks.json | tee links.json || true
+          curl -s "https://digitalassetlinks.googleapis.com/v1/statements:list?source.web.site=https://munjiz-qa.github.io&relation=delegate_permission/common.handle_all_urls" | tee api.json
+          if grep -q app.mishkat.quran api.json; then echo ASSETLINKS_OK; else echo "ASSETLINKS_NOT_LIVE_YET (published after merge to main)"; fi
+      - name: Enable KVM
+        if: steps.apk.outputs.ok == '1'
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
+      - name: Install and open on an Android phone with Chrome
+        if: steps.apk.outputs.ok == '1'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: playstore
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: |
+            mkdir -p out
+            adb install -r mishkat/android/mishkat.apk
+            adb shell 'echo "_ --disable-fre --no-default-browser-check --no-first-run" > /data/local/tmp/chrome-command-line'
+            adb shell am set-debug-app --persistent com.android.chrome
+            adb shell am force-stop com.android.chrome
+            adb shell pm list packages | grep -E "mishkat|chrome"
+            adb shell dumpsys package com.android.chrome | grep versionName | head -1
+            adb shell am start -n app.mishkat.quran/.LauncherActivity
+            sleep 50
+            adb exec-out screencap -p > out/android-mishkat-1.png
+            adb shell input tap 540 1400
+            sleep 15
+            adb exec-out screencap -p > out/android-mishkat-2.png
+            adb shell dumpsys activity activities | grep -E "topResumedActivity|ResumedActivity" | head -3 | tee out/android-activity.txt
+            adb shell pm get-app-links app.mishkat.quran | tee out/android-applinks.txt || true
+            adb logcat -d | grep -iE "FATAL|TWA|TrustedWeb|Verif" | tail -40 > out/android-log.txt || true
+            adb shell pidof app.mishkat.quran && echo APP_RUNNING
+      - if: steps.apk.outputs.ok == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh release upload $TAG out/android-* --clobber

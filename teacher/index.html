@@ -13,8 +13,15 @@
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ar_AR">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="معلم">
+<meta property="og:image" content="https://munjiz-qa.github.io/teacher/icon-512.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Reem+Kufi:wght@500;600;700&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Reem+Kufi:wght@500;600;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Reem+Kufi:wght@500;600;700&display=swap"></noscript>
 <style>
 /* Layout: a single learning column under a sticky header; the home view pairs "today's step" with a progress panel, the path view climbs four weekly flights of steps. */
 :root{
@@ -536,6 +543,7 @@ q:[["ما أداة حفظ القواعد الدائمة في مشروع برمج
 
 </script>
 <script src="config.js"></script>
+<script src="local.js?v=20261101"></script>
 <script>
 (function(){
 const TOTAL = LESSONS.length;
@@ -576,7 +584,10 @@ function persist(){
   saveTimer = setTimeout(pushCloud, 700);
 }
 async function api(action, body){
-  if(!CFG.API) throw new Error("offline");
+  if(!CFG.API){
+    try{ return await window.TeacherLocal.call(action, Object.assign({token}, body||{})); }
+    catch(e){ if(e.code==="auth" && token) signOut(true); throw e; }
+  }
   const r = await fetch(CFG.API, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(Object.assign({action, token}, body||{}))});
   const j = await r.json();
   if(!j.ok){
@@ -588,7 +599,7 @@ async function api(action, body){
 const ERR = {invalid:"اسم المستخدم أو كلمة المرور غير صحيحة", locked:"محاولات كثيرة غير ناجحة، حاول بعد 15 دقيقة", disabled:"هذا الحساب موقوف، تواصل مع الإدارة",
   taken:"اسم المستخدم مستخدم من قبل", bad_username:"اسم المستخدم من 3 أحرف على الأقل، بالإنجليزية والأرقام فقط", bad_name:"اكتب الاسم",
   weak_password:"كلمة المرور 8 أحرف على الأقل", signup_closed:"التسجيل الذاتي مغلق حالياً، تواصل مع الإدارة", self:"لا يمكن تنفيذ هذا الإجراء على حسابك",
-  last_admin:"يجب أن يبقى مدير واحد نشط على الأقل", forbidden:"هذه الصلاحية للإدارة فقط", auth:"انتهت الجلسة، سجّل الدخول مرة أخرى", offline:"نظام الحسابات غير مفعّل بعد"};
+  last_admin:"يجب أن يبقى مدير واحد نشط على الأقل", forbidden:"هذه الصلاحية للإدارة فقط", auth:"انتهت الجلسة، سجّل الدخول مرة أخرى", offline:"نظام الحسابات غير مفعّل بعد", bad_file:"الملف غير صالح أو لا يحوي مديراً نشطاً", storage:"تعذّر الحفظ في المتصفح، تأكد أنه ليس في وضع التصفح الخاص", not_found:"المستخدم غير موجود", must_change:"لحماية حسابك، عيّن كلمة مرور جديدة قبل المتابعة", same_password:"اختر كلمة مرور مختلفة عن الحالية"};
 const errMsg = e => ERR[e && e.code] || ERR[e && e.message] || "تعذّر الاتصال بالخادم، حاول مرة أخرى";
 function summary(){ return {done:doneList(), xp:xp(), streak:streak(), quizAvg:quizAvg()}; }
 async function pushCloud(){
@@ -652,6 +663,7 @@ function render(){
   else if(r==="notes"){ v.innerHTML = viewNotes(); bindNotes(); }
   else if(r==="remind"){ v.innerHTML = viewRemind(); bindRemind(); }
   else if(r==="contact"){ v.innerHTML = viewContact(); }
+  else if(me && me.mustChange && r==="admin"){ v.innerHTML = viewAccount(); bindAccount(); }
   else if(r==="admin" && isAdmin){ v.innerHTML = viewAdmin(); bindAdmin(); }
   else if(r==="account"){ v.innerHTML = viewAccount(); bindAccount(); }
   else { v.innerHTML = viewHome(); bindHome(); }
@@ -659,8 +671,8 @@ function render(){
 
 function storageBanner(){
   return mode==="cloud"
-    ? `<div class="banner" role="status"><span aria-hidden="true">●</span><span>مرحباً ${esc(me&&me.name)}، تقدّمك محفوظ في حسابك ويتزامن بين أجهزتك.</span></div>`
-    : `<div class="banner" role="status"><span aria-hidden="true">○</span><span>تتعلّم الآن زائراً، وتقدّمك محفوظ في هذا المتصفح. ${CFG.API?`<a href="#account">سجّل الدخول أو أنشئ حساباً</a> ليُحفظ تقدّمك ويتزامن بين أجهزتك.`:"استخدم الجهاز نفسه لمتابعة رحلتك."}</span></div>`;
+    ? `<div class="banner" role="status"><span aria-hidden="true">●</span><span>مرحباً ${esc(me&&me.name)}، تقدّمك محفوظ في حسابك${CFG.API?" ويتزامن بين أجهزتك":" على هذا الجهاز"}.</span></div>`
+    : `<div class="banner" role="status"><span aria-hidden="true">○</span><span>تتعلّم الآن زائراً، وتقدّمك محفوظ في هذا المتصفح. <a href="#account">سجّل الدخول أو أنشئ حساباً</a> ${CFG.API?"ليُحفظ تقدّمك ويتزامن بين أجهزتك.":"ليُحفظ تقدّمك باسمك."}</span></div>`;
 }
 
 function ring(p, size=86){
@@ -985,16 +997,21 @@ function viewAdmin(){
       <label class="switch"><input type="checkbox" id="seq" ${sequential?"checked":""}><span>فتح الدروس بالتسلسل: لا يُفتح الدرس إلا بعد إتمام الذي قبله</span></label>
       <label class="switch"><input type="checkbox" id="signup" ${allowSignup?"checked":""}><span>السماح للزوار بإنشاء حساب متعلّم بأنفسهم</span></label>
       <span class="muted" style="font-size:.88rem">يسري التغيير فوراً على كل المستخدمين.</span></section>`;
+  } else if(adminTab==="data"){
+    body = `<section class="card stack"><h2>البيانات والنسخ الاحتياطي</h2>
+      <p class="muted">${CFG.API?"البيانات محفوظة على خادم المنصة وتتزامن بين كل الأجهزة.":"الحسابات والتقدّم محفوظة في هذا المتصفح على هذا الجهاز، دون أي خادم خارجي. لنقلها إلى جهاز آخر: صدّر نسخة احتياطية هنا، ثم استوردها من لوحة الإدارة على الجهاز الآخر."}</p>
+      ${CFG.API?"":`<div class="row"><button class="btn" id="exp" type="button">تصدير نسخة احتياطية</button><label class="btn ghost" style="flex-direction:row;cursor:pointer">استيراد نسخة<input type="file" id="imp" accept=".json,application/json" hidden></label></div>
+      <span class="muted" style="font-size:.88rem">الاستيراد يستبدل بيانات هذا الجهاز ببيانات الملف.</span>`}</section>`;
   } else {
     body = `<section class="card stack"><h2>سجل العمليات</h2>${adminLog.length?`<div class="scroll"><table><thead><tr><th>الوقت</th><th>المستخدم</th><th>العملية</th><th>التفاصيل</th></tr></thead><tbody>${adminLog.map(l=>`<tr><td class="num">${fmtDate(l.time)}</td><td class="ltr">${esc(l.actor)}</td><td>${esc(LOGN[l.action]||l.action)}</td><td class="muted ltr" style="font-size:.85rem">${esc(l.detail)}</td></tr>`).join("")}</tbody></table></div>`:`<p class="muted">لا توجد عمليات بعد.</p>`}</section>`;
   }
   return `<div class="stack">
     <div class="stack" style="gap:6px"><h1>لوحة الإدارة</h1><p class="muted">صلاحيات كاملة: المستخدمون والأدوار وكلمات المرور والإعدادات والسجل.</p></div>
-    <div class="row">${tab("users","المستخدمون")}${tab("stats","الإحصاءات")}${tab("settings","الإعدادات")}${tab("log","السجل")}</div>
+    <div class="row">${tab("users","المستخدمون")}${tab("stats","الإحصاءات")}${tab("settings","الإعدادات")}${tab("data","البيانات")}${tab("log","السجل")}</div>
     ${body}
   </div>`;
 }
-const LOGN = {setup:"تهيئة", login:"دخول", register:"تسجيل حساب", changePassword:"تغيير كلمة المرور", createUser:"إضافة مستخدم", updateUser:"تعديل مستخدم", resetPassword:"تعيين كلمة مرور", deleteUser:"حذف مستخدم", resetProgress:"تصفير تقدّم", setSettings:"تعديل الإعدادات"};
+const LOGN = {setup:"تهيئة", login:"دخول", register:"تسجيل حساب", changePassword:"تغيير كلمة المرور", createUser:"إضافة مستخدم", updateUser:"تعديل مستخدم", resetPassword:"تعيين كلمة مرور", deleteUser:"حذف مستخدم", resetProgress:"تصفير تقدّم", setSettings:"تعديل الإعدادات", exportData:"تصدير نسخة", importData:"استيراد نسخة"};
 async function loadAdmin(){
   try{
     const [u, l] = await Promise.all([api("listUsers"), api("getLog")]);
@@ -1017,6 +1034,14 @@ function bindAdmin(){
     e.preventDefault(); const f = Object.fromEntries(new FormData(nu));
     try{ await api("createUser", f); toast("أُضيف المستخدم"); learnersUnsub = null; loadAdmin(); }catch(err){ toast(errMsg(err)); }
   });
+  const ex = $("#exp"); if(ex) ex.addEventListener("click", async ()=>{
+    try{ const j = await api("exportData"); saveFile("Teacher-backup-"+dayKey()+".json", JSON.stringify(j.data,null,1), "application/json"); }catch(err){ toast(errMsg(err)); }
+  });
+  const im = $("#imp"); if(im) im.addEventListener("change", async ()=>{
+    const f = im.files[0]; if(!f) return;
+    try{ const data = JSON.parse(await f.text()); if(!confirm("استبدال بيانات هذا الجهاز بالنسخة المختارة؟")) return; await api("importData", {data}); toast("اكتمل الاستيراد"); learnersUnsub = null; loadAdmin(); }
+    catch(err){ toast(err instanceof SyntaxError ? ERR.bad_file : errMsg(err)); }
+  });
   const fd = $("#uFind"); if(fd) fd.addEventListener("input", ()=>{ const q = fd.value.trim().toLowerCase(); document.querySelectorAll("#uTable tbody tr").forEach(tr=>{ tr.hidden = q && !tr.dataset.q.includes(q); }); });
   const cv = $("#csv"); if(cv) cv.addEventListener("click", ()=>{
     const rows = [["الاسم","اسم المستخدم","الدور","الحالة","الدروس المكتملة","النقاط","أيام متتالية","دقة الاختبارات","آخر نشاط"]].concat(learners.map(x=>[x.name,x.username,x.role==="admin"?"مدير":"متعلّم",x.active?"نشط":"موقوف",(x.done||[]).length,x.xp||0,x.streak||0,(x.quizAvg||0)+"%",x.last||x.lastLogin||""]));
@@ -1037,8 +1062,8 @@ function bindAdmin(){
 
 /* ---------- account ---------- */
 function viewAccount(){
-  if(!CFG.API) return `<div class="card stack" style="max-width:560px;margin-inline:auto"><h1>الحسابات</h1><p class="muted">نظام الحسابات قيد التفعيل. يمكنك التعلّم الآن زائراً، ويُحفظ تقدّمك في هذا المتصفح.</p><a class="btn" href="#home">ابدأ التعلّم</a></div>`;
   if(me) return `<div class="stack" style="max-width:640px;margin-inline:auto">
+    ${me.mustChange?`<div class="banner" role="alert"><span aria-hidden="true">!</span><span>هذا الحساب ما زال على كلمة المرور الافتراضية. عيّن كلمة مرور جديدة الآن لتفعيل ${me.role==="admin"?"لوحة الإدارة":"حسابك"} بأمان.</span></div>`:""}
     <div class="card stack"><h1>حسابي</h1>
       <div class="kv"><span class="muted">الاسم</span><b>${esc(me.name)}</b><span class="muted">اسم المستخدم</span><b class="ltr">${esc(me.username)}</b><span class="muted">الصلاحية</span><b>${me.role==="admin"?"مدير المنصة (كل الصلاحيات)":"متعلّم"}</b><span class="muted">التقدّم</span><b class="num">${doneCount()} / ${TOTAL} درساً</b></div>
       <div class="row">${me.role==="admin"?`<a class="btn" href="#admin">لوحة الإدارة</a>`:""}<button class="btn ghost" id="out" type="button">تسجيل الخروج</button></div></div>
@@ -1063,7 +1088,7 @@ function bindAccount(){
   const busy = (f,on)=>{ const b = f.querySelector("button[type=submit]"); if(b) b.disabled = on; };
   const lf = $("#loginF"); if(lf) lf.addEventListener("submit", async e=>{
     e.preventDefault(); busy(lf,true); $("#loginE").textContent = "";
-    try{ signIn(await api("login", Object.fromEntries(new FormData(lf)))); await loadCloud(); toast("أهلاً "+me.name); go(isAdmin?"admin":"home"); }
+    try{ signIn(await api("login", Object.fromEntries(new FormData(lf)))); await loadCloud(); if(me.mustChange){ toast(ERR.must_change); go("account"); setTimeout(()=>{ const c = document.querySelector('#pwF input[name=current]'); if(c){ c.scrollIntoView({block:"center"}); c.focus(); } }, 60); } else { toast("أهلاً "+me.name); go(isAdmin?"admin":"home"); } }
     catch(err){ $("#loginE").textContent = errMsg(err); busy(lf,false); }
   });
   const rf = $("#regF"); if(rf) rf.addEventListener("submit", async e=>{
@@ -1073,7 +1098,7 @@ function bindAccount(){
   });
   const o = $("#out"); if(o) o.addEventListener("click", async ()=>{ try{ await api("logout"); }catch(e){} signOut(); learnersUnsub = null; toast("سُجّل الخروج"); go("home"); });
   const nf = $("#nameF"); if(nf) nf.addEventListener("submit", async e=>{ e.preventDefault(); try{ const j = await api("updateProfile", Object.fromEntries(new FormData(nf))); me = j.user; toast("حُفظ الاسم"); render(); }catch(err){ toast(errMsg(err)); } });
-  const pf = $("#pwF"); if(pf) pf.addEventListener("submit", async e=>{ e.preventDefault(); try{ await api("changePassword", Object.fromEntries(new FormData(pf))); pf.reset(); toast("تغيّرت كلمة المرور"); }catch(err){ toast(errMsg(err)); } });
+  const pf = $("#pwF"); if(pf) pf.addEventListener("submit", async e=>{ e.preventDefault(); try{ const j = await api("changePassword", Object.fromEntries(new FormData(pf))); pf.reset(); const was = me.mustChange; if(j.user) me = j.user; toast("تغيّرت كلمة المرور"); if(was) go(isAdmin?"admin":"home"); }catch(err){ toast(errMsg(err)); } });
 }
 
 /* ---------- helpers ---------- */
@@ -1097,7 +1122,6 @@ loadLocal();
 render();
 
 (async function connect(){
-  if(!CFG.API) return;
   try{ token = localStorage.getItem(TOK_KEY); }catch(e){}
   try{
     if(token){
@@ -1112,5 +1136,7 @@ render();
 })();
 })();
 </script>
+<script>if("serviceWorker" in navigator && location.protocol!=="file:") addEventListener("load", ()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>
+<script src="pwa-install.js" defer></script>
 </body>
 </html>

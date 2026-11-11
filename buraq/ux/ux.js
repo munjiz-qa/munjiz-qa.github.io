@@ -3,7 +3,7 @@
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const GROUPS=[
  ["ابدأ هنا",[["#convert","مخطط تحويل سيارتك","1,404 موديلات"],["#how","كيف نعمل","4 خطوات"],["#flex","الطقم المرن"],["#report","قائمة السيارات"],["#madad","مدد مصر","بالجنيه"],["#model","النموذج التفاعلي","3D"]]],
- ["المنظومة",[["#modules","الوحدات"],["#range","المدى"],["#bom","التكلفة"],["#iface","الواجهات"],["#hv","الدوائر"],["#install","التركيب"],["#safety","السلامة"]]],
+ ["المنظومة",[["#modules","الوحدات"],["#solar","الشحن الشمسي","جديد"],["#range","المدى"],["#bom","التكلفة"],["#iface","الواجهات"],["#hv","الدوائر"],["#install","التركيب"],["#safety","السلامة"]]],
  ["التوريد والملفات",[["#suppliers","الموردون وعروض الأسعار"],["#workshop","معدات الورشة"],["#files","ملفات التصميم"],["#sources","المصادر"]]],
  ["الخدمة",[["#faq","الأسئلة الشائعة"],["#contact","تواصل معنا"]]]
 ];
@@ -60,3 +60,13 @@ const onScroll=()=>{tick=false;const y=scrollY,h=document.documentElement.scroll
 addEventListener("scroll",()=>{if(!tick){tick=true;requestAnimationFrame(onScroll)}},{passive:true});
 addEventListener("resize",onScroll);onScroll();
 })();
+// 02/11/2026 · المناطق القابلة للتمرير أفقياً (جداول ومعادلات) تُصبح قابلة للتركيز والتمرير بلوحة المفاتيح
+(()=>{let seq=0;const mark=()=>{document.querySelectorAll(".tbl,.formula,.sx,[class*='scroll']").forEach(el=>{
+  if(el.hasAttribute("data-scrollfocus")||el.scrollWidth<=el.clientWidth+1)return;
+  if(el.querySelector("a,button,input,select,textarea,[tabindex]"))return;
+  const h=el.closest("section,figure,.fig,div")?.querySelector("h2,h3,figcaption,.k");
+  el.tabIndex=0;el.setAttribute("data-scrollfocus","");el.setAttribute("role","region");
+  el.setAttribute("aria-label",(h?h.textContent.trim().slice(0,60)+" · ":"")+"منطقة قابلة للتمرير "+(++seq));});};
+ let t;const run=()=>{clearTimeout(t);t=setTimeout(mark,400)};
+ addEventListener("load",run);addEventListener("resize",run);
+ new MutationObserver(run).observe(document.body,{childList:true,subtree:true});})();

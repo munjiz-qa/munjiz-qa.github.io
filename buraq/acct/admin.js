@@ -1,8 +1,12 @@
 // لوحة إدارة براق: صلاحيات كاملة على الطلبات والمستخدمين والخطط والكتالوج والمحتوى.
+import { printQuote } from "./quote.js?v=1";
+import { insightsHtml, INS_CSS } from "./insights.js?v=1";
+import { createUnread, titleBadge } from "./unread.js?v=2";
 import { READY, auth, db, A, F, loadProfile, createUserAsAdmin } from "./fb.js";
 import { $, esc, fmtDate, normPhone, phoneHtml, money, STATUS, stBadge, TYPES, toast, errMsg } from "./ui.js";
-import { CATALOG, KIND, CONTENT } from "./seed.js";
+import { CATALOG, KIND, CONTENT } from "./seed.js?v=2";
 
+let U = null;
 let ME = null, USERS = [], REQS = [], PLANS = [], CAT = [], unsub = [];
 $("boot").hidden = true;
 if (!READY) { $("notReady").hidden = false; throw new Error("not configured"); }
@@ -19,7 +23,7 @@ $("logout").onclick = () => A.signOut(auth);
 
 A.onAuthStateChanged(auth, async (user) => {
   unsub.forEach((u) => u()); unsub = [];
-  if (!user) { $("dash").hidden = true; $("auth").hidden = false; $("logout").hidden = true; $("whoName").textContent = ""; return; }
+  if (!user) { $("dash").hidden = true; $("auth").hidden = false; $("logout").hidden = true; if ($("notifyBtn")) $("notifyBtn").hidden = true; $("whoName").textContent = ""; return; }
   try { ME = await loadProfile(user); } catch (err) { showErr("loginErr", errMsg(err)); return; }
   if (ME.role !== "admin" || ME.disabled) {
     await A.signOut(auth);
@@ -31,10 +35,33 @@ A.onAuthStateChanged(auth, async (user) => {
 });
 
 const byDate = (a, b) => (b.createdAt?.seconds || 9e9) - (a.createdAt?.seconds || 9e9);
+// تنبيهات المتصفح (اختيارية): طلب جديد أو رسالة عميل بانتظار الرد، حين تكون الصفحة في الخلفية.
+// الحالة الأولية بعد الدخول تُعدّ معلومة سابقة فلا تُنبَّه، وكل تنبيه يظهر مرة واحدة فقط.
+const NOTE = typeof Notification !== "undefined";
+let noteBase = 0; const noted = new Set();
+function notifyNew() {
+  if (!NOTE || Notification.permission !== "granted" || !U) return;
+  const fresh = [];
+  REQS.filter((r) => r.status === "new").forEach((r) => fresh.push([`n:${r.id}`, `طلب جديد ${r.no}`, `${r.name || ""} · ${TYPES[r.type] || r.type}`]));
+  U.ids().forEach((id) => { const r = REQS.find((x) => x.id === id), m = U.lastOf(id); if (r && m) fresh.push([`m:${id}:${m.at && (m.at.seconds || m.at)}`, `رسالة من العميل · ${r.no}`, String(m.text || "").slice(0, 120)]); });
+  fresh.forEach(([k, t, b]) => {
+    if (noted.has(k)) return; noted.add(k);
+    if (Date.now() < noteBase || !document.hidden) return;
+    try { new Notification(t, { body: b, tag: k, icon: "app/icon-192.png", dir: "rtl", lang: "ar" }); } catch (e) {}
+  });
+}
+function noteBtn() {
+  const b = $("notifyBtn"); if (!b) return;
+  b.hidden = !NOTE || Notification.permission !== "default";
+  b.onclick = async () => { try { await Notification.requestPermission(); } catch (e) {} noteBase = Date.now() + 4000; b.hidden = Notification.permission !== "default"; if (Notification.permission === "granted") toast("فُعّلت تنبيهات المتصفح للطلبات والرسائل الجديدة."); };
+}
 function watch() {
+  noteBase = Date.now() + 5000; noteBtn();
   const live = (name, set) => unsub.push(F.onSnapshot(F.collection(db, name), (s) => { set(s.docs.map((d) => ({ id: d.id, ...d.data() }))); render(); }, (e) => toast(errMsg(e), true)));
   live("users", (v) => (USERS = v.sort(byDate)));
-  live("requests", (v) => (REQS = v.sort(byDate)));
+  U = createUnread({ db, F, uid: ME.id, side: "admin", onChange: () => { renderOv(); renderReqs(); titleBadge(U.count()); notifyNew(); } });
+  unsub.push(() => { U.stop(); titleBadge(0); });
+  live("requests", (v) => { REQS = v.sort(byDate); notifyNew(); U.sync(REQS.filter((r) => !["done", "cancelled"].includes(r.status))); });
   live("plans", (v) => (PLANS = v.sort(byDate)));
   live("catalog", (v) => (CAT = v.sort((a, b) => (a.order ?? 999) - (b.order ?? 999))));
   loadContent();
@@ -55,12 +82,16 @@ function renderOv() {
   $("kpis").innerHTML = [
     [REQS.length, "كل الطلبات"], [c("new"), "طلبات جديدة"], [open, "طلبات مفتوحة"], [c("quoted"), "عروض بانتظار العميل"],
     [USERS.filter((u) => u.role === "customer").length, "العملاء"], [USERS.filter((u) => u.role === "admin").length, "المديرون"],
-    [PLANS.length, "خطط محفوظة"], [money(val), "قيمة الطلبات المعتمدة"]
+    [PLANS.length, "خطط محفوظة"], [money(val), "قيمة الطلبات المعتمدة"], [U ? U.count() : 0, "رسائل بانتظار ردك"]
   ].map(([v, l]) => `<div class="kpi"><b>${v}</b><span>${l}</span></div>`).join("");
+  $("insights").innerHTML = insightsHtml(REQS);
   $("latest").innerHTML = REQS.slice(0, 6).map(reqItem).join("") || `<div class="empty">لا توجد طلبات بعد.</div>`;
-  $("nReq").textContent = REQS.length; $("nUsr").textContent = USERS.length; $("nPlan").textContent = PLANS.length;
+  { const nu = U ? U.count() : 0; $("nReq").textContent = REQS.length + (nu ? ` · ${nu} بانتظار ردك` : ""); } $("nUsr").textContent = USERS.length; $("nPlan").textContent = PLANS.length;
 }
-const reqItem = (r) => `<article class="item"><div><h3>${esc(r.name)} · ${esc(TYPES[r.type] || r.type)} ${stBadge(r.status)}</h3><div class="meta"><span dir="ltr">${esc(r.no)}</span><span>${esc(r.car || "—")}</span><span>${fmtDate(r.createdAt, true)}</span></div></div><div class="acts"><button class="btn sm pri" data-open="${r.id}">إدارة الطلب</button></div></article>`;
+const waitBadge = (r) => (U && U.isUnread(r.id) ? ` <span class="badge msg-new" data-unread>رسالة بانتظار ردك</span>` : "");
+const reqItem = (r) => `<article class="item"><div><h3>${esc(r.name)} · ${esc(TYPES[r.type] || r.type)} ${stBadge(r.status)}${waitBadge(r)}</h3><div class="meta"><span dir="ltr">${esc(r.no)}</span><span>${esc(r.car || "—")}</span><span>${fmtDate(r.createdAt, true)}</span></div></div><div class="acts"><button class="btn sm pri" data-open="${r.id}">إدارة الطلب</button></div></article>`;
+{ const st = document.createElement("style"); st.textContent = INS_CSS; document.head.appendChild(st); }
+$("insights").onclick = (e) => { const b = e.target.closest("[data-open]"); if (b) openReq(b.dataset.open); };
 $("latest").onclick = (e) => { const b = e.target.closest("[data-open]"); if (b) openReq(b.dataset.open); };
 
 // ===== الطلبات =====
@@ -72,11 +103,20 @@ function filteredReqs() {
 }
 function renderReqs() {
   const L = filteredReqs();
-  $("reqRows").innerHTML = L.length ? L.map((r) => `<tr><td dir="ltr" style="text-align:right">${esc(r.no)}</td><td>${esc(r.name)}<div class="mute sm" dir="ltr" style="text-align:right">${esc(r.email)}</div></td><td>${phoneHtml(r.phone)}</td><td>${esc(TYPES[r.type] || r.type)}</td><td>${esc(r.car || "—")}</td><td>${stBadge(r.status)}</td><td>${money(r.price, r.currency)}</td><td>${fmtDate(r.createdAt)}</td><td><button class="btn sm pri" data-open="${r.id}">إدارة</button></td></tr>`).join("")
+  $("reqRows").innerHTML = L.length ? L.map((r) => `<tr${U && U.isUnread(r.id) ? ' class="unread"' : ""}><td dir="ltr" style="text-align:right">${esc(r.no)}${waitBadge(r)}</td><td>${esc(r.name)}<div class="mute sm" dir="ltr" style="text-align:right">${esc(r.email)}</div></td><td>${phoneHtml(r.phone)}</td><td>${esc(TYPES[r.type] || r.type)}</td><td>${esc(r.car || "—")}</td><td>${stBadge(r.status)}</td><td>${money(r.price, r.currency)}</td><td>${fmtDate(r.createdAt)}</td><td><button class="btn sm pri" data-open="${r.id}">إدارة</button></td></tr>`).join("")
     : `<tr><td colspan="9" class="mute" style="text-align:center;padding:24px">لا توجد طلبات مطابقة.</td></tr>`;
 }
 $("reqRows").onclick = (e) => { const b = e.target.closest("[data-open]"); if (b) openReq(b.dataset.open); };
 
+// ردود جاهزة بصياغة موحّدة، تُدرج في صندوق الرد ويعدّلها المدير قبل الإرسال
+const REPLIES = [
+  ["استلام الطلب", "مرحباً {الاسم}، شكراً لتواصلك مع براق. استلمنا طلبك {الطلب} ويعمل عليه فريقنا الآن، وسنوافيك بالتفاصيل خلال 24 ساعة."],
+  ["طلب معلومات إضافية", "مرحباً {الاسم}، لإتمام دراسة طلبك {الطلب} نحتاج إلى: موديل السيارة وسنة صنعها، والمدى اليومي المعتاد، والميزانية التقريبية. بمجرد وصولها نرسل لك عرض السعر."],
+  ["إرسال عرض السعر", "مرحباً {الاسم}، أُرسل إليك عرض السعر الخاص بطلبك {الطلب}، وهو ظاهر في حسابك. يسعدنا الإجابة عن أي استفسار، ويمكنك اعتماده من صفحة الطلب بضغطة واحدة."],
+  ["متابعة عرض السعر", "مرحباً {الاسم}، نتابع معك بخصوص عرض السعر لطلبك {الطلب}. هل لديك أي استفسار أو ملاحظة نستطيع معالجتها؟"],
+  ["اعتماد الطلب وبدء التنفيذ", "مرحباً {الاسم}، شكراً لاعتمادك العرض. أصبح طلبك {الطلب} قيد التنفيذ، وسنُعلمك بكل مرحلة من مراحله."],
+  ["اكتمال التنفيذ", "مرحباً {الاسم}، اكتمل تنفيذ طلبك {الطلب}. نشكر ثقتك، ونرحب بأي ملاحظة بعد التجربة."],
+];
 let msgUnsub = null;
 function openReq(id) {
   const r = REQS.find((x) => x.id === id); if (!r) return;
@@ -97,18 +137,21 @@ function openReq(id) {
       <label class="f">عرض السعر بالدولار (يُحوَّل تلقائياً لعملة العميل)<input id="dPr" type="number" min="0" step="0.01" inputmode="decimal" value="${r.price ?? ""}"><small class="mute sm" data-usd-hint="dPr" data-nocur></small></label>
     </div>
     <label class="f">ملاحظة للعميل (تظهر في حسابه)<textarea id="dNote" maxlength="1000" style="min-height:70px">${esc(r.adminNote || "")}</textarea></label>
-    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn pri" type="submit">حفظ التحديث</button><button class="btn bad" type="button" id="dDel">حذف الطلب نهائياً</button></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn pri" type="submit">حفظ التحديث</button><button class="btn" type="button" id="dPdf"${r.price != null ? "" : " hidden"}>عرض السعر PDF</button><button class="btn bad" type="button" id="dDel">حذف الطلب نهائياً</button></div>
   </form>
   <ul class="timeline">${(r.history || []).map((h) => `<li>${STATUS[h.s]?.[0] || esc(h.s)} · ${fmtDate(h.at, true)}${h.by === "customer" ? " (العميل)" : ""}</li>`).join("<li>←</li>")}</ul>
   <h3>المراسلة مع العميل</h3>
-  <div class="thread" id="thread"></div>
+  <div class="thread" id="thread" role="log" tabindex="0" aria-label="رسائل الطلب"></div>
+  <label class="f" style="margin:0 0 8px">رد جاهز<select id="msgTpl" aria-label="إدراج رد جاهز في صندوق الرد"><option value="">اختر ردّاً جاهزاً لتعديله قبل الإرسال</option>${REPLIES.map((t, i) => `<option value="${i}">${esc(t[0])}</option>`).join("")}</select></label>
   <form id="msgF" style="display:flex;gap:8px;align-items:flex-end"><textarea id="msgT" maxlength="2000" style="min-height:48px" placeholder="اكتب ردك للعميل" required></textarea><button class="btn pri" type="submit">إرسال</button></form>`;
   $("dlg").showModal();
+  if (U) U.setOpen(id);
   if (msgUnsub) msgUnsub();
   msgUnsub = F.onSnapshot(F.query(F.collection(db, "requests", id, "msgs"), F.orderBy("at")), (s) => {
     const t = $("thread"); if (!t) return;
-    t.innerHTML = s.empty ? `<div class="mute sm">لا رسائل بعد.</div>` : s.docs.map((d) => { const m = d.data(); return `<div class="bubble ${m.fromAdmin ? "adm" : ""}">${esc(m.text)}<small>${m.fromAdmin ? "براق · " + esc(m.name) : esc(m.name)} · ${fmtDate(m.at, true)}</small></div>`; }).join("");
+    t.innerHTML = s.empty ? `<div class="mute sm">لا رسائل بعد.</div>` : s.docs.map((d) => { const m = d.data(); return `<div class="bubble ${m.fromAdmin ? "adm" : ""}${m.accept ? " acc" : ""}">${esc(m.text)}<small>${m.fromAdmin ? "براق · " + esc(m.name) : esc(m.name)} · ${fmtDate(m.at, true)}</small></div>`; }).join("");
     t.scrollTop = t.scrollHeight;
+    if (s.docs.some((d) => d.data().accept) && r.status === "quoted" && !$("accHint")) $("stF").insertAdjacentHTML("afterbegin", `<p class="msg ok" id="accHint" style="margin:0 0 10px">اعتمد العميل هذا العرض من حسابه. غيّر الحالة إلى «معتمد» واحفظ.</p>`);
   });
   $("stF").onsubmit = async (e) => {
     e.preventDefault();
@@ -117,16 +160,22 @@ function openReq(id) {
     if (st !== r.status) upd.history = [...(r.history || []), { s: st, at: new Date().toISOString(), by: ME.name }];
     try { await F.updateDoc(F.doc(db, "requests", id), upd); toast("حُفظ تحديث الطلب وظهر للعميل."); $("dlg").close(); } catch (err) { toast(errMsg(err), true); }
   };
+  $("dPdf").onclick = () => printQuote(r, USERS.find((u) => u.id === r.uid));
   $("dDel").onclick = async () => {
     if (!confirm(`حذف الطلب ${r.no} نهائياً؟ لا يمكن التراجع.`)) return;
     try { await F.deleteDoc(F.doc(db, "requests", id)); $("dlg").close(); toast("حُذف الطلب."); } catch (err) { toast(errMsg(err), true); }
+  };
+  $("msgTpl").onchange = (e) => {
+    const t = REPLIES[e.target.value]; if (!t) return;
+    const fill = (x) => x.replace(/\{الاسم\}/g, (r.name || "").split(" ")[0] || "عميلنا الكريم").replace(/\{الطلب\}/g, r.no || "");
+    const box = $("msgT"); box.value = (box.value.trim() ? box.value.trim() + "\n\n" : "") + fill(t[1]); box.focus(); e.target.value = "";
   };
   $("msgF").onsubmit = async (e) => {
     e.preventDefault(); const text = $("msgT").value.trim(); if (!text) return;
     try { await F.addDoc(F.collection(db, "requests", id, "msgs"), { uid: ME.id, name: ME.name, fromAdmin: true, text, at: F.serverTimestamp() }); $("msgT").value = ""; } catch (err) { toast(errMsg(err), true); }
   };
 }
-$("dlg").addEventListener("close", () => { if (msgUnsub) { msgUnsub(); msgUnsub = null; } });
+$("dlg").addEventListener("close", () => { if (msgUnsub) { msgUnsub(); msgUnsub = null; } if (U) U.setOpen(null); });
 $("csvReq").onclick = () => {
   const rows = [["رقم الطلب", "العميل", "البريد", "الجوال", "المدينة", "النوع", "السيارة", "الحالة", "عرض السعر USD", "التاريخ", "التفاصيل"]]
     .concat(filteredReqs().map((r) => [r.no, r.name, r.email, r.phone, r.city, TYPES[r.type] || r.type, r.car, STATUS[r.status]?.[0], r.price ?? "", fmtDate(r.createdAt, true), r.details]));
@@ -237,11 +286,14 @@ $("addItem").onclick = async () => {
   try { await F.addDoc(F.collection(db, "catalog"), { order: CAT.length + 1, code: "BQ-NEW", name: "بند جديد", cat: "أخرى", price: null, kind: "est", active: false, updatedAt: F.serverTimestamp() }); toast("أُضيف بند جديد غير مفعّل في آخر الجدول. عدّله ثم فعّله واحفظ."); } catch (err) { toast(errMsg(err), true); }
 };
 $("seedCat").onclick = async () => {
-  if (!confirm("استيراد بنود براق الافتراضية؟ البنود ذات الرموز نفسها تُحدَّث بأسعارها الافتراضية.")) return;
+  const have = new Set(CAT.map((c) => c.code));
+  const miss = CATALOG.filter((c) => !have.has(c.code));
+  if (!miss.length) return toast("كل بنود براق الافتراضية موجودة في الجدول. عدّل أسعارها من الجدول مباشرة.");
+  if (!confirm(`إضافة ${miss.length} بنداً ناقصاً من بنود براق الافتراضية؟ البنود الموجودة وأسعارها لا تتغير.`)) return;
   try {
     const b = F.writeBatch(db);
-    CATALOG.forEach((c, i) => b.set(F.doc(db, "catalog", c.code.replace(/[^\w-]/g, "_")), { ...c, order: i + 1, active: true, updatedAt: F.serverTimestamp() }));
-    await b.commit(); toast(`اُستورد ${CATALOG.length} بنداً.`);
+    miss.forEach((c) => b.set(F.doc(db, "catalog", c.code.replace(/[^\w-]/g, "_")), { ...c, order: CATALOG.indexOf(c) + 1, active: true, updatedAt: F.serverTimestamp() }));
+    await b.commit(); toast(`أُضيف ${miss.length} بنداً، منها: ${miss.slice(0, 3).map((c) => c.code).join("، ")}.`);
   } catch (err) { toast(errMsg(err), true); }
 };
 

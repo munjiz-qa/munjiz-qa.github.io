@@ -65,7 +65,27 @@ function ring(score, st) {
   return `<svg class="ring" viewBox="0 0 120 120" role="img" aria-label="مؤشر السرية ${v}"><circle cx="60" cy="60" r="${r}" fill="none" stroke="var(--line)" stroke-width="11"/><circle cx="60" cy="60" r="${r}" fill="none" stroke="${scoreColor(v, st)}" stroke-width="11" stroke-linecap="round" stroke-dasharray="${c * v / 100} ${c}" transform="rotate(-90 60 60)"/><text x="60" y="58" text-anchor="middle" font-size="30" font-weight="700" fill="var(--ink)">${score == null ? "—" : v}</text><text x="60" y="80" text-anchor="middle" font-size="12" fill="var(--mute)">من 100</text></svg>`;
 }
 const LOGO = (s = 38) => `<svg width="${s}" height="${s}" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 3l17 7v12c0 11-7.3 19.6-17 23-9.7-3.4-17-12-17-23V10z" fill="none" stroke="var(--brand)" stroke-width="2.6"/><path d="M24 10l11 4.6v7.6c0 7.2-4.6 12.9-11 15.3-6.4-2.4-11-8.1-11-15.3v-7.6z" fill="var(--brand)" opacity=".14"/><circle cx="24" cy="21" r="4.2" fill="none" stroke="var(--gold)" stroke-width="2.6"/><path d="M24 25.2v7" stroke="var(--gold)" stroke-width="2.6" stroke-linecap="round"/></svg>`;
-function modal(html) { const m = document.createElement("div"); m.className = "modal"; m.innerHTML = `<div class="card" role="dialog" aria-modal="true">${html}</div>`; m.addEventListener("click", e => { if (e.target === m || e.target.closest("[data-close]")) m.remove(); }); document.body.appendChild(m); const f = m.querySelector("input,select,button"); if (f) f.focus(); return m; }
+/* النوافذ المنبثقة: Esc يغلقها، والتنقل بـ Tab يبقى داخلها، ويعود التركيز إلى الزر الذي فتحها عند الإغلاق، وتُسمّى بعنوانها للقارئات الصوتية */
+function modal(html) {
+  const prev = document.activeElement, m = document.createElement("div"); m.className = "modal"; m.innerHTML = `<div class="card" role="dialog" aria-modal="true">${html}</div>`;
+  const dlg = m.firstChild, h = dlg.querySelector("h1,h2,h3"); if (h) { h.id = h.id || "mdl" + Date.now(); dlg.setAttribute("aria-labelledby", h.id); }
+  const FOC = 'input:not([type=hidden]):not([disabled]),select:not([disabled]),textarea:not([disabled]),button:not([disabled]),a[href],[tabindex]:not([tabindex="-1"])';
+  const onKey = e => {
+    if (!m.isConnected) { document.removeEventListener("keydown", onKey, true); return; }
+    if (m !== [...document.querySelectorAll(".modal")].pop()) return;
+    if (e.key === "Escape") { e.preventDefault(); m.remove(); return; }
+    if (e.key !== "Tab") return;
+    const els = [...dlg.querySelectorAll(FOC)].filter(x => x.offsetParent !== null); if (!els.length) { e.preventDefault(); return; }
+    const first = els[0], last = els[els.length - 1];
+    if (!dlg.contains(document.activeElement)) { e.preventDefault(); first.focus(); }
+    else if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  };
+  const rm = m.remove.bind(m); m.remove = () => { document.removeEventListener("keydown", onKey, true); rm(); if (prev && prev.isConnected && prev.focus) prev.focus(); };
+  m.addEventListener("click", e => { if (e.target === m || e.target.closest("[data-close]")) m.remove(); });
+  document.addEventListener("keydown", onKey, true); document.body.appendChild(m);
+  const f = m.querySelector("input,select,button"); if (f) f.focus(); return m;
+}
 function busy(btn, on) { if (!btn) return; btn.disabled = on; if (on) { btn.dataset.t = btn.textContent; btn.textContent = "جارٍ التنفيذ…"; } else if (btn.dataset.t) btn.textContent = btn.dataset.t; }
 function download(name, text, type) { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([text], { type: type || "application/json" })); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500); }
 function theme(t) { if (t) { ls.set("saif-theme", t); } t = ls.get("saif-theme"); if (t) document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme; }
@@ -89,22 +109,24 @@ async function route() {
   const item = NAV.find(n => n[0] === pg);
   S.page = item && (!item[2] || can(item[2])) ? pg : "home";
   shell();
+  document.title = (item ? item[1] + " · " : "") + "سَيْف · منجز";
   const v = $("#view");
   try { await PAGES[S.page](v); } catch (e) { if (e.code !== "auth") v.innerHTML = `<div class="banner alert">${esc(e.message)}</div>`; }
 }
 window.addEventListener("hashchange", route);
+document.addEventListener("click", e => { const k = e.target.closest && e.target.closest("a.skip"); if (!k) return; e.preventDefault(); const m = document.querySelector("main"); if (m) m.focus(); });
 
 function shell() {
   const u = S.user;
-  $("#app").innerHTML = `<header class="top"><div class="top-in">
+  $("#app").innerHTML = `<a class="skip" href="#">انتقل إلى المحتوى</a><header class="top"><div class="top-in">
       <a class="brand" href="#home">${LOGO()}<span><b>سَيْف</b><small>حارس سرية البيانات · منجز لخدمات الأعمال</small></span></a>
       <span class="live" id="live" title="حالة الاتصال والمزامنة"><i></i><span id="liveT">مباشر</span></span>
       <span class="who"><span class="nm">${esc(u.name)}</span><span class="pill ${u.role === "admin" ? "warn" : "ok"} rl">${esc(u.roleName)}</span></span>
-      <button class="sm ghost" id="thm" type="button" aria-label="تبديل المظهر">◐</button>
+      <button class="sm ghost ico" id="thm" type="button" aria-label="تبديل المظهر بين الفاتح والداكن" title="تبديل المظهر"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor" stroke="none"/></svg></button>
       <button class="sm" id="out" type="button">خروج</button>
     </div>
-    <nav class="tabs" aria-label="أقسام المنصة">${NAV.filter(n => !n[2] || can(n[2])).map(n => `<a href="#${n[0]}" class="${n[0] === S.page ? "on" : ""}">${n[1]}</a>`).join("")}</nav>
-  </header><main class="wrap" id="view"><div class="boot">جارٍ التحميل…</div></main>${footer()}`;
+    <nav class="tabs" aria-label="أقسام المنصة">${NAV.filter(n => !n[2] || can(n[2])).map(n => `<a href="#${n[0]}" class="${n[0] === S.page ? "on" : ""}"${n[0] === S.page ? ' aria-current="page"' : ""}>${n[1]}</a>`).join("")}</nav>
+  </header><main class="wrap" id="view" tabindex="-1"><div class="boot">جارٍ التحميل…</div></main>${footer()}`;
   $("#thm").onclick = () => theme(document.documentElement.dataset.theme === "dark" ? "light" : (document.documentElement.dataset.theme === "light" ? "dark" : (matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "dark")));
   $("#out").onclick = logout;
   const on = $("nav.tabs a.on"); if (on && on.scrollIntoView) on.scrollIntoView({ block: "nearest", inline: "center" });
@@ -135,9 +157,10 @@ document.addEventListener("visibilitychange", () => { if (document.visibilitySta
 
 /* ---------- الزائر ---------- */
 function renderPublic() {
-  $("#app").innerHTML = `<header class="top"><div class="top-in"><a class="brand" href="#">${LOGO()}<span><b>سَيْف</b><small>حارس سرية البيانات · منجز لخدمات الأعمال</small></span></a>
+  document.title = "سَيْف · حارس سرية البيانات من منجز";
+  $("#app").innerHTML = `<a class="skip" href="#">انتقل إلى المحتوى</a><header class="top"><div class="top-in"><a class="brand" href="#">${LOGO()}<span><b>سَيْف</b><small>حارس سرية البيانات · منجز لخدمات الأعمال</small></span></a>
     <span class="live" id="pubLive"><i></i><span>المنصة تعمل الآن</span></span><a class="btn pri sm" href="#login">تسجيل الدخول</a></div></header>
-  <main class="wrap">
+  <main class="wrap" id="main" tabindex="-1">
     <section class="hero"><div><h1>بياناتك السرية تبقى سرية، وأنت ترى ذلك لحظة بلحظة</h1>
       <p>سَيْف يفحص ملفاتك على جهازك نفسه، فيكشف أرقام الهواتف والهويات والحسابات البنكية وكلمات المرور والمفاتيح المكشوفة، ويختم كل تقرير ببصمة لا تقبل التعديل، ويتابع حالة جهازك واتصاله مباشرة.</p>
       <div class="row"><a class="btn pri" href="#login">الدخول إلى حسابك</a><a class="btn" href="https://wa.me/${CONTACT.wa}" target="_blank" rel="noopener">اطلب حساباً عبر واتساب</a></div></div>
@@ -151,8 +174,9 @@ function renderPublic() {
     </section></main>${footer()}`;
 }
 function renderLogin() {
-  $("#app").innerHTML = `<header class="top"><div class="top-in"><a class="brand" href="#">${LOGO()}<span><b>سَيْف</b><small>حارس سرية البيانات · منجز لخدمات الأعمال</small></span></a><a class="btn sm" href="#">الصفحة الرئيسية</a></div></header>
-  <main class="wrap"><section class="card login" style="margin-top:28px"><h2>تسجيل الدخول</h2>
+  document.title = "تسجيل الدخول · سَيْف";
+  $("#app").innerHTML = `<a class="skip" href="#">انتقل إلى المحتوى</a><header class="top"><div class="top-in"><a class="brand" href="#">${LOGO()}<span><b>سَيْف</b><small>حارس سرية البيانات · منجز لخدمات الأعمال</small></span></a><a class="btn sm" href="#">الصفحة الرئيسية</a></div></header>
+  <main class="wrap" id="main" tabindex="-1"><section class="card login" style="margin-top:28px"><h2>تسجيل الدخول</h2>
     <form id="lf" novalidate><label>اسم المستخدم<input id="lu" autocomplete="username" dir="ltr" autocapitalize="none" spellcheck="false" required></label>
     <label>كلمة المرور<span class="pwrap"><input id="lp" type="password" autocomplete="current-password" dir="ltr" required><button type="button" class="sm" id="pt">إظهار</button></span></label>
     <span class="err" id="le" role="alert"></span><button class="pri" style="width:100%" id="lb">دخول</button></form>
@@ -249,11 +273,15 @@ const RULES = [
   { type: "رقم بطاقة بنكية", sev: "high", re: /\b(?:\d[ -]?){13,19}\b/g, test: m => { const d = m.replace(/\D/g, ""); return d.length >= 13 && d.length <= 19 && luhn(d) && !/^(\d)\1+$/.test(d); } },
   { type: "رقم حساب بنكي دولي IBAN", sev: "mid", re: /\b[A-Z]{2}\d{2}(?: ?[A-Z0-9]{4}){3,7}(?: ?[A-Z0-9]{1,4})?\b/g, test: m => m.replace(/\s/g, "").length >= 15 },
   { type: "رقم بطاقة شخصية قطرية", sev: "mid", re: /\b[23]\d{10}\b/g },
+  { type: "رقم قومي مصري", sev: "mid", re: /\b[23]\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])\d{7}\b/g },
   { type: "رقم جواز سفر", sev: "mid", re: /(?:passport|جواز(?:\s*السفر)?)\s*(?:no\.?|رقم)?\s*[:#]?\s*[A-Z0-9]{6,9}\b/gi },
-  { type: "رقم هاتف", sev: "low", re: /(?:\+|00)\d{1,3}[\s-]?\d{3,4}[\s-]?\d{3,4}(?:[\s-]?\d{2,4})?\b|\b[3-7]\d{3}[\s-]?\d{4}\b/g },
+  { type: "رقم هاتف", sev: "low", re: /(?:\+|(?<!\d)00)\d{1,3}[\s-]?\d{3,4}[\s-]?\d{3,4}(?:[\s-]?\d{2,4})?\b|\b[3-7]\d{3}[\s-]?\d{4}\b|\b01[0125]\d[\s-]?\d{3}[\s-]?\d{4}\b/g },
   { type: "بريد إلكتروني", sev: "low", re: /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g }
 ];
+/* الأرقام العربية المشرقية (٠-٩) والفارسية (۰-۹) تُحوَّل إلى أرقام لاتينية قبل الفحص، فلا يفوت رقم هوية أو هاتف مكتوب بها */
+const normDigits = t => t.replace(/[\u0660-\u0669]/g, d => d.charCodeAt(0) - 0x0660).replace(/[\u06F0-\u06F9]/g, d => d.charCodeAt(0) - 0x06F0);
 function scanText(txt) {
+  txt = normDigits(txt);
   const res = [];
   RULES.forEach(r => { const m = (txt.match(r.re) || []).filter(x => !r.test || r.test(x)); if (m.length) res.push({ type: r.type, sev: r.sev, count: m.length, sample: mask(m[0]) }); });
   return res;
@@ -275,13 +303,79 @@ async function ooxmlText(buf) {
   }
   return out;
 }
+/* نص ملفات PDF: تُفك ضغط تدفقات المحتوى (FlateDecode) داخل المتصفح، ويُستخرج النص المكتوب بخطوط قياسية من أوامر Tj وTJ ومن البيانات الوصفية.
+   ملفات PDF الممسوحة ضوئياً أو ذات الخطوط المضمّنة بترميز خاص قد لا يُستخرج نصها، فتُحسب بصمتها فقط. */
+/* فك ضغط متسامح: كثير من ملفات PDF تضيف سطراً أو بايتات بعد نهاية البيانات المضغوطة، فيُحتفظ بما فُكّ قبل الخطأ */
+async function zinflate(u8) {
+  const rd = new Blob([u8]).stream().pipeThrough(new DecompressionStream("deflate")).getReader(), parts = []; let n = 0;
+  try { for (;;) { const { done, value } = await rd.read(); if (done) break; parts.push(value); n += value.length; } } catch (e) { if (!n) throw e; }
+  const out = new Uint8Array(n); let o = 0; for (const p of parts) { out.set(p, o); o += p.length; } return out;
+}
+function a85(u8) {
+  const s = new TextDecoder("latin1").decode(u8).replace(/^\s*<~/, "").replace(/~>[\s\S]*$/, "").replace(/\s+/g, ""), out = []; let t = [];
+  for (const ch of s) {
+    if (ch === "z" && !t.length) { out.push(0, 0, 0, 0); continue; }
+    const v = ch.charCodeAt(0) - 33; if (v < 0 || v > 84) throw new Error("a85"); t.push(v);
+    if (t.length === 5) { let n = 0; for (const x of t) n = n * 85 + x; out.push(n >>> 24 & 255, n >>> 16 & 255, n >>> 8 & 255, n & 255); t = []; }
+  }
+  if (t.length) { const k = t.length; while (t.length < 5) t.push(84); let n = 0; for (const x of t) n = n * 85 + x; out.push(...[n >>> 24 & 255, n >>> 16 & 255, n >>> 8 & 255, n & 255].slice(0, k - 1)); }
+  return new Uint8Array(out);
+}
+function pdfStrings(src) {
+  let out = "", i = 0; const n = src.length;
+  while (i < n) {
+    const c = src[i];
+    if (c === "(") {
+      let d = 1, t = ""; i++;
+      while (i < n && d > 0) {
+        const ch = src[i];
+        if (ch === "\\") { const nx = src[i + 1]; const m = { n: "\n", r: "\n", t: " ", b: "", f: "", "(": "(", ")": ")", "\\": "\\" }; if (nx in m) { t += m[nx]; i += 2; continue; } if (/[0-7]/.test(nx)) { const o = /^[0-7]{1,3}/.exec(src.slice(i + 1, i + 4))[0]; t += String.fromCharCode(parseInt(o, 8)); i += 1 + o.length; continue; } i += 2; continue; }
+        if (ch === "(") d++; else if (ch === ")") { d--; if (!d) break; }
+        t += ch; i++;
+      }
+      out += t; i++;
+    } else if (c === "]" || (c === "T" && (src[i + 1] === "*" || src[i + 1] === "J" || src[i + 1] === "j"))) { out += " "; i++; }
+    else if (c === "E" && src[i + 1] === "T") { out += "\n"; i += 2; }
+    else i++;
+  }
+  return out;
+}
+async function pdfText(buf) {
+  const u8 = new Uint8Array(buf), lat = new TextDecoder("latin1").decode(u8); let out = "", total = 0, got = false;
+  const meta = lat.match(/\/(?:Title|Author|Subject|Keywords|Creator)\s*\([^)]{0,500}\)/g); if (meta) out += pdfStrings(meta.join(" ").replace(/\/\w+\s*/g, " ")) + "\n";
+  const re = />>\s*stream\r?\n/g; let m;
+  while ((m = re.exec(lat)) && total < 8 * 1048576) {
+    const st = m.index + m[0].length, en = lat.indexOf("endstream", st); if (en < 0) break;
+    const ob = lat.lastIndexOf(" obj", m.index), dict = lat.slice(ob < 0 ? Math.max(0, m.index - 2000) : ob, m.index); if (/\/(?:Subtype\s*\/Image|Type\s*\/(?:XObject|Font|FontDescriptor|ObjStm|XRef))/.test(dict) || /\/(?:DCTDecode|JPXDecode|CCITTFaxDecode|JBIG2Decode)/.test(dict)) { re.lastIndex = en; continue; }
+    let e2 = en; while (e2 > st && (u8[e2 - 1] === 10 || u8[e2 - 1] === 13)) e2--;
+    let data = u8.subarray(st, e2);
+    const fl = (dict.match(/\/Filter\s*(\[[^\]]*\]|\/\w+)/) || [, ""])[1].match(/\/\w+/g) || [];
+    if (fl.some(f => f !== "/FlateDecode" && f !== "/ASCII85Decode")) { re.lastIndex = en; continue; }
+    try { for (const f of fl) data = f === "/ASCII85Decode" ? a85(data) : await zinflate(data); } catch (e) { re.lastIndex = en; continue; }
+    total += data.length; const s = new TextDecoder("latin1").decode(data);
+    if (/\bBT\b/.test(s)) { const x = pdfStrings(s); if (x.trim()) { got = true; out += x + "\n"; } }
+    re.lastIndex = en;
+  }
+  /* إن لم يُستخرج نص الصفحات (ملف ممسوح أو بخطوط مرمّزة) يُعامل كملف غير مقروء المحتوى، فلا يُوصف بأنه خالٍ من البيانات الحساسة */
+  return got ? out : null;
+}
+/* ترميز الملفات النصية: UTF-16 (ملفات «نص يونيكود» من Excel) وUTF-8، ثم Windows-1256 للملفات العربية القديمة (CSV من Excel على ويندوز العربي).
+   بدون ذلك تظهر هذه الملفات حروفاً مشوّهة فتفلت منها البيانات الحساسة. */
+function decodeText(buf) {
+  const u = new Uint8Array(buf);
+  if (u[0] === 0xFF && u[1] === 0xFE) return new TextDecoder("utf-16le").decode(u.subarray(2));
+  if (u[0] === 0xFE && u[1] === 0xFF) return new TextDecoder("utf-16be").decode(u.subarray(2));
+  try { return new TextDecoder("utf-8", { fatal: true }).decode(u); } catch (e) { }
+  try { return new TextDecoder("windows-1256").decode(u); } catch (e) { return new TextDecoder().decode(u); }
+}
 async function analyze(file) {
   const buf = await file.arrayBuffer();
   const sha = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", buf)), b => b.toString(16).padStart(2, "0")).join("");
   let txt = null;
   if (file.size <= 20 * 1048576) {
     if (OOXML.test(file.name)) txt = await ooxmlText(buf);
-    else if (TEXT_EXT.test(file.name) || /^text\//.test(file.type) || file.type === "application/json") txt = new TextDecoder().decode(buf);
+    else if (/\.pdf$/i.test(file.name) || file.type === "application/pdf") txt = await pdfText(buf);
+    else if (TEXT_EXT.test(file.name) || /^text\//.test(file.type) || file.type === "application/json") txt = decodeText(buf);
   }
   return { name: file.name, size: file.size, sha, kind: txt != null ? "text" : "binary", findings: txt != null ? scanText(txt) : [] };
 }
@@ -300,7 +394,7 @@ password = Test-Only-123
 /* ---------- عرض التقارير ---------- */
 const sevPill = s => pill(s === "high" ? "alert" : s === "mid" ? "warn" : "na", C.SEV[s]);
 function repDetail(r) {
-  return `<div class="scroll"><table><thead><tr><th>الملف</th><th>الحجم</th><th>الحالة</th><th>نتيجة الفحص</th></tr></thead><tbody>${r.files.map(f => `<tr><td>${esc(f.name)}<div class="mono mute">${f.sha.slice(0, 16)}…</div></td><td class="num">${size(f.size)}</td><td>${pill(f.status === "changed" ? "warn" : f.status === "new" ? "na" : "ok", FST[f.status])}</td><td>${f.kind === "binary" ? '<span class="mute small">بصمة فقط (المحتوى غير نصي)</span>' : f.findings.length ? f.findings.map(g => `<div>${sevPill(g.sev)} ${esc(g.type)} × <span class="num">${g.count}</span> <span class="mono mute">${esc(g.sample)}</span></div>`).join("") : pill("ok", "لا بيانات حساسة")}</td></tr>`).join("")}</tbody></table></div>
+  return `<div class="scroll"><table><thead><tr><th>الملف</th><th>الحجم</th><th>الحالة</th><th>نتيجة الفحص</th></tr></thead><tbody>${r.files.map(f => `<tr><td>${esc(f.name)}<div class="mono mute">${f.sha.slice(0, 16)}…</div></td><td class="num">${size(f.size)}</td><td>${pill(f.status === "changed" ? "warn" : f.status === "new" ? "na" : "ok", FST[f.status])}</td><td>${f.kind === "binary" ? '<span class="mute small">بصمة فقط (لم يُقرأ المحتوى: صورة أو ملف مضغوط أو أكبر من 20 م.ب)</span>' : f.findings.length ? f.findings.map(g => `<div>${sevPill(g.sev)} ${esc(g.type)} × <span class="num">${g.count}</span> <span class="mono mute">${esc(g.sample)}</span></div>`).join("") : pill("ok", "لا بيانات حساسة")}</td></tr>`).join("")}</tbody></table></div>
   <div class="note">الختم: <span class="mono">${r.seal}</span><br>الختم السابق: <span class="mono">${r.prev || "— (أول تقرير)"}</span></div>
   <div class="row noprint" style="margin-top:8px"><button class="sm" data-print="${r.n}" type="button">طباعة أو حفظ PDF</button></div>`;
 }
@@ -341,7 +435,7 @@ const PAGES = {
     v.innerHTML = `<h1 class="pg">فحص الملفات <small>المحتوى يُقرأ داخل متصفحك فقط ولا يُرسل إلى أي مكان</small></h1>
       <div class="card"><div class="drop" id="drop"><p style="margin:0 0 10px;font-size:16px"><b>اسحب الملفات هنا</b> أو اخترها من جهازك</p>
         <div class="row" style="justify-content:center"><label class="btn pri" style="margin:0">اختيار ملفات<input type="file" id="fi" multiple></label><button type="button" id="demo">تجربة بملف اختبار وهمي</button></div>
-        <p class="note">يُفحص محتوى النصوص والجداول وملفات Word وExcel وPowerPoint حتى 20 م.ب للملف، وتُحسب بصمة كل الملفات أياً كان نوعها.</p></div>
+        <p class="note">يُفحص محتوى النصوص والجداول وملفات Word وExcel وPowerPoint وPDF النصية حتى 20 م.ب للملف، وتُحسب بصمة كل الملفات أياً كان نوعها.</p></div>
         <div id="prog" class="small mute" style="margin-top:10px" aria-live="polite"></div></div><div id="res" style="margin-top:14px"></div>`;
     const go = async files => {
       files = Array.from(files).slice(0, 200); if (!files.length) return;

@@ -93,6 +93,7 @@ dl.kv dt{color:var(--muted)}dl.kv dd{margin:0;overflow-wrap:anywhere}
 .bubble{max-width:85%;padding:8px 12px;border-radius:12px;background:var(--bg);border:1px solid var(--line);font-size:.92rem;white-space:pre-wrap;overflow-wrap:anywhere}
 .bubble.adm{align-self:flex-end;background:var(--copper-soft);border-color:transparent}
 .bubble small{display:block;color:var(--muted);font-size:.75rem;margin-top:2px}
+.bubble.acc{border:1.5px solid var(--ok);background:color-mix(in srgb,var(--ok) 10%,var(--surface));font-weight:600}
 .timeline{list-style:none;margin:0 0 16px;padding:0;display:flex;flex-wrap:wrap;gap:6px}
 .timeline li{font-size:.8rem;color:var(--muted)}
 .plan-sum{font-size:.85rem;color:var(--muted);background:var(--bg);border-radius:10px;padding:10px 12px;margin:6px 0 0;white-space:pre-wrap}
@@ -103,3 +104,8 @@ footer.ft .wrap{display:flex;gap:8px 20px;flex-wrap:wrap}
 .pw{position:relative}.pw button{position:absolute;inset-inline-end:6px;top:50%;transform:translateY(-50%);min-height:32px;padding:2px 8px;font-size:.8rem}
 .loading{color:var(--muted);padding:30px;text-align:center}
 .pw input{padding-inline-end:72px}
+/* 05/11/2026 · الرسائل غير المقروءة */
+.badge.msg-new{background:var(--copper);color:var(--surface);animation:bqPulse 2s ease-in-out 3}
+tr.unread td{background:var(--copper-soft)}
+@keyframes bqPulse{50%{box-shadow:0 0 0 5px var(--copper-soft)}}
+@media (prefers-reduced-motion:reduce){.badge.msg-new{animation:none}}

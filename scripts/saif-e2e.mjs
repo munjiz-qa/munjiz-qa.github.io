@@ -4,6 +4,7 @@
 import { createRequire } from "node:module";
 import { randomBytes } from "node:crypto";
 import fs from "node:fs";
+import zlib from "node:zlib";
 const require = createRequire(import.meta.url);
 const { chromium, devices } = require("playwright");
 const C = require("../saif/core.js");
@@ -27,7 +28,7 @@ function mkZip(files) {
   const cs = Buffer.concat(cen), e = Buffer.alloc(22); e.writeUInt32LE(0x06054b50, 0); e.writeUInt16LE(files.length, 8); e.writeUInt16LE(files.length, 10); e.writeUInt32LE(cs.length, 12); e.writeUInt32LE(off, 16);
   return Buffer.concat([...parts, cs, e]);
 }
-const DOCX = mkZip([["[Content_Types].xml", "<Types/>"], ["word/document.xml", "<w:document><w:body><w:p><w:r><w:t>للتواصل: sales@example.com</w:t></w:r></w:p></w:body></w:document>"]]);
+const DOCX = mkZip([["[Content_Types].xml", "<Types/>"], ["word/document.xml", "<w:document><w:body><w:p><w:r><w:t>للتواصل: sales@example.com</w:t></w:r></w:p><w:p><w:r><w:t>رقم الهوية: ٢٨٥٠١٢٣٤٥٦٧</w:t></w:r></w:p></w:body></w:document>"]]);
 (async () => {
   const br = await chromium.launch();
   for (const [name, opts] of [["desktop", { viewport: { width: 1366, height: 900 } }], ["mobile", devices["iPhone 13"]]]) {
@@ -48,8 +49,20 @@ const DOCX = mkZip([["[Content_Types].xml", "<Types/>"], ["word/document.xml", "
     await p.goto(BASE + "#scan"); await p.click("#demo"); await p.waitForSelector("text=نتيجة الفحص", { timeout: 10000 });
     const res = await p.textContent("#res"); ok(res.includes("كلمة مرور مكتوبة") && res.includes("IBAN") && res.includes("بطاقة شخصية") && res.includes("بريد"), "الفحص اكتشف البيانات الحساسة في ملف الاختبار"); ok(!res.includes("Test-Only-123"), "القيم الحساسة مقنّعة"); await shot("client-scan");
     await p.setInputFiles("#fi", { name: "عرض.docx", mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", buffer: DOCX });
-    await p.waitForFunction(() => document.querySelector("#res") && document.querySelector("#res").textContent.includes("#2"), null, { timeout: 10000 });
+    // انتظار عبر محدد العنصر بدل waitForFunction: الأخيرة تحتاج تقييم نص برمجي تمنعه سياسة أمان المحتوى في الصفحة فتفشل المراقبة أحياناً
+    await p.locator("#res", { hasText: "#2" }).first().waitFor({ timeout: 15000 });
     ok((await p.textContent("#res")).includes("بريد"), "فحص محتوى ملف Word");
+    ok((await p.textContent("#res")).includes("بطاقة شخصية"), "كشف رقم هوية مكتوب بالأرقام العربية");
+    // ملف PDF نصي صغير مضغوط بـ FlateDecode كما تنتجه برامج المكتب
+    const pdfStream = zlib.deflateSync(Buffer.from("BT /F1 12 Tf 72 720 Td (IBAN QA58DOHB00001234567890ABCDEFG) Tj ET"));
+    const PDF = Buffer.concat([Buffer.from("%PDF-1.4\n1 0 obj\n<< /Length " + pdfStream.length + " /Filter /FlateDecode >>\nstream\n"), pdfStream, Buffer.from("\nendstream\nendobj\n%%EOF\n")]);
+    await p.setInputFiles("#fi", { name: "كشف.pdf", mimeType: "application/pdf", buffer: PDF });
+    await p.locator("#res", { hasText: "#3" }).first().waitFor({ timeout: 15000 });
+    ok((await p.textContent("#res")).includes("IBAN"), "فحص محتوى ملف PDF");
+    // ملفات CSV بترميز UTF-16 (نص يونيكود من Excel) وWindows-1256 (ويندوز العربي)
+    await p.setInputFiles("#fi", [{ name: "عملاء-يونيكود.csv", mimeType: "text/csv", buffer: Buffer.concat([Buffer.from([0xFF, 0xFE]), Buffer.from("الهوية," + ["285", "0123", "4567"].join("") + "\n", "utf16le")]) }, { name: "عملاء-ويندوز.csv", mimeType: "text/csv", buffer: Buffer.from("x+HH0+Ms3+HjySDH4ePR5tE6IFF4LTc3ODgK", "base64") }]);
+    await p.locator("#res", { hasText: "#4" }).first().waitFor({ timeout: 15000 });
+    { const t = await p.textContent("#res"); ok(t.includes("بطاقة شخصية") && t.includes("كلمة مرور مكتوبة"), "فحص ملفات CSV بترميز UTF-16 وWindows-1256"); }
     await p.goto(BASE + "#reports"); await p.waitForSelector(".banner"); ok((await p.textContent(".banner")).includes("سليمة"), "سلسلة الأختام سليمة"); await shot("client-reports");
     for (const h of ["users", "audit", "settings", "health"]) { await p.goto(BASE + "#" + h); await p.waitForTimeout(300); ok(!(await p.isVisible("h1:has-text('" + ({ users: "الحسابات", audit: "سجل التدقيق", settings: "الإعدادات", health: "صحة المنصة" })[h] + "')")), "العميل محجوب عن #" + h); }
     await p.goto(BASE + "#device"); await p.waitForSelector(".chk"); const n1 = await p.textContent("#dv"); await p.waitForTimeout(2200); const n2 = await p.textContent("#dv"); ok(n1 !== n2, "مراقبة الجهاز تتحدث لحظياً"); await shot("device");
@@ -58,6 +71,12 @@ const DOCX = mkZip([["[Content_Types].xml", "<Types/>"], ["word/document.xml", "
     await login("admin", A); ok((await p.textContent("h1.pg")).includes("المدير الشامل"), "دخول المدير الشامل");
     const tA = await p.$$eval("nav.tabs a", a => a.length); ok(tA === 9, "قائمة المدير 9 أقسام"); await shot("admin-home"); ok(!(await overflow()), "لا تمرير أفقي (مدير)");
     ok((await p.textContent("main")).includes("العميل الافتراضي"), "المدير يرى العميل وحالته في اللوحة");
+    // إتاحة النوافذ المنبثقة: عنوان للقارئات الصوتية، وTab يبقى داخلها، وEsc يغلقها ويعيد التركيز للزر
+    await p.goto(BASE + "#users"); await p.waitForSelector("#nu"); await p.focus("#nu"); await p.click("#nu");
+    ok(!!(await p.getAttribute(".modal [role=dialog]", "aria-labelledby")), "النافذة المنبثقة لها عنوان للقارئات الصوتية");
+    let inside = true; for (let i = 0; i < 40; i++) { await p.keyboard.press("Tab"); if (!(await p.evaluate(() => !!document.activeElement.closest(".modal [role=dialog]")))) { inside = false; break; } }
+    ok(inside, "التنقل بـ Tab يبقى داخل النافذة المنبثقة");
+    await p.keyboard.press("Escape"); ok((await p.$$(".modal")).length === 0 && (await p.evaluate(() => document.activeElement.id)) === "nu", "Esc يغلق النافذة ويعيد التركيز إلى زر فتحها");
     await p.goto(BASE + "#users"); await p.waitForSelector("#nu"); await p.click("#nu"); await p.fill("[name=name]", "شركة النور"); await p.fill("[name=user]", "alnoor"); await p.fill("[name=phone]", "0097455001234"); await p.click("#gp"); const npw = await p.inputValue("[name=pw]"); await p.click("#us"); await p.waitForTimeout(600);
     ok((await p.textContent("main")).includes("alnoor") && (await p.textContent("main")).includes("+974 5500 1234"), "المدير ينشئ عميلاً جديداً"); await shot("admin-users");
     await p.goto(BASE + "#reports?uid=u2"); await p.waitForSelector(".banner"); ok((await p.$$("details.rep")).length >= 2, "المدير يرى تقارير العميل");

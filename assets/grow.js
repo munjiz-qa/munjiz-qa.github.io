@@ -4,7 +4,7 @@
 // links to the restaurants / management / partners / articles pages, and the forms and calculator on those pages.
 // Company facts are set in GROW below. An empty value is simply not shown (never invent an address or hours).
 (function(){
-const GROW={"key": "munjiz", "cfg": "MUNJIZ_CONFIG", "name": {"ar": "منجز لخدمات الأعمال", "en": "Munjiz Business Services"}, "wa": "97451600498", "cr": "", "city": {"ar": "الدوحة، قطر", "en": "Doha, Qatar"}, "hours": {"ar": "نستقبل طلباتك عبر الموقع وواتساب على مدار الساعة", "en": "Requests via the website and WhatsApp, 24/7"}, "map": "", "items": {"unit": 50, "incl": 5, "extra": 5}, "svc": "index.html#svc={c}", "rsvc": ["MC-06", "MC-08", "MC-09", "MC-05", "MC-07", "MC-02", "MC-03", "MB-01", "MH-03", "MH-02"], "kinds": {"restaurant": {"ar": "طلب عرض مطاعم", "en": "Restaurant quote"}, "consult": {"ar": "حجز استشارة مجانية", "en": "Free consultation"}, "partner": {"ar": "طلب شراكة وإحالة", "en": "Partner application"}}, "pages": [{"href": "restaurants.html", "ar": "للمطاعم", "en": "For restaurants"}, {"href": "management.html", "ar": "المتابعة الشهرية", "en": "Monthly follow-up"}, {"href": "partners.html", "ar": "الشركاء والإحالات (10%)", "en": "Partners (10%)"}, {"href": "articles.html", "ar": "مقالات وأدلة", "en": "Articles"}]};
+const GROW={"key": "munjiz", "cfg": "MUNJIZ_CONFIG", "name": {"ar": "منجز لخدمات الأعمال", "en": "Munjiz Business Services"}, "wa": "97451600498", "cr": "", "city": {"ar": "لوسيل، قطر", "en": "Lusail, Qatar"}, "hours": {"ar": "المكتب من 6:00 صباحاً إلى 6:00 مساءً، والمنصة والخدمة الإلكترونية على مدار 24 ساعة", "en": "Office 6:00 am to 6:00 pm; the platform and online service 24 hours a day"}, "map": "", "items": {"unit": 50, "incl": 5, "extra": 5}, "svc": "index.html#svc={c}", "rsvc": ["MC-06", "MC-08", "MC-09", "MC-05", "MC-07", "MC-02", "MC-03", "MB-01", "MH-03", "MH-02"], "kinds": {"restaurant": {"ar": "طلب عرض مطاعم", "en": "Restaurant quote"}, "consult": {"ar": "حجز استشارة مجانية", "en": "Free consultation"}, "partner": {"ar": "طلب شراكة وإحالة", "en": "Partner application"}}, "pages": [{"href": "restaurants.html", "ar": "للمطاعم", "en": "For restaurants"}, {"href": "management.html", "ar": "المتابعة الشهرية", "en": "Monthly follow-up"}, {"href": "partners.html", "ar": "الشركاء والإحالات (10%)", "en": "Partners (10%)"}, {"href": "articles.html", "ar": "مقالات وأدلة", "en": "Articles"}]};
 const EN=document.documentElement.lang==='en';
 const me=document.currentScript&&document.currentScript.src||'';
 const ROOT=me?me.replace(/assets\/grow\.js.*$/,''):'';
@@ -40,6 +40,7 @@ function footer(){const f=document.querySelector('footer');if(!f||f.querySelecto
   const pages=f.querySelector('a[href$="restaurants.html"]')?[]:(GROW.pages||[]);
   if(pages.length){const n=el('nav','grow-links');n.setAttribute('aria-label',t('صفحات تهمّك','Useful pages'));
     pages.forEach(p=>{const a=el('a',null,t(p.ar,p.en));a.href=(p.ext?p.href:BASE+p.href);n.appendChild(a)});w.appendChild(n)}
+  if(!f.querySelector('a[href$="standards.html"]')){const a=el('a','gt-std',t('معايير خدمتنا','Our service standards'));a.href=BASE+'standards.html';w.appendChild(a)}
   f.appendChild(w)}
 
 // 3) forms on the new pages: sent to the office system, or prepared as a WhatsApp message when the system is unreachable

@@ -1030,7 +1030,7 @@ const slug = cfg => (cfg.name||"").toLowerCase().replace(/[^a-z0-9]+/g,"-").repl
 /* place a scaled site inside a fixed box; returns a re-fit function */
 function scaleInto(box, cfg, mobile, scaler, fill=false){
   const el = scaler || box; el.innerHTML = siteHTML(cfg, mobile);
-  const site = el.firstElementChild; const natural = mobile ? 390 : 1100;
+  const site = el.firstElementChild; site.setAttribute("role", "img"); site.setAttribute("aria-label", T("معاينة موقع ", "Site preview: ") + (site.querySelector("h1")?.textContent || "")); [...site.children].forEach(c => c.setAttribute("aria-hidden", "true")); const natural = mobile ? 390 : 1100;
   const fit = () => {
     const avail = mobile && !fill ? box.clientWidth - 24 : box.clientWidth;
     const k = Math.min(1, avail / natural);
@@ -2039,4 +2039,5 @@ window.MDK = Object.freeze({quote, conv, bestPlan, normPhone, sanitizeOrder, san
 (() => { bootApp(); const h = (location.hash || "").slice(1); renderChrome(); if (h.startsWith("view=")) openShared(h); else go(ROUTES.includes(h) && h !== "view" ? h : "home"); connect(); })();
 
 })();</script>
+<script src="pwa-install.js" defer></script>
 </body></html>
