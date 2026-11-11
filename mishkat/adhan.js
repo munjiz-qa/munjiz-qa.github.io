@@ -43,9 +43,12 @@
     catch (e) { manifest = []; }
     return manifest;
   }
+  const idb = (mode, fn) => new Promise((res, rej) => { const r = indexedDB.open('mishkat-adhan', 1); r.onupgradeneeded = () => r.result.createObjectStore('f'); r.onerror = () => rej(r.error);
+    r.onsuccess = () => { const tx = r.result.transaction('f', mode), q = fn(tx.objectStore('f')); tx.oncomplete = () => res(q.result); tx.onerror = () => rej(tx.error); }; });
   async function play(sound, vol) {
     if (lastAudio) { try { lastAudio.pause(); } catch (e) {} lastAudio = null; }
     if (!sound || sound === 'none') return 'none';
+    if (sound === 'custom') { try { const b = await idb('readonly', st => st.get('custom')); if (b) { const a = new Audio(URL.createObjectURL(b)); a.volume = vol; lastAudio = a; await a.play(); return 'file'; } } catch (e) { return 'blocked'; } return chime(vol) ? 'chime' : 'blocked'; }
     if (sound !== 'chime') { const m = (await loadManifest()).find(x => x.id === sound);
       if (m) { try { const a = new Audio('data/adhan/' + m.file); a.volume = vol; lastAudio = a; await a.play(); return 'file'; } catch (e) { return 'blocked'; } } }
     return chime(vol) ? 'chime' : 'blocked';
@@ -94,8 +97,10 @@
       <div class="prform"><label class="field"><span>${T('الصوت', 'Sound')}</span><select id="adS">
         <option value="chime"${c.s === 'chime' ? ' selected' : ''}>${T('نغمة تنبيه هادئة (أصلية)', 'Soft alert tone (original)')}</option>
         <option value="none"${c.s === 'none' ? ' selected' : ''}>${T('إشعار صامت بلا صوت', 'Silent notification')}</option>
+        ${c.cn ? `<option value="custom"${c.s === 'custom' ? ' selected' : ''}>${esc2(T('ملفي: ', 'My file: ') + c.cn)}</option>` : ''}
         ${ms.map(m => `<option value="${esc2(m.id)}"${m.pending ? ' disabled' : ''}${c.s === m.id ? ' selected' : ''}>${esc2(mName(m))}${m.pending ? T(' (بانتظار التسجيل المرخّص)', ' (awaiting licensed recording)') : ''}</option>`).join('')}</select></label>
         <label class="field"><span>${T('مستوى الصوت', 'Volume')}</span><input type="range" id="adV" min="0.1" max="1" step="0.05" value="${c.v}"></label></div>
+ <label class="field"><span>${T('أذان من ملف على جهازك (يبقى على جهازك فقط)', 'Use an adhan file from your device (stays on your device only)')}</span><input type="file" id="adF" accept="audio/*"></label>
       <div class="toolbar"><button class="btn" id="adT" type="button">${T('جرّب الصوت الآن', 'Test the sound')}</button><button class="btn" id="adN" type="button">${T('جرّب إشعاراً', 'Test a notification')}</button><span class="muted small" id="adMsg"></span></div>
       <p class="muted small" id="adSt" style="margin:0">${esc2(status)}</p>
       <p class="muted small" style="margin:0">${ms.filter(m => !m.pending).length ? ms.filter(m => !m.pending).map(m => esc2(`${mName(m)}: ${m.author} · ${m.license} · ${m.source}`)).join('<br>')
@@ -103,6 +108,9 @@
     const upd = ch => { const x = Object.assign(cfgA(), ch); saveA(x); schedule().then(() => ui()); };
     box.querySelector('#adOn').onchange = async e => { if (e.target.checked) { const p = await enable(); if (p === 'denied') $('#adMsg') && ($('#adMsg').textContent = ''); } upd({ on: e.target.checked }); };
     box.querySelectorAll('[data-adk]').forEach(el => el.onchange = () => upd({ p: Object.assign({}, cfgA().p, { [el.dataset.adk]: el.checked ? 1 : 0 }) }));
+    box.querySelector('#adF').onchange = async e => { const f = e.target.files[0]; if (!f) return;
+      if (!/^audio\//.test(f.type) || f.size > 15e6) { $('#adMsg').textContent = T('اختر ملفاً صوتياً لا يتجاوز ١٥ ميغابايت.', 'Choose an audio file up to 15 MB.'); return; }
+      try { await idb('readwrite', st => st.put(f, 'custom')); upd({ s: 'custom', cn: f.name.slice(0, 60) }); } catch (er) { $('#adMsg').textContent = T('تعذّر حفظ الملف على الجهاز.', 'Could not save the file on this device.'); } };
     box.querySelector('#adS').onchange = e => upd({ s: e.target.value });
     box.querySelector('#adV').onchange = e => saveA(Object.assign(cfgA(), { v: +e.target.value }));
     box.querySelector('#adT').onclick = async () => { const r = await play(cfgA().s, cfgA().v); $('#adMsg').textContent = r === 'blocked' ? T('منع المتصفح التشغيل؛ المس الصفحة أولاً.', 'Playback was blocked; tap the page first.') : r === 'none' ? T('الصوت مغلق.', 'Sound is off.') : T('تم التشغيل.', 'Played.'); };
