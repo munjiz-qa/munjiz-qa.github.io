@@ -27,7 +27,7 @@ ok((await p.$$('.path')).length === 4 && (await p.$$('.path .scard')).length >= 
   ok(mi.n >= 23 && mi.paths === 'none', 'الجوال: فهرس الأقسام كلها بدل البطاقات الطويلة');
   ok(mi.mp < 200 && mi.mp < mi.ad && mi.ad < mi.pr && mi.pr < mi.mx, 'الجوال: المصحف أول الصفحة ثم الأذكار ثم مواقيت الصلاة ثم فهرس الأقسام');
   await m.evaluate(() => location.hash = 'kids'); await m.waitForTimeout(800);
-  ok(await m.evaluate(() => document.querySelectorAll('.k-card .ksv').length >= 11), 'ركن الأطفال: ١١ قصة مصوّرة');
+  ok(await m.evaluate(() => document.querySelectorAll('.k-card .ksv').length >= 19), 'ركن الأطفال: ١٩ قصة مصوّرة');
   await m.evaluate(() => location.hash = 'k-nuh'); await m.waitForTimeout(800);
   const k = await m.evaluate(() => ({ s: document.querySelectorAll('.k-scene .ksv').length, a: document.querySelectorAll('.k-scene .k-ay .ayah').length, q: document.querySelectorAll('.k-q').length }));
   await m.evaluate(() => document.querySelectorAll('.k-q').forEach(f => f.querySelectorAll('.k-op').forEach(x => { if (x.dataset.k === '0') x.click(); })));
