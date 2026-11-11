@@ -103,6 +103,18 @@ ok(/الآيات القرآنية/.test(doc) && /أقوال المفسرين/.te
     ok(!/claude|anthropic/i.test(t.txt), `صفحة ${k} تعمل ولا تذكر Claude`);
   }
 }
+{ // الحج والعمرة: آيات بنص مجمع الملك فهد، وأحاديث بتخريجها ودرجتها، ونقول المفسرين، ورسوم متحركة تعمل
+  await p.evaluate(() => location.hash = 'hajj'); await p.waitForSelector('.hj-ch', { timeout: 30000 }).catch(() => {});
+  await p.evaluate(() => document.querySelectorAll('.hj-ch').forEach(d => d.open = true)); await p.waitForTimeout(3500);
+  const h = await p.evaluate(() => ({ ch: document.querySelectorAll('.hj-ch').length, ix: document.querySelectorAll('.u-index li').length, a: document.querySelectorAll('.tm-ay .tm-q').length, h: document.querySelectorAll('.hj-h .tm-matn').length,
+    q: document.querySelectorAll('.hj-hero ~ * .tm-qt blockquote, .tm-qt blockquote').length, svg: document.querySelectorAll('.hj-svg').length, daif: document.querySelectorAll('.hj-h.hj-tg-daif').length, warn: !!document.querySelector('.tm-warn'),
+    lap: document.getElementById('hjLap')?.textContent || '', over: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1 }));
+  ok(h.ch >= 12 && h.ix >= 12 && h.a >= 40 && h.h >= 60 && h.q >= 30 && h.svg >= 6 && h.daif >= 1 && h.warn && /[1-7١-٧]/.test(h.lap), `الحج والعمرة: ${h.ch} أبواب، ${h.a} آية بنص مجمع الملك فهد، ${h.h} حديثاً بتخريجه، ${h.q} نقلاً، ${h.svg} رسوم، والضعيف موسوم`);
+  ok(!h.over, 'الحج والعمرة: لا تمرير أفقي للصفحة');
+  await p.evaluate(() => document.querySelector('.hj-day:nth-child(2)')?.click()); await p.waitForTimeout(300);
+  ok(await p.evaluate(() => /عرفة/.test(document.getElementById('hjDd')?.textContent || '')), 'الحج والعمرة: اختيار يوم عرفة يعرض تفاصيله وأدلته');
+  const tt = await p.evaluate(() => document.body.innerText); ok(!/claude|anthropic/i.test(tt), 'صفحة hajj تعمل ولا تذكر Claude');
+}
 { // التلاوة المتصلة، والقبلة وتقويم الشهر، واختبار الحفظ: الصفحات تعمل وبياناتها صحيحة
   await p.evaluate(() => location.hash = 'recite'); await p.waitForSelector('#rcGo', { timeout: 30000 }).catch(() => {});
   const r = await p.evaluate(() => ({ go: !!document.querySelector('#rcGo'), rs: document.querySelectorAll('#rcR option').length }));
