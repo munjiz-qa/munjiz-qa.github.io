@@ -45,7 +45,11 @@ jobs:
         with:
           node-version: 20
       - name: تجهيز متصفح الاختبار
-        run: npm i --no-save --no-package-lock playwright@1.48.2 && npx playwright install --with-deps chromium
+        # يُعاد التجهيز حتى 3 مرات: انقطاع مستودعات حزم النظام لحظياً على جهاز التشغيل كان يُسقط المراقبة ويرسل تنبيهاً كاذباً (رمز الخروج 100)
+        run: |
+          npm i --no-save --no-package-lock playwright@1.48.2
+          for i in 1 2 3; do npx playwright install --with-deps chromium && exit 0; echo "فشلت المحاولة $i، إعادة بعد 20 ثانية"; sleep 20; done
+          exit 1
       - name: اختبار الموقع المنشور بكل الأدوار على الكمبيوتر والجوال
         run: node scripts/saif-e2e.mjs https://munjiz-qa.github.io/saif/ shots
       - name: حفظ لقطات الشاشة
