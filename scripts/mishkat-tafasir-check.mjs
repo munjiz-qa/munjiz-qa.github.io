@@ -1,5 +1,7 @@
 // فحص ركن «التفاسير وأسباب النزول» في مشكاة: جوال وكمبيوتر، تصفح وبحث ودون إنترنت. يعمل مستقلاً دون أي اتصال بـ Claude.
 import pw from 'playwright';
+// انتظار بالاستطلاع عبر evaluate: waitForFunction تُنشئ دالة بـ eval فتمنعها سياسة أمان المحتوى
+async function until(p, fn, ms = 30000) { const t = Date.now(); for (;;) { if (await p.evaluate(fn).catch(() => false)) return; if (Date.now() - t > ms) throw new Error('until: انتهت المهلة'); await p.waitForTimeout(250); } }
 const { chromium } = pw;
 const B = process.env.MISHKAT_URL || 'https://munjiz-qa.github.io/mishkat/';
 const SHOTS = process.env.SHOTS || '';
@@ -21,7 +23,7 @@ for (const [dev, vp] of [['جوال', { width: 390, height: 844 }], ['كمبيو
   await noOverflow('الصفحة الرئيسية للركن'); await shot(p, `${dev}-1-الركن`);
   // آية الخمر
   await p.goto(B + '#tf2-219'); await p.waitForSelector('.tf-ay', { timeout: 30000 });
-  await p.waitForFunction(() => /الخمر/.test(document.body.innerText) && document.querySelector('.tf-layer'), null, { timeout: 30000 });
+  await until(p, () => /الخمر/.test(document.body.innerText) && !!document.querySelector(".tf-layer"), 30000);
   const khamr = await p.evaluate(() => document.body.innerText);
   ok(/البقرة · آية ٢١٩/.test(khamr) && /سبب نزول|أسباب النزول/.test(khamr), `${dev}: آية الخمر (٢:٢١٩) وأسباب نزولها`);
   ok(/الأسانيد|ميزان|تنبيه/.test(khamr), `${dev}: تنبيه الرجوع إلى الأسانيد ظاهر`);
@@ -37,7 +39,7 @@ for (const [dev, vp] of [['جوال', { width: 390, height: 844 }], ['كمبيو
   await shot(p, `${dev}-3-الطبقات`);
   // آية الإفك
   await p.goto(B + '#tf24-11'); await p.waitForSelector('.tf-ay', { timeout: 30000 });
-  await p.waitForFunction(() => /عائشة/.test(document.body.innerText), null, { timeout: 30000 }).catch(() => {});
+  await until(p, () => /عائشة/.test(document.body.innerText), 30000).catch(() => {});
   ok(await p.evaluate(() => /عائشة/.test(document.body.innerText) && /الإفك|إفك/.test(document.body.innerText)), `${dev}: آية الإفك (٢٤:١١) وسببها`);
   await noOverflow('آية الإفك'); await shot(p, `${dev}-4-آية-الإفك`);
   // بحث في أسباب النزول
@@ -59,10 +61,10 @@ for (const [dev, vp] of [['جوال', { width: 390, height: 844 }], ['كمبيو
   const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'allow' }); const p = await ctx.newPage();
   await p.goto(B + '#home'); await p.waitForSelector('.daily', { timeout: 30000 });
   await p.evaluate(async () => { await navigator.serviceWorker.ready; });
-  await p.reload(); await p.waitForFunction(() => navigator.serviceWorker.controller, null, { timeout: 30000 });
+  await p.reload(); await until(p, () => !!navigator.serviceWorker.controller, 30000);
   const shell = await p.evaluate(async () => !!(await caches.match('tafasir.js')));
   ok(shell, 'دون إنترنت: tafasir.js في ذاكرة التطبيق');
-  await p.goto(B + '#tf2-219'); await p.waitForFunction(() => /الخمر/.test(document.body.innerText), null, { timeout: 30000 });
+  await p.goto(B + '#tf2-219'); await until(p, () => /الخمر/.test(document.body.innerText), 30000);
   const pack = await p.evaluate(async () => { try { return await offlinePack(() => {}); } catch (e) { return String(e); } });
   console.log('  تجهيز الحزمة:', pack);
   const files = await p.evaluate(async () => !!(await caches.match('data/asbab.txt', { ignoreSearch: true })));
@@ -70,7 +72,7 @@ for (const [dev, vp] of [['جوال', { width: 390, height: 844 }], ['كمبيو
   await ctx.setOffline(true);
   await p.goto(B + '#tf24-11'); await p.reload().catch(() => {});
   await p.waitForSelector('.tf-ay', { timeout: 30000 }).catch(() => {});
-  await p.waitForFunction(() => /عائشة/.test(document.body.innerText), null, { timeout: 30000 }).catch(() => {});
+  await until(p, () => /عائشة/.test(document.body.innerText), 30000).catch(() => {});
   ok(await p.evaluate(() => /عائشة/.test(document.body.innerText)), 'دون إنترنت: آية الإفك بسبب نزولها تُفتح في وضع الطيران');
   await ctx.close();
 }
