@@ -3025,6 +3025,7 @@ function prayer() {
     <p class="lead" style="margin:4px 0 0">${esc(new Intl.DateTimeFormat(LANG === 'ar' ? 'ar-EG' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(now))} · ${esc(hijri(now))}</p></div>
   <section class="prnext panel"><div><span class="eyebrow">الصلاة القادمة</span><b class="prnm">${prName(nx.x)}</b><span class="prat">${prFmt(nx.h, cfg.f24)}</span></div><span class="chip acc" id="prLeft">${prLeft(nx.left)}</span></section>
   <div class="prgrid">${PR_NAMES.map(x => `<div class="prcell${x === nx.x ? ' on' : ''}${x[0] === 'sunrise' ? ' sun' : ''}"><span>${prName(x)}</span><b>${prFmt(t[x[0]], cfg.f24)}</b></div>`).join('')}</div>
+  <div id="adhanBox"></div>
   <section class="panel stack tight"><h2>البلد وطريقة الحساب</h2>
     <div class="prform">
       <label class="field"><span>البلد</span><select id="prC" class="notranslate" translate="no">${PR_PLACES.map(c => `<option value="${c[0]}"${c[0] === cfg.c ? ' selected' : ''}>${esc(LANG === 'ar' ? c[1] : c[2])}</option>`).join('')}${cfg.geo ? `<option value="GEO"${cfg.c === 'GEO' ? ' selected' : ''}>${LANG === 'ar' ? 'موقعي الحالي' : 'My location'}</option>` : ''}</select></label>
@@ -3037,6 +3038,7 @@ function prayer() {
   </section>
   <section class="panel stack tight"><h2>مواقيت ثلاثين يوماً</h2><div class="tablebox"><table class="wtable prtable"><thead><tr><th>اليوم</th>${PR_NAMES.map(x => `<th>${prName(x)}</th>`).join('')}</tr></thead><tbody>
     ${month.map(([d, tt], k) => `<tr${k === 0 ? ' class="today"' : ''}><td>${esc(dfmt(d))}</td>${PR_NAMES.map(x => `<td>${prFmt(tt[x[0]], cfg.f24)}</td>`).join('')}</tr>`).join('')}</tbody></table></div></section></div>`);
+  if (window.adhanUI) window.adhanUI();
   const saveCfg = ch => { LS.set('prayer', Object.assign(prCfg(), ch)); prayer(); };
   $('#prC').onchange = e => saveCfg({ c: e.target.value, i: 0, m: '' });
   $('#prI').onchange = e => saveCfg({ i: +e.target.value });
