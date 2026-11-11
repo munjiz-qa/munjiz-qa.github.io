@@ -98,3 +98,8 @@
   .mp-bar select,.mp-bar input{font-size:.86rem;padding:5px 6px}
 }
 @media print{.mp-bar,.mp-src{display:none}.mp-page{box-shadow:none;break-after:page;height:auto!important}}
+
+/* وضع الحفظ: حجب الكلمات وكشف الآية بالضغط */
+#mpRoot[data-hz="1"] .mp-t .w,#mpRoot[data-hz="2"] .mp-t .w:not([data-t="0"]){filter:blur(7px);cursor:pointer;transition:filter .2s;user-select:none;-webkit-user-select:none}
+#mpRoot[data-hz] .mp-t .w.rec-on{filter:none}
+#mpHz button{font-size:.85rem}
