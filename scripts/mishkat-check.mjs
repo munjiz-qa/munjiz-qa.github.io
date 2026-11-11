@@ -6,7 +6,7 @@ let fail = 0; const ok = (c, m) => { console.log((c ? '✓ ' : '✗ ') + m); if 
 const b = await chromium.launch(); const p = await b.newPage(); const bad = [], errs = [];
 p.on('request', r => { if (/claude|anthropic/i.test(new URL(r.url()).host)) bad.push(r.url()); });
 p.on('pageerror', e => errs.push(e.message));
-for (const f of ['', 'app.js', 'app.css', 'sw.js', 'manifest.webmanifest', 'config.json', 'data/quran.txt', ...['taam', 'asnaf', 'jannah', 'jamal', 'tawhid', 'ruqya', 'wazifa'].map(k => `mods/${k}.js`), 'data/t/muyassar/0.txt', ...['bukhari', 'muslim', 'abudawud', 'tirmidhi', 'nasai', 'ibnmajah'].map(k => `data/hadith/${k}.txt`), 'data/tr/index.json', 'data/tr/en.txt', 'data/tr/fr.txt', 'data/i18n/en.json', 'data/i18n/fr.json', 'data/i18n/ur.json']) {
+for (const f of ['', 'app.js', 'app.css', 'sw.js', 'manifest.webmanifest', 'config.json', 'data/quran.txt', 'mods/qtl.js', 'mods/qatlas.js', ...['taam', 'asnaf', 'jannah', 'jamal', 'tawhid', 'ruqya', 'wazifa'].map(k => `mods/${k}.js`), 'data/t/muyassar/0.txt', ...['bukhari', 'muslim', 'abudawud', 'tirmidhi', 'nasai', 'ibnmajah'].map(k => `data/hadith/${k}.txt`), 'data/tr/index.json', 'data/tr/en.txt', 'data/tr/fr.txt', 'data/i18n/en.json', 'data/i18n/fr.json', 'data/i18n/ur.json']) {
   const r = await p.request.get(B + f); ok(r.ok(), `${f || 'index.html'} → ${r.status()}`);
 }
 const cfg = await (await p.request.get(B + 'config.json')).json();
@@ -64,7 +64,7 @@ ok((await p.$$('.path')).length === 4 && (await p.$$('.path .scard')).length >= 
   await m.close();
 }
 ok(await p.evaluate(() => typeof window.claude === 'undefined'), 'لا يوجد أي مكوّن من Claude في الصفحة');
-for (const v of ['account', 'admin', 'search', 'hifz', 'map', 'awwalin', 'ijaz', 'research', 'kids', 'ulum', 'duaa', 'nisaa', 'rijal', 'shifa', 'tawhid', 'jannah', 'ruqya']) {
+for (const v of ['account', 'admin', 'search', 'hifz', 'map', 'awwalin', 'ijaz', 'research', 'kids', 'ulum', 'duaa', 'nisaa', 'rijal', 'shifa', 'tawhid', 'jannah', 'ruqya', 'timeline']) {
   await p.evaluate(v => location.hash = v, v); await p.waitForTimeout(700);
   const t = await p.evaluate(() => document.body.innerText); ok(!/claude|anthropic/i.test(t) && t.length > 200, `صفحة ${v} تعمل ولا تذكر Claude`);
 }
@@ -94,6 +94,24 @@ ok(/الآيات القرآنية/.test(doc) && /أقوال المفسرين/.te
     tin: (document.querySelector('.tm-q .tm-n[data-ayah="' + idxOf(95, 1) + '"]')?.parentElement.textContent || '').replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/g, '').includes('لتين وٱلزيتون') }));
   ok(t.f >= 16 && t.ch >= 10 && t.ix === t.ch && t.a >= 100 && t.h >= 20 && t.q >= 10 && t.warn && t.tin, `الفاكهة والطعام في القرآن الكريم: ${t.f} صنفاً، ${t.ch} أبواب، ${t.a} آية بنص مجمع الملك فهد، ${t.h} حديثاً بتخريجه، ${t.q} نقلاً، مع التنبيه الطبي`);
   const tt = await p.evaluate(() => document.body.innerText); ok(!/claude|anthropic/i.test(tt), 'صفحة taam تعمل ولا تذكر Claude');
+}
+{ // الخط الزمني التفاعلي للقصص والحضارات وأطلس القرآن: مداخل موسومة بالثبات أو الاجتهاد، وشواهد، وروابط الخريطة، ومسارات
+  await p.evaluate(() => { location.hash = 'timeline'; }); await p.waitForSelector('.tlq-card', { timeout: 30000 }).catch(() => {});
+  const t = await p.evaluate(() => ({ n: document.querySelectorAll('.tlq-card').length, j: document.querySelectorAll('.tlq-card.ij').length, e: document.querySelectorAll('.tlq-era').length, lanes: ['p', 'q', 'v'].every(l => document.querySelector('.tlq-card.' + l)), badge: document.querySelectorAll('.tlq-c').length }));
+  ok(t.n >= 50 && t.j >= 10 && t.e === 11 && t.lanes && t.badge === t.n, `الخط الزمني: ${t.n.toLocaleString('ar-EG')} مدخلاً في ${t.e.toLocaleString('ar-EG')} عصور، منها ${t.j.toLocaleString('ar-EG')} موسومة اجتهاداً غير جازم`);
+  await p.click('#ev-musa .tlq-t'); const mu = await p.evaluate(() => ({ open: !document.querySelector('#ev-musa .tlq-x').hidden, ay: document.querySelectorAll('#ev-musa .tlq-r a[data-ayah]').length, pl: document.querySelectorAll('#ev-musa [data-place]').length }));
+  ok(mu.open && mu.ay >= 3 && mu.pl >= 2, 'الخط الزمني: فتح مدخل موسى يعرض آياته وروابطه بالخريطة');
+  await p.click('#tlf [data-c="j"]'); const jo = await p.evaluate(() => ({ all: document.querySelectorAll('.tlq-card').length, non: document.querySelectorAll('.tlq-card:not(.ij)').length, why: document.querySelectorAll('.tlq-card .tlq-why').length })); await p.click('#tlf [data-c="all"]');
+  ok(jo.all >= 10 && jo.non === 0 && jo.why >= jo.all, 'الخط الزمني: كل مدخل اجتهادي له بيان سبب الاجتهاد');
+  await p.evaluate(() => { document.querySelector('#ev-ad .tlq-t').click(); }); await p.click('#ev-ad [data-place]'); await p.waitForSelector('#plinfo h2', { timeout: 15000 }).catch(() => {});
+  const mp = await p.evaluate(() => ({ h: location.hash, h2: document.querySelector('#plinfo h2')?.textContent || '', why: !!document.querySelector('#plinfo .mp-why'), pins: document.querySelectorAll('.pin').length, uns: document.querySelectorAll('.pin.unsure').length, rt: document.querySelectorAll('.rt').length, jr: document.querySelectorAll('.rt.j').length }));
+  ok(mp.h === '#map' && /الأحقاف/.test(mp.h2) && mp.why && mp.pins >= 30 && mp.uns >= 15 && mp.rt >= 6 && mp.jr >= 2, `أطلس القرآن: من الخط الزمني إلى الخريطة، ${mp.pins} موضعاً (${mp.uns} اجتهادياً) و${mp.rt} مسارات`);
+  await p.click('#plback'); await p.click('#rtlist [data-rt="3"]'); const rt = await p.evaluate(() => ({ h: document.querySelector('#plinfo h2')?.textContent, w: !!document.querySelector('#plinfo .mp-why'), s: document.querySelectorAll('.rt.sel').length }));
+  ok(/خروج/.test(rt.h) && rt.w && rt.s === 1, 'أطلس القرآن: المسار الاجتهادي يُبيّن سبب الاجتهاد');
+  await p.click('#plback'); await p.click('[data-ly="u"]'); ok(await p.evaluate(() => [...document.querySelectorAll('.pin.unsure')].every(e => e.style.display === 'none')), 'أطلس القرآن: إخفاء المواضع الاجتهادية بطبقة واحدة');
+  const m2 = await b.newPage({ viewport: { width: 390, height: 844 } }); const e3 = []; m2.on('pageerror', e => e3.push(e.message));
+  for (const v of ['timeline', 'map']) { await m2.goto(B + '#' + v); await m2.waitForSelector(v === 'map' ? '.pin' : '.tlq-card', { timeout: 30000 }).catch(() => {}); ok(await m2.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `الجوال: صفحة ${v} بلا تمرير أفقي`); }
+  ok(!e3.length, 'الجوال: لا أخطاء برمجية في الخط الزمني والخريطة ' + e3.join(' | ')); await m2.close();
 }
 await p.evaluate(() => location.hash = 'account'); await p.waitForTimeout(700);
 ok(!!(await p.$('#uform')) && !!(await p.$('#rform')), 'صفحة الدخول للعميل والمدير وإنشاء الحساب تعمل');
