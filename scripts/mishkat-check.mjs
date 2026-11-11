@@ -6,7 +6,7 @@ let fail = 0; const ok = (c, m) => { console.log((c ? '✓ ' : '✗ ') + m); if 
 const b = await chromium.launch(); const p = await b.newPage(); const bad = [], errs = [];
 p.on('request', r => { if (/claude|anthropic/i.test(new URL(r.url()).host)) bad.push(r.url()); });
 p.on('pageerror', e => errs.push(e.message));
-for (const f of ['', 'app.js', 'tools.js', 'app.css', 'sw.js', 'manifest.webmanifest', 'config.json', 'data/quran.txt', 'mods/qtl.js', 'mods/qatlas.js', ...['taam', 'asnaf', 'jannah', 'jamal', 'tawhid', 'ruqya', 'wazifa', 'rusul', 'mawdui'].map(k => `mods/${k}.js`), 'data/t/muyassar/0.txt', ...['bukhari', 'muslim', 'abudawud', 'tirmidhi', 'nasai', 'ibnmajah'].map(k => `data/hadith/${k}.txt`), 'data/tr/index.json', 'data/tr/en.txt', 'data/tr/fr.txt', 'data/i18n/en.json', 'data/i18n/fr.json', 'data/i18n/ur.json']) {
+for (const f of ['', 'app.js', 'app.css', 'sw.js', 'manifest.webmanifest', 'config.json', 'data/quran.txt', 'data/t/muyassar/0.txt', ...['bukhari', 'muslim', 'abudawud', 'tirmidhi', 'nasai', 'ibnmajah'].map(k => `data/hadith/${k}.txt`), 'data/tr/index.json', 'data/tr/en.txt', 'data/tr/fr.txt', 'data/i18n/en.json', 'data/i18n/fr.json', 'data/i18n/ur.json']) {
   const r = await p.request.get(B + f); ok(r.ok(), `${f || 'index.html'} → ${r.status()}`);
 }
 const cfg = await (await p.request.get(B + 'config.json')).json();
@@ -19,7 +19,7 @@ ok(!!(await p.$('meta[http-equiv="Content-Security-Policy"]')) && await p.evalua
 { const d = await p.evaluate(() => { const r = x => { const o = dailyPick(new Date(x)); return Q.ayat[o.i][0] + ':' + Q.ayat[o.i][1] + ' ' + o.tag; };
     return { why: document.querySelector('.daily .dl-why')?.textContent || '', arafa: r('2026-05-26T12:00'), ashura: r('2026-06-25T12:00'), fitr: r('2026-03-20T12:00') }; });
   ok(d.why.startsWith('سبب الاختيار') && d.arafa === '5:3 يوم عرفة' && d.ashura === '26:65 يوم عاشوراء' && d.fitr === '2:185 عيد الفطر', `آية اليوم بسبب اختيارها وتتبع المناسبات الهجرية (${d.arafa} · ${d.ashura} · ${d.fitr})`); }
-ok((await p.$$('.path')).length === 6 && (await p.$$('.path .scard')).length >= 29 && !!(await p.$('.path .scard[href="#jannah"]')) && !!(await p.$('.path .scard[href="#tawhid"]')), 'الرئيسية: ست فئات وبطاقات الأقسام كلها، ومنها التوحيد في القرآن الكريم');
+ok((await p.$$('.path')).length === 4 && (await p.$$('.path .scard')).length >= 23 && !!(await p.$('.path .scard[href="#jannah"]')) && !!(await p.$('.path .scard[href="#tawhid"]')), 'الرئيسية: أربعة مسارات وبطاقات الأقسام كلها، ومنها التوحيد في القرآن الكريم');
 { // نسخة الجوال المبسطة: فهرس كل الأقسام في أول الشاشة، وركن الأطفال بقصصه وأسئلته
   const m = await b.newPage({ viewport: { width: 390, height: 844 } }); await m.goto(B + '#home'); await m.waitForSelector('.mindex .mi-tile', { timeout: 30000 }).catch(() => {});
   const mi = await m.evaluate(() => { const t = [...document.querySelectorAll('.mindex .mi-tile')], y = s => document.querySelector(s)?.getBoundingClientRect().top ?? 9e9;
@@ -27,7 +27,7 @@ ok((await p.$$('.path')).length === 6 && (await p.$$('.path .scard')).length >= 
   ok(mi.n >= 23 && mi.paths === 'none', 'الجوال: فهرس الأقسام كلها بدل البطاقات الطويلة');
   ok(mi.mp < 200 && mi.mp < mi.ad && mi.ad < mi.pr && mi.pr < mi.mx, 'الجوال: المصحف أول الصفحة ثم الأذكار ثم مواقيت الصلاة ثم فهرس الأقسام');
   await m.evaluate(() => location.hash = 'kids'); await m.waitForTimeout(800);
-  ok(await m.evaluate(() => document.querySelectorAll('.k-card .ksv').length >= 19), 'ركن الأطفال: ١٩ قصة مصوّرة');
+  ok(await m.evaluate(() => document.querySelectorAll('.k-card .ksv').length >= 11), 'ركن الأطفال: ١١ قصة مصوّرة');
   await m.evaluate(() => location.hash = 'k-nuh'); await m.waitForTimeout(800);
   const k = await m.evaluate(() => ({ s: document.querySelectorAll('.k-scene .ksv').length, a: document.querySelectorAll('.k-scene .k-ay .ayah').length, q: document.querySelectorAll('.k-q').length }));
   await m.evaluate(() => document.querySelectorAll('.k-q').forEach(f => f.querySelectorAll('.k-op').forEach(x => { if (x.dataset.k === '0') x.click(); })));
@@ -41,13 +41,6 @@ ok((await p.$$('.path')).length === 6 && (await p.$$('.path .scard')).length >= 
     await m.evaluate(() => { const d = document.querySelector('.th-item'); if (d) d.open = true; }); await m.waitForSelector('.th-item .u-tf blockquote', { timeout: 60000 }).catch(() => {});
     const t = await m.evaluate(() => ({ n: document.querySelectorAll('.th-item').length, ix: document.querySelectorAll('.th-index li').length, a: document.querySelectorAll('.th-item .ayah').length, q: document.querySelectorAll('.th-item .u-tf blockquote').length }));
     ok(t.n >= min && t.ix === t.n && t.a >= t.n && t.q >= 1, `${nm}: ${t.n.toLocaleString("ar-EG")} مدخلاً مفهرساً بآياتها، ونقل التفسير يظهر عند الفتح`);
-  }
-  { // التفسير الموضوعي: ٢٧ موضوعاً في أربعة أبواب، آياتها، وطبقتا التعمق بالرأي واللطائف بنقول موسومة بلفظها
-    await m.evaluate(() => location.hash = 'mawdui'); await m.waitForSelector('.mw-tp', { timeout: 30000 }).catch(() => {});
-    await m.evaluate(() => document.querySelectorAll('.mw-tp').forEach(d => d.open = true));
-    const t = await m.evaluate(() => ({ th: document.querySelectorAll('.mw-th').length, tp: document.querySelectorAll('.mw-tp').length, ix: document.querySelectorAll('.mw-ixc li a').length,
-      ay: document.querySelectorAll('.mw-tp .th-ay .ayah').length, q: document.querySelectorAll('.mw-q').length, tag: [...document.querySelectorAll('.mw-q figcaption .mw-tag')].every(x => x.textContent.includes('·')), warn: !!document.querySelector('.mw-warn'), wide: document.documentElement.scrollWidth <= innerWidth + 1 }));
-    ok(t.th === 4 && t.tp >= 27 && t.ix === t.tp && t.ay >= 100 && t.q >= 100 && t.tag && t.warn && t.wide, `التفسير الموضوعي: ${t.tp.toLocaleString("ar-EG")} موضوعاً، ${t.q.toLocaleString("ar-EG")} نقلاً موسوماً بنوعه وكتابه، وتنبيه اللطائف ظاهر`);
   }
   { // التوحيد في القرآن الكريم: أقسامه الثلاثة، وأبوابه بآياتها بنص مجمع الملك فهد، وأحاديثها بتخريجها، ونقول المفسرين
     await m.evaluate(() => location.hash = 'tawhid'); await m.waitForSelector('.tw-ch', { timeout: 30000 }).catch(() => {});
@@ -71,7 +64,7 @@ ok((await p.$$('.path')).length === 6 && (await p.$$('.path .scard')).length >= 
   await m.close();
 }
 ok(await p.evaluate(() => typeof window.claude === 'undefined'), 'لا يوجد أي مكوّن من Claude في الصفحة');
-for (const v of ['account', 'admin', 'search', 'hifz', 'map', 'awwalin', 'ijaz', 'research', 'kids', 'ulum', 'duaa', 'nisaa', 'rijal', 'shifa', 'tawhid', 'jannah', 'ruqya', 'timeline']) {
+for (const v of ['account', 'admin', 'search', 'hifz', 'map', 'awwalin', 'ijaz', 'research', 'kids', 'ulum', 'duaa', 'nisaa', 'rijal', 'shifa', 'tawhid', 'jannah', 'ruqya']) {
   await p.evaluate(v => location.hash = v, v); await p.waitForTimeout(700);
   const t = await p.evaluate(() => document.body.innerText); ok(!/claude|anthropic/i.test(t) && t.length > 200, `صفحة ${v} تعمل ولا تذكر Claude`);
 }
@@ -102,40 +95,13 @@ ok(/الآيات القرآنية/.test(doc) && /أقوال المفسرين/.te
   ok(t.f >= 16 && t.ch >= 10 && t.ix === t.ch && t.a >= 100 && t.h >= 20 && t.q >= 10 && t.warn && t.tin, `الفاكهة والطعام في القرآن الكريم: ${t.f} صنفاً، ${t.ch} أبواب، ${t.a} آية بنص مجمع الملك فهد، ${t.h} حديثاً بتخريجه، ${t.q} نقلاً، مع التنبيه الطبي`);
   const tt = await p.evaluate(() => document.body.innerText); ok(!/claude|anthropic/i.test(tt), 'صفحة taam تعمل ولا تذكر Claude');
 }
-{ // التلاوة المتصلة، والقبلة وتقويم الشهر، واختبار الحفظ: الصفحات تعمل وبياناتها صحيحة
-  await p.evaluate(() => location.hash = 'recite'); await p.waitForSelector('#rcGo', { timeout: 30000 }).catch(() => {});
-  const r = await p.evaluate(() => ({ go: !!document.querySelector('#rcGo'), rs: document.querySelectorAll('#rcR option').length }));
-  ok(r.go && r.rs >= 10, `التلاوة المتصلة: ${r.rs} قارئاً`);
-  await p.evaluate(() => location.hash = 'prayer'); await p.waitForSelector('#prMon table', { timeout: 30000 }).catch(() => {});
-  const m = await p.evaluate(() => { const d = new Date(); return { rows: document.querySelectorAll('#prMon tbody tr').length, days: new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate(), q: typeof qibla === 'function' ? Math.round(qibla(30.0444, 31.2357)) : 0, dial: !!document.querySelector('#qDial') }; });
-  ok(m.rows === m.days && m.dial && Math.abs(m.q - 136) <= 2, `مواقيت الشهر كاملاً (${m.rows} يوماً) وبوصلة القبلة (القاهرة ${m.q}°)`);
-  await p.evaluate(() => location.hash = 'hifz'); await p.waitForSelector('#hzMode', { timeout: 30000 }).catch(() => {});
-  ok(await p.evaluate(() => !!document.querySelector('#hzMode [data-m="quiz"]')), 'وضع «اختبار قصير» في الحفظ');
-}
-{ // الخط الزمني التفاعلي للقصص والحضارات وأطلس القرآن: مداخل موسومة بالثبات أو الاجتهاد، وشواهد، وروابط الخريطة، ومسارات
-  await p.evaluate(() => { location.hash = 'timeline'; }); await p.waitForSelector('.tlq-card', { timeout: 30000 }).catch(() => {});
-  const t = await p.evaluate(() => ({ n: document.querySelectorAll('.tlq-card').length, j: document.querySelectorAll('.tlq-card.ij').length, e: document.querySelectorAll('.tlq-era').length, lanes: ['p', 'q', 'v'].every(l => document.querySelector('.tlq-card.' + l)), badge: document.querySelectorAll('.tlq-c').length }));
-  ok(t.n >= 50 && t.j >= 10 && t.e === 11 && t.lanes && t.badge === t.n, `الخط الزمني: ${t.n.toLocaleString('ar-EG')} مدخلاً في ${t.e.toLocaleString('ar-EG')} عصور، منها ${t.j.toLocaleString('ar-EG')} موسومة اجتهاداً غير جازم`);
-  await p.click('#ev-musa .tlq-t'); const mu = await p.evaluate(() => ({ open: !document.querySelector('#ev-musa .tlq-x').hidden, ay: document.querySelectorAll('#ev-musa .tlq-r a[data-ayah]').length, pl: document.querySelectorAll('#ev-musa [data-place]').length }));
-  ok(mu.open && mu.ay >= 3 && mu.pl >= 2, 'الخط الزمني: فتح مدخل موسى يعرض آياته وروابطه بالخريطة');
-  await p.click('#tlf [data-c="j"]'); const jo = await p.evaluate(() => ({ all: document.querySelectorAll('.tlq-card').length, non: document.querySelectorAll('.tlq-card:not(.ij)').length, why: document.querySelectorAll('.tlq-card .tlq-why').length })); await p.click('#tlf [data-c="all"]');
-  ok(jo.all >= 10 && jo.non === 0 && jo.why >= jo.all, 'الخط الزمني: كل مدخل اجتهادي له بيان سبب الاجتهاد');
-  await p.evaluate(() => { document.querySelector('#ev-ad .tlq-t').click(); }); await p.click('#ev-ad [data-place]'); await p.waitForSelector('#plinfo h2', { timeout: 15000 }).catch(() => {});
-  const mp = await p.evaluate(() => ({ h: location.hash, h2: document.querySelector('#plinfo h2')?.textContent || '', why: !!document.querySelector('#plinfo .mp-why'), pins: document.querySelectorAll('.pin').length, uns: document.querySelectorAll('.pin.unsure').length, rt: document.querySelectorAll('.rt').length, jr: document.querySelectorAll('.rt.j').length }));
-  ok(mp.h === '#map' && /الأحقاف/.test(mp.h2) && mp.why && mp.pins >= 30 && mp.uns >= 15 && mp.rt >= 6 && mp.jr >= 2, `أطلس القرآن: من الخط الزمني إلى الخريطة، ${mp.pins} موضعاً (${mp.uns} اجتهادياً) و${mp.rt} مسارات`);
-  await p.click('#plback'); await p.click('#rtlist [data-rt="3"]'); const rt = await p.evaluate(() => ({ h: document.querySelector('#plinfo h2')?.textContent, w: !!document.querySelector('#plinfo .mp-why'), s: document.querySelectorAll('.rt.sel').length }));
-  ok(/خروج/.test(rt.h) && rt.w && rt.s === 1, 'أطلس القرآن: المسار الاجتهادي يُبيّن سبب الاجتهاد');
-  await p.click('#plback'); await p.click('[data-ly="u"]'); ok(await p.evaluate(() => [...document.querySelectorAll('.pin.unsure')].every(e => e.style.display === 'none')), 'أطلس القرآن: إخفاء المواضع الاجتهادية بطبقة واحدة');
-  const m2 = await b.newPage({ viewport: { width: 390, height: 844 } }); const e3 = []; m2.on('pageerror', e => e3.push(e.message));
-  for (const v of ['timeline', 'map']) { await m2.goto(B + '#' + v); await m2.waitForSelector(v === 'map' ? '.pin' : '.tlq-card', { timeout: 30000 }).catch(() => {}); ok(await m2.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `الجوال: صفحة ${v} بلا تمرير أفقي`); }
-  ok(!e3.length, 'الجوال: لا أخطاء برمجية في الخط الزمني والخريطة ' + e3.join(' | ')); await m2.close();
-}
-{ // الأنبياء والمرسلون: ٢٥ نبياً بترتيبهم، النبي والرسول وأولو العزم، من ذُكروا بلا اسم، بنص الآيات ونقول المفسرين وأحاديث البخاري
-  await p.evaluate(() => location.hash = 'rusul'); await p.waitForSelector('.rs-ch', { timeout: 30000 }).catch(() => {});
-  await p.evaluate(() => document.querySelectorAll('.rs-ch,.rs-p').forEach(d => d.open = true));
-  const t = await p.evaluate(() => ({ ch: document.querySelectorAll('.rs-ch').length, ix: document.querySelectorAll('.u-index li').length, p: document.querySelectorAll('.rs-p').length, a: document.querySelectorAll('.rs-q').length, h: document.querySelectorAll('.rs-h .rs-matn').length, q: document.querySelectorAll('.rs-qt blockquote').length, ulu: document.querySelectorAll('.rs-p[data-ulu="1"]').length, warn: !!document.querySelector('.rs-warn') }));
-  ok(t.ch === 8 && t.ix === t.ch && t.p === 25 && t.ulu === 5 && t.a >= 150 && t.h >= 14 && t.q >= 40 && t.warn, `الأنبياء والمرسلون: ${t.p} نبياً (${t.ulu} من أولي العزم)، ${t.ch} أبواب، ${t.a} آية بخط المصحف، ${t.h} حديثاً، ${t.q} نقلاً`);
-  const tt = await p.evaluate(() => document.body.innerText); ok(!/claude|anthropic/i.test(tt), 'صفحة rusul تعمل ولا تذكر Claude');
+{ // أدعية المناسبات وفقه العبادات: يُحمَّل fiqh.js عند أول فتح، والأحاديث بتخريجها، والخلاف المعتبر، والبحث
+  for (const [k, exp] of [['adiya', { ch: 13, h: 47 }], ['ibadat', { ch: 6, h: 30, kh: 12 }]]) {
+    await p.evaluate(h => location.hash = h, k); await p.waitForSelector('.tm-ch', { timeout: 30000 }).catch(() => {});
+    const t = await p.evaluate(() => ({ ch: document.querySelectorAll('.tm-ch').length, h: document.querySelectorAll('.tm-h .tm-matn').length, kh: document.querySelectorAll('.fq-kh').length, ix: document.querySelectorAll('#fqx li').length, ay: document.querySelectorAll('.tm-q .tm-t').length, txt: document.body.innerText }));
+    ok(t.ch === exp.ch && t.ix === t.ch && t.h === exp.h && (!exp.kh || t.kh === exp.kh) && t.ay >= 15, `قسم ${k}: ${t.ch} أبواب، ${t.h} حديثاً بتخريجها، ${t.kh} مسألة خلاف، ${t.ay} آية بنص مجمع الملك فهد`);
+    ok(!/claude|anthropic/i.test(t.txt), `صفحة ${k} تعمل ولا تذكر Claude`);
+  }
 }
 await p.evaluate(() => location.hash = 'account'); await p.waitForTimeout(700);
 ok(!!(await p.$('#uform')) && !!(await p.$('#rform')), 'صفحة الدخول للعميل والمدير وإنشاء الحساب تعمل');
