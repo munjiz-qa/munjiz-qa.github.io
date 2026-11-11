@@ -28,3 +28,4 @@ jobs:
         run: sleep 120
       - run: npm i --no-save --no-package-lock playwright@1.47.2 && npx playwright install --with-deps chromium
       - run: node scripts/mishkat-check.mjs
+      - run: node scripts/mishkat-tafasir-check.mjs
