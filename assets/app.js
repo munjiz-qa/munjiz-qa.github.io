@@ -217,6 +217,7 @@ function openSvc(code){const s=byCode[code];if(!s||!dlg)return;const d=s.d||{};
    ${d.docs&&d.docs.length?`<h4>${T.docs}</h4><ul>${d.docs.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><p><a class="btn ghost sm" href="checklist.html?s=${s.c}">📋 ${L('جهّز هذه المستندات في قائمة تؤشّر عليها','Prepare these documents as a tick list')}</a></p>`:''}
    ${d.out?`<h4>${T.out}</h4><p>${esc(d.out)}</p>`:''}
    ${d.time?`<h4>${T.time}</h4><p>${esc(d.time)}</p>`:''}
+   <p><a class="btn ghost sm" href="call.html?t=${encodeURIComponent(s.c)}">📞 ${L('احجز مكالمة نشرح لك فيها هذه الخدمة','Book a call about this service')}</a></p>
    ${d.note?`<p class="dnote">${esc(d.note)}</p>`:''}
    ${s.kind!=='consult'?`<p class="mute sm">${T.govFee}</p>`:''}`;
   const a=$('dlgAdd');a.textContent=cart.has(code)?T.inCalc:T.addCalc;a.onclick=()=>{if(!cart.has(code))toggleCart(code);a.textContent=T.inCalc};
