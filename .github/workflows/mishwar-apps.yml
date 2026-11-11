@@ -20,10 +20,10 @@ jobs:
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: mishwar/native } }
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with: { node-version: 20 }
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4
         with: { distribution: temurin, java-version: 17 }
       - run: npm install --no-audit --no-fund
       - run: node prep.mjs
@@ -51,21 +51,21 @@ jobs:
           cp android/app/build/outputs/apk/release/app-release.apk out/Mishwar.apk
           cp android/app/build/outputs/bundle/release/app-release.aab out/Mishwar.aab
           ls -la out; echo "store signed: $STORE_SIGNED"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with: { name: android, path: mishwar/native/out }
 
   android-test:
     needs: android
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with: { name: android, path: out }
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
       - name: Install and run on an Android 13 phone emulator
-        uses: reactivecircus/android-emulator-runner@v2
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2
         with:
           api-level: 33
           target: google_apis
@@ -84,7 +84,7 @@ jobs:
             adb logcat -d | grep -iE "FATAL|AndroidRuntime: |Capacitor/Console" | tail -60 > out/android-log.txt || true
             cat out/android-log.txt
             adb shell pidof qa.munjiz.mishwar
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with: { name: android-test, path: out/android-* }
 
   desktop:
@@ -98,8 +98,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     defaults: { run: { working-directory: mishwar/native, shell: bash } }
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with: { node-version: 20 }
       - run: npm install --no-audit --no-fund
       - run: node prep.mjs
@@ -114,7 +114,7 @@ jobs:
           sleep 25
           if [ "$RUNNER_OS" = Windows ]; then tasklist | grep -i mishwar; else pgrep -fl "$P"; fi
           cat run.log | tail -20
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: desktop-${{ runner.os }}
           path: mishwar/native/${{ matrix.files }}
@@ -124,7 +124,7 @@ jobs:
     if: always() && needs.android.result == 'success'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with: { path: dl }
       - env:
           GH_TOKEN: ${{ github.token }}
