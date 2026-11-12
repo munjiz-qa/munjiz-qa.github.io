@@ -48,7 +48,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 h1,h2,h3{font-family:var(--f-display);line-height:1.25;text-wrap:balance;margin:0}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
+.num{font-family:inherit;font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
 
 /* shell */
 .app{display:grid;grid-template-columns:232px 1fr;height:100%}
@@ -129,9 +129,9 @@ input.i:focus,select.i:focus,textarea.i:focus{border-color:var(--accent);outline
 .seg button{border:0;background:var(--surface);padding:6px 12px;cursor:pointer;font-size:13px}
 .seg button[aria-pressed="true"]{background:var(--accent-soft);color:var(--ink);font-weight:600}
 .daylabel{font-weight:600;font-size:14px;color:var(--muted);margin-top:6px}
-.time{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-weight:500;background:var(--accent-soft);color:var(--ink);border-radius:8px;padding:2px 8px;direction:ltr;display:inline-block}
+.time{font-family:inherit;font-variant-numeric:tabular-nums;font-weight:500;background:var(--accent-soft);color:var(--ink);border-radius:8px;padding:2px 8px;direction:ltr;display:inline-block}
 .slots{display:flex;flex-wrap:wrap;gap:6px}
-.slots button{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:5px 10px;font-family:var(--f-mono);cursor:pointer;direction:ltr}
+.slots button{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:5px 10px;font-family:inherit;font-variant-numeric:tabular-nums;cursor:pointer;direction:ltr}
 .slots button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .banner{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--amber-soft);border:1px solid color-mix(in srgb,var(--amber) 35%,transparent);border-radius:var(--r);padding:12px 14px}
 .banner.acc{background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 35%,transparent)}
@@ -181,6 +181,15 @@ input.i:focus,select.i:focus,textarea.i:focus{border-color:var(--accent);outline
 .hero p{font-size:17px;color:var(--muted);max-width:56ch;margin:0}
 .svc{display:grid;gap:4px}
 .svc b{font-size:16px}
+.svc .btn{justify-self:start;margin-top:8px}
+.kv dd.contact{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.kv a.num,.kv a.mail{color:var(--ink);text-decoration:none;border-bottom:1px dashed var(--line)}
+.kv a.mail{direction:ltr;unicode-bidi:isolate}
+.kv dd.contact .btn{color:var(--ink);text-decoration:none}
+.kv{margin:0}
+.book-cta{display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap}
+.book-cta b{font-size:16px}
+@media(max-width:420px){.topbar>.small.muted{display:none}}
 .toast{position:fixed;inset-inline:0;bottom:calc(76px + env(safe-area-inset-bottom,0px));display:flex;justify-content:center;pointer-events:none;z-index:50;padding-inline:16px}
 .toast div{background:var(--ink);color:var(--bg);border-radius:10px;padding:9px 16px;font-size:14px;box-shadow:var(--shadow);max-width:520px}
 .toast div.bad{background:var(--bad);color:#fff}
@@ -581,7 +590,7 @@ function instructions(role){
     const me = myDoc().profile;
     return `أنت «سند»، المساعد الذكي لـ«${st.name||'النشاط'}». تخدم عميلاً مسجلاً: تعرّفه بالخدمات، وتبحث له عن الأوقات المتاحة، وتسجّل بياناته، وترسل طلب الحجز ليؤكده فريق النشاط.\n${base}\nبيانات العميل الحالية: الاسم «${me.name||'غير مسجل'}»، الجوال «${me.phone||'غير مسجل'}».\nقواعد: اسأل عن الناقص فقط. لا تعد بتأكيد نهائي: الطلب يبقى «بانتظار التأكيد» حتى يعتمده الفريق. لا تفصح عن بيانات عملاء آخرين أو عن تفاصيل المواعيد المحجوزة، واكتفِ بالأوقات المتاحة.`;
   }
-  return `أنت «سند»، المساعد الذكي لـ«${st.name||'النشاط'}» تجيب زائراً عاماً للموقع.\n${base}\nعرّفه بالخدمات وساعات العمل والأوقات المتاحة. الحجز يحتاج حساب عميل: إن أراد الحجز فاطلب منه التواصل عبر ${st.phone||'وسائل التواصل في الصفحة'} للحصول على رابط بوابة العملاء. لا تفصح عن أي بيانات داخلية.`;
+  return `أنت «سند»، المساعد الذكي لـ«${st.name||'النشاط'}» تجيب زائراً عاماً للموقع.\n${base}\nعرّفه بالخدمات وساعات العمل والأوقات المتاحة. الحجز يحتاج حساب عميل مجاني: إن أراد الحجز فوجّهه إلى زر «احجز موعداً» في الصفحة لإنشاء حسابه والحجز مباشرة، أو التواصل عبر ${st.phone||'وسائل التواصل في الصفحة'}. لا تفصح عن أي بيانات داخلية.`;
 }
 function chatKey(){ return 'chat:'+S.role; }
 function loadChat(){ S.chat = store.get(chatKey(), []); }
@@ -909,19 +918,21 @@ function vSettings(){
      </div></div>`;
 }
 /* client + visitor */
+function canSelfRegister(){ const m = window.__sanadMe; return !m || m.registration !== false; }
+function bookLink(svc){ return `login.html?next=book${svc?`&svc=${encodeURIComponent(svc)}`:''}${canSelfRegister()?'#register':''}`; }
 function servicesHtml(){
-  const st = site();
-  return st.services.length ? `<div class="grid g2">${st.services.map(s => `<div class="card svc"><b>${esc(s.name)}</b><span class="small muted">${s.duration} دقيقة${s.price?` · ${esc(s.price)}`:''}</span></div>`).join('')}</div>` : `<div class="empty">لم تُضف الخدمات بعد.</div>`;
+  const st = site(); const canBook = S.role!=='admin';
+  return st.services.length ? `<div class="grid g2">${st.services.map(s => `<div class="card svc"><b>${esc(s.name)}</b><span class="small muted">${s.duration} دقيقة${s.price?` · ${esc(s.price)}`:''}</span>${canBook?`<button class="btn sm" data-act="gobook" data-svc="${esc(s.name)}">${ic('cal')} احجز هذه الخدمة</button>`:''}</div>`).join('')}</div>` : `<div class="empty">لم تُضف الخدمات بعد.</div>`;
 }
 function vHome(){
   const st = site();
   if(!S.site) return `<div class="hero">${MARK}<h1>سند يرد ويحجز وينفّذ، وصاحب العمل يوافق.</h1><p>هذه صفحة نشاط يديرها وكيل ذكي. لم تُنشر بيانات النشاط بعد${S.db?'':'، أو تحتاج إلى تسجيل الدخول لعرضها'}.</p></div>`;
   return `<div class="hero"><span class="pill acc" style="justify-self:start">${esc(st.city||'')}${st.city?' · ':''}يرد سند على مدار الساعة</span><h1>${esc(st.name)}</h1><p>${esc(st.tagline||st.about||'')}</p>
-    <div class="toolbar"><button class="btn pri" data-tab="chat">${ic('chat')} اسأل سند الآن</button></div></div>
+    <div class="toolbar"><button class="btn pri" data-act="gobook">${ic('cal')} احجز موعداً</button><button class="btn" data-tab="chat">${ic('chat')} اسأل سند الآن</button></div></div>
     <div class="sec"><h2>الخدمات</h2>${servicesHtml()}</div>
     <div class="sec"><h2>ساعات العمل</h2><div class="card"><dl class="kv"><dt>الأيام</dt><dd>${st.days.map(d => DAYS[d]).join('، ')}</dd><dt>الوقت</dt><dd>من ${st.start} إلى ${st.end}</dd>
-    ${st.phone?`<dt>الهاتف</dt><dd><span class="num" style="user-select:all">${esc(st.phone)}</span> <a class="small" href="https://wa.me/${phoneDigits(st.phone)}" target="_blank" rel="noopener">واتساب</a></dd>`:''}${st.email?`<dt>البريد</dt><dd style="user-select:all">${esc(st.email)}</dd>`:''}</dl></div></div>
-    <div class="sec"><h2>الحجز</h2><div class="card small">الحجز متاح لعملائنا عبر رابط بوابة العملاء. تواصل معنا للحصول على الرابط، أو اسأل سند عن الأوقات المتاحة.</div></div>`;
+    ${st.phone?`<dt>الهاتف</dt><dd class="contact"><a class="num" href="tel:+${phoneDigits(st.phone)}">${esc(st.phone)}</a><a class="btn sm" href="https://wa.me/${phoneDigits(st.phone)}" target="_blank" rel="noopener">${ic('send')} واتساب</a></dd>`:''}${st.email?`<dt>البريد</dt><dd><a class="mail" href="mailto:${esc(st.email)}">${esc(st.email)}</a></dd>`:''}</dl></div></div>
+    <div class="sec"><h2>الحجز</h2><div class="card book-cta"><div><b>احجز موعدك في أقل من دقيقة</b><div class="small muted">${canSelfRegister()?'أنشئ حساباً مجانياً، ثم اختر الخدمة والوقت المناسب، ويصلك التأكيد من الفريق وتتابع حالته من «حجوزاتي».':'سجّل الدخول بحسابك لاختيار الخدمة والوقت، أو تواصل معنا لفتح حساب.'}</div></div><div class="toolbar"><button class="btn pri" data-act="gobook">${ic('cal')} احجز موعداً</button><button class="btn" data-tab="chat">اسأل سند</button></div></div></div>`;
 }
 function vBook(){
   const st = site(); const b = S.booking; const today = riyadhNow().date;
@@ -983,6 +994,11 @@ document.addEventListener('click', async e => {
   const a = t.dataset.act, id = t.dataset.id;
   if(a==='closesheet'){ if(e.target===t){ S.sheet = false; render(); } return; }
   if(a==='more'){ S.sheet = true; render(); return; }
+  if(a==='gobook'){
+    if(S.preview && S.role==='visitor'){ toast('في المعاينة: يُوجَّه الزائر إلى إنشاء حساب ثم صفحة الحجز مباشرة'); return; }
+    if(S.role==='visitor'){ if(window.__sanadMe) location.href = bookLink(t.dataset.svc); else { S.tab = 'chat'; render(); } return; }
+    S.booking = t.dataset.svc ? { service:t.dataset.svc } : {}; S.tab = 'book'; render(); const m = document.querySelector('.main'); if(m) m.scrollTop = 0; return;
+  }
   if(a==='chip'){ runAgent(t.textContent); return; }
   if(a==='stop'){ ctl?.abort(); return; }
   if(a==='newchat'){ S.chat = []; saveChat(); render(); return; }
@@ -1076,6 +1092,7 @@ async function boot(){
   if(role==='admin' && mcp) S.mcp = mcp;
   if(sample){ try{ const lim = await sample.limits(); S.toolsMax = lim.tools ? lim.tools.maxCount : 0; S.canImages = !!lim.images && role==='admin'; }catch{} }
   S.role = S.realRole = role;
+  try{ const nx = JSON.parse(sessionStorage.getItem('sanad:next') || 'null'); if(nx && role==='client'){ sessionStorage.removeItem('sanad:next'); if(nx.go==='book'){ S.tab = 'book'; S.booking = nx.svc ? { service:nx.svc } : {}; } } }catch{}
   loadChat();
   if(db){
     watchDoc(db.doc('public/site'), d => { S.site = d; });

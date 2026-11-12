@@ -79,6 +79,14 @@
     bar.querySelector('.pwi-x').onclick = () => { ls('snooze', String(Date.now() + 3 * 864e5)); bar.hidden = true; };
     pill = document.createElement('button'); pill.type = 'button'; pill.className = 'pwi-pill'; pill.innerHTML = ico + esc(T.app); pill.title = T.head(name); pill.onclick = install;
     document.body.appendChild(pill);
+    // keep the pill clear of the side rail's account footer (sign-out, console link): lift it into the free space above that footer
+    let q = 0; const place = () => { q = 0; const w = document.querySelector('.rail .who'); const r = w && w.offsetParent ? w.getBoundingClientRect() : null;
+      pill.style.bottom = pill.style.insetInlineStart = ''; if (!r || r.top >= innerHeight) return;
+      const rail = w.closest('.rail'), navEnd = Math.max(0, ...[...rail.children].filter(e => e !== w && e.offsetParent).map(e => e.getBoundingClientRect().bottom));
+      if (r.top - navEnd >= 46 + 28) pill.style.bottom = Math.round(innerHeight - r.top + 14) + 'px'; // free space in the rail above its footer
+      else pill.style.insetInlineStart = Math.round(rail.getBoundingClientRect().width + 18) + 'px'; }; // short screens: beside the rail, in the page
+    const later = () => { if (!q) q = requestAnimationFrame(place); };
+    addEventListener('resize', later); new MutationObserver(later).observe(document.body, { childList: true, subtree: true }); later();
     render();
     // إن غطّى رأسُ الصفحة الثابت الشريطَ يُعرض الشريط عائماً أسفل الشاشة حتى يبقى ظاهراً
     requestAnimationFrame(() => setTimeout(() => {

@@ -641,6 +641,8 @@ body.signed-client #whoLi{display:none!important}
 @media (min-width:521px){.top .gtsel{max-width:62px;padding-inline:6px}}
 @media (min-width:981px){.top .wrap{gap:10px;flex-wrap:nowrap}.top nav{flex:1 1 auto;min-width:0}.menu{flex-wrap:nowrap;justify-content:flex-end}.menu>li>a,.topbtn{padding:6px 8px;white-space:nowrap}.top .brand{white-space:nowrap;flex:none}}
 @media (min-width:981px) and (max-width:1180px){.menu>li>a,.topbtn{font-size:13.5px;padding:6px 6px}.top .brand{font-size:17px}}
+@media (min-width:981px){.top .wrap{max-width:1260px}}
+@media (min-width:981px) and (max-width:1180px){.top .brand .bsub{display:none}}
 /* clear-UX pass 2 (2026-10-19): skip link, service-first request form, one-row page nav on phones, English About fit */
 .skip{position:absolute;inset-inline-start:12px;top:-60px;z-index:50;background:var(--surface);color:var(--ink);padding:10px 16px;border-radius:10px;font-weight:700;text-decoration:none;box-shadow:0 6px 20px rgba(0,0,0,.18)}
 .skip:focus{top:10px}
@@ -673,3 +675,8 @@ footer .fc b{color:#e8cf8f}
 .mbar .wa-btn{background:#15803d;border-color:#15803d;color:#fff}
 .mbar .btn.wa-btn,:root[data-theme="dark"] .mbar .btn.wa-btn,:root:not([data-theme="light"]) .mbar .btn.wa-btn{color:#fff}
 #dlg .dhead{padding-inline-end:40px}
+/* 2026-11-12: short dropdowns (حلول الأعمال / المزيد) read as menu items, not underlined links */
+.drop.small a{display:block;padding:9px 12px;border-radius:8px;color:inherit;text-decoration:none;font-size:14.5px}
+.drop.small a:hover,.drop.small a:focus-visible{background:var(--chip)}
+.top .brand>svg{flex:none}
+@media (max-width:420px){html[lang="en"] .top .brand .bsub{display:none}}

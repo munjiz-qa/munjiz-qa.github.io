@@ -115,16 +115,22 @@ async function load(){
   $('#model').value = s.model; $('#vchat').checked = s.visitorChat; $('#reg').checked = s.registration;
   $('#l-v').value = s.limits.visitor; $('#l-c').value = s.limits.client; $('#l-a').value = s.limits.admin;
   $('#urls').innerHTML = s.urls.map(u => `<div class="num" style="padding:4px 0"><a href="${esc(u)}">${esc(u)}</a></div>`).join('');
-  $('#sys').textContent = `النظام: ${s.platform} · Node ${s.node} · البيانات: ${s.dataDir}`;
-  $('#ver').textContent = 'سند ' + s.version;
+  $('#sys').textContent = s.local ? `البيانات محفوظة في: ${s.dataDir} · الجهاز: ${s.platform}` : `النظام: ${s.platform} · Node ${s.node} · البيانات: ${s.dataDir}`;
+  $('#ver').innerHTML = 'سند · الإصدار <bdi dir="ltr">' + esc(s.version) + '</bdi>';
   loadUsers();
 }
 async function loadUsers(){
   const { users } = await call('GET', 'api/admin/users');
   $('#ucount').textContent = `${users.length} حساب`;
-  $('#users').innerHTML = users.map(u => `<tr><td>${esc(u.name)}</td><td><span class="pill ${u.role==='admin'?'acc':'ok'}">${u.super?'مدير شامل':u.role==='admin'?'مدير':'عميل'}</span></td><td class="num">${esc(u.phone)}</td><td class="num">${esc(u.email)}</td><td class="small">${fmtDate(u.createdAt)}</td><td>${u.id===me.user.id?'<span class="small muted">أنت</span>':u.super?'<span class="small muted">محمي</span>':`<button class="btn bad" data-del="${esc(u.id)}" data-name="${esc(u.name)}" style="padding:3px 10px;font-size:13px">حذف</button>`}</td></tr>`).join('');
+  $('#users').innerHTML = users.map(u => `<tr><td>${esc(u.name)}</td><td><span class="pill ${u.role==='admin'?'acc':'ok'}">${u.super?'مدير شامل':u.role==='admin'?'مدير':'عميل'}</span></td><td class="num">${esc(u.phone)}</td><td class="num">${esc(u.email)}</td><td class="small">${fmtDate(u.createdAt)}</td><td>${u.id===me.user.id?'<span class="small muted">أنت</span>':u.super?'<span class="small muted">محمي</span>':`<div class="acts">${u.role!=='admin'||me.user.super?`<button class="btn" data-reset="${esc(u.id)}" data-name="${esc(u.name)}" style="padding:3px 10px;font-size:13px">كلمة مرور جديدة</button>`:''}<button class="btn bad" data-del="${esc(u.id)}" data-name="${esc(u.name)}" style="padding:3px 10px;font-size:13px">حذف</button></div>`}</td></tr>`).join('');
 }
 document.addEventListener('click', async e => {
+  const r = e.target.closest('[data-reset]');
+  if(r){
+    const pw = prompt(`كلمة المرور الجديدة لحساب «${r.dataset.name}» (8 أحرف على الأقل):`, ''); if(pw == null) return;
+    try { await call('POST', 'api/admin/users/' + encodeURIComponent(r.dataset.reset) + '/password', { password: pw }); say('#m-user', `تغيّرت كلمة مرور «${r.dataset.name}». أرسلها له بطريقة آمنة.`); } catch(err){ say('#m-user', err.message, 'bad'); }
+    return;
+  }
   const b = e.target.closest('[data-del]'); if(!b) return;
   if(!confirm(`حذف حساب «${b.dataset.name}»؟ لا يمكن التراجع.`)) return;
   try { await call('DELETE', 'api/admin/users/' + encodeURIComponent(b.dataset.del)); say('#m-user','حُذف الحساب'); loadUsers(); } catch(err){ say('#m-user', err.message, 'bad'); }

@@ -197,7 +197,7 @@ $('cTxn').onclick=()=>openTx({clientId:curClient,status:'بانتظار المس
 $('cNote').onclick=async()=>{const t=await ask('اكتب الملاحظة أو ملخص المكالمة',{input:true,ok:'حفظ'});if(!t)return;await saveRow('Log',{clientId:curClient,kind:'note',subject:'ملاحظة',body:t,by:'CRM'});renderClient();renderLog()};
 // service contract: the client's details and open transactions go to contract.html, which reads them once
 $('cContract').onclick=()=>{const c=cli(curClient);if(!c.id)return;const tx=DB.Transactions.filter(t=>t.clientId===c.id&&!/منجزة|ملغاة/.test(t.status));
-  try{localStorage.setItem('munjiz_contract',JSON.stringify({at:Date.now(),client:{name:c.name,cr:c.cr,estCard:c.estCard,address:c.address,phone:c.phone,email:c.email,qid:c.qid},items:tx.map(t=>({c:t.code,n:t.service,q:1,p:+t.fee||0}))}))}catch(e){}
+  try{localStorage.setItem('munjiz_contract',JSON.stringify({at:Date.now(),client:{name:c.name,cr:c.cr,estCard:c.estCard,address:c.address,phone:c.phone,email:c.email,qid:c.qid,contactName:((/المسؤول: *([^\n]+)/.exec(c.notes||'')||[])[1]||'').trim(),contactPhone:c.phone,contactEmail:c.email},items:tx.map(t=>({c:t.code,n:t.service,q:1,p:+t.fee||0}))}))}catch(e){}
   window.open('contract.html'+(EN?'?lang=en':''),'_blank')};
 let editC=null;
 function openCli(c){editC=c;const f=$('fC');f.reset();Object.keys(c).forEach(k=>{if(f.elements[k])f.elements[k].value=c[k]==null?'':c[k]});$('delC').hidden=!c.id;$('dlgC').showModal()}
