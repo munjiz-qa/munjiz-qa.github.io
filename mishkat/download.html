@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'self'">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>تحميل مشكاة</title>
+<meta name="description" content="حمّل تطبيق مشكاة، موسوعة القرآن الكريم الذكية، على هاتفك أو حاسوبك بضغطة واحدة، ويعمل دون إنترنت.">
+<meta name="theme-color" content="#1b2559">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="fonts.css">
+<style>
+:root{--bg:#f3f5f9;--sheet:#fff;--ink:#151b33;--muted:#5d6580;--line:#dfe3ee;--navy:#1b2559;--gold:#e3a440;--gold-d:#b57a16}
+@media (prefers-color-scheme:dark){:root{--bg:#0c1022;--sheet:#141a33;--ink:#e6e9f5;--muted:#9aa3c2;--line:#252d4d}}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Readex Pro',system-ui,sans-serif;line-height:1.8;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.hero{background:linear-gradient(160deg,#1b2559 0%,#2a3680 60%,#3a2f6e 100%);color:#f5f2ea;text-align:center;padding:44px 16px 64px}
+.appicon{display:block;width:132px;height:132px;margin:0 auto 18px;border-radius:30px;box-shadow:0 14px 40px rgba(0,0,0,.4),0 0 0 6px rgba(227,164,64,.25)}
+.hero h1{font-family:'Aref Ruqaa',serif;font-size:3rem;margin:0;line-height:1.2}
+.ver{display:inline-block;background:rgba(227,164,64,.18);color:#f3c77a;border:1px solid rgba(227,164,64,.5);border-radius:99px;padding:2px 14px;font-size:.85rem;margin-bottom:8px!important}
+.hero p{margin:6px auto 0;max-width:34ch;opacity:.9}
+.main{max-width:760px;margin:-40px auto 0;padding:0 16px 40px}
+.card{background:var(--sheet);border:1px solid var(--line);border-radius:18px;padding:20px;margin-bottom:14px;box-shadow:0 6px 24px rgba(21,27,51,.08)}
+.big{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;border:0;cursor:pointer;font:inherit;font-weight:700;font-size:1.15rem;color:#1b2559;background:var(--gold);border-radius:14px;padding:16px;text-decoration:none;min-height:56px}
+.big:hover{background:#efb352}.big small{font-weight:400;opacity:.8}
+.big svg{width:24px;height:24px}
+.note{color:var(--muted);font-size:.9rem;text-align:center;margin:10px 0 0}
+h2{margin:0 0 12px;font-size:1.1rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.dev{display:flex;flex-direction:column;gap:6px;border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--bg)}
+.dev.me{border-color:var(--gold);box-shadow:0 0 0 2px rgba(227,164,64,.35)}
+.dev b{font-size:1rem}.dev span{color:var(--muted);font-size:.88rem}
+.dev a,.dev button{margin-top:auto;display:block;text-align:center;font:inherit;font-weight:600;border:1px solid var(--navy);background:var(--navy);color:#fff;border-radius:10px;padding:10px;text-decoration:none;cursor:pointer;min-height:44px}
+.dev a.alt,.dev button.alt{background:transparent;color:var(--ink);border-color:var(--line)}
+@media (prefers-color-scheme:dark){.dev a,.dev button{background:#2c3a8a;border-color:#2c3a8a}}
+.guide{background:var(--bg);border-radius:12px;padding:12px 16px;margin-top:10px}
+.guide ol{margin:6px 0 0;padding-inline-start:20px}
+.ok{color:#1f7a3d;font-weight:700;text-align:center}
+.foot{text-align:center;color:var(--muted);font-size:.85rem;margin-top:20px}.foot a{color:inherit}
+</style>
+</head>
+<body>
+<header class="hero">
+  <img class="appicon" src="icons/icon-512.png" width="132" height="132" alt="أيقونة مشكاة">
+  <h1>مشكاة</h1>
+  <p class="ver">الإصدار ٤ · نور المشكاة</p>
+  <p>موسوعة القرآن الكريم الذكية، تثبّتها على جهازك وتعمل دون إنترنت</p>
+</header>
+<main class="main">
+  <section class="card" id="primary">
+    <button class="big" id="go" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 20h16"/></svg><span id="goT">ثبّت مشكاة على جهازك</span></button>
+    <p class="note" id="goN">بضغطة واحدة، مجاني، بلا حساب</p>
+    <div class="guide" id="ios" hidden><b>تثبيت على آيفون وآيباد:</b><ol><li>افتح هذه الصفحة في متصفح سفاري.</li><li>اضغط زر المشاركة <b>⬆︎</b> في أسفل الشاشة.</li><li>اختر «إضافة إلى الشاشة الرئيسية» ثم «إضافة».</li></ol></div>
+    <div class="guide" id="manual" hidden><b>تثبيت من قائمة المتصفح:</b><ol><li>افتح قائمة المتصفح (⋮ أو ⋯).</li><li>اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».</li></ol></div>
+    <p class="ok" id="done" hidden>تم تثبيت مشكاة على هذا الجهاز ✓</p>
+  </section>
+
+  <section class="card">
+    <h2>اختر جهازك</h2>
+    <div class="grid">
+      <div class="dev" id="d-android"><b>أندرويد</b><span>ثبّت من المتصفح، أو نزّل ملف التطبيق مباشرة.</span><button type="button" data-install>تثبيت من المتصفح</button><a class="alt" href="android/mishkat.apk" download>تنزيل ملف APK</a></div>
+      <div class="dev" id="d-ios"><b>آيفون وآيباد</b><span>من سفاري: مشاركة ثم «إضافة إلى الشاشة الرئيسية».</span><button type="button" data-ios>طريقة التثبيت</button></div>
+      <div class="dev" id="d-desktop"><b>ويندوز وماك ولينكس</b><span>من كروم أو إيدج: ثبّت مشكاة تطبيقاً مستقلاً بنافذته وأيقونته.</span><button type="button" data-install>تثبيت على الحاسوب</button></div>
+    </div>
+    <p class="note">أو افتح الموسوعة مباشرة في المتصفح دون تثبيت.</p>
+    <a class="big" style="margin-top:10px;background:var(--navy);color:#fff" href="./">افتح مشكاة الآن</a>
+  </section>
+  <p class="foot">مشكاة · موسوعة القرآن الكريم الذكية · <a href="privacy.html">سياسة الخصوصية</a></p>
+</main>
+<script src="download.js"></script>
+</body>
+</html>
