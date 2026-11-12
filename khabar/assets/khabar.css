@@ -213,3 +213,8 @@ mark{background:var(--dawn-soft);color:inherit;border-radius:3px;padding:0 2px;b
 .zchip[data-zone="qatar"]{color:#14212E}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .zchip{color:#0C141C}}
 :root[data-theme="dark"] .zchip{color:#0C141C}
+
+/* خريطة الطريق: تصفية حسب الدائرة وعناوين الأشهر */
+.road-filter{margin:4px 0 6px}
+.road-month{display:flex;align-items:baseline;gap:10px;font-size:1.25rem;margin:22px 0 0;padding-bottom:6px;border-bottom:2px solid var(--ink)}
+.road-month .count{margin-inline-start:auto;font-family:var(--body);font-size:.85rem;font-weight:400;color:var(--mute)}
