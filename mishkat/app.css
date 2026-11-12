@@ -1402,3 +1402,16 @@ main h1,.welcome h1,.sec-head h2,.path-head h3{font-family:var(--f-brand)}
 .path::before{display:none}
 .mi-group .mi-t{font-family:var(--f-brand);font-size:1.15rem}
 @media (max-width:1100px){.path-head{padding:14px}}
+
+/* v4 mobile home fixes: no duplicate install button, readable search, compact install bar */
+#qinput::placeholder{text-overflow:ellipsis;white-space:nowrap;overflow:hidden}
+.searchbar form{min-width:0}
+@media (max-width:760px){
+  .shell:has(.instbar:not([hidden])) .instbtn{display:none}
+  .searchbar .wrap{gap:8px}
+  .searchbar .brand span{display:none}
+  .instbar .ib-t b{font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .instbar .ib-t small{font-size:.72rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .instbar img{width:34px;height:34px}
+  .instbar .btn{padding:7px 12px}
+}

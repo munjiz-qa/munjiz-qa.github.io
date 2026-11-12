@@ -104,7 +104,7 @@ function progHomeCard() {
     ${mk ? `<a class="mcard" href="#pa${mk.i}"><svg><use href="#i-bookmark"/></svg><span><small>توقفت هنا</small><b>${esc(ref(mk.i))}</b></span></a>` : `<a class="mcard" href="#wird"><svg><use href="#i-bookmark"/></svg><span><small>توقفت هنا</small><b>ضع أول علامة</b></span></a>`}
     <a class="mcard" href="#wird"><svg><use href="#i-time"/></svg><span><small>ورد اليوم</small><b>${g ? `${n(Math.min(t, g))} من ${n(g)} صفحة` : `${n(t)} صفحة`}</b></span></a>
     <a class="mcard" href="#wird"><svg><use href="#i-spark"/></svg><span><small>سلسلة القراءة</small><b>${st ? `${n(st)} ${st === 1 ? 'يوم' : st === 2 ? 'يومان' : st <= 10 ? 'أيام' : 'يوماً'}` : 'ابدأ اليوم'}</b></span></a>
-    ${(() => { try { return localStorage.getItem('mishkat:seenVer') === MK_VERSION ? '' : '<a class="wn-new" href="#whatsnew"><b>جديد</b> الإصدار ${MK_VERSION}: شكل جديد وست فئات للأقسام</a>'; } catch (e) { return ''; } })()}
+    ${(() => { try { return localStorage.getItem('mishkat:seenVer') === MK_VERSION ? '' : `<a class="wn-new" href="#whatsnew"><b>جديد</b> الإصدار ${MK_VERSION}: شكل جديد وست فئات للأقسام</a>`; } catch (e) { return ''; } })()}
   </div>`;
 }
 
