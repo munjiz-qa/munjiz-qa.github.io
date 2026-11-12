@@ -1449,3 +1449,14 @@ main h1,.welcome h1,.sec-head h2,.path-head h3{font-family:var(--f-brand)}
   .jr{flex:0 0 78%;scroll-snap-align:start}
 }
 .drawer .sfind{max-width:none;margin:4px 0}
+
+/* v5 viewport hardening: never let any decoration widen the layout viewport (phones then shrink-to-fit / "zoom") */
+html{overflow-x:hidden;max-width:100%;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{overflow-x:clip;position:relative;max-width:100%;touch-action:manipulation}
+.shell{max-width:100%;min-width:0}
+.welcome{overflow:clip;max-width:100%}
+@media (max-width:760px){.welcome .wl-pat{width:200px;height:200px;inset:auto -40px -60px auto}html[dir=ltr] .welcome .wl-pat{inset:auto auto -60px -40px}}
+.hero2{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)}
+@media (max-width:860px){.hero2{grid-template-columns:minmax(0,1fr)}.np-grid{grid-template-columns:minmax(0,1fr)}}
+.hero2>*,.home2>*,.welcome>*{min-width:0}
+.welcome{min-width:0}
