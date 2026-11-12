@@ -2,6 +2,10 @@
 /* مشكاة — موسوعة القرآن الذكية. One codebase for the claude.ai build and the installable PWA build. */
 const BUILD = window.MISHKAT_BUILD || 'pwa';
 const IS_PWA = BUILD === 'pwa';
+/* iOS < 16.4 لا يدعم lookbehind: تقسيم الجمل بلا lookbehind، وكشف الدعم للتعابير الأخرى */
+const splitAfter = (t, cls, nl) => String(t).replace(new RegExp('([' + cls + '])\\s+' + (nl ? '|\\n+' : ''), 'g'), (m, a) => (a || '') + '\u0001').split('\u0001');
+const IS_IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const LB_OK = (() => { try { new RegExp('(?<!a)b'); return true; } catch (e) { return false; } })();
 const LAB = window.MISHKAT_APP === 'lab'; // «مختبر الأبحاث القرآنية»: تطبيق مستقل من الشيفرة نفسها، له اسمه وتخزينه وحساباته
 const BRAND = LAB ? 'مختبر الأبحاث القرآنية' : 'مشكاة', HOME = LAB ? 'research' : 'home';
 const $ = s => document.querySelector(s);
@@ -29,7 +33,7 @@ const stateKey = () => SESSION ? 'state@' + SESSION.u : 'state';
 const ST = {};
 function loadState() {
   for (const k of Object.keys(ST)) delete ST[k];
-  Object.assign(ST, { bookmarks: [], last: null, hifz: {}, research: [], prefs: { tafsir: 'muyassar', size: 1, theme: 'auto' }, updated: 0 }, LS.get(stateKey(), {}));
+  Object.assign(ST, { bookmarks: [], last: null, mark: null, notes: {}, log: {}, goal: null, khatma: null, hifz: {}, research: [], prefs: { tafsir: 'muyassar', size: 1, theme: 'auto' }, updated: 0 }, LS.get(stateKey(), {}));
   ST.prefs = Object.assign({ tafsir: 'muyassar', size: 1, theme: 'auto' }, ST.prefs || {});
   cleanState(ST);
 }
@@ -39,12 +43,38 @@ let saveTimer = 0;
 /* تنقية البيانات المحفوظة أو المستوردة: أرقام آيات صحيحة فقط، فلا يمر أي نص إلى الصفحة */
 function isAyahIx(v) { return Number.isInteger(v) && v >= 0 && v < 6236; }
 function cleanHifz(h) { const o = {}; if (h && typeof h === 'object') for (const [k, v] of Object.entries(h)) { if (!/^\d{1,3}:\d{1,3}-\d{1,3}$/.test(k) || !v || typeof v !== 'object') continue; const r = {}; for (const f of ['ef', 'int', 'reps', 'due', 'last']) if (Number.isFinite(+v[f])) r[f] = +v[f]; o[k] = r; } return o; }
+function cleanNewPrefs(p) { // إعدادات التلاوة ووضع الحفظ وسجل المراجعة: قيم محدودة فقط، فلا يمر أي نص غير متوقع
+  const r = p.rec && typeof p.rec === 'object' ? p.rec : {};
+  p.rec = { r: /^[A-Za-z0-9_.-]{1,60}$/.test(r.r) ? r.r : 'Alafasy_128kbps', s: [0.75, 0.9, 1, 1.15, 1.25, 1.5, 1.75, 2, 3, 4, 6, 8].includes(+r.s) ? +r.s : 1, p: [1, 2, 3, 5, 10].includes(+r.p) ? +r.p : 1, b: r.b !== false };
+  if (!isAyahIx(p.recAt)) p.recAt = null;
+  p.mpHz = [0, 1, 2].includes(+p.mpHz) ? +p.mpHz : 0;
+  const L = {}; if (p.hzLog && typeof p.hzLog === 'object') for (const [k, v] of Object.entries(p.hzLog)) if (/^\d{4}-\d{2}-\d{2}$/.test(k) && Number.isInteger(v) && v > 0 && v < 1e4) L[k] = v;
+  p.hzLog = L;
+}
+function cleanNotes(h) { const o = {}; if (h && typeof h === 'object') for (const [k, v] of Object.entries(h)) { if (!/^\d{1,4}$/.test(k) || !isAyahIx(+k) || !v || typeof v.t !== 'string') continue; const t = v.t.trim().slice(0, 800); if (t) o[k] = { t, at: Number.isFinite(+v.at) ? +v.at : 0 }; } return o; }
+function cleanLog(h) { const o = {}; if (h && typeof h === 'object') for (const k of Object.keys(h).sort().slice(-400)) { if (!/^\d{4}-\d{2}-\d{2}$/.test(k) || !Array.isArray(h[k])) continue; const p = [...new Set(h[k].map(Number).filter(v => Number.isInteger(v) && v >= 1 && v <= 604))]; if (p.length) o[k] = p; } return o; }
+/* خطة الختمة والأعمال اليومية: تواريخ وأرقام ومعرّفات قصيرة فقط */
+function cleanKplan(w) {
+  const D = /^\d{4}-\d{2}-\d{2}$/, I = /^[a-z0-9]{1,24}$/, o = { goal: null, count: 0, items: [], done: {} };
+  if (!w || typeof w !== 'object') return o;
+  if (w.goal && D.test(w.goal.start) && Number.isInteger(w.goal.days) && w.goal.days >= 1 && w.goal.days <= 1000) o.goal = { start: w.goal.start, days: w.goal.days };
+  o.count = Number.isInteger(w.count) && w.count >= 0 && w.count <= 500 ? w.count : 0;
+  o.items = (Array.isArray(w.items) ? w.items : []).filter(i => i && typeof i.id === 'string' && I.test(i.id) && typeof i.t === 'string').map(i => ({ id: i.id, t: i.t.slice(0, 40) })).slice(0, 12);
+  if (w.done && typeof w.done === 'object') for (const [k, v] of Object.entries(w.done).slice(-150)) if (D.test(k) && Array.isArray(v)) o.done[k] = v.filter(x => typeof x === 'string' && I.test(x)).slice(0, 12);
+  return o;
+}
 function cleanState(x) {
   x.bookmarks = [...new Set((Array.isArray(x.bookmarks) ? x.bookmarks : []).map(Number).filter(isAyahIx))];
   x.last = isAyahIx(x.last) ? x.last : null;
   x.hifz = cleanHifz(x.hifz);
+  x.mark = x.mark && isAyahIx(+x.mark.i) ? { i: +x.mark.i, at: Number.isFinite(+x.mark.at) ? +x.mark.at : 0 } : null;
+  x.notes = cleanNotes(x.notes); x.log = cleanLog(x.log);
+  x.goal = x.goal && Number.isInteger(+x.goal.pages) && +x.goal.pages >= 1 && +x.goal.pages <= 100 ? { pages: +x.goal.pages, at: Number.isFinite(+x.goal.at) ? +x.goal.at : 0 } : null;
+  x.khatma = typeof x.khatma === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(x.khatma) ? x.khatma : null;
+  x.kplan = cleanKplan(x.kplan);
   x.research = (Array.isArray(x.research) ? x.research : []).filter(r => r && typeof r.q === 'string').slice(0, 200);
   const p = x.prefs || {}; x.prefs = { ...p, tafsir: /^[a-z0-9_-]{1,32}$/.test(p.tafsir) ? p.tafsir : 'muyassar', size: [0.9, 1, 1.2, 1.45].includes(+p.size) ? +p.size : 1, theme: ['auto', 'light', 'dark'].includes(p.theme) ? p.theme : 'auto' };
+  cleanNewPrefs(x.prefs);
   return x;
 }
 function save() {
@@ -56,6 +86,32 @@ function save() {
   }, 1500);
 }
 
+/* ورد القراءة: تُسجَّل الصفحة قراءةً إذا بقيت أمام القارئ نحو ثماني ثوانٍ والصفحة ظاهرة */
+const dayKey = (t = Date.now()) => { const d = new Date(t); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+const todayPages = () => ST.log[dayKey()] || [];
+const goalPages = () => ST.goal ? ST.goal.pages : 0;
+function readStreak() { let k = 0, t = Date.now(); const need = Math.max(1, goalPages()); if ((ST.log[dayKey(t)] || []).length < need) t -= 864e5; for (; k < 400; k++, t -= 864e5) if ((ST.log[dayKey(t)] || []).length < need) break; return k; }
+function logReadPage(p) {
+  p = +p; if (!(p >= 1 && p <= 604)) return;
+  if (logReadPage.p === p) return;
+  clearTimeout(logReadPage.t); logReadPage.p = p;
+  logReadPage.t = setTimeout(() => {
+    if (document.visibilityState === 'hidden') { logReadPage.p = 0; return; }
+    const d = dayKey(), a = ST.log[d] || (ST.log[d] = []);
+    if (!a.includes(p)) { a.push(p); save(); const c = $('#pgHome'); if (c) c.outerHTML = progHomeCard(); }
+  }, window.MISHKAT_DWELL ?? 8000);
+}
+const logRead = i => { const a = Q.ayat[i]; if (a) logReadPage(a[6]); };
+function progHomeCard() {
+  const g = goalPages(), t = todayPages().length, st = readStreak(), mk = ST.mark;
+  return `<div class="mine3 pgrow" id="pgHome">
+    ${mk ? `<a class="mcard" href="#pa${mk.i}"><svg><use href="#i-bookmark"/></svg><span><small>توقفت هنا</small><b>${esc(ref(mk.i))}</b></span></a>` : `<a class="mcard" href="#wird"><svg><use href="#i-bookmark"/></svg><span><small>توقفت هنا</small><b>ضع أول علامة</b></span></a>`}
+    <a class="mcard" href="#wird"><svg><use href="#i-time"/></svg><span><small>ورد اليوم</small><b>${g ? `${n(Math.min(t, g))} من ${n(g)} صفحة` : `${n(t)} صفحة`}</b></span></a>
+    <a class="mcard" href="#wird"><svg><use href="#i-spark"/></svg><span><small>سلسلة القراءة</small><b>${st ? `${n(st)} ${st === 1 ? 'يوم' : st === 2 ? 'يومان' : st <= 10 ? 'أيام' : 'يوماً'}` : 'ابدأ اليوم'}</b></span></a>
+    ${(() => { try { return localStorage.getItem('mishkat:seenVer') === MK_VERSION ? '' : `<a class="wn-new" href="#whatsnew"><b>جديد</b> الإصدار ${MK_VERSION}: باحث للأقسام ورحلات مقترحة وتنظيم أوضح</a>`; } catch (e) { return ''; } })()}
+  </div>`;
+}
+
 /* ================= data loading */
 const FILE_MODE = location.protocol === 'file:';
 if (IS_PWA && !FILE_MODE && window.top !== window.self) { document.documentElement.hidden = true; document.documentElement.style.display = 'none'; try { window.top.location.replace(location.href); } catch (e) {} } // لا تُعرض المنصة داخل إطار موقع آخر
@@ -65,7 +121,7 @@ function scriptData(url) { // file:// pages cannot fetch(); every data file also
   return new Promise((res, rej) => { const sc = document.createElement('script'); sc.src = url + '.js'; sc.onload = () => { const v = window.__ATH[url]; delete window.__ATH[url]; sc.remove(); v == null ? rej(new Error(url)) : res(v); }; sc.onerror = () => rej(new Error(url)); document.head.appendChild(sc); });
 }
 /* سلامة البيانات: بصمة SHA-256 لكل ملف بيانات تُضمَّن في app.js عند البناء، ويُرفض أي ملف معدَّل */
-const INTEGRITY = {"data/geo.json":"3a381595551873cb2f5612b47aa211a2","data/hadith/abudawud.txt":"add164bbe53224463598b5d5a8771d84","data/hadith/bukhari.txt":"a40d9810e6718b084f4a75ceb094331a","data/hadith/ibnmajah.txt":"8b9a2ecdbd11ad5aebdd3ded1dd5bf95","data/hadith/muslim.txt":"c422cf76a7e81044477b76bc052474a0","data/hadith/nasai.txt":"ca0303322e9a8b85c8beb942f8c55cce","data/hadith/tirmidhi.txt":"3cc7c7bada84ef1fa49d06e5f9666930","data/i18n/aa.json":"ff0afce2a1a1fb4cdb2c5a0ee4b6ddd5","data/i18n/ace.json":"618359c488707831c1c0c2614b2cb915","data/i18n/af.json":"5c2cbf06c87824c7642db89e07bdb9a3","data/i18n/am.json":"6b53bf7773fca1c97208f64e670aff43","data/i18n/as.json":"a03e6e7d24207770ff212e3c128fdfb8","data/i18n/az.json":"9a2d1c189dbb5af844d036e6d15bb81d","data/i18n/ber.json":"98a91046a6305cfab7d62f0fbc4a1b20","data/i18n/bg.json":"ea268344bc76ca41c77539713bfffd12","data/i18n/bm.json":"33e46292b56a284116f76953f0c85c23","data/i18n/bn.json":"ffc365093abbbac927590890c740be32","data/i18n/bs.json":"618c0ac067a840b980019148c761e99e","data/i18n/ca.json":"ebae4fa81efe68985b6a8b969c807646","data/i18n/cs.json":"11e8d22e324421fee781e74545c04f3b","data/i18n/da.json":"25b2747721561f972a4dafe11db2d886","data/i18n/de.json":"bc38949db82bf7d510166dac33b83261","data/i18n/dv.json":"760af1f4fc1fa2d9865bebc25c5c4054","data/i18n/en.json":"ce80d9c7fc4331471bd835175e4b8382","data/i18n/eo.json":"c68c052a58a03312d08102b99e07b77b","data/i18n/es.json":"6a19bf9ca0c14dccbec911a6ccd7cfda","data/i18n/fa.json":"ec97d3acddbb07d75f5867e96537f54b","data/i18n/ff.json":"95c448a82dd8161bed97c9aeb8865e4b","data/i18n/fi.json":"c1beac4eba992eb6c03ef0bedcc8f8bb","data/i18n/fr.json":"f0544ffced5d6d71b9b6fd78e8e80b3f","data/i18n/gu.json":"ac5aa72bd8db55cb43c401beae08d5c3","data/i18n/ha.json":"5a09adf673079deb868895b0f46fb0a8","data/i18n/he.json":"a9f2af8dee78dd24bc9612712f931b4e","data/i18n/hi.json":"3d06abf625a729f893525c472c6455a9","data/i18n/hr.json":"3163777e50cba19278ee5b4b4e3b116e","data/i18n/hu.json":"93cb551be8e9b815a1507cfffc6ab48d","data/i18n/id.json":"9830ab84f3cdeabc94e6f236e4275394","data/i18n/it.json":"68e589acf3a9c183943654367f4c0eab","data/i18n/ja.json":"808aa8500dc951d7507b884ff2ffc71a","data/i18n/jv.json":"34d5152578fc2c40eb6f5ce0d1674abc","data/i18n/kk.json":"72ad839073ea3dae75878bc0246b33c4","data/i18n/km.json":"90a7a36d7f2c05d5821f3d2c20d391ad","data/i18n/kmr.json":"9a007348126f5d57e817d34b464d9c83","data/i18n/kn.json":"1b54ec1b3257fdb51daf24a0d2bcbddb","data/i18n/ko.json":"26c8a2738bcdc3e34f877d97390712d6","data/i18n/ku.json":"f50be57183ba34685fdb979f6dae7709","data/i18n/ky.json":"bd69fc19e96eb6c57cede1c083f878d1","data/i18n/la.json":"5966a52c0daecaddc23ef433e601dc00","data/i18n/lg.json":"e59891d741e3134ec0a45b6fe22f80e7","data/i18n/ln.json":"0de572c43c838bb310e9de3d15defac7","data/i18n/mk.json":"cad8cb903eb823a779114632e644b68b","data/i18n/ml.json":"594e9b5fdbf4eaddf0c2f32a47d4477f","data/i18n/mr.json":"eb19c66968c124a44dbaf75f037791e3","data/i18n/ms.json":"81bd6233fe861fdd4aa2ac11f06588a4","data/i18n/mt.json":"270f3d24ff338b1e3cdbe9e251aafd29","data/i18n/my.json":"1f98e1a72a9be53ac1b8b5dd4d644c34","data/i18n/ne.json":"ad7cbbc36cb31f7c5855440509f766ba","data/i18n/nl.json":"fcdc07096e42d2177179abdac1d21c98","data/i18n/no.json":"692382f2b31986fce6a6d8331fc13cd4","data/i18n/ny.json":"e4683cb4a328021818532a249ab0edb7","data/i18n/om.json":"b9e2007f7302f3c5bf95308171dcfed1","data/i18n/pa.json":"319b1d55f3fe6c794419ad785935a583","data/i18n/pl.json":"9e89da142b109085458f9e5a38ee1d91","data/i18n/prs.json":"0620e9359c4df54366695f54cfcc47a7","data/i18n/ps.json":"d0fb97ed172cb8a7951adb35e4fc2c2a","data/i18n/pt.json":"a8dd83067a44f58843618988fa783101","data/i18n/rn.json":"2b606776470953d1e1116eb44eaab170","data/i18n/ro.json":"09d4c78ec164fad6381fabab246a7a01","data/i18n/ru.json":"1e0dbb54eeeee16a608c823bb48a72b3","data/i18n/rw.json":"23bdedca33deb7c31cd64746fb88242f","data/i18n/sd.json":"88725c15fbd36d1b41768c5b0ff318e2","data/i18n/si.json":"93adab3f12f9d3ab0ba53172e8bd756f","data/i18n/sk.json":"489521e482347094ac13299eb0bf7afb","data/i18n/sn.json":"839b64e11624a2f3a0f01b73d57db452","data/i18n/so.json":"22a3808ce552028b290efd7873ee8640","data/i18n/sq.json":"84fd879cf25df1484d9a9aee4f21ff68","data/i18n/sr.json":"d9344ea28ee390e0f1b8cec551b3f51b","data/i18n/st.json":"b2418a1d565b4adb1f19a161ac8aa2bd","data/i18n/sv.json":"fade1661fe005e636cf56d44947847fa","data/i18n/sw.json":"f31ccfa6f8acc01552c216a58df4996c","data/i18n/ta.json":"a00bfdffe74d9fb8c3cf969c73bf5d51","data/i18n/te.json":"1084b1e381a29d75dca777bdb14496e2","data/i18n/tg.json":"93bff0a62519e3ec34ad13d182f75246","data/i18n/th.json":"cf60a7b57ad208e862fac37585edb0fa","data/i18n/tl.json":"dc9f07b5c6134e41a7d8b6805cc1865f","data/i18n/tr.json":"5bb2eeacdf9c549cece41cf26e01556c","data/i18n/tt.json":"1dbdb26bde650872ca759fe42934a62a","data/i18n/tw.json":"2a2125cccc37fb45116b7768fa876f2c","data/i18n/ug.json":"4efa236e24ff1f3a1d69a0d3828dd114","data/i18n/uk.json":"0376baaa5792e72c84c1d166946301f6","data/i18n/ur.json":"95e327a53f6650182051d7cc1abc5959","data/i18n/uz.json":"e2521841d5d947289f9cdbe309e15f4e","data/i18n/vi.json":"112514fb89dce46c1b864c330f0dee7b","data/i18n/xh.json":"7ef37aaa6b9266d685fe50c6f6ff5915","data/i18n/yo.json":"0c437c5fa561234c38dfe4e5e0764abd","data/i18n/zh-CN.json":"b221aaac2c0636545f388baae0fda9e3","data/i18n/zh-TW.json":"e5748b0136fb915073dae7d381c73f2d","data/i18n/zu.json":"13830bce01b3ecdb7a94700e7d15cd59","data/qasas.txt":"80574a78941b3c892f213076faad4111","data/quran.txt":"7e5e37a5ed56a512f434350824aa0fa0","data/t/baghawi/0.txt":"7faae25c408cdc26625a7524dca815dc","data/t/baghawi/1.txt":"30173aa5f1fcbd954b9c6bbe45f5d617","data/t/baghawi/10.txt":"7565e6bbed96f16acbb42cefb8f6facb","data/t/baghawi/11.txt":"71e2d5e8f78fb0c30444bec7ad107c84","data/t/baghawi/12.txt":"888811ec46d136bbb3a035eb60d3ff4a","data/t/baghawi/2.txt":"513bb1d9ff2ed425e78d7ab105fafff7","data/t/baghawi/3.txt":"6722e346ca4db204bb7ea92742106176","data/t/baghawi/4.txt":"b437112f9c51d6ea6431837820a05e37","data/t/baghawi/5.txt":"79474312a9168d04530565d73706d72b","data/t/baghawi/6.txt":"8e2c637220c8e6648348f34347c9420e","data/t/baghawi/7.txt":"f10d852add588e55be80e13f2c5335e7","data/t/baghawi/8.txt":"49a1e3d8b1f4660a617b1c810831d907","data/t/baghawi/9.txt":"e4150e87e5db7780c7edb5c4aa9fa309","data/t/gharib/0.txt":"d9643ca7a9e4b3ce54b4536016862492","data/t/ibnkathir/0.txt":"b9f71c8ea4bb6e1a69fa220d922ba81f","data/t/ibnkathir/1.txt":"fef628ff6ab2f8a4249d7b59df680303","data/t/ibnkathir/10.txt":"e9ebcbec4bea5c58332eb26073fd73a2","data/t/ibnkathir/11.txt":"f3ee0d04b0a9c7d651ad34ddc8123418","data/t/ibnkathir/12.txt":"1b976a9e445704d32cf4ec797b96dd91","data/t/ibnkathir/13.txt":"4a6e87593ff4eed81f39ee4deabf020f","data/t/ibnkathir/14.txt":"ac43f8a575ad304fa0bb3525f19b7e67","data/t/ibnkathir/15.txt":"45cd62ec8ea417752e9786b865f8264d","data/t/ibnkathir/16.txt":"3196b23811704529f697ca2fab7230bf","data/t/ibnkathir/17.txt":"f58d8af171c28b480eee69c1e356120e","data/t/ibnkathir/18.txt":"909ab1ac7fae9a08fb67839be52ac345","data/t/ibnkathir/19.txt":"aae865c0f16344a551d3d4010db57e48","data/t/ibnkathir/2.txt":"1bcc4c9bf088ba4c6549d31d6c65eb51","data/t/ibnkathir/20.txt":"6ac5ccb14fba012f687eab70ae563803","data/t/ibnkathir/21.txt":"0b4ef942c43911f1a835815148399ff2","data/t/ibnkathir/22.txt":"e84bcff9a5ea04a2962d5f8b0ff0a1c6","data/t/ibnkathir/23.txt":"896608268ed7e2dc1d954510b16da876","data/t/ibnkathir/24.txt":"07573e0b9362fb51206c28cb6b09b2fc","data/t/ibnkathir/25.txt":"700eb9a4166fd9dd7847252660d74065","data/t/ibnkathir/26.txt":"b289aa3fba775ab933f6608abfe2dbf0","data/t/ibnkathir/27.txt":"e62aa99726ffe79233750c372a02ff18","data/t/ibnkathir/28.txt":"3482541f88ba219443368dcb5102b57e","data/t/ibnkathir/3.txt":"960ab05782deedd3ef636cdfbc156770","data/t/ibnkathir/4.txt":"35e3fa721824520a834d44c6d5fd021b","data/t/ibnkathir/5.txt":"73c13ea42fb37331500cc1a58e07ef6b","data/t/ibnkathir/6.txt":"86e4d3270a53c4444376bea4a86d62da","data/t/ibnkathir/7.txt":"1f0bc0f74f005b942a3ac90b677ae0ff","data/t/ibnkathir/8.txt":"198963d3a1028799c8c685c7084a92ec","data/t/ibnkathir/9.txt":"40dca06d4a4dca7d1cd7aed5678d855a","data/t/jalalayn/0.txt":"808c69712a35d920348120a32cc4b136","data/t/muyassar/0.txt":"c3638ff74728fac6db2a4dcb0d48a12b","data/t/qurtubi/0.txt":"350fbe701785ef42832a49971fd1334f","data/t/qurtubi/1.txt":"69b49609871dfd2e6721fe5b73a95364","data/t/qurtubi/10.txt":"4746ae89f4d87ac3e306fdd3cf938899","data/t/qurtubi/11.txt":"22d9e2f4d222f6fff050ccc4e5fc547d","data/t/qurtubi/12.txt":"e5096a9d84fe5cacdcfb0359f8a4cc68","data/t/qurtubi/13.txt":"a58c6c63dde97bb84f7a46b683b849d5","data/t/qurtubi/14.txt":"ce8e23ae2ac906081de1b026fb4c9567","data/t/qurtubi/15.txt":"e744ea365fb4342a28b2dcd64746f006","data/t/qurtubi/16.txt":"01143d68d66d86db10578d4c5ecc70f7","data/t/qurtubi/17.txt":"f6dc50f4b1f9b7bfda020b181d39c510","data/t/qurtubi/18.txt":"ff81fe5ac87c70538649ceda4a48b719","data/t/qurtubi/19.txt":"3124580bba03ba9dd95ebea99fbb5702","data/t/qurtubi/2.txt":"1953f016d7c806d93d52735c287565d1","data/t/qurtubi/20.txt":"28a9138224c69f482a3ca7cecd64f61f","data/t/qurtubi/21.txt":"b44810e2e2ede712c16d9199ad0a9ac3","data/t/qurtubi/22.txt":"79cab53b39c91e66fab8f37959534e22","data/t/qurtubi/23.txt":"5e9e1cfd7184680a449c250372dd7ce1","data/t/qurtubi/24.txt":"c653c0a8f6a990ed3b06b1303c759111","data/t/qurtubi/25.txt":"f5acf4b4a21aabf020ca4aba50a92657","data/t/qurtubi/26.txt":"5ea26baecf62c5d2ebe1be03f6cc1045","data/t/qurtubi/3.txt":"adc1f2f78cd7a9ea701bb51c7bf2c6c6","data/t/qurtubi/4.txt":"781145f3a0c186c59941f0ca572230cd","data/t/qurtubi/5.txt":"7817db8a204a04f3dddd55240424811e","data/t/qurtubi/6.txt":"ad7e4d93acf6dd023f9f95dce6cd1cc9","data/t/qurtubi/7.txt":"9a8f5186741a80f43f758731c35a4229","data/t/qurtubi/8.txt":"084bc82055350254ac76ca9a582a133a","data/t/qurtubi/9.txt":"5d90458dc5b353c1789f8fb6b6acf30e","data/t/saadi/0.txt":"db815b6ddf5247c31372571e22bfb43a","data/t/saadi/1.txt":"3d675d6e1261c291a050367e8d45c742","data/t/saadi/10.txt":"e3f7b8585d6a1f4d7309a96452115505","data/t/saadi/11.txt":"b2f05d6d2fe897cbfa2c271019916eb9","data/t/saadi/12.txt":"e2625e384fe7395ea7432cdd57d80859","data/t/saadi/2.txt":"33af5b1e2a623c71522b73c2142f2d9a","data/t/saadi/3.txt":"51e53bcd9da2ef33e7b9cde87192b4b7","data/t/saadi/4.txt":"97848b26daa977c4215bc016c4e0196c","data/t/saadi/5.txt":"fb54c7c851141be805e91baa38788762","data/t/saadi/6.txt":"925ee23ae0b1b6f52198d86070cd7d9a","data/t/saadi/7.txt":"b1bcce418884d9eb3bcc2648ecdd84b9","data/t/saadi/8.txt":"03baf29844f76e727280c8faa0e11fae","data/t/saadi/9.txt":"2996a21ab899675d6f74348c527fa48f","data/t/tabari/0.txt":"21aea58e4dfb5cf145507d2a65586a10","data/t/tabari/1.txt":"0386493b0bef93a33f2274b4b8a80f77","data/t/tabari/10.txt":"0a625c3387aca8f7c13e952e7e94720d","data/t/tabari/11.txt":"5d0799a3601daa5e8c1aec5274d80347","data/t/tabari/12.txt":"ce3a4c2baa7e524dd75a9424d167569d","data/t/tabari/13.txt":"ab83e444f25790ff1a14040e16f1eb91","data/t/tabari/14.txt":"c956aa1a645a4befab9e016f1be572b9","data/t/tabari/15.txt":"4cb17f0859f4ab1341a70c45fe46f242","data/t/tabari/16.txt":"194c32676e1ff9452f800df13e997f5e","data/t/tabari/17.txt":"53865d3c86e98520de55ed698c66831f","data/t/tabari/18.txt":"828b76964e337cfa99665ef86acae45c","data/t/tabari/19.txt":"efeef96b7069d3a4352b4e1e5df670dc","data/t/tabari/2.txt":"b46845e07001e4add5abbca72182bf29","data/t/tabari/3.txt":"1b87a27cfe412d44b769a2b409eacbca","data/t/tabari/4.txt":"a0d883cec1eb493dfd4ce203d1b578b8","data/t/tabari/5.txt":"2bd32bc0e11391cd722b76c128094b34","data/t/tabari/6.txt":"167a05d5d934f10837804d98ab768877","data/t/tabari/7.txt":"b2b8e3353dbe8095e67174d6462b9208","data/t/tabari/8.txt":"79ed4d3197d54d2be60f6a8641be4b73","data/t/tabari/9.txt":"785500a3787ff62fc2194836b913e75a","data/tafsir.json":"0b340e92baea2ad150cc24986aefa196","data/topics.txt":"f68fb424e69865b75d9893a3cc68b132","data/tr/aa.txt":"6db3f725119a862fd48797cce594cb57","data/tr/ace.txt":"ebf7a0ce6077a8901d6991216968663e","data/tr/af.txt":"8cb3ff29d1deaf6952dd8dd1bd89469b","data/tr/am.txt":"5a62b3361537d47cf5d239cc4069ceaa","data/tr/as.txt":"bf36c16a778a210cb47134b1ddeb3a05","data/tr/az.txt":"b81701f24c2642e1f11816f73ec88b0f","data/tr/ber.txt":"1147bd28aa6dacc8f569c3ebeb461d0a","data/tr/bg.txt":"ddc0e9863a6f6c464e7fb260f29f46b5","data/tr/bm.txt":"329ed374f974c2a3c2661c7dad03d788","data/tr/bn.txt":"732b3afea91619f7406c68f3baf9acb3","data/tr/bs.txt":"895f5cd361874e0936541ffcf3ddef7c","data/tr/ca.txt":"b9adb72e9dfccad8ab48a1ba9ea2ee17","data/tr/cs.txt":"f56a8b99d853965b420441c9f559b0cd","data/tr/da.txt":"514cdf5202023bce0b9fa3a8e5ea450d","data/tr/dag.txt":"7f6dfc22d3dd0e682742fed3a67a5633","data/tr/de.txt":"3b554c9ab374d00d3ad8dd1d25c2da22","data/tr/dv.txt":"823e9e42083e852b06af3971058dbe8f","data/tr/en.txt":"68759abc70885f8ad84a6d35f58e8b59","data/tr/eo.txt":"e1ddfc523837ec5d8ce5f537f86f3540","data/tr/es.txt":"2e12b4b315a45fc4114764570bc05ac9","data/tr/fa.txt":"739de532508ebeb86f99e68c8500d634","data/tr/ff.txt":"ac4fce5af3c6a7bddd61eb7c03e75b76","data/tr/fi.txt":"5a2734bbc9c60ebbfea035274df02306","data/tr/fr.txt":"514d96682aebd7702dceeb3d95761229","data/tr/gu.txt":"8c1f6f0683737da9bad96153254be6fe","data/tr/ha.txt":"244bb98e4fbfc091f495d3fed55415d1","data/tr/he.txt":"e23b9e3510a0dd9c905d02e711fbd780","data/tr/hi.txt":"2e49c1c92ccb8e49a5c2853d94ec076b","data/tr/hr.txt":"8f52e215197d759197fbd177f7aac08c","data/tr/hu.txt":"9f1d09f4ecb83a7803450a8621371279","data/tr/id.txt":"ce0a3dbb5aaf5b071e4cf7ab81442df0","data/tr/ilp.txt":"9769844d7a19d990b18a112dbc58b442","data/tr/index.json":"bbb5abf5e6429c81e43dfa27739aaafc","data/tr/it.txt":"6fd9d367ffa96feacf10637dbeb15057","data/tr/ja.txt":"76bbe7bb7fb8820b9657beab10b55b75","data/tr/jv.txt":"e6e4faa4b17a44bdb58c3a1e4147555e","data/tr/kk.txt":"3351bf98c181f76c762b2b8ed17506ec","data/tr/km.txt":"3f398183d1248948bb833bde66887a05","data/tr/kmr.txt":"01b8a56c2f518d8090462cc995451bdf","data/tr/kn.txt":"b971aad35b50a36473e0060bcbef8f40","data/tr/knx.txt":"ec559ff35338ae4c82ae7f2df3a12992","data/tr/ko.txt":"3d480d78fdb593eb8b93c15a03981796","data/tr/ku.txt":"4a593acdb3fb3bdc7dc39aa262bd880c","data/tr/ky.txt":"b3ab45d73e9c91456109906e0e0ec684","data/tr/la.txt":"5713c542ce930b7d38b10ac59fdb2edb","data/tr/lg.txt":"f47be5e9e031f55633d08ceeb035672d","data/tr/ln.txt":"0a03ea925fa25343fccd14ff99b4bd7b","data/tr/luy.txt":"dce0ce3054d84f82fb3461a604a65643","data/tr/mk.txt":"5e09a28b9ea6c5872b645a70267b9e58","data/tr/ml.txt":"d6f04a27acd0732ad574197606219dd9","data/tr/mr.txt":"81267e60b4f42938b3a96f119beb17b5","data/tr/mrw.txt":"16aa33b43dc194d2b0d6c395d0d2ef3f","data/tr/ms.txt":"9339cd81b318a107de562ec94ff8d770","data/tr/mt.txt":"ce5f84c2d34b1f99dfb3f239d275ac90","data/tr/my.txt":"e02cb7e9b7960c2f00c33c02c18af9dc","data/tr/ne.txt":"31744c329d68eb08b5fd759e5bc5b7da","data/tr/nl.txt":"fd1a0f11b46a5d520be1fd45217e69bb","data/tr/no.txt":"e8ccab3ce5aff3fae250e4672871082f","data/tr/ny.txt":"82d02cfc3d450874c34398cd1aa10145","data/tr/om.txt":"c85c0d03278e472017cd4374095843bf","data/tr/pa.txt":"f1cfe18b5ee847276ac13d950c893d5d","data/tr/pl.txt":"d182460edec7b416ee45908417b13a8c","data/tr/prs.txt":"9de1463afbef144a37007fc347fc871b","data/tr/ps.txt":"8641a133150303e2c80baa4b13db5b4e","data/tr/pt.txt":"1128c4e578f250e1d7aebfcffbb479c2","data/tr/rn.txt":"5995763ec5e3a7dd21aa8a821c2754c3","data/tr/ro.txt":"3790733ce253647107e46dec267df6df","data/tr/ru.txt":"3a2ee252097bdffa7ab2343ab5a59ecf","data/tr/rw.txt":"380e41a1a83091847be114f95ea436f8","data/tr/sd.txt":"cad418daf644fe9eb82b5db466c14335","data/tr/si.txt":"e35ed062b53090cf4ef6d8f32f5eced5","data/tr/sk.txt":"22f6bae04ffc51c129df4007de32e28f","data/tr/sn.txt":"62fc72ece9072859eb5057dbe668a5f8","data/tr/so.txt":"18b6658ee7de4f4583091c38dfe34068","data/tr/sq.txt":"c919b1f7737a51d8d6c0e20de35bd98c","data/tr/sr.txt":"43716edda5709333c54d40d6b5c8bb94","data/tr/st.txt":"29e7a76cfa9478bb5607b1d93364a417","data/tr/sv.txt":"e2e9ef9491c4975873773aae18107ef7","data/tr/sw.txt":"e4e4becf8ea3be702b516c4860d9fdcb","data/tr/ta.txt":"b64bef347d184666505efb640a79d692","data/tr/te.txt":"fd13ec7ac64f3fa0314a4ce137e0491d","data/tr/tg.txt":"7269bc4d31c63b02bd51a869bb5dd4ea","data/tr/th.txt":"398f48130ac7395152df8c7309d52633","data/tr/tl.txt":"a04af6ca1fa790972d074daa7ea83179","data/tr/tr.txt":"1916c2a115b3da0fd22c5dad367dda6b","data/tr/tt.txt":"92e96de81be9d68fc24a822eb2ea2850","data/tr/tw.txt":"885dbbf376d5a870ce52485d628809f1","data/tr/ug.txt":"232ed978b1a1158fc4c141586e8ea308","data/tr/uk.txt":"5fe630290c5af71fdbdb2bc8e29f19b3","data/tr/ur.txt":"966e68c7d4d0215f39bbb74695fe7a29","data/tr/uz.txt":"ff35602979a11f6c0a693883f5f07eb6","data/tr/vi.txt":"36fca7fdb1cc524253758129a915b455","data/tr/xh.txt":"1df1342445407e592cd7c24bc583a027","data/tr/yao.txt":"e4fb3735b05e1295f30962322f13debc","data/tr/yo.txt":"411cfeb0e30045b121ff674926cbfaba","data/tr/zh-CN.txt":"d49c39b253674555663e80a97ded9feb","data/tr/zh-TW.txt":"6797c91ed8b7af21a5f8b87a337b46f9","data/tr/zu.txt":"03b06a023c1d15befb46bb774e046b61","data/words.txt":"6108e9bdb76a8465b9e167a416c10031"};
+const INTEGRITY = {"data/geo.json":"3a381595551873cb2f5612b47aa211a2","data/hadith/abudawud.txt":"add164bbe53224463598b5d5a8771d84","data/hadith/bukhari.txt":"a40d9810e6718b084f4a75ceb094331a","data/hadith/ibnmajah.txt":"8b9a2ecdbd11ad5aebdd3ded1dd5bf95","data/hadith/muslim.txt":"c422cf76a7e81044477b76bc052474a0","data/hadith/nasai.txt":"ca0303322e9a8b85c8beb942f8c55cce","data/hadith/tirmidhi.txt":"3cc7c7bada84ef1fa49d06e5f9666930","data/i18n/aa.json":"ff0afce2a1a1fb4cdb2c5a0ee4b6ddd5","data/i18n/ace.json":"618359c488707831c1c0c2614b2cb915","data/i18n/af.json":"5c2cbf06c87824c7642db89e07bdb9a3","data/i18n/am.json":"6b53bf7773fca1c97208f64e670aff43","data/i18n/as.json":"a03e6e7d24207770ff212e3c128fdfb8","data/i18n/az.json":"9a2d1c189dbb5af844d036e6d15bb81d","data/i18n/ber.json":"98a91046a6305cfab7d62f0fbc4a1b20","data/i18n/bg.json":"ea268344bc76ca41c77539713bfffd12","data/i18n/bm.json":"33e46292b56a284116f76953f0c85c23","data/i18n/bn.json":"ffc365093abbbac927590890c740be32","data/i18n/bs.json":"618c0ac067a840b980019148c761e99e","data/i18n/ca.json":"ebae4fa81efe68985b6a8b969c807646","data/i18n/cs.json":"11e8d22e324421fee781e74545c04f3b","data/i18n/da.json":"25b2747721561f972a4dafe11db2d886","data/i18n/de.json":"bc38949db82bf7d510166dac33b83261","data/i18n/dv.json":"760af1f4fc1fa2d9865bebc25c5c4054","data/i18n/en.json":"fe686d2713b7936ca2946032cd19d83d","data/i18n/eo.json":"c68c052a58a03312d08102b99e07b77b","data/i18n/es.json":"6a19bf9ca0c14dccbec911a6ccd7cfda","data/i18n/fa.json":"ec97d3acddbb07d75f5867e96537f54b","data/i18n/ff.json":"95c448a82dd8161bed97c9aeb8865e4b","data/i18n/fi.json":"c1beac4eba992eb6c03ef0bedcc8f8bb","data/i18n/fr.json":"f0544ffced5d6d71b9b6fd78e8e80b3f","data/i18n/gu.json":"ac5aa72bd8db55cb43c401beae08d5c3","data/i18n/ha.json":"5a09adf673079deb868895b0f46fb0a8","data/i18n/he.json":"a9f2af8dee78dd24bc9612712f931b4e","data/i18n/hi.json":"3d06abf625a729f893525c472c6455a9","data/i18n/hr.json":"3163777e50cba19278ee5b4b4e3b116e","data/i18n/hu.json":"93cb551be8e9b815a1507cfffc6ab48d","data/i18n/id.json":"9830ab84f3cdeabc94e6f236e4275394","data/i18n/it.json":"68e589acf3a9c183943654367f4c0eab","data/i18n/ja.json":"808aa8500dc951d7507b884ff2ffc71a","data/i18n/jv.json":"34d5152578fc2c40eb6f5ce0d1674abc","data/i18n/kk.json":"72ad839073ea3dae75878bc0246b33c4","data/i18n/km.json":"90a7a36d7f2c05d5821f3d2c20d391ad","data/i18n/kmr.json":"9a007348126f5d57e817d34b464d9c83","data/i18n/kn.json":"1b54ec1b3257fdb51daf24a0d2bcbddb","data/i18n/ko.json":"26c8a2738bcdc3e34f877d97390712d6","data/i18n/ku.json":"f50be57183ba34685fdb979f6dae7709","data/i18n/ky.json":"bd69fc19e96eb6c57cede1c083f878d1","data/i18n/la.json":"5966a52c0daecaddc23ef433e601dc00","data/i18n/lg.json":"e59891d741e3134ec0a45b6fe22f80e7","data/i18n/ln.json":"0de572c43c838bb310e9de3d15defac7","data/i18n/mk.json":"cad8cb903eb823a779114632e644b68b","data/i18n/ml.json":"594e9b5fdbf4eaddf0c2f32a47d4477f","data/i18n/mr.json":"eb19c66968c124a44dbaf75f037791e3","data/i18n/ms.json":"81bd6233fe861fdd4aa2ac11f06588a4","data/i18n/mt.json":"270f3d24ff338b1e3cdbe9e251aafd29","data/i18n/my.json":"1f98e1a72a9be53ac1b8b5dd4d644c34","data/i18n/ne.json":"ad7cbbc36cb31f7c5855440509f766ba","data/i18n/nl.json":"fcdc07096e42d2177179abdac1d21c98","data/i18n/no.json":"692382f2b31986fce6a6d8331fc13cd4","data/i18n/ny.json":"e4683cb4a328021818532a249ab0edb7","data/i18n/om.json":"b9e2007f7302f3c5bf95308171dcfed1","data/i18n/pa.json":"319b1d55f3fe6c794419ad785935a583","data/i18n/pl.json":"9e89da142b109085458f9e5a38ee1d91","data/i18n/prs.json":"0620e9359c4df54366695f54cfcc47a7","data/i18n/ps.json":"d0fb97ed172cb8a7951adb35e4fc2c2a","data/i18n/pt.json":"a8dd83067a44f58843618988fa783101","data/i18n/rn.json":"2b606776470953d1e1116eb44eaab170","data/i18n/ro.json":"09d4c78ec164fad6381fabab246a7a01","data/i18n/ru.json":"1e0dbb54eeeee16a608c823bb48a72b3","data/i18n/rw.json":"23bdedca33deb7c31cd64746fb88242f","data/i18n/sd.json":"88725c15fbd36d1b41768c5b0ff318e2","data/i18n/si.json":"93adab3f12f9d3ab0ba53172e8bd756f","data/i18n/sk.json":"489521e482347094ac13299eb0bf7afb","data/i18n/sn.json":"839b64e11624a2f3a0f01b73d57db452","data/i18n/so.json":"22a3808ce552028b290efd7873ee8640","data/i18n/sq.json":"84fd879cf25df1484d9a9aee4f21ff68","data/i18n/sr.json":"d9344ea28ee390e0f1b8cec551b3f51b","data/i18n/st.json":"b2418a1d565b4adb1f19a161ac8aa2bd","data/i18n/sv.json":"fade1661fe005e636cf56d44947847fa","data/i18n/sw.json":"f31ccfa6f8acc01552c216a58df4996c","data/i18n/ta.json":"a00bfdffe74d9fb8c3cf969c73bf5d51","data/i18n/te.json":"1084b1e381a29d75dca777bdb14496e2","data/i18n/tg.json":"93bff0a62519e3ec34ad13d182f75246","data/i18n/th.json":"cf60a7b57ad208e862fac37585edb0fa","data/i18n/tl.json":"dc9f07b5c6134e41a7d8b6805cc1865f","data/i18n/tr.json":"5bb2eeacdf9c549cece41cf26e01556c","data/i18n/tt.json":"1dbdb26bde650872ca759fe42934a62a","data/i18n/tw.json":"2a2125cccc37fb45116b7768fa876f2c","data/i18n/ug.json":"4efa236e24ff1f3a1d69a0d3828dd114","data/i18n/uk.json":"0376baaa5792e72c84c1d166946301f6","data/i18n/ur.json":"95e327a53f6650182051d7cc1abc5959","data/i18n/uz.json":"e2521841d5d947289f9cdbe309e15f4e","data/i18n/vi.json":"112514fb89dce46c1b864c330f0dee7b","data/i18n/xh.json":"7ef37aaa6b9266d685fe50c6f6ff5915","data/i18n/yo.json":"0c437c5fa561234c38dfe4e5e0764abd","data/i18n/zh-CN.json":"b221aaac2c0636545f388baae0fda9e3","data/i18n/zh-TW.json":"e5748b0136fb915073dae7d381c73f2d","data/i18n/zu.json":"13830bce01b3ecdb7a94700e7d15cd59","data/qasas.txt":"80574a78941b3c892f213076faad4111","data/quran.txt":"7e5e37a5ed56a512f434350824aa0fa0","data/t/baghawi/0.txt":"7faae25c408cdc26625a7524dca815dc","data/t/baghawi/1.txt":"30173aa5f1fcbd954b9c6bbe45f5d617","data/t/baghawi/10.txt":"7565e6bbed96f16acbb42cefb8f6facb","data/t/baghawi/11.txt":"71e2d5e8f78fb0c30444bec7ad107c84","data/t/baghawi/12.txt":"888811ec46d136bbb3a035eb60d3ff4a","data/t/baghawi/2.txt":"513bb1d9ff2ed425e78d7ab105fafff7","data/t/baghawi/3.txt":"6722e346ca4db204bb7ea92742106176","data/t/baghawi/4.txt":"b437112f9c51d6ea6431837820a05e37","data/t/baghawi/5.txt":"79474312a9168d04530565d73706d72b","data/t/baghawi/6.txt":"8e2c637220c8e6648348f34347c9420e","data/t/baghawi/7.txt":"f10d852add588e55be80e13f2c5335e7","data/t/baghawi/8.txt":"49a1e3d8b1f4660a617b1c810831d907","data/t/baghawi/9.txt":"e4150e87e5db7780c7edb5c4aa9fa309","data/t/gharib/0.txt":"d9643ca7a9e4b3ce54b4536016862492","data/t/ibnkathir/0.txt":"b9f71c8ea4bb6e1a69fa220d922ba81f","data/t/ibnkathir/1.txt":"fef628ff6ab2f8a4249d7b59df680303","data/t/ibnkathir/10.txt":"e9ebcbec4bea5c58332eb26073fd73a2","data/t/ibnkathir/11.txt":"f3ee0d04b0a9c7d651ad34ddc8123418","data/t/ibnkathir/12.txt":"1b976a9e445704d32cf4ec797b96dd91","data/t/ibnkathir/13.txt":"4a6e87593ff4eed81f39ee4deabf020f","data/t/ibnkathir/14.txt":"ac43f8a575ad304fa0bb3525f19b7e67","data/t/ibnkathir/15.txt":"45cd62ec8ea417752e9786b865f8264d","data/t/ibnkathir/16.txt":"3196b23811704529f697ca2fab7230bf","data/t/ibnkathir/17.txt":"f58d8af171c28b480eee69c1e356120e","data/t/ibnkathir/18.txt":"909ab1ac7fae9a08fb67839be52ac345","data/t/ibnkathir/19.txt":"aae865c0f16344a551d3d4010db57e48","data/t/ibnkathir/2.txt":"1bcc4c9bf088ba4c6549d31d6c65eb51","data/t/ibnkathir/20.txt":"6ac5ccb14fba012f687eab70ae563803","data/t/ibnkathir/21.txt":"0b4ef942c43911f1a835815148399ff2","data/t/ibnkathir/22.txt":"e84bcff9a5ea04a2962d5f8b0ff0a1c6","data/t/ibnkathir/23.txt":"896608268ed7e2dc1d954510b16da876","data/t/ibnkathir/24.txt":"07573e0b9362fb51206c28cb6b09b2fc","data/t/ibnkathir/25.txt":"700eb9a4166fd9dd7847252660d74065","data/t/ibnkathir/26.txt":"b289aa3fba775ab933f6608abfe2dbf0","data/t/ibnkathir/27.txt":"e62aa99726ffe79233750c372a02ff18","data/t/ibnkathir/28.txt":"3482541f88ba219443368dcb5102b57e","data/t/ibnkathir/3.txt":"960ab05782deedd3ef636cdfbc156770","data/t/ibnkathir/4.txt":"35e3fa721824520a834d44c6d5fd021b","data/t/ibnkathir/5.txt":"73c13ea42fb37331500cc1a58e07ef6b","data/t/ibnkathir/6.txt":"86e4d3270a53c4444376bea4a86d62da","data/t/ibnkathir/7.txt":"1f0bc0f74f005b942a3ac90b677ae0ff","data/t/ibnkathir/8.txt":"198963d3a1028799c8c685c7084a92ec","data/t/ibnkathir/9.txt":"40dca06d4a4dca7d1cd7aed5678d855a","data/t/jalalayn/0.txt":"808c69712a35d920348120a32cc4b136","data/t/muyassar/0.txt":"c3638ff74728fac6db2a4dcb0d48a12b","data/t/qurtubi/0.txt":"350fbe701785ef42832a49971fd1334f","data/t/qurtubi/1.txt":"69b49609871dfd2e6721fe5b73a95364","data/t/qurtubi/10.txt":"4746ae89f4d87ac3e306fdd3cf938899","data/t/qurtubi/11.txt":"22d9e2f4d222f6fff050ccc4e5fc547d","data/t/qurtubi/12.txt":"e5096a9d84fe5cacdcfb0359f8a4cc68","data/t/qurtubi/13.txt":"a58c6c63dde97bb84f7a46b683b849d5","data/t/qurtubi/14.txt":"ce8e23ae2ac906081de1b026fb4c9567","data/t/qurtubi/15.txt":"e744ea365fb4342a28b2dcd64746f006","data/t/qurtubi/16.txt":"01143d68d66d86db10578d4c5ecc70f7","data/t/qurtubi/17.txt":"f6dc50f4b1f9b7bfda020b181d39c510","data/t/qurtubi/18.txt":"ff81fe5ac87c70538649ceda4a48b719","data/t/qurtubi/19.txt":"3124580bba03ba9dd95ebea99fbb5702","data/t/qurtubi/2.txt":"1953f016d7c806d93d52735c287565d1","data/t/qurtubi/20.txt":"28a9138224c69f482a3ca7cecd64f61f","data/t/qurtubi/21.txt":"b44810e2e2ede712c16d9199ad0a9ac3","data/t/qurtubi/22.txt":"79cab53b39c91e66fab8f37959534e22","data/t/qurtubi/23.txt":"5e9e1cfd7184680a449c250372dd7ce1","data/t/qurtubi/24.txt":"c653c0a8f6a990ed3b06b1303c759111","data/t/qurtubi/25.txt":"f5acf4b4a21aabf020ca4aba50a92657","data/t/qurtubi/26.txt":"5ea26baecf62c5d2ebe1be03f6cc1045","data/t/qurtubi/3.txt":"adc1f2f78cd7a9ea701bb51c7bf2c6c6","data/t/qurtubi/4.txt":"781145f3a0c186c59941f0ca572230cd","data/t/qurtubi/5.txt":"7817db8a204a04f3dddd55240424811e","data/t/qurtubi/6.txt":"ad7e4d93acf6dd023f9f95dce6cd1cc9","data/t/qurtubi/7.txt":"9a8f5186741a80f43f758731c35a4229","data/t/qurtubi/8.txt":"084bc82055350254ac76ca9a582a133a","data/t/qurtubi/9.txt":"5d90458dc5b353c1789f8fb6b6acf30e","data/t/saadi/0.txt":"db815b6ddf5247c31372571e22bfb43a","data/t/saadi/1.txt":"3d675d6e1261c291a050367e8d45c742","data/t/saadi/10.txt":"e3f7b8585d6a1f4d7309a96452115505","data/t/saadi/11.txt":"b2f05d6d2fe897cbfa2c271019916eb9","data/t/saadi/12.txt":"e2625e384fe7395ea7432cdd57d80859","data/t/saadi/2.txt":"33af5b1e2a623c71522b73c2142f2d9a","data/t/saadi/3.txt":"51e53bcd9da2ef33e7b9cde87192b4b7","data/t/saadi/4.txt":"97848b26daa977c4215bc016c4e0196c","data/t/saadi/5.txt":"fb54c7c851141be805e91baa38788762","data/t/saadi/6.txt":"925ee23ae0b1b6f52198d86070cd7d9a","data/t/saadi/7.txt":"b1bcce418884d9eb3bcc2648ecdd84b9","data/t/saadi/8.txt":"03baf29844f76e727280c8faa0e11fae","data/t/saadi/9.txt":"2996a21ab899675d6f74348c527fa48f","data/t/tabari/0.txt":"21aea58e4dfb5cf145507d2a65586a10","data/t/tabari/1.txt":"0386493b0bef93a33f2274b4b8a80f77","data/t/tabari/10.txt":"0a625c3387aca8f7c13e952e7e94720d","data/t/tabari/11.txt":"5d0799a3601daa5e8c1aec5274d80347","data/t/tabari/12.txt":"ce3a4c2baa7e524dd75a9424d167569d","data/t/tabari/13.txt":"ab83e444f25790ff1a14040e16f1eb91","data/t/tabari/14.txt":"c956aa1a645a4befab9e016f1be572b9","data/t/tabari/15.txt":"4cb17f0859f4ab1341a70c45fe46f242","data/t/tabari/16.txt":"194c32676e1ff9452f800df13e997f5e","data/t/tabari/17.txt":"53865d3c86e98520de55ed698c66831f","data/t/tabari/18.txt":"828b76964e337cfa99665ef86acae45c","data/t/tabari/19.txt":"efeef96b7069d3a4352b4e1e5df670dc","data/t/tabari/2.txt":"b46845e07001e4add5abbca72182bf29","data/t/tabari/3.txt":"1b87a27cfe412d44b769a2b409eacbca","data/t/tabari/4.txt":"a0d883cec1eb493dfd4ce203d1b578b8","data/t/tabari/5.txt":"2bd32bc0e11391cd722b76c128094b34","data/t/tabari/6.txt":"167a05d5d934f10837804d98ab768877","data/t/tabari/7.txt":"b2b8e3353dbe8095e67174d6462b9208","data/t/tabari/8.txt":"79ed4d3197d54d2be60f6a8641be4b73","data/t/tabari/9.txt":"785500a3787ff62fc2194836b913e75a","data/tafsir.json":"0b340e92baea2ad150cc24986aefa196","data/topics.txt":"f68fb424e69865b75d9893a3cc68b132","data/tr/aa.txt":"6db3f725119a862fd48797cce594cb57","data/tr/ace.txt":"ebf7a0ce6077a8901d6991216968663e","data/tr/af.txt":"8cb3ff29d1deaf6952dd8dd1bd89469b","data/tr/am.txt":"5a62b3361537d47cf5d239cc4069ceaa","data/tr/as.txt":"bf36c16a778a210cb47134b1ddeb3a05","data/tr/az.txt":"b81701f24c2642e1f11816f73ec88b0f","data/tr/ber.txt":"1147bd28aa6dacc8f569c3ebeb461d0a","data/tr/bg.txt":"ddc0e9863a6f6c464e7fb260f29f46b5","data/tr/bm.txt":"329ed374f974c2a3c2661c7dad03d788","data/tr/bn.txt":"732b3afea91619f7406c68f3baf9acb3","data/tr/bs.txt":"895f5cd361874e0936541ffcf3ddef7c","data/tr/ca.txt":"b9adb72e9dfccad8ab48a1ba9ea2ee17","data/tr/cs.txt":"f56a8b99d853965b420441c9f559b0cd","data/tr/da.txt":"514cdf5202023bce0b9fa3a8e5ea450d","data/tr/dag.txt":"7f6dfc22d3dd0e682742fed3a67a5633","data/tr/de.txt":"3b554c9ab374d00d3ad8dd1d25c2da22","data/tr/dv.txt":"823e9e42083e852b06af3971058dbe8f","data/tr/en.txt":"68759abc70885f8ad84a6d35f58e8b59","data/tr/eo.txt":"e1ddfc523837ec5d8ce5f537f86f3540","data/tr/es.txt":"2e12b4b315a45fc4114764570bc05ac9","data/tr/fa.txt":"739de532508ebeb86f99e68c8500d634","data/tr/ff.txt":"ac4fce5af3c6a7bddd61eb7c03e75b76","data/tr/fi.txt":"5a2734bbc9c60ebbfea035274df02306","data/tr/fr.txt":"514d96682aebd7702dceeb3d95761229","data/tr/gu.txt":"8c1f6f0683737da9bad96153254be6fe","data/tr/ha.txt":"244bb98e4fbfc091f495d3fed55415d1","data/tr/he.txt":"e23b9e3510a0dd9c905d02e711fbd780","data/tr/hi.txt":"2e49c1c92ccb8e49a5c2853d94ec076b","data/tr/hr.txt":"8f52e215197d759197fbd177f7aac08c","data/tr/hu.txt":"9f1d09f4ecb83a7803450a8621371279","data/tr/id.txt":"ce0a3dbb5aaf5b071e4cf7ab81442df0","data/tr/ilp.txt":"9769844d7a19d990b18a112dbc58b442","data/tr/index.json":"bbb5abf5e6429c81e43dfa27739aaafc","data/tr/it.txt":"6fd9d367ffa96feacf10637dbeb15057","data/tr/ja.txt":"76bbe7bb7fb8820b9657beab10b55b75","data/tr/jv.txt":"e6e4faa4b17a44bdb58c3a1e4147555e","data/tr/kk.txt":"3351bf98c181f76c762b2b8ed17506ec","data/tr/km.txt":"3f398183d1248948bb833bde66887a05","data/tr/kmr.txt":"01b8a56c2f518d8090462cc995451bdf","data/tr/kn.txt":"b971aad35b50a36473e0060bcbef8f40","data/tr/knx.txt":"ec559ff35338ae4c82ae7f2df3a12992","data/tr/ko.txt":"3d480d78fdb593eb8b93c15a03981796","data/tr/ku.txt":"4a593acdb3fb3bdc7dc39aa262bd880c","data/tr/ky.txt":"b3ab45d73e9c91456109906e0e0ec684","data/tr/la.txt":"5713c542ce930b7d38b10ac59fdb2edb","data/tr/lg.txt":"f47be5e9e031f55633d08ceeb035672d","data/tr/ln.txt":"0a03ea925fa25343fccd14ff99b4bd7b","data/tr/luy.txt":"dce0ce3054d84f82fb3461a604a65643","data/tr/mk.txt":"5e09a28b9ea6c5872b645a70267b9e58","data/tr/ml.txt":"d6f04a27acd0732ad574197606219dd9","data/tr/mr.txt":"81267e60b4f42938b3a96f119beb17b5","data/tr/mrw.txt":"16aa33b43dc194d2b0d6c395d0d2ef3f","data/tr/ms.txt":"9339cd81b318a107de562ec94ff8d770","data/tr/mt.txt":"ce5f84c2d34b1f99dfb3f239d275ac90","data/tr/my.txt":"e02cb7e9b7960c2f00c33c02c18af9dc","data/tr/ne.txt":"31744c329d68eb08b5fd759e5bc5b7da","data/tr/nl.txt":"fd1a0f11b46a5d520be1fd45217e69bb","data/tr/no.txt":"e8ccab3ce5aff3fae250e4672871082f","data/tr/ny.txt":"82d02cfc3d450874c34398cd1aa10145","data/tr/om.txt":"c85c0d03278e472017cd4374095843bf","data/tr/pa.txt":"f1cfe18b5ee847276ac13d950c893d5d","data/tr/pl.txt":"d182460edec7b416ee45908417b13a8c","data/tr/prs.txt":"9de1463afbef144a37007fc347fc871b","data/tr/ps.txt":"8641a133150303e2c80baa4b13db5b4e","data/tr/pt.txt":"1128c4e578f250e1d7aebfcffbb479c2","data/tr/rn.txt":"5995763ec5e3a7dd21aa8a821c2754c3","data/tr/ro.txt":"3790733ce253647107e46dec267df6df","data/tr/ru.txt":"3a2ee252097bdffa7ab2343ab5a59ecf","data/tr/rw.txt":"380e41a1a83091847be114f95ea436f8","data/tr/sd.txt":"cad418daf644fe9eb82b5db466c14335","data/tr/si.txt":"e35ed062b53090cf4ef6d8f32f5eced5","data/tr/sk.txt":"22f6bae04ffc51c129df4007de32e28f","data/tr/sn.txt":"62fc72ece9072859eb5057dbe668a5f8","data/tr/so.txt":"18b6658ee7de4f4583091c38dfe34068","data/tr/sq.txt":"c919b1f7737a51d8d6c0e20de35bd98c","data/tr/sr.txt":"43716edda5709333c54d40d6b5c8bb94","data/tr/st.txt":"29e7a76cfa9478bb5607b1d93364a417","data/tr/sv.txt":"e2e9ef9491c4975873773aae18107ef7","data/tr/sw.txt":"e4e4becf8ea3be702b516c4860d9fdcb","data/tr/ta.txt":"b64bef347d184666505efb640a79d692","data/tr/te.txt":"fd13ec7ac64f3fa0314a4ce137e0491d","data/tr/tg.txt":"7269bc4d31c63b02bd51a869bb5dd4ea","data/tr/th.txt":"398f48130ac7395152df8c7309d52633","data/tr/tl.txt":"a04af6ca1fa790972d074daa7ea83179","data/tr/tr.txt":"1916c2a115b3da0fd22c5dad367dda6b","data/tr/tt.txt":"92e96de81be9d68fc24a822eb2ea2850","data/tr/tw.txt":"885dbbf376d5a870ce52485d628809f1","data/tr/ug.txt":"232ed978b1a1158fc4c141586e8ea308","data/tr/uk.txt":"5fe630290c5af71fdbdb2bc8e29f19b3","data/tr/ur.txt":"966e68c7d4d0215f39bbb74695fe7a29","data/tr/uz.txt":"ff35602979a11f6c0a693883f5f07eb6","data/tr/vi.txt":"36fca7fdb1cc524253758129a915b455","data/tr/xh.txt":"1df1342445407e592cd7c24bc583a027","data/tr/yao.txt":"e4fb3735b05e1295f30962322f13debc","data/tr/yo.txt":"411cfeb0e30045b121ff674926cbfaba","data/tr/zh-CN.txt":"d49c39b253674555663e80a97ded9feb","data/tr/zh-TW.txt":"6797c91ed8b7af21a5f8b87a337b46f9","data/tr/zu.txt":"03b06a023c1d15befb46bb774e046b61","data/words.txt":"6108e9bdb76a8465b9e167a416c10031"};
 async function sha256hex(t) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join(''); }
 async function verified(url, t) { const want = INTEGRITY[url]; if (!want || !crypto?.subtle) return true; return (await sha256hex(t)).slice(0, want.length) === want; }
 async function getText(url) {
@@ -120,6 +176,8 @@ function prep() {
 const topicItem = (cat, name) => { const c = T.find(x => x.id === cat); if (!c) return null; const k = c.items.findIndex(x => x.n === name || x.n.startsWith(name)); return k < 0 ? null : { c, k, it: c.items[k] }; };
 const itemAyat = it => it ? (it.a || (it.r ? it.r.flatMap(([s, e]) => { const o = []; for (let i = s; i <= e; i++) o.push(i); return o; }) : [])) : [];
 
+/* رقم الإصدار: مصدر واحد تقرؤه الرئيسية والإعدادات وصفحة ما الجديد */
+const MK_VERSION = window.MK_VERSION = '٥';
 /* ================= navigation */
 const NAV = LAB ? [
   ['المختبر', [['research','بحث جديد','i-flask'],['mine','أبحاثي','i-bookmark'],['prayer','مواقيت الصلاة','i-time'],['adhkar','أذكار الصباح والمساء','i-sun',1]]],
@@ -127,11 +185,11 @@ const NAV = LAB ? [
   ['التطبيق', [['guide','دليل المختبر','i-info'],['account','حسابي','i-user'],['settings','الإعدادات','i-gear'],['admin','لوحة الإدارة','i-shield']]],
 ] : [
   ['', [['home','الرئيسية','i-home']]],
-  ['اقرأ وتدبّر', [['mushaf','المصحف','i-book'],['search','البحث بالمعنى','i-search'],['ask','اسأل مشكاة','i-spark'],['topics','الموسوعة الموضوعية','i-grid'],['kids','ركن الأطفال','i-kids',1],['tawhid','التوحيد في القرآن','i-tawhid',1],['jannah','وصف الجنة في القرآن','i-jannah',1]], 'p1'],
-  ['احفظ وتعبّد', [['adhkar','أذكار الصباح والمساء','i-sun'],['duaa','أدعية القرآن','i-hands',1],['ruqya','التداوي بالقرآن','i-ruqya',1],['hifz','الحفظ والتسميع','i-mic'],['saved','محفوظاتي','i-bookmark'],['prayer','مواقيت الصلاة','i-time']], 'p2'],
-  ['ابحث وحقّق', [['research','مختبر الأبحاث','i-flask'],['ulum','علوم القرآن','i-ulum',1],['jamal','الصور الجمالية في القرآن','i-jamal',1],['words','المعجم المفهرس','i-abc'],['stats','الإحصاء العام','i-chart'],['taam','الفاكهة والطعام في القرآن','i-taam',1]], 'p3'],
-  ['اكتشف وتأمّل', [['awwalin','أخبار الأولين والآخرين','i-scroll'],['ijaz','الإعجاز العلمي','i-atom'],['map','أطلس القرآن','i-map'],['timeline','الخط الزمني','i-time'],['graph','شبكة المعرفة','i-graph'],['nisaa','المرأة في القرآن','i-flower',1],['rijal','الرجل في القرآن','i-user',1],['shifa','الأمراض والعلاج','i-heal',1],['wazifa','وظيفة الإنسان','i-wazifa',1]], 'p4'],
-  ['التطبيق', [['guide','دليل التطبيق','i-info'],['about','المنهج والمصادر','i-info'],['account','حسابي','i-user'],['settings','الإعدادات','i-gear'],['admin','لوحة الإدارة','i-shield']]],
+  ['اقرأ وتدبّر', [['mushaf','المصحف','i-book'],['tafasir','التفاسير وأسباب النزول','i-book',1],['search','البحث بالمعنى','i-search'],['recite','التلاوة المتصلة','i-play',1],['ask','اسأل مشكاة','i-spark'],['topics','الموسوعة الموضوعية','i-grid'],['mawdui','التفسير الموضوعي','i-grid',1],['kids','ركن الأطفال','i-kids',1],['tawhid','التوحيد في القرآن','i-tawhid',1],['asma','أسماء الله الحسنى','i-asma',1],['jannah','وصف الجنة في القرآن','i-jannah',1],['rusul','الأنبياء والمرسلون','i-rusul',1]], 'p1'],
+  ['احفظ وتعبّد', [['adhkar','أذكار الصباح والمساء','i-sun'],['duaa','أدعية القرآن','i-hands',1],['adiya','أدعية المناسبات','i-adiya',1],['ibadat','فقه العبادات','i-manasik',1],['ruqya','التداوي بالقرآن','i-ruqya',1],['hajj','الحج والعمرة','i-hajj',1],['arbain','الأحاديث الأربعون النووية','i-arbain',1],['hijri','التقويم الهجري','i-cal',1],['khatma','خطة الختمة والأوسمة','i-check',1],['hifz','الحفظ والتسميع','i-mic'],['wird','وردي وتقدّمي','i-time'],['saved','محفوظاتي','i-bookmark'],['prayer','مواقيت الصلاة','i-time']], 'p2'],
+  ['ابحث وحقّق', [['research','مختبر الأبحاث','i-flask'],['ulum','علوم القرآن','i-ulum',1],['jamal','الصور الجمالية في القرآن','i-jamal',1],['amthal','أمثال القرآن','i-amthal',1],['naskh','الناسخ والمنسوخ ومتشابه الآيات','i-naskh',1],['words','المعجم المفهرس','i-abc'],['stats','الإحصاء العام','i-chart'],['taam','الفاكهة والطعام في القرآن','i-taam',1],['zakat','حاسبة الزكاة','i-calc',1],['mawarith','حاسبة المواريث','i-calc',1],['lafz','عدّاد الألفاظ','i-chart',1]], 'p3'],
+  ['اكتشف وتأمّل', [['awwalin','أخبار الأولين والآخرين','i-scroll'],['ijaz','الإعجاز العلمي','i-atom'],['map','أطلس القرآن','i-map'],['timeline','الخط الزمني','i-time'],['sira','السيرة النبوية والغزوات','i-sira',1],['graph','شبكة المعرفة','i-graph'],['nisaa','ركن المرأة','i-flower',1],['rijal','ركن الرجل','i-user',1],['usra','ركن الأسرة','i-family',1],['shifa','الأمراض والعلاج','i-heal',1],['wazifa','وظيفة الإنسان','i-wazifa',1]], 'p4'],
+  ['التطبيق', [['guide','دليل التطبيق','i-info'],['whatsnew','ما الجديد','i-spark'],['about','المنهج والمصادر','i-info'],['account','حسابي','i-user'],['settings','الإعدادات','i-gear'],['admin','لوحة الإدارة','i-shield']]],
 ];
 let isOwner = false;
 function navHTML() {
@@ -143,40 +201,93 @@ function drawNav() { $('#nav').innerHTML = navHTML(); }
 const PATHS = [
   ['p1', 'اقرأ وتدبّر', 'النص الكريم ومعانيه: تلاوة، وبحث بالفكرة، وموضوعات مفهرسة.', [
     ['mushaf', 'i-book', 'المصحف', 'صفحات مصحف المدينة متصلة بخط مجمع الملك فهد، مع التفسير والمعاني لكل آية.', () => `${n(Q.surahs.length)} سورة`],
+    ['recite', 'i-play', 'التلاوة المتصلة', 'استمع إلى المصحف متصلاً مع تظليل الآية الجارية، واختر القارئ والسرعة وتكرار الآية للحفظ.', () => ''],
+    ['tafasir', 'i-book', 'التفاسير وأسباب النزول', 'ثمانية تفاسير لكل آية، وأسباب النزول مقتطفة من نصوص المفسرين مع نسبتها إلى كتبها، وبحث فيها.', () => `${n(TF.length)} كتب`],
     ['search', 'i-search', 'البحث بالمعنى', 'اكتب الفكرة بلغتك، فتظهر الآيات الأقرب إليها مرتبةً.', () => `${n(Q.ayat.length)} آية`],
     ['ask', 'i-spark', 'اسأل مشكاة', 'سؤالك يُجاب من الآيات وأقوال المفسرين والمداخل الموضوعية.', () => ''],
     ['topics', 'i-grid', 'الموسوعة الموضوعية', 'الأنبياء والأقوام والأماكن والأحكام، كل موضوع بآياته.', () => `${n(T.length)} فهرساً`],
+    ['mawdui', 'i-grid', 'التفسير الموضوعي', 'فهرس موضوعات القرآن (التوحيد والأخلاق والقصص والأحكام) مربوطة بآياتها، مع التعمق بالرأي واللطائف من أمهات التفسير بألفاظها.', () => '٢٧ موضوعاً'],
     ['kids', 'i-kids', 'ركن الأطفال', 'قصص القرآن مصوّرة للأطفال، كل مشهد بآيته، مع أسئلة ونجوم وسور قصيرة للحفظ.', () => `${n(KIDS.length)} قصة`],
     ['tawhid', 'i-tawhid', 'التوحيد في القرآن الكريم', 'معنى التوحيد وأقسامه وبراهينه من آيات القرآن، ودعوة الرسل إليه، ونقيضه الشرك وثمراته، بالأحاديث الصحيحة وأقوال المفسرين.', () => `${n(TAWHID.nay)} آية`],
-    ['jannah', 'i-jannah', 'وصف الجنة وأنواعها في القرآن الكريم', 'أسماء الجنة ودرجاتها، وأنهارها وقصورها ونعيمها وأهلها، ورؤية الله ورضوانه، والطريق إليها، بالآيات والأحاديث الصحيحة وأقوال المفسرين.', () => `${n(JANNAH.nay)} آية`]]],
+    ['asma', 'i-asma', 'أسماء الله الحسنى', 'كل اسم ورد لفظه في القرآن بآيته ومعناه وشرحه بنقول المفسرين بلفظها، مع حديث الأسماء بتخريجه ودرجته.', () => '88 اسماً'],
+    ['jannah', 'i-jannah', 'وصف الجنة وأنواعها في القرآن الكريم', 'أسماء الجنة ودرجاتها، وأنهارها وقصورها ونعيمها وأهلها، ورؤية الله ورضوانه، والطريق إليها، بالآيات والأحاديث الصحيحة وأقوال المفسرين.', () => `${n(JANNAH.nay)} آية`],
+    ['rusul', 'i-rusul', 'الأنبياء والمرسلون في القرآن الكريم', 'الأنبياء الخمسة والعشرون المذكورون بأسمائهم بترتيبهم الزمني وأقوامهم، والنبي والرسول وأولو العزم، ومن ذُكروا بلا اسم، بآياتها بخط المصحف وأقوال المفسرين وأحاديث البخاري.', () => `${n(25)} نبياً`]]],
   ['p2', 'احفظ وتعبّد', 'رفيقك اليومي: حفظ بخطة مراجعة، وأذكار الصباح والمساء، ومواقيت الصلاة.', [
     ['hifz', 'i-mic', 'الحفظ والتسميع', 'إخفاء تدريجي، واختبار بالكتابة والصوت، وجدول مراجعة.', () => ''],
+    ['wird', 'i-time', 'وردي وتقدّمي', 'علامة «توقفت هنا»، وهدف الصفحات اليومي وسلسلة القراءة، وملاحظاتك على الآيات، ونسخ احتياطي ومزامنة بين أجهزتك.', () => { const g = goalPages(); return g ? `${n(Math.min(todayPages().length, g))} من ${n(g)} صفحة اليوم` : ''; }],
     ['saved', 'i-bookmark', 'محفوظاتي', 'الآيات التي علّمتها ومقاطع حفظك في مكان واحد.', () => `${n(ST.bookmarks.length)} علامة`],
     ['prayer', 'i-time', 'مواقيت الصلاة', 'حسب بلدك ومذهبك، مع اتجاه القبلة والتاريخ الهجري.', () => ''],
     ['adhkar', 'i-sun', 'أذكار الصباح والمساء', 'تظهر في وقتها حسب مدينتك، بنصوص حصن المسلم وتخريجها، مع عدّاد لكل ذكر.', () => ''],
     ['duaa', 'i-hands', 'أدعية القرآن', 'كل دعاء في القرآن بموضوعه ومن دعا به وسبب نزوله، وكيف تستعمله في يومك.', () => `${n(THEMES.duaa.groups.reduce((t, g) => t + g[1].length, 0))} دعاءً`],
-    ['ruqya', 'i-ruqya', 'التداوي بالقرآن', 'آيات الشفاء والرقية الشرعية بأدلتها: الأحاديث الصحيحة بتخريجها، وأقوال العلماء بمصادرها، وضوابط الرقية وكيفيتها.', () => `${n(RUQYA.h.length)} حديثاً`]]],
+    ['adiya', 'i-adiya', 'أدعية القرآن والسنة بالمناسبة', 'أدعية الكرب والمرض والسفر والنوم والصلاة وليلة القدر وغيرها، بنص المصحف والأحاديث الصحيحة بتخريجها ودرجتها، وأقوال المفسرين.', () => `${n(13)} مناسبة`],
+    ['ibadat', 'i-manasik', 'فقه العبادات: الصيام والزكاة', 'أحكام الصيام والزكاة خطوة بخطوة من الآيات والأحاديث الصحيحة وأقوال المفسرين، مع الخلاف المعتبر بين المذاهب.', () => `${n(6)} باباً`],
+    ['arbain', 'i-arbain', 'الأحاديث الأربعون النووية', 'الأحاديث الأربعون النووية، كل حديث بتخريجه ودرجته وشرح موجز لمعناه.', () => `${n(40)} حديثاً`],
+    ['ruqya', 'i-ruqya', 'التداوي بالقرآن', 'آيات الشفاء والرقية الشرعية بأدلتها: الأحاديث الصحيحة بتخريجها، وأقوال العلماء بمصادرها، وضوابط الرقية وكيفيتها.', () => `${n(RUQYA.h.length)} حديثاً`],
+    ['hajj', 'i-hajj', 'الحج والعمرة', 'أصل الحج في الأمم السابقة، وآياته ومناسكه خطوةً خطوة من القرآن والسنة بأحاديثها المخرّجة، مع رسوم متحركة للطواف والسعي وأيام المناسك وفضل الحج والعمرة.', () => 'آيات وأحاديث ومناسك'],
+    ['hijri', 'i-cal', 'التقويم الهجري', 'الأيام الفاضلة والأيام البيض وأيام لا يُصام فيها، مع المناسبات بأدلتها وتذكير بصيام الغد.', () => ''],
+    ['khatma', 'i-check', 'خطة الختمة والأوسمة', 'قسّم ختمتك على الأيام، وتابع أوسمتك وأعمالك اليومية، مبنية على ما تقرؤه في المصحف.', () => '']]],
   ['p3', 'ابحث وحقّق', 'أدوات الباحث: أبحاث موثقة، ومعجم الألفاظ والجذور، والإحصاء.', [
     ['research', 'i-flask', 'مختبر الأبحاث', 'بحث كامل في أي موضوع من الآيات والتفاسير والصحاح، بمصادره.', () => ''],
     ['ulum', 'i-ulum', 'علوم القرآن', 'أبواب مسلسلة مفهرسة: النزول، والمكي والمدني، وأسباب النزول، والجمع، والقراءات، والرسم، والنسخ، والمحكم والمتشابه، والعام والخاص، والمطلق والمقيد، والمنطوق والمفهوم، والأمثال، والأقسام، والجدل، والقصص، والإعجاز، والتفسير، وآداب التلاوة.', () => `${n(ULUM.length)} ${ULUM.length > 10 ? 'باباً' : 'أبواب'}`],
     ['jamal', 'i-jamal', 'الصور الجمالية في القرآن الكريم', 'التشبيه والاستعارة ومشاهد الكون والقيامة وتصوير النفس، وذكر القرآن للجمال والزينة والصبر الجميل، بأقوال المفسرين بلفظها.', () => `${n(JAMAL.nay)} آية`],
+    ['amthal', 'i-amthal', 'أمثال القرآن', 'الأمثال المضروبة في القرآن بآياتها ووجه التمثيل فيها وشرحها بنقول المفسرين، وما يفسّرها من الأمثال النبوية.', () => '38 مثلاً'],
+    ['naskh', 'i-naskh', 'الناسخ والمنسوخ ومتشابه الآيات', 'حقيقة النسخ وأقسامه وأمثلته بأقوال المفسرين، ومتشابه ألفاظ الآيات مع إبراز مواضع الاختلاف.', () => `${n(9)} أحكام منسوخة`],
     ['words', 'i-abc', 'المعجم المفهرس', 'كل لفظ وجذر في المصحف بمواضعه وصيغه.', () => `${n(W.roots.length)} جذراً`],
     ['stats', 'i-chart', 'الإحصاء العام', 'السور والكلمات والحروف وأقسام الكلم بالأرقام الموثقة.', () => `${n(W.w.length)} كلمة`],
-    ['taam', 'i-taam', 'الفاكهة والطعام في القرآن الكريم', 'التين والزيتون والنخل والعسل واللبن والمن والسلوى بآياتها، وأحكام الحلال والطيبات وآداب الطعام وترك الإسراف، بالأحاديث الصحيحة وأقوال المفسرين.', () => `${n(TAAM.k.length)} صنفاً`]]],
+    ['taam', 'i-taam', 'الفاكهة والطعام في القرآن الكريم', 'التين والزيتون والنخل والعسل واللبن والمن والسلوى بآياتها، وأحكام الحلال والطيبات وآداب الطعام وترك الإسراف، بالأحاديث الصحيحة وأقوال المفسرين.', () => `${n(TAAM.k.length)} صنفاً`],
+    ['zakat', 'i-calc', 'حاسبة الزكاة', 'نصاب الذهب والفضة والعروض والأنعام والزروع وزكاة الفطر بمقاديرها الشرعية.', () => ''],
+    ['mawarith', 'i-calc', 'حاسبة المواريث', 'أنصبة الورثة بالكسور والمبلغ، مع الحجب والعَول والردّ، وأدلتها من سورة النساء.', () => ''],
+    ['lafz', 'i-chart', 'عدّاد الألفاظ', 'كم مرة ورد أي جذر أو لفظ في القرآن، وتوزيعه على السور مكيّها ومدنيّها.', () => '']]],
   ['p4', 'اكتشف وتأمّل', 'رحلة في أخبار القرآن وآياته الكونية، على الخريطة والزمن.', [
     ['awwalin', 'i-scroll', 'أخبار الأولين والآخرين', 'قصص الأمم السابقة وأخبار الغيب الآتي، من الآيات.', () => ''],
     ['ijaz', 'i-atom', 'الإعجاز العلمي', 'آيات الكون والإنسان مع درجة كل قول ومصادره.', () => ''],
-    ['map', 'i-map', 'أطلس القرآن', 'خريطة للمدن والقرى والأماكن الواردة في القرآن.', () => ''],
-    ['timeline', 'i-time', 'الخط الزمني', 'الأنبياء على ترتيب المؤرخين، وأحداث السيرة بسنواتها.', () => ''],
+    ['map', 'i-map', 'أطلس القرآن', 'خريطة بلا إنترنت للأماكن والأمم المذكورة ومسارات الأنبياء، مع وسم ما هو اجتهاد غير جازم.', () => ''],
+    ['timeline', 'i-time', 'الخط الزمني', 'قصص الأنبياء والأقوام والحضارات على خط زمني تفاعلي، وأحداث السيرة بسنواتها.', () => ''],
+    ['sira', 'i-sira', 'السيرة النبوية والغزوات', 'أحداث السيرة والغزوات من بدء الوحي إلى الوفاة، كل حدث بآياته وأحاديثه وأقوال المفسرين.', () => `${n(17)} حدثاً`],
     ['graph', 'i-graph', 'شبكة المعرفة', 'علاقات الأنبياء بأقوامهم وأماكنهم والسور.', () => ''],
     ['asnaf', 'i-asnaf', 'أقسام الناس في القرآن', 'المؤمنون والكافرون والمنافقون، والسابقون وأصحاب اليمين والشمال، والأبرار والفجار، والمتقون والمحسنون والمستضعفون وأهل الكتاب، بالآيات والأحاديث الصحيحة وأقوال المفسرين.', () => `${n(ASNAF.nay)} آية`],
-    ['nisaa', 'i-flower', 'المرأة في القرآن', 'النساء اللاتي ذكرهن القرآن وقصصهن، ومكانة المرأة وحقوقها وأحكامها بآياتها.', () => ''],
-    ['rijal', 'i-user', 'الرجل في القرآن', 'رجال ذكرهم القرآن، وصفات الرجال المؤمنين، ومسؤوليات الرجل وأحكامه بآياتها.', () => ''],
+    ['nisaa', 'i-flower', 'ركن المرأة في القرآن', 'النساء اللاتي ذكرهن القرآن وقصصهن، ومكانة المرأة وحقوقها وأحكامها وحمايتها، بآياتها.', () => ''],
+    ['rijal', 'i-user', 'ركن الرجل في القرآن', 'رجال ذكرهم القرآن وقصصهم، وخصال الرجولة، ومسؤوليات الرجل وأحكامه، بآياتها.', () => ''],
     ['shifa', 'i-heal', 'الأمراض والعلاج في القرآن', 'أمراض القلوب والأبدان والشفاء، ورخص المريض وأحكامه، والوقاية وحفظ الصحة بآياتها.', () => ''],
+    ['usra', 'i-family', 'ركن الأسرة في القرآن', 'الزواج، والوالدان والأبناء، والتربية في البيت، وقصص الأسر، وإصلاح ما بين الزوجين، وصلة الأرحام، بآياتها.', () => ''],
     ['wazifa', 'i-wazifa', 'وظيفة الإنسان في القرآن', 'لماذا خُلق الإنسان وما وظيفته: العبادة والخلافة وعمارة الأرض والأمانة، وختامها «يا ليتني قدّمت لحياتي».', () => `${n(WAZIFA.ch.length)} أبواب`]]],
 ];
 const PATH_OF = {}; PATHS.forEach((p, gi) => p[3].forEach((x, i) => { PATH_OF[x[0]] = [gi, i]; }));
-const sCard = ([v, ic, t, d, meta], pc, big) => { let m = ''; try { m = meta(); } catch (e) {} return `<a class="scard ${pc}${big ? ' big' : ''}" href="#${v}"><span class="sic"><svg><use href="#${ic}"/></svg></span><span class="stx"><b>${t}</b><span>${d}</span></span><span class="sft">${m ? `<em>${m}</em>` : '<em></em>'}<i aria-hidden="true">←</i></span></a>`; };
+const secTotal = () => PATHS.reduce((t, g) => t + g[3].length, 0);
+const finderHTML = (id) => `<form class="sfind" role="search" onsubmit="return false"><svg><use href="#i-search"/></svg><input type="search" class="sf-in" id="${id}" placeholder="ابحث عن قسم بين ${n(secTotal())} قسماً" aria-label="ابحث عن قسم" autocomplete="off"><span class="sf-n muted small" aria-live="polite"></span></form>`;
+const normAr = x => (x || '').replace(/[\u064B-\u065F\u0670\u0640]/g, '').replace(/[أإآٱ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه').toLowerCase().trim();
+/* باحث الأقسام: يرشّح بطاقات الرئيسية وفهرس الجوال وقائمة «المزيد» بالاسم والوصف */
+function bindFinder(root) {
+  const ins = [...root.querySelectorAll('.sf-in')]; if (!ins.length) return;
+  const items = [...root.querySelectorAll('.mi-tile,.scard,.nav a,.jr-step')];
+  items.forEach(a => { a._q = normAr(a.dataset.q || a.textContent); });
+  const run = src => {
+    const q = normAr(src.value); ins.forEach(i => { if (i !== src) i.value = src.value; });
+    let hits = 0;
+    items.forEach(a => { const ok = !q || a._q.includes(q); a.hidden = !ok; if (ok && q && a.matches('.mi-tile,.scard,.nav a')) hits++; });
+    root.querySelectorAll('.mi-group,.path').forEach(g => { g.hidden = !!q && !g.querySelector('.mi-tile:not([hidden]),.scard:not([hidden])'); });
+    root.querySelectorAll('.mi-group').forEach(g => g.classList.toggle('finding', !!q));
+    root.querySelectorAll('.nav .sec').forEach(sc => { let nx = sc.nextElementSibling, any = false; while (nx && !nx.classList.contains('sec')) { if (!nx.hidden) any = true; nx = nx.nextElementSibling; } sc.hidden = !!q && !any; });
+    root.querySelectorAll('.journeys').forEach(j => { j.hidden = !!q; });
+    const perInput = !!root.querySelector('.mi-tile') && !!root.querySelector('.scard');
+    ins.forEach(i => { const o = i.parentNode.querySelector('.sf-n'); if (o) o.textContent = q ? (hits ? `${n(perInput ? hits / 2 : hits)} نتيجة` : 'لا يوجد قسم بهذا الاسم') : ''; });
+  };
+  ins.forEach(i => { i.addEventListener('input', () => run(i)); i.addEventListener('keydown', e => { if (e.key === 'Enter') { const f = items.find(a => !a.hidden && a.matches('.mi-tile,.scard,.nav a') && a.offsetParent); if (f) { e.preventDefault(); if (root.id === 'sheet') closeDrawer(); location.hash = f.getAttribute('href'); } } }); });
+}
+/* رحلات مقترحة: مسارات مرتبة من أقسام قائمة فعلاً، تُرشد الزائر من أين يبدأ */
+const JOURNEYS = [
+  ['أول مرة في مشكاة؟', 'ابدأ بهذا الترتيب', ['mushaf', 'search', 'tafasir', 'adhkar', 'guide']],
+  ['طالب علم', 'من الأصول إلى الأدلة', ['tafasir', 'ulum', 'naskh', 'amthal', 'words']],
+  ['لبيتك وأسرتك', 'للكبار والصغار معاً', ['usra', 'kids', 'nisaa', 'rijal', 'duaa']],
+  ['رحلة إيمانية', 'من التوحيد إلى الجنة', ['tawhid', 'asma', 'rusul', 'wazifa', 'jannah']],
+  ['العبادة والمناسبات', 'ما تحتاجه في يومك وسنتك', ['prayer', 'ibadat', 'hajj', 'hijri', 'adiya']],
+];
+function journeysHTML() {
+  const info = {}; PATHS.forEach(g => g[3].forEach(x => { info[x[0]] = [x[1], x[2], g[0]]; }));
+  info.guide = ['i-info', 'دليل التطبيق', 'p1'];
+  return `<section class="journeys" aria-label="رحلات مقترحة"><div class="sec-head"><div><span class="eyebrow">من أين أبدأ؟</span><h2>رحلات مقترحة</h2></div></div><div class="jr-grid">${JOURNEYS.map(([t, d, ids]) => `<div class="jr"><b>${t}</b><small>${d}</small><ol>${ids.filter(v => info[v]).map(v => `<li><a class="jr-step ${info[v][2]}" href="#${v}" data-q="${esc(info[v][1])}"><svg><use href="#${info[v][0]}"/></svg>${info[v][1]}</a></li>`).join('')}</ol></div>`).join('')}</div></section>`;
+}
+const sCard = ([v, ic, t, d, meta], pc, big) => { let m = ''; try { m = meta(); } catch (e) {} return `<a class="scard ${pc}${big ? ' big' : ''}" href="#${v}" data-q="${esc(t + ' ' + d)}"><span class="sic"><svg><use href="#${ic}"/></svg></span><span class="stx"><b>${t}</b><span>${d}</span></span><span class="sft">${m ? `<em>${m}</em>` : '<em></em>'}<i aria-hidden="true">←</i></span></a>`; };
 function nextPaths(v) {
   const at = PATH_OF[v]; if (!at || LAB) return '';
   const [gi, i] = at, g = PATHS[gi], ng = PATHS[(gi + 1) % PATHS.length];
@@ -185,7 +296,24 @@ function nextPaths(v) {
 }
 let curRoute = '';
 const V = html => { $('#view').innerHTML = html + nextPaths(curRoute); };
-const views = { prayer, adhkar, home: LAB ? research : home, mine: () => research(null, true), mushaf, stats, words, topics, search, ask, hifz, saved, map: atlas, timeline, graph, settings, about, admin, guide, account, awwalin, ijaz, research, kids, ulum, duaa, nisaa, rijal, shifa, ruqya };
+/* ورد القراءة والمزامنة وما الجديد: وحدة تُحمَّل عند أول فتح من progress.js */
+function progLoad(fn, ...a) {
+  if (window.progressUI) return progressUI[fn](...a);
+  if (!progLoad.s) { progLoad.s = document.createElement('script'); progLoad.s.src = 'progress.js'; document.head.appendChild(progLoad.s); }
+  progLoad.s.addEventListener('load', () => progressUI[fn](...a), { once: true });
+  progLoad.s.addEventListener('error', () => { progLoad.s.remove(); progLoad.s = null; V(`<p class="loading">تعذّر فتح هذا القسم، تحقق من الاتصال ثم أعد المحاولة.</p>`); }, { once: true });
+}
+const wird = () => { V(`<p class="loading">جارٍ التحميل…</p>`); progLoad('wird'); };
+const whatsnew = () => { V(`<p class="loading">جارٍ التحميل…</p>`); progLoad('whatsnew'); };
+/* أدوات المسلم (التقويم الهجري، الزكاة، المواريث، عدّاد الألفاظ، خطة الختمة): ملف tools.js يُحمَّل عند أول فتح ويعمل دون اتصال */
+function toolsLoad(then) {
+  if (window.MTOOLS) return then();
+  if (!toolsLoad.s) { toolsLoad.s = document.createElement('script'); toolsLoad.s.src = 'tools.js'; document.head.appendChild(toolsLoad.s); }
+  toolsLoad.s.addEventListener('load', then, { once: true });
+  toolsLoad.s.addEventListener('error', () => { toolsLoad.s.remove(); toolsLoad.s = null; V(`<p class="loading">تعذّر فتح القسم، تحقق من الاتصال ثم أعد المحاولة.</p>`); }, { once: true });
+}
+const tool = k => () => { if (window.MTOOLS) return MTOOLS[k](); V(`<p class="loading">جارٍ فتح القسم…</p>`); toolsLoad(() => { if (curRoute === k) MTOOLS[k](); }); };
+const views = { hijri: tool('hijri'), khatma: tool('khatma'), zakat: tool('zakat'), mawarith: tool('mawarith'), lafz: tool('lafz'), wird, whatsnew, recite, prayer: () => { prOff = 0; prayer(); }, adhkar, home: LAB ? research : home, mine: () => research(null, true), mushaf, stats, words, topics, search, ask, hifz, saved, map: atlas, timeline, graph, settings, about, admin, guide, account, awwalin, ijaz, research, kids, ulum, duaa, nisaa, rijal, shifa, usra, ruqya };
 /* وحدات البيانات الكبيرة (mods/*.js): لا تُحمَّل إلا عند أول فتح للقسم، فيخفّ app.js ويبدأ التطبيق أسرع */
 const MODS = {};
 function needMod(key) {
@@ -202,18 +330,21 @@ function needMod(key) {
 function route() {
   const h = (location.hash || '#' + HOME).slice(1);
   let m, cur;
-  curRoute = /^(s|a|p|ps|pa)\d/.test(h) ? 'mushaf' : /^k-/.test(h) ? 'kids' : /^t-/.test(h) ? 'topics' : /^(root|lem)\d/.test(h) ? 'words' : h;
-  if (m = h.match(/^s(\d+)$/)) { cur = 'mushaf'; surah(+m[1]); }
+  curRoute = /^lafz\//.test(h) ? 'lafz' : /^(s|a|p|ps|pa)\d/.test(h) ? 'mushaf' : /^tf\d/.test(h) || h === 'tafasir' || h === 'tfbooks' ? 'tafasir' : /^k-/.test(h) ? 'kids' : /^t-/.test(h) ? 'topics' : /^(root|lem)\d/.test(h) ? 'words' : h;
+  if (/^lafz\//.test(h)) { cur = 'lafz'; views.lafz(); }
+  else if (m = h.match(/^s(\d+)$/)) { cur = 'mushaf'; surah(+m[1]); }
   else if (m = h.match(/^a(\d+)-(\d+)$/)) { cur = 'mushaf'; surah(+m[1], +m[2]); }
   else if (m = h.match(/^p(\d+)$/)) { cur = 'mushaf'; mpOpen(+m[1]); }
   else if (m = h.match(/^ps(\d+)$/)) { cur = 'mushaf'; mpOpen(1, { surah: Math.max(1, Math.min(114, +m[1])) }); }
   else if (m = h.match(/^pa(\d+)$/)) { cur = 'mushaf'; mpOpen(1, { ayah: Math.min(6235, +m[1]) }); }
+  else if (h === 'tfbooks') { cur = 'tafasir'; tafasirOpen2(-1, 0); }
+  else if (m = h.match(/^tf(\d+)(?:-(\d+))?$/)) { cur = 'tafasir'; tafasirOpen2(Math.max(1, Math.min(114, +m[1])), +m[2] || 0); }
   else if (m = h.match(/^t-([a-z]+)$/)) { cur = 'topics'; topic(m[1]); }
   else if (!LAB && (m = h.match(/^k-([a-z]+)$/))) { cur = 'kids'; kids(m[1]); }
   else if (m = h.match(/^root(\d+)$/)) { cur = 'words'; rootView(+m[1]); }
   else if (m = h.match(/^lem(\d+)$/)) { cur = 'words'; lemmaView(+m[1]); }
   else { cur = views[h] ? h : HOME; if (LAB && cur === 'home') cur = 'research'; if (LAB && cur === 'about') cur = 'guide'; if (LAB && !['research', 'mine', 'prayer', 'adhkar', 'mushaf', 'words', 'guide', 'account', 'settings', 'admin'].includes(cur)) cur = 'research'; views[cur](); }
-  setCur(cur);
+  setCur(cur); noteRecent(cur);
   if (!/^(a|p|ps|pa)\d/.test(h)) window.scrollTo(0, 0);
 }
 function setCur(v) { $$('#nav a,#tabbar a').forEach(a => { if (a.dataset.v === v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }); }
@@ -368,8 +499,8 @@ function home() {
       <form class="wl-search" id="homeQ" role="search"><svg><use href="#i-search"/></svg><input type="search" id="homeQi" placeholder="عمّ تبحث في القرآن؟ اكتب فكرة أو كلمة" aria-label="ابحث في القرآن"><button class="btn primary" type="submit">ابحث</button></form>
       <div class="wl-chips"><span class="muted small">جرّب:</span>${QUICK.map(q => `<button type="button" class="chip" data-hq="${esc(q)}">${esc(q)}</button>`).join('')}</div>
     </section>
-    <section class="mindex" aria-label="أقسام مشكاة"><div class="mi-head"><b>أقسام مشكاة</b><span class="muted small">كل الأقسام بلمسة واحدة</span></div>
-      ${PATHS.map(([pc, t, , items]) => `<div class="mi-group ${pc}"><div class="mi-t"><i class="dot"></i>${t}</div><div class="mi-grid">${items.map(([v, ic, tt]) => `<a class="mi-tile" href="#${v}"><svg><use href="#${ic}"/></svg><span>${tt}</span></a>`).join('')}</div></div>`).join('')}
+    <section class="mindex" aria-label="أقسام مشكاة"><div class="mi-head"><b>أقسام مشكاة</b><span class="muted small">${n(secTotal())} قسماً في ${n(PATHS.length)} فئات</span></div>${finderHTML('sfM')}${recentHTML()}
+      ${PATHS.map(([pc, t, , items]) => `<div class="mi-group ${pc}"><div class="mi-t"><i class="dot"></i>${t}<em>${n(items.length)}</em></div><div class="mi-grid">${items.map(([v, ic, tt, dd]) => `<a class="mi-tile" href="#${v}" data-q="${esc(tt + ' ' + dd)}"><svg><use href="#${ic}"/></svg><span>${tt}</span></a>`).join('')}</div>${items.length > 6 ? `<button type="button" class="mi-all" data-all aria-expanded="false">عرض كل أقسام الفئة (${n(items.length)})</button>` : ''}</div>`).join('')}
       <div class="mi-more"><a href="#stats">القرآن بالأرقام</a><a href="#guide">دليل التطبيق</a><a href="#about">المنهج والمصادر</a></div>
     </section>
   </div>
@@ -379,11 +510,13 @@ function home() {
       <a class="mcard" href="#hifz"><svg><use href="#i-mic"/></svg><span><small>مراجعة اليوم</small><b>${n(due.length)} مقطع</b></span></a>
       <a class="mcard" href="#saved"><svg><use href="#i-bookmark"/></svg><span><small>علاماتك</small><b>${n(ST.bookmarks.length)} آية</b></span></a>
     </div>
+    ${progHomeCard()}
     <div class="pill-row acct-row">${cloud ? '<span class="chip ok">تقدّمك محفوظ في حسابك ويتزامن بين أجهزتك</span>' : SESSION ? `<a class="chip ok" href="#account">حسابك: ${esc(SESSION.name)} · ${ROLE[SESSION.role]}</a>` : IS_PWA ? '<span class="chip">تقدّمك محفوظ على هذا الجهاز</span><a class="chip acc" href="#account">ادخل إلى حسابك</a>' : '<span class="chip">تقدّمك محفوظ على هذا الجهاز</span>'}${IS_PWA && !FILE_MODE && !isStandalone() ? '<button class="chip acc" id="homeInst">ثبّت مشكاة على جهازك</button>' : ''}</div>
   </div>
+  ${journeysHTML()}
   <section class="paths">
-    <div class="sec-head"><div><span class="eyebrow">مسارات مشكاة</span><h2>اختر طريقك في الموسوعة</h2></div><a class="btn" href="#guide">دليل التطبيق</a></div>
-    ${PATHS.map(([pc, t, d, items], gi) => `<div class="path ${pc}"><div class="path-head"><span class="pnum">${n(gi + 1)}</span><div><h3>${t}</h3><p>${d}</p></div></div><div class="path-grid">${items.map((x, i) => sCard(x, pc, i === 0)).join('')}</div></div>`).join('')}
+    <div class="sec-head"><div><span class="eyebrow">مسارات مشكاة · ${n(secTotal())} قسماً</span><h2>اختر طريقك في الموسوعة</h2></div>${finderHTML('sfD')}<a class="btn" href="#guide">دليل التطبيق</a></div>
+    ${PATHS.map(([pc, t, d, items], gi) => `<div class="path ${pc}"><div class="path-head"><span class="pnum">${n(gi + 1)}</span><div><h3>${t}</h3><span class="pcount">${n(items.length)} ${items.length > 10 ? 'قسماً' : 'أقسام'}</span><p>${d}</p></div></div><div class="path-grid">${items.map((x, i) => sCard(x, pc, i === 0)).join('')}</div></div>`).join('')}
   </section>
   <section class="numbers">
     <div class="sec-head"><div><span class="eyebrow">القرآن بالأرقام</span><h2>إحصاء موثق من نص المصحف</h2></div><a class="btn" href="#stats">الإحصاء الكامل</a></div>
@@ -403,6 +536,8 @@ function home() {
   $('#mhSur').onchange = e => { if (+e.target.value) location.hash = 'ps' + e.target.value; };
   $('#mhJuz').onchange = e => { const j = +e.target.value; if (j) location.hash = 'pa' + Q.ayat.findIndex(a => a[5] === j); };
   $$('[data-hq]').forEach(b => b.onclick = () => go(b.dataset.hq));
+  bindFinder($('#view'));
+  $$('.mi-all').forEach(b => b.onclick = () => { const g = b.closest('.mi-group'), o = g.classList.toggle('open'); b.setAttribute('aria-expanded', o); b.textContent = o ? 'إخفاء' : `عرض كل أقسام الفئة (${n(g.querySelectorAll('.mi-tile').length)})`; });
   const hi = $('#homeInst'); if (hi) hi.onclick = installApp;
 }
 
@@ -469,6 +604,17 @@ const KSV = (() => {
     lamp: (x, y, s) => g(x, y, s, `<path d="M0-40v14" stroke="#c9a15a" stroke-width="2"/><path d="M-12-26h24l-4 18h-16z" fill="#f2c94c" opacity=".9"/><circle cy="-14" r="18" fill="#ffd34d" opacity=".25"/>`),
     heart: (x, y, s) => g(x, y, s, `<path d="M0 10C-24-6-18-26-6-24c4 0 6 4 6 6 0-2 2-6 6-6 12-2 18 18-6 34z" fill="#ff6f8f"/>`),
     rock: (x, y, s) => g(x, y, s, `<path d="M-40 0q4-30 34-34 30 0 46 34z" fill="#a08c74"/><path d="M-6-34q8 14 2 34" stroke="#7e6c56" stroke-width="2" fill="none"/>`),
+    crow: (x, y, s) => g(x, y, s, `<ellipse cx="0" cy="-10" rx="15" ry="8" fill="#23232b"/><circle cx="-14" cy="-16" r="6" fill="#23232b"/><path d="M-20-16l-9 3 9 2z" fill="#4a4a56"/><path d="M13-10l16 5-16 3z" fill="#23232b"/><path d="M-4-2v7M4-2v7" stroke="#4a4a56" stroke-width="2"/><circle cx="-15" cy="-17" r="1.3" fill="#fff"/>`),
+    mound: (x, y, s) => g(x, y, s, `<path d="M-30 0q30-28 60 0z" fill="#9a7650"/><path d="M-30 0q30-12 60 0" stroke="#7b5c3b" stroke-width="2" fill="none"/>`),
+    vines: (x, y, s) => g(x, y, s, `<path d="M-54 0v-38M54 0v-38" stroke="#8a5a2b" stroke-width="4"/><path d="M-58-38q28 16 58 0t58 0" stroke="#3f8a3a" stroke-width="5" fill="none"/>` + [[-36, -30], [-10, -26], [16, -30], [40, -26]].map(([a, b]) => `<g fill="#7d3c98"><circle cx="${a}" cy="${b}" r="5"/><circle cx="${a - 6}" cy="${b + 8}" r="5"/><circle cx="${a + 6}" cy="${b + 8}" r="5"/><circle cx="${a}" cy="${b + 15}" r="5"/></g>`).join('')),
+    spring: (x, y, s) => g(x, y, s, `<ellipse cx="0" cy="0" rx="40" ry="9" fill="#5cb3e6"/><ellipse cx="0" cy="-1" rx="28" ry="5" fill="#9fd8f5"/><path d="M0-2q-12-28 0-44q12 16 0 44z" fill="#7cc6ee" opacity=".9"/><circle cx="-16" cy="-14" r="3" fill="#bfe6fa"/><circle cx="16" cy="-20" r="3" fill="#bfe6fa"/>`),
+    deadtree: (x, y, s) => g(x, y, s, `<path d="M0 0v-46M0-24l-16-16M0-34l14-14M0-14l12-8" stroke="#6b5a4a" stroke-width="5" fill="none" stroke-linecap="round"/>`),
+    wall: (x, y, s) => g(x, y, s, `<rect x="-64" y="-90" width="128" height="90" fill="#7b8494"/>` + [0, 1, 2, 3, 4].map(i => `<path d="M-64-${i * 18}h128" stroke="#5b6475" stroke-width="2"/>`).join('') + [0, 1, 2, 3, 4].map(i => [-40, -8, 24, 52].map(a => `<path d="M${a + (i % 2 ? 0 : 14)}-${i * 18}v-18" stroke="#5b6475" stroke-width="2"/>`).join('')).join('')),
+    ironbars: (x, y, s) => g(x, y, s, [0, 1, 2].map(i => `<rect x="${-34 + i * 6}" y="${-i * 10 - 10}" width="${68 - i * 12}" height="9" rx="2" fill="#98a2b3" stroke="#6b7586"/>`).join('')),
+    cow: (x, y, s) => g(x, y, s, `<ellipse cx="0" cy="-28" rx="36" ry="19" fill="#e8b84a"/><circle cx="-38" cy="-36" r="12" fill="#e8b84a"/><path d="M-44-46l-4-10M-32-46l2-10" stroke="#a8761f" stroke-width="3" stroke-linecap="round"/><g fill="#e8b84a"><rect x="-24" y="-14" width="9" height="16" rx="3"/><rect x="14" y="-14" width="9" height="16" rx="3"/></g><path d="M36-34q10 4 8 18" stroke="#a8761f" stroke-width="3" fill="none"/><circle cx="-42" cy="-38" r="1.8" fill="#2b1b0b"/>`),
+    dates: (x, y, s) => g(x, y, s, [[-8, 0], [4, 6], [-2, 14], [10, 16], [-12, 12]].map(([a, b]) => `<ellipse cx="${a}" cy="${b}" rx="4" ry="6" fill="#a2522a"/>`).join('')),
+    garden: (x, y, s) => g(x, y, s, `<path d="M-60 0h120" stroke="#8a5a2b" stroke-width="4"/>` + [-44, -22, 0, 22, 44].map(a => `<circle cx="${a}" cy="-14" r="13" fill="#4caf50"/><circle cx="${a - 4}" cy="-18" r="3" fill="#e5533d"/><circle cx="${a + 5}" cy="-10" r="3" fill="#e5533d"/>`).join('')),
+    burnt: (x, y, s) => g(x, y, s, `<path d="M-60 0h120" stroke="#3a3128" stroke-width="4"/>` + [-44, -22, 0, 22, 44].map(a => `<path d="M${a} 0v-18M${a}-8l-8-8M${a}-10l8-8" stroke="#2b2520" stroke-width="3" fill="none" stroke-linecap="round"/>`).join('')),
   };
   return spec => {
     const [sky, ground, gy = 130, ...items] = spec; const [c1, c2] = SKY[sky] || SKY.day; const id = 'k' + Math.random().toString(36).slice(2, 8);
@@ -602,19 +748,110 @@ const KIDS = [
     learn: ['نعبد الله وحده.', 'برّ الوالدين وشكرهما.', 'التواضع وخفض الصوت وحسن الخلق.'],
     quiz: [['بماذا بدأ لقمان وصيته؟', ['لا تشرك بالله', 'العب كثيراً', 'نم مبكراً'], 0], ['من أوصانا الله بشكرهما بعد شكره؟', ['الوالدين', 'الجيران فقط', 'لا أحد'], 0], ['كيف نمشي؟', ['بتواضع واعتدال', 'بتكبّر', 'بسرعة ونصرخ'], 0]],
     mem: [31, 17] },
+  { id: 'ibnadam', t: 'ابنا آدم والغراب', age: '٦+', c: '#7d5a3c', cover: ['dusk', 'desert', 146, ['sun', 250, 46], ['crow', 160, 150, 1.5], ['mound', 80, 160, 1]],
+    scenes: [
+      ['قدّم ابنا آدم كلٌّ منهما قرباناً إلى الله، فتقبّل الله من أحدهما ولم يتقبّل من الآخر.', [5, 27], ['day', 'grass', 140, ['sun', 50, 40], ['cloud', 250, 40], ['basket', 110, 150, 1.2], ['basket', 210, 150, 1.2]]],
+      ['غضب الذي لم يُتقبَّل منه، وقال لأخيه: لأقتلنّك! فقال له أخوه بهدوء: إنما يتقبّل الله من المتّقين.', [5, 27], ['storm', 'grass', 146, ['darkcloud', 80, 40], ['darkcloud', 230, 34], ['heart', 160, 120, 1.3]]],
+      ['قال الأخ الطيّب: لو مددتَ يدك إليّ لتقتلني فلن أمدّ يدي إليك لأقتلك، إني أخاف الله ربّ العالمين.', [5, 28], ['dawn', 'grass', 146, ['sun', 260, 56], ['lamp', 160, 150, 1.4], ['heart', 90, 130, .9]]],
+      ['لكنّ نفسه زيّنت له القتل فقتل أخاه، وأصبح من الخاسرين.', [5, 30], ['storm', 'desert', 146, ['darkcloud', 70, 40], ['darkcloud', 210, 34], ['rock', 160, 156, 1.1]]],
+      ['فأرسل الله غراباً يحفر في الأرض ليُريَه كيف يستر جسد أخيه، فقال نادماً: يا ويلتا، أعجزتُ أن أكون مثل هذا الغراب؟', [5, 31], ['day', 'desert', 146, ['sun', 60, 40], ['cloud', 240, 40], ['crow', 130, 156, 1.6], ['mound', 220, 160, 1.2]]],
+    ],
+    learn: ['لا نحسد أحداً على نعمة الله، ولا نؤذي أحداً.', 'نخاف الله ونبتعد عن الأذى حتى لو غضبنا.', 'نتعلّم حتى من الطيور، وإذا أخطأنا نندم ونرجع إلى الله.'],
+    quiz: [['ماذا أرسل الله ليُري ابن آدم كيف يستر أخاه؟', ['غراباً', 'صقراً', 'ذئباً'], 0], ['ماذا قال الأخ الطيب؟', ['إني أخاف الله ربّ العالمين', 'سأنتقم منك', 'لا أبالي'], 0], ['ممّن يتقبّل الله؟', ['من المتّقين', 'من الأغنياء فقط', 'من الأقوياء'], 0]],
+    mem: [5, 28] },
+  { id: 'ayyub', t: 'أيوب الصابر', age: '٥+', c: '#2e8b8b', cover: ['dawn', 'desert', 148, ['sun', 250, 54], ['spring', 160, 158, 1.5], ['palm', 60, 150, .8]],
+    scenes: [
+      ['كان أيوب عبداً صالحاً، أصابه مرضٌ وضرٌّ شديد، فصبر ولجأ إلى الله، ووصفه الله بأنه صابر، نعم العبد.', [38, 44], ['night', 'desert', 150, ['moon', 250, 44], ['lamp', 160, 146, 1.3]]],
+      ['ونادى أيوب ربّه: إني مسّني الضرّ وأنت أرحم الراحمين.', [21, 83], ['night', 'hills', 150, ['stars', 0, 0], ['moon', 70, 44], ['heart', 170, 120, 1.4]]],
+      ['فاستجاب الله له، وقال له: اضرب الأرض برجلك، هذا ماءٌ بارد تغتسل به وتشرب منه.', [38, 42], ['day', 'desert', 148, ['sun', 50, 40], ['cloud', 250, 40], ['spring', 170, 156, 1.6]]],
+      ['فكشف الله عنه ما به من ضرّ، وجاء الفرج بعد الصبر.', [21, 84], ['dawn', 'grass', 148, ['sun', 160, 60], ['heart', 100, 130, 1], ['palm', 260, 150, .9]]],
+      ['وأعطاه الله أهله ومثلهم معهم، رحمةً منه وتذكرةً لأصحاب العقول.', [38, 43], ['day', 'grass', 146, ['sun', 56, 40], ['palm', 70, 150, .9], ['tree', 250, 150, .9], ['heart', 150, 130, 1.1], ['heart', 190, 126, .9]]],
+    ],
+    learn: ['نصبر على المرض والمصائب ونثق بالله.', 'ندعو الله وحده، فهو أرحم الراحمين.', 'الفرج يأتي بعد الصبر.'],
+    quiz: [['ماذا قال أيوب في دعائه؟', ['مسّني الضرّ وأنت أرحم الراحمين', 'أريد كنزاً', 'لا شيء'], 0], ['ماذا أمره الله أن يفعل؟', ['يضرب الأرض برجله فيخرج ماء بارد', 'يسافر بعيداً', 'يترك بيته'], 0], ['بماذا وصف الله أيوب؟', ['صابراً، نعم العبد', 'كسولاً', 'غاضباً'], 0]],
+    mem: [21, 83] },
+  { id: 'jannatayn', t: 'صاحب الجنتين', age: '٧+', c: '#6a8f2a', cover: ['day', 'grass', 142, ['sun', 52, 40], ['vines', 100, 150, 1], ['palm', 250, 150, 1]],
+    scenes: [
+      ['ضرب الله مثلاً برجلين: جعل لأحدهما بستانين من أعناب ونخل، وبينهما زرع، وفجّر بينهما نهراً.', [18, 32, 33], ['day', 'river', 138, ['sun', 52, 40], ['vines', 90, 140, .9], ['palm', 240, 140, 1], ['palm', 290, 145, .8]]],
+      ['فقال صاحب البستان لصاحبه وهو يحاوره: أنا أكثر منك مالاً وأعزّ نفراً! وظنّ أن بستانه لن يفنى أبداً.', [18, 34, 35], ['day', 'grass', 142, ['sun', 260, 40], ['coins', 120, 150, 1.4], ['garden', 230, 152, .9]]],
+      ['فنصحه صاحبه المؤمن: هلّا قلتَ حين دخلت بستانك: ما شاء الله، لا قوة إلا بالله!', [18, 38, 39], ['dawn', 'grass', 144, ['sun', 160, 56], ['lamp', 160, 150, 1.3], ['heart', 250, 130, 1]]],
+      ['فأهلك الله ثمر البستان، فأصبح خالياً، وأخذ صاحبه يقلّب كفّيه حسرةً على ما أنفق فيه.', [18, 42], ['storm', 'desert', 144, ['darkcloud', 70, 40], ['darkcloud', 220, 34], ['burnt', 150, 156, 1], ['deadtree', 260, 156, 1]]],
+      ['وقال: يا ليتني لم أشرك بربي أحداً! ولم يجد من ينصره من دون الله، فالنصر لله الحقّ وهو خير ثواباً.', [18, 43, 44], ['dawn', 'hills', 146, ['sun', 250, 50], ['lamp', 150, 150, 1.4], ['heart', 100, 130, 1]]],
+    ],
+    learn: ['نقول: ما شاء الله، لا قوة إلا بالله، حين نرى نعمة.', 'المال لا يُغني عن الله شيئاً.', 'نشكر الله على نعمه ولا نتكبّر على أحد.'],
+    quiz: [['ماذا نقول حين نرى نعمة جميلة؟', ['ما شاء الله، لا قوة إلا بالله', 'أنا الذي صنعتها', 'لا شيء'], 0], ['ماذا كان في بستان الرجل؟', ['أعناب ونخل', 'ورود فقط', 'حجارة'], 0], ['من الذي أهلك ثمر البستان؟', ['الله', 'الجيران', 'لا أحد'], 0]],
+    mem: [18, 39] },
+  { id: 'bayt', t: 'بناء الكعبة', age: '٥+', c: '#1b1b1f', cover: ['day', 'desert', 148, ['sun', 250, 44], ['kaaba', 160, 152, 1.5], ['stones', 70, 160, 1]],
+    scenes: [
+      ['جعل الله البيت الحرام مكاناً يرجع إليه الناس ويأمنون فيه.', [2, 125], ['day', 'desert', 148, ['sun', 56, 40], ['cloud', 250, 40], ['kaaba', 160, 152, 1.3]]],
+      ['وأمر الله إبراهيم وإسماعيل عليهما السلام أن يطهّرا بيته للطائفين والعاكفين والرُّكَّع السجود.', [2, 125], ['dawn', 'desert', 148, ['sun', 260, 54], ['kaaba', 150, 152, 1.2], ['lamp', 250, 150, 1]]],
+      ['ورفع إبراهيم وإسماعيل قواعد البيت، حجراً فوق حجر، وهما يعملان بصبر وتعاون.', [2, 127], ['day', 'desert', 148, ['sun', 50, 40], ['stones', 90, 158, 1.2], ['kaaba', 200, 152, .8]]],
+      ['وكانا يقولان: ربّنا تقبّل منّا، إنك أنت السميع العليم.', [2, 127], ['dusk', 'desert', 148, ['sun', 260, 60], ['kaaba', 150, 152, 1.2], ['heart', 70, 130, 1], ['bird', 230, 60, 1]]],
+      ['ودعا إبراهيم: ربّ اجعل هذا البلد آمناً، وارزق أهله من الثمرات.', [2, 126], ['night', 'desert', 148, ['moon', 260, 44], ['kaaba', 150, 152, 1.2], ['palm', 60, 152, .8], ['wheat', 250, 156, 1]]],
+    ],
+    learn: ['نبني الخير ونسأل الله أن يتقبّله منّا.', 'نتعاون في الأعمال الصالحة كما تعاون إبراهيم وإسماعيل.', 'الكعبة بيت الله، وهي قبلتنا في الصلاة.'],
+    quiz: [['من رفع قواعد البيت؟', ['إبراهيم وإسماعيل', 'نوح وهود', 'موسى وهارون'], 0], ['ماذا قالا بعد البناء؟', ['ربنا تقبّل منا إنك أنت السميع العليم', 'انتهينا', 'لا شيء'], 0], ['ماذا دعا إبراهيم لهذا البلد؟', ['أن يكون آمناً ويُرزق أهله من الثمرات', 'أن يصير كبيراً فقط', 'لا شيء'], 0]],
+    mem: [2, 127] },
+  { id: 'nakhla', t: 'النخلة والرُّطَب', age: '٦+', c: '#b0713a', cover: ['dawn', 'desert', 150, ['sun', 250, 50], ['palm', 150, 156, 1.5], ['dates', 160, 100, 1]],
+    scenes: [
+      ['حملت مريم عليها السلام بأمر الله، فابتعدت إلى مكانٍ بعيد.', [19, 22], ['dusk', 'desert', 150, ['sun', 260, 60], ['mountain', 80, 150, .9], ['palm', 220, 154, .9]]],
+      ['وجاءها ألم الولادة إلى جذع النخلة، فقالت: يا ليتني متّ قبل هذا!', [19, 23], ['night', 'desert', 150, ['moon', 250, 44], ['palm', 150, 156, 1.4]]],
+      ['فناداها من تحتها: لا تحزني، قد جعل ربّك تحتك جدول ماء.', [19, 24], ['dawn', 'desert', 148, ['sun', 260, 54], ['palm', 100, 154, 1.2], ['spring', 220, 158, 1.4]]],
+      ['وقال لها: حرّكي جذع النخلة يسقط عليك رُطباً طازجاً.', [19, 25], ['day', 'desert', 148, ['sun', 56, 40], ['palm', 150, 156, 1.5], ['dates', 148, 96, 1.1], ['dates', 168, 108, .9]]],
+      ['فكُلي واشربي وطيبي نفساً، وإن رأيتِ أحداً فقولي: إني نذرتُ للرحمن صوماً فلن أكلّم اليوم إنسياً.', [19, 26], ['day', 'grass', 148, ['sun', 250, 44], ['palm', 90, 154, 1.1], ['spring', 220, 158, 1.2], ['dates', 100, 160, 1]]],
+    ],
+    learn: ['الله يرعى عباده ولا ينساهم وقت الشدة.', 'نأخذ بالأسباب ونتوكّل على الله، كما أُمرت بهزّ النخلة.', 'نصبر ونثق برحمة الله.'],
+    quiz: [['ماذا أمرها الله أن تفعل بجذع النخلة؟', ['تهزّه فيسقط عليها رطب طازج', 'تقطعه', 'تنام تحته'], 0], ['ماذا جعل الله تحتها؟', ['جدول ماء', 'جبلاً', 'بيتاً'], 0], ['ماذا تقول إن رأت أحداً؟', ['نذرتُ للرحمن صوماً فلن أكلّم اليوم إنسياً', 'لا أعرفكم', 'تعالوا إليّ'], 0]],
+    mem: [19, 25] },
+  { id: 'qarnayn', t: 'ذو القرنين والسدّ', age: '٨+', c: '#6b7280', cover: ['dawn', 'hills', 146, ['sun', 250, 50], ['mountain', 60, 150, 1.1], ['wall', 170, 156, 1.2], ['mountain', 290, 150, 1.1]],
+    scenes: [
+      ['سأل الناس عن ذي القرنين، وكان ملكاً صالحاً مكّن الله له في الأرض وآتاه من كل شيء سبباً.', [18, 83, 84], ['day', 'hills', 146, ['sun', 56, 40], ['path', 160, 156, 1], ['mountain', 260, 150, 1]]],
+      ['وسار في الأرض حتى بلغ مغرب الشمس، فقال: من ظلم فسوف نعذّبه، ومن آمن وعمل صالحاً فله الجزاء الحسن ونقول له قولاً يسيراً.', [18, 86, 88], ['dusk', 'sea', 140, ['sun', 160, 88], ['boat', 90, 150, 1], ['bird', 240, 60, 1]]],
+      ['ثم بلغ بين جبلين، فوجد قوماً لا يكادون يفهمون كلاماً، فشكوا إليه فساد يأجوج ومأجوج.', [18, 93, 94], ['day', 'hills', 146, ['sun', 50, 40], ['mountain', 80, 150, 1.2], ['mountain', 250, 150, 1.2], ['path', 165, 160, 1]]],
+      ['قال: ما أعطاني ربّي خيرٌ من مالكم، فأعينوني بقوّة، أجعل بينكم وبينهم سدّاً.', [18, 95], ['day', 'hills', 146, ['sun', 260, 40], ['ironbars', 120, 158, 1.2], ['ironbars', 200, 158, 1], ['mountain', 40, 150, .9]]],
+      ['فجاءوا بقطع الحديد حتى ملأوا ما بين الجبلين، وأشعلوا عليه النار حتى صار أحمر، وصبّ عليه النحاس المذاب.', [18, 96], ['dusk', 'hills', 146, ['sun', 260, 60], ['mountain', 50, 150, 1], ['fire', 160, 156, .9], ['ironbars', 240, 160, 1]]],
+      ['فلم يستطيعوا أن يتسلّقوه ولم يقدروا على ثقبه، فقال: هذا رحمة من ربي، فإذا جاء وعد ربي جعله مستوياً بالأرض، وكان وعد ربي حقاً.', [18, 97, 98], ['dawn', 'hills', 146, ['sun', 250, 50], ['mountain', 50, 150, 1.1], ['wall', 170, 158, 1.2], ['mountain', 290, 150, 1.1]]],
+    ],
+    learn: ['القوة والمال نعمة من الله نستعملها لنفع الناس.', 'نتعاون: أعينوني بقوة.', 'نقول: هذا من فضل ربي، ولا نتكبّر.'],
+    quiz: [['ماذا بنى ذو القرنين؟', ['سدّاً من الحديد والنحاس', 'قصراً من الذهب', 'سفينة'], 0], ['بماذا استعان على بنائه؟', ['بقوّة الناس وعملهم', 'بالسحر', 'بلا أحد'], 0], ['ماذا قال عند اكتماله؟', ['هذا رحمة من ربي', 'أنا الأقوى', 'لا شيء'], 0]],
+    mem: [18, 98] },
+  { id: 'hadiqa', t: 'أصحاب الحديقة', age: '٧+', c: '#3f8a3a', cover: ['dawn', 'grass', 146, ['sun', 52, 50], ['garden', 160, 156, 1.4], ['palm', 270, 150, .9]],
+    scenes: [
+      ['كان لقومٍ حديقة جميلة مليئة بالثمار، وحلفوا ليقطفنّ ثمارها في الصباح الباكر، ولم يقولوا: إن شاء الله.', [68, 17, 18], ['dawn', 'grass', 146, ['sun', 56, 50], ['garden', 160, 156, 1.3], ['palm', 270, 152, .9]]],
+      ['فمرّ عليها بلاء من ربّك وهم نائمون، فأصبحت كالليل المظلم.', [68, 19, 20], ['night', 'desert', 146, ['moon', 250, 44], ['darkcloud', 80, 40], ['burnt', 160, 156, 1.2]]],
+      ['وفي الصباح نادى بعضهم بعضاً، ومشَوا وهم يتهامسون: لا يدخلنّها اليوم عليكم فقير.', [68, 21, 24], ['dawn', 'grass', 146, ['sun', 260, 56], ['path', 0, 0, 1], ['palm', 60, 150, .8], ['stones', 160, 160, 1]]],
+      ['فلمّا رأوها قالوا: إنّا لضالّون الطريق! ثم قالوا: بل نحن محرومون.', [68, 26, 27], ['dusk', 'desert', 146, ['sun', 250, 66], ['burnt', 150, 156, 1.2], ['deadtree', 260, 156, 1]]],
+      ['فقال أعدلهم: ألم أقل لكم لولا تسبّحون؟ فقالوا: سبحان ربّنا إنّا كنّا ظالمين.', [68, 28, 29], ['dawn', 'grass', 146, ['sun', 160, 60], ['lamp', 160, 150, 1.4], ['heart', 90, 130, 1]]],
+      ['وتلاوموا وقالوا: يا ويلنا إنّا كنّا طاغين، عسى ربّنا أن يبدلنا خيراً منها، إنّا إلى ربّنا راغبون.', [68, 30, 32], ['day', 'grass', 146, ['sun', 56, 40], ['garden', 160, 156, 1.2], ['heart', 250, 130, 1.1]]],
+    ],
+    learn: ['نعطي الفقير حقّه ولا نبخل.', 'نقول: إن شاء الله، فيما نعزم عليه.', 'إذا أخطأنا نتوب ونرجع إلى الله.'],
+    quiz: [['ماذا أراد أصحاب الحديقة؟', ['ألّا يعطوا الفقراء شيئاً', 'أن يوزّعوها على الناس', 'أن يبيعوها'], 0], ['ماذا قال أعدلهم؟', ['ألم أقل لكم لولا تسبّحون', 'لا بأس', 'اذهبوا'], 0], ['ماذا قالوا بعد أن رأوا الحديقة؟', ['سبحان ربنا إنا كنا ظالمين', 'لا ذنب لنا', 'سنعيد بناءها وحدنا'], 0]],
+    mem: [68, 29] },
+  { id: 'baqara', t: 'البقرة', age: '٨+', c: '#c58a1f', cover: ['day', 'grass', 146, ['sun', 52, 40], ['cow', 160, 158, 1.6], ['wheat', 270, 160, 1]],
+    scenes: [
+      ['أمر الله بني إسرائيل على لسان موسى أن يذبحوا بقرة، فظنّوا أنه يمزح، فقال: أعوذ بالله أن أكون من الجاهلين.', [2, 67], ['day', 'grass', 146, ['sun', 56, 40], ['cow', 160, 158, 1.5], ['wheat', 270, 160, 1]]],
+      ['ثم أخذوا يسألون: ما هي؟ وما لونها؟ فجاءهم الوصف: بقرة صفراء شديدة الصفرة تسرّ الناظرين.', [2, 68, 69], ['dusk', 'grass', 146, ['sun', 250, 60], ['cow', 150, 158, 1.6], ['cloud', 80, 40]]],
+      ['وقالوا: وإنّا إن شاء الله لمهتدون. فقيل لهم: بقرة لا تحرث الأرض ولا تسقي الزرع، سليمة لا عيب فيها.', [2, 70, 71], ['day', 'grass', 146, ['sun', 260, 40], ['cow', 150, 158, 1.5], ['wheat', 70, 160, 1], ['wheat', 250, 160, 1]]],
+      ['فذبحوها وهم كادوا ألّا يفعلوا.', [2, 71], ['dawn', 'desert', 146, ['sun', 160, 60], ['cow', 150, 158, 1.5], ['stones', 250, 164, 1]]],
+      ['ثم أمرهم الله أن يضربوا القتيل ببعضها، ليُريهم كيف يحيي الله الموتى، لعلّهم يعقلون.', [2, 72, 73], ['day', 'grass', 146, ['sun', 50, 40], ['heart', 160, 120, 1.4], ['palm', 70, 152, .9], ['tree', 260, 152, .9]]],
+    ],
+    learn: ['نطيع أمر الله بسرعة ولا نكثر الجدال والتعقيد.', 'الله قادر على إحياء الموتى.', 'نقول: إن شاء الله، فيما نريد فعله.'],
+    quiz: [['بماذا أمرهم الله أن يذبحوا؟', ['بقرة', 'ناقة', 'خروفاً'], 0], ['ما لون البقرة؟', ['صفراء فاقع لونها', 'سوداء', 'بيضاء'], 0], ['ماذا أراهم الله بذلك؟', ['كيف يحيي الله الموتى', 'كيف يطير الناس', 'لا شيء'], 0]],
+    mem: [2, 73] },
 ];
 const KSURAHS = [[1, 'الفاتحة'], [112, 'الإخلاص'], [113, 'الفلق'], [114, 'الناس'], [108, 'الكوثر'], [103, 'العصر'], [105, 'الفيل'], [106, 'قريش'], [107, 'الماعون'], [110, 'النصر'], [111, 'المسد'], [109, 'الكافرون'], [97, 'القدر'], [99, 'الزلزلة'], [94, 'الشرح'], [93, 'الضحى']];
 const kidsStars = () => LS.get('kids', {}) || {};
 function kidsRef([s, a, b]) { const i = idxOf(s, a); return `<a class="k-ref" data-ayah="${i}">${esc(Q.surahs[s - 1].name)} ${n(a)}${b ? `<span>–${n(b)}</span>` : ''}</a>`; }
 function kidsAyat([s, a, b]) { const o = []; for (let k = a; k <= (b || a); k++) { const i = idxOf(s, k); if (i >= 0) o.push(ayahHTML(i, null, false)); } return o.join(''); }
 function kids(id) {
+  if (id === 'quiz') return kidsChallenge();
   const st = kidsStars(), total = KIDS.reduce((t, k) => t + (st[k.id] || 0), 0);
   const story = id && KIDS.find(k => k.id === id);
   if (!story) {
     V(`<div class="stack kids">
       <section class="k-hero"><div class="k-hero-art">${KSV(['dawn', 'hills', 130, ['sun', 260, 50], ['cloud', 80, 40], ['ark', 90, 128, .55], ['palm', 300, 140, .8], ['bird', 170, 50, 1], ['bird', 200, 40, .8]])}</div>
         <div class="k-hero-tx"><span class="eyebrow">ركن الأطفال</span><h1>قصص القرآن للأطفال</h1><p class="lead">حكايات مصوّرة من القرآن الكريم، كل مشهد مرتبط بآيته. اقرأ القصة، وتعلّم منها، وأجب عن الأسئلة لتجمع النجوم.</p>
-        <div class="k-stars" aria-label="نجومك"><span>نجومك</span><b>${'★'.repeat(Math.min(total, 10))}${total > 10 ? ' +' + n(total - 10) : ''}</b><em>${n(total)} من ${n(KIDS.length * 3)}</em></div></div></section>
+        <div class="toolbar"><a class="btn pri k-cta" href="#k-quiz">تحدّي الأسئلة</a></div><div class="k-stars" aria-label="نجومك"><span>نجومك</span><b>${'★'.repeat(Math.min(total, 10))}${total > 10 ? ' +' + n(total - 10) : ''}</b><em>${n(total)} من ${n(KIDS.length * 3)}</em></div></div></section>
       <section><div class="sec-head"><div><span class="eyebrow">${n(KIDS.length)} قصة</span><h2>اختر قصة</h2></div></div>
       <div class="k-grid">${KIDS.map((k, i) => `<a class="k-card" href="#k-${k.id}" style="--kc:${k.c}"><span class="k-art">${KSV(k.cover)}</span><span class="k-meta"><span class="k-num">${n(i + 1)}</span><b>${k.t}</b><small>${n(k.scenes.length)} مشاهد · العمر ${k.age}</small><span class="k-st" aria-label="النجوم">${'★'.repeat(st[k.id] || 0)}${'☆'.repeat(3 - (st[k.id] || 0))}</span></span></a>`).join('')}</div></section>
       <section class="panel stack tight"><div class="sec-head"><div><span class="eyebrow">احفظ مع مشكاة</span><h2>سور قصيرة للحفظ</h2></div><a class="btn" href="#hifz">الحفظ والتسميع</a></div>
@@ -646,6 +883,37 @@ function kids(id) {
     else { f.dataset.miss = 1; fb.textContent = 'حاول مرة أخرى'; }
     if ([...$$('.k-q')].every(x => x.dataset.done)) { const all = kidsStars(); all[story.id] = Math.max(all[story.id] || 0, got.size); LS.set('kids', all); const sc = $('#kscore'); sc.hidden = false; sc.innerHTML = `<b>${'★'.repeat(got.size)}${'☆'.repeat(3 - got.size)}</b> ${got.size === 3 ? 'ما شاء الله! أجبت عن كل الأسئلة من أول مرة.' : 'أحسنت! أعد قراءة القصة وحاول مرة أخرى لتجمع كل النجوم.'}`; }
   }));
+}
+
+
+/* تحدّي الأسئلة: عشرة أسئلة عشوائية من كل القصص، ولكل جواب صحيح من المحاولة الأولى نقطة */
+function kidsChallenge() {
+  const pool = []; KIDS.forEach(k => k.quiz.forEach(([q, ops, c]) => pool.push({ q, ops, c, st: k.t, col: k.c })));
+  for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+  const qs = pool.slice(0, 10), best = +(LS.get('kidsq', 0) || 0);
+  V(`<div class="stack kids k-story" style="--kc:#2e86c1">
+    <nav class="crumbs"><a href="#kids">ركن الأطفال</a> › <span>تحدّي الأسئلة</span></nav>
+    <header class="k-head"><div><span class="eyebrow">تحدّي الأسئلة</span><h1>هل تذكر القصص؟</h1><p class="lead">عشرة أسئلة من كل قصص الركن. اختر الجواب الصحيح، ولكل جواب صحيح من المحاولة الأولى نقطة.</p><p class="muted small">أفضل نتيجة لك: ${n(best)} من ${n(10)}</p></div></header>
+    <section class="panel k-quiz" id="kquiz">${qs.map((o, qi) => {
+      const ord = o.ops.map((t, k) => [t, k]).sort(() => Math.random() - .5);
+      return `<fieldset class="k-q" data-q="${qi}"><legend>${n(qi + 1)}. ${esc(o.q)} <span class="k-from" style="--kc:${o.col}">${esc(o.st)}</span></legend>${ord.map(([t, k]) => `<button type="button" class="k-op" data-k="${k}">${esc(t)}</button>`).join('')}<span class="k-fb" aria-live="polite"></span></fieldset>`;
+    }).join('')}<div class="k-score" id="kscore" hidden></div></section>
+    <div class="toolbar"><a class="btn" href="#kids">رجوع إلى القصص</a><button type="button" class="btn k-again" id="kagain" hidden>جولة جديدة</button></div>
+  </div>`);
+  const got = new Set();
+  $$('.k-q').forEach(f => f.querySelectorAll('.k-op').forEach(b => b.onclick = () => {
+    if (f.dataset.done) return; const qi = +f.dataset.q, right = qs[qi].c === +b.dataset.k;
+    b.classList.add(right ? 'ok' : 'no'); const fb = f.querySelector('.k-fb');
+    if (right) { f.dataset.done = 1; if (!f.dataset.miss) got.add(qi); fb.textContent = 'أحسنت! ★'; f.querySelectorAll('.k-op').forEach(x => x.disabled = true); }
+    else { f.dataset.miss = 1; fb.textContent = 'حاول مرة أخرى'; }
+    if ([...$$('.k-q')].every(x => x.dataset.done)) {
+      const sc = got.size; if (sc > best) LS.set('kidsq', sc);
+      const el = $('#kscore'); el.hidden = false;
+      el.innerHTML = `<b>${n(sc)} من ${n(10)}</b> ${sc === 10 ? 'ما شاء الله! نتيجة كاملة.' : sc >= 7 ? 'أحسنت! أنت تحفظ القصص جيداً.' : 'أحسنت! أعد قراءة القصص وحاول مرة أخرى.'}`;
+      $('#kagain').hidden = false;
+    }
+  }));
+  const again = $('#kagain'); if (again) again.onclick = () => kidsChallenge();
 }
 
 
@@ -876,8 +1144,8 @@ const THEMES = {
         ['قل أعوذ برب الفلق، قل أعوذ برب الناس', 'المعوّذتان', [113, 1, 5], 'لبيد/سحر/الفلق', 'استعاذة من شر الخلق والحسد والسحر والوسواس.', 'في صحيح البخاري من حديث عائشة أن النبي ﷺ كان إذا أوى إلى فراشه نفث في كفيه بالإخلاص والمعوذتين ومسح بهما جسده. وفي سنن أبي داود والترمذي قراءتها ثلاثاً صباحاً ومساءً.'],
       ]],
     ] },
-  nisaa: { t: 'المرأة في القرآن', ey: 'اكتشف وتأمّل', ic: 'i-flower',
-    lead: 'النساء اللاتي ذكرهن القرآن الكريم وقصصهن، وما خاطب الله به المرأة من حقوق وأحكام وأحوال، كلٌّ بآياته وتفسيره ونقل بلفظه من كتب التفسير.',
+  nisaa: { t: 'ركن المرأة في القرآن', ey: 'اكتشف وتأمّل', ic: 'i-flower',
+    lead: 'ركنٌ جامع للمرأة كما ذكرها القرآن الكريم: النساء اللاتي ذكرهن وقصصهن، ومكانتها وحقوقها، وأحوالها وأحكامها، وما شرعه الله لحمايتها وصون كرامتها، كلٌّ بآياته وتفسيره ونقل بلفظه من كتب التفسير.',
     note: 'نص الآيات من المصحف، والتفسير من الميسّر، والنقل بلفظه من كتب التفسير المضمّنة، وأقربها لأحكام النساء «الجامع لأحكام القرآن» للقرطبي. والتمهيد تلخيص موجز، وتفصيل الأحكام ومذاهب الفقهاء في كتب الفقه.',
     groups: [
       ['نساء ذكرهن القرآن', [
@@ -896,6 +1164,14 @@ const THEMES = {
         ['امرأة أبي لهب', 'حمّالة الحطب', [111, 4, 5], 'حمالة الحطب/أم جميل', 'كانت تؤذي النبي ﷺ، فذكر الله جزاءها.', ''],
         ['أمهات المؤمنين', 'زوجات النبي ﷺ', [33, 32, 34], 'نساء النبي', 'خاطبهن الله بالتقوى وحسن القول والقرار في البيوت وإقامة الصلاة.', ''],
         ['براءة أم المؤمنين عائشة', 'حادثة الإفك', [24, 11, 12], 'عائشة/الإفك', 'أنزل الله براءتها في آيات تُتلى، وأدّب المؤمنين في التثبت من الأخبار.', ''],
+      ]],
+      ['نساء أخريات في قصص القرآن', [
+        ['هاجر أم إسماعيل', 'أسكنها إبراهيم بوادٍ غير ذي زرع عند البيت', [14, 37], 'هاجر/غير ذي زرع', 'ترك إبراهيم عليه السلام زوجه وولده بوادٍ لا زرع فيه عند البيت المحرم، ودعا لهما، فكان من صبرها وتوكلها على الله بدءُ عمارة مكة.', ''],
+        ['امرأة زكريا عليه السلام', 'وُهب لها يحيى بعد العقم والكبر', [3, 40], 'عاقر/امرأتي', 'كانت عاقراً وقد بلغ زكريا الكبر، فوهب الله لهما يحيى، آيةً على أن قدرة الله لا تحدّها الأسباب.', ''],
+        ['بنات لوط عليه السلام', 'دعا قومه إلى النكاح الحلال', [11, 78], 'بناتي', 'قال لوط عليه السلام لقومه: «هؤلاء بناتي هن أطهر لكم»، يدعوهم إلى الزواج الحلال بدل الفاحشة، وقال كثير من المفسرين: أراد نساء أمته.', ''],
+        ['التي نقضت غزلها', 'مثلٌ لمن ينقض العهد بعد توكيده', [16, 92], 'غزلها/خرقاء', 'ضرب الله بها المثل لمن ينقض عهده بعد توكيده، كمن تغزل غزلها ثم تنقضه أنكاثاً.', ''],
+        ['حفصة وعائشة رضي الله عنهما', 'حفظ أسرار البيت والتوبة إلى الله', [66, 3, 5], 'حفصة', 'أسرّ النبي ﷺ إلى بعض أزواجه حديثاً فأفشته، فدعا الله الاثنتين إلى التوبة، وفي ذلك أدب حفظ أسرار البيت.', ''],
+        ['المرأة التي وهبت نفسها للنبي ﷺ', 'حكم من خصائص النبي ﷺ', [33, 50], 'وهبت', 'أحلّ الله لنبيه ﷺ امرأةً مؤمنة إن وهبت نفسها له، خالصةً له من دون المؤمنين، فهو حكم من خصائصه ﷺ.', ''],
       ]],
       ['مكانتها وحقوقها', [
         ['المساواة في الأجر والجزاء', 'الرجل والمرأة في العمل الصالح سواء', [3, 195], 'ذكر أو أنثى/أم سلمة', 'لا يضيع الله عمل عامل من ذكر أو أنثى.', ''],
@@ -917,9 +1193,19 @@ const THEMES = {
         ['بيعة النساء', 'بايعت المؤمنات النبي ﷺ', [60, 12], 'يبايعنك', 'بايعن على التوحيد والعفة وترك المعاصي، فصارت لهن ذمة مستقلة.', ''],
         ['هجرة المؤمنات', 'امتحان المهاجرات وحمايتهن', [60, 10], 'فامتحنوهن/امتحان/يمتحن/المهاجرات', 'أمر الله بامتحان المهاجرات وعدم ردّهن إلى الكفار.', ''],
       ]],
+      ['حمايتها وكرامتها في الأحكام', [
+        ['حماية العرض وحدّ القذف', 'عقوبة من يرمي المحصنات', [24, 4, 5], 'المحصنات/يرمون', 'شدّد الله عقوبة من يرمي المحصنات بغير بيّنة، فجعل عليه الحد، وردّ شهادته، وسمّاه فاسقاً إلا من تاب.', ''],
+        ['اللعان', 'إذا اتهم الزوج زوجه ولا شهود له', [24, 6, 9], 'اللعان/يلاعن/لاعن', 'شرع الله اللعان بين الزوجين إذا اتهم الرجل امرأته ولا شهود له، ويدرأ عنها العذاب أن تشهد أربع شهادات بالله.', ''],
+        ['الإيلاء', 'لا هجر بيمين فوق أربعة أشهر', [2, 226, 227], 'الإيلاء/يؤلون', 'منع الله أن يحلف الرجل على هجر امرأته أكثر من أربعة أشهر، رفعاً للضرر عنها؛ فإما أن يفيء وإما أن يطلّق.', ''],
+        ['عدة الوفاة', 'أربعة أشهر وعشر', [2, 234], 'أربعة أشهر وعشرا/عدة', 'جعل الله عدة المتوفى عنها زوجها أربعة أشهر وعشراً، ثم لها أن تتصرف في نفسها بالمعروف.', ''],
+        ['متعة المطلقة', 'حقٌّ على المتقين', [2, 241], 'متاع/المتعة', 'أوجب الله للمطلقات متاعاً بالمعروف حقاً على المتقين، جبراً لخاطرهن وإحساناً عند الفراق.', ''],
+        ['الولاية المشتركة في الإيمان', 'المؤمنون والمؤمنات بعضهم أولياء بعض', [9, 71], 'أولياء بعض', 'جعل الله المؤمنين والمؤمنات أولياء بعض، يأمرون بالمعروف وينهون عن المنكر ويقيمون الصلاة، فالمرأة شريكة في الإصلاح.', ''],
+        ['تحريم أذى المؤمنات', 'بهتان وإثم مبين', [33, 58], 'يؤذون', 'توعّد الله من يؤذي المؤمنين والمؤمنات بغير ما اكتسبوا بأنه قد احتمل بهتاناً وإثماً مبيناً.', ''],
+        ['فتنة المؤمنات في دينهن', 'وعيد لمن عذّبهن ثم لم يتب', [85, 10], 'فتنوا', 'توعّد الله الذين فتنوا المؤمنين والمؤمنات عن دينهم ثم لم يتوبوا بعذاب جهنم وعذاب الحريق.', ''],
+      ]],
     ] },
-  rijal: { t: 'الرجل في القرآن', ey: 'اكتشف وتأمّل', ic: 'i-user',
-    lead: 'الرجال الذين ذكرهم القرآن الكريم من غير الأنبياء وقصصهم، وصفات الرجال المؤمنين، ومسؤولياته وأحكامه، كلٌّ بآياته وتفسيره ونقل بلفظه من كتب التفسير.',
+  rijal: { t: 'ركن الرجل في القرآن', ey: 'اكتشف وتأمّل', ic: 'i-user',
+    lead: 'ركنٌ جامع للرجل كما ذكره القرآن الكريم: رجال من غير الأنبياء ذكرهم وقصصهم، وخصال الرجولة وصفات المؤمنين، ومسؤولياته وأحكامه، كلٌّ بآياته وتفسيره ونقل بلفظه من كتب التفسير.',
     note: 'نص الآيات من المصحف، والتفسير من الميسّر، والنقل بلفظه من كتب التفسير المضمّنة. والتمهيد تلخيص موجز، وتفصيل الأحكام ومذاهب الفقهاء في كتب الفقه. وقصص الأنبياء في «قصص القرآن» من الموسوعة الموضوعية.',
     groups: [
       ['رجال ذكرهم القرآن', [
@@ -936,11 +1222,35 @@ const THEMES = {
         ['صاحب الجنتين', 'مثل الغني المغترّ', [18, 32, 35], 'الجنتين', 'اغترّ بماله وظن أنه لا يبيد، فأحاط الله بثمره.', ''],
         ['ابن نوح', 'أبى أن يركب السفينة', [11, 42, 43], 'ابنه', 'لم تنفعه قرابة أبيه، فالنجاة باتباع الحق.', ''],
       ]],
+      ['رجال آخرون في قصص القرآن', [
+        ['الفتية أصحاب الكهف', 'شباب آمنوا بربهم فزادهم الله هدى', [18, 13, 14], 'فتية', 'شبابٌ آمنوا بربهم فزادهم الله هدى، وربط على قلوبهم فقاموا بالتوحيد أمام قومهم.', ''],
+        ['أصحاب الأخدود والغلام', 'ثبات على التوحيد حتى الموت', [85, 4, 8], 'الأخدود/الغلام', 'قومٌ عُذّبوا بالنار في الأخدود لأنهم آمنوا بالله العزيز الحميد، وفي تفسيرها قصة الغلام الذي ثبت على التوحيد.', ''],
+        ['الذي مرّ على قرية', 'أماته الله مائة عام ثم بعثه', [2, 259], 'عزير', 'أماته الله مائة عام ثم بعثه، فلما تبيّن له قال: أعلم أن الله على كل شيء قدير.', ''],
+        ['الذي حاجّ إبراهيم في ربه', 'ملك طغى فبُهت أمام الحجة', [2, 258], 'نمروذ/نمرود', 'ملكٌ آتاه الله الملك فطغى وجادل إبراهيم في ربه، فأقام عليه إبراهيم الحجة فبُهت الذي كفر.', ''],
+        ['آزر أبو إبراهيم', 'دعوة الأب إلى التوحيد برفق', [6, 74], 'آزر', 'دعا إبراهيم عليه السلام أباه إلى التوحيد وترك الأصنام، وفي القصة أن الهداية لا تُورث بالقرابة.', ''],
+        ['السامري', 'أضلّ بني إسرائيل بالعجل', [20, 85, 88], 'السامري', 'أضلّ بني إسرائيل بعجلٍ جسدٍ له خوار، فكان مثلاً لمن يفتن الناس عن دينهم.', ''],
+        ['الذي انسلخ من آيات الله', 'علم بلا عمل', [7, 175, 176], 'بلعام', 'آتاه الله آياته فانسلخ منها واتبع هواه، فضرب الله له مثل الكلب، تحذيراً من العلم بلا عمل.', ''],
+        ['الوليد بن المغيرة', 'كفران النعمة وعناد الحق', [74, 11, 16], 'الوليد', 'آتاه الله مالاً ممدوداً وبنين شهوداً، فعاند آيات الله، فكان عبرة في كفران النعمة.', ''],
+        ['صاحب النبي ﷺ في الغار', 'لا تحزن إن الله معنا', [9, 40], 'أبو بكر/أبي بكر', 'قال النبي ﷺ لصاحبه في الغار: «لا تحزن إن الله معنا»، فأنزل الله سكينته عليه، وأجمع المفسرون أن الصاحب أبو بكر الصديق رضي الله عنه.', ''],
+        ['الثلاثة الذين خُلّفوا', 'نجّاهم الصدق', [9, 118], 'كعب بن مالك', 'تخلّفوا عن غزوة تبوك ثم صدقوا، فضاقت عليهم الأرض بما رحبت حتى تاب الله عليهم، فكان الصدق نجاتهم.', ''],
+        ['عبد الله بن أم مكتوم', 'الأعمى الذي جاء يسعى', [80, 1, 4], 'أم مكتوم', 'جاء يطلب العلم فعاتب الله نبيه ﷺ لأجله، وفيه أن قدر الرجل بإقباله على الهدى لا بمكانته في قومه.', ''],
+        ['أبرهة وأصحاب الفيل', 'جاء يهدم الكعبة فحمى الله بيته', [105, 1, 5], 'أبرهة', 'جاء بجيشه وفيله ليهدم الكعبة، فأرسل الله عليهم طيراً أبابيل، فحمى الله بيته.', ''],
+      ]],
       ['صفات الرجال المؤمنين', [
         ['رجال صدقوا ما عاهدوا الله عليه', 'الوفاء بالعهد', [33, 23], 'أنس بن النضر/صدقوا', 'مدح الله رجالاً ثبتوا على عهدهم حتى لقوه.', ''],
         ['رجال لا تلهيهم تجارة ولا بيع عن ذكر الله', 'عُمّار المساجد', [24, 36, 37], 'لا تلهيهم', 'يعملون ويتاجرون ولا يشغلهم ذلك عن الصلاة والزكاة.', ''],
         ['رجال يحبون أن يتطهروا', 'أهل مسجد قباء', [9, 108], 'قباء/يتطهروا', 'مدح الله طهارتهم الظاهرة والباطنة.', ''],
         ['عباد الرحمن', 'صفات جامعة للمؤمن', [25, 63, 64], 'هونا/الحلم/بالسكينة', 'تواضع وحلم وقيام بالليل واعتدال في الإنفاق.', ''],
+      ]],
+      ['خصال الرجولة كما يرسمها القرآن', [
+        ['صدق الوعد', 'خُلُق إسماعيل عليه السلام', [19, 54], 'صادق الوعد', 'أثنى الله على إسماعيل عليه السلام بأنه كان صادق الوعد، فالوفاء بالوعد من شيم الرجال.', ''],
+        ['الحلم والإنابة', 'خُلُق إبراهيم عليه السلام', [11, 75], 'حليم', 'وصف الله إبراهيم عليه السلام بأنه حليمٌ أوّاهٌ منيب، فالرجولة حلمٌ ورقّة قلب ورجوع إلى الله.', ''],
+        ['الوفاء بالتكاليف', 'إبراهيم الذي وفّى', [53, 37], 'وفى', 'أثنى الله على إبراهيم عليه السلام بأنه وفّى، أي أتمّ ما أُمر به وبلّغ ما أُرسل به.', ''],
+        ['إكرام الضيف', 'سنة إبراهيم عليه السلام', [51, 24, 27], 'الضيف/ضيف', 'جاء ضيف إبراهيم المكرمون، فراغ إلى أهله فجاء بعجلٍ سمين وقرّبه إليهم، فصار إكرام الضيف من هدي الأنبياء.', ''],
+        ['الشورى', 'وأمرهم شورى بينهم', [42, 38], 'شورى', 'من صفات المؤمنين التي ذكرها الله أن أمرهم شورى بينهم، فلا يستبدّ الرجل برأيه فيما يعمّ غيره.', ''],
+        ['كظم الغيظ والعفو', 'صفة المحسنين', [3, 134], 'الكاظمين', 'أعدّ الله الجنة للمتقين الذين ينفقون في السراء والضراء، والكاظمين الغيظ، والعافين عن الناس.', ''],
+        ['الشدة في الحق والرحمة بالمؤمنين', 'صفة أصحاب النبي ﷺ', [48, 29], 'أشداء', 'وصف الله أصحاب النبي ﷺ بأنهم أشداء على الكفار رحماء بينهم، تراهم ركعاً سجداً يبتغون فضلاً من الله ورضواناً.', ''],
+        ['الصبر والثبات', 'ربّيون ما وهنوا', [3, 146], 'ربيون', 'كم من نبي قاتل معه ربّيون كثير، فما وهنوا لما أصابهم في سبيل الله وما ضعفوا وما استكانوا.', ''],
       ]],
       ['مسؤولياته وأحكامه', [
         ['القوامة', 'مسؤولية رعاية وإنفاق', [4, 34], 'قوامون', 'جعل الله القوامة للرجال بما فضّل وبما أنفقوا، وهي رعاية وحماية.', ''],
@@ -952,6 +1262,8 @@ const THEMES = {
         ['بر الوالدين', 'الإحسان إليهما', [17, 23], 'أف/إحسانا', 'قرن الله الإحسان إلى الوالدين بعبادته.', ''],
         ['السعي في الرزق', 'العمل بعد الصلاة', [62, 10], 'فانتشروا', 'أمر الله بالانتشار في الأرض وابتغاء فضله مع ذكره كثيراً.', ''],
         ['الشهادة والأمانة', 'توثيق الحقوق', [2, 282], 'رجالكم/شهيدين', 'أمر الله بكتابة الدَّين والإشهاد عليه حفظاً للحقوق.', ''],
+        ['السعي إلى الجمعة', 'ترك البيع وقت النداء', [62, 9], 'الجمعة', 'أمر الله المؤمنين إذا نودي للصلاة يوم الجمعة أن يسعوا إلى ذكر الله ويذروا البيع، والجمعة واجبة على الرجال.', ''],
+        ['القتال دفاعاً عن الحق', 'كُتب عليكم القتال وهو كره لكم', [2, 216], 'كتب عليكم القتال', 'فرض الله القتال في سبيله دفاعاً عن الدين والنفس وهو كره للنفوس، وقد يكره المرء شيئاً وهو خير له.', ''],
       ]],
     ] },
   shifa: { t: 'الأمراض والعلاج في القرآن', ey: 'اكتشف وتأمّل', ic: 'i-heal', ul: 'كيف تنتفع به',
@@ -1004,6 +1316,60 @@ const THEMES = {
         ['حرمت عليكم الميتة والدم ولحم الخنزير', 'طهارة المطعوم', [5, 3], 'الميتة/الدم', 'حرّم الله الخبائث من المطعومات، وأباح الطيبات.', 'تحرَّ الحلال الطيب في طعامك.'],
         ['ويسألونك عن المحيض قل هو أذى', 'الطهارة وحفظ الأبدان', [2, 222], 'المحيض/أذى', 'سمّى الله المحيض أذى، وأمر باعتزال النساء فيه، وأثنى على المتطهرين.', 'الطهارة عبادة ووقاية معاً.'],
         ['وثيابك فطهر', 'النظافة', [74, 4], 'الثياب/طهارة', 'من أوائل ما نزل: الأمر بتطهير الثياب، وفسّره كثير من السلف بتطهير العمل والنفس أيضاً.', 'احرص على نظافة بدنك وثوبك ومكانك.'],
+      ]],
+    ] },
+  usra: { t: 'ركن الأسرة في القرآن', ey: 'اكتشف وتأمّل', ic: 'i-family',
+    lead: 'الأسرة كما بناها القرآن الكريم: الزواج وأسسه، والوالدان والأبناء، والتربية في البيت، وقصص الأسر في القرآن، وما يُصلح ما بين الزوجين، وصلة الأرحام والميراث، كلٌّ بآياته وتفسيره ونقل بلفظه من كتب التفسير.',
+    note: 'نص الآيات من المصحف، والتفسير من الميسّر، والنقل بلفظه من كتب التفسير المضمّنة. والتمهيد تلخيص موجز، وتفصيل الأحكام ومذاهب الفقهاء في كتب الفقه. وما يخص المرأة والرجل ففي «ركن المرأة» و«ركن الرجل»، والأدعية الخاصة بالأسرة في «أدعية القرآن».',
+    groups: [
+      ['بناء الأسرة', [
+        ['أصل الأسرة: نفس واحدة', 'الناس كلهم أسرة واحدة', [4, 1], 'نفس واحدة', 'افتتح الله سورة النساء بأن الناس خُلقوا من نفس واحدة وخُلق منها زوجها، وأمر بتقواه وبصلة الأرحام.', ''],
+        ['الزواج سنة المرسلين', 'جعل الله لهم أزواجاً وذرية', [13, 38], 'أزواجا وذرية', 'أرسل الله رسلاً من قبل النبي ﷺ وجعل لهم أزواجاً وذرية، فالزواج من هدي الأنبياء لا ينافي الرسالة.', ''],
+        ['تيسير الزواج', 'وأنكحوا الأيامى منكم', [24, 32], 'الأيامى', 'أمر الله بتزويج من لا زوج له من الرجال والنساء والصالحين من العبيد والإماء، ووعد الفقراء بالغنى من فضله.', ''],
+        ['الدين أولاً في الاختيار', 'ولأمة مؤمنة خير من مشركة', [2, 221], 'ولأمة مؤمنة', 'جعل الله الإيمان أول ما يُنظر إليه في الزواج، فالأمة المؤمنة خير من مشركة ولو أعجبتكم، والعبد المؤمن خير من مشرك.', ''],
+        ['المحرّمات من النساء', 'حفظ الأرحام والأنساب', [4, 23], 'حرمت عليكم', 'بيّن الله من يحرم نكاحهن من النسب والرضاع والمصاهرة، صيانةً للأرحام وحفظاً لحرمة البيوت.', ''],
+        ['الزوجان لباس', 'هن لباس لكم وأنتم لباس لهن', [2, 187], 'لباس', 'وصف الله كلاً من الزوجين بأنه لباس للآخر: سترٌ وسكنٌ وقرب، وهو من أبلغ ما وُصفت به صلة الزوجين.', ''],
+      ]],
+      ['الوالدان والأبناء', [
+        ['الوصية بالوالدين مع الثبات على الحق', 'ووصينا الإنسان بوالديه حسناً', [29, 8], 'ووصينا/حسنا', 'أوصى الله بالإحسان إلى الوالدين، فإن جاهدا الولد على الشرك فلا يطعهما، ويبقى برّه بهما.', ''],
+        ['مصاحبة الوالدين بالمعروف', 'ولو خالفا في الدين', [31, 15], 'وصاحبهما', 'أمر الله بمصاحبة الوالدين في الدنيا معروفاً ولو كانا مشركين، مع اتباع سبيل من أناب إليه.', ''],
+        ['النهي عن قتل الأولاد خشية الفقر', 'نحن نرزقهم وإياكم', [17, 31], 'إملاق', 'نهى الله عن قتل الأولاد خشية الفقر، وتكفّل برزقهم ورزق آبائهم، وجعل قتلهم خطئاً كبيراً.', ''],
+        ['الأولاد زينة الحياة', 'والباقيات الصالحات خير', [18, 46], 'زينة الحياة', 'المال والبنون زينة الحياة الدنيا، والأعمال الصالحات الباقية خيرٌ عند الله ثواباً وأملاً.', ''],
+        ['فتنة الأهل والأولاد', 'الحذر مع العفو والصفح', [64, 14, 15], 'عدوا لكم/فتنة', 'حذّر الله من أن يصدّ الأزواج والأولاد عن طاعته، وأمر مع ذلك بالعفو والصفح والمغفرة.', ''],
+        ['حفظ النسب', 'ادعوهم لآبائهم', [33, 4, 5], 'ادعوهم لآبائهم', 'أمر الله أن يُنسب كل ولد إلى أبيه، وأبطل نسبة الولد إلى غير أبيه، حفظاً للأنساب والحقوق.', ''],
+        ['اليتيم في كنف الأسرة', 'فإخوانكم', [2, 220], 'فإخوانكم', 'أذن الله بمخالطة اليتامى في المعيشة على وجه الإصلاح، وسمّاهم إخواناً، والله يعلم المفسد من المصلح.', ''],
+      ]],
+      ['التربية في البيت', [
+        ['وصايا لقمان: المراقبة والصلاة والصبر', 'تربية بالحكمة', [31, 16, 17], 'مثقال حبة/أقم الصلاة', 'علّم لقمان ابنه أن الله يأتي بمثقال حبة من خردل، وأمره بالصلاة والأمر بالمعروف والنهي عن المنكر والصبر.', ''],
+        ['وصية إبراهيم ويعقوب لأبنائهما', 'فلا تموتن إلا وأنتم مسلمون', [2, 132, 133], 'ووصى بها', 'وصّى إبراهيم بنيه وكذلك يعقوب بالثبات على الإسلام، وسأل يعقوب بنيه عند موته: ما تعبدون من بعدي.', ''],
+        ['أمر الأهل بالصلاة', 'واصطبر عليها', [20, 132], 'وأمر أهلك', 'أمر الله نبيه ﷺ أن يأمر أهله بالصلاة ويصطبر عليها، وتكفّل برزقه.', ''],
+        ['إسماعيل يأمر أهله', 'وكان عند ربه مرضياً', [19, 55], 'يأمر أهله', 'أثنى الله على إسماعيل عليه السلام بأنه كان يأمر أهله بالصلاة والزكاة، وكان عند ربه مرضياً.', ''],
+        ['آداب الاستئذان داخل البيت', 'ثلاث عورات لكم', [24, 58, 59], 'ثلاث عورات', 'أدّب الله الأطفال والخدم بالاستئذان في ثلاثة أوقات داخل البيت، فإذا بلغ الأطفال الحلم استأذنوا في كل وقت.', ''],
+      ]],
+      ['قصص أسر في القرآن', [
+        ['إبراهيم وإسماعيل: البلاء والتسليم', 'يا أبت افعل ما تؤمر', [37, 102, 107], 'أرى في المنام', 'شاور إبراهيم ابنه في رؤياه، فأجاب الابن: افعل ما تؤمر ستجدني إن شاء الله من الصابرين، ففداه الله بذبح عظيم.', ''],
+        ['ابنا آدم', 'أول جريمة بين أخوين', [5, 27, 31], 'هابيل/قابيل', 'تقبّل الله قربان أحد ابني آدم ولم يتقبل من الآخر فحسده وقتله، ثم أصبح من النادمين، فكانت القصة عبرة في الحسد بين الإخوة.', ''],
+        ['يعقوب وبنوه', 'لا تقصص رؤياك على إخوتك', [12, 5, 6], 'لا تقصص/إخوتك', 'نهى يعقوب ابنه يوسف أن يقصّ رؤياه على إخوته خشية كيدهم، فكان مثلاً في حكمة الأب ورعايته.', ''],
+        ['يوسف يعفو عن إخوته', 'لا تثريب عليكم اليوم', [12, 92], 'لا تثريب', 'لما قدر يوسف عليه السلام على إخوته عفا عنهم وقال: لا تثريب عليكم اليوم يغفر الله لكم، فاجتمع شمل الأسرة.', ''],
+        ['آل عمران', 'ذرية بعضها من بعض', [3, 33, 34], 'ذرية بعضها', 'اصطفى الله آدم ونوحاً وآل إبراهيم وآل عمران على العالمين، ذريةً بعضها من بعض في الإيمان والصلاح.', ''],
+        ['موسى وأهله في الطريق', 'امكثوا إني آنست ناراً', [28, 29], 'لأهله امكثوا/بأهله', 'سار موسى عليه السلام بأهله من مدين، فلما آنس ناراً قال لأهله: امكثوا لعلي آتيكم منها بخبر أو جذوة لعلكم تصطلون.', ''],
+        ['لوط وأهله', 'فأسر بأهلك بقطع من الليل', [11, 81], 'فأسر بأهلك', 'أمر الله لوطاً عليه السلام أن يسري بأهله ليلاً إلا امرأته، فالنجاة لمن آمن من الأسرة.', ''],
+      ]],
+      ['حين يختلف الزوجان', [
+        ['التحكيم بين الزوجين', 'حكماً من أهله وحكماً من أهلها', [4, 35], 'حكما', 'إذا خيف الشقاق بين الزوجين بُعث حكمٌ من أهل الزوج وحكمٌ من أهل الزوجة، فإن أرادا إصلاحاً وفّق الله بينهما.', ''],
+        ['والصلح خير', 'إذا خافت امرأة من بعلها نشوزاً', [4, 128], 'والصلح خير', 'إذا خافت المرأة من زوجها نشوزاً أو إعراضاً فلا جناح عليهما أن يصطلحا، والصلح خير.', ''],
+        ['الطلاق لعدّتهن', 'لا تخرجوهن من بيوتهن', [65, 1], 'لعدتهن', 'أمر الله أن يكون الطلاق في وقت تستقبل فيه المرأة عدتها، ونهى عن إخراج المطلقة من بيتها في العدة، لعل الله يُحدث بعد ذلك أمراً.', ''],
+        ['ولا تنسوا الفضل بينكم', 'المعروف حتى عند الفراق', [2, 237], 'الفضل بينكم', 'أوصى الله الزوجين عند الطلاق قبل الدخول بالعفو والسماحة، وقال: «ولا تنسوا الفضل بينكم».', ''],
+        ['النهي عن الإضرار', 'ولا تمسكوهن ضراراً', [2, 231], 'ضرارا', 'نهى الله الأزواج عن إمساك المطلقات للإضرار بهن، وجعل ذلك ظلماً للنفس واتخاذاً لآيات الله هزواً.', ''],
+        ['النهي عن العضل', 'أن ينكحن أزواجهن', [2, 232], 'تعضلوهن', 'نهى الله الأولياء أن يمنعوا المطلقة من الرجوع إلى زوجها إذا تراضيا بينهم بالمعروف.', ''],
+      ]],
+      ['الأسرة الكبيرة: الأرحام والميراث', [
+        ['صلة الرحم', 'وتقطعوا أرحامكم', [47, 22, 23], 'أرحامكم', 'قرن الله قطيعة الأرحام بالإفساد في الأرض، وتوعّد من فعل ذلك باللعن.', ''],
+        ['الإحسان إلى ذوي القربى', 'وبالوالدين إحساناً وبذي القربى', [4, 36], 'وبذي القربى', 'أمر الله بعبادته وحده، ثم بالإحسان إلى الوالدين وذوي القربى واليتامى والمساكين والجار.', ''],
+        ['الميراث فريضة من الله', 'يوصيكم الله في أولادكم', [4, 11], 'يوصيكم الله', 'تولّى الله قسمة الميراث بنفسه، وبيّن أنصبة الأولاد والوالدين، وقال: «فريضة من الله».', ''],
+        ['النفقة على الأقربين', 'قل ما أنفقتم من خير فللوالدين والأقربين', [2, 215], 'والأقربين', 'جعل الله الوالدين والأقربين أول من يُنفق عليه، ثم اليتامى والمساكين وابن السبيل.', ''],
+        ['البيت سكن', 'والله جعل لكم من بيوتكم سكناً', [16, 80], 'سكنا', 'امتنّ الله على الناس بأن جعل لهم من بيوتهم سكناً يطمئنون فيه، فالبيت مأوى الأسرة وموضع راحتها.', ''],
+        ['لمّ شمل الأسرة في الجنة', 'ألحقنا بهم ذريتهم', [52, 21], 'ألحقنا بهم ذريتهم', 'وعد الله المؤمنين أن يلحق بهم ذريتهم المؤمنة في الجنة وإن قصر عملهم، فتجتمع الأسرة المؤمنة في دار الكرامة.', ''],
       ]],
     ] },
 };
@@ -1077,6 +1443,7 @@ function tawhid() {
 }
 views.tawhid = tawhid;
 function shifa() { theme('shifa'); }
+function usra() { theme('usra'); }
 /* بيانات RUQYA في mods/ruqya.js: تُحمَّل عند أول فتح للقسم */
 /* ================= التداوي بالقرآن: آيات الشفاء والرقية الشرعية بأدلتها
    نصوص الأحاديث مقتطعة بلفظها من الكتب الستة المضمّنة (data/hadith)، ونقول المفسرين بلفظها من data/t،
@@ -1222,6 +1589,86 @@ function taam() {
   $$('[data-tmc]').forEach(b => b.onclick = () => { const c = b.dataset.tmc; $$('[data-tmc]').forEach(x => x.classList.toggle('on', x === b)); $$('.tm-f').forEach(f => { f.hidden = !!c && f.dataset.c !== c; }); });
 }
 views.taam = taam;
+/* الحج والعمرة: بيانات HAJJ وعرضه في mods/hajj.js */
+function hajj() { if (!needMod('hajj')) return; window.hajjView(); }
+views.hajj = hajj;
+/* ================= أدعية المناسبات والمناسك والعبادات: يُحمَّل fiqh.js (البيانات والعرض) عند أول فتح */
+function fiqhOpen(key) {
+  if (window.fiqhRender) return fiqhRender(key);
+  if (!fiqhOpen.s) { V(`<p class="loading">جارٍ فتح القسم…</p>`); fiqhOpen.s = document.createElement('script'); fiqhOpen.s.src = 'fiqh.js'; document.head.appendChild(fiqhOpen.s); }
+  fiqhOpen.s.addEventListener('load', () => { if (location.hash === '#' + key) fiqhRender(key); }, { once: true });
+  fiqhOpen.s.addEventListener('error', () => { fiqhOpen.s.remove(); fiqhOpen.s = null; V(`<p class="loading">تعذّر فتح القسم، تحقق من الاتصال ثم أعد المحاولة.</p>`); }, { once: true });
+}
+views.adiya = () => fiqhOpen('adiya');
+views.ibadat = () => fiqhOpen('ibadat');
+/* ================= الأنبياء والمرسلون في القرآن الكريم: الخمسة والعشرون المذكورون بأسمائهم بترتيبهم الزمني وأقوامهم، والنبي والرسول، وأولو العزم، ومن ذُكروا بلا اسم ومن اختُلف في نبوتهم
+   نص الآيات بلفظ مصحف المدينة (مجمع الملك فهد، الإصدار ١٨) وبخطه، والأحاديث مقتطعة بلفظها من صحيح البخاري المضمّن (data/hadith)،
+   ونقول المفسرين بلفظها من data/t؛ والبيانات تُبنى بسكربت من هذه المصادر، فلا يُكتب نص منسوب باليد، ولا يُنسب إلى نبي ما لم يرد في القرآن أو الحديث الصحيح أو قول مفسر منقول بلفظه. */
+function rusul() {
+  if (!needMod('rusul')) return;
+  const D = RUSUL, enOn = LANG !== 'ar', bk = k => (HAD_BOOKS[k] || [k])[0];
+  const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+  const num = k => LANG === 'ar' ? AR(k) : k;
+  const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah rs-q"><span class="rs-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num rs-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
+  const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] ? `<span>–${n(r[2])}</span>` : ''}`;
+  const ayCard = it => `<article class="rs-ay"><h3>${it.t}</h3><div class="u-ref">${refOf(it.r)}</div>
+    <div class="rs-ays">${ays(it.r)}</div><p class="rs-note">${esc(it.n)}</p>
+    <div class="rs-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div></article>`;
+  const hCard = h => `<article class="rs-h" id="rsh-${h.id}"><h3>${h.t}</h3>
+    <blockquote class="rs-matn notranslate" translate="no" lang="ar" dir="rtl">${esc(h.x)}</blockquote>
+    ${enOn ? `<div class="rs-en"><b>معنى الحديث بالإنجليزية</b><p class="notranslate" translate="no" lang="en" dir="ltr">${esc(h.en)}</p></div>` : ''}
+    <p class="rs-tx"><span>رواه</span> ${h.src.map(([b, k]) => `<b>${bk(b)}</b> <span class="num">(${num(k)})</span>`).join(' · ')}</p>
+    <p class="rs-gr"><span>درجته</span> <em class="rs-badge">${h.gr}</em></p>
+    <div class="th-use"><b>فقه الحديث</b><p>${esc(h.f)}</p></div></article>`;
+  const qCard = q => { const b = TF.find(x => x.key === q.bk);
+    return `<figure class="qs-quote rs-qt"><blockquote class="notranslate" translate="no" lang="ar" dir="rtl">${esc(q.x)}</blockquote>
+    ${enOn ? `<p class="rs-qen notranslate" translate="no" lang="en" dir="ltr">${esc(q.en)}</p>` : ''}
+    <figcaption><b>${q.w}</b> · <span>نقل بلفظه من</span> <span>${esc(b ? b.title : q.bk)}</span> · <span>عند تفسير</span> ${refLink(idxOf(q.s, q.ay))}</figcaption>
+    <p class="rs-note small">${esc(q.n)}</p></figure>`; };
+  const hadarat = typeof views.hadarat === 'function';
+  const pCard = p => { const hs = D.h.filter(h => h.p === p.id && h.ch === 'named'), rl = p.lb.some(l => /رسول|المرسلين/.test(l[0]));
+    const full = p.id === 'muhammad' ? 'محمد' : p.n;
+    return `<details class="rs-p panel" id="rs-p-${p.id}" data-ulu="${p.ulu}" data-rl="${rl ? 1 : 0}"><summary><span class="u-n">${n(p.k)}</span><span class="rs-sn"><b class="u-t">${p.n}</b><span class="rs-e">${p.e}</span></span>
+      <span class="rs-chips">${p.ulu ? '<span class="rs-chip gold">أولو العزم من الرسل</span>' : ''}${rl ? '<span class="rs-chip">رسول</span>' : ''}<span class="rs-chip muted"><span class="num">${n(p.c)}</span> <span>مرة</span></span></span></summary>
+      <div class="u-body stack tight">
+        <h4 class="rs-h4">ملخص ما صرّح به القرآن</h4><p class="rs-sum">${esc(p.s)}</p>
+        <p class="rs-meta"><b>قومه</b> ${esc(p.qw)}${hadarat && p.hd ? ` · <a href="#hadarat-${p.hd}">قوم النبي في ركن الحضارات</a>` : ''}</p>
+        <div class="rs-lb"><b>وصفه القرآن</b> ${p.lb.length ? `<ul>${p.lb.map(([t, s, a]) => `<li>${t} <span class="u-ref">${refLink(idxOf(s, a))}</span></li>`).join('')}</ul>` : `<span class="muted small">لم يصرّح القرآن بوصفه نبياً أو رسولاً بلفظ الآية؛ والتفاصيل في النقل أدناه.</span>`}</div>
+        <h4 class="rs-h4">آيات مختارة</h4>
+        <div class="rs-grid">${p.ay.map(r => `<article class="rs-ay"><div class="u-ref">${refOf(r)}</div><div class="rs-ays">${ays(r)}</div></article>`).join('')}</div>
+        <h4 class="rs-h4">مواضع قصته</h4>
+        <p class="rs-sites small"><span class="num">${n(p.c)}</span> <span>مرة</span> · <span class="num">${n(p.ns)}</span> <span>سورة</span> · ${p.sr.slice(0, 6).map(r => refLink(r[0])).join('، ')}</p>
+        <h4 class="rs-h4">من أقوال المفسرين</h4>${qCard({ ...p.q, ch: 'p' })}
+        ${hs.length ? `<h4 class="rs-h4">من السنة الصحيحة</h4><div class="rs-grid">${hs.map(hCard).join('')}</div>` : ''}
+        <div class="rs-links"><a class="btn" href="#pa${idxOf(p.ay[0][0], p.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a><a class="btn" data-open="anbiya|${esc(full)}" href="#t-anbiya">القصة الموسّعة</a></div>
+      </div></details>`; };
+  const body = c => { const hs = c.id === 'named' ? [] : D.h.filter(h => h.ch === c.id), qs = D.q.filter(q => q.ch === c.id);
+    return `${c.id === 'named' ? `<div class="rs-chips2" role="group"><button type="button" class="rs-fc on" data-rsf="">الكل</button><button type="button" class="rs-fc" data-rsf="ulu">أولو العزم</button><button type="button" class="rs-fc" data-rsf="rl">وُصفوا بالرسالة</button></div>
+        <ol class="rs-line" aria-label="الأنبياء بترتيبهم الزمني">${D.p.map(p => `<li><a href="#rusul" data-rsp="${p.id}"><span class="u-n">${n(p.k)}</span>${p.n}</a></li>`).join('')}</ol>
+        <div class="rs-plist">${D.p.map(pCard).join('')}</div>` : ''}
+      ${c.ay.length ? `<div class="rs-grid">${c.ay.map(ayCard).join('')}</div>` : ''}
+      ${qs.length ? `<h3 class="rs-sub"><svg><use href="#i-book"/></svg>من أقوال المفسرين</h3><div class="rs-grid">${qs.map(qCard).join('')}</div>` : ''}
+      ${hs.length ? `<h3 class="rs-sub"><svg><use href="#i-scroll"/></svg>من السنة الصحيحة</h3><div class="rs-grid">${hs.map(hCard).join('')}</div>` : ''}`; };
+  const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>الترتيب الزمني تقريبي: لم يرد في القرآن ولا في الصحيح ترتيب تاريخي لجميع الأنبياء، وهو على ما ذكره المؤرخون والمفسرون كابن كثير في «قصص الأنبياء» و«البداية والنهاية»، وفي بعضه خلاف. والتلخيصات صياغتنا مما صرّح به القرآن، أما الآيات والأحاديث ونقول المفسرين فبألفاظها من المصادر المضمّنة.</p></div>`;
+  V(`<div class="stack ulum rs">
+    <section class="u-hero rs-hero"><span class="eyebrow">اقرأ وتدبّر</span><h1>الأنبياء والمرسلون في القرآن الكريم</h1>
+      <p class="lead">الأنبياء الخمسة والعشرون المذكورون بأسمائهم، والنبي والرسول وأولو العزم، ومن ذُكروا بلا اسم، بآياتها ونقول المفسرين وأحاديث البخاري.</p>
+      <div class="rs-stats"><span><b class="num">${n(D.p.length)}</b> <span>نبياً</span></span><span><b class="num">${n(D.nay)}</b> <span>آية</span></span><span><b class="num">${n(D.h.length)}</b> <span>حديثاً</span></span><span><b class="num">${n(D.q.length + D.p.length)}</b> <span>نقلاً</span></span><span><b class="num">${n(D.ch.length)}</b> <span>باباً</span></span></div></section>
+    ${note}
+    <nav class="panel u-index" aria-label="الفهرس"><h2>الفهرس</h2><ol>${D.ch.map((c, i) => `<li><a href="#rusul" data-rsj="${c.id}"><span class="u-n">${n(i + 1)}</span>${c.t}</a></li>`).join('')}</ol></nav>
+    ${D.ch.map((c, i) => `<details class="u-ch panel rs-ch" id="rs-${c.id}"${i === 0 ? ' open' : ''}><summary><span class="u-n">${n(i + 1)}</span><span class="u-t">${c.t}</span></summary>
+      <div class="u-body stack tight"><p class="u-intro">${esc(c.d)}</p>${body(c)}</div></details>`).join('')}
+    <p class="muted small">نصوص الآيات بلفظ مصحف المدينة النبوية (مجمع الملك فهد، الإصدار ١٨) وبخطه، والأحاديث مقتطعة بلفظها من صحيح البخاري المضمّن بترقيمها، ونقول المفسرين بلفظها من كتبهم المضمّنة؛ أما التمهيدات والملخصات فصياغة موجزة مما صرّح به القرآن، ولا يُنسب إلى نبي ما لم يرد في القرآن أو في حديث صحيح أو في قول مفسر منقول بلفظه.</p>
+  </div>`);
+  const go = el => { if (!el) return; let d = el.closest('details'); while (d) { d.open = true; d = d.parentElement && d.parentElement.closest('details'); } el.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+  $$('[data-rsj]').forEach(a => a.onclick = e => { e.preventDefault(); go($('#rs-' + a.dataset.rsj)); });
+  $$('[data-rsp]').forEach(a => a.onclick = e => { e.preventDefault(); go($('#rs-p-' + a.dataset.rsp)); });
+  $$('[data-rsf]').forEach(b => b.onclick = () => { const f = b.dataset.rsf; $$('[data-rsf]').forEach(x => x.classList.toggle('on', x === b));
+    $$('.rs-p').forEach(p => { p.hidden = f === 'ulu' ? p.dataset.ulu !== '1' : f === 'rl' ? p.dataset.rl !== '1' : false; });
+    $$('.rs-line li').forEach((li, i) => { const p = D.p[i]; li.hidden = f === 'ulu' ? !p.ulu : f === 'rl' ? !p.lb.some(l => /رسول|المرسلين/.test(l[0])) : false; }); });
+}
+views.rusul = rusul;
 /* ================= mushaf */
 function mushaf() {
   let sort = 'n', dir = 1, filt = '';
@@ -1249,6 +1696,11 @@ function mpOpen(p, opt) {
   mpOpen.s.addEventListener('load', () => mushafRead(p, opt), { once: true });
   mpOpen.s.addEventListener('error', () => { mpOpen.s.remove(); mpOpen.s = null; V(`<p class="loading">تعذّر فتح المصحف، تحقق من الاتصال ثم أعد المحاولة.</p>`); }, { once: true });
 }
+/* وحدات تُحمَّل عند أول استعمال: study.js (اختبار الحفظ وبحث التفاسير) وrecite.js (التلاوة المتصلة) */
+const XMODS = {};
+function loadMod(src) { return XMODS[src] || (XMODS[src] = new Promise((ok, no) => { const el = document.createElement('script'); el.src = src; el.onload = ok; el.onerror = () => { XMODS[src] = null; el.remove(); no(new Error('mod ' + src)); }; document.head.appendChild(el); })); }
+function recitePlay(i, scope, opt) { return loadMod('recite.js').then(() => recStart(i, scope, opt)).catch(() => toast('تعذّر تحميل مشغّل التلاوة، تحقق من الاتصال')); }
+function recite() { V('<p class="loading">جارٍ تجهيز التلاوة…</p>'); loadMod('recite.js').then(() => { if (curRoute === 'recite') reciteView(); }).catch(() => V('<p class="loading">تعذّر فتح التلاوة، تحقق من الاتصال ثم أعد المحاولة.</p>')); }
 let readObs = null;
 function surah(sn, focusA) {
   const s = Q.surahs[sn - 1]; if (!s) return mushaf();
@@ -1266,9 +1718,9 @@ function surah(sn, focusA) {
   if (focusA) { const el = $('#ay' + (s.first + focusA - 1)); if (el) { el.scrollIntoView({ block: 'center' }); el.style.background = 'var(--accent-soft)'; } }
   else window.scrollTo(0, 0);
   if (readObs) readObs.disconnect();
-  readObs = new IntersectionObserver(es => { for (const e of es) if (e.isIntersecting) { ST.last = +e.target.dataset.i; clearTimeout(surah.t); surah.t = setTimeout(save, 800); } }, { rootMargin: '-40% 0px -55% 0px' });
+  readObs = new IntersectionObserver(es => { for (const e of es) if (e.isIntersecting) { ST.last = +e.target.dataset.i; logRead(ST.last); clearTimeout(surah.t); surah.t = setTimeout(save, 800); } }, { rootMargin: '-40% 0px -55% 0px' });
   $$('#reader .occ').forEach(el => readObs.observe(el));
-  const pb = $('#playSurah'); if (pb) pb.onclick = () => playFrom(s.first, s.first + s.ayas - 1, pb);
+  const pb = $('#playSurah'); if (pb) pb.onclick = () => recitePlay(s.first, 'surah');
 }
 
 /* ================= audio (PWA build only: the claude.ai frame does not allow outside media) */
@@ -1467,7 +1919,7 @@ function search(q0) {
   const q = typeof q0 === 'string' ? q0 : ($('#qinput').value || '');
   const EX = ['الصبر على البلاء','بر الوالدين','آداب الكلام مع الناس','خلق السماوات والأرض','الرزق والتوكل','التوبة والمغفرة','حقوق اليتيم'];
   V(`<div class="stack"><div><div class="eyebrow">البحث بالمعنى</div><h1>ابحث بالفكرة، لا بالحرف فقط</h1><p class="lead">اكتب ما تريد بلغتك المعتادة. يبحث «مشكاة» في نص الآيات وفي معانيها من التفسير الميسر، ويوسّع بحثك بالجذور القرآنية والمترادفات، ثم يرتب الآيات بالأقرب إلى سؤالك. يعمل دون إنترنت.</p></div>
-  <form class="toolbar" id="sform"><input id="sq" type="search" value="${esc(q)}" placeholder="مثال: الصبر على البلاء"><div class="seg" id="smode"><button type="button" aria-pressed="true" data-m="meaning">بالمعنى</button><button type="button" aria-pressed="false" data-m="exact">بالنص الحرفي</button></div><button class="btn pri">بحث</button></form>
+  <form class="toolbar" id="sform"><input id="sq" type="search" value="${esc(q)}" placeholder="مثال: الصبر على البلاء"><div class="seg" id="smode"><button type="button" aria-pressed="true" data-m="meaning">بالمعنى</button><button type="button" aria-pressed="false" data-m="exact">بالنص الحرفي</button><button type="button" aria-pressed="false" data-m="tafsir">الآيات والتفاسير</button></div><button class="btn pri">بحث</button></form>
   <div class="suggest">${EX.map(x => `<button type="button" data-q="${x}">${x}</button>`).join('')}</div>
   <div id="sres"></div></div>`);
   let mode = 'meaning';
@@ -1478,6 +1930,7 @@ function search(q0) {
     const raw = $('#sq').value.trim(); if (!raw) { $('#sres').innerHTML = ''; return; }
     if (!ARX.test(raw) && I18N.mean) return meanSearch(raw);
     if (mode === 'exact') return exactSearch(raw);
+    if (mode === 'tafsir') { $('#sres').innerHTML = '<p class="loading">جارٍ تجهيز فهرس البحث (مرة واحدة فقط)…</p>'; try { await loadMod('study.js'); await tafsirSearch(raw, $('#sres')); } catch (e) { $('#sres').innerHTML = '<p class="muted">تعذّر تحميل أداة البحث، تحقق من الاتصال ثم أعد المحاولة.</p>'; } return; }
     $('#sres').innerHTML = '<p class="loading">جارٍ تجهيز فهرس المعاني (مرة واحدة فقط)…</p>';
     const r = await smartSearch(raw, 60);
     const top = r.ids.length ? r.score[r.ids[0]] : 1;
@@ -1638,17 +2091,22 @@ function grade(key, q) { // SM-2 مبسّط: q = 1 صعب، 3 متوسط، 5 س�
   v.due = Date.now() + v.int * DAY; v.last = Date.now(); v.q = q;
   ST.hifz[key] = v; save(); return v;
 }
-let hzSel = { s: 1, a: 1, b: 7 };
+let hzSel = { s: 1, a: 1, b: 7 }, hzQueue = [];
+/* سجل المراجعة اليومي: عدد المقاطع المراجَعة كل يوم، تُحسب منه سلسلة الأيام المتتالية */
+function hzLog() { const L = ST.prefs.hzLog = ST.prefs.hzLog || {}, k = dayKey(new Date()); L[k] = (L[k] || 0) + 1; const ks = Object.keys(L).sort(); while (ks.length > 120) { const old = ks.shift(); L[old] = undefined; } save(); }
+function hzStreak() { const L = ST.prefs.hzLog || {}; let d = new Date(), c = 0; if (!L[dayKey(d)]) d.setDate(d.getDate() - 1); while (L[dayKey(d)]) { c++; d.setDate(d.getDate() - 1); } return c; }
+function hzStreakHTML() { const L = ST.prefs.hzLog || {}, t = L[dayKey(new Date())] || 0, st = hzStreak();
+  return `<div class="pill-row"><span class="chip${t ? ' ok' : ''}">راجعت اليوم: ${n(t)}</span><span class="chip gold">سلسلة المراجعة: ${n(st)} ${plural(st, 'يوم', 'أيام', 'يوماً')}</span></div>`; }
 function hifz() {
   const due = dueList();
   const sOpts = Q.surahs.map(s => `<option value="${s.n}" ${s.n === hzSel.s ? 'selected' : ''}>${n(s.n)}. ${s.name}</option>`).join('');
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   const voiceOK = IS_PWA && !!SR;
   V(`<div class="stack"><div><div class="eyebrow">الحفظ والتسميع</div><h1>احفظ، وسمّع، وراجع في موعدك</h1><p class="lead">اختر مقطعاً، ثم تدرّج: اقرأ، ثم أخفِ الكلمات تدريجياً، ثم سمّع بصوتك أو بالكتابة. بعد كل تسميع قيّم مستواك، فيحدد التطبيق موعد المراجعة التالية بطريقة التكرار المتباعد.</p></div>
-  <section class="panel stack tight"><h3>مراجعات اليوم</h3>${due.length ? due.slice(0, 12).map(([k, v]) => { const [s, r] = k.split(':'); const [a, b] = r.split('-'); return `<div class="due"><span><b>${Q.surahs[s-1].name}</b> ${n(+a)}–${n(+b)} <span class="muted small">· آخر تقييم: ${['','صعب','','متوسط','','سهل'][v.q] || '—'}</span></span><button class="btn" data-hzgo="${k}">راجع الآن</button></div>`; }).join('') : `<p class="muted small" style="margin:0">لا توجد مراجعات مستحقة اليوم. ${Object.keys(ST.hifz).length ? `لديك ${n(Object.keys(ST.hifz).length)} مقطعاً في جدولك.` : 'ابدأ بأول مقطع من الأسفل.'}</p>`}</section>
+  <section class="panel stack tight"><h3>مراجعات اليوم</h3>${hzStreakHTML()}${due.length > 1 ? `<div class="toolbar"><button class="btn pri" id="hzRun" type="button">ابدأ مراجعة اليوم (${n(due.length)})</button><span class="muted small">اختبار قصير لكل مقطع بالتتابع، ثم يُسجَّل تقييمك.</span></div>` : ''}${due.length ? due.slice(0, 12).map(([k, v]) => { const [s, r] = k.split(':'); const [a, b] = r.split('-'); return `<div class="due"><span><b>${Q.surahs[s-1].name}</b> ${n(+a)}–${n(+b)} <span class="muted small">· آخر تقييم: ${['','صعب','','متوسط','','سهل'][v.q] || '—'}</span></span><button class="btn" data-hzgo="${k}">راجع الآن</button></div>`; }).join('') : `<p class="muted small" style="margin:0">لا توجد مراجعات مستحقة اليوم. ${Object.keys(ST.hifz).length ? `لديك ${n(Object.keys(ST.hifz).length)} مقطعاً في جدولك.` : 'ابدأ بأول مقطع من الأسفل.'}</p>`}</section>
   <section class="panel stack">
     <div class="toolbar"><label>السورة <select id="hzS">${sOpts}</select></label><label>من الآية <input id="hzA" type="number" min="1" style="width:5.5em" value="${hzSel.a}"></label><label>إلى <input id="hzB" type="number" min="1" style="width:5.5em" value="${hzSel.b}"></label><button class="btn pri" id="hzLoad">اعرض المقطع</button></div>
-    <div class="toolbar"><div class="seg" id="hzMode"><button aria-pressed="true" data-m="read">قراءة</button><button aria-pressed="false" data-m="hint">أوائل الكلمات</button><button aria-pressed="false" data-m="hide">إخفاء كامل</button><button aria-pressed="false" data-m="type">تسميع بالكتابة</button><button aria-pressed="false" data-m="voice">تسميع بالصوت</button></div></div>
+    <div class="toolbar"><div class="seg" id="hzMode"><button aria-pressed="true" data-m="read">قراءة</button><button aria-pressed="false" data-m="hint">أوائل الكلمات</button><button aria-pressed="false" data-m="hide">إخفاء كامل</button><button aria-pressed="false" data-m="type">تسميع بالكتابة</button><button aria-pressed="false" data-m="voice">تسميع بالصوت</button><button aria-pressed="false" data-m="quiz">اختبار قصير</button></div></div>
     <div id="hzBox"></div>
   </section></div>`);
   let mode = 'read';
@@ -1660,6 +2118,7 @@ function hifz() {
     const key = hzKey(s, a, b), rec = ST.hifz[key];
     const wordsHTML = ids.map(i => { const A = Q.ayat[i]; let h = ''; for (let k = 0; k < A[3]; k++) { const f = W.w[A[2]+k][0]; h += `<span class="hz-word" data-w="${A[2]+k}" data-h="${esc(strip(f).slice(0, 1))}">${esc(f)}</span> `; } return h + `<span class="num">﴿${n(A[1])}﴾</span> `; }).join('');
     let tool = '';
+    if (mode === 'quiz') tool = '<div id="hzQuiz"></div>';
     if (mode === 'type') tool = `<textarea class="field" id="hzType" rows="4" placeholder="اكتب المقطع من حفظك، ولا حاجة إلى التشكيل…"></textarea><div class="toolbar"><button class="btn pri" id="hzCheck">صحّح</button><span id="hzScore" class="muted"></span></div>`;
     if (mode === 'voice') tool = voiceOK ? `<div class="toolbar"><button class="mic" id="hzMic" aria-label="ابدأ التسميع"><svg><use href="#i-mic"/></svg></button><div class="stack tight" style="flex:1;min-width:200px"><span id="hzVStat" class="muted">اضغط الميكروفون وابدأ التلاوة. تُعلَّم الكلمات الصحيحة بالأخضر أثناء قراءتك.</span><div class="meter"><i id="hzBar" style="width:0"></i></div></div></div><p class="muted small" style="margin:0">يعتمد التعرف على الصوت على خدمة المتصفح (كروم أو إيدج أو سفاري) ويحتاج إلى اتصال بالإنترنت.</p>`
       : `<div class="note">${IS_PWA ? 'متصفحك لا يدعم التعرف على الكلام. استعمل كروم أو إيدج أو سفاري الحديث.' : 'التسميع بالصوت يعمل في نسخة التطبيق المثبّت على الجوال أو الكمبيوتر، لأن صفحة claude.ai لا تسمح بالوصول إلى الميكروفون. استعمل الآن «تسميع بالكتابة».'}</div>`;
@@ -1667,10 +2126,12 @@ function hifz() {
       <div class="ayah" id="hzText">${wordsHTML}</div>${tool}
       <div class="panel stack tight" style="background:var(--bg)"><b>كيف كان حفظك لهذا المقطع؟</b><div class="toolbar"><button class="btn" data-g="1">صعب، أعده غداً</button><button class="btn" data-g="3">متوسط</button><button class="btn pri" data-g="5">سهل، أتقنته</button></div></div></div>`;
     const words = $$('#hzText .hz-word');
+    if (mode === 'quiz') { $('#hzText').hidden = true; const qb = $('#hzQuiz'); qb.innerHTML = '<p class="loading">جارٍ تجهيز الاختبار…</p>';
+      loadMod('study.js').then(() => hifzQuiz(qb, ids, key, g => { const v = grade(key, g); hzLog(); toast(`حُفظ تقييمك. المراجعة القادمة بعد ${n(v.int)} ${plural(v.int,'يوم','أيام','يوماً')}`); if (hzQueue.length) { hzOpen(hzQueue.shift()); } else load(); })).catch(() => { qb.innerHTML = '<p class="muted">تعذّر تحميل الاختبار، تحقق من الاتصال.</p>'; }); }
     if (mode === 'hint') words.forEach(w => w.classList.add('hint'));
     if (mode === 'hide' || mode === 'type' || mode === 'voice') words.forEach(w => w.classList.add('hide'));
     $('#hzText').onclick = e => { const w = e.target.closest('.hz-word'); if (w) w.classList.remove('hide', 'hint'); };
-    $$('[data-g]').forEach(b => b.onclick = () => { const v = grade(key, +b.dataset.g); toast(`حُفظ تقييمك. المراجعة القادمة بعد ${n(v.int)} ${plural(v.int,'يوم','أيام','يوماً')}`); load(); });
+    $$('[data-g]').forEach(b => b.onclick = () => { const v = grade(key, +b.dataset.g); hzLog(); toast(`حُفظ تقييمك. المراجعة القادمة بعد ${n(v.int)} ${plural(v.int,'يوم','أيام','يوماً')}`); load(); });
     const sk = x => { const t = norm(x).replace(/[^ء-ي]/g, '').replace(/ا/g, ''); return suf(pre(t)) || t; };
     const expected = words.map(w => sk(w.textContent));
     if (mode === 'type') $('#hzCheck').onclick = () => {
@@ -1696,7 +2157,9 @@ function hifz() {
   $('#hzLoad').onclick = load;
   $('#hzS').onchange = () => { const su = Q.surahs[+$('#hzS').value - 1]; $('#hzA').value = 1; $('#hzB').value = Math.min(su.ayas, 7); load(); };
   $('#hzMode').onclick = e => { const b = e.target.closest('button'); if (!b) return; mode = b.dataset.m; $('#hzMode').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); load(); };
-  $('#view').addEventListener('click', e => { const g = e.target.closest('[data-hzgo]'); if (!g) return; const [s, r] = g.dataset.hzgo.split(':'); const [a, b] = r.split('-'); $('#hzS').value = s; $('#hzA').value = a; $('#hzB').value = b; mode = 'hide'; $('#hzMode').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x.dataset.m === 'hide')); load(); $('#hzBox').scrollIntoView({ block: 'start' }); });
+  const hzOpen = (k, m = 'quiz') => { const [s, r] = k.split(':'); const [a, b] = r.split('-'); $('#hzS').value = s; $('#hzA').value = a; $('#hzB').value = b; mode = m; $('#hzMode').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x.dataset.m === m)); load(); $('#hzBox').scrollIntoView({ block: 'start' }); };
+  $('#view').firstElementChild.addEventListener('click', e => { const g = e.target.closest('[data-hzgo]'); if (g) { hzQueue = []; return hzOpen(g.dataset.hzgo, 'hide'); }
+    if (e.target.closest('#hzRun')) { hzQueue = due.map(x => x[0]); toast(`بدأت مراجعة اليوم: ${n(hzQueue.length)} ${plural(hzQueue.length, 'مقطع', 'مقاطع', 'مقطعاً')}`); hzOpen(hzQueue.shift()); } });
   load();
 }
 
@@ -1735,21 +2198,44 @@ const PLACES = [
   { n: 'الكهف والرقيم', lat: 31.95, lon: 35.98, refs: [['amakin','الكهف والرقيم'],['aqwam','أصحاب الكهف']], d: 'اختُلف في موضعه: قيل قرب عمّان بالأردن، وقيل أفسس بالأناضول.', p: [], u: 1, ly: -12 },
 ];
 const placeEntries = p => p.refs.map(([c, nm]) => topicItem(c, nm)).filter(Boolean);
-function atlas() {
+/* وحدات بيانات الأطلس والخط الزمني تُحمَّل عند الحاجة من mods/ وتُخزَّن للعمل دون إنترنت */
+const QMOD = {};
+function qmod(name) { return QMOD[name] || (QMOD[name] = new Promise((res, rej) => { if (window['Q_' + name]) return res(window['Q_' + name]); const el = document.createElement('script'); el.src = `mods/${name}.js`; el.onload = () => res(window['Q_' + name]); el.onerror = () => { delete QMOD[name]; rej(new Error(name)); }; document.head.appendChild(el); })); }
+let PL_ALL = null, ATL = null, TLD = null;
+async function atlasLoad() {
+  try { [TLD, ATL] = await Promise.all([qmod('qtl'), qmod('qatlas')]); } catch (e) { TLD = null; ATL = null; }
+  if (!PL_ALL) PL_ALL = PLACES.map(p => ({ ...p, k: (ATL && ATL.kind[p.n]) || 'p', w: ATL && ATL.why[p.n] && ATL.why[p.n][0] || '' })).concat(ATL ? ATL.places.map(p => ({ refs: [], p: [], ...p })) : []);
+}
+const KLAB = { p: 'دعوة الأنبياء', q: 'ديار الأقوام', h: 'المقدّسات', s: 'السيرة النبوية' };
+const rngIdx = ([s, a, b]) => { const o = []; for (let q = a; q <= (b || a); q++) { const i = idxOf(s, q); if (i >= 0) o.push(i); } return o; };
+async function atlas() {
+  const mine = curRoute;
+  if (!PL_ALL) { V(`<p class="muted">جارٍ تحميل الخريطة…</p>`); await atlasLoad(); if (curRoute !== mine) return; }
+  const PL = PL_ALL, RT = ATL ? ATL.routes : [], LY = atlas.ly || (atlas.ly = { p: 1, q: 1, h: 1, s: 1, u: 1, r: 1 });
   const B = GEO.b, k = GEO.k, sx = GEO.sx;
   const xy = (lat, lon) => [((lon - B.x0) * k * sx), ((B.y1 - lat) * sx)];
-  V(`<div class="stack"><div><div class="eyebrow">أطلس القرآن</div><h1>الأماكن التي ذكرها القرآن على الخريطة</h1><p class="lead">${n(PLACES.length)} موضعاً من المدن والقرى والديار والمعالم. اضغط أي نقطة لعرض ما ورد فيها من آيات وأقوام وأنبياء. الخريطة مرسومة داخل التطبيق وتعمل دون إنترنت.</p></div>
-  <div class="legend"><span><i></i>موضع معروف</span><span><i class="u"></i>موضع تقريبي أو مختلف في تعيينه</span></div>
+  const rpath = r => 'M' + r.pts.map(nm => { const p = PL.find(q => q.n === nm); const [x, y] = xy(p.lat, p.lon); return x.toFixed(1) + ' ' + y.toFixed(1); }).join('L');
+  V(`<div class="stack"><div><div class="eyebrow">أطلس القرآن</div><h1>الأماكن والأمم التي ذكرها القرآن على الخريطة</h1><p class="lead">${n(PL.length)} موضعاً من المدن والقرى والديار والمعالم${RT.length ? ` و${n(RT.length)} مسارات لرحلات الأنبياء والسيرة` : ''}. اضغط أي نقطة لعرض ما ورد فيها من آيات وأقوام وأنبياء. ما ثبت بنص أو إجماع نقطته ممتلئة، وما كان اجتهاداً غير جازم نقطته مفرغة وخطه متقطع، مع بيان سبب الاجتهاد. الخريطة مرسومة داخل التطبيق وتعمل دون إنترنت.</p></div>
+  <div class="legend"><span><i></i>موضع معروف</span><span><i class="u"></i>موضع تقريبي أو مختلف في تعيينه (اجتهاد غير جازم)</span>${RT.length ? `<span><b class="rl"></b>مسار ثابت</span><span><b class="rl j"></b>مسار اجتهادي</span>` : ''}</div>
+  <div class="mlay" id="mlay" role="group" aria-label="طبقات الخريطة">${Object.entries(KLAB).map(([c, t]) => `<button type="button" class="chip" aria-pressed="${!!LY[c]}" data-ly="${c}">${t}</button>`).join('')}<button type="button" class="chip" aria-pressed="${!!LY.u}" data-ly="u">المواضع الاجتهادية</button>${RT.length ? `<button type="button" class="chip" aria-pressed="${!!LY.r}" data-ly="r">المسارات</button>` : ''}<input class="field" id="mfind" type="search" placeholder="ابحث عن موضع أو نبي أو قوم" aria-label="بحث في المواضع"></div>
   <div class="cols split">
-    <div class="mapbox"><svg id="map" viewBox="0 0 ${GEO.w} ${GEO.h}" role="img" aria-label="خريطة الأماكن القرآنية"><rect class="sea" width="${GEO.w}" height="${GEO.h}"/><g id="mapg"><path class="land" d="${GEO.land}"/><path class="border" d="${GEO.borders}"/>
-      ${PLACES.map((p, i) => { const [x, y] = xy(p.lat, p.lon); return `<g class="pin${p.u ? ' unsure' : ''}" data-pl="${i}" transform="translate(${x.toFixed(1)} ${y.toFixed(1)})"><circle r="7"/><text x="10" y="${4 + (p.ly || 0)}" text-anchor="end">${esc(p.n)}</text></g>`; }).join('')}</g></svg>
+    <div class="mapbox"><svg id="map" viewBox="0 0 ${GEO.w} ${GEO.h}" role="img" aria-label="خريطة الأماكن القرآنية"><defs><marker id="rarr" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L8 4L0 8z" class="rarr"/></marker></defs><rect class="sea" width="${GEO.w}" height="${GEO.h}"/><g id="mapg"><path class="land" d="${GEO.land}"/><path class="border" d="${GEO.borders}"/>
+      ${RT.map((r, i) => `<g class="rt${r.c === 'j' ? ' j' : ''}" data-rt="${i}"><path class="route" d="${rpath(r)}" marker-end="url(#rarr)"/><path class="rhit" d="${rpath(r)}"/></g>`).join('')}
+      ${PL.map((p, i) => { const [x, y] = xy(p.lat, p.lon); return `<g class="pin k-${p.k}${p.u ? ' unsure' : ''}" data-pl="${i}" transform="translate(${x.toFixed(1)} ${y.toFixed(1)})"><circle r="7"/><text x="10" y="${4 + (p.ly || 0)}" text-anchor="end">${esc(p.n)}</text></g>`; }).join('')}</g></svg>
       <div class="zoom"><button class="iconbtn" id="zin" aria-label="تكبير">+</button><button class="iconbtn" id="zout" aria-label="تصغير">−</button></div></div>
     <section class="panel stack tight" id="plinfo"><h3>اختر موضعاً</h3><p class="muted small" style="margin:0">اضغط أي نقطة على الخريطة. يمكنك التكبير بالأزرار أو بعجلة الفأرة، والسحب للتنقل.</p>
-      <div class="list">${PLACES.map((p, i) => `<a class="row" data-pl="${i}"><span class="t">${esc(p.n)}</span><span class="n">${n(placeEntries(p).reduce((s, e) => s + itemAyat(e.it).length, 0))}</span></a>`).join('')}</div></section>
+      <div class="list" id="pllist">${PL.map((p, i) => `<a class="row${p.u ? ' ij' : ''}" data-pl="${i}"><span class="t">${esc(p.n)}</span>${p.u ? '<span class="chip gold mp-ij">اجتهاد</span>' : ''}<span class="n">${n(placeEntries(p).reduce((s, e) => s + itemAyat(e.it).length, 0) + (p.ay || []).reduce((s, r) => s + rngIdx(r).length, 0))}</span></a>`).join('')}</div>
+      ${RT.length ? `<h3>المسارات</h3><div class="list" id="rtlist">${RT.map((r, i) => `<a class="row${r.c === 'j' ? ' ij' : ''}" data-rt="${i}"><span class="t">${esc(r.n)}</span>${r.c === 'j' ? '<span class="chip gold mp-ij">اجتهاد</span>' : ''}</a>`).join('')}</div>` : ''}</section>
   </div></div>`);
+  const hay = PL.map(p => norm(p.n + ' ' + (p.p || []).join(' ') + ' ' + (p.refs || []).map(r => r[1]).join(' ')));
+  const layers = () => { const q = norm(($('#mfind') || {}).value || '');
+    PL.forEach((p, i) => { const on = LY[p.k] && (!p.u || LY.u) && (!q || hay[i].includes(q)); $$(`[data-pl="${i}"]`).forEach(el => el.style.display = on ? '' : 'none'); });
+    RT.forEach((r, i) => { const on = LY.r && (!q || norm(r.n).includes(q)); $$(`[data-rt="${i}"]`).forEach(el => el.style.display = on ? '' : 'none'); }); };
+  $('#mlay').onclick = e => { const b = e.target.closest('[data-ly]'); if (!b) return; LY[b.dataset.ly] = LY[b.dataset.ly] ? 0 : 1; b.setAttribute('aria-pressed', !!LY[b.dataset.ly]); layers(); };
+  $('#mfind').oninput = layers; layers();
   // pan & zoom
   const svg = $('#map'), g = $('#mapg'); let z = 1, tx = 0, ty = 0;
-  const apply = () => { g.setAttribute('transform', `translate(${tx} ${ty}) scale(${z})`); $$('#mapg .pin').forEach(p => { const t = p.getAttribute('transform').replace(/ scale\([^)]*\)/, ''); p.setAttribute('transform', t + ` scale(${base() / z})`); }); };
+  const apply = () => { g.setAttribute('transform', `translate(${tx} ${ty}) scale(${z})`); svg.parentElement.classList.toggle('zoomed', z > 2); $$('#mapg .pin').forEach(p => { const t = p.getAttribute('transform').replace(/ scale\([^)]*\)/, ''); p.setAttribute('transform', t + ` scale(${base() / z})`); }); };
   const base = () => Math.max(1, GEO.w / (svg.clientWidth || GEO.w) * 0.6);
   const zoomAt = (f, cx = GEO.w / 2, cy = GEO.h / 2) => { const nz = Math.max(1, Math.min(8, z * f)); tx = cx - (cx - tx) * nz / z; ty = cy - (cy - ty) * nz / z; z = nz; if (z === 1) { tx = 0; ty = 0; } apply(); };
   $('#zin').onclick = () => zoomAt(1.5); $('#zout').onclick = () => zoomAt(1 / 1.5);
@@ -1758,18 +2244,36 @@ function atlas() {
   let drag = null, moved = false;
   svg.addEventListener('pointerdown', e => { drag = [...pt(e), tx, ty]; moved = false; });
   svg.addEventListener('pointermove', e => { if (!drag) return; const [x, y] = pt(e); if (Math.abs(x - drag[0]) + Math.abs(y - drag[1]) > 4) { moved = true; svg.setPointerCapture(e.pointerId); } if (moved) { tx = drag[2] + x - drag[0]; ty = drag[3] + y - drag[1]; apply(); } });
-  svg.addEventListener('pointerup', e => { drag = null; if (!moved) { const pin = e.target.closest('.pin'); if (pin) showPlace(+pin.dataset.pl); } });
-  $('#plinfo').onclick = e => { const r = e.target.closest('[data-pl]'); if (r) showPlace(+r.dataset.pl); };
+  svg.addEventListener('pointerup', e => { drag = null; if (!moved) { const pin = e.target.closest('.pin'), rt = e.target.closest('.rt'); if (pin) showPlace(+pin.dataset.pl); else if (rt) showRoute(+rt.dataset.rt); } });
+  $('#plinfo').onclick = e => { const r = e.target.closest('[data-pl]'), t = e.target.closest('[data-rt]'); if (r) showPlace(+r.dataset.pl); else if (t) showRoute(+t.dataset.rt); };
   apply();
+  if (atlas.pending != null) { const i = atlas.pending; atlas.pending = null; showPlace(i); }
 }
+
 function showPlace(i) {
-  const p = PLACES[i]; const es = placeEntries(p);
-  $$('#mapg .pin').forEach(x => x.classList.toggle('sel', +x.dataset.pl === i));
-  const ay = [...new Set(es.flatMap(e => itemAyat(e.it)))].sort((a, b) => a - b);
-  $('#plinfo').innerHTML = `<button class="btn ghost" id="plback">→ كل المواضع</button><div class="eyebrow">${p.u ? 'تعيين تقريبي على أقوال المفسرين والمؤرخين' : 'موضع معروف'}</div><h2>${esc(p.n)}</h2>
+  const PL = PL_ALL || PLACES, p = PL[i]; const es = placeEntries(p), RT = ATL ? ATL.routes : [];
+  $$('#mapg .pin').forEach(x => x.classList.toggle('sel', +x.dataset.pl === i)); $$('#mapg .rt').forEach(x => x.classList.remove('sel'));
+  const ay = [...new Set(es.flatMap(e => itemAyat(e.it)).concat((p.ay || []).flatMap(rngIdx)))].sort((a, b) => a - b);
+  const rts = RT.map((r, j) => [r, j]).filter(([r]) => r.pts.includes(p.n)), evs = TLD ? TLD.ev.filter(e => (e.pl || []).includes(p.n)) : [];
+  $('#plinfo').innerHTML = `<button class="btn ghost" id="plback">→ كل المواضع</button><div class="eyebrow">${p.u ? 'تعيين تقريبي (اجتهاد غير جازم)' : 'موضع معروف'}</div><div class="pill-row"><span class="chip">${KLAB[p.k] || ''}</span></div><h2>${esc(p.n)}</h2>
     ${p.d ? `<p style="margin:0">${esc(p.d)}</p>` : ''}
+    ${p.u ? `<div class="note mp-why"><b>لماذا هو اجتهاد؟</b> <span>${esc(p.w || 'اختلف المفسرون والمؤرخون في تعيينه، فالنقطة تقريبية.')}</span></div>` : p.w ? `<p class="muted small" style="margin:0">${esc(p.w)}</p>` : ''}
     ${es.map(e => `<div class="stack tight" style="gap:2px"><a href="#t-${e.c.id}" data-open="${e.c.id}|${esc(e.it.n)}"><b>${esc(e.it.n)}</b></a><span class="muted small">${esc(e.c.title)}${e.it.c ? ` · ${n(e.it.c)} مرة` : ''}</span>${e.it.d ? `<span class="small">${esc(e.it.d)}</span>` : ''}</div>`).join('')}
     ${p.p.length ? `<div><b class="small">الأنبياء المرتبطون:</b><div class="pill-row" style="margin-top:4px">${p.p.map(x => `<a class="chip acc" data-prophet="${esc(x)}">${esc(x)}</a>`).join('')}</div></div>` : ''}
+    ${evs.length ? `<div><b class="small">في الخط الزمني:</b><div class="pill-row" style="margin-top:4px">${evs.map(e => `<a class="chip" href="#timeline" data-tle="${e.id}">${esc(e.n)}</a>`).join('')}</div></div>` : ''}
+    ${rts.length ? `<div><b class="small">تمرّ به المسارات:</b><div class="pill-row" style="margin-top:4px">${rts.map(([r, j]) => `<a class="chip" data-rt="${j}">${esc(r.n)}</a>`).join('')}</div></div>` : ''}
+    <h3>من آياته (${n(ay.length)})</h3><div id="plocc"></div>`;
+  $('#plback').onclick = () => atlas();
+  renderOcc($('#plocc'), ay, null, 6);
+  if (innerWidth < 1000) $('#plinfo').scrollIntoView({ block: 'start' });
+}
+function showRoute(j) {
+  const r = ATL.routes[j], PL = PL_ALL;
+  $$('#mapg .pin').forEach(x => x.classList.toggle('sel', r.pts.includes(PL[+x.dataset.pl].n))); $$('#mapg .rt').forEach(x => x.classList.toggle('sel', +x.dataset.rt === j));
+  const ay = [...new Set(r.ay.flatMap(rngIdx))].sort((a, b) => a - b);
+  $('#plinfo').innerHTML = `<button class="btn ghost" id="plback">→ كل المواضع</button><div class="eyebrow">${r.c === 'j' ? 'مسار اجتهادي غير جازم' : 'مسار ثابت'}</div><h2>${esc(r.n)}</h2><p style="margin:0">${esc(r.d)}</p>
+    ${r.c === 'j' ? `<div class="note mp-why"><b>لماذا هو اجتهاد؟</b> <span>${esc(r.w || '')}</span></div>` : ''}
+    <div><b class="small">المحطات بالترتيب:</b><div class="pill-row" style="margin-top:4px">${r.pts.map(nm => `<a class="chip acc" data-pl="${PL.findIndex(q => q.n === nm)}">${esc(nm)}</a>`).join('')}</div></div>
     <h3>من آياته (${n(ay.length)})</h3><div id="plocc"></div>`;
   $('#plback').onclick = () => atlas();
   renderOcc($('#plocc'), ay, null, 6);
@@ -1785,16 +2289,68 @@ const KIN = { 'إسماعيل': 'ابن إبراهيم', 'إسحاق': 'ابن �
 const SIRA = [ ['بدء نزول الوحي','١٣ ق.هـ · ٦١٠م'],['انشقاق القمر','نحو ٥ ق.هـ'],['الجن يستمعون القرآن','١٠ من البعثة · ٦١٩م'],['الإسراء','نحو ١ ق.هـ (على المشهور)'],['المعراج','نحو ١ ق.هـ (على المشهور)'],['الهجرة والغار','١هـ · ٦٢٢م'],['تحويل القبلة','٢هـ'],['غزوة بدر','رمضان ٢هـ · ٦٢٤م'],['غزوة أُحد','شوال ٣هـ · ٦٢٥م'],['إجلاء بني النضير','٤هـ'],['زواج النبي','٥هـ'],['غزوة الأحزاب','شوال ٥هـ · ٦٢٧م'],['حادثة الإفك','٥ أو ٦هـ'],['صلح الحديبية','ذو القعدة ٦هـ · ٦٢٨م'],['فتح مكة','رمضان ٨هـ · ٦٣٠م'],['غزوة حنين','شوال ٨هـ'],['غزوة تبوك','رجب ٩هـ · ٦٣٠م'],['مسجد الضرار','٩هـ'],['التخيير والتحريم','٩هـ'],['المباهلة','٩ أو ١٠هـ'],['حجة الوداع','ذو الحجة ١٠هـ · ٦٣٢م'] ];
 const prophetItem = name => { const c = T.find(x => x.id === 'anbiya'); const it = c.items.find(x => x.n.startsWith(name)); return it ? { c, it } : null; };
 function timeline() {
-  let tab = timeline.tab || 'anbiya';
+  let tab = timeline.tab || 'qasas';
+  if (tab === 'qasas') return timelineQ();
   const ak = T.find(x => x.id === 'akhbar');
   const body = tab === 'anbiya' ? ERAS.map(([era, ps]) => `<div class="ev era"><h3>${era}</h3></div>` + ps.map(nm => { const e = prophetItem(nm); if (!e) return ''; const ay = itemAyat(e.it); const ss = new Set(ay.map(i => Q.ayat[i][0]));
       return `<div class="ev"><h3><a data-open="anbiya|${esc(e.it.n)}" href="#t-anbiya">${esc(e.it.n)}</a>${e.it.c ? `<span class="chip acc">${n(e.it.c)} مرة</span>` : ''}<span class="chip">${n(ss.size)} سورة</span>${KIN[nm] ? `<span class="chip gold">${KIN[nm]}</span>` : ''}</h3><p style="margin:2px 0" class="small">${esc(e.it.d || '')}</p>${e.it.g ? `<p class="muted small" style="margin:0">${esc(e.it.g)}</p>` : ''}${ay[0] != null ? `<p class="muted small" style="margin:2px 0">أول ذكر في ترتيب المصحف: ${refLink(ay[0])}</p>` : ''}</div>`; }).join('')).join('')
     : SIRA.map(([nm, when]) => { const it = ak.items.find(x => x.n.startsWith(nm)); if (!it) return ''; return `<div class="ev"><h3><a data-open="akhbar|${esc(it.n)}" href="#t-akhbar">${esc(it.n)}</a><span class="chip gold">${when}</span><span class="chip">${esc(it.g || '')}</span></h3><p style="margin:2px 0" class="small">${esc(it.d || '')}</p><p class="muted small" style="margin:0">الآيات: ${it.r.slice(0, 3).map(([s, e]) => refLink(s) + (e > s ? '–' + n(Q.ayat[e][1]) : '')).join('، ')}</p></div>`; }).join('');
   V(`<div class="stack" style="max-width:900px"><div><div class="eyebrow">الخط الزمني</div><h1>${tab === 'anbiya' ? 'الأنبياء على ترتيب المؤرخين' : 'أحداث السيرة في القرآن'}</h1>
   <p class="lead">${tab === 'anbiya' ? 'ترتيب تقريبي على ما في «قصص الأنبياء» و«البداية والنهاية» لابن كثير. لا تُعرف تواريخ دقيقة لبعثة الأنبياء السابقين، ولذلك رُتّبوا في عصور لا في سنوات.' : 'الأحداث التي نزلت فيها آيات، بسنواتها على المشهور في كتب السيرة (سيرة ابن هشام، وزاد المعاد). وما فيه خلاف ذُكر معه.'}</p></div>
-  <div class="seg" id="tlseg" style="align-self:flex-start"><button aria-pressed="${tab === 'anbiya'}" data-t="anbiya">الأنبياء</button><button aria-pressed="${tab === 'sira'}" data-t="sira">السيرة النبوية</button></div>
+  ${tlSeg(tab)}
   <section class="panel"><div class="tl">${body}</div></section></div>`);
   $('#tlseg').onclick = e => { const b = e.target.closest('button'); if (!b) return; timeline.tab = b.dataset.t; timeline(); };
+}
+
+/* ================= الخط الزمني التفاعلي لقصص القرآن والأقوام والحضارات (#timeline)
+   البيانات في mods/qtl.js، وكل مدخل موسوم «ثابت» (بنص القرآن أو إجماع) أو «اجتهاد غير جازم» مع بيان سببه. */
+const TLQ = { lane: { p: 1, q: 1, v: 1 }, cert: 'all', q: '' };
+const TLN = { p: ['الأنبياء', 'نبي'], q: ['الأقوام والحضارات', 'قوم أو حضارة'], v: ['أحداث وشخصيات', 'حدث أو شخصية'] };
+const tlSeg = tab => `<div class="seg" id="tlseg" style="align-self:flex-start"><button aria-pressed="${tab === 'qasas'}" data-t="qasas">القصص والحضارات</button><button aria-pressed="${tab === 'anbiya'}" data-t="anbiya">الأنبياء</button><button aria-pressed="${tab === 'sira'}" data-t="sira">السيرة النبوية</button></div>`;
+async function timelineQ() {
+  const mine = curRoute;
+  if (!TLD) { V(`<p class="muted">جارٍ تحميل الخط الزمني…</p>`); await atlasLoad(); if (curRoute !== mine) return; }
+  if (!TLD) { V(`<div class="stack"><div class="note">تعذّر تحميل الخط الزمني. حاول مرة أخرى بعد قليل.</div>${tlSeg('qasas')}</div>`); $('#tlseg').onclick = e => { const b = e.target.closest('button'); if (!b) return; timeline.tab = b.dataset.t; timeline(); }; return; }
+  const S = TLQ, EVs = TLD.ev, byId = Object.fromEntries(EVs.map(e => [e.id, e])), PL = PL_ALL;
+  const shown = e => S.lane[e.l] && (S.cert === 'all' || S.cert === e.c) && (!S.q || norm(e.n + ' ' + e.d).includes(norm(S.q)));
+  const rng = ([s, a, b]) => `<span class="tlq-r">${refLink(idxOf(s, a))}${b > a ? `<span>–${n(b)}</span>` : ''}</span>`;
+  const card = e => { const pls = (e.pl || []).map(nm => PL.findIndex(p => p.n === nm)).filter(i => i >= 0);
+    return `<article class="tlq-card ${e.l}${e.c === 'j' ? ' ij' : ''}" id="ev-${e.id}">
+    <header><span class="tlq-k">${TLN[e.l][1]}</span><span class="tlq-c ${e.c}">${e.c === 'j' ? 'اجتهاد غير جازم' : 'ثابت'}</span></header>
+    <h3><button type="button" class="tlq-t" aria-expanded="false" aria-controls="x-${e.id}">${esc(e.n)}</button></h3>
+    <p class="tlq-d">${esc(e.d)}</p>
+    ${e.est ? `<p class="tlq-est"><span>التاريخ التقريبي:</span> <span>${esc(e.est)}</span></p>` : ''}
+    <div class="tlq-x" id="x-${e.id}" hidden>
+      ${e.w ? `<p class="tlq-why"><b>لماذا هو اجتهاد؟</b> <span>${esc(e.w)}</span></p>` : ''}
+      <div class="tlq-row"><b>الآيات:</b> ${e.ay.map(rng).join(' ')}</div>
+      ${pls.length ? `<div class="tlq-row"><b>على الخريطة:</b> ${pls.map(i => `<a class="chip acc" href="#map" data-place="${i}">${esc(PL[i].n)}</a>`).join('')}</div>` : ''}
+      ${(e.r || []).length ? `<div class="tlq-row"><b>مرتبط بـ:</b> ${e.r.map(id => `<a class="chip" data-tlq="${id}">${esc(byId[id].n)}</a>`).join('')}</div>` : ''}
+      ${e.tp ? `<div class="tlq-row"><a class="btn ghost" data-open="${e.tp[0]}|${esc(e.tp[1])}" href="#t-${e.tp[0]}">افتح الموضوع في الفهرس</a></div>` : ''}
+    </div></article>`; };
+  const body = () => { const h = TLD.eras.map((er, i) => { const list = EVs.filter(e => e.e === i && shown(e)); if (!list.length) return '';
+      return `<section class="tlq-era" id="era-${i}"><header><span class="tlq-en">${n(i + 1)}</span><div><h2>${er[0]}</h2><p class="muted small">${er[1]}</p></div></header>
+      <div class="tlq-grid">${['p', 'q', 'v'].map(l => { const c = list.filter(e => e.l === l); return c.length ? `<div class="tlq-col ${l}">${c.map(card).join('')}</div>` : ''; }).join('')}</div></section>`; }).join('');
+    return h || `<p class="muted">لا نتائج تطابق التصفية. جرّب إظهار كل الفئات.</p>`; };
+  const nJ = EVs.filter(e => e.c === 'j').length;
+  V(`<div class="stack tlq"><div><div class="eyebrow">الخط الزمني</div><h1>قصص القرآن مرتبةً على الأزمنة</h1>
+    <p class="lead">${n(EVs.length)} مدخلاً من الأنبياء والأقوام والحضارات والأحداث، مرتبة في ${n(TLD.eras.length)} عصور، في ثلاثة مسارات متجاورة. اضغط اسم أي مدخل لتفتح آياته وارتباطاته بالخريطة وبغيره. ما ثبت بنص القرآن أو إجماع موسوم «ثابت»، وما كان ترتيبه أو تعيينه اجتهاداً موسوم «اجتهاد غير جازم» مع بيان سببه، وهو ${n(nJ)} مدخلاً.</p></div>
+    ${tlSeg('qasas')}
+    <div class="tlq-tools"><div class="mlay" id="tlf" role="group" aria-label="تصفية الخط الزمني">${Object.entries(TLN).map(([l, t]) => `<button type="button" class="chip l-${l}" aria-pressed="${!!S.lane[l]}" data-l="${l}">${t[0]}</button>`).join('')}
+      <span class="tlq-sep"></span>${[['all', 'كل المداخل'], ['t', 'الثابت فقط'], ['j', 'الاجتهادي فقط']].map(([c, t]) => `<button type="button" class="chip" aria-pressed="${S.cert === c}" data-c="${c}">${t}</button>`).join('')}
+      <input class="field" id="tlq" type="search" placeholder="ابحث في الخط الزمني" aria-label="بحث في الخط الزمني" value="${esc(S.q)}"></div>
+      <nav class="tlq-eras" aria-label="العصور">${TLD.eras.map((er, i) => `<a class="chip" data-era="${i}">${er[0]}</a>`).join('')}</nav></div>
+    <div id="tlq-body">${body()}</div>
+    <p class="muted small">الأرقام والتواريخ المنسوبة إلى «مؤرخين» تقديرات من كتب التاريخ، لا من نص القرآن، وتُذكر للتوضيح وحدها. وما لم يرد فيه نص لا نجزم به.</p></div>`);
+  $('#tlseg').onclick = e => { const b = e.target.closest('button'); if (!b) return; timeline.tab = b.dataset.t; timeline(); };
+  const redraw = () => { $('#tlq-body').innerHTML = body(); };
+  $('#tlf').onclick = e => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.l) { S.lane[b.dataset.l] = S.lane[b.dataset.l] ? 0 : 1; b.setAttribute('aria-pressed', !!S.lane[b.dataset.l]); } else { S.cert = b.dataset.c; $$('#tlf [data-c]').forEach(x => x.setAttribute('aria-pressed', x.dataset.c === S.cert)); } redraw(); };
+  let tm = 0; $('#tlq').oninput = e => { S.q = e.target.value; clearTimeout(tm); tm = setTimeout(redraw, 150); };
+  const open = (el, on) => { const b = el.querySelector('.tlq-t'), x = el.querySelector('.tlq-x'); b.setAttribute('aria-expanded', on); x.hidden = !on; el.classList.toggle('open', on); };
+  const focusEv = id => { const e = byId[id]; if (!e) return; if (!shown(e)) { S.lane = { p: 1, q: 1, v: 1 }; S.cert = 'all'; S.q = ''; $('#tlq').value = ''; $$('#tlf button').forEach(x => x.setAttribute('aria-pressed', x.dataset.l ? true : x.dataset.c === 'all')); redraw(); }
+    const el = $('#ev-' + id); if (!el) return; open(el, true); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.classList.add('hl'); setTimeout(() => el.classList.remove('hl'), 2600); };
+  $('#tlq-body').onclick = e => { const t = e.target.closest('.tlq-t'); if (t) { const el = t.closest('.tlq-card'); open(el, !el.classList.contains('open')); return; } const r = e.target.closest('[data-tlq]'); if (r) focusEv(r.dataset.tlq); };
+  $('.tlq-eras').onclick = e => { const a = e.target.closest('[data-era]'); if (!a) return; const el = $('#era-' + a.dataset.era); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+  if (timeline.focus) { const id = timeline.focus; timeline.focus = null; setTimeout(() => focusEv(id), 60); }
 }
 
 /* ================= knowledge graph */
@@ -1934,8 +2490,16 @@ async function installApp() {
 }
 /* حزمة العمل دون إنترنت: بعد التثبيت (أو عند الفتح من الأيقونة) تُنزَّل في الخلفية كل التفاسير والأحاديث والقصص ولغة الواجهة ومعاني لغتك، فيعمل التطبيق كاملاً دون اتصال */
 const OFF_CACHE = APPK + '-data-v1';
+/* ركن التفاسير وأسباب النزول: يُحمَّل عند أول فتحه من tafasir.js */
+function tafasirOpen2(sn, an) {
+  if (window.tafasirOpen) return tafasirOpen(sn, an);
+  if (!tafasirOpen2.s) { V(`<p class="loading">جارٍ فتح الركن…</p>`); tafasirOpen2.s = document.createElement('script'); tafasirOpen2.s.src = 'tafasir.js'; document.head.appendChild(tafasirOpen2.s); }
+  tafasirOpen2.s.addEventListener('load', () => tafasirOpen(sn, an), { once: true });
+  tafasirOpen2.s.addEventListener('error', () => { tafasirOpen2.s.remove(); tafasirOpen2.s = null; V(`<p class="loading">تعذّر فتح الركن، تحقق من الاتصال ثم أعد المحاولة.</p>`); }, { once: true });
+}
+views.tafasir = () => tafasirOpen2(0, 0);
 function offlineFiles() {
-  const f = [...TF.flatMap(b => Array.from({ length: b.chunks }, (_, k) => `data/t/${b.key}/${k}.txt`)), ...Object.keys(HAD_BOOKS).map(k => `data/hadith/${k}.txt`), 'data/qasas.txt'];
+  const f = [...TF.flatMap(b => Array.from({ length: b.chunks }, (_, k) => `data/t/${b.key}/${k}.txt`)), ...Object.keys(HAD_BOOKS).map(k => `data/hadith/${k}.txt`), 'data/qasas.txt', 'tafasir.js', 'data/asbab.txt'];
   if (LANG !== 'ar') f.push(`data/i18n/${LANG}.json`, 'data/i18n/en.json');
   if (I18N.meanCode) f.push(`data/tr/${I18N.meanCode}.txt`);
   return [...new Set(f)];
@@ -1951,15 +2515,26 @@ function offlinePack(onProg) {
     const cache = await caches.open(OFF_CACHE); let done = 0, failed = 0, i = 0;
     const tick = () => { done++; const p = Math.round(done / files.length * 100); offlinePack.cbs.forEach(cb => cb(done, files.length)); if (pill && !quiet) { pill.hidden = false; pill.textContent = `تجهيز ${BRAND} للعمل دون إنترنت… ${n(p)}٪`; } };
     const worker = async () => { while (i < files.length) { const f = files[i++]; try { if (!(await caches.match(f, { ignoreSearch: true }))) { const r = await fetch(f, { cache: 'no-cache' }); if (r.ok) await cache.put(f, r); else failed++; } } catch (e) { failed++; } tick(); } };
-    await Promise.all([worker(), worker(), worker(), worker()]);
+    await Promise.all((IS_IOS ? [1, 2] : [1, 2, 3, 4]).map(worker));
     if (pill) pill.hidden = true;
     if (!failed) { if (!quiet) toast(`${BRAND} جاهز الآن للعمل كاملاً دون إنترنت`); lsSet('offline', sig); }
     offlinePack.run = null; return !failed;
   })();
   return offlinePack.run;
 }
-function offlineAuto() { if (IS_PWA && !FILE_MODE && (isStandalone() || lsGet('installed') === '1') && navigator.onLine !== false) setTimeout(() => offlinePack(), 1500); }
+/* الإصدار ٥: يبدأ تجهيز العمل دون إنترنت فور فتح الصفحة (جوالاً أو حاسوباً) دون انتظار التثبيت؛ يُستثنى من فعّل «توفير البيانات» في جهازه */
+function offlineAuto() { const sd = !!(navigator.connection && navigator.connection.saveData); if (!IS_PWA || FILE_MODE || sd || navigator.onLine === false) return; if (IS_IOS) { /* آيفون: ذاكرة المتصفح محدودة؛ لا تنزيل خلفي لمئات الميغابايت أثناء التصفح داخل سفاري، بل بعد التثبيت على الشاشة الرئيسية وبعد استقرار الصفحة */ if (isStandalone()) setTimeout(() => offlinePack(), 15000); return; } setTimeout(() => offlinePack(), 600); }
+/* بطاقة ترحيب عند أول فتح: المتصفحات تمنع التثبيت الصامت، فتُعرض نقرة واحدة تفتح نافذة التثبيت الأصلية (أندرويد وكروم وإيدج) أو دليل آيفون، وتُعاد بعد ١٤ يوماً إن أُجّلت */
+function installWelcome() {
+  if (!IS_PWA || FILE_MODE || instHidden() || Date.now() < +(lsGet('welcomeSnooze') || 0) || !$('#drawer').hidden || !/^#?(home)?$/.test(location.hash) || /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName || '')) return;
+  const snooze = () => lsSet('welcomeSnooze', String(Date.now() + 14 * 864e5));
+  openDrawer(`<div class="stack instwel" style="text-align:center;width:100%;max-width:420px;margin:8vh auto 0"><img src="icons/icon-192.png" alt="" width="84" height="84" style="margin:auto;border-radius:20px;box-shadow:0 0 0 1px var(--line),0 10px 30px var(--glow)"><h2 style="margin:0">أهلاً بك في ${BRAND}</h2><p class="muted" style="margin:0">ثبّته مرة واحدة فيفتح من شاشتك مباشرة كأي تطبيق، ويعمل دون إنترنت.</p><button class="btn pri" id="welGo" type="button" style="min-height:52px;font-size:1.05rem">ثبّت ${BRAND} الآن</button><button class="btn" id="welLater" type="button">لاحقاً</button></div>`);
+  $('#welGo').onclick = () => { snooze(); if (installEvt) { closeDrawer(); installApp(); } else installApp(); };
+  $('#welLater').onclick = () => { snooze(); closeDrawer(); };
+  $('#drawer').querySelectorAll('[data-close]').forEach(x => x.addEventListener('click', snooze, { once: true }));
+}
 function instBarInit() {
+  setTimeout(installWelcome, 3500);
   const bar = $('#instBar'); if (!bar) return;
   $('#instBarGo').onclick = installApp;
   $('#instBarX').onclick = () => { lsSet('barSnooze', String(Date.now() + 3 * 864e5)); bar.hidden = true; };
@@ -1977,17 +2552,13 @@ function settings() {
       <p class="muted small" style="margin:0">على آيفون: افتح الرابط في سفاري، ثم «مشاركة» ثم «إضافة إلى الشاشة الرئيسية». على أندرويد والكمبيوتر: زر التثبيت في المتصفح أو الزر أعلاه.</p>`
       : `<p style="margin:0">هذه نسخة مشكاة على claude.ai. توجد نسخة قابلة للتثبيت على الجوال والكمبيوتر تعمل دون إنترنت وتدعم التسميع بالصوت والاستماع للتلاوة.</p>`}
   </section>
-  <section class="panel stack tight"><h3>بياناتك</h3><p class="muted small" style="margin:0">${cloud ? 'تقدّمك محفوظ في حسابك (خاص بك ولا يراه غيرك) ونسخة منه على هذا الجهاز.' : 'تقدّمك محفوظ على هذا الجهاز. انسخ الرمز لنقله إلى جهاز آخر.'}</p>
-    <div class="toolbar"><button class="btn" id="expBtn">نسخ رمز النقل</button><button class="btn" id="impBtn">لصق رمز من جهاز آخر</button><button class="btn" id="clrBtn">مسح كل بياناتي</button></div>
-    <textarea class="field" id="impBox" hidden placeholder="الصق الرمز هنا ثم اضغط «استيراد»"></textarea><div class="toolbar" id="impRow" hidden><button class="btn pri" id="impGo">استيراد</button></div><p class="small" id="dataMsg" style="margin:0"></p></section>
-  <section class="panel small muted">الإصدار ٢٫٠ · ${IS_PWA ? 'النسخة المستقلة' : 'نسخة claude.ai'}</section></div>`);
+  <section class="panel stack tight"><h3>بياناتك</h3><p class="muted small" style="margin:0">${cloud ? 'تقدّمك محفوظ في حسابك (خاص بك ولا يراه غيرك) ونسخة منه على هذا الجهاز.' : 'تقدّمك محفوظ على هذا الجهاز وحده.'} من «وردي وتقدّمي» تجد علامة التوقف وهدف القراءة اليومي.</p><div class="toolbar"><a class="btn" href="#wird">وردي وتقدّمي</a><a class="btn" href="#whatsnew">ما الجديد</a></div></section>
+  <div id="dataMount"></div>
+  <section class="panel small muted">الإصدار ${MK_VERSION} · ${IS_PWA ? 'النسخة المستقلة' : 'نسخة claude.ai'}</section></div>`);
   $('#thSeg').onclick = e => { const b = e.target.closest('button'); if (!b) return; ST.prefs.theme = b.dataset.t; applyPrefs(); save(); settings(); };
   $('#szSeg').onclick = e => { const b = e.target.closest('button'); if (!b) return; ST.prefs.size = +b.dataset.s; applyPrefs(); save(); settings(); };
   $('#tfSel').onchange = e => { ST.prefs.tafsir = e.target.value; save(); toast('حُفظ التفسير الافتراضي'); };
-  $('#expBtn').onclick = () => copyText(btoa(unescape(encodeURIComponent(JSON.stringify({ bookmarks: ST.bookmarks, hifz: ST.hifz, last: ST.last })))));
-  $('#impBtn').onclick = () => { $('#impBox').hidden = false; $('#impRow').hidden = false; $('#impBox').focus(); };
-  $('#impGo').onclick = () => { try { const d = cleanState(JSON.parse(decodeURIComponent(escape(atob($('#impBox').value.trim()))))); ST.bookmarks = [...new Set([...ST.bookmarks, ...d.bookmarks])]; Object.assign(ST.hifz, d.hifz); if (d.last != null) ST.last = d.last; save(); $('#dataMsg').textContent = 'استُورد تقدّمك بنجاح.'; } catch (e) { $('#dataMsg').textContent = 'الرمز غير صحيح. انسخه كاملاً ثم أعد المحاولة.'; } };
-  let armed = false; $('#clrBtn').onclick = () => { if (!armed) { armed = true; $('#clrBtn').textContent = 'اضغط مرة أخرى للتأكيد'; return; } ST.bookmarks = []; ST.hifz = {}; ST.last = null; save(); $('#dataMsg').textContent = 'مُسحت بياناتك.'; $('#clrBtn').textContent = 'مسح كل بياناتي'; armed = false; };
+  progLoad('dataPanel', $('#dataMount'));
   const ib = $('#instBtn'); if (ib) ib.onclick = installApp;
   const da = $('#dlAll'); if (da) da.onclick = async () => {
     da.disabled = true; const ok = await offlinePack((d, t) => { $('#dlBar').style.width = (d / t * 100) + '%'; $('#dlStat').textContent = `${n(d)} من ${n(t)} ملفاً`; });
@@ -2358,7 +2929,7 @@ async function scholarsSay(prx, keys, st, per = 8) { // full-text search of the 
   for (const key of keys) { const b = TF.find(x => x.key === key); if (!b) continue; const cand = [];
     for (let s = 1; s <= 114; s++) { if (s % 15 === 1) st(`جارٍ البحث في نص «${b.title}» كاملاً… (سورة ${n(s)} من ١١٤)`); let t; try { t = await tafsir(key, s); } catch (e) { continue; }
       for (const a of Object.keys(t)) { const tx = t[a]; if (!tx || norm(tx).replace(/[^ء-ي ]/g, ' ').search(prx) < 0) continue;
-        const sents = String(tx).replace(/\[\[[^\]]*\]\]/g, '').split(/(?<=[.؟!])\s+|\n+/).map(x => x.trim()).filter(Boolean);
+        const sents = String(tx).replace(/\[\[[^\]]*\]\]/g, '').replace(/([.؟!])\s+|\n+/g, (m, a) => (a || '') + '\u0001').split('\u0001').map(x => x.trim()).filter(Boolean);
         sents.forEach((x, j) => { const nx = ' ' + norm(x).replace(/[^ء-ي ]/g, ' ').replace(/\s+/g, ' ') + ' '; const h = hits(nx, prx); if (!h) return;
           const txt = [sents[j - 1], x, sents[j + 1]].filter(y => y && (y === x || !ISNAD.test(norm(y)))).join(' ');
           cand.push({ b, s, a: +a, t: cut(txt, 900), c: x, w: h + (ISNAD.test(nx) ? -.5 : 0) + (/قال|ذهب|اختلف|القول|الصحيح|العلماء/.test(nx) ? .5 : 0) }); }); } }
@@ -2425,9 +2996,260 @@ function jamal() {
   $$('[data-jmh]').forEach(a => a.onclick = e => { e.preventDefault(); go($('#jmh-' + a.dataset.jmh)); });
 }
 views.jamal = jamal;
+/* ================= أسماء الله الحسنى: كل اسم ورد لفظه في القرآن، بآيته بخط مصحف المدينة (مجمع الملك فهد، الإصدار ١٨) ومعناه إجمالاً،
+   ونقل المفسرين بلفظه من كتبهم المضمّنة؛ والأحاديث مقتطعة بلفظها من الكتب الستة المضمّنة. البيانات في mods/asma.js وتُبنى بسكربت من هذه المصادر. */
+function asma() {
+  if (!needMod('asma')) return;
+  const D = ASMA, enOn = LANG !== 'ar', bk = k => (HAD_BOOKS[k] || [k])[0];
+  const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+  const num = k => LANG === 'ar' ? AR(k) : k;
+  const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah an-q"><span class="an-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num an-nm" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 5); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
+  const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] ? `<span>–${n(r[2])}</span>` : ''}`;
+  const tt = (a, e) => enOn ? `<span class="notranslate" translate="no" lang="en" dir="ltr">${esc(e)}</span>` : a;
+  const ayCard = it => `<article class="an-ay"><h3>${enOn ? '' : it.t}${enOn ? `<span class="notranslate" translate="no" lang="en" dir="ltr">${esc(it.et)}</span>` : ''}</h3><div class="u-ref">${refOf(it.r)}</div>
+    <div class="an-ays">${ays(it.r)}</div><p class="an-note">${enOn ? `<span class="notranslate" translate="no" lang="en" dir="ltr">${esc(it.en)}</span>` : esc(it.n)}</p>
+    <div class="an-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div></article>`;
+  const hCard = h => `<article class="an-h" id="anh-${h.id}"><h3>${enOn ? '' : h.t}${enOn ? `<span class="notranslate" translate="no" lang="en" dir="ltr">${esc(h.et)}</span>` : ''}</h3>
+    <blockquote class="an-matn notranslate" translate="no" lang="ar" dir="rtl">${esc(h.x)}</blockquote>
+    ${enOn ? `<div class="an-en"><b>معنى الحديث بالإنجليزية</b><p class="notranslate" translate="no" lang="en" dir="ltr">${esc(h.en)}</p></div>` : ''}
+    <p class="an-tx"><span>رواه</span> ${h.src.map(([b, k]) => `<b>${bk(b)}</b> <span class="num">(${num(k)})</span>`).join(' · ')}</p>
+    ${h.gr || h.dg ? `<p class="an-gr"><span>درجته</span> ${h.gr ? `<em class="an-badge${/ضعيف/.test(h.gr) ? ' warn' : ''}">${h.gr}</em>` : ''}${h.dg ? `<span class="an-dg notranslate" translate="no">${esc(h.dg.replace(/[؛\s]+$/, ''))}</span>` : ''}</p>` : ''}
+    <div class="th-use"><b>فقه الحديث</b><p>${enOn ? `<span class="notranslate" translate="no" lang="en" dir="ltr">${esc(h.ef)}</span>` : esc(h.f)}</p></div></article>`;
+  const qCard = q => { const b = TF.find(x => x.key === q.bk);
+    return `<figure class="qs-quote an-qt"><blockquote class="notranslate" translate="no" lang="ar" dir="rtl">${esc(q.x)}</blockquote>
+    <figcaption><span>نقل بلفظه من</span> <b>${esc(b ? b.title : q.bk)}</b> · <span>عند تفسير</span> ${refLink(idxOf(q.s, q.ay))}</figcaption></figure>`; };
+  const nCard = x => `<article class="an-n" id="an-${x.id}">
+    <header><h3 class="an-ar notranslate" translate="no" lang="ar">${x.a}</h3>${enOn ? `<span class="an-e notranslate" translate="no" lang="en" dir="ltr">${esc(x.e)}</span>` : ''}</header>
+    <p class="an-m"><b class="an-lbl">المعنى إجمالاً</b> ${enOn ? `<span class="notranslate" translate="no" lang="en" dir="ltr">${esc(x.em)}</span>` : esc(x.m)}</p>
+    <div class="an-ays">${x.r.map(r => ays(r)).join('')}</div>
+    <div class="u-ref">${x.r.map(r => refLink(idxOf(r[0], r[1]))).join(' · ')}</div>
+    ${x.q ? qCard(x.q) : ''}
+    <div class="an-links"><a class="btn" href="#pa${idxOf(x.r[0][0], x.r[0][1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div></article>`;
+  const body = c => {
+    if (c.id === 'hadith') return `<div class="an-grid">${D.h.map(hCard).join('')}</div>`;
+    const ns = D.n.filter(x => x.c === c.id);
+    return `${c.ay.length ? `<div class="an-grid">${c.ay.map(ayCard).join('')}</div>` : ''}${ns.length ? `<div class="an-grid">${ns.map(nCard).join('')}</div>` : ''}`; };
+  const chT = c => enOn ? `<span class="notranslate" translate="no" lang="en" dir="ltr">${esc(c.et)}</span>` : c.t;
+  const chD = c => enOn ? `<span class="notranslate" translate="no" lang="en" dir="ltr">${esc(c.ed)}</span>` : esc(c.d);
+  V(`<div class="stack ulum an">
+    <section class="u-hero an-hero"><span class="eyebrow">اقرأ وتدبّر</span><h1>أسماء الله الحسنى</h1>
+      <p class="lead">كل اسم من أسماء الله الحسنى جاء لفظه في القرآن الكريم: بآيته بخط المصحف، ومعناه، وشرحه بنقل المفسرين بلفظه، مع حديث الأسماء بتخريجه ودرجته.</p>
+      <div class="an-stats"><span><b class="num">${n(D.nn)}</b> <span>اسماً</span></span><span><b class="num">${n(D.nay)}</b> <span>آية</span></span><span><b class="num">${n(D.h.length)}</b> <span>أحاديث</span></span><span><b class="num">${n(D.ch.length)}</b> <span>أبواب</span></span></div></section>
+    <nav class="panel u-index" aria-label="الفهرس"><h2>الفهرس</h2><ol>${D.ch.map((c, i) => `<li><a href="#asma" data-anj="${c.id}"><span class="u-n">${n(i + 1)}</span>${chT(c)}</a></li>`).join('')}</ol></nav>
+    <details class="panel an-chips"><summary><h2>فهرس الأسماء</h2></summary><div class="an-chipr">${D.n.map(x => `<a href="#asma" data-ann="${x.id}" class="notranslate" translate="no" lang="ar">${x.a}</a>`).join('')}</div></details>
+    ${D.ch.map((c, i) => `<details class="u-ch panel an-ch" id="an-ch-${c.id}"${i === 0 ? ' open' : ''}><summary><span class="u-n">${n(i + 1)}</span><span class="u-t">${chT(c)}</span></summary>
+      <div class="u-body stack tight"><p class="u-intro">${chD(c)}</p>${body(c)}</div></details>`).join('')}
+    <p class="muted small">الآيات بلفظ مصحف المدينة النبوية (مجمع الملك فهد، الإصدار ١٨) وبخطه، والأحاديث من الكتب المضمّنة في مشكاة بترقيمها ودرجتها كما في المصدر، ونقول المفسرين بلفظها من السعدي والبغوي وابن كثير والقرطبي. أما «المعنى إجمالاً» والتمهيدات فصياغة موجزة وليست نقلاً. وكتب ابن القيم وغيره في الأسماء الحسنى غير مضمّنة في مشكاة، فلم يُنقل عنها. والأسماء الحسنى لا تنحصر في عدد، وهذا القسم يقتصر على ما ورد لفظه في القرآن.</p>
+  </div>`);
+  const go = el => { if (!el) return; const d = el.closest('details'); if (d) d.open = true; el.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+  $$('[data-anj]').forEach(a => a.onclick = e => { e.preventDefault(); go($('#an-ch-' + a.dataset.anj)); });
+  $$('[data-ann]').forEach(a => a.onclick = e => { e.preventDefault(); go($('#an-' + a.dataset.ann)); });
+}
+views.asma = asma;
+/* ================= أمثال القرآن: الأمثال المضروبة في القرآن الكريم وشرحها وبلاغتها. الآيات بلفظ مصحف المدينة (مجمع الملك فهد، الإصدار ١٨) وبخطه،
+   ونقول المفسرين بلفظها من كتبهم المضمّنة، والأمثال النبوية بلفظها من الصحيحين. البيانات في mods/amthal.js وتُبنى بسكربت من هذه المصادر. */
+function amthal() {
+  if (!needMod('amthal')) return;
+  const D = AMTHAL, enOn = LANG !== 'ar', bk = k => (HAD_BOOKS[k] || [k])[0];
+  const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+  const num = k => LANG === 'ar' ? AR(k) : k;
+  const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah am-q"><span class="am-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num am-nm" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 5); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
+  const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] ? `<span>–${n(r[2])}</span>` : ''}`;
+  const en = (cls, x) => `<span class="${cls} notranslate" translate="no" lang="en" dir="ltr">${esc(x)}</span>`;
+  const qCard = q => { const b = TF.find(x => x.key === q.bk);
+    return `<figure class="qs-quote am-qt"><blockquote class="notranslate" translate="no" lang="ar" dir="rtl">${esc(q.x)}</blockquote>
+    <figcaption><span>نقل بلفظه من</span> <b>${esc(b ? b.title : q.bk)}</b> · <span>عند تفسير</span> ${refLink(idxOf(q.s, q.ay))}</figcaption></figure>`; };
+  const mCard = (x, k) => `<article class="am-m" id="am-${x.id}"><header><span class="am-no">${n(k)}</span><h3>${enOn ? en('', x.et) : x.t}</h3></header><div class="u-ref">${refOf(x.r)}</div>
+    <div class="am-ays">${ays(x.r)}</div>
+    <p class="am-note"><b class="am-lbl">وجه التمثيل</b> ${enOn ? en('', x.en) : esc(x.n)}</p>
+    ${x.q ? qCard(x.q) : ''}
+    <div class="am-links"><a class="btn" href="#pa${idxOf(x.r[0], x.r[1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div></article>`;
+  const bk2 = h => h;
+  const hCard = h => `<article class="am-h" id="amh-${h.id}"><h3>${enOn ? en('', h.et) : h.t}</h3>
+    <blockquote class="am-matn notranslate" translate="no" lang="ar" dir="rtl">${esc(h.x)}</blockquote>
+    ${enOn ? `<div class="am-en"><b>معنى الحديث بالإنجليزية</b><p class="notranslate" translate="no" lang="en" dir="ltr">${esc(h.en)}</p></div>` : ''}
+    <p class="am-tx"><span>رواه</span> ${h.src.map(([b, k]) => `<b>${bk(b)}</b> <span class="num">(${num(k)})</span>`).join(' · ')}</p>
+    ${h.gr ? `<p class="am-gr"><span>درجته</span> <em class="am-badge">${h.gr}</em></p>` : ''}
+    <div class="th-use"><b>فقه الحديث</b><p>${enOn ? en('', h.ef) : esc(h.f)}</p></div></article>`;
+  let k = 0;
+  const body = c => c.id === 'sunna' ? `<div class="am-grid">${D.h.map(hCard).join('')}</div>` : `<div class="am-grid">${c.m.map(x => mCard(x, ++k)).join('')}</div>`;
+  const chT = c => enOn ? en('', c.et) : c.t;
+  V(`<div class="stack ulum am">
+    <section class="u-hero am-hero"><span class="eyebrow">ابحث وحقّق</span><h1>أمثال القرآن</h1>
+      <p class="lead">الأمثال المضروبة في القرآن الكريم: كل مثل بآياته بخط المصحف ووجه التمثيل فيه، وشرحه بنقل المفسرين بلفظه، وما يفسّره من الأمثال النبوية في الصحيحين.</p>
+      <div class="am-stats"><span><b class="num">${n(D.nm)}</b> <span>مثلاً</span></span><span><b class="num">${n(D.nay)}</b> <span>آية</span></span><span><b class="num">${n(D.h.length)}</b> <span>أحاديث</span></span><span><b class="num">${n(D.ch.length)}</b> <span>أبواب</span></span></div></section>
+    <nav class="panel u-index" aria-label="الفهرس"><h2>الفهرس</h2><ol>${D.ch.map((c, i) => `<li><a href="#amthal" data-amj="${c.id}"><span class="u-n">${n(i + 1)}</span>${chT(c)}</a></li>`).join('')}</ol></nav>
+    ${D.ch.map((c, i) => `<details class="u-ch panel am-ch" id="am-ch-${c.id}"${i === 0 ? ' open' : ''}><summary><span class="u-n">${n(i + 1)}</span><span class="u-t">${chT(c)}</span></summary>
+      <div class="u-body stack tight"><p class="u-intro">${enOn ? en('', c.ed) : esc(c.d)}</p>${body(c)}</div></details>`).join('')}
+    <p class="muted small">الآيات بلفظ مصحف المدينة النبوية (مجمع الملك فهد، الإصدار ١٨) وبخطه، ونقول المفسرين بلفظها من كتبهم المضمّنة في مشكاة (السعدي والبغوي وابن كثير والقرطبي)، والأحاديث من الصحيحين بترقيمهما. أما التمهيدات و«وجه التمثيل» فصياغة موجزة وليست نقلاً. وبعض الأمثال لا نقل معها لأن العبارة المناسبة لم تُوجد في كتب التفسير المضمّنة، فلم يُنقل شيء غير ثابت.</p>
+  </div>`);
+  const go = el => { if (!el) return; const d = el.closest('details'); if (d) d.open = true; el.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+  $$('[data-amj]').forEach(a => a.onclick = e => { e.preventDefault(); go($('#am-ch-' + a.dataset.amj)); });
+}
+views.amthal = amthal;
+/* ================= التفسير الموضوعي (#mawdui)
+   فهرس موضوعات (التوحيد، الأخلاق، القصص، الأحكام) مربوطة بآياتها، وفي كل موضوع طبقتا «التعمق بالرأي» و«اللطائف والاستنباطات»؛
+   النقول بلفظها من كتب التفسير المضمّنة (data/t) وموسومة بنوعها واسم الكتاب والمؤلف، وتُبنى بسكربت من هذه المصادر فلا يُكتب نص منسوب باليد.
+   mawduiOf(i): المواضيع التي تحوي الآية i، لتُربط بها صفحة الآية. */
+/* بيانات MAWDUI في mods/mawdui.js: تُحمَّل عند أول فتح للقسم (وبـ mawduiLoad() لصفحة الآية) */
+const MW_TYPE = { 'ترجيح': 'بالرأي المحمود', 'استنباط': 'استنباط', 'نظر واستنباط': 'نظر واستنباط', 'لطيفة': 'لطيفة', 'فائدة': 'فائدة', 'لطيفة واستنباط': 'لطيفة واستنباط' };
+let MW_BY = null;
+const mawduiLoad = () => window.MAWDUI ? Promise.resolve(window.MAWDUI) : new Promise((ok, no) => { const s = document.createElement('script'); s.src = 'mods/mawdui.js'; s.onload = () => ok(window.MAWDUI); s.onerror = () => no(new Error('mawdui')); document.head.appendChild(s); });
+function mawduiOf(i) {
+  if (!window.MAWDUI) return [];
+  if (!MW_BY) { MW_BY = new Map(); window.MAWDUI.forEach(th => th.tp.forEach(t => t.r.forEach(([s, a, b]) => { for (let k = a; k <= b; k++) { const ix = idxOf(s, k); if (ix >= 0) (MW_BY.get(ix) || MW_BY.set(ix, []).get(ix)).push({ th: th.id, thT: th.t, id: t.id, t: t.t }); } }))); }
+  return MW_BY.get(i) || [];
+}
+function mawdui() {
+  if (!needMod('mawdui')) return;
+  const MAWDUI = window.MAWDUI;
+  const nT = MAWDUI.reduce((t, h) => t + h.tp.length, 0), nQ = MAWDUI.reduce((t, h) => t + h.tp.reduce((u, p) => u + p.q.length + p.l.length, 0), 0);
+  const nA = new Set(MAWDUI.flatMap(h => h.tp.flatMap(p => p.r.flatMap(([s, a, b]) => { const o = []; for (let k = a; k <= b; k++) o.push(idxOf(s, k)); return o; })))).size;
+  const rng = ([s, a, b]) => { const o = [], last = Math.min(b, a + 3); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayahHTML(i, null, false)); }
+    return `<div class="mw-r"><div class="u-ref">${refLink(idxOf(s, a))}${b > a ? `<span>–${n(b)}</span>` : ''}</div><div class="th-ay">${o.join('')}</div>${b > last ? `<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>` : ''}</div>`; };
+  const quote = (x, kind) => { const [bk, s, a, tag, tx] = x, b = TF.find(z => z.key === bk) || { title: bk, author: '' };
+    return `<figure class="qs-quote mw-q mw-${kind}"><blockquote class="notranslate" translate="no" lang="ar" dir="rtl">${esc(tx)}${/[.؟!)\]»]\s*$/.test(tx) ? '' : ' …'}</blockquote>
+    <figcaption><span class="mw-tag"><span>${MW_TYPE[tag] || tag}</span> · <span>${esc(b.title)}</span></span><span class="muted">${esc(b.author)}</span><span>عند تفسير</span> ${refLink(idxOf(s, a))}</figcaption></figure>`; };
+  const topicBody = t => `<p class="u-intro">${esc(t.d)}</p>
+    <section class="mw-lay"><h3 class="mw-st"><span class="mw-ln">${n(9)}</span>آيات الموضوع مجموعة</h3><div class="mw-rs">${t.r.map(rng).join('')}</div></section>
+    ${t.q.length ? `<section class="mw-lay"><h3 class="mw-st"><span class="mw-ln">${n(7)}</span>التعمق بالرأي</h3><p class="muted small">ترجيحات المفسرين واستنباطاتهم وتحرير أقوالهم في آيات الموضوع، منقولة بلفظها.</p>${t.q.map(x => quote(x, 'q')).join('')}</section>` : ''}
+    ${t.l.length ? `<section class="mw-lay"><h3 class="mw-st"><span class="mw-ln">${n(10)}</span>اللطائف والاستنباطات</h3><p class="mw-warn small"><b>تنبيه:</b> اجتهاد من المفسر لا يُجزم به، يُستأنس به ولا يُبنى عليه حكم.</p>${t.l.map(x => quote(x, 'l')).join('')}</section>` : ''}`;
+  V(`<div class="stack ulum mw">
+    <section class="u-hero mw-hero"><span class="eyebrow">اقرأ وتدبّر</span><h1>التفسير الموضوعي</h1>
+      <p class="lead">فهرس موضوعات القرآن في التوحيد والأخلاق والقصص والأحكام، كل موضوع بآياته مجموعةً في موضع واحد، ثم طبقة «التعمق بالرأي» وطبقة «اللطائف والاستنباطات» من أمهات التفسير بألفاظها، وكل نقل موسوم بنوعه واسم الكتاب والمؤلف.</p>
+      <div class="mw-stats"><span><b class="num">${n(MAWDUI.length)}</b> <span>أبواب</span></span><span><b class="num">${n(nT)}</b> <span>موضوعاً</span></span><span><b class="num">${n(nA)}</b> <span>آية</span></span><span><b class="num">${n(nQ)}</b> <span>نقلاً</span></span></div></section>
+    <div class="panel mw-find"><label for="mwq">ابحث في الموضوعات</label><input id="mwq" type="search" placeholder="مثال: الصبر، يوسف، الربا، الحج" autocomplete="off"><div id="mwn" class="muted small" aria-live="polite"></div></div>
+    <nav class="panel mw-index" aria-label="فهرس الموضوعات"><h2>فهرس الموضوعات</h2><div class="mw-ix">${MAWDUI.map(h => `<div class="mw-ixc mw-${h.id}"><h3><svg><use href="#${h.ic}"/></svg>${h.t}</h3><ol>${h.tp.map(t => `<li><a href="#mawdui" data-mwj="${h.id}-${t.id}">${t.t}</a></li>`).join('')}</ol></div>`).join('')}</div></nav>
+    ${MAWDUI.map(h => `<section class="mw-th mw-${h.id}" id="mwth-${h.id}"><h2 class="mw-h2"><svg><use href="#${h.ic}"/></svg>${h.t}</h2><p class="muted">${esc(h.d)}</p>
+      ${h.tp.map((t, i) => `<details class="u-ch panel mw-tp" id="mw-${h.id}-${t.id}" data-s="${esc(h.t + ' ' + t.t + ' ' + t.d)}"><summary><span class="u-n">${n(i + 1)}</span><span class="u-t">${t.t}</span><span class="meta"><span class="chip">${n(t.r.reduce((c, [, a, b]) => c + b - a + 1, 0))} آية</span></span></summary><div class="u-body stack tight">${topicBody(t)}</div></details>`).join('')}</section>`).join('')}
+    <p class="muted small">الآيات من المصحف المضمّن، والنقول بحروفها من كتب التفسير المضمّنة: جامع البيان للطبري، وتفسير ابن كثير، والجامع لأحكام القرآن للقرطبي، وتيسير الكريم الرحمن للسعدي، ومعالم التنزيل للبغوي؛ وتمهيد كل موضوع صياغة موجزة. ما يُنقل في «اللطائف» اجتهاد المفسر لا يُجزم به.</p>
+  </div>`);
+  const go = el => { if (!el) return; el.open = true; el.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+  $$('[data-mwj]').forEach(a => a.onclick = e => { e.preventDefault(); go($('#mw-' + a.dataset.mwj)); });
+  const inp = $('#mwq'), nf = $('#mwn');
+  inp.oninput = () => { const q = norm(inp.value.trim()); let c = 0;
+    $$('.mw-tp').forEach(d => { const hit = !q || norm(d.dataset.s).includes(q); d.hidden = !hit; if (hit) c++; });
+    $$('.mw-th').forEach(s => { s.hidden = ![...s.querySelectorAll('.mw-tp')].some(d => !d.hidden); });
+    nf.textContent = q ? (c ? `${n(c)} موضوعاً مطابقاً` : 'لا موضوع مطابق، جرّب كلمة أخرى.') : ''; };
+}
+views.mawdui = mawdui;
+/* ================= الناسخ والمنسوخ ومتشابه الآيات، والسيرة النبوية والغزوات، والأحاديث الأربعون النووية
+   البيانات في mods/naskh.js و mods/sira.js و mods/arbain.js وتُحمَّل عند أول فتح للقسم (وهي ضمن التخزين المسبق للعمل دون إنترنت).
+   نص الآيات بلفظ مصحف المدينة (مجمع الملك فهد، الإصدار ١٨) وبخطه، والأحاديث مقتطعة بلفظها من الكتب المضمّنة (data/hadith)،
+   ونقول المفسرين بلفظها من data/t؛ والبيانات تُبنى بسكربت من هذه المصادر، فلا يُكتب نص منسوب باليد. */
+const SX_FILES = { ARBAIN: 'mods/arbain.js', NASKH: 'mods/naskh.js', SIRA: 'mods/sira.js' }, SX_LOAD = {};
+function sxReady(key) {
+  if (window[key]) return true;
+  if (!SX_LOAD[key]) SX_LOAD[key] = new Promise((ok, no) => { const s = document.createElement('script'); s.src = SX_FILES[key]; s.onload = ok; s.onerror = () => { delete SX_LOAD[key]; no(); }; document.head.appendChild(s); });
+  V(`<div class="stack ulum"><section class="panel"><p class="muted" role="status">جارٍ فتح القسم…</p></section></div>`);
+  SX_LOAD[key].then(() => route(), () => V(`<div class="stack ulum"><section class="panel"><p class="muted" role="alert">تعذّر تحميل القسم؛ تحقق من الاتصال ثم أعد المحاولة.</p></section></div>`));
+  return false;
+}
+function sxKit(D) {
+  const enOn = LANG !== 'ar', bk = k => (HAD_BOOKS[k] || [k])[0];
+  const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+  const num = k => LANG === 'ar' ? AR(k) : k;
+  const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah jm-q"><span class="jm-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num jm-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
+  const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] && r[2] !== r[1] ? `<span>–${n(r[2])}</span>` : ''}`;
+  const ayCard = it => `<article class="jm-ay"><h3>${esc(it.t)}</h3><div class="u-ref">${refOf(it.r)}</div>
+    <div class="jm-ays">${ays(it.r)}</div><p class="jm-note"><b class="jm-lbl">وجه الدلالة</b> ${esc(it.n)}</p>
+    <div class="jm-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div></article>`;
+  const hCard = (h, id) => `<article class="jm-h" ${id ? `id="${id}"` : ''}><h3>${esc(h.t)}</h3>
+    <blockquote class="jm-matn notranslate" translate="no" lang="ar" dir="rtl">${esc(h.x)}</blockquote>
+    ${enOn && h.en ? `<div class="jm-en"><b>معنى الحديث بالإنجليزية</b><p class="notranslate" translate="no" lang="en" dir="ltr">${esc(h.en)}</p></div>` : ''}
+    <p class="jm-tx"><span>رواه</span> ${h.src.map(([b, k]) => `<b>${bk(b)}</b> <span class="num">(${num(k)})</span>`).join(' · ')}</p>
+    ${h.gr || h.dg ? `<p class="jm-gr"><span>درجته</span> ${h.gr ? `<em class="jm-badge">${h.gr}</em>` : ''}${h.dg ? `<span class="jm-dg notranslate" translate="no">${esc(h.dg.replace(/[؛\s]+$/, ''))}</span>` : ''}</p>` : ''}
+    <div class="th-use"><b>فقه الحديث</b><p>${esc(h.f)}</p></div></article>`;
+  const qCard = q => { const b = TF.find(x => x.key === q.bk);
+    return `<figure class="qs-quote jm-qt"><blockquote class="notranslate" translate="no" lang="ar" dir="rtl">${esc(q.x)}</blockquote>
+    <figcaption><b>${q.w}</b> · <span>نقل بلفظه من</span> <span>${esc(b ? b.title : q.bk)}</span> · <span>عند تفسير</span> ${refLink(idxOf(q.s, q.ay))}</figcaption></figure>`; };
+  const sub = (icon, t, inner) => inner ? `<h3 class="jm-sub"><svg><use href="#${icon}"/></svg>${t}</h3><div class="jm-grid">${inner}</div>` : '';
+  const go = el => { if (!el) return; const d = el.closest('details'); if (d) d.open = true; el.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+  const wire = () => { $$('[data-sxj]').forEach(a => a.onclick = e => { e.preventDefault(); go($('#' + a.dataset.sxj)); }); };
+  return { enOn, AR, num, ayLine, ays, refOf, ayCard, hCard, qCard, sub, wire, bk };
+}
+/* ---------- الأحاديث الأربعون النووية ---------- */
+function arbain() {
+  if (!sxReady('ARBAIN')) return;
+  const D = window.ARBAIN; D.ay = D.ay || {}; const K = sxKit(D), by = {}; D.h.forEach(h => by[h.n] = h);
+  const card = nn => { const h = by[nn];
+    if (!h) { const o = D.no[nn]; return `<article class="jm-h ar-no" id="ar-${nn}"><h3><span class="ar-num">${K.num(nn)}</span> ${esc(o.t)}</h3><p class="muted">${esc(o.d)}</p></article>`; }
+    return K.hCard({ ...h, t: h.t }, 'ar-' + nn).replace('<h3>', `<h3><span class="ar-num">${K.num(nn)}</span> `); };
+  V(`<div class="stack ulum jm ar">
+    <section class="u-hero jm-hero"><span class="eyebrow">احفظ وتعبّد</span><h1>الأحاديث الأربعون النووية</h1>
+      <p class="lead">جوامع الكلم التي جمعها الإمام النووي، كل حديث بمتنه بلفظ كتب السنة المضمّنة في مشكاة وبتخريجه ودرجته، مع شرح موجز لفقهه ومعناه بالإنجليزية.</p>
+      <div class="jm-stats"><span><b class="num">${n(D.h.length)}</b> <span>حديثاً بنصه</span></span><span><b class="num">${n(D.ch.length - 1)}</b> <span>أبواب</span></span><span><b class="num">${n(42)}</b> <span>حديثاً مع حديثَي ابن رجب</span></span></div></section>
+    <details class="panel u-index sx-idx" open><summary><h2>الفهرس</h2></summary><div class="sx-idxg">${D.ch.map((c, i) => `<details${i === 0 ? ' open' : ''}><summary>${c.t} <em>${n(c.ids.length)}</em></summary><ol>${c.ids.map(k => `<li><a href="#arbain" data-sxj="ar-${k}"><span class="u-n">${n(k)}</span>${esc((by[k] || D.no[k]).t)}</a></li>`).join('')}</ol></details>`).join('')}</div></details>
+    ${D.ch.map((c, i) => `<details class="u-ch panel jm-ch" id="arc-${c.id}"${i === 0 ? ' open' : ''}><summary><span class="u-n">${n(i + 1)}</span><span class="u-t">${c.t}</span></summary>
+      <div class="u-body stack tight"><p class="u-intro">${esc(c.d)}</p><div class="jm-grid">${c.ids.map(card).join('')}</div></div></details>`).join('')}
+    <p class="muted small">متون الأحاديث مقتطعة بلفظها من صحيح البخاري وصحيح مسلم وجامع الترمذي وسنن أبي داود وسنن ابن ماجه المضمّنة في مشكاة بترقيمها، ودرجات السنن من أقوال المحققين المثبتة في الكتب نفسها. وقد رتّبنا الأحاديث في أبواب موضوعية مع إبقاء رقم كل حديث في «الأربعين النووية». أما الحديثان ٣٠ و٤١ فليسا في الكتب الستة المضمّنة، فلم يُورد نصهما. والعناوين والفوائد المختصرة صياغة موجزة لا تُنسب إلى النووي.</p>
+  </div>`);
+  K.wire();
+}
+views.arbain = arbain;
+/* ---------- الناسخ والمنسوخ ومتشابه الآيات ---------- */
+function naskh() {
+  if (!sxReady('NASKH')) return;
+  const D = window.NASKH, K = sxKit(D), pairN = D.p.length;
+  const AR = K.AR;
+  const cases = D.ch.find(c => c.cs).cs;
+  const caseCard = (c, i) => `<article class="panel sx-case" id="nk-${c.id}"><h3><span class="u-n">${K.num(i + 1)}</span> ${esc(c.t)}</h3>
+    <div class="sx-cols">${c.x.map(r => `<div class="sx-col"><div class="u-ref">${K.refOf(r)}</div><div class="jm-ays">${K.ays(r)}</div></div>`).join('')}</div>
+    <p class="jm-note">${esc(c.n)}</p>
+    ${K.sub('i-scroll', 'من السنة', c.h.map(h => K.hCard(h)).join(''))}${K.sub('i-book', 'من أقوال المفسرين', c.q.map(K.qCard).join(''))}</article>`;
+  const diff = (s, fl) => { const w = s.split(' '); return w.map((x, i) => fl[i] ? `<mark class="sx-df">${esc(x)}</mark>` : esc(x)).join(' '); };
+  const pairCard = (p, i) => { const ia = idxOf(p.a[0], p.a[1]), ib = idxOf(p.b[0], p.b[1]);
+    return `<article class="panel sx-pair" id="nk-p${i}"><h3><span class="u-n">${K.num(i + 1)}</span> ${esc(ref(ia))} ⟷ ${esc(ref(ib))}</h3>
+    <div class="sx-cols"><div class="sx-col"><div class="u-ref">${refLink(ia)}</div><div class="ayah jm-q"><span class="jm-t">${diff(D.ay[ia], p.fa)}</span> <span class="num jm-n">${AR(p.a[1])}</span></div></div>
+    <div class="sx-col"><div class="u-ref">${refLink(ib)}</div><div class="ayah jm-q"><span class="jm-t">${diff(D.ay[ib], p.fb)}</span> <span class="num jm-n">${AR(p.b[1])}</span></div></div></div>
+    <p class="jm-note"><b class="jm-lbl">تنبيه الحفظ</b> ${esc(p.n)}</p></article>`; };
+  const chBody = c => {
+    if (c.cs) return c.cs.map(caseCard).join('');
+    return `<div class="jm-grid">${(c.ay || []).map(K.ayCard).join('')}</div>${K.sub('i-scroll', 'من السنة الصحيحة', (c.h || []).map(h => K.hCard(h)).join(''))}${K.sub('i-book', 'من أقوال المفسرين', (c.q || []).map(K.qCard).join(''))}`; };
+  const nq = D.ch.reduce((a, c) => a + (c.q || []).length + (c.cs || []).reduce((b, x) => b + x.q.length, 0), 0), nh = D.ch.reduce((a, c) => a + (c.h || []).length + (c.cs || []).reduce((b, x) => b + x.h.length, 0), 0);
+  const all = [...D.ch.map(c => ['nc-' + c.id, c.t]), ['nc-mutashabih', 'متشابه اللفظ: آيات تتفق وتختلف']];
+  V(`<div class="stack ulum jm nk">
+    <section class="u-hero jm-hero"><span class="eyebrow">ابحث وحقّق</span><h1>الناسخ والمنسوخ ومتشابه الآيات</h1>
+      <p class="lead">حقيقة النسخ وأقسامه، وأمثلة الأحكام المنسوخة بناسخها وأقوال المفسرين بلفظها، وما وقع فيه الخلاف، ثم متشابه الألفاظ بين آيات القرآن مع إبراز مواضع الاختلاف لتعين على الحفظ.</p>
+      <div class="jm-stats"><span><b class="num">${n(cases.length)}</b> <span>مثالاً للنسخ</span></span><span><b class="num">${n(pairN)}</b> <span>موضعاً متشابهاً</span></span><span><b class="num">${n(nh)}</b> <span>حديثاً</span></span><span><b class="num">${n(nq)}</b> <span>نقلاً</span></span></div></section>
+    <section class="panel jm-kinds"><h2>أقسام النسخ</h2><div class="jm-kgrid">${D.k.map((k, i) => `<div class="jm-k jm-k${i + 1}"><span class="jm-kn">${n(i + 1)}</span><b>${k.t}</b><p>${esc(k.d)}</p></div>`).join('')}</div></section>
+    <details class="panel u-index sx-idx" open><summary><h2>الفهرس</h2></summary><ol>${all.map(([id, t], i) => `<li><a href="#naskh" data-sxj="${id}"><span class="u-n">${n(i + 1)}</span>${t}</a></li>`).join('')}</ol></details>
+    ${D.ch.map((c, i) => `<details class="u-ch panel jm-ch" id="nc-${c.id}"${i === 0 ? ' open' : ''}><summary><span class="u-n">${n(i + 1)}</span><span class="u-t">${c.t}</span></summary>
+      <div class="u-body stack tight"><p class="u-intro">${esc(c.d)}</p>${chBody(c)}</div></details>`).join('')}
+    <details class="u-ch panel jm-ch" id="nc-mutashabih"><summary><span class="u-n">${n(D.ch.length + 1)}</span><span class="u-t">متشابه اللفظ: آيات تتفق وتختلف</span></summary>
+      <div class="u-body stack tight"><p class="u-intro">آيات تتشابه ألفاظها وتختلف في كلمة أو حرف أو ترتيب، فيقع الاشتباه عند الحفظ والتلاوة. أُبرزت الكلمات المختلفة بين الآيتين بلون خاص من نص المصحف نفسه، ثم تنبيه موجز يعين على التفريق.</p>
+      <div class="jm-grid sx-pairs">${D.p.map(pairCard).join('')}</div>
+      <p class="muted small">للتوسع في أسرار هذه الفروق ينظر في كتب المتشابه اللفظي، مثل «البرهان في متشابه القرآن» للكرماني، و«ملاك التأويل» لابن الزبير الغرناطي، و«درة التنزيل وغرة التأويل» للخطيب الإسكافي؛ وهي غير مضمّنة في مشكاة، فلم يُنقل عنها، والتنبيهات هنا وصف للفروق الظاهرة في النص.</p></div></details>
+    <p class="muted small">نصوص الآيات بلفظ مصحف المدينة النبوية (مجمع الملك فهد، الإصدار ١٨) وبخطه، والأحاديث مقتطعة بلفظها من الكتب المضمّنة بترقيمها وأحكام المحققين المثبتة فيها، ونقول المفسرين بلفظها من كتبهم المضمّنة (ابن كثير والسعدي والقرطبي وغيرهما)؛ أما التمهيدات والتنبيهات فصياغة موجزة. وللعلماء خلاف معروف في عدد المنسوخ وفي كثير من الأمثلة، فاقرأ الخلاف في بابه ولا تُعمّم.</p>
+  </div>`);
+  K.wire();
+}
+views.naskh = naskh;
+/* ---------- السيرة النبوية والغزوات ---------- */
+function sira() {
+  if (!sxReady('SIRA')) return;
+  const D = window.SIRA, K = sxKit(D), nh = D.ev.reduce((a, e) => a + e.h.length, 0), nq = D.ev.reduce((a, e) => a + e.q.length, 0);
+  const evCard = (e, i) => `<details class="u-ch panel jm-ch sx-ev" id="sr-${e.id}"><summary><span class="u-n">${K.num(i + 1)}</span><span class="u-t">${e.t}</span><span class="sx-dt">${e.dt}</span></summary>
+    <div class="u-body stack tight"><p class="u-intro">${esc(e.s)}</p>
+    ${K.sub('i-book', 'الآيات النازلة فيها', e.ay.map(K.ayCard).join(''))}${K.sub('i-scroll', 'من السنة الصحيحة', e.h.map(h => K.hCard(h)).join(''))}${K.sub('i-book', 'من أقوال المفسرين', e.q.map(K.qCard).join(''))}</div></details>`;
+  let k = 0; const order = e => D.ev.indexOf(e);
+  V(`<div class="stack ulum jm sr">
+    <section class="u-hero jm-hero"><span class="eyebrow">اكتشف وتأمّل</span><h1>السيرة النبوية والغزوات</h1>
+      <p class="lead">أحداث السيرة من بدء الوحي إلى وفاته ﷺ مرتبةً زمنياً، كل حدث مربوط بالآيات التي نزلت فيه، مع الأحاديث الصحيحة بألفاظها وأقوال المفسرين.</p>
+      <div class="jm-stats"><span><b class="num">${n(D.ev.length)}</b> <span>حدثاً</span></span><span><b class="num">${n(D.nay)}</b> <span>آية</span></span><span><b class="num">${n(nh)}</b> <span>حديثاً</span></span><span><b class="num">${n(nq)}</b> <span>نقلاً</span></span></div></section>
+    <details class="panel u-index sx-idx" open><summary><h2>الفهرس</h2></summary><div class="sx-idxg">${D.ph.map((p, pi) => `<details${pi === 0 ? ' open' : ''}><summary>${p.t} <em>${n(D.ev.filter(e => e.ph === p.id).length)}</em></summary><ol>${D.ev.filter(e => e.ph === p.id).map(e => `<li><a href="#sira" data-sxj="sr-${e.id}"><span class="u-n">${n(order(e) + 1)}</span>${e.t}</a></li>`).join('')}</ol></details>`).join('')}</div></details>
+    ${D.ph.map(p => `<h2 class="sx-ph">${p.t}</h2><p class="muted">${esc(p.d)}</p>${D.ev.filter(e => e.ph === p.id).map(e => evCard(e, order(e))).join('')}`).join('')}
+    <p class="muted small">نصوص الآيات بلفظ مصحف المدينة النبوية (مجمع الملك فهد، الإصدار ١٨) وبخطه، والأحاديث مقتطعة بلفظها من الصحيحين المضمّنين بترقيمهما، ونقول المفسرين بلفظها من كتبهم المضمّنة. وأما التمهيدات فصياغة موجزة، والتواريخ الهجرية على المشهور عند أهل السير، وفي بعضها خلاف. وكتب السير المستقلة (كسيرة ابن هشام) غير مضمّنة في مشكاة فلم يُنقل عنها.</p>
+  </div>`);
+  K.wire();
+}
+views.sira = sira;
 function excerpt(text, rts, ayahWords, max = 650) { // the sentences of a long commentary that speak to the topic or to this ayah; chains of narration and verse are left out
   const res = rts.map(x => x instanceof RegExp ? x : rootRx(x));
-  const sents = String(text).replace(/\[\[[^\]]*\]\]/g, '').split(/(?<=[.؟!:])\s+|\n+/).map(s => s.trim()).filter(s => s.length > 12);
+  const sents = String(text).replace(/\[\[[^\]]*\]\]/g, '').replace(/([.؟!:])\s+|\n+/g, (m, a) => (a || '') + '\u0001').split('\u0001').map(s => s.trim()).filter(s => s.length > 12);
   const sc = sents.map(s => { const nn = ' ' + norm(s).replace(/[^ء-ي ]/g, ' ').replace(/\s+/g, ' ') + ' '; let v = 0;
     res.forEach(re => v += 3 * hits(nn, re)); ayahWords.forEach(w => { if (nn.includes(' ' + w)) v += .5; });
     if (ISNAD.test(nn)) v -= 8; if (/\.\.\.|…/.test(s) && s.length < 160) v -= 4; return v; });
@@ -2824,13 +3646,16 @@ function ayahDrawer(i) {
   const bm = ST.bookmarks.includes(i);
   openDrawer(`<div class="stack"><div><div class="eyebrow">${esc(ref(i))} · الجزء ${n(a[5])} · الصفحة ${n(a[6])}</div><h2>سورة ${Q.surahs[a[0]-1].name}، الآية ${n(a[1])}</h2></div>
   ${ayahHTML(i)}
-  <div class="toolbar"><button class="btn${bm ? ' pri' : ''}" id="bmBtn"><svg><use href="#i-bookmark"/></svg>${bm ? 'في علاماتك' : 'أضف إلى العلامات'}</button><button class="btn" data-card="${i}"><svg><use href="#i-image"/></svg>بطاقة</button><button class="btn" id="cpBtn"><svg><use href="#i-copy"/></svg>نسخ</button>${IS_PWA ? `<button class="btn" id="plBtn"><svg><use href="#i-play"/></svg>استمع</button>` : ''}<a class="btn" href="#a${a[0]}-${a[1]}" data-close>في سياقها</a></div>
+  <div class="toolbar"><button class="btn${bm ? ' pri' : ''}" id="bmBtn"><svg><use href="#i-bookmark"/></svg>${bm ? 'في علاماتك' : 'أضف إلى العلامات'}</button><button class="btn${ST.mark && ST.mark.i === i ? ' pri' : ''}" id="markBtn"><svg><use href="#i-time"/></svg>${ST.mark && ST.mark.i === i ? 'توقفت هنا ✓' : 'توقفت هنا'}</button><button class="btn" data-card="${i}"><svg><use href="#i-image"/></svg>بطاقة</button><button class="btn" id="cpBtn"><svg><use href="#i-copy"/></svg>نسخ</button>${IS_PWA ? `<button class="btn" id="plBtn"><svg><use href="#i-play"/></svg>استمع</button>` : ''}<a class="btn" href="#a${a[0]}-${a[1]}" data-close>في سياقها</a></div>
   <div class="pill-row"><span class="chip">${n(a[3])} كلمة</span><span class="chip">${n([...Array(a[3]).keys()].reduce((s, k) => s + W.w[a[2]+k][4], 0))} حرفاً</span>${i > 0 ? `<a class="chip" data-ayah="${i-1}">→ السابقة</a>` : ''}${i < Q.ayat.length - 1 ? `<a class="chip" data-ayah="${i+1}">التالية ←</a>` : ''}</div>
+  <section class="stack tight"><h3>ملاحظتي على الآية</h3><textarea class="field" id="noteBox" rows="3" maxlength="800" placeholder="اكتب فائدة أو تدبراً أو سؤالاً. تبقى على جهازك ويمكنك نقلها بالنسخ الاحتياطي." aria-label="ملاحظتي على الآية">${esc((ST.notes[i] || {}).t || '')}</textarea><div class="toolbar"><button class="btn" id="noteSave">حفظ الملاحظة</button></div></section>
   <section><h3>التفسير والمعاني</h3><div class="toolbar" style="margin:8px 0"><select id="tsel" aria-label="اختر التفسير">${TF.map(b => `<option value="${b.key}" ${b.key === ST.prefs.tafsir ? 'selected' : ''}>${b.title} (${b.author})</option>`).join('')}</select></div><div class="tafsir panel" id="tbody">جارٍ التحميل…</div></section>
   <section><h3>تحليل الكلمات</h3><div class="tablebox"><table class="wtable"><thead><tr><th>الكلمة</th><th>اللفظ</th><th>الجذر</th><th>النوع</th></tr></thead><tbody>${wt.join('')}</tbody></table></div></section></div>`);
   $('#bmBtn').onclick = () => { const k = ST.bookmarks.indexOf(i); if (k >= 0) ST.bookmarks.splice(k, 1); else ST.bookmarks.unshift(i); save(); ayahDrawer(i); toast(k >= 0 ? 'أُزيلت من العلامات' : 'أُضيفت إلى العلامات'); };
+  $('#markBtn').onclick = () => { if (ST.mark && ST.mark.i === i) { ST.mark = null; toast('أُزيلت علامة التوقف'); } else { ST.mark = { i, at: Date.now() }; toast('حُفظ موضع توقفك: ' + ref(i)); } save(); ayahDrawer(i); };
+  $('#noteSave').onclick = () => { const t = $('#noteBox').value.trim().slice(0, 800); if (t) ST.notes[i] = { t, at: Date.now() }; else delete ST.notes[i]; save(); toast(t ? 'حُفظت الملاحظة' : 'حُذفت الملاحظة'); };
   $('#cpBtn').onclick = () => copyText(`${ayahText(i)} ﴿${Q.surahs[a[0]-1].name}: ${a[1]}﴾`);
-  const pl = $('#plBtn'); if (pl) pl.onclick = () => { const au = new Audio(audioUrl(i)); au.play().catch(() => toast('تعذّر تشغيل التلاوة، تحقق من الاتصال')); };
+  const pl = $('#plBtn'); if (pl) pl.onclick = () => recitePlay(i, 'ayah');
   const load = async () => { const key = $('#tsel').value; ST.prefs.tafsir = key; LS.set(stateKey(), ST);
     $('#tbody').textContent = 'جارٍ التحميل…';
     try { const t = await tafsir(key, a[0]); $('#tbody').textContent = t[a[1]] || (key === 'gharib' ? 'لا توجد ألفاظ غريبة مفسَّرة في هذه الآية في كتاب «الميسر في غريب القرآن».' : 'يُنظر تفسير هذه الآية ضمن الآيات السابقة لها.'); }
@@ -2851,7 +3676,7 @@ function wordDrawer(wi) {
   <section><h3>الآية</h3>${ayahHTML(i, new Set([wi]), false)}<button class="btn" data-ayah="${i}">عرض تفسير الآية</button></section></div>`);
   tafsir('gharib', Q.ayat[i][0]).then(t => { $('#gbody').textContent = t[Q.ayat[i][1]] || 'لم يذكر كتاب «الميسر في غريب القرآن» ألفاظاً غريبة في هذه الآية. اضغط «عرض تفسير الآية» لقراءة التفسير.'; }).catch(() => { $('#gbody').textContent = 'تعذّر التحميل.'; });
 }
-function moreMenu() { openDrawer(`<div class="stack mm"><a class="brand" href="#${HOME}" data-close style="padding:0"><img src="icons/icon-192.png" alt="" style="width:40px;height:40px;border-radius:10px"><span><b>${LAB ? 'مختبر الأبحاث' : 'مشكاة'}</b><small>${LAB ? 'القرآنية والحديثية' : 'موسوعة القرآن الذكية'}</small></span></a><nav class="nav${LAB ? '' : ' nav-tiles'}">${navHTML()}</nav></div>`); }
+function moreMenu() { openDrawer(`<div class="stack mm"><a class="brand" href="#${HOME}" data-close style="padding:0"><img src="icons/icon-192.png" alt="" style="width:40px;height:40px;border-radius:10px"><span><b>${LAB ? 'مختبر الأبحاث' : 'مشكاة'}</b><small>${LAB ? 'القرآنية والحديثية' : 'موسوعة القرآن الذكية'}</small></span></a>${LAB ? '' : finderHTML('sfS')}<nav class="nav${LAB ? '' : ' nav-tiles'}">${navHTML()}</nav></div>`); if (!LAB) bindFinder($('#sheet')); }
 
 /* ================= global events */
 document.addEventListener('click', e => {
@@ -2867,7 +3692,8 @@ document.addEventListener('click', e => {
   else if (d.card !== undefined) cardDrawer(+d.card);
   else if (d.open !== undefined) { e.preventDefault(); closeDrawer(); const [c, nm] = d.open.split('|'); history.replaceState(null, '', '#t-' + c); topic(c, nm); setCur('topics'); window.scrollTo(0, 0); }
   else if (d.prophet !== undefined) { const e2 = prophetItem(d.prophet); if (e2) { history.replaceState(null, '', '#t-anbiya'); topic('anbiya', e2.it.n); window.scrollTo(0, 0); } }
-  else if (d.place !== undefined) { e.preventDefault(); location.hash = 'map'; setTimeout(() => showPlace(+d.place), 30); }
+  else if (d.place !== undefined) { e.preventDefault(); atlas.pending = +d.place; if (curRoute === 'map') atlas(); else location.hash = 'map'; }
+  else if (d.tle !== undefined) { e.preventDefault(); timeline.tab = 'qasas'; timeline.focus = d.tle; if (curRoute === 'timeline') timeline(); else location.hash = 'timeline'; window.scrollTo(0, 0); }
   else if (d.hifz !== undefined) { const s = +d.hifz; hzSel = { s, a: 1, b: Math.min(Q.surahs[s-1].ayas, 7) }; }
   else if (d.copy !== undefined) copyText(d.copy);
   else if (d.close !== undefined || t.matches('#sheet .nav a')) closeDrawer();
@@ -2978,7 +3804,7 @@ const PR_NAMES = [['fajr', 'الفجر', 'Fajr'], ['sunrise', 'الشروق', 'S
 const prName = x => LANG === 'ar' ? x[1] : x[2];
 function prCfg() { const d = { c: 'QA', i: 0, m: '', h: 'std', f24: false, adj: 0 }; const v = Object.assign(d, LS.get('prayer', {}) || {}); return v; }
 function prPlace(cfg) {
-  if (cfg.c === 'GEO' && cfg.geo) return { country: LANG === 'ar' ? 'موقعي الحالي' : 'My location', city: cfg.geo.label || '', lat: cfg.geo.lat, lng: cfg.geo.lng, tz: cfg.geo.tz, method: cfg.m || 'mwl' };
+  if (cfg.c === 'GEO' && cfg.geo) return { country: LANG === 'ar' ? 'موقعي الحالي' : 'My location', city: (LANG === 'ar' ? cfg.geo.la : cfg.geo.le) || cfg.geo.label || '', lat: cfg.geo.lat, lng: cfg.geo.lng, tz: cfg.geo.tz, method: cfg.m || cfg.geo.mc || 'mwl' };
   const c = PR_PLACES.find(x => x[0] === cfg.c) || PR_PLACES[0], ci = c[5][cfg.i] || c[5][0];
   return { country: LANG === 'ar' ? c[1] : c[2], city: LANG === 'ar' ? ci[0] : ci[1], lat: ci[2], lng: ci[3], tz: ci[4] || c[4], method: cfg.m || c[3] };
 }
@@ -3039,8 +3865,6 @@ function prayer() {
   const cfg = prCfg(), P = prPlace(cfg), now = new Date(), { t } = prDay(now, cfg), nx = prNext(cfg);
   const M = PR_METHODS.find(x => x[0] === P.method) || PR_METHODS[5];
   const ctry = PR_PLACES.find(x => x[0] === cfg.c);
-  const month = []; for (let k = 0; k < 30; k++) { const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + k); month.push([d, prDay(d, cfg).t]); }
-  const dfmt = d => new Intl.DateTimeFormat(LANG === 'ar' ? 'ar-EG' : 'en-GB', { weekday: 'short', day: 'numeric', month: 'short' }).format(d);
   V(`<div class="stack" style="max-width:980px"><div><div class="eyebrow">مواقيت الصلاة</div><h1 class="notranslate" translate="no">${esc(P.city)}${P.country ? (LANG === 'ar' ? '، ' : ', ') + esc(P.country) : ''}</h1>
     <p class="lead" style="margin:4px 0 0">${esc(new Intl.DateTimeFormat(LANG === 'ar' ? 'ar-EG' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(now))} · ${esc(hijri(now))}</p></div>
   <section class="prnext panel"><div><span class="eyebrow">الصلاة القادمة</span><b class="prnm">${prName(nx.x)}</b><span class="prat">${prFmt(nx.h, cfg.f24)}</span></div><span class="chip acc" id="prLeft">${prLeft(nx.left)}</span></section>
@@ -3053,24 +3877,128 @@ function prayer() {
       <label class="field"><span>طريقة الحساب</span><select id="prM" class="notranslate" translate="no"><option value="">${LANG === 'ar' ? 'المعتمدة في البلد' : 'Official for the country'} (${esc(LANG === 'ar' ? M[1] : M[2])})</option>${PR_METHODS.map(m => `<option value="${m[0]}"${m[0] === cfg.m ? ' selected' : ''}>${esc(LANG === 'ar' ? m[1] : m[2])}</option>`).join('')}</select></label>
       <label class="field"><span>المذهب في وقت العصر</span><select id="prH" class="notranslate" translate="no">${PR_MADHAB.map(m => `<option value="${m[0]}"${m[0] === cfg.h ? ' selected' : ''}>${esc(LANG === 'ar' ? m[1] : m[2])}</option>`).join('')}</select></label>
     </div>
-    <div class="toolbar"><button class="btn" id="prGeo" type="button"><svg><use href="#i-map"/></svg>استعمل موقعي الحالي</button><label class="chk"><input type="checkbox" id="prF"${cfg.f24 ? ' checked' : ''}> نظام ٢٤ ساعة</label><span class="muted small" id="prMsg"></span></div>
-    <p class="muted small" style="margin:0">الفجر بزاوية ${n(M[3])}°، والعشاء ${typeof M[4] === 'string' ? `بعد المغرب بـ${n(parseFloat(M[4]))} دقيقة (${n(120)} في رمضان)` : `بزاوية ${n(M[4])}°`}. اتجاه القبلة: ${n(Math.round(qibla(P.lat, P.lng)))}° من الشمال باتجاه عقارب الساعة. المواقيت محسوبة على جهازك من موقع الشمس، وتعمل دون إنترنت، وقد تختلف دقيقة أو دقيقتين عن تقويم الجهة الرسمية؛ فالمعتمد إعلان المسجد والجهة الرسمية في بلدك.</p>
+    <div class="toolbar"><button class="btn" id="prGeo" type="button"><svg><use href="#i-map"/></svg>استعمل موقعي الحالي</button><label class="chk"><input type="checkbox" id="prF"${cfg.f24 ? ' checked' : ''}> نظام ٢٤ ساعة</label><label class="chk"><input type="checkbox" id="prAuto"${cfg.auto ? ' checked' : ''}> حدّث موقعي تلقائياً عند فتح الصفحة</label><span class="muted small" id="prMsg" aria-live="polite"></span></div>
+    <p class="muted small" style="margin:0">الفجر بزاوية ${n(M[3])}°، والعشاء ${typeof M[4] === 'string' ? `بعد المغرب بـ${n(parseFloat(M[4]))} دقيقة (${n(120)} في رمضان)` : `بزاوية ${n(M[4])}°`}. المواقيت محسوبة على جهازك من موقع الشمس، وتعمل دون إنترنت، وقد تختلف دقيقة أو دقيقتين عن تقويم الجهة الرسمية؛ فالمعتمد إعلان المسجد والجهة الرسمية في بلدك.</p>
   </section>
-  <section class="panel stack tight"><h2>مواقيت ثلاثين يوماً</h2><div class="tablebox"><table class="wtable prtable"><thead><tr><th>اليوم</th>${PR_NAMES.map(x => `<th>${prName(x)}</th>`).join('')}</tr></thead><tbody>
-    ${month.map(([d, tt], k) => `<tr${k === 0 ? ' class="today"' : ''}><td>${esc(dfmt(d))}</td>${PR_NAMES.map(x => `<td>${prFmt(tt[x[0]], cfg.f24)}</td>`).join('')}</tr>`).join('')}</tbody></table></div></section></div>`);
+  ${prQiblaHTML(P)}
+  <section class="panel stack tight" id="prMon">${prMonthHTML(cfg)}</section></div>`);
   if (window.adhanUI) window.adhanUI();
+  qStop(); qInit(P);
+  $('#prMon').onclick = e => { const b = e.target.closest('[data-pm]'); if (!b) return; const k = b.dataset.pm;
+    if (k === 'prev') prOff--; else if (k === 'next') prOff++; else if (k === 'now') prOff = 0;
+    else if (k === 'print') { window.print(); return; } else if (k === 'csv') { prCSV(prCfg()); return; }
+    $('#prMon').innerHTML = prMonthHTML(prCfg()); };
   const saveCfg = ch => { LS.set('prayer', Object.assign(prCfg(), ch)); prayer(); };
   $('#prC').onchange = e => saveCfg({ c: e.target.value, i: 0, m: '' });
   $('#prI').onchange = e => saveCfg({ i: +e.target.value });
   $('#prM').onchange = e => saveCfg({ m: e.target.value });
   $('#prH').onchange = e => saveCfg({ h: e.target.value });
   $('#prF').onchange = e => saveCfg({ f24: e.target.checked });
-  $('#prGeo').onclick = () => { if (!navigator.geolocation) { $('#prMsg').textContent = 'تحديد الموقع غير متاح في هذا المتصفح.'; return; }
-    $('#prMsg').textContent = 'جارٍ تحديد موقعك…';
-    navigator.geolocation.getCurrentPosition(pos => { const { latitude: lat, longitude: lng } = pos.coords; const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      saveCfg({ c: 'GEO', geo: { lat, lng, tz, label: `${lat.toFixed(3)}°, ${lng.toFixed(3)}°` } }); },
-      () => { $('#prMsg').textContent = 'لم يُسمح بتحديد الموقع. اختر البلد والمدينة من القائمة.'; }, { timeout: 15000 }); };
+  $('#prAuto').onchange = e => { LS.set('prayer', Object.assign(prCfg(), { auto: e.target.checked })); if (e.target.checked) prLocate(false); };
+  $('#prGeo').onclick = () => prLocate(false);
+  if (prCfg().auto && Date.now() - prAutoAt > 6e5) { prAutoAt = Date.now(); prLocate(true); }
   clearInterval(prTimer); prTimer = setInterval(() => { const el = $('#prLeft'); if (!el) return clearInterval(prTimer); const x = prNext(prCfg()); el.textContent = prLeft(x.left); if (x.left < 1 / 120) prayer(); }, 30000);
+}
+/* ---- الموقع التلقائي: أقرب مدينة معروفة تعطي الاسم وطريقة الحساب المعتمدة في بلدها ---- */
+const kmBetween = (la1, lo1, la2, lo2) => { const R = Math.PI / 180, a = Math.sin((la2 - la1) * R / 2) ** 2 + Math.cos(la1 * R) * Math.cos(la2 * R) * Math.sin((lo2 - lo1) * R / 2) ** 2; return 12742 * Math.asin(Math.sqrt(a)); };
+function prNearest(lat, lng) {
+  let best = null; for (const c of PR_PLACES) for (const ci of c[5]) { const d = kmBetween(lat, lng, ci[2], ci[3]); if (!best || d < best.km) best = { km: d, ar: ci[0], en: ci[1], method: c[3] }; }
+  return best;
+}
+let prAutoAt = 0;
+function prSave(ch) { LS.set('prayer', Object.assign(prCfg(), ch)); if (curRoute === 'prayer') prayer(); }
+function prLocate(silent) {
+  const msg = t => { const e = $('#prMsg'); if (e) e.textContent = t; };
+  if (!navigator.geolocation) { msg('تحديد الموقع غير متاح في هذا المتصفح.'); return; }
+  msg('جارٍ تحديد موقعك…');
+  navigator.geolocation.getCurrentPosition(pos => {
+    const { latitude: lat, longitude: lng } = pos.coords, tz = Intl.DateTimeFormat().resolvedOptions().timeZone, nr = prNearest(lat, lng), cur = prCfg();
+    const geo = { lat: +lat.toFixed(4), lng: +lng.toFixed(4), tz, label: `${lat.toFixed(3)}°, ${lng.toFixed(3)}°` };
+    if (nr && nr.km <= 40) { geo.la = nr.ar; geo.le = nr.en; } if (nr && nr.km <= 1500) geo.mc = nr.method;
+    if (silent && cur.c === 'GEO' && cur.geo && kmBetween(cur.geo.lat, cur.geo.lng, geo.lat, geo.lng) < 1) { msg('الموقع كما هو.'); return; }
+    prSave({ c: 'GEO', geo }); setTimeout(() => msg('حُدّد موقعك' + (geo.la ? ': ' + (LANG === 'ar' ? geo.la : geo.le) : '') + '.'), 50);
+  }, err => msg(err && err.code === 1 ? 'لم يُسمح بتحديد الموقع. اختر البلد والمدينة من القائمة.' : 'تعذّر تحديد الموقع الآن. اختر البلد والمدينة من القائمة.'), { timeout: 15000, maximumAge: 600000 });
+}
+/* ---- مواقيت شهر كامل: تنقّل بين الأشهر، وطباعة، وتنزيل ملف CSV ---- */
+let prOff = 0;
+function prMonthRows(cfg) {
+  const now = new Date(), base = new Date(now.getFullYear(), now.getMonth() + prOff, 1), days = new Date(base.getFullYear(), base.getMonth() + 1, 0).getDate();
+  return { base, rows: Array.from({ length: days }, (_, k) => { const d = new Date(base.getFullYear(), base.getMonth(), k + 1); return [d, prDay(d, cfg).t]; }) };
+}
+const hjParts = d => { try { const o = Object.fromEntries(new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', { day: 'numeric', month: 'numeric', year: 'numeric' }).formatToParts(d).map(x => [x.type, x.value])); return [+o.day, +o.month, parseInt(o.year, 10)]; } catch (e) { return null; } };
+const hjMonthName = d => { try { return new Intl.DateTimeFormat((LANG === 'ar' ? 'ar-SA' : 'en-GB') + '-u-ca-islamic-umalqura', { month: 'long' }).format(d); } catch (e) { return ''; } };
+function prMonthHTML(cfg) {
+  const { base, rows } = prMonthRows(cfg), P = prPlace(cfg), loc = LANG === 'ar' ? 'ar-EG' : 'en-GB', now = new Date();
+  const title = new Intl.DateTimeFormat(loc, { month: 'long', year: 'numeric' }).format(base);
+  const h1 = hjMonthName(rows[0][0]), h2 = hjMonthName(rows[rows.length - 1][0]), hy = hjParts(rows[0][0]);
+  const dfmt = d => new Intl.DateTimeFormat(loc, { weekday: 'short', day: 'numeric' }).format(d);
+  const hj = d => { const h = hjParts(d); return h ? `${n(h[0])} ${hjMonthName(d)}` : ''; };
+  return `<div class="prmhead"><div><h2>${LANG === 'ar' ? 'مواقيت شهر ' + esc(title) : 'Prayer times for ' + esc(title)}</h2><p class="muted small" style="margin:0">${esc(h1)}${h2 && h2 !== h1 ? ' – ' + esc(h2) : ''}${hy ? ' ' + n(hy[2]) + (LANG === 'ar' ? ' هـ' : ' AH') : ''} · <span class="notranslate" translate="no">${esc(P.city)}</span></p></div>
+    <div class="toolbar no-print"><button class="btn" data-pm="prev" type="button" aria-label="الشهر السابق">→ السابق</button><button class="btn" data-pm="now" type="button"${prOff === 0 ? ' disabled' : ''}>هذا الشهر</button><button class="btn" data-pm="next" type="button" aria-label="الشهر التالي">التالي ←</button><button class="btn" data-pm="print" type="button">طباعة</button><button class="btn" data-pm="csv" type="button">تنزيل CSV</button></div></div>
+    <div class="tablebox"><table class="wtable prtable"><thead><tr><th>اليوم</th><th>الهجري</th>${PR_NAMES.map(x => `<th>${prName(x)}</th>`).join('')}</tr></thead><tbody>
+    ${rows.map(([d, tt]) => `<tr${prOff === 0 && d.getDate() === now.getDate() ? ' class="today"' : ''}><td>${esc(dfmt(d))}</td><td class="muted">${esc(hj(d))}</td>${PR_NAMES.map(x => `<td>${prFmt(tt[x[0]], cfg.f24)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+}
+function prCSV(cfg) {
+  const { base, rows } = prMonthRows(cfg), P = prPlace(cfg), pad = x => String(x).padStart(2, '0');
+  const hm = h => { const m = Math.round(h * 60) % 1440; return pad(Math.floor(m / 60)) + ':' + pad(m % 60); };
+  const iso = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const lines = [['Date', 'Hijri', ...PR_NAMES.map(x => x[2])].join(',')].concat(rows.map(([d, t]) => { const h = hjParts(d); return [iso(d), h ? `${h[2]}-${pad(h[1])}-${pad(h[0])}` : '', ...PR_NAMES.map(x => hm(t[x[0]]))].join(','); }));
+  saveFile(`mawaqit-${base.getFullYear()}-${pad(base.getMonth() + 1)}.csv`, new Blob(['﻿' + lines.join('\r\n') + '\r\n'], { type: 'text/csv;charset=utf-8' }));
+  toast('نُزّل ملف المواقيت');
+}
+/* ---- بوصلة القبلة: الزاوية من الشمال والمسافة إلى الكعبة، وتدور بحساس الجهاز إن توفّر ---- */
+const kaabaKm = (lat, lng) => kmBetween(lat, lng, 21.4225, 39.8262);
+const compass8 = a => ['شمال', 'شمال شرق', 'شرق', 'جنوب شرق', 'جنوب', 'جنوب غرب', 'غرب', 'شمال غرب'][Math.round(a / 45) % 8];
+const compass8e = a => ['north', 'north-east', 'east', 'south-east', 'south', 'south-west', 'west', 'north-west'][Math.round(a / 45) % 8];
+function prQiblaHTML(P) {
+  const q = qibla(P.lat, P.lng), km = Math.round(kaabaKm(P.lat, P.lng));
+  const ticks = Array.from({ length: 36 }, (_, k) => `<line x1="0" y1="-118" x2="0" y2="${k % 9 === 0 ? -104 : k % 3 === 0 ? -109 : -112}" transform="rotate(${k * 10})"/>`).join('');
+  const card = [['N', 0, LANG === 'ar' ? 'ش' : 'N'], ['E', 90, LANG === 'ar' ? 'شر' : 'E'], ['S', 180, LANG === 'ar' ? 'ج' : 'S'], ['W', 270, LANG === 'ar' ? 'غ' : 'W']].map(([k, a, t]) => `<text class="qcard${k === 'N' ? ' qn' : ''}" x="${(88 * Math.sin(a * Math.PI / 180)).toFixed(1)}" y="${(-88 * Math.cos(a * Math.PI / 180) + 5).toFixed(1)}" text-anchor="middle">${t}</text>`).join('');
+  return `<section class="panel stack tight" id="prQibla"><h2>اتجاه القبلة</h2>
+    <div class="qwrap"><svg class="qsvg notranslate" viewBox="-130 -130 260 260" role="img" aria-label="بوصلة القبلة" id="qSvg">
+      <circle r="124" class="qring"/><g id="qDial" class="qdial"><circle r="118" class="qface"/>${ticks}${card}
+        <g transform="rotate(${q.toFixed(2)})" id="qKaaba"><line x1="0" y1="0" x2="0" y2="-96" class="qray"/><rect x="-9" y="-130" width="18" height="18" rx="2" class="qk"/><rect x="-9" y="-124" width="18" height="3.4" class="qkb"/></g></g>
+      <path d="M0 -66 L9 -44 L0 -50 L-9 -44 Z" class="qneedle"/><circle r="4" class="qpin"/></svg>
+      <div class="qinfo stack tight"><div class="qdeg"><b id="qDeg">${n(Math.round(q))}°</b><span class="muted">من الشمال باتجاه عقارب الساعة <span class="notranslate" translate="no">(${LANG === 'ar' ? compass8(q) : compass8e(q)})</span></span></div>
+        <div class="muted">المسافة إلى الكعبة المشرفة: <b>${n(km)}</b> كم</div>
+        <div class="qstat" id="qStat" aria-live="polite">الدرجة محسوبة لموقعك بدقة، وتعمل دون إنترنت.</div>
+        <div class="toolbar"><button class="btn pri" id="qOn" type="button"><svg><use href="#i-map"/></svg>شغّل بوصلة الجهاز</button></div>
+        <p class="muted small" style="margin:0">ضع الجهاز أفقياً وبعيداً عن المعادن والمغناطيس، وحرّكه على شكل ٨ لمعايرته. عند التطابق يظهر وجه الكعبة في أعلى البوصلة. إن لم يتوفر الحساس فالقبلة في الاتجاه المبيّن بالدرجات من الشمال.</p></div></div></section>`;
+}
+let qSm = null, qHandler = null, qQ = 0;
+function qStop() { if (qHandler) { window.removeEventListener('deviceorientationabsolute', qHandler, true); window.removeEventListener('deviceorientation', qHandler, true); qHandler = null; } qSm = null; }
+function prQiblaSet(hd) { // hd: اتجاه الجهاز بالدرجات من الشمال
+  const dial = $('#qDial'); if (!dial) return qStop();
+  qSm = qSm == null ? hd : qSm + (((hd - qSm + 540) % 360) - 180) * 0.3; qSm = (qSm + 360) % 360;
+  dial.setAttribute('transform', `rotate(${(-qSm).toFixed(1)})`);
+  const d = ((qQ - qSm + 540) % 360) - 180, ad = Math.round(Math.abs(d)), ok = ad <= 4;
+  $('#qSvg').classList.toggle('qok', ok);
+  $('#qStat').textContent = ok ? 'أنت متجه نحو القبلة الآن.' : `أدِر جهازك ${n(ad)}° نحو ${d > 0 ? 'اليمين' : 'اليسار'}.`;
+}
+function qInit(P) {
+  qQ = qibla(P.lat, P.lng);
+  const on = $('#qOn'); if (!on) return;
+  const start = () => {
+    qStop();
+    qHandler = e => { let hd = null;
+      if (e.webkitCompassHeading != null) hd = e.webkitCompassHeading;
+      else if ((e.absolute || e.type === 'deviceorientationabsolute') && e.alpha != null) {
+        const R = Math.PI / 180, x = (e.beta || 0) * R, y = (e.gamma || 0) * R, z = e.alpha * R, cY = Math.cos(y), sY = Math.sin(y), cZ = Math.cos(z), sZ = Math.sin(z), sX = Math.sin(x), cX = Math.cos(x);
+        hd = Math.abs(e.beta || 0) < 50 && Math.abs(e.gamma || 0) < 50 ? 360 - e.alpha // جهاز شبه أفقي: اتجاه رأس الجهاز
+          : Math.atan2(-cZ * sY - sZ * sX * cY, -sZ * sY + cZ * sX * cY) / R; // جهاز قائم: اتجاه خلفية الجهاز
+        hd = (hd % 360 + 360) % 360; }
+      if (hd != null && !isNaN(hd)) prQiblaSet(hd); };
+    window.addEventListener('deviceorientationabsolute', qHandler, true); window.addEventListener('deviceorientation', qHandler, true);
+    $('#qStat').textContent = 'جارٍ قراءة حساس الاتجاه… حرّك الجهاز قليلاً.'; on.textContent = 'أوقف البوصلة';
+    on.onclick = () => { qStop(); $('#qDial').setAttribute('transform', 'rotate(0)'); $('#qSvg').classList.remove('qok'); on.textContent = 'شغّل بوصلة الجهاز'; $('#qStat').textContent = 'أُوقفت البوصلة. الاتجاه المبيّن بالدرجات من الشمال.'; on.onclick = ask; };
+  };
+  const ask = () => {
+    if (typeof DeviceOrientationEvent === 'undefined' && !('ondeviceorientationabsolute' in window)) { $('#qStat').textContent = 'جهازك أو متصفحك لا يوفّر حساس الاتجاه. استعمل الدرجة المبيّنة من الشمال.'; return; }
+    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function')
+      DeviceOrientationEvent.requestPermission().then(r => r === 'granted' ? start() : ($('#qStat').textContent = 'لم يُسمح بالوصول إلى حساس الاتجاه.')).catch(() => ($('#qStat').textContent = 'تعذّر تشغيل حساس الاتجاه.'));
+    else start();
+  };
+  on.onclick = ask;
 }
 function prHomeCard() {
   try { const cfg = prCfg(), P = prPlace(cfg), nx = prNext(cfg), { t } = prDay(new Date(), cfg);
@@ -3175,7 +4103,7 @@ let surRx = null;
 const CNT0 = [[/آية واحدة/g, '1 آية'], [/آيتين|آيتان/g, '2 آية'], [/([0-9٠-٩][0-9٠-٩٬,.٫]* )آيات/g, '$1آية'], [/مرة واحدة/g, '1 مرة'], [/مرتين|مرتان/g, '2 مرة'], [/([0-9٠-٩][0-9٠-٩٬,.٫]* )مرات/g, '$1مرة'],
   [/حديث واحد/g, '1 حديث'], [/حديثين|حديثان/g, '2 حديث'], [/([0-9٠-٩][0-9٠-٩٬,.٫]* )(?:أحاديث|حديثاً)/g, '$1حديث'], [/صيغة واحدة/g, '1 صيغة'], [/صيغتين/g, '2 صيغة'], [/([0-9٠-٩][0-9٠-٩٬,.٫]* )صيغ(?!ة)/g, '$1صيغة'],
   [/واحدة مكية/g, '1 مكية'], [/اثنتان مكيتان/g, '2 مكية'], [/واحدة مدنية/g, '1 مدنية'], [/اثنتان مدنيتان/g, '2 مدنية']];
-const CNT = CNT0.map(([re, r]) => [new RegExp('(?<![\\u0600-\\u06FF])' + re.source, 'g'), r]);
+const CNT = CNT0.map(([re, r]) => LB_OK ? [new RegExp('(?<![\\u0600-\\u06FF])' + re.source, 'g'), r] : [new RegExp('(^|[^\\u0600-\\u06FF])(?:' + re.source + ')', 'g'), (m, p) => p + m.slice(p.length).replace(new RegExp('^(?:' + re.source + ')$'), r)]);
 function trRx(c) {
   if (I18N.rx) for (const [re, out] of I18N.rx) { const g = c.match(re); if (!g) continue; let bad = false;
     const r = out.replace(/\$(\d)/g, (_, i) => g[i] ?? '').replace(/%(\d)/g, (_, i) => { if (g[i] == null || g[i] === '') return ''; const t = ARX.test(g[i]) ? trKey(g[i]) : g[i]; if (t == null) bad = true; return t ?? ''; });
@@ -3196,7 +4124,7 @@ function trLookup(k) {
 }
 function trKey(k) {
   let v = trLookup(k); if (v != null) return v;
-  if (surRx) { const names = []; const k3 = k.replace(surRx, (m, a) => { names.push(I18N.sur[a]); return '@'; }); if (names.length) { v = trLookup(k3); if (v != null) { let q = 0; return v.replace(/@(\d+)?/g, (m, i) => (i ? names[i - 1] : names[q++]) ?? ''); } } }
+  if (surRx) { const names = []; const k3 = k.replace(surRx, (m, a, b) => { names.push(I18N.sur[LB_OK ? a : b]); return LB_OK ? '@' : a + '@'; }); if (names.length) { v = trLookup(k3); if (v != null) { let q = 0; return v.replace(/@(\d+)?/g, (m, i) => (i ? names[i - 1] : names[q++]) ?? ''); } } }
   for (const sep of [' | ', ' · ', ' — ', '؛ ', '، ', ': ', ' و']) if (k.includes(sep)) { const parts = k.split(sep).map(p => ARX.test(p) ? trKey(p) : p); if (parts.every(p => p != null)) return parts.join(sep === '، ' ? ', ' : sep === '؛ ' ? '; ' : sep === ' و' ? ' and ' : sep); }
   return null;
 }
@@ -3229,7 +4157,7 @@ function mtQueue(nd) {
   let e = MT.q.get(k); if (!e) MT.q.set(k, e = []); e.push([nd, src]);
   clearTimeout(MT.t); MT.t = setTimeout(mtFlush, 200);
 }
-function mtSplit(k) { if (k.length <= 4000) return [k]; const out = []; let cur = ''; for (const s of k.split(/(?<=[.!؟?،:])\s+/)) { if (cur && cur.length + s.length > 3800) { out.push(cur); cur = ''; } cur += (cur ? ' ' : '') + s; } if (cur) out.push(cur); return out.flatMap(x => x.length > 4000 ? x.match(/[\s\S]{1,3800}/g) : [x]); }
+function mtSplit(k) { if (k.length <= 4000) return [k]; const out = []; let cur = ''; for (const s of splitAfter(k, '.!؟?،:')) { if (cur && cur.length + s.length > 3800) { out.push(cur); cur = ''; } cur += (cur ? ' ' : '') + s; } if (cur) out.push(cur); return out.flatMap(x => x.length > 4000 ? x.match(/[\s\S]{1,3800}/g) : [x]); }
 async function mtFlush() {
   const entries = [...MT.q.entries()].map(([k, nodes]) => ({ k, nodes, parts: mtSplit(k), res: [] })); MT.q.clear();
   const flat = entries.flatMap(e => e.parts.map((p, i) => [e, i, p]));
@@ -3302,7 +4230,7 @@ async function i18nInit() {
   html.lang = LANG; html.dir = rtl ? 'rtl' : 'ltr'; html.classList.add('i18n', rtl ? 'i18n-rtl' : 'i18n-ltr');
   const loadDict = async code => { if (I18N.dict) return true; try { const d = await getJSON(`data/i18n/${code}.json`); I18N.sur = d.__surahs; I18N.rx = (d.__rx || []).map(([a, b]) => [new RegExp('^' + a + '$'), b]); delete d.__surahs; delete d.__rx; I18N.dict = d; I18N.dictCode = code;
     const names = Object.keys(I18N.sur).sort((a, b) => b.length - a.length).map(x => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-    surRx = new RegExp(`(?<![\\u0600-\\u06FF])(${names.join('|')})(?=:? #|$|[،؛)﴾]| ←| →)`, 'g'); return true; } catch (e) { return false; } };
+    surRx = new RegExp(LB_OK ? `(?<![\\u0600-\\u06FF])(${names.join('|')})(?=:? #|$|[،؛)﴾]| ←| →)` : `(^|[^\\u0600-\\u06FF])(${names.join('|')})(?=:? #|$|[،؛)﴾]| ←| →)`, 'g'); return true; } catch (e) { return false; } };
   // المعاني: لغة الزائر إن وُجدت لها ترجمة معتمدة، وإلا الإنجليزية
   I18N.meanCode = langRow(LANG) ? LANG : 'en';
   const meanP = gz(`data/tr/${I18N.meanCode}.txt`).then(m => { I18N.mean = m; addMeanings(document.body); }).catch(() => {});
@@ -3333,6 +4261,51 @@ async function connectCloud() {
     const h = (location.hash || '#' + HOME).slice(1); if (['home', 'saved', 'settings', 'hifz', 'research', 'mine'].includes(h)) route();
   } catch (e) {}
 }
+/* ================= سجل الأقسام الموحّد: ست فئات، والقائمة والرئيسية تُبنيان من مصدر واحد.
+   لإضافة قسم جديد: views.x = fn؛ ثم أضفه إلى PATHS بأي فئة، ثم registerSection('x', 'p3') أو أضف معرّفه إلى SEC_ORDER.
+   كل قسم غير مسجّل يقع تلقائياً في «الأدوات والاستكشاف» فلا يضيع من القائمة ولا من الرئيسية. */
+const SEC_CATS = [
+  ['p1', 'القرآن الكريم', 'اقرأ المصحف، وابحث بالمعنى، واحفظ واسأل.', ['mushaf', 'recite', 'search', 'ask', 'topics', 'hifz', 'saved']],
+  ['p4', 'التفسير والعلوم', 'التفاسير وأسباب النزول وعلوم القرآن والبلاغة والإعجاز والمعجم.', ['tafasir', 'mawdui', 'ulum', 'naskh', 'amthal', 'jamal', 'ijaz', 'arbain', 'words', 'stats']],
+  ['p3', 'موضوعات في القرآن', 'دراسات موثّقة بالآيات والأحاديث الصحيحة وأقوال المفسرين.', ['tawhid', 'asma', 'jannah', 'wazifa', 'asnaf', 'taam', 'awwalin', 'rusul', 'sira']],
+  ['p2', 'العبادات والأذكار', 'رفيقك اليومي: أذكار ومواقيت وأدعية وتداوٍ بالقرآن.', ['adhkar', 'prayer', 'wird', 'khatma', 'duaa', 'adiya', 'ibadat', 'hajj', 'hijri', 'ruqya', 'shifa']],
+  ['p5', 'الأسرة والأطفال', 'قصص مصوّرة للأطفال، والمرأة والرجل في القرآن.', ['kids', 'usra', 'nisaa', 'rijal']],
+  ['p6', 'الأدوات والاستكشاف', 'بحث موثّق، وخرائط وخطوط زمنية وشبكة معرفة.', ['research', 'map', 'timeline', 'graph', 'zakat', 'mawarith', 'lafz']],
+];
+const SEC_PIN = {};
+function registerSection(id, pc) { SEC_PIN[id] = pc; mkRegroup(); }
+function mkRegroup() {
+  if (LAB) return;
+  const items = {}, navOf = {};
+  PATHS.forEach(g => g[3].forEach(x => { items[x[0]] = x; }));
+  NAV.forEach(g => g[1].forEach(x => { navOf[x[0]] = x; }));
+  const home = {}; SEC_CATS.forEach(c => c[3].forEach(id => { home[id] = c[0]; }));
+  const buckets = SEC_CATS.map(c => [c[0], c[1], c[2], []]);
+  const at = pc => buckets.find(b => b[0] === pc) || buckets[buckets.length - 1];
+  SEC_CATS.forEach(c => c[3].forEach(id => { if (items[id]) at(c[0])[3].push(items[id]); }));
+  Object.keys(items).forEach(id => { if (!home[id]) at(SEC_PIN[id] || 'p6')[3].push(items[id]); });
+  PATHS.length = 0; buckets.forEach(b => PATHS.push(b));
+  const first = NAV[0], last = NAV[NAV.length - 1];
+  NAV.length = 0; NAV.push(first);
+  buckets.forEach(b => NAV.push([b[1], b[3].map(x => { const o = navOf[x[0]]; return [x[0], o ? o[1] : x[2], o ? o[2] : x[1], o ? o[3] : 1]; }), b[0]]));
+  NAV.push(last);
+  Object.keys(PATH_OF).forEach(k => delete PATH_OF[k]);
+  PATHS.forEach((p, gi) => p[3].forEach((x, i) => { PATH_OF[x[0]] = [gi, i]; }));
+}
+mkRegroup();
+/* أحدث ما زرته: آخر ٤ أقسام فُتحت، تُحفظ على الجهاز */
+const RECENT_KEY = 'recentSecs';
+function noteRecent(v) {
+  if (LAB || !PATH_OF[v] || v === 'home') return;
+  let r = []; try { r = JSON.parse(localStorage.getItem('mk_' + RECENT_KEY) || '[]'); } catch (e) {}
+  r = [v, ...r.filter(x => x !== v)].slice(0, 4);
+  try { localStorage.setItem('mk_' + RECENT_KEY, JSON.stringify(r)); } catch (e) {}
+}
+function recentHTML() {
+  let r = []; try { r = JSON.parse(localStorage.getItem('mk_' + RECENT_KEY) || '[]'); } catch (e) {}
+  const rows = r.map(v => { const at = PATH_OF[v]; if (!at) return ''; const g = PATHS[at[0]], x = g[3][at[1]]; return `<a class="chip rc ${g[0]}" href="#${v}"><svg><use href="#${x[1]}"/></svg>${x[2]}</a>`; }).join('');
+  return rows ? `<div class="recent"><b>أحدث ما زرته</b><div>${rows}</div></div>` : '';
+}
 applyPrefs(); drawNav(); if (IS_PWA) $('#acctBtn').hidden = false; { const b = $('#instTop'); if (b) b.onclick = installApp; instBarInit(); instTopShow(); }
 const i18nReady = i18nInit().catch(() => {});
 (async () => {
@@ -3341,7 +4314,7 @@ const i18nReady = i18nInit().catch(() => {});
     [Q, W, T, TF, GEO] = await Promise.all([gz('data/quran.txt'), gz('data/words.txt'), gz('data/topics.txt'), getJSON('data/tafsir.json'), getJSON('data/geo.json')]);
     prep();
     if (IS_PWA) { try { const base = await getJSON('config.json').catch(() => ({})), pv = LS.get('cfgPreview', null); siteCfg = pv && (pv.updated || 0) > (base.updated || 0) ? pv : base; applyCfg(); } catch (e) {} checkSession(); }
-    route(); connectCloud(); i18nReady.then(offlineAuto);
+    route(); connectCloud(); i18nReady.then(offlineAuto); try { if (localStorage.getItem('mishkat:fastremind')) setTimeout(() => toolsLoad(() => MTOOLS.remind()), 2500); } catch (e) {}
   } catch (err) { V(`<p class="loading">تعذّر تحميل البيانات. يتطلب التطبيق متصفحاً حديثاً (كروم أو سفاري أو فايرفوكس أو إيدج). ${esc(err.message)}</p>`); }
 })();
 /* التحديث التلقائي: عند نشر نسخة جديدة يثبّتها عامل الخدمة ثم تُعاد الصفحة مرة واحدة، فيرى الزائر الجديد دون إعادة تحميل يدوية */

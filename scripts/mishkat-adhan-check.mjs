@@ -17,8 +17,7 @@ for (const [name, opts] of [['الكمبيوتر', { viewport: { width: 1280, he
   await p.clock.runFor(ev.at - now + 3000);
   const sh = await p.evaluate(() => window.__shown);
   ok(sh.some(s => s[2] === 'adhan-' + ev.id && /^حان وقت صلاة/.test(s[0])), `${name}: إشعار عند دخول وقت ${ev.key}`);
-  ok(await p.evaluate(() => window.__ac >= 1), `${name}: النغمة تُشغَّل عند دخول الوقت`);
-  ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${name}: بلا تمرير أفقي`);
+    ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${name}: بلا تمرير أفقي`);
   ok(errs.length === 0, `${name}: بلا أخطاء في الصفحة`);
   await ctx.close();
 }
@@ -29,7 +28,16 @@ for (const [name, opts] of [['الكمبيوتر', { viewport: { width: 1280, he
   ok(await p.evaluate(() => window.__shown.filter(s => s[2]).length >= 14), 'الإشعارات المجدولة (Triggers) تُسجَّل للأوقات القادمة حيث يدعمها المتصفح');
   ok(/والتطبيق مغلق/.test(await p.textContent('#adSt')), 'الواجهة تذكر أن الإشعار يصل والتطبيق مغلق عند دعم المتصفح');
   await ctx.close(); }
-{ const ctx = await b.newContext(), p = await ctx.newPage(); await p.goto(B + '#prayer'); await p.waitForSelector('#adOn');
-  const lic = await p.evaluate(async () => { const j = await (await fetch('data/adhan/manifest.json')).json(); return j.licenses_allowed.join(); });
-  ok(/CC0-1.0/.test(lic) && !/All-Rights/.test(lic), 'قائمة الرخص المقبولة مفتوحة فقط'); await ctx.close(); }
+{ const ctx = await b.newContext({ serviceWorkers: 'block' }), p = await ctx.newPage(); await p.goto(B + '#prayer'); await p.waitForSelector('#adF');
+  const wav = Buffer.concat([Buffer.from('RIFF$\0\0\0WAVEfmt \x10\0\0\0\x01\0\x01\0\x40\x1f\0\0\x40\x1f\0\0\x01\0\x08\0data\0\0\0\0', 'latin1')]);
+  await p.setInputFiles('#adF', { name: 'my-adhan.wav', mimeType: 'audio/wav', buffer: wav }); await p.waitForTimeout(1200);
+  ok(await p.$eval('#adS', e => e.value) === 'custom' && /my-adhan/.test(await p.$eval('#adS', e => e.selectedOptions[0].textContent)), 'ملف الأذان من جهاز المستخدم يُحفظ على جهازه ويُختار');
+  ok(await p.evaluate(async () => (await new Promise(r => { const q = indexedDB.open('mishkat-adhan', 1); q.onsuccess = () => { const g = q.result.transaction('f').objectStore('f').get('custom'); g.onsuccess = () => r(!!g.result); }; }))), 'الملف محفوظ في IndexedDB لا يغادر الجهاز'); await ctx.close(); }
+{ const ctx = await b.newContext({ serviceWorkers: 'block' }), p = await ctx.newPage(); await p.goto(B + '#prayer'); await p.waitForSelector('#adS');
+  const o = await p.$$eval('#adS option', x => x.map(e => e.value));
+  ok(o.length === 1 && o[0] === 'none', 'لا صوت أذان مضمَّناً: الخيار الوحيد إشعار صامت حتى يختار المستخدم ملفه');
+  ok(await p.evaluate(() => typeof adhanTone === 'undefined' && typeof chime === 'undefined'), 'لا مولِّد صوت في الشيفرة');
+  const dead = await p.evaluate(async () => (await fetch('data/adhan/manifest.json')).status); ok(dead === 404, 'لا ملفات أذان ولا manifest في المنصة');
+  ok(/لا صوت أذان مضمَّناً/.test(await p.textContent('#adhanBox')), 'الصفحة تبيّن أن الصوت من ملف المستخدم فقط');
+  await ctx.close(); }
 await b.close(); process.exit(fail ? 1 : 0);

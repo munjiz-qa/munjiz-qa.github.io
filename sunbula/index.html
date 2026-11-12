@@ -4,11 +4,23 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="سنبلة: استثمر في الأسهم والباقات العالمية ابتداءً من مبلغ صغير.">
+<title>سنبلة للاستثمار | استثمارٌ ينمو معك</title>
+<meta name="theme-color" content="#14474D">
+<meta name="application-name" content="سنبلة">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="سنبلة">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ar_AR">
+<meta property="og:title" content="سنبلة للاستثمار | استثمارٌ ينمو معك">
+<meta property="og:description" content="امتلك أجزاء من أسهم كبرى الشركات العالمية واستثمر في باقات مدروسة ابتداءً من 25 دولاراً.">
+<meta property="og:image" content="icon-512.png">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='9' fill='%2314474D'/%3E%3Cg transform='translate(20 20) scale(0.8) translate(-20 -20)'%3E%3Cpath d='M20 37V11' stroke='%23F4F1E6' stroke-width='2.2' stroke-linecap='round'/%3E%3Cg fill='%23E2AE52'%3E%3Cellipse cx='14.6' cy='29' rx='5.4' ry='2.5' transform='rotate(-38 14.6 29)'/%3E%3Cellipse cx='25.4' cy='25.5' rx='5.8' ry='2.6' transform='rotate(38 25.4 25.5)'/%3E%3Cellipse cx='14.2' cy='20.6' rx='6.2' ry='2.8' transform='rotate(-42 14.2 20.6)'/%3E%3Cellipse cx='25.8' cy='16.6' rx='6.6' ry='2.9' transform='rotate(42 25.8 16.6)'/%3E%3Cpath d='M20 3c3 3.2 3.6 7 0 11-3.6-4-3-7.8 0-11z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
-</head>
-<body>
-<title>سنبلة للاستثمار</title>
-<meta name="claude:viewport-fit-sides" content="cover">
+<script>try{var t=localStorage.getItem('sunbula_theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Reem+Kufi:wght@500;600;700&display=swap">
@@ -283,7 +295,8 @@ svg.chart path.l{fill:none;stroke:var(--petrol-2);stroke-width:2.4;stroke-linejo
 .banner div{flex:1;min-width:200px}
 .banner b{display:block}
 .empty{text-align:center;padding:32px 16px;color:var(--muted)}
-.quick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.quick{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+@media (max-width:560px){.quick{gap:6px}.quick button{padding:12px 2px;font-size:12px;text-align:center}.quick svg{width:20px;height:20px}}
 .quick button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px;border:1px solid var(--line);background:var(--surface);border-radius:12px;cursor:pointer;font-weight:500;font-size:13.5px}
 .quick button:hover{border-color:var(--wheat)}
 .quick svg{width:22px;height:22px;color:var(--wheat)}
@@ -339,10 +352,54 @@ svg.chart path.l{fill:none;stroke:var(--petrol-2);stroke-width:2.4;stroke-linejo
 .search{position:relative;flex:1;min-width:180px;max-width:320px}
 .search input{padding-inline-start:36px}
 .search svg{position:absolute;top:50%;transform:translateY(-50%);inset-inline-start:11px;width:17px;height:17px;color:var(--muted)}
-</style>
 
+/* ===== v4 additions ===== */
+.bell{position:relative}
+.bell .dotn{position:absolute;top:-6px;inset-inline-end:-6px;min-width:18px;height:18px;border-radius:999px;background:var(--loss);color:#fff;font:700 11px/18px var(--f-num);padding:0 5px;text-align:center}
+#sheet .modal{z-index:85}
+.ntf{display:grid;gap:4px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.ntf.unread{border-color:color-mix(in srgb,var(--wheat) 55%,var(--line));background:color-mix(in srgb,var(--wheat-soft) 45%,var(--surface))}
+.ntf small{color:var(--muted);font-size:12px}
+.plan{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:12px 14px;border:1px solid var(--line);border-radius:12px}
+.plan .acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.plan small{color:var(--muted);font-size:12.5px;display:block;margin-top:2px}
+@media (max-width:560px){.plan{grid-template-columns:1fr}.plan .acts{justify-content:flex-start}}
+.legal h4{margin:14px 0 4px;font-size:15px}
+.legal p,.legal li{line-height:1.9;color:var(--ink);font-size:14.5px}
+.legal ol{padding-inline-start:20px;margin:6px 0}
+.linkbtn{background:none;border:0;padding:0;color:var(--petrol-2);text-decoration:underline;cursor:pointer;font:inherit}
+.foot .linkbtn{color:inherit;opacity:1}
+.alerts-list{display:grid;gap:6px}
+.alerts-list .row{justify-content:space-between;padding:8px 12px;border:1px dashed var(--line);border-radius:10px}
+.audit{display:grid;gap:0}
+.audit div{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.audit div:last-child{border-bottom:0}
+.audit small{color:var(--muted);white-space:nowrap}
+.statrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.statrow>div{background:var(--surface-2);border-radius:12px;padding:12px 14px}
+.statrow span{display:block;font-size:12.5px;color:var(--muted)}
+.statrow b{font-size:18px}
+.print-head{display:none}
+@media (max-width:900px){
+  .bnav .nv{flex:1 1 0;min-width:0;font-size:10.5px;padding:6px 2px}
+  .bnav .nv span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  .bnav{overflow-x:visible}
+}
+@media print{
+  .side,.bnav,.topbar .sp,.no-print,.toasts,#modal,#sheet{display:none!important}
+  .app{display:block}.topbar{display:none!important}
+  .print-head{display:block;margin-bottom:12px}
+  body,.main,.content{background:#fff!important}
+  .card{box-shadow:none!important;break-inside:avoid}
+}
+@media (max-width:480px){.topbar .sp .pill .pt{display:none}.topbar .sp .pill{padding:7px}.topbar .sp{gap:6px}.topbar .iconbtn{width:38px;height:38px}}
+.chk .linkbtn{display:inline}
+</style>
+</head>
+<body>
 <div id="root"></div>
 <div id="modal"></div>
+<div id="sheet"></div>
 <div class="toasts" id="toasts" aria-live="polite"></div>
 
 <script>
@@ -373,6 +430,8 @@ const I={
  chip:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/></svg>',
  leaf:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 19c0-9 6-14 15-14 0 9-5 15-14 15"/><path d="M5 19l8-8"/></svg>',
  scale:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 21h14M6 7h12M6 7l-3 7a3 3 0 0 0 6 0zM18 7l-3 7a3 3 0 0 0 6 0z"/></svg>',
+ bell:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16v-5a6 6 0 1 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg>',
+ repeat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l3 3-3 3"/><path d="M4 11V9a4 4 0 0 1 4-4h12"/><path d="M7 22l-3-3 3-3"/><path d="M20 13v2a4 4 0 0 1-4 4H4"/></svg>',
  moon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>'
 };
 const STOCKS=[
@@ -418,11 +477,16 @@ const nTxt=n=>n.toLocaleString('en-US');
 const fDate=ts=>{const d=new Date(ts);return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`};
 const fDT=ts=>{const d=new Date(ts);return fDate(ts)+'، '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
 const normName=s=>String(s||'').trim().replace(/\s+/g,' ');
-const fPhone=ph=>{if(!ph)return '—';const n=String(ph.n||'');let g;if(n.length===9)g=[n.slice(0,2),n.slice(2,5),n.slice(5)];else if(n.length===10)g=[n.slice(0,3),n.slice(3,6),n.slice(6)];else if(n.length===8)g=[n.slice(0,4),n.slice(4)];else g=n.match(/.{1,3}/g)||[n];return `<span class="num nw">+${ph.cc} ${g.join(' ')}</span>`};
+const fPhone=ph=>ph?`<span class="num nw">${fPhoneTxt(ph)}</span>`:'—';
 const initials=n=>{const p=normName(n).split(' ');return (p[0]?.[0]||'')+(p[1]?.[0]||'')};
 const rng=seed=>{let s=seed>>>0||1;return()=>(s=(s*1664525+1013904223)>>>0)/4294967296};
 const strSeed=s=>{let x=7;for(const c of s)x=(x*31+c.charCodeAt(0))>>>0;return x};
 const sumOf=a=>a.reduce((x,y)=>x+y,0);
+const mI=v=>'\u2066'+mTxt(v)+'\u2069';
+const arN=(n,one,two,few,many)=>n===1?one:n===2?two:(n>=3&&n<=10||n===0)?`<span class="num">${n}</span> ${few}`:`<span class="num">${nTxt(n)}</span> ${many}`;
+const fPhoneTxt=ph=>{if(!ph)return '';const n=String(ph.n||'');let g;if(n.length===9)g=[n.slice(0,2),n.slice(2,5),n.slice(5)];else if(n.length===10)g=[n.slice(0,3),n.slice(3,6),n.slice(6)];else if(n.length===8)g=[n.slice(0,4),n.slice(4)];else g=n.match(/.{1,3}/g)||[n];return `+${ph.cc} ${g.join(' ')}`};
+const pwErr=pw=>pw.length<8?'كلمة المرور يجب ألا تقل عن ثمانية أحرف.':(!/[A-Za-z\u0600-\u06FF]/.test(pw)||!/\d/.test(pw))?'كلمة المرور يجب أن تتضمن حرفاً ورقماً.':'';
+function nextRun(day,from){const d=new Date(from);let n=new Date(d.getFullYear(),d.getMonth(),day,9,0,0);if(n.getTime()<=from)n=new Date(d.getFullYear(),d.getMonth()+1,day,9,0,0);return n.getTime()}
 
 /* ================= data ================= */
 let DB;
@@ -470,6 +534,13 @@ function seed(){
   const db={v:3,prices,packages,users,txns,tickets,settings:{fee:0.25,minDeposit:10,withdrawFee:0,tradingOpen:true},session:null,seededAt:now};
   // portfolio history for seeded investors
   db.users.forEach(u=>{if(u.role==='investor')u.hist=genHist(u,db)});
+  db.plans=[{id:uid('pl'),userId:'u_sara',kind:'pkg',target:'p4',amount:200,day:5,active:true,created:now-60*DAY,next:nextRun(5,now),runs:2},
+            {id:uid('pl'),userId:'u_layla',kind:'stock',target:'GLD',amount:100,day:15,active:true,created:now-40*DAY,next:nextRun(15,now),runs:1}];
+  db.notifs=[{id:uid('n'),userId:'u_sara',text:'نُفّذت دفعة الاستثمار الدوري الشهرية في باقة «العالم المتوازن» بقيمة \u2066$200.00\u2069.',at:now-6*DAY,read:false},
+             {id:uid('n'),userId:'u_sara',text:'أجاب فريق سنبلة عن استفسارك السابق حول رسوم التحويل البنكي.',at:now-30*DAY,read:true},
+             {id:uid('n'),userId:'u_sara',text:'مرحباً بك في سنبلة. اعتُمد توثيق هويتك وأصبحت جميع الخصائص مفعّلة لحسابك.',at:now-178*DAY,read:true}];
+  db.alerts=[{id:uid('a'),userId:'u_sara',sym:'TSLA',target:+(prices.TSLA.p*0.97).toFixed(2),dir:'down',created:now-2*DAY}];
+  db.audit=[{at:now-118*DAY,by:'مدير النظام',text:'اعتماد توثيق ليلى حداد'},{at:now-30*DAY,by:'مدير النظام',text:'إيقاف حساب يوسف القحطاني مؤقتاً'}];
   return db;
 }
 function navOf(pg,prices){prices=prices||DB.prices;let v=0;for(const[s,w]of Object.entries(pg.comp))v+=w/100*prices[s].p/pg.base[s];return 100*v}
@@ -482,7 +553,8 @@ function genHist(u,db){
   // early days ramp up because deposits came in over time
   const n=out.length; return out.map(([d,val],i)=>[d,val*(0.55+0.45*Math.min(1,(i/n)*1.6))]).map((p,i,a)=>i===a.length-1?[p[0],end]:p);
 }
-function load(){try{const s=localStorage.getItem(KEY);if(s){const d=JSON.parse(s);if(d&&d.v===3)return d}}catch(e){}return seed()}
+function upgrade(d){d.plans=d.plans||[];d.notifs=d.notifs||[];d.alerts=d.alerts||[];d.audit=d.audit||[];return d}
+function load(){try{const s=localStorage.getItem(KEY);if(s){const d=JSON.parse(s);if(d&&d.v===3)return upgrade(d)}}catch(e){}return seed()}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(DB))}catch(e){}}
 DB=load();
 
@@ -494,6 +566,45 @@ const NAV=pg=>navOf(pg);
 const userById=id=>DB.users.find(u=>u.id===id);
 function pf(u){let st=0,stc=0,pk=0,pkc=0;for(const[s,h]of Object.entries(u.holdings)){st+=h.q*P(s);stc+=h.cost}for(const[id,sb]of Object.entries(u.subs)){const pg=pkgById(id);if(!pg)continue;pk+=sb.units*NAV(pg);pkc+=sb.cost}const inv=st+pk,cost=stc+pkc;return{cash:u.cash,st,stc,pk,pkc,inv,cost,total:u.cash+inv,pnl:inv-cost,pnlPct:cost?((inv-cost)/cost*100):0}}
 const me=()=>DB.session?userById(DB.session):null;
+function notify(userId,text){if(!userId)return;DB.notifs.push({id:uid('n'),userId,text,at:Date.now(),read:false});if(DB.notifs.length>400)DB.notifs.splice(0,DB.notifs.length-400)}
+function audit(text){const a=me();DB.audit.push({at:Date.now(),by:a?a.name:'النظام',text});if(DB.audit.length>300)DB.audit.splice(0,DB.audit.length-300)}
+const unread=u=>DB.notifs.filter(n=>n.userId===u.id&&!n.read).length;
+function refreshBell(){const u=me();if(!u||u.role!=='investor')return;const b=$('[data-bell]');if(!b)return;const n=unread(u);b.innerHTML=I.bell+(n?`<span class="dotn">${n>9?'9+':n}</span>`:'');b.setAttribute('aria-label',n?`الإشعارات، ${n} غير مقروءة`:'الإشعارات');b.title='الإشعارات'}
+function planTargetName(pl){return pl.kind==='pkg'?`باقة «${pkgById(pl.target)?.name||'—'}»`:`${SMAP[pl.target]?.n||pl.target}`}
+function execBuy(u,s,a,extra){const b=canTrade(u);if(b)return b;if(!(a>=1))return 'الحد الأدنى للشراء دولار واحد.';if(a>u.cash+1e-9)return `رصيدك المتاح ${mI(u.cash)} لا يكفي لهذه العملية.`;
+  const fee=a*DB.settings.fee/100,q=+((a-fee)/P(s)).toFixed(6);u.cash-=a;const h=u.holdings[s]||(u.holdings[s]={q:0,cost:0});h.q+=q;h.cost+=a;addTx(Object.assign({userId:u.id,type:'buy',amount:a,sym:s,qty:q,price:P(s),fee},extra||{}));return {q}}
+function execSub(u,id,a,extra){const pg=pkgById(id),b=canTrade(u);if(b)return b;if(!pg||!pg.active)return 'الباقة مغلقة أمام الاشتراكات الجديدة.';if(!(a>=pg.min))return `الحد الأدنى لهذه الباقة ${mI(pg.min)}.`;if(a>u.cash+1e-9)return `رصيدك المتاح ${mI(u.cash)} لا يكفي.`;
+  const units=+(a/NAV(pg)).toFixed(6);u.cash-=a;const sb=u.subs[id]||(u.subs[id]={units:0,cost:0});sb.units+=units;sb.cost+=a;addTx(Object.assign({userId:u.id,type:'sub',amount:a,pkg:id,units},extra||{}));return {units}}
+function runPlans(u){if(!u||u.role!=='investor')return 0;let n=0;const now=Date.now();
+  DB.plans.filter(p=>p.userId===u.id&&p.active&&p.next<=now).forEach(pl=>{
+    const r=pl.kind==='pkg'?execSub(u,pl.target,pl.amount,{plan:pl.id}):execBuy(u,pl.target,pl.amount,{plan:pl.id});
+    if(typeof r==='string')notify(u.id,`تعذّر تنفيذ دفعة الاستثمار الدوري في ${planTargetName(pl)}: ${r}`);
+    else{pl.runs=(pl.runs||0)+1;n++;notify(u.id,`نُفّذت دفعة الاستثمار الدوري في ${planTargetName(pl)} بقيمة ${mI(pl.amount)}.`)}
+    pl.next=nextRun(pl.day,Math.max(now,pl.next));});
+  return n}
+function csv(name,rows){const body='\ufeff'+rows.map(r=>r.map(v=>{v=String(v??'');return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}).join(',')).join('\r\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([body],{type:'text/csv;charset=utf-8'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},800)}
+const today=()=>new Date().toISOString().slice(0,10);
+
+
+const LEGAL={
+ terms:['الشروط والأحكام',`<p>تنظّم هذه الشروط استخدامك منصة سنبلة وخدماتها. باستخدامك المنصة فإنك تقر بأنك قرأتها وقبلتها.</p>
+  <h4>1. الأهلية</h4><p>يشترط أن يكون عمر المستخدم 18 عاماً فأكثر، وأن يقدم بيانات صحيحة ومحدثة، وأن يجتاز إجراءات التحقق من الهوية (اعرف عميلك).</p>
+  <h4>2. الحساب وأمانه</h4><p>المستخدم مسؤول عن سرية كلمة المرور وعن كل عملية تتم من حسابه، وعليه إبلاغ فريق الدعم فوراً عند الاشتباه بأي استخدام غير مصرح به.</p>
+  <h4>3. أوامر التداول والباقات</h4><p>تُنفَّذ الأوامر بسعر السوق وقت التنفيذ، وتُحتسب العمولة المعلنة في صفحة الرسوم. الباقات محافظ بأوزان محددة يعاد توازنها دورياً، وتُحتسب رسوم إدارتها سنوياً على أساس يومي.</p>
+  <h4>4. الاستثمار الدوري</h4><p>عند إنشاء خطة استثمار دوري تفوّض المنصة بخصم المبلغ المحدد من رصيدك النقدي في يوم التنفيذ، ويمكنك إيقاف الخطة أو حذفها في أي وقت دون رسوم.</p>
+  <h4>5. الإيداع والسحب</h4><p>تُقبل الإيداعات من حسابات ووسائل دفع باسم العميل فقط، وتُحوَّل السحوبات إلى حساب بنكي موثّق باسمه بعد المراجعة.</p>
+  <h4>6. إيقاف الحساب</h4><p>يحق للمنصة إيقاف الحساب مؤقتاً عند مخالفة الشروط أو لمتطلبات نظامية، مع بقاء أصول العميل محفوظة باسمه.</p>
+  <h4>7. التواصل</h4><p>للاستفسارات: <span class="num">munijizqa@gmail.com</span> أو <span class="num nw">+974 5160 0498</span>.</p>`],
+ privacy:['سياسة الخصوصية',`<p>نلتزم بحماية بياناتك الشخصية واستخدامها في حدود ما يلزم لتقديم الخدمة والوفاء بالمتطلبات النظامية.</p>
+  <h4>البيانات التي نجمعها</h4><ol><li>بيانات الهوية والتواصل: الاسم والبريد الإلكتروني ورقم الجوال والجنسية.</li><li>بيانات التحقق: مستند الهوية وإجابات استبيان ملف المخاطر.</li><li>بيانات العمليات: الإيداعات والسحوبات وأوامر التداول والاشتراكات.</li></ol>
+  <h4>كيف نستخدمها</h4><p>لفتح الحساب والتحقق من الهوية، وتنفيذ العمليات، ومكافحة الاحتيال وغسل الأموال، والتواصل معك بشأن حسابك.</p>
+  <h4>المشاركة والحفظ</h4><p>لا نبيع بياناتك. نشاركها فقط مع الوسطاء وأمناء الحفظ والجهات الرقابية بالقدر الذي يتطلبه النظام، وتُحفظ مشفّرة طوال مدة العلاقة والمدة النظامية بعدها.</p>
+  <h4>حقوقك</h4><p>يحق لك طلب الاطلاع على بياناتك وتصحيحها، وطلب إغلاق حسابك، عبر نموذج الدعم داخل المنصة.</p>
+  <p class="hint">في هذا النموذج التجريبي تُحفظ البيانات داخل متصفحك فقط ولا تُرسل إلى أي خادم.</p>`],
+ risk:['إفصاح المخاطر',`<p>الاستثمار في الأسهم والصناديق والباقات ينطوي على مخاطر، ويجب أن تستثمر فقط ما تستطيع تحمل تقلب قيمته.</p>
+  <ol><li><b>مخاطر السوق:</b> قد تنخفض قيمة استثمارك، وقد تسترد مبلغاً أقل مما دفعته.</li><li><b>مخاطر العملة:</b> الأصول مقوّمة بالدولار الأمريكي، وقد يؤثر تغير سعر الصرف في قيمتها بعملتك المحلية.</li><li><b>مخاطر التركّز:</b> شراء سهم واحد أعلى مخاطرة من محفظة متنوعة.</li><li><b>الأداء السابق:</b> لا يضمن الأداء السابق أو تقديرات حاسبة النمو أي نتائج مستقبلية.</li><li><b>أجزاء الأسهم:</b> قد لا تنتقل أجزاء الأسهم إلى وسيط آخر، وتُباع عند إغلاق الحساب.</li></ol>
+  <p>المحتوى المعروض في المنصة لأغراض المعلومات، ولا يمثل نصيحة أو توصية استثمارية شخصية.</p>`]
+};
 
 /* ================= UI state ================= */
 const S={view:'home',mfilter:'all',mq:'',range:'3m',txFilter:'all',uFilter:'all',uq:'',kycStep:1,kycDraft:{},menu:false};
@@ -569,8 +680,8 @@ function renderPublic(){
   return `
   <header class="ph"><div class="wrap">
     <button class="brand" data-act="top" aria-label="سنبلة، الصفحة الرئيسية">${LOGO}<span><b>سنبلة</b><small>استثمارٌ ينمو معك</small></span></button>
-    <nav class="pnav ${S.menu?'open':''}" id="pnav"><a href="#markets" data-act="closemenu">الأسواق</a><a href="#packages" data-act="closemenu">الباقات</a><a href="#how" data-act="closemenu">كيف نعمل</a><a href="#calc" data-act="closemenu">حاسبة النمو</a><a href="#fees" data-act="closemenu">الرسوم</a><a href="#faq" data-act="closemenu">الأسئلة الشائعة</a><a href="#contact" data-act="closemenu">تواصل معنا</a><a href="#" class="mob-only" data-act="auth" data-id="login">تسجيل الدخول</a></nav>
-    <div class="acts"><button class="btn ghost" data-act="auth" data-id="login">تسجيل الدخول</button><button class="btn" data-act="auth" data-id="signup">افتح حسابك</button><button class="menu-btn" data-act="menu" aria-label="القائمة">${I.menu}</button></div>
+    <nav class="pnav ${S.menu?'open':''}" id="pnav"><a href="#markets" data-act="closemenu">الأسواق</a><a href="#packages" data-act="closemenu">الباقات</a><a href="#how" data-act="closemenu">كيف نعمل</a><a href="#calc" data-act="closemenu">حاسبة النمو</a><a href="#fees" data-act="closemenu">الرسوم</a><a href="#faq" data-act="closemenu">الأسئلة الشائعة</a><a href="#contact" data-act="closemenu">تواصل معنا</a><a href="#" class="mob-only" data-act="auth" data-id="login">تسجيل الدخول</a><a href="#" class="mob-only" data-act="install">ثبّت التطبيق على جوالك</a></nav>
+    <div class="acts"><button class="iconbtn" data-act="theme" aria-label="تبديل الوضع الليلي" title="الوضع الليلي">${I.moon}</button><button class="btn ghost" data-act="auth" data-id="login">تسجيل الدخول</button><button class="btn" data-act="auth" data-id="signup">افتح حسابك</button><button class="menu-btn" data-act="menu" aria-label="القائمة">${I.menu}</button></div>
   </div></header>
 
   <section class="hero"><div class="wrap">
@@ -617,7 +728,7 @@ function renderPublic(){
       <div class="card" style="display:grid;gap:18px">
         <div class="field"><label for="c_init">المبلغ المبدئي</label><input class="input num" id="c_init" type="number" min="0" value="1000" style="text-align:right"></div>
         <div class="field"><label for="c_month">الإضافة الشهرية</label><input class="input num" id="c_month" type="number" min="0" value="200" style="text-align:right"></div>
-        <div class="field"><label for="c_years">المدة: <span class="num" id="c_years_v">10</span> سنوات</label><input id="c_years" type="range" min="1" max="30" value="10"></div>
+        <div class="field"><label for="c_years">المدة: <span id="c_years_v"><span class="num">10</span> سنوات</span></label><input id="c_years" type="range" min="1" max="30" value="10"></div>
         <div class="field"><label for="c_rate">العائد السنوي المفترض: <span class="num" id="c_rate_v">7%</span></label><input id="c_rate" type="range" min="2" max="12" step="0.5" value="7"><div class="rangeval"><span>متحفظ</span><span>متوازن</span><span>جريء</span></div></div>
       </div>
       <div class="res" id="c_res"></div>
@@ -664,7 +775,7 @@ function renderPublic(){
   <footer class="foot"><div class="wrap">
     <div class="cols">
       <div><div class="brand">${LOGO}<span><b>سنبلة</b><small>استثمارٌ ينمو معك</small></span></div><p style="margin-top:12px;max-width:30em">منصة رقمية تفتح أسواق الأسهم العالمية لكل فرد، بأجزاء الأسهم والباقات الجاهزة وتجربة عربية كاملة.</p></div>
-      <div><b>المنصة</b><ul><li><a href="#markets">الأسواق</a></li><li><a href="#packages">الباقات</a></li><li><a href="#fees">الرسوم</a></li></ul></div>
+      <div><b>المنصة</b><ul><li><a href="#markets">الأسواق</a></li><li><a href="#packages">الباقات</a></li><li><a href="#fees">الرسوم</a></li><li><button class="linkbtn" data-act="legal" data-id="terms">الشروط والأحكام</button></li><li><button class="linkbtn" data-act="legal" data-id="privacy">سياسة الخصوصية</button></li><li><button class="linkbtn" data-act="legal" data-id="risk">إفصاح المخاطر</button></li><li><button class="linkbtn" data-act="install">ثبّت التطبيق على جوالك</button></li></ul></div>
       <div><b>تواصل معنا</b><ul><li><a class="num" href="mailto:munijizqa@gmail.com">munijizqa@gmail.com</a></li><li><a class="num nw" href="tel:+97451600498">+974 5160 0498</a></li><li><a href="https://wa.me/97451600498" target="_blank" rel="noopener">واتساب</a></li><li><a href="#" data-act="auth" data-id="login">تسجيل الدخول</a></li></ul></div>
     </div>
     <p class="disc">نموذج أولي تجريبي لأغراض العرض. لا تُنفَّذ أي عمليات حقيقية ولا تُحصَّل أي أموال، وجميع الأسعار توضيحية. الاستثمار في الأسواق المالية ينطوي على مخاطر، وقد تنخفض قيمة الاستثمار. © <span class="num">${new Date().getFullYear()}</span> سنبلة.</p>
@@ -673,10 +784,10 @@ function renderPublic(){
 function calcUpdate(){
   const el=$('#c_res');if(!el)return;
   const init=Math.max(0,+$('#c_init').value||0),mo=Math.max(0,+$('#c_month').value||0),y=+$('#c_years').value,r=+$('#c_rate').value/100;
-  $('#c_years_v').textContent=y;$('#c_rate_v').textContent=r*100+'%';
+  $('#c_years_v').innerHTML=arN(y,'سنة واحدة','سنتان','سنوات','سنة');$('#c_rate_v').textContent=r*100+'%';
   const mr=Math.pow(1+r,1/12)-1;let v=init;const pts=[v];for(let m=1;m<=y*12;m++){v=v*(1+mr)+mo;if(m%3===0)pts.push(v)}
   const paid=init+mo*12*y;
-  el.innerHTML=`<span style="opacity:.8">القيمة التقديرية بعد <span class="num">${y}</span> ${y>10||y<3?'سنة':'سنوات'}</span><div class="big">${mTxt(v)}</div>
+  el.innerHTML=`<span style="opacity:.8">القيمة التقديرية بعد ${arN(y,'سنة واحدة','سنتين','سنوات','سنة')}</span><div class="big">${mTxt(v)}</div>
    ${lineSVG(pts,{h:140,color:'var(--wheat)'})}
    <div class="split"><div><span style="opacity:.8">إجمالي ما تدفعه</span><b>${mTxt(paid)}</b></div><div><span style="opacity:.8">النمو المتوقع</span><b>${mTxt(v-paid)}</b></div></div>
    <button class="btn gold" data-act="auth" data-id="signup" style="align-self:start">ابدأ خطتك الآن</button>`;
@@ -698,7 +809,7 @@ function renderApp(){
    </aside>
    <main class="main">
      <header class="topbar"><span class="mbrand">${LOGO}</span><h1>${TITLES[S.view]}</h1>
-       <div class="sp"><span class="pill ${open?'ok live':'bad'}"><span class="dot"></span>${open?'السوق مفتوح':'التداول متوقف'}</span>
+       <div class="sp"><span class="pill ${open?'ok live':'bad'}" title="${open?'السوق مفتوح':'التداول متوقف'}"><span class="dot"></span><span class="pt">${open?'السوق مفتوح':'التداول متوقف'}</span></span>${admin?'':`<button class="iconbtn bell" data-act="notifs" data-bell aria-label="الإشعارات">${I.bell}</button>`}<button class="iconbtn" data-act="theme" aria-label="تبديل الوضع الليلي" title="الوضع الليلي">${I.moon}</button>
        <button class="iconbtn" data-act="logout" title="تسجيل الخروج" aria-label="تسجيل الخروج">${I.out}</button></div></header>
      <div class="content" id="content">${(VIEWS[S.view]||VIEWS.dash)(u)}</div>
    </main>
@@ -726,11 +837,11 @@ const VIEWS={
   return `${kycBanner(u)}
   <div class="kpis">
    <div class="kpi hero"><span>إجمالي قيمة المحفظة</span><b class="num" data-tot>${mTxt(p.total)}</b><small class="num" style="color:var(--wheat)" data-pnl>${(p.pnl>=0?'+':'')+mTxt(p.pnl)} (${pTxt(p.pnlPct)})</small></div>
-   <div class="kpi"><span>المستثمر حالياً</span><b class="num" data-inv>${mTxt(p.inv)}</b><small class="muted">التكلفة ${mTxt(p.cost)}</small></div>
-   <div class="kpi"><span>الأرباح غير المحققة</span><b class="num ${p.pnl>=0?'gain':'loss'}" data-pnl2>${(p.pnl>=0?'+':'')+mTxt(p.pnl)}</b><small class="${p.pnl>=0?'gain':'loss'}">${pTxt(p.pnlPct)}</small></div>
+   <div class="kpi"><span>المستثمر حالياً</span><b class="num" data-inv>${mTxt(p.inv)}</b><small class="muted">التكلفة ${M(p.cost)}</small></div>
+   <div class="kpi"><span>الأرباح غير المحققة</span><b class="num ${p.pnl>=0?'gain':'loss'}" data-pnl2>${(p.pnl>=0?'+':'')+mTxt(p.pnl)}</b><small class="num ${p.pnl>=0?'gain':'loss'}">${pTxt(p.pnlPct)}</small></div>
    <div class="kpi"><span>الرصيد النقدي المتاح</span><b class="num">${mTxt(p.cash)}</b><small class="muted">جاهز للاستثمار</small></div>
   </div>
-  <div class="quick"><button data-act="deposit">${I.plus}إيداع</button><button data-act="go" data-id="market">${I.market}شراء سهم</button><button data-act="go" data-id="packages">${I.pkg}باقة جديدة</button><button data-act="withdraw">${I.minus}سحب</button></div>
+  <div class="quick"><button data-act="deposit">${I.plus}إيداع</button><button data-act="plannew" data-id="">${I.repeat}استثمار شهري</button><button data-act="go" data-id="market">${I.market}شراء سهم</button><button data-act="go" data-id="packages">${I.pkg}باقة جديدة</button><button data-act="withdraw">${I.minus}سحب</button></div>
   <div class="cols2">
    <div class="card"><div class="ch-hd"><div><h3>أداء المحفظة</h3><span class="muted" style="font-size:13px">خلال الفترة: ${P2(rch)}</span></div>
      <div class="seg">${[['1m','شهر'],['3m','3 أشهر'],['all','الكل']].map(([k,l])=>`<button class="${S.range===k?'on':''}" data-act="range" data-id="${k}">${l}</button>`).join('')}</div></div>
@@ -751,7 +862,8 @@ const VIEWS={
    ${ss.length?`<div class="tw"><table class="t"><thead><tr><th>الباقة</th><th class="n">الوحدات</th><th class="n">سعر الوحدة</th><th class="n">القيمة</th><th class="n">الربح/الخسارة</th><th></th></tr></thead><tbody>
    ${ss.map(([id,sb])=>{const pg=pkgById(id);if(!pg)return '';const v=sb.units*NAV(pg),pl=v-sb.cost;return `<tr><td><b>${esc(pg.name)}</b></td><td class="n num">${qTxt(sb.units)}</td><td class="n num" data-nav="${id}">${mTxt(NAV(pg))}</td><td class="n num">${mTxt(v)}</td><td class="n">${P2(pl/sb.cost*100)}</td><td><button class="btn sm ghost" data-act="pkg" data-id="${id}">إدارة</button></td></tr>`}).join('')}
    </tbody></table></div>`:`<div class="empty">لم تشترك في أي باقة بعد.</div>`}
-  </div>`;
+  </div>
+  ${plansCard(u)}`;
  },
  market(u){return `${kycBanner(u)}<div>${marketBlock(true)}</div>${trustline()}`},
  packages(u){return `${kycBanner(u)}<div class="pkgs">${DB.packages.filter(p=>p.active||u.subs[p.id]).map(p=>pkgCard(p,true)).join('')}</div>${trustline()}`},
@@ -766,9 +878,10 @@ const VIEWS={
    <div class="card"><h3 style="margin-bottom:12px">حركة الإيداع والسحب</h3>${txTable(tx,false)}</div>`;
  },
  history(u){
-  let tx=DB.txns.filter(t=>t.userId===u.id).sort((a,b)=>b.date-a.date);
-  if(S.txFilter!=='all')tx=tx.filter(t=>S.txFilter==='trade'?['buy','sell'].includes(t.type):S.txFilter==='pkg'?['sub','redeem'].includes(t.type):['deposit','withdraw'].includes(t.type));
-  return `<div class="tabs">${[['all','الكل'],['trade','الأسهم'],['pkg','الباقات'],['cash','الإيداع والسحب']].map(([k,l])=>`<button class="tab ${S.txFilter===k?'on':''}" data-act="txf" data-id="${k}">${l}</button>`).join('')}</div><div class="card">${txTable(tx,false)}</div>`;
+  const tx=filterTx(DB.txns.filter(t=>t.userId===u.id).sort((a,b)=>b.date-a.date));
+  return `<div class="print-head"><h2>كشف حساب سنبلة</h2><p>${esc(u.name)} · <span class="num">${esc(u.email)}</span> · تاريخ الإصدار ${fDT(Date.now())}</p></div>
+  <div class="row no-print" style="justify-content:space-between"><div class="tabs">${[['all','الكل'],['trade','الأسهم'],['pkg','الباقات'],['cash','الإيداع والسحب']].map(([k,l])=>`<button class="tab ${S.txFilter===k?'on':''}" data-act="txf" data-id="${k}">${l}</button>`).join('')}</div>
+  <div class="row" style="gap:8px"><button class="btn sm ghost" data-act="exptx">تصدير Excel (CSV)</button><button class="btn sm ghost" data-act="print">طباعة كشف الحساب</button></div></div><div class="card">${txTable(tx,false)}</div>`;
  },
  account(u){
   const tks=DB.tickets.filter(t=>t.userId===u.id).sort((a,b)=>b.created-a.created);
@@ -785,7 +898,8 @@ const VIEWS={
      <div><span>البريد الإلكتروني</span><b class="num">${esc(u.email)}</b></div><div><span>رقم الجوال</span><b>${fPhone(u.phone)}</b></div>
      <div><span>الجنسية</span><b>${esc(u.nat||'—')}</b></div><div><span>ملف المخاطر</span><b>${esc(u.risk||'—')}</b></div><div><span>عضو منذ</span><b>${fDate(u.created)}</b></div>
     </div>
-    <button class="btn ghost" data-act="logout">${I.out} تسجيل الخروج</button>
+    <div style="border-top:1px solid var(--line);padding-top:14px">${pwForm()}</div>
+    <div class="row" style="border-top:1px solid var(--line);padding-top:14px"><button class="btn ghost" data-act="install">ثبّت التطبيق على جوالك</button><button class="btn ghost" data-act="logout">${I.out} تسجيل الخروج</button></div>
    </div></div>`;
  },
  /* ---------- admin ---------- */
@@ -803,7 +917,8 @@ const VIEWS={
    <div class="kpi"><span>إجمالي الإيداعات</span><b class="num">${mTxt(sumOf(dep.map(t=>t.amount)))}</b><small class="muted">${dep.length} عملية</small></div>
    <div class="kpi"><span>بانتظار الإجراء</span><b class="num">${c.ausers+c.atx+c.atickets}</b><small class="muted">توثيق ${c.ausers} · سحب ${c.atx} · دعم ${c.atickets}</small></div>
   </div>
-  ${c.ausers||c.atx?`<div class="banner"><div><b>طلبات تحتاج إلى قرارك</b><span class="muted">${c.ausers} طلب توثيق هوية و${c.atx} طلب سحب بانتظار المراجعة.</span></div>${c.ausers?`<button class="btn sm" data-act="go" data-id="ausers" data-f="pending">مراجعة التوثيق</button>`:''}${c.atx?`<button class="btn sm ghost" data-act="go" data-id="atx">مراجعة السحوبات</button>`:''}</div>`:''}
+  ${c.ausers||c.atx?`<div class="banner"><div><b>طلبات تحتاج إلى قرارك</b><span class="muted">طلبات توثيق الهوية: <span class="num">${c.ausers}</span> · طلبات السحب: <span class="num">${c.atx}</span>، بانتظار المراجعة.</span></div>${c.ausers?`<button class="btn sm" data-act="go" data-id="ausers" data-f="pending">مراجعة التوثيق</button>`:''}${c.atx?`<button class="btn sm ghost" data-act="go" data-id="atx">مراجعة السحوبات</button>`:''}</div>`:''}
+  ${(()=>{const ap=DB.plans.filter(p=>p.active);return `<div class="card"><h3 style="margin-bottom:12px">الاستثمار الدوري والتنبيهات</h3><div class="statrow"><div><span>الخطط الشهرية النشطة</span><b class="num">${ap.length}</b></div><div><span>الالتزام الشهري</span><b class="num">${mTxt(sumOf(ap.map(p=>p.amount)))}</b></div><div><span>مستثمرون مشتركون</span><b class="num">${new Set(ap.map(p=>p.userId)).size}</b></div><div><span>تنبيهات أسعار نشطة</span><b class="num">${DB.alerts.length}</b></div></div></div>`})()}
   <div class="cols2">
    <div class="card"><h3>الإيداعات خلال آخر 7 أيام</h3><div class="bars">${days.map(d=>`<div><small class="num">${d.v?mTxt(d.v).replace('.00',''):''}</small><i style="height:${(d.v/mx*100).toFixed(0)}%"></i><small>${new Date(d.st).getDate()} ${MONTHS[new Date(d.st).getMonth()].slice(0,5)}</small></div>`).join('')}</div></div>
    <div class="card"><h3 style="margin-bottom:12px">الأصول حسب الباقة</h3><div class="legend">${pkgAum.map(x=>`<div><i style="background:${x.pg.color}"></i>${esc(x.pg.name)}<b>${mTxt(x.v)}</b></div>`).join('')}</div></div>
@@ -816,7 +931,7 @@ const VIEWS={
   const q=S.uq.trim().toLowerCase();if(q)us=us.filter(u=>u.name.toLowerCase().includes(q)||u.email.includes(q));
   us.sort((a,b)=>(a.kyc==='pending'?-1:0)-(b.kyc==='pending'?-1:0)||b.created-a.created);
   return `<div class="row" style="justify-content:space-between"><div class="tabs">${[['all','الكل'],['pending','بانتظار التوثيق'],['approved','موثّق'],['none','غير موثّق'],['rejected','مرفوض'],['suspended','موقوف']].map(([k,l])=>`<button class="tab ${S.uFilter===k?'on':''}" data-act="uf" data-id="${k}">${l}</button>`).join('')}</div>
-   <label class="search">${I.search}<input class="input" id="uq" placeholder="بحث بالاسم أو البريد" value="${esc(S.uq)}" aria-label="بحث"></label></div>
+   <label class="search">${I.search}<input class="input" id="uq" placeholder="بحث بالاسم أو البريد" value="${esc(S.uq)}" aria-label="بحث"></label><button class="btn sm ghost" data-act="expusers">تصدير Excel (CSV)</button></div>
    <div class="tw"><table class="t"><thead><tr><th>المستثمر</th><th>الجوال</th><th>التوثيق</th><th>الحالة</th><th class="n">قيمة المحفظة</th><th>التسجيل</th><th>إجراءات</th></tr></thead><tbody>
    ${us.map(u=>`<tr><td><div class="row" style="gap:10px;flex-wrap:nowrap"><span class="av">${esc(initials(u.name))}</span><div><b>${esc(u.name)}</b><div class="muted num" style="font-size:12px">${esc(u.email)}</div></div></div></td><td>${fPhone(u.phone)}</td><td>${kycPill(u.kyc)}</td><td>${u.status==='active'?'<span class="pill ok">نشط</span>':'<span class="pill bad">موقوف</span>'}</td><td class="n">${M(pf(u).total)}</td><td style="white-space:nowrap">${fDate(u.created)}</td>
     <td><div class="row" style="gap:6px;flex-wrap:nowrap">${u.kyc==='pending'?`<button class="btn sm ok" data-act="kycok" data-id="${u.id}">اعتماد</button><button class="btn sm danger" data-act="kycno" data-id="${u.id}">رفض</button>`:''}<button class="btn sm ghost" data-act="udetail" data-id="${u.id}">التفاصيل</button></div></td></tr>`).join('')||`<tr><td colspan="7"><div class="empty">لا يوجد مستثمرون ضمن هذا التصنيف.</div></td></tr>`}
@@ -825,10 +940,10 @@ const VIEWS={
  atx(){
   const pend=DB.txns.filter(t=>t.status==='pending').sort((a,b)=>b.date-a.date);
   let all=[...DB.txns].sort((a,b)=>b.date-a.date);
-  if(S.txFilter!=='all')all=all.filter(t=>S.txFilter==='trade'?['buy','sell'].includes(t.type):S.txFilter==='pkg'?['sub','redeem'].includes(t.type):['deposit','withdraw'].includes(t.type));
+  all=filterTx(all);
   return `<div class="card"><h3 style="margin-bottom:12px">طلبات السحب بانتظار الموافقة</h3>
-   ${pend.length?`<div class="tw"><table class="t"><thead><tr><th>المستثمر</th><th class="n">المبلغ</th><th>الوسيلة</th><th>التاريخ</th><th>القرار</th></tr></thead><tbody>${pend.map(t=>`<tr><td>${esc(userById(t.userId)?.name)}</td><td class="n">${M(t.amount)}</td><td>${esc(t.method)}</td><td>${fDT(t.date)}</td><td><div class="row" style="gap:6px;flex-wrap:nowrap"><button class="btn sm ok" data-act="wok" data-id="${t.id}">تنفيذ</button><button class="btn sm danger" data-act="wno" data-id="${t.id}">رفض وإرجاع</button></div></td></tr>`).join('')}</tbody></table></div>`:`<div class="empty">لا توجد طلبات معلقة.</div>`}</div>
-   <div class="tabs">${[['all','الكل'],['trade','الأسهم'],['pkg','الباقات'],['cash','الإيداع والسحب']].map(([k,l])=>`<button class="tab ${S.txFilter===k?'on':''}" data-act="txf" data-id="${k}">${l}</button>`).join('')}</div>
+   ${pend.length?`<div class="tw"><table class="t"><thead><tr><th>المستثمر</th><th class="n">المبلغ</th><th>الوسيلة</th><th>التاريخ</th><th>القرار</th></tr></thead><tbody>${pend.map(t=>`<tr><td>${esc(userById(t.userId)?.name)}</td><td class="n">${M(t.amount)}</td><td>${esc(t.method)}${t.iban?`<div class="muted num" style="font-size:12px">•••• ${esc(t.iban)}</div>`:''}</td><td>${fDT(t.date)}</td><td><div class="row" style="gap:6px;flex-wrap:nowrap"><button class="btn sm ok" data-act="wok" data-id="${t.id}">تنفيذ</button><button class="btn sm danger" data-act="wno" data-id="${t.id}">رفض وإرجاع</button></div></td></tr>`).join('')}</tbody></table></div>`:`<div class="empty">لا توجد طلبات معلقة.</div>`}</div>
+   <div class="row" style="justify-content:space-between"><div class="tabs">${[['all','الكل'],['trade','الأسهم'],['pkg','الباقات'],['cash','الإيداع والسحب']].map(([k,l])=>`<button class="tab ${S.txFilter===k?'on':''}" data-act="txf" data-id="${k}">${l}</button>`).join('')}</div><button class="btn sm ghost" data-act="exptx">تصدير Excel (CSV)</button></div>
    <div class="card">${txTable(all,true)}</div>`;
  },
  apkgs(){
@@ -850,7 +965,9 @@ const VIEWS={
    <div class="field"><label for="st_min">الحد الأدنى للإيداع ($)</label><input class="input num" id="st_min" name="min" type="number" min="1" value="${s.minDeposit}"></div>
    <div class="field"><label for="st_wf">رسوم السحب ($)</label><input class="input num" id="st_wf" name="wf" type="number" min="0" step="0.5" value="${s.withdrawFee}"></div></div>
    <button class="btn" style="justify-self:start">حفظ الإعدادات</button></form>
-   <div class="card" style="max-width:640px;display:grid;gap:10px"><h3>بيانات العرض التجريبي</h3><p class="muted">إعادة البيانات إلى حالتها الأصلية تحذف أي حسابات أو عمليات أُضيفت أثناء التجربة على هذا الجهاز.</p><button class="btn danger" data-act="reset" style="justify-self:start">إعادة ضبط البيانات التجريبية</button></div>`;
+   <div class="card" style="max-width:640px;display:grid;gap:10px"><h3>بيانات العرض التجريبي</h3><p class="muted">إعادة البيانات إلى حالتها الأصلية تحذف أي حسابات أو عمليات أُضيفت أثناء التجربة على هذا الجهاز.</p><button class="btn danger" data-act="reset" style="justify-self:start">إعادة ضبط البيانات التجريبية</button></div>
+   <div class="card" style="max-width:640px">${pwForm()}</div>
+   <div class="card" style="max-width:640px"><h3 style="margin-bottom:8px">سجل نشاط الإدارة</h3><p class="hint" style="margin-bottom:8px">كل قرار إداري يُسجَّل تلقائياً مع وقته ومنفّذه لأغراض الرقابة والمراجعة.</p>${DB.audit.length?`<div class="audit">${[...DB.audit].reverse().slice(0,30).map(a=>`<div><span>${esc(a.text)} <span class="muted">· ${esc(a.by)}</span></span><small>${fDT(a.at)}</small></div>`).join('')}</div>`:'<div class="empty">لا توجد أنشطة مسجلة.</div>'}</div>`;
  }
 };
 const TXL={deposit:'إيداع',withdraw:'سحب',buy:'شراء',sell:'بيع',sub:'اشتراك في باقة',redeem:'استرداد من باقة'};
@@ -860,7 +977,7 @@ function txTable(tx,showUser){
   ${tx.map(t=>{const det=t.sym?`${esc(SMAP[t.sym]?.n||t.sym)} · <span class="num">${qTxt(t.qty)}</span> سهم`:t.pkg?`${esc(pkgById(t.pkg)?.name||'')} · <span class="num">${qTxt(t.units)}</span> وحدة`:esc(t.method||'');
    const st={done:'<span class="pill ok">مكتملة</span>',pending:'<span class="pill wait">قيد المراجعة</span>',rejected:'<span class="pill bad">مرفوضة</span>'}[t.status];
    const sign=['deposit','sell','redeem'].includes(t.type)?'gain':'';
-   return `<tr>${showUser?`<td>${esc(userById(t.userId)?.name||'—')}</td>`:''}<td><b>${TXL[t.type]}</b></td><td>${det}</td><td class="n ${sign}">${M(t.amount)}</td><td>${st}</td><td style="white-space:nowrap">${fDT(t.date)}</td></tr>`}).join('')}
+   return `<tr>${showUser?`<td>${esc(userById(t.userId)?.name||'—')}</td>`:''}<td><b>${TXL[t.type]}</b>${t.plan?'<div class="muted" style="font-size:12px">استثمار دوري</div>':''}</td><td>${det}</td><td class="n ${sign}">${M(t.amount)}</td><td>${st}</td><td style="white-space:nowrap">${fDT(t.date)}</td></tr>`}).join('')}
   </tbody></table></div>`;
 }
 function ticketView(t,admin){
@@ -886,9 +1003,33 @@ function kycSection(u){
    <div class="row"><button type="button" class="btn ghost" data-act="kycback">السابق</button><button class="btn">التالي</button></div></form>`;
   return head+`<form data-form="kyc3" style="display:grid;gap:14px">
    ${[['q1','ما هدفك الرئيسي من الاستثمار؟',['الحفاظ على رأس المال مع عائد بسيط','نمو متوازن على المدى المتوسط','أعلى نمو ممكن على المدى الطويل']],['q2','لو انخفضت محفظتك 20% خلال شهر، ماذا ستفعل؟',['أبيع لأتجنب خسارة أكبر','أنتظر حتى تتعافى','أشتري المزيد بسعر أقل']],['q3','ما المدة التي تنوي الاستثمار خلالها؟',['أقل من سنتين','من سنتين إلى خمس سنوات','أكثر من خمس سنوات']]].map(([k,q,os])=>`<fieldset style="border:0;padding:0;margin:0;display:grid;gap:8px"><legend style="font-weight:600;margin-bottom:6px">${q}</legend>${os.map((o,i)=>`<label class="opt"><input type="radio" name="${k}" value="${i}" required>${o}</label>`).join('')}</fieldset>`).join('')}
-   <label class="chk"><input type="checkbox" name="agree" required>أقرّ بصحة البيانات، وبأني اطلعت على إفصاح المخاطر وأن الاستثمار قد يتعرض لخسارة جزء من رأس المال.</label>
+   <label class="chk"><input type="checkbox" name="agree" required><span>أقرّ بصحة البيانات، وبأني اطلعت على <button type="button" class="linkbtn" data-act="legal" data-id="risk">إفصاح المخاطر</button> وأن الاستثمار قد يتعرض لخسارة جزء من رأس المال.</span></label>
    <div class="row"><button type="button" class="btn ghost" data-act="kycback">السابق</button><button class="btn gold">إرسال طلب التوثيق</button></div></form>`;
 }
+
+
+function plansCard(u){const pls=DB.plans.filter(p=>p.userId===u.id),act=pls.filter(p=>p.active);
+ return `<div class="card" id="plans"><div class="ch-hd"><div><h3>الاستثمار الدوري</h3><span class="muted" style="font-size:13px">${act.length?`التزامك الشهري ${M(sumOf(act.map(p=>p.amount)))}`:'ادّخر واستثمر تلقائياً كل شهر'}</span></div><button class="btn sm gold" data-act="plannew" data-id="">${I.plus} خطة جديدة</button></div>
+ ${pls.length?`<div style="display:grid;gap:10px">${pls.map(pl=>`<div class="plan"><div><b>${esc(planTargetName(pl))}</b><small>${M(pl.amount)} شهرياً · يوم <span class="num">${pl.day}</span> من كل شهر · ${pl.active?`الدفعة القادمة ${fDate(pl.next)}`:'متوقفة مؤقتاً'} · نُفّذت ${arN(pl.runs||0,'مرة واحدة','مرتين','مرات','مرة')}</small></div><div class="acts">${pl.active?`<button class="btn sm ghost" data-act="planpause" data-id="${pl.id}">إيقاف مؤقت</button>`:`<button class="btn sm ok" data-act="planresume" data-id="${pl.id}">استئناف</button>`}<button class="btn sm ghost" data-act="plandel" data-id="${pl.id}">حذف</button></div></div>`).join('')}</div>`:`<div class="empty">لا توجد خطط بعد. خطة شهرية بمبلغ صغير هي أبسط طريقة لبناء محفظتك على المدى الطويل.</div>`}</div>`}
+function planModal(kind,target){
+  const nd=Math.min(new Date().getDate(),28);
+  const opts=`<optgroup label="الباقات">${DB.packages.filter(p=>p.active).map(p=>`<option value="pkg:${p.id}" ${kind==='pkg'&&target===p.id?'selected':''}>${esc(p.name)} (الحد الأدنى ${mTxt(p.min)})</option>`).join('')}</optgroup><optgroup label="الأسهم والصناديق">${STOCKS.map(x=>`<option value="stock:${x.s}" ${kind==='stock'&&target===x.s?'selected':''}>${esc(x.n)} (${x.s})</option>`).join('')}</optgroup>`;
+  modal('خطة استثمار دوري جديدة',`<form data-form="plan" style="display:grid;gap:14px">
+   <p class="muted">استثمر مبلغاً ثابتاً كل شهر تلقائياً؛ فتشتري أكثر حين تنخفض الأسعار وأقل حين ترتفع، وتبني محفظتك بانتظام دون متابعة يومية.</p>
+   <div class="field"><label for="pl_t">مجال الاستثمار</label><select class="input" id="pl_t" name="t">${opts}</select></div>
+   <div class="grid2"><div class="field"><label for="pl_a">المبلغ الشهري بالدولار</label><input class="input num" id="pl_a" name="amt" type="number" min="1" step="0.01" required value="100" style="text-align:right"></div>
+   <div class="field"><label for="pl_d">يوم التنفيذ من كل شهر</label><select class="input num" id="pl_d" name="day">${Array.from({length:28},(_,i)=>`<option value="${i+1}" ${i+1===nd?'selected':''}>${i+1}</option>`).join('')}</select></div></div>
+   <label class="chk"><input type="checkbox" name="now" checked>تنفيذ الدفعة الأولى اليوم</label>
+   <p class="hint">تُخصم الدفعة من رصيدك النقدي في يوم التنفيذ ويصلك إشعار بالنتيجة. يمكنك إيقاف الخطة أو حذفها في أي وقت دون رسوم.</p>
+   <button class="btn gold block">إنشاء الخطة</button></form>`);
+}
+function sheet(title,body){$('#sheet').innerHTML=`<div class="modal" data-act="sclose-bg"><div class="box wide" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="mh"><h3>${title}</h3><button class="iconbtn" data-act="sclose" aria-label="إغلاق">${I.x}</button></div><div class="mb legal">${body}<button class="btn" data-act="sclose" style="justify-self:start">تم</button></div></div></div>`;document.body.style.overflow='hidden'}
+function closeSheet(){$('#sheet').innerHTML='';if(!$('#modal').innerHTML)document.body.style.overflow=''}
+function pwForm(){return `<form data-form="chpass" style="display:grid;gap:10px"><b>تغيير كلمة المرور</b><div class="field"><label for="cp_old">كلمة المرور الحالية</label><input class="input" id="cp_old" name="old" type="password" required dir="ltr" autocomplete="current-password"></div><div class="field"><label for="cp_new">كلمة المرور الجديدة</label><input class="input" id="cp_new" name="nw" type="password" required minlength="8" dir="ltr" autocomplete="new-password"><span class="hint">ثمانية أحرف على الأقل تتضمن حرفاً ورقماً.</span></div><button class="btn sm ghost" style="justify-self:start">تحديث كلمة المرور</button></form>`}
+function txRows(tx,withUser){const st={done:'مكتملة',pending:'قيد المراجعة',rejected:'مرفوضة'};return [[...(withUser?['المستثمر']:[]),'العملية','التفاصيل','المبلغ (USD)','الحالة','التاريخ'],...tx.map(t=>[...(withUser?[userById(t.userId)?.name||'—']:[]),TXL[t.type]+(t.plan?' (استثمار دوري)':''),t.sym?`${SMAP[t.sym]?.n||t.sym} - ${qTxt(t.qty)} سهم`:t.pkg?`${pkgById(t.pkg)?.name||''} - ${qTxt(t.units)} وحدة`:(t.method||''),t.amount.toFixed(2),st[t.status],fDT(t.date)])]}
+function filterTx(all){return S.txFilter==='all'?all:all.filter(t=>S.txFilter==='trade'?['buy','sell'].includes(t.type):S.txFilter==='pkg'?['sub','redeem'].includes(t.type):['deposit','withdraw'].includes(t.type))}
+let deferredInstall=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e});
 
 /* ================= modals ================= */
 function modal(title,body,wide){$('#modal').innerHTML=`<div class="modal" data-act="mclose-bg"><div class="box ${wide?'wide':''}" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="mh"><h3>${title}</h3><button class="iconbtn" data-act="mclose" aria-label="إغلاق">${I.x}</button></div><div class="mb">${body}</div></div></div>`;document.body.style.overflow='hidden';const f=$('#modal input:not([type=hidden]),#modal select');if(f&&matchMedia('(min-width:900px)').matches)f.focus()}
@@ -904,6 +1045,7 @@ function authModal(mode){
    ${login?`<form data-form="login" style="display:grid;gap:14px">
      <div class="field"><label for="l_email">البريد الإلكتروني</label><input class="input" id="l_email" name="email" type="email" required dir="ltr" autocomplete="username"></div>
      <div class="field"><label for="l_pass">كلمة المرور</label><input class="input" id="l_pass" name="pass" type="password" required dir="ltr" autocomplete="current-password"></div>
+     <button type="button" class="linkbtn" data-act="forgot" style="justify-self:start">نسيت كلمة المرور؟</button>
      <button class="btn block">دخول</button></form>
      <div class="demo-creds"><b>حسابات العرض التجريبي</b>
       <div>المستثمر: <span class="num">investor@sunbula.demo</span> / <span class="num">Invest@2026</span></div><button class="btn sm ghost" data-act="fill" data-id="investor">تعبئة بيانات المستثمر</button>
@@ -913,7 +1055,7 @@ function authModal(mode){
      <div class="field"><label for="s_email">البريد الإلكتروني</label><input class="input" id="s_email" name="email" type="email" required dir="ltr" autocomplete="email"></div>
      <div class="field"><label for="s_phone">رقم الجوال</label><div class="phone"><select class="input num" name="cc" aria-label="رمز الدولة">${CCS.map(c=>`<option value="${c[0]}">+${c[0]} ${c[1]}</option>`).join('')}</select><input class="input num" id="s_phone" name="phone" required inputmode="numeric" placeholder="5X XXX XXXX"></div></div>
      <div class="field"><label for="s_pass">كلمة المرور</label><input class="input" id="s_pass" name="pass" type="password" required minlength="8" dir="ltr" autocomplete="new-password"><span class="hint">ثمانية أحرف على الأقل تتضمن حرفاً ورقماً.</span></div>
-     <label class="chk"><input type="checkbox" name="terms" required>أوافق على الشروط والأحكام وسياسة الخصوصية وإفصاح المخاطر.</label>
+     <label class="chk"><input type="checkbox" name="terms" required><span>أوافق على <button type="button" class="linkbtn" data-act="legal" data-id="terms">الشروط والأحكام</button> و<button type="button" class="linkbtn" data-act="legal" data-id="privacy">سياسة الخصوصية</button> و<button type="button" class="linkbtn" data-act="legal" data-id="risk">إفصاح المخاطر</button>.</span></label>
      <button class="btn gold block">إنشاء الحساب</button></form>`}`);
 }
 function stockModal(sym){
@@ -933,6 +1075,8 @@ function stockModal(sym){
       <p class="hint" id="b_est">الرصيد المتاح ${mTxt(u.cash)} · العمولة <span class="num">${fee}%</span></p><button class="btn ok block">تأكيد الشراء</button></form>
      <form data-form="sell" data-id="${sym}" class="card" style="display:grid;gap:10px;padding:16px"><b>بيع</b>${h?`<div class="field"><label for="s_qty">عدد الأسهم (تملك <span class="num">${qTxt(h.q)}</span>)</label><input class="input num" id="s_qty" name="qty" type="number" min="0.000001" step="any" max="${h.q}" required style="text-align:right"></div><div class="row"><button type="button" class="btn sm ghost" data-act="sellall" data-id="${h.q}">بيع الكل</button></div><button class="btn danger block">تأكيد البيع</button>`:`<p class="muted">لا تملك أسهماً في ${esc(x.n)} حالياً.</p>`}</form>
     </div>`}
+   ${isInv?`<div class="card" style="padding:16px;display:grid;gap:10px"><b>تنبيه السعر</b>${(()=>{const al=DB.alerts.filter(a=>a.userId===u.id&&a.sym===sym);return al.length?`<div class="alerts-list">${al.map(a=>`<div class="row"><span>عندما ${a.dir==='up'?'يرتفع إلى':'ينخفض إلى'} ${M(a.target)}</span><button type="button" class="btn sm ghost" data-act="alertdel" data-id="${a.id}">حذف</button></div>`).join('')}</div>`:''})()}<form data-form="alert" data-id="${sym}" class="row" style="flex-wrap:nowrap"><input class="input num" name="target" type="number" step="0.01" min="0.01" required placeholder="${P(sym).toFixed(2)}" aria-label="السعر المستهدف بالدولار" style="text-align:right;flex:1"><button class="btn sm">نبّهني</button></form><p class="hint">نرسل لك إشعاراً عندما يبلغ السعر القيمة التي تحددها، صعوداً أو هبوطاً.</p></div>`:''}
+   ${isInv&&!block?`<button class="btn ghost" data-act="plannew" data-id="stock:${sym}">${I.repeat} استثمر في ${esc(x.n)} شهرياً بشكل تلقائي</button>`:''}
    ${trustline()}`,true);
 }
 function pkgModal(id){
@@ -946,6 +1090,7 @@ function pkgModal(id){
    :block?`<div class="banner"><div><b>الاشتراك غير متاح حالياً</b><span class="muted">${block}</span></div></div>`
    :`<div class="grid2">${pg.active?`<form data-form="sub" data-id="${id}" class="card" style="display:grid;gap:10px;padding:16px"><b>استثمار مبلغ</b><div class="field"><label for="p_amt">المبلغ بالدولار (الحد الأدنى ${mTxt(pg.min)})</label><input class="input num" id="p_amt" name="amt" type="number" min="${pg.min}" step="0.01" required style="text-align:right"></div><p class="hint">الرصيد المتاح ${mTxt(u.cash)}</p><button class="btn ok block">تأكيد الاستثمار</button></form>`:'<div class="card"><p class="muted">الباقة مغلقة أمام الاشتراكات الجديدة.</p></div>'}
      <form data-form="redeem" data-id="${id}" class="card" style="display:grid;gap:10px;padding:16px"><b>استرداد</b>${sb?`<div class="field"><label for="r_units">عدد الوحدات (تملك <span class="num">${qTxt(sb.units)}</span>)</label><input class="input num" id="r_units" name="units" type="number" min="0.000001" step="any" max="${sb.units}" required style="text-align:right"></div><div class="row"><button type="button" class="btn sm ghost" data-act="redeemall" data-id="${sb.units}">استرداد الكل</button></div><button class="btn danger block">تأكيد الاسترداد</button>`:'<p class="muted">لا تملك وحدات في هذه الباقة.</p>'}</form></div>`}
+   ${isInv&&!block&&pg.active?`<button class="btn ghost" data-act="plannew" data-id="pkg:${id}">${I.repeat} اجعلها خطة استثمار شهرية</button>`:''}
    ${trustline()}`,true);
 }
 function depositModal(){
@@ -1018,49 +1163,66 @@ const ACTS={
  redeemall(q){$('#r_units').value=q},
  watch(sym){const u=me();const i=u.watch.indexOf(sym);i>=0?u.watch.splice(i,1):u.watch.push(sym);save();stockModal(sym);if(S.view==='market')rerenderMarket();toast(i>=0?'أُزيل السهم من قائمة المتابعة.':'أُضيف السهم إلى قائمة المتابعة.')},
  kycback(){S.kycStep=Math.max(1,S.kycStep-1);render()},
- kycok(id){const u=userById(id);u.kyc='approved';u.kycNote='';closeModal();commit(`تم اعتماد توثيق ${u.name}.`)},
+ kycok(id){const u=userById(id);u.kyc='approved';u.kycNote='';notify(u.id,'تهانينا، اعتُمد توثيق هويتك. أصبح الإيداع والتداول متاحَين لحسابك.');audit(`اعتماد توثيق ${u.name}`);closeModal();commit(`تم اعتماد توثيق ${u.name}.`)},
  kycno(id){const u=userById(id);modal('رفض طلب التوثيق',`<form data-form="kycreject" data-id="${id}" style="display:grid;gap:12px"><p>سيظهر السبب للمستثمر ${esc(u.name)} ليعيد التوثيق.</p><div class="field"><label for="kr_note">سبب الرفض</label><select class="input" id="kr_note" name="note"><option>صورة الهوية غير واضحة، يرجى إعادة رفعها بدقة أعلى.</option><option>مستند الهوية منتهي الصلاحية.</option><option>البيانات المدخلة لا تطابق مستند الهوية.</option></select></div><button class="btn danger">تأكيد الرفض</button></form>`)},
- suspend(id){const u=userById(id);confirmBox('إيقاف الحساب',`سيتوقف تداول ${esc(u.name)} حتى إعادة التفعيل، مع بقاء أصوله محفوظة.`,'إيقاف الحساب',()=>{u.status='suspended';closeModal();commit('تم إيقاف الحساب.')},true)},
- activate(id){const u=userById(id);u.status='active';closeModal();commit('أُعيد تفعيل الحساب.')},
- wok(id){const t=DB.txns.find(x=>x.id===id);t.status='done';commit('نُفّذ طلب السحب.')},
- wno(id){const t=DB.txns.find(x=>x.id===id);confirmBox('رفض طلب السحب','سيُعاد المبلغ إلى الرصيد النقدي للمستثمر.','رفض وإرجاع المبلغ',()=>{t.status='rejected';userById(t.userId).cash+=t.amount;closeModal();commit('رُفض الطلب وأُعيد المبلغ إلى رصيد المستثمر.')},true)},
+ suspend(id){const u=userById(id);confirmBox('إيقاف الحساب',`سيتوقف تداول ${esc(u.name)} حتى إعادة التفعيل، مع بقاء أصوله محفوظة.`,'إيقاف الحساب',()=>{u.status='suspended';notify(u.id,'أُوقف حسابك مؤقتاً، وأصولك محفوظة باسمك. تواصل مع فريق الدعم لمعرفة التفاصيل.');audit(`إيقاف حساب ${u.name} مؤقتاً`);closeModal();commit('تم إيقاف الحساب.')},true)},
+ activate(id){const u=userById(id);u.status='active';notify(u.id,'أُعيد تفعيل حسابك، ويمكنك التداول من جديد.');audit(`إعادة تفعيل حساب ${u.name}`);closeModal();commit('أُعيد تفعيل الحساب.')},
+ wok(id){const t=DB.txns.find(x=>x.id===id);t.status='done';notify(t.userId,`نُفّذ طلب سحب ${mI(t.amount)} إلى حسابك البنكي، ويصل عادة خلال يومي عمل.`);audit(`تنفيذ سحب ${mI(t.amount)} لصالح ${userById(t.userId)?.name||''}`);commit('نُفّذ طلب السحب.')},
+ wno(id){const t=DB.txns.find(x=>x.id===id);confirmBox('رفض طلب السحب','سيُعاد المبلغ إلى الرصيد النقدي للمستثمر.','رفض وإرجاع المبلغ',()=>{t.status='rejected';userById(t.userId).cash+=t.amount+(t.fee||0);notify(t.userId,`لم يُنفَّذ طلب سحب ${mI(t.amount)}، وأُعيد المبلغ إلى رصيدك النقدي.`);audit(`رفض سحب ${mI(t.amount)} لصالح ${userById(t.userId)?.name||''}`);closeModal();commit('رُفض الطلب وأُعيد المبلغ إلى رصيد المستثمر.')},true)},
  udetail(id){userDetail(id)},
  pkgedit(id){pkgEditor(id)},
  addcomp(){$('#pe_rows').insertAdjacentHTML('beforeend',compRow('GLD',10));sumComp()},
  delcomp(_,el){if(document.querySelectorAll('.comp-row').length>1){el.closest('.comp-row').remove();sumComp()}},
  copy(t,el){const done=()=>toast('تم النسخ: '+t);try{navigator.clipboard.writeText(t).then(done,()=>toast(t))}catch(e){toast(t)}},
- tclose(id){const t=DB.tickets.find(x=>x.id===id);t.status='closed';commit('أُغلقت التذكرة.')},
- reset(){confirmBox('إعادة ضبط البيانات','ستعود جميع البيانات إلى حالتها التجريبية الأصلية، وستُحذف الحسابات والعمليات المضافة.','إعادة الضبط',()=>{DB=seed();DB.session='u_admin';save();closeModal();S.view='aov';render();toast('أُعيدت البيانات التجريبية.')},true)},
+ tclose(id){const t=DB.tickets.find(x=>x.id===id);t.status='closed';audit(`إغلاق تذكرة «${t.subject}»`);commit('أُغلقت التذكرة.')},
+ reset(){confirmBox('إعادة ضبط البيانات','ستعود جميع البيانات إلى حالتها التجريبية الأصلية، وستُحذف الحسابات والعمليات المضافة.','إعادة الضبط',()=>{DB=seed();DB.session='u_admin';audit('إعادة ضبط البيانات التجريبية');save();closeModal();S.view='aov';render();toast('أُعيدت البيانات التجريبية.')},true)},
  cok(){const f=pendingConfirm;pendingConfirm=null;f&&f()},
  mclose(){closeModal()},
+ sclose(){closeSheet()},
+ 'sclose-bg'(_,el,e){if(e.target===el)closeSheet()},
+ legal(id){const d=LEGAL[id];if(d)sheet(d[0],d[1])},
+ theme(){const cur=document.documentElement.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');const n=cur==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('sunbula_theme',n)}catch(e){}document.querySelector('meta[name=theme-color]')?.setAttribute('content',n==='dark'?'#0B1819':'#14474D');toast(n==='dark'?'تم تفعيل الوضع الليلي.':'تم تفعيل الوضع النهاري.')},
+ notifs(){const u=me();const ns=DB.notifs.filter(n=>n.userId===u.id).sort((a,b)=>b.at-a.at);
+  modal('الإشعارات',ns.length?`<div style="display:grid;gap:8px">${ns.slice(0,40).map(n=>`<div class="ntf ${n.read?'':'unread'}"><span>${esc(n.text)}</span><small>${fDT(n.at)}</small></div>`).join('')}</div>`:'<div class="empty">لا توجد إشعارات حتى الآن.</div>');
+  ns.forEach(n=>n.read=true);save();refreshBell()},
+ plannew(id){closeModal();const [k,t]=(id||'').split(':');planModal(k,t)},
+ planpause(id){const pl=DB.plans.find(p=>p.id===id);pl.active=false;commit('أُوقفت الخطة مؤقتاً.')},
+ planresume(id){const pl=DB.plans.find(p=>p.id===id);pl.active=true;pl.next=nextRun(pl.day,Date.now());commit(`استُؤنفت الخطة، والدفعة القادمة في ${fDate(pl.next)}.`)},
+ plandel(id){confirmBox('حذف خطة الاستثمار الدوري','ستتوقف الدفعات القادمة، وتبقى استثماراتك السابقة كما هي.','حذف الخطة',()=>{DB.plans=DB.plans.filter(p=>p.id!==id);closeModal();commit('حُذفت الخطة.')},true)},
+ alertdel(id){const a=DB.alerts.find(x=>x.id===id);DB.alerts=DB.alerts.filter(x=>x.id!==id);save();if(a)stockModal(a.sym);toast('حُذف التنبيه.')},
+ exptx(){const u=me(),adm=u.role==='admin';const tx=filterTx(DB.txns.filter(t=>adm||t.userId===u.id).sort((a,b)=>b.date-a.date));if(!tx.length)return toast('لا توجد عمليات للتصدير.',true);csv(`sunbula-${adm?'transactions':'statement'}-${today()}.csv`,txRows(tx,adm));toast('جُهّز ملف العمليات للتنزيل.')},
+ expusers(){const kyc={approved:'موثّق',pending:'قيد المراجعة',rejected:'مرفوض',none:'غير موثّق'};csv(`sunbula-investors-${today()}.csv`,[['الاسم','البريد الإلكتروني','الجوال','الجنسية','التوثيق','الحالة','ملف المخاطر','قيمة المحفظة (USD)','الرصيد النقدي (USD)','تاريخ التسجيل'],...DB.users.filter(u=>u.role==='investor').map(u=>[u.name,u.email,fPhoneTxt(u.phone),u.nat||'',kyc[u.kyc]||u.kyc,u.status==='active'?'نشط':'موقوف',u.risk||'',pf(u).total.toFixed(2),u.cash.toFixed(2),fDate(u.created)])]);toast('جُهّز ملف المستثمرين للتنزيل.')},
+ print(){window.print()},
+ forgot(){modal('استعادة كلمة المرور',`<form data-form="forgot1" style="display:grid;gap:14px"><p class="muted">أدخل بريدك المسجّل وسنرسل إليك رمز تحقق من ستة أرقام لتعيين كلمة مرور جديدة.</p><div class="field"><label for="f_email">البريد الإلكتروني</label><input class="input" id="f_email" name="email" type="email" required dir="ltr" autocomplete="username"></div><button class="btn block">إرسال رمز التحقق</button><button type="button" class="linkbtn" data-act="auth" data-id="login" style="justify-self:start">العودة إلى تسجيل الدخول</button></form>`)},
+ install(){if(deferredInstall){const d=deferredInstall;deferredInstall=null;d.prompt();return}
+  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  modal('ثبّت سنبلة على جهازك',`<p>استخدم سنبلة كتطبيق مستقل على شاشتك الرئيسية، يفتح بملء الشاشة دون شريط المتصفح.</p><ol style="padding-inline-start:20px;margin:0;line-height:2">${ios?'<li>افتح الموقع في متصفح Safari.</li><li>اضغط زر المشاركة أسفل الشاشة.</li><li>اختر «إضافة إلى الشاشة الرئيسية» ثم «إضافة».</li>':'<li>افتح الموقع في متصفح Chrome أو Edge.</li><li>افتح قائمة المتصفح (⋮).</li><li>اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».</li>'}</ol><button class="btn" data-act="mclose" style="justify-self:start">تم</button>`)},
  'mclose-bg'(_,el,e){if(e.target===el)closeModal()}
 };
 const FORMS={
- login(f){const em=f.email.value.trim().toLowerCase(),u=DB.users.find(x=>x.email===em);if(!u||u.pass!==hash(f.pass.value))return toast('البريد الإلكتروني أو كلمة المرور غير صحيحة.',true);DB.session=u.id;S.view=u.role==='admin'?'aov':'dash';S.kycStep=1;closeModal();pushHist(u);save();render();window.scrollTo(0,0);toast(u.role==='admin'?'مرحباً بك في لوحة الإدارة.':`مرحباً ${u.name.split(' ')[0]}، تم تسجيل الدخول.`)},
+ login(f){const em=f.email.value.trim().toLowerCase(),u=DB.users.find(x=>x.email===em);if(!u||u.pass!==hash(f.pass.value))return toast('البريد الإلكتروني أو كلمة المرور غير صحيحة.',true);DB.session=u.id;S.view=u.role==='admin'?'aov':'dash';S.kycStep=1;closeModal();runPlans(u);pushHist(u);save();render();window.scrollTo(0,0);toast(u.role==='admin'?'مرحباً بك في لوحة الإدارة.':`مرحباً ${u.name.split(' ')[0]}، تم تسجيل الدخول.`)},
  signup(f){
   const name=normName(f.name.value),em=f.email.value.trim().toLowerCase(),ph=f.phone.value.replace(/\D/g,'').replace(/^0+/,''),pw=f.pass.value;
   if(name.split(' ').length<2)return toast('يرجى كتابة الاسم الأول واسم العائلة على الأقل.',true);
   if(DB.users.some(u=>u.email===em))return toast('هذا البريد مسجّل مسبقاً، يمكنك تسجيل الدخول مباشرة.',true);
   if(ph.length<8||ph.length>10)return toast('رقم الجوال غير مكتمل، أدخله دون رمز الدولة.',true);
-  if(!/[A-Za-z؀-ۿ]/.test(pw)||!/\d/.test(pw))return toast('كلمة المرور يجب أن تتضمن حرفاً ورقماً.',true);
+  if(pwErr(pw))return toast(pwErr(pw),true);
   const nat=CCS.find(c=>c[0]===f.cc.value)[1];
   const u={id:uid('u'),role:'investor',name,email:em,pass:hash(pw),phone:{cc:f.cc.value,n:ph},nat,kyc:'none',status:'active',cash:0,holdings:{},subs:{},watch:[],hist:[],risk:'',created:Date.now()};
   DB.users.push(u);DB.session=u.id;S.view='account';S.kycStep=1;S.kycDraft={};closeModal();save();render();window.scrollTo(0,0);toast('أُنشئ حسابك بنجاح. وثّق هويتك لتبدأ الاستثمار.')},
  contact(f){DB.tickets.push({id:uid('k'),userId:null,name:normName(f.name.value),email:f.email.value.trim().toLowerCase(),subject:normName(f.subject.value),status:'open',created:Date.now(),msgs:[{from:'user',text:f.msg.value.trim(),at:Date.now()}]});save();f.reset();toast('وصلت رسالتك إلى فريق الدعم، وسنرد عليك عبر بريدك الإلكتروني.')},
  ticket(f){const u=me();DB.tickets.push({id:uid('k'),userId:u.id,name:u.name,email:u.email,subject:normName(f.subject.value),status:'open',created:Date.now(),msgs:[{from:'user',text:f.msg.value.trim(),at:Date.now()}]});commit('أُرسلت رسالتك إلى فريق الدعم.')},
- reply(f){const t=DB.tickets.find(x=>x.id===f.dataset.id);t.msgs.push({from:'staff',text:f.msg.value.trim(),at:Date.now()});commit('أُرسل الرد إلى المستثمر.')},
+ reply(f){const t=DB.tickets.find(x=>x.id===f.dataset.id);t.msgs.push({from:'staff',text:f.msg.value.trim(),at:Date.now()});notify(t.userId,`ردّ فريق سنبلة على تذكرتك «${t.subject}». اطّلع على الرد في صفحة حسابي.`);audit(`الرد على تذكرة «${t.subject}»`);commit('أُرسل الرد إلى المستثمر.')},
  kyc1(f){S.kycDraft={...S.kycDraft,nat:f.nat.value,dob:f.dob.value,idn:f.idn.value.trim(),job:normName(f.job.value)};S.kycStep=2;render()},
  kyc2(f){const file=f.doc.files[0];if(!file)return toast('يرجى اختيار ملف الهوية.',true);if(file.size>8*1024*1024)return toast('حجم الملف يتجاوز 8 ميجابايت.',true);S.kycDraft.doc=file.name;S.kycStep=3;render()},
  kyc3(f){const sc=+f.q1.value + +f.q2.value + +f.q3.value;const risk=sc<=2?'محافظ':sc<=4?'متوازن':'جريء';const u=me(),d=S.kycDraft;Object.assign(u,{nat:d.nat,dob:d.dob,idNumber:d.idn,job:d.job,idDoc:d.doc,risk,kyc:'pending',kycNote:''});S.kycStep=1;S.kycDraft={};commit(`أُرسل طلب التوثيق. ملف المخاطر المقترح لك: ${risk}.`)},
- kycreject(f){const u=userById(f.dataset.id);u.kyc='rejected';u.kycNote=f.note.value;closeModal();commit('رُفض طلب التوثيق وأُبلغ المستثمر بالسبب.')},
+ kycreject(f){const u=userById(f.dataset.id);u.kyc='rejected';u.kycNote=f.note.value;notify(u.id,`لم يُعتمد طلب توثيق هويتك: ${f.note.value}`);audit(`رفض توثيق ${u.name}`);closeModal();commit('رُفض طلب التوثيق وأُبلغ المستثمر بالسبب.')},
  deposit(f){const a=+(+f.amt.value).toFixed(2),u=me();if(!(a>=DB.settings.minDeposit))return toast(`الحد الأدنى للإيداع ${mTxt(DB.settings.minDeposit)}.`,true);if(a>1e6)return toast('الحد الأعلى للإيداع الواحد مليون دولار في هذا النموذج.',true);u.cash+=a;addTx({userId:u.id,type:'deposit',amount:a,method:f.method.value});closeModal();commit(`أُضيف ${mTxt(a)} إلى رصيدك.`)},
- withdraw(f){const a=+(+f.amt.value).toFixed(2),u=me(),wf=DB.settings.withdrawFee;if(!(a>0))return toast('أدخل مبلغاً صحيحاً.',true);if(a+wf>u.cash+1e-9)return toast('المبلغ يتجاوز رصيدك المتاح.',true);u.cash-=a+wf;addTx({userId:u.id,type:'withdraw',amount:a,method:'تحويل بنكي',status:'pending',iban:f.iban.value.replace(/\s/g,'').slice(-4)});closeModal();commit('أُرسل طلب السحب وهو الآن قيد المراجعة.')},
- buy(f){const u=me(),s=f.dataset.id,a=+(+f.amt.value).toFixed(2),b=canTrade(u);if(b)return toast(b,true);if(!(a>=1))return toast('الحد الأدنى للشراء دولار واحد.',true);if(a>u.cash+1e-9)return toast(`رصيدك المتاح ${mTxt(u.cash)} لا يكفي لهذه العملية.`,true);
-  const fee=a*DB.settings.fee/100,q=+((a-fee)/P(s)).toFixed(6);u.cash-=a;const h=u.holdings[s]||(u.holdings[s]={q:0,cost:0});h.q+=q;h.cost+=a;addTx({userId:u.id,type:'buy',amount:a,sym:s,qty:q,price:P(s),fee});closeModal();commit(`اشتريت ${qTxt(q)} سهم من ${SMAP[s].n}.`)},
+ withdraw(f){const a=+(+f.amt.value).toFixed(2),u=me(),wf=DB.settings.withdrawFee;if(!(a>0))return toast('أدخل مبلغاً صحيحاً.',true);if(a+wf>u.cash+1e-9)return toast('المبلغ يتجاوز رصيدك المتاح.',true);u.cash-=a+wf;addTx({userId:u.id,type:'withdraw',amount:a,fee:wf,method:'تحويل بنكي',status:'pending',iban:f.iban.value.replace(/\s/g,'').slice(-4)});closeModal();commit('أُرسل طلب السحب وهو الآن قيد المراجعة.')},
+ buy(f){const u=me(),s=f.dataset.id,a=+(+f.amt.value).toFixed(2),r=execBuy(u,s,a);if(typeof r==='string')return toast(r,true);closeModal();commit(`اشتريت ${qTxt(r.q)} سهم من ${SMAP[s].n}.`)},
  sell(f){const u=me(),s=f.dataset.id,h=u.holdings[s],b=canTrade(u);if(b)return toast(b,true);let q=+f.qty.value;if(!h||!(q>0))return toast('أدخل كمية صحيحة.',true);if(q>h.q+1e-9)return toast('الكمية أكبر مما تملك.',true);q=Math.min(q,h.q);
   const gross=q*P(s),fee=gross*DB.settings.fee/100,net=gross-fee;h.cost-=h.cost*(q/h.q);h.q-=q;if(h.q<1e-6)delete u.holdings[s];u.cash+=net;addTx({userId:u.id,type:'sell',amount:+net.toFixed(2),sym:s,qty:q,price:P(s),fee});closeModal();commit(`بعت ${qTxt(q)} سهم، وأُضيف ${mTxt(net)} إلى رصيدك.`)},
- sub(f){const u=me(),id=f.dataset.id,pg=pkgById(id),a=+(+f.amt.value).toFixed(2),b=canTrade(u);if(b)return toast(b,true);if(!(a>=pg.min))return toast(`الحد الأدنى لهذه الباقة ${mTxt(pg.min)}.`,true);if(a>u.cash+1e-9)return toast(`رصيدك المتاح ${mTxt(u.cash)} لا يكفي.`,true);
-  const units=+(a/NAV(pg)).toFixed(6);u.cash-=a;const sb=u.subs[id]||(u.subs[id]={units:0,cost:0});sb.units+=units;sb.cost+=a;addTx({userId:u.id,type:'sub',amount:a,pkg:id,units});closeModal();commit(`استثمرت ${mTxt(a)} في «${pg.name}».`)},
+ sub(f){const u=me(),id=f.dataset.id,a=+(+f.amt.value).toFixed(2),r=execSub(u,id,a);if(typeof r==='string')return toast(r,true);closeModal();commit(`استثمرت ${mI(a)} في «${pkgById(id).name}».`)},
  redeem(f){const u=me(),id=f.dataset.id,sb=u.subs[id],b=canTrade(u);if(b)return toast(b,true);let n=+f.units.value;if(!sb||!(n>0))return toast('أدخل عدداً صحيحاً من الوحدات.',true);if(n>sb.units+1e-9)return toast('العدد أكبر مما تملك.',true);n=Math.min(n,sb.units);
   const v=n*NAV(pkgById(id));sb.cost-=sb.cost*(n/sb.units);sb.units-=n;if(sb.units<1e-6)delete u.subs[id];u.cash+=v;addTx({userId:u.id,type:'redeem',amount:+v.toFixed(2),pkg:id,units:n});closeModal();commit(`استرددت ${mTxt(v)} إلى رصيدك.`)},
  pkgsave(f){
@@ -1074,13 +1236,27 @@ const FORMS={
     // re-base so the unit price is continuous after a composition change
     pg.comp=comp;pg.base={};const raw=Object.entries(comp).reduce((a,[s,w])=>a+w/100,0);for(const[s]of Object.entries(comp))pg.base[s]=P(s)*100/nav*raw;
   }else{DB.packages.push(Object.assign({id:uid('p'),icon:'globe',comp,base:Object.fromEntries(cs.map(s=>[s,P(s)])),active:true,created:Date.now()},data))}
-  closeModal();commit(id?'حُفظت تعديلات الباقة.':'أُنشئت الباقة وأصبحت متاحة للمستثمرين.')},
- settings(f){const s=DB.settings;s.tradingOpen=f.open.checked;s.fee=Math.max(0,+f.fee.value);s.minDeposit=Math.max(1,+f.min.value);s.withdrawFee=Math.max(0,+f.wf.value);commit('حُفظت إعدادات المنصة.')}
+  audit(`${id?'تعديل':'إنشاء'} باقة «${data.name}»`);closeModal();commit(id?'حُفظت تعديلات الباقة.':'أُنشئت الباقة وأصبحت متاحة للمستثمرين.')},
+ settings(f){const s=DB.settings;s.tradingOpen=f.open.checked;s.fee=Math.max(0,+f.fee.value);s.minDeposit=Math.max(1,+f.min.value);s.withdrawFee=Math.max(0,+f.wf.value);audit(`تحديث إعدادات المنصة (التداول ${s.tradingOpen?'مفتوح':'متوقف'}، العمولة ${s.fee}%)`);commit('حُفظت إعدادات المنصة.')},
+ plan(f){const u=me(),[kind,target]=f.t.value.split(':'),a=+(+f.amt.value).toFixed(2),day=+f.day.value;
+  if(!(a>=1))return toast('أدخل مبلغاً شهرياً صحيحاً.',true);
+  if(kind==='pkg'&&a<pkgById(target).min)return toast(`الحد الأدنى لهذه الباقة ${mI(pkgById(target).min)}.`,true);
+  if(u.status!=='active'||u.kyc!=='approved')return toast(canTrade(u)||'يُفعّل الاستثمار الدوري بعد اعتماد توثيق الهوية.',true);
+  const pl={id:uid('pl'),userId:u.id,kind,target,amount:a,day,active:true,created:Date.now(),next:f.now.checked?Date.now()-1:nextRun(day,Date.now()),runs:0};
+  DB.plans.push(pl);let msg='أُنشئت خطة الاستثمار الدوري.',err=false;
+  if(f.now.checked){if(runPlans(u))msg='أُنشئت الخطة ونُفّذت الدفعة الأولى بنجاح.';else{msg='أُنشئت الخطة، وتعذّر تنفيذ الدفعة الأولى. اطّلع على التفاصيل في الإشعارات.';err=true}}
+  closeModal();commit(msg,err)},
+ alert(f){const s=f.dataset.id,t=+(+f.target.value).toFixed(2),cur=P(s);if(!(t>0))return toast('أدخل سعراً صحيحاً.',true);if(Math.abs(t-cur)<0.01)return toast('السعر المستهدف يساوي السعر الحالي تقريباً.',true);
+  DB.alerts.push({id:uid('a'),userId:me().id,sym:s,target:t,dir:t>cur?'up':'down',created:Date.now()});save();stockModal(s);toast(`سننبهك عندما يبلغ سعر ${SMAP[s].n} ${mI(t)}.`)},
+ chpass(f){const u=me();if(u.pass!==hash(f.old.value))return toast('كلمة المرور الحالية غير صحيحة.',true);const e=pwErr(f.nw.value);if(e)return toast(e,true);u.pass=hash(f.nw.value);if(u.role==='admin')audit('تغيير كلمة مرور المدير');else notify(u.id,'غُيّرت كلمة مرور حسابك. إن لم تكن أنت من قام بذلك فتواصل مع الدعم فوراً.');f.reset();commit('حُدّثت كلمة المرور بنجاح.')},
+ forgot1(f){const em=f.email.value.trim().toLowerCase();S.reset={email:em,code:String(100000+Math.floor(Math.random()*900000))};
+  modal('تعيين كلمة مرور جديدة',`<form data-form="forgot2" style="display:grid;gap:14px"><p class="muted">إن كان البريد <span class="num">${esc(em)}</span> مسجلاً لدينا فقد أرسلنا إليه رمز تحقق صالحاً لمدة عشر دقائق.</p><div class="demo-creds"><b>العرض التجريبي</b><div>رمز التحقق: <span class="num">${S.reset.code}</span></div></div><div class="field"><label for="f_code">رمز التحقق</label><input class="input num" id="f_code" name="code" required inputmode="numeric" maxlength="6" dir="ltr" autocomplete="one-time-code"></div><div class="field"><label for="f_pass">كلمة المرور الجديدة</label><input class="input" id="f_pass" name="pass" type="password" required minlength="8" dir="ltr" autocomplete="new-password"><span class="hint">ثمانية أحرف على الأقل تتضمن حرفاً ورقماً.</span></div><button class="btn block">حفظ كلمة المرور</button></form>`)},
+ forgot2(f){const r=S.reset;if(!r||f.code.value.trim()!==r.code)return toast('رمز التحقق غير صحيح.',true);const e=pwErr(f.pass.value);if(e)return toast(e,true);const u=DB.users.find(x=>x.email===r.email);if(!u)return toast('تعذّر إتمام العملية. تحقق من البريد الإلكتروني المسجل.',true);u.pass=hash(f.pass.value);S.reset=null;save();if(u.role==='investor')notify(u.id,'عُيّنت كلمة مرور جديدة لحسابك عبر خدمة الاستعادة.');save();authModal('login');$('#l_email').value=r.email;toast('حُفظت كلمة المرور الجديدة. سجّل دخولك الآن.')}
 };
 
 document.addEventListener('click',e=>{
   const el=e.target.closest('[data-act]');if(!el)return;
-  if(el.type==='checkbox'&&el.dataset.act==='pkgtoggle'){const pg=pkgById(el.dataset.id);pg.active=el.checked;save();toast(pg.active?'الباقة متاحة للاشتراك.':'أُغلقت الباقة أمام الاشتراكات الجديدة.');return}
+  if(el.type==='checkbox'&&el.dataset.act==='pkgtoggle'){const pg=pkgById(el.dataset.id);pg.active=el.checked;audit(`${pg.active?'فتح':'إغلاق'} باقة «${pg.name}» ${pg.active?'للاشتراكات':'أمام الاشتراكات الجديدة'}`);save();toast(pg.active?'الباقة متاحة للاشتراك.':'أُغلقت الباقة أمام الاشتراكات الجديدة.');return}
   const a=ACTS[el.dataset.act];if(!a)return;
   if(el.tagName==='A'&&el.getAttribute('href')==='#')e.preventDefault();
   a(el.dataset.id,el,e);
@@ -1094,7 +1270,7 @@ document.addEventListener('input',e=>{
   else if(t.name==='cw')sumComp();
   else if(t.id==='b_amt'){const s=t.closest('form').dataset.id,a=+t.value||0,fee=a*DB.settings.fee/100;$('#b_est').innerHTML=`ستحصل على نحو <span class="num">${qTxt(Math.max(0,(a-fee)/P(s)))}</span> سهم · العمولة ${mTxt(fee)}`}
 });
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#modal').innerHTML)closeModal()});
+document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if($('#sheet').innerHTML)closeSheet();else if($('#modal').innerHTML)closeModal()});
 function rerenderMarket(keep){const l=$('#mlist');if(!l)return render();const list=filteredStocks();l.innerHTML=list.length?list.map(x=>stockRow(x)).join(''):`<div class="empty" style="grid-column:1/-1">لا توجد نتائج مطابقة.</div>`;if(!keep)document.querySelectorAll('[data-act=mfilter]').forEach(b=>b.classList.toggle('on',b.dataset.id===S.mfilter))}
 
 /* ================= render & live ================= */
@@ -1103,12 +1279,13 @@ function render(){
   if(u&&!userById(u.id)){DB.session=null}
   if(me()){if(me().role==='admin'&&!S.view.startsWith('a'))S.view='aov';if(me().role==='investor'&&(S.view.startsWith('a')&&S.view!=='account'||S.view==='home'))S.view='dash'}else S.view='home';
   $('#root').innerHTML=me()?renderApp():renderPublic();
-  if(!me())calcUpdate();
+  if(!me())calcUpdate();else refreshBell();
 }
 function live(){
   if(!DB.settings.tradingOpen)return;
   for(const s in DB.prices){const pr=DB.prices[s];pr.p=Math.max(0.5,pr.p*(1+(Math.random()-.495)*.0032))}
   document.querySelectorAll('[data-px]').forEach(el=>{const s=el.dataset.px,old=parseFloat(el.textContent.replace(/[$,]/g,'')),v=P(s);el.textContent=mTxt(v);if(old&&Math.abs(old-v)>.004){el.classList.remove('flash-up','flash-dn');void el.offsetWidth;el.classList.add(v>old?'flash-up':'flash-dn')}});
+  if(DB.alerts.length){const hit=DB.alerts.filter(a=>DB.prices[a.sym]&&(a.dir==='up'?P(a.sym)>=a.target:P(a.sym)<=a.target));if(hit.length){const cu=me();hit.forEach(a=>{notify(a.userId,`تنبيه سعر: بلغ سعر ${SMAP[a.sym].n} ${mI(P(a.sym))}، ${a.dir==='up'?'متجاوزاً':'دون'} السعر المستهدف ${mI(a.target)}.`);if(cu&&a.userId===cu.id)toast(`تنبيه سعر: ${SMAP[a.sym].n} بلغ ${mI(P(a.sym))}.`)});DB.alerts=DB.alerts.filter(a=>!hit.includes(a));save();refreshBell()}}
   document.querySelectorAll('[data-chg]').forEach(el=>{const c=chg(el.dataset.chg);el.textContent=pTxt(c);el.classList.toggle('gain',c>=0);el.classList.toggle('loss',c<0)});
   document.querySelectorAll('[data-nav]').forEach(el=>el.textContent=mTxt(NAV(pkgById(el.dataset.nav))));
   document.querySelectorAll('[data-navc]').forEach(el=>{const c=NAV(pkgById(el.dataset.navc))-100;el.textContent=pTxt(c);el.className=c>=0?'gain':'loss'});
@@ -1124,7 +1301,9 @@ function live(){
   if(++live.n%10===0){if(u)pushHist(u);save()}
 }
 live.n=0;
+if(me()&&runPlans(me()))save();
 render();
+if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
 setInterval(live,2500);
 window.addEventListener('storage',e=>{if(e.key===KEY){DB=load();if(!$('#modal').innerHTML)render()}});
 })();
