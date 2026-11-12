@@ -4222,12 +4222,12 @@ async function connectCloud() {
    لإضافة قسم جديد: views.x = fn؛ ثم أضفه إلى PATHS بأي فئة، ثم registerSection('x', 'p3') أو أضف معرّفه إلى SEC_ORDER.
    كل قسم غير مسجّل يقع تلقائياً في «الأدوات والاستكشاف» فلا يضيع من القائمة ولا من الرئيسية. */
 const SEC_CATS = [
-  ['p1', 'القرآن الكريم', 'اقرأ المصحف، وابحث بالمعنى، واحفظ واسأل.', ['mushaf', 'search', 'ask', 'topics', 'hifz', 'saved']],
-  ['p4', 'التفسير والعلوم', 'التفاسير وأسباب النزول وعلوم القرآن والبلاغة والإعجاز والمعجم.', ['tafasir', 'ulum', 'jamal', 'amthal', 'ijaz', 'words', 'stats']],
-  ['p3', 'موضوعات في القرآن', 'دراسات موثّقة بالآيات والأحاديث الصحيحة وأقوال المفسرين.', ['tawhid', 'asma', 'jannah', 'wazifa', 'asnaf', 'taam', 'awwalin']],
-  ['p2', 'العبادات والأذكار', 'رفيقك اليومي: أذكار ومواقيت وأدعية وتداوٍ بالقرآن.', ['adhkar', 'prayer', 'duaa', 'ruqya', 'hajj', 'shifa']],
-  ['p5', 'الأسرة والأطفال', 'قصص مصوّرة للأطفال، والمرأة والرجل في القرآن.', ['kids', 'nisaa', 'rijal', 'usra']],
-  ['p6', 'الأدوات والاستكشاف', 'بحث موثّق، وخرائط وخطوط زمنية وشبكة معرفة.', ['research', 'map', 'timeline', 'graph']],
+  ['p1', 'القرآن الكريم', 'اقرأ المصحف، وابحث بالمعنى، واحفظ واسأل.', ['mushaf', 'recite', 'search', 'ask', 'topics', 'hifz', 'saved']],
+  ['p4', 'التفسير والعلوم', 'التفاسير وأسباب النزول وعلوم القرآن والبلاغة والإعجاز والمعجم.', ['tafasir', 'mawdui', 'ulum', 'naskh', 'amthal', 'jamal', 'ijaz', 'arbain', 'words', 'stats']],
+  ['p3', 'موضوعات في القرآن', 'دراسات موثّقة بالآيات والأحاديث الصحيحة وأقوال المفسرين.', ['tawhid', 'asma', 'jannah', 'wazifa', 'asnaf', 'taam', 'awwalin', 'rusul', 'sira']],
+  ['p2', 'العبادات والأذكار', 'رفيقك اليومي: أذكار ومواقيت وأدعية وتداوٍ بالقرآن.', ['adhkar', 'prayer', 'wird', 'khatma', 'duaa', 'adiya', 'ibadat', 'hajj', 'hijri', 'ruqya', 'shifa']],
+  ['p5', 'الأسرة والأطفال', 'قصص مصوّرة للأطفال، والمرأة والرجل في القرآن.', ['kids', 'usra', 'nisaa', 'rijal']],
+  ['p6', 'الأدوات والاستكشاف', 'بحث موثّق، وخرائط وخطوط زمنية وشبكة معرفة.', ['research', 'map', 'timeline', 'graph', 'zakat', 'mawarith', 'lafz']],
 ];
 const SEC_PIN = {};
 function registerSection(id, pc) { SEC_PIN[id] = pc; mkRegroup(); }
