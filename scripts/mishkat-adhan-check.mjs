@@ -36,11 +36,14 @@ for (const [name, opts] of [['الكمبيوتر', { viewport: { width: 1280, he
   ok(await p.evaluate(async () => (await new Promise(r => { const q = indexedDB.open('mishkat-adhan', 1); q.onsuccess = () => { const g = q.result.transaction('f').objectStore('f').get('custom'); g.onsuccess = () => r(!!g.result); }; }))), 'الملف محفوظ في IndexedDB لا يغادر الجهاز'); await ctx.close(); }
 { const ctx = await b.newContext({ serviceWorkers: 'block' }), p = await ctx.newPage(); await p.goto(B + '#prayer'); await p.waitForSelector('#adS');
   const o = await p.$$eval('#adS option', x => x.map(e => [e.value, e.disabled, e.selected]));
-  ok(['haram-makki', 'haram-madani', 'aqsa', 'misr', 'turkiye', 'maghrib', 'sham'].every(k => o.some(r => r[0] === k && r[1])) && o.length >= 10, 'أذانات العالم (الحرمان والأقصى ومصر وتركيا والمغرب والشام…) مدرجة وتنتظر التسجيل المرخّص ولا يمكن اختياره بلا ملف');
-  ok(o.find(r => r[2])?.[0] === 'chime', 'الصوت الافتراضي نغمة التنبيه حتى يتوفر تسجيل مرخّص');
-  await p.route('**/data/adhan/manifest.json', r => r.fulfill({ json: { muadhdhins: [{ id: 'haram-makki', name: 'أذان الحرم المكي', default: true, author: 'x', file: 'haram.mp3', license: 'CC0-1.0', source: 'https://example.org/h' }] } }));
-  await p.reload(); await p.waitForSelector('#adS');
-  ok(await p.$eval('#adS', e => e.value) === 'haram-makki', 'يصير أذان الحرم المكي الافتراضي فور توفر تسجيله المرخّص'); await ctx.close(); }
+  ok(o.find(r => r[2])?.[0] === 'adhan' && o.some(r => r[0] === 'chime') && o.length === 3, 'الافتراضي نداء الأذان المولَّد، ومعه نغمة هادئة وصامت، بلا أي مؤذن مشروط برخصة');
+  ok(/بلا أي تسجيل أو رخصة خارجية/.test(await p.textContent('#adhanBox')), 'الصفحة تبيّن أن اللحن من تأليف المنصة بلا ترخيص خارجي');
+  const r = await p.evaluate(async () => { const C = new OfflineAudioContext(1, 22050 * 40, 22050); adhanTone(0.8, C); const buf = await C.startRendering(), d = buf.getChannelData(0);
+    let last = 0; for (let i = d.length - 1; i >= 0; i--) if (Math.abs(d[i]) > 0.01) { last = i; break; }
+    const rms = (a, b) => { let s = 0; for (let i = a; i < b; i++) s += d[i] * d[i]; return Math.sqrt(s / (b - a)); };
+    return { secs: last / 22050, mid: rms(22050 * 5, 22050 * 6), peak: d.reduce((m, v) => Math.max(m, Math.abs(v)), 0) }; });
+  ok(r.secs > 10 && r.secs < 40 && r.mid > 0.01 && r.peak < 1.01, `اللحن يُنتَج صوتاً حقيقياً غير مقصوص: ${r.secs.toFixed(1)} ثانية، طاقة ${r.mid.toFixed(3)}`);
+  ok(await p.evaluate(() => adhanPlay('adhan', 0.5)) === 'adhan', 'تشغيل نداء الأذان يعمل'); await ctx.close(); }
 { const ctx = await b.newContext(), p = await ctx.newPage(); await p.goto(B + '#prayer'); await p.waitForSelector('#adOn');
   const lic = await p.evaluate(async () => { const j = await (await fetch('data/adhan/manifest.json')).json(); return j.licenses_allowed.join(); });
   ok(/CC0-1.0/.test(lic) && !/All-Rights/.test(lic), 'قائمة الرخص المقبولة مفتوحة فقط'); await ctx.close(); }
