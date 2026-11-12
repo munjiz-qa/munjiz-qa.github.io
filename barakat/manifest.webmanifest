@@ -1,0 +1,22 @@
+{
+  "name": "بركات · الخدمات المصرفية الإسلامية",
+  "short_name": "بركات",
+  "description": "نظام مصرفي إسلامي متكامل: حسابات واستثمار بالمضاربة، وتمويل وتكافل وزكاة، بلا ربا ولا غرامات تأخير.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f8fa",
+  "theme_color": "#17594a",
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ],
+  "shortcuts": [
+    {"name": "حسابي", "url": "./#/c/home"},
+    {"name": "التحويل", "url": "./#/c/transfer"},
+    {"name": "حاسبة الزكاة", "url": "./#/p/zakat"}
+  ]
+}
