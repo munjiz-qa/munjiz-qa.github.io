@@ -1679,7 +1679,7 @@ function settings() {
   <section class="panel stack tight"><h3>بياناتك</h3><p class="muted small" style="margin:0">${cloud ? 'تقدّمك محفوظ في حسابك (خاص بك ولا يراه غيرك) ونسخة منه على هذا الجهاز.' : 'تقدّمك محفوظ على هذا الجهاز. انسخ الرمز لنقله إلى جهاز آخر.'}</p>
     <div class="toolbar"><button class="btn" id="expBtn">نسخ رمز النقل</button><button class="btn" id="impBtn">لصق رمز من جهاز آخر</button><button class="btn" id="clrBtn">مسح كل بياناتي</button></div>
     <textarea class="field" id="impBox" hidden placeholder="الصق الرمز هنا ثم اضغط «استيراد»"></textarea><div class="toolbar" id="impRow" hidden><button class="btn pri" id="impGo">استيراد</button></div><p class="small" id="dataMsg" style="margin:0"></p></section>
-  <section class="panel small muted">الإصدار ٤ · ${IS_PWA ? 'النسخة المستقلة' : 'نسخة claude.ai'}</section></div>`);
+  <section class="panel small muted">الإصدار ٥ · ${IS_PWA ? 'النسخة المستقلة' : 'نسخة claude.ai'}</section></div>`);
   $('#thSeg').onclick = e => { const b = e.target.closest('button'); if (!b) return; ST.prefs.theme = b.dataset.t; applyPrefs(); save(); settings(); };
   $('#szSeg').onclick = e => { const b = e.target.closest('button'); if (!b) return; ST.prefs.size = +b.dataset.s; applyPrefs(); save(); settings(); };
   $('#tfSel').onchange = e => { ST.prefs.tafsir = e.target.value; save(); toast('حُفظ التفسير الافتراضي'); };
