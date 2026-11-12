@@ -104,7 +104,7 @@ function progHomeCard() {
     ${mk ? `<a class="mcard" href="#pa${mk.i}"><svg><use href="#i-bookmark"/></svg><span><small>توقفت هنا</small><b>${esc(ref(mk.i))}</b></span></a>` : `<a class="mcard" href="#wird"><svg><use href="#i-bookmark"/></svg><span><small>توقفت هنا</small><b>ضع أول علامة</b></span></a>`}
     <a class="mcard" href="#wird"><svg><use href="#i-time"/></svg><span><small>ورد اليوم</small><b>${g ? `${n(Math.min(t, g))} من ${n(g)} صفحة` : `${n(t)} صفحة`}</b></span></a>
     <a class="mcard" href="#wird"><svg><use href="#i-spark"/></svg><span><small>سلسلة القراءة</small><b>${st ? `${n(st)} ${st === 1 ? 'يوم' : st === 2 ? 'يومان' : st <= 10 ? 'أيام' : 'يوماً'}` : 'ابدأ اليوم'}</b></span></a>
-    ${(() => { try { return localStorage.getItem('mishkat:seenVer') === '٣٫٠' ? '' : '<a class="wn-new" href="#whatsnew"><b>جديد</b> الإصدار ٣٫٠: الشكل الجديد، نور المشكاة وست فئات</a>'; } catch (e) { return ''; } })()}
+    ${(() => { try { return localStorage.getItem('mishkat:seenVer') === MK_VERSION ? '' : '<a class="wn-new" href="#whatsnew"><b>جديد</b> الإصدار ${MK_VERSION}: الشكل الجديد، نور المشكاة وست فئات</a>'; } catch (e) { return ''; } })()}
   </div>`;
 }
 
@@ -172,6 +172,8 @@ function prep() {
 const topicItem = (cat, name) => { const c = T.find(x => x.id === cat); if (!c) return null; const k = c.items.findIndex(x => x.n === name || x.n.startsWith(name)); return k < 0 ? null : { c, k, it: c.items[k] }; };
 const itemAyat = it => it ? (it.a || (it.r ? it.r.flatMap(([s, e]) => { const o = []; for (let i = s; i <= e; i++) o.push(i); return o; }) : [])) : [];
 
+/* رقم الإصدار: مصدر واحد تقرؤه الرئيسية والإعدادات وصفحة ما الجديد */
+const MK_VERSION = window.MK_VERSION = '٤';
 /* ================= navigation */
 const NAV = LAB ? [
   ['المختبر', [['research','بحث جديد','i-flask'],['mine','أبحاثي','i-bookmark'],['prayer','مواقيت الصلاة','i-time'],['adhkar','أذكار الصباح والمساء','i-sun',1]]],
@@ -2399,7 +2401,7 @@ function settings() {
   </section>
   <section class="panel stack tight"><h3>بياناتك</h3><p class="muted small" style="margin:0">${cloud ? 'تقدّمك محفوظ في حسابك (خاص بك ولا يراه غيرك) ونسخة منه على هذا الجهاز.' : 'تقدّمك محفوظ على هذا الجهاز وحده.'} من «وردي وتقدّمي» تجد علامة التوقف وهدف القراءة اليومي.</p><div class="toolbar"><a class="btn" href="#wird">وردي وتقدّمي</a><a class="btn" href="#whatsnew">ما الجديد</a></div></section>
   <div id="dataMount"></div>
-  <section class="panel small muted">الإصدار ٣٫٠ · ${IS_PWA ? 'النسخة المستقلة' : 'نسخة claude.ai'}</section></div>`);
+  <section class="panel small muted">الإصدار ${MK_VERSION} · ${IS_PWA ? 'النسخة المستقلة' : 'نسخة claude.ai'}</section></div>`);
   $('#thSeg').onclick = e => { const b = e.target.closest('button'); if (!b) return; ST.prefs.theme = b.dataset.t; applyPrefs(); save(); settings(); };
   $('#szSeg').onclick = e => { const b = e.target.closest('button'); if (!b) return; ST.prefs.size = +b.dataset.s; applyPrefs(); save(); settings(); };
   $('#tfSel').onchange = e => { ST.prefs.tafsir = e.target.value; save(); toast('حُفظ التفسير الافتراضي'); };

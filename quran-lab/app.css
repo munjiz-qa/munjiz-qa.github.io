@@ -685,3 +685,11 @@ html[dir=ltr] .ruq-matn{border-radius:10px 0 0 10px}
 .offpill{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(76px + env(safe-area-inset-bottom));z-index:60;background:var(--ink,#1b1b1b);color:var(--bg,#fff);padding:8px 16px;border-radius:999px;font-size:.85rem;box-shadow:var(--shadow)}
 .offpill[hidden]{display:none}
 .in-apk{margin:4px 0 0}
+
+/* ================= v3.0 · نور المشكاة: هوية بصرية أصلية — كوّة ضوء تتدرج من الأعلى، ونجمة هندسية من ثماني رؤوس، وأيقونات في إطار محراب */
+:root{--glow:rgba(232,176,86,.34);--glow-2:rgba(39,55,138,.10);--star:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23000' stroke-width='1.4'%3E%3Cpath d='M32 6l7 12 13-5-5 13 12 7-12 7 5 13-13-5-7 12-7-12-13 5 5-13-12-7 12-7-5-13 13 5z'/%3E%3Ccircle cx='32' cy='32' r='6'/%3E%3Cpath d='M0 0l8 8M64 0l-8 8M0 64l8-8M64 64l-8-8'/%3E%3C/g%3E%3C/svg%3E")}
+:root[data-theme="dark"]{--glow:rgba(232,176,86,.16);--glow-2:rgba(122,140,255,.12)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--glow:rgba(232,176,86,.16);--glow-2:rgba(122,140,255,.12)}}
+body{background-image:radial-gradient(900px 420px at 50% -120px,var(--glow),transparent 70%),radial-gradient(700px 360px at 100% 0,var(--glow-2),transparent 70%);background-repeat:no-repeat;background-attachment:fixed}
+.brand img{box-shadow:0 0 0 1px color-mix(in srgb,var(--saffron) 40%,transparent),0 0 22px var(--glow)}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
