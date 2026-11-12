@@ -20,7 +20,7 @@
     ['Muhammad_Ayyoub_128kbps', 'محمد أيوب', 'Muhammad Ayyub', 'مرتّل'],
     ['Ghamadi_40kbps', 'سعد الغامدي', 'Saad Al-Ghamdi', 'مرتّل'],
   ];
-  const RATES = [0.75, 0.9, 1, 1.15, 1.25, 1.5, 1.75, 2];
+  const RATES = [0.75, 0.9, 1, 1.15, 1.25, 1.5, 1.75, 2, 3, 4, 6, 8];
   const REPS = [1, 2, 3, 5, 10];
   const P = () => { const r = ST.prefs.rec || {}; return { r: REC_LIST.some(x => x[0] === r.r) ? r.r : REC_LIST[0][0], s: RATES.includes(+r.s) ? +r.s : 1, p: REPS.includes(+r.p) ? +r.p : 1, b: r.b !== false }; };
   const setP = ch => { ST.prefs.rec = { ...P(), ...ch }; save(); };
