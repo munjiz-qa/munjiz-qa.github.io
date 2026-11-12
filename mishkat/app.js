@@ -41,7 +41,7 @@ function isAyahIx(v) { return Number.isInteger(v) && v >= 0 && v < 6236; }
 function cleanHifz(h) { const o = {}; if (h && typeof h === 'object') for (const [k, v] of Object.entries(h)) { if (!/^\d{1,3}:\d{1,3}-\d{1,3}$/.test(k) || !v || typeof v !== 'object') continue; const r = {}; for (const f of ['ef', 'int', 'reps', 'due', 'last']) if (Number.isFinite(+v[f])) r[f] = +v[f]; o[k] = r; } return o; }
 function cleanNewPrefs(p) { // إعدادات التلاوة ووضع الحفظ وسجل المراجعة: قيم محدودة فقط، فلا يمر أي نص غير متوقع
   const r = p.rec && typeof p.rec === 'object' ? p.rec : {};
-  p.rec = { r: /^[A-Za-z0-9_.-]{1,60}$/.test(r.r) ? r.r : 'Alafasy_128kbps', s: [0.75, 0.9, 1, 1.15, 1.25, 1.5, 1.75, 2].includes(+r.s) ? +r.s : 1, p: [1, 2, 3, 5, 10].includes(+r.p) ? +r.p : 1, b: r.b !== false };
+  p.rec = { r: /^[A-Za-z0-9_.-]{1,60}$/.test(r.r) ? r.r : 'Alafasy_128kbps', s: [0.75, 0.9, 1, 1.15, 1.25, 1.5, 1.75, 2, 3, 4, 6, 8].includes(+r.s) ? +r.s : 1, p: [1, 2, 3, 5, 10].includes(+r.p) ? +r.p : 1, b: r.b !== false };
   if (!isAyahIx(p.recAt)) p.recAt = null;
   p.mpHz = [0, 1, 2].includes(+p.mpHz) ? +p.mpHz : 0;
   const L = {}; if (p.hzLog && typeof p.hzLog === 'object') for (const [k, v] of Object.entries(p.hzLog)) if (/^\d{4}-\d{2}-\d{2}$/.test(k) && Number.isInteger(v) && v > 0 && v < 1e4) L[k] = v;
