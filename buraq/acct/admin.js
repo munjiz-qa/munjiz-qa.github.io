@@ -108,6 +108,15 @@ function renderReqs() {
 }
 $("reqRows").onclick = (e) => { const b = e.target.closest("[data-open]"); if (b) openReq(b.dataset.open); };
 
+// ردود جاهزة بصياغة موحّدة، تُدرج في صندوق الرد ويعدّلها المدير قبل الإرسال
+const REPLIES = [
+  ["استلام الطلب", "مرحباً {الاسم}، شكراً لتواصلك مع براق. استلمنا طلبك {الطلب} ويعمل عليه فريقنا الآن، وسنوافيك بالتفاصيل خلال 24 ساعة."],
+  ["طلب معلومات إضافية", "مرحباً {الاسم}، لإتمام دراسة طلبك {الطلب} نحتاج إلى: موديل السيارة وسنة صنعها، والمدى اليومي المعتاد، والميزانية التقريبية. بمجرد وصولها نرسل لك عرض السعر."],
+  ["إرسال عرض السعر", "مرحباً {الاسم}، أُرسل إليك عرض السعر الخاص بطلبك {الطلب}، وهو ظاهر في حسابك. يسعدنا الإجابة عن أي استفسار، ويمكنك اعتماده من صفحة الطلب بضغطة واحدة."],
+  ["متابعة عرض السعر", "مرحباً {الاسم}، نتابع معك بخصوص عرض السعر لطلبك {الطلب}. هل لديك أي استفسار أو ملاحظة نستطيع معالجتها؟"],
+  ["اعتماد الطلب وبدء التنفيذ", "مرحباً {الاسم}، شكراً لاعتمادك العرض. أصبح طلبك {الطلب} قيد التنفيذ، وسنُعلمك بكل مرحلة من مراحله."],
+  ["اكتمال التنفيذ", "مرحباً {الاسم}، اكتمل تنفيذ طلبك {الطلب}. نشكر ثقتك، ونرحب بأي ملاحظة بعد التجربة."],
+];
 let msgUnsub = null;
 function openReq(id) {
   const r = REQS.find((x) => x.id === id); if (!r) return;
@@ -132,7 +141,8 @@ function openReq(id) {
   </form>
   <ul class="timeline">${(r.history || []).map((h) => `<li>${STATUS[h.s]?.[0] || esc(h.s)} · ${fmtDate(h.at, true)}${h.by === "customer" ? " (العميل)" : ""}</li>`).join("<li>←</li>")}</ul>
   <h3>المراسلة مع العميل</h3>
-  <div class="thread" id="thread"></div>
+  <div class="thread" id="thread" role="log" tabindex="0" aria-label="رسائل الطلب"></div>
+  <label class="f" style="margin:0 0 8px">رد جاهز<select id="msgTpl" aria-label="إدراج رد جاهز في صندوق الرد"><option value="">اختر ردّاً جاهزاً لتعديله قبل الإرسال</option>${REPLIES.map((t, i) => `<option value="${i}">${esc(t[0])}</option>`).join("")}</select></label>
   <form id="msgF" style="display:flex;gap:8px;align-items:flex-end"><textarea id="msgT" maxlength="2000" style="min-height:48px" placeholder="اكتب ردك للعميل" required></textarea><button class="btn pri" type="submit">إرسال</button></form>`;
   $("dlg").showModal();
   if (U) U.setOpen(id);
@@ -154,6 +164,11 @@ function openReq(id) {
   $("dDel").onclick = async () => {
     if (!confirm(`حذف الطلب ${r.no} نهائياً؟ لا يمكن التراجع.`)) return;
     try { await F.deleteDoc(F.doc(db, "requests", id)); $("dlg").close(); toast("حُذف الطلب."); } catch (err) { toast(errMsg(err), true); }
+  };
+  $("msgTpl").onchange = (e) => {
+    const t = REPLIES[e.target.value]; if (!t) return;
+    const fill = (x) => x.replace(/\{الاسم\}/g, (r.name || "").split(" ")[0] || "عميلنا الكريم").replace(/\{الطلب\}/g, r.no || "");
+    const box = $("msgT"); box.value = (box.value.trim() ? box.value.trim() + "\n\n" : "") + fill(t[1]); box.focus(); e.target.value = "";
   };
   $("msgF").onsubmit = async (e) => {
     e.preventDefault(); const text = $("msgT").value.trim(); if (!text) return;

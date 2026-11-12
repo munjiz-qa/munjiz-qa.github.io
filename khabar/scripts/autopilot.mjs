@@ -169,7 +169,8 @@ async function health(brief) {
   }
   const head = readJSON('headlines.json', {}), exp = expected();
   const briefAge = (Date.now() - new Date(brief.published)) / 3600e3, headAge = (Date.now() - new Date(head.updated)) / 3600e3;
-  checks.push({name: 'الخلاصة في موعدها', ok: brief.id === exp.id, detail: `${brief.id}${brief.auto ? ' (آلية)' : ''}، المتوقع ${exp.id}`});
+  // خلاصة نُشرت قبل نهاية مهلة موعدها (مثل الليل 23:51 والمتوقع ما زال المساء حتى 00:20) سليمة، لا عطل
+  checks.push({name: 'الخلاصة في موعدها', ok: rank(brief.id) >= rank(exp.id), detail: `${brief.id}${brief.auto ? ' (آلية)' : ''}، المتوقع ${exp.id}${rank(brief.id) > rank(exp.id) ? ' (نُشرت قبل موعدها)' : ''}`});
   checks.push({name: 'العناوين الآلية حديثة', ok: headAge < 7, detail: `آخر تحديث قبل ${headAge.toFixed(1)} ساعة`});
   const n = (brief.zones || []).reduce((s, z) => s + z.items.length, 0), unsourced = (brief.zones || []).flatMap(z => z.items).filter(i => !(i.src || []).every(s => brief.sources[s]?.url)).length;
   checks.push({name: 'كل خبر بمصدره', ok: n >= 8 && unsourced === 0, detail: `${n} خبراً، ${unsourced} دون مصدر`});

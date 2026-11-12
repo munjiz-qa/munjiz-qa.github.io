@@ -1,0 +1,60 @@
+# رفع تطبيق «مشكاة» إلى Google Play آلياً: يبني الملف ويوقّعه بمفتاح الرفع ثم يرسله عبر حساب خدمة.
+# الأسرار المطلوبة في المستودع (Settings → Secrets and variables → Actions):
+#   MISHKAT_UPLOAD_KEYSTORE   ملف mishkat-upload.p12 بترميز base64
+#   MISHKAT_UPLOAD_PASS       كلمة مرور المخزن والمفتاح
+#   PLAY_SERVICE_ACCOUNT_JSON مفتاح حساب الخدمة (JSON) من Play Console → Setup → API access
+# التشغيل يدوي فقط: Actions → Mishkat Play upload → Run workflow.
+name: Mishkat Play upload
+on:
+  workflow_dispatch:
+    inputs:
+      track:
+        description: المسار (internal للاختبار الداخلي، alpha للمغلق، production للنشر العام)
+        default: internal
+        type: choice
+        options: [internal, alpha, beta, production]
+      status:
+        description: حالة الإصدار (draft يُنشر من Play Console بعد مراجعته)
+        default: draft
+        type: choice
+        options: [draft, completed]
+permissions:
+  contents: read
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    env:
+      KS_B64: ${{ secrets.MISHKAT_UPLOAD_KEYSTORE }}
+      KS_PASS: ${{ secrets.MISHKAT_UPLOAD_PASS }}
+      PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+    steps:
+      - name: Check secrets
+        run: |
+          for v in KS_B64 KS_PASS PLAY_SERVICE_ACCOUNT_JSON; do
+            [ -n "${!v}" ] || { echo "::error::السر الناقص: $v. راجع أول هذا الملف."; exit 1; }
+          done
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4
+        with: { distribution: temurin, java-version: 17 }
+      - name: Build AAB
+        working-directory: stores/mishkat/android
+        env:
+          VERSION_CODE: ${{ github.run_number }}
+          VERSION_NAME: 1.0.${{ github.run_number }}
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon bundleRelease
+      - name: Sign AAB with the upload key
+        run: |
+          echo "$KS_B64" | base64 -d > "$RUNNER_TEMP/upload.p12"
+          cp stores/mishkat/android/app/build/outputs/bundle/release/app-release.aab "$RUNNER_TEMP/mishkat.aab"
+          jarsigner -keystore "$RUNNER_TEMP/upload.p12" -storepass "$KS_PASS" -sigalg SHA256withRSA -digestalg SHA-256 "$RUNNER_TEMP/mishkat.aab" mishkat-upload >/dev/null
+          jarsigner -verify "$RUNNER_TEMP/mishkat.aab" | tail -1
+          keytool -list -keystore "$RUNNER_TEMP/upload.p12" -storepass "$KS_PASS" 2>/dev/null | grep -i fingerprint || true
+      - name: Upload to Google Play
+        run: |
+          python3 -m pip install -q google-api-python-client google-auth
+          python3 scripts/play_upload.py "$RUNNER_TEMP/mishkat.aab" app.mishkat.quran "${{ inputs.track }}" "${{ inputs.status }}"
+      - name: Remove key material
+        if: always()
+        run: rm -f "$RUNNER_TEMP/upload.p12" "$RUNNER_TEMP/mishkat.aab"

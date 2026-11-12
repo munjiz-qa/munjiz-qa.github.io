@@ -33,6 +33,14 @@ async function mpData() {
   MPV.data = { ...d, A, G0, TA: Int16Array.from(TA), pageOf, lineOfA, deferred, hdr, pageQ };
   return MPV.data;
 }
+/* وضع الحفظ في المصحف: تُحجب الكلمات، ويكشف الضغطُ آيتها (وتبقى الكلمة الأولى ظاهرة في المستوى الثاني). الآيات المكشوفة تُحفظ في قاعدة style فلا تضيع عند إعادة رسم الصفحات */
+const mpHzRev = new Set();
+function mpHzApply() {
+  const root = $('#mpRoot'); if (!root) return; const lv = +ST.prefs.mpHz || 0; root.dataset.hz = String(lv);
+  let st = $('#mpHzStyle'); if (!st) { st = document.createElement('style'); st.id = 'mpHzStyle'; document.head.appendChild(st); }
+  st.textContent = mpHzRev.size ? [...mpHzRev].map(i => `#mpRoot .w[data-a="${i}"]`).join(',') + '{filter:none!important;opacity:1!important}' : '';
+  $$('#mpHz button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.h === lv)));
+}
 function mpWord(i, t) { const m = MPV.data.m[i]; return Q.ayat[i][2] + (m ? m[t] : t); }
 function mpSurahsOn(p) { const D = MPV.data, s = new Set(); for (const L of D.p[p - 1]) { if (L[0] === 'h') s.add(L[1]); else if (typeof L[0] === 'number') { s.add(Q.ayat[D.TA[L[0]]][0]); s.add(Q.ayat[D.TA[L[1] - 1]][0]); } } return [...s]; }
 function mpFirstAyah(p) { const D = MPV.data; for (const L of D.p[p - 1]) if (typeof L[0] === 'number') return D.TA[L[0]]; return 0; }
@@ -45,7 +53,7 @@ function mpLine(L) {
   if (L[2]) h += mpNum(D.TA[L[0] - 1]);
   for (let x = L[0]; x < L[1]; x++) {
     const i = D.TA[x], t = x - D.G0[i];
-    h += `<span class="w" data-word="${mpWord(i, t)}" data-a="${i}">${D.A[i][t]}</span> `;
+    h += `<span class="w" data-word="${mpWord(i, t)}" data-a="${i}" data-t="${t}">${D.A[i][t]}</span> `;
     if (t === D.A[i].length - 1 && !D.deferred.has(i)) h += mpNum(i);
   }
   return `<div class="mp-l mp-t">${h}</div> `;
@@ -142,7 +150,7 @@ function mpObserve() {
 function mpSetCur(p) {
   if (!$('#mpRoot')) return;
   const D = MPV.data, a = mpFirstAyah(p), lb = mpLabels(p);
-  MPV.cur = p; $('#mpPage').value = p; $('#mpInfo').textContent = `${lb.sur} · ${lb.juz}`;
+  MPV.cur = p; logReadPage(p); $('#mpPage').value = p; $('#mpInfo').textContent = `${lb.sur} · ${lb.juz}`;
   $('#mpSur').value = Q.ayat[a][0]; $('#mpJuz').value = D.j[a];
   let k = 0; for (let x = 0; x < D.q.length && D.pageOf[D.q[x]] <= p; x++) k = x; $('#mpHizb').value = (k >> 2) + 1;
   if (location.hash !== '#p' + p) history.replaceState(null, '', '#p' + p);
@@ -191,10 +199,12 @@ async function mushafRead(p, opt = {}) {
       <select id="mpJuz" aria-label="الجزء">${jOpts}</select>
       <select id="mpHizb" class="mp-opt" aria-label="الحزب">${hOpts}</select>
       <label class="mp-pg"><span class="mp-pgl">صفحة</span><input id="mpPage" type="number" inputmode="numeric" min="1" max="604" value="${p}" aria-label="رقم الصفحة"></label>
+      ${IS_PWA ? '<button class="btn" id="mpPlay" type="button" aria-label="استمع إلى التلاوة"><svg><use href="#i-play"/></svg><span>استمع</span></button>' : ''}
       <button class="btn mp-more" id="mpMore" aria-expanded="false" aria-controls="mpOpts" aria-label="خيارات العرض">خيارات</button>
     </div>
     <div class="mp-row mp-opts" id="mpOpts">
       <div class="seg" id="mpMode" role="group" aria-label="طريقة العرض"><button data-m="scroll" aria-pressed="false">قراءة متصلة</button><button data-m="flip" aria-pressed="false">تقليب الصفحات</button></div>
+      <div class="seg" id="mpHz" role="group" aria-label="وضع الحفظ"><button data-h="0" aria-pressed="false">عرض كامل</button><button data-h="1" aria-pressed="false">إخفاء الآيات للحفظ</button><button data-h="2" aria-pressed="false">أول كلمة فقط</button></div>
       <div class="seg" id="mpLay" role="group" aria-label="هيئة النص"><button data-l="0" aria-pressed="false">قراءة مريحة</button><button data-l="1" aria-pressed="false">سطور المصحف</button></div>
       <label class="mp-fsel"><span>الخط</span><select id="mpFont" aria-label="نوع الخط">${MP_FONTS.map(f => `<option value="${f.k}">${f.n}</option>`).join('')}</select></label>
       <div class="mp-size" id="mpSize" role="group" aria-label="حجم الخط"><button class="btn" data-d="-1" aria-label="تصغير الخط">أ−</button><input type="range" id="mpZoom" min="${MP_ZMIN}" max="${MP_ZMAX}" step="${MP_ZSTEP}" aria-label="حجم الخط"><span id="mpSizeLbl" class="mp-sizel" aria-live="polite"></span><button class="btn" data-d="1" aria-label="تكبير الخط">أ+</button></div>
@@ -209,6 +219,10 @@ async function mushafRead(p, opt = {}) {
   const root = $('#mpRoot');
   $('#mpMore').onclick = () => { const on = !root.classList.contains('mp-showopts'); root.classList.toggle('mp-showopts', on); $('#mpMore').setAttribute('aria-expanded', on); };
   $('#mpMode').onclick = e => { const b = e.target.closest('button'); if (b && b.dataset.m !== MPV.mode) mpSetMode(b.dataset.m); };
+  $('#mpHz').onclick = e => { const b = e.target.closest('button'); if (!b) return; ST.prefs.mpHz = +b.dataset.h; mpHzRev.clear(); save(); mpHzApply(); if (ST.prefs.mpHz) toast('وضع الحفظ: اضغط أي كلمة لإظهار آيتها أو إخفائها'); };
+  root.addEventListener('click', e => { if (!(ST.prefs.mpHz > 0)) return; const w = e.target.closest('.w'); if (!w) return; e.stopPropagation(); e.preventDefault(); const i = +w.dataset.a; if (mpHzRev.has(i)) mpHzRev.delete(i); else mpHzRev.add(i); mpHzApply(); }, true);
+  const pl = $('#mpPlay'); if (pl) pl.onclick = () => { if (window.recState && recState.on) mpGo(D.pageOf[recState.i], recState.i); else recitePlay(mpFirstAyah(MPV.cur), 'quran'); };
+  mpHzApply();
   $('#mpLay').onclick = e => { const b = e.target.closest('button'); if (!b) return; const v = b.dataset.l === '1'; if (v === MPV.lines) return; MPV.lines = v; ST.prefs.mpLines = v; save(); const p0 = MPV.cur; mpMeasure(); mpRefill(); mpGo(p0, null, true); };
   const setZoom = z => { z = Math.max(MP_ZMIN, Math.min(MP_ZMAX, Math.round(z / MP_ZSTEP) * MP_ZSTEP)); if (z === MPV.zoom) return; MPV.zoom = z; ST.prefs.mpZoom = z; save(); const p0 = MPV.cur; mpMeasure(); mpRefill(); mpGo(p0, null, true); setTimeout(() => mpGo(p0, null, true), 200); };
   $('#mpSize').onclick = e => { const b = e.target.closest('button'); if (b) setZoom(MPV.zoom + MP_ZSTEP * +b.dataset.d); };
