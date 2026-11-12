@@ -104,7 +104,7 @@ function progHomeCard() {
     ${mk ? `<a class="mcard" href="#pa${mk.i}"><svg><use href="#i-bookmark"/></svg><span><small>توقفت هنا</small><b>${esc(ref(mk.i))}</b></span></a>` : `<a class="mcard" href="#wird"><svg><use href="#i-bookmark"/></svg><span><small>توقفت هنا</small><b>ضع أول علامة</b></span></a>`}
     <a class="mcard" href="#wird"><svg><use href="#i-time"/></svg><span><small>ورد اليوم</small><b>${g ? `${n(Math.min(t, g))} من ${n(g)} صفحة` : `${n(t)} صفحة`}</b></span></a>
     <a class="mcard" href="#wird"><svg><use href="#i-spark"/></svg><span><small>سلسلة القراءة</small><b>${st ? `${n(st)} ${st === 1 ? 'يوم' : st === 2 ? 'يومان' : st <= 10 ? 'أيام' : 'يوماً'}` : 'ابدأ اليوم'}</b></span></a>
-    ${(() => { try { return localStorage.getItem('mishkat:seenVer') === MK_VERSION ? '' : '<a class="wn-new" href="#whatsnew"><b>جديد</b> الإصدار ${MK_VERSION}: الشكل الجديد، نور المشكاة وست فئات</a>'; } catch (e) { return ''; } })()}
+    ${(() => { try { return localStorage.getItem('mishkat:seenVer') === MK_VERSION ? '' : '<a class="wn-new" href="#whatsnew"><b>جديد</b> الإصدار ${MK_VERSION}: شكل جديد وست فئات للأقسام</a>'; } catch (e) { return ''; } })()}
   </div>`;
 }
 
@@ -2481,7 +2481,17 @@ function offlinePack(onProg) {
   return offlinePack.run;
 }
 function offlineAuto() { if (IS_PWA && !FILE_MODE && (isStandalone() || lsGet('installed') === '1') && navigator.onLine !== false) setTimeout(() => offlinePack(), 1500); }
+/* بطاقة ترحيب عند أول فتح: المتصفحات تمنع التثبيت الصامت، فتُعرض نقرة واحدة تفتح نافذة التثبيت الأصلية (أندرويد وكروم وإيدج) أو دليل آيفون، وتُعاد بعد ١٤ يوماً إن أُجّلت */
+function installWelcome() {
+  if (!IS_PWA || FILE_MODE || instHidden() || Date.now() < +(lsGet('welcomeSnooze') || 0) || !$('#drawer').hidden || !/^#?(home)?$/.test(location.hash) || /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName || '')) return;
+  const snooze = () => lsSet('welcomeSnooze', String(Date.now() + 14 * 864e5));
+  openDrawer(`<div class="stack instwel" style="text-align:center;width:100%;max-width:420px;margin:8vh auto 0"><img src="icons/icon-192.png" alt="" width="84" height="84" style="margin:auto;border-radius:20px;box-shadow:0 0 0 1px var(--line),0 10px 30px var(--glow)"><h2 style="margin:0">أهلاً بك في ${BRAND}</h2><p class="muted" style="margin:0">ثبّته مرة واحدة فيفتح من شاشتك مباشرة كأي تطبيق، ويعمل دون إنترنت.</p><button class="btn pri" id="welGo" type="button" style="min-height:52px;font-size:1.05rem">ثبّت ${BRAND} الآن</button><button class="btn" id="welLater" type="button">لاحقاً</button></div>`);
+  $('#welGo').onclick = () => { snooze(); if (installEvt) { closeDrawer(); installApp(); } else installApp(); };
+  $('#welLater').onclick = () => { snooze(); closeDrawer(); };
+  $('#drawer').querySelectorAll('[data-close]').forEach(x => x.addEventListener('click', snooze, { once: true }));
+}
 function instBarInit() {
+  setTimeout(installWelcome, 3500);
   const bar = $('#instBar'); if (!bar) return;
   $('#instBarGo').onclick = installApp;
   $('#instBarX').onclick = () => { lsSet('barSnooze', String(Date.now() + 3 * 864e5)); bar.hidden = true; };
