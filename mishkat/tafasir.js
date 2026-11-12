@@ -13,7 +13,7 @@ const BOOKA = k => (TF.find(b => b.key === k) || { author: '' }).author;
 
 const KIND = { muyassar: 'إجمالي', jalalayn: 'إجمالي', tabari: 'مأثور', ibnkathir: 'مأثور', baghawi: 'مأثور', qurtubi: 'فقهي', saadi: 'تربوي', gharib: 'لغوي' };
 const KSHORT = { muyassar: 'الميسر', jalalayn: 'الجلالين', tabari: 'الطبري', ibnkathir: 'ابن كثير', baghawi: 'البغوي', qurtubi: 'القرطبي', saadi: 'السعدي', gharib: 'غريب القرآن' };
-const brief = t => { const ss = String(t || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().split(/(?<=[.؟!])\s+/).filter(Boolean); let o = ''; for (const x of ss) { if (o && (o + ' ' + x).length > 260) break; o += (o ? ' ' : '') + x; if (o.length > 120) break; } return o.length > 300 ? o.slice(0, 297) + '…' : o; };
+const brief = t => { const ss = String(t || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().replace(/([.؟!])\s+/g, '$1\u0001').split('\u0001').filter(Boolean); let o = ''; for (const x of ss) { if (o && (o + ' ' + x).length > 260) break; o += (o ? ' ' : '') + x; if (o.length > 120) break; } return o.length > 300 ? o.slice(0, 297) + '…' : o; };
 const BT = { muyassar: 'إجمالي ميسّر', jalalayn: 'وجيز (إجمالي)', saadi: 'بالمأثور مع استنباط الهدايات', baghawi: 'بالمأثور', qurtubi: 'فقهي (أحكام القرآن)', tabari: 'بالمأثور مع الترجيح', ibnkathir: 'بالمأثور', gharib: 'لغوي' };
 const TYPES = [
   ['التفسير بالمأثور', 'تفسير القرآن بالقرآن، ثم بصحيح السنة، ثم بأقوال الصحابة والتابعين. هو أوثق الطرق وأولاها بالتقديم، ويُحذر فيه من الروايات الضعيفة والإسرائيليات.', 'الطبري، البغوي، ابن كثير', ['tabari', 'baghawi', 'ibnkathir']],

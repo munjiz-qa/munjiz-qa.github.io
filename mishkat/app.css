@@ -51,10 +51,10 @@ code{font-size:.8rem;overflow-wrap:anywhere}
 .nav a[aria-current="page"] .new{background:transparent;color:inherit}
 .rail .foot{margin-top:auto;padding:14px 8px 0;font-size:.75rem;color:var(--muted)}
 .topbar{display:none}
-.shell{margin-right:var(--rail);min-height:100vh}
+.shell{margin-right:var(--rail);min-height:100vh;min-height:100dvh}
 .wrap{max-width:1120px;margin:0 auto;padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
 main{padding-block:26px 70px}
-.searchbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.searchbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
 .searchbar .wrap{display:flex;gap:10px;align-items:center;padding-block:10px}
 .searchbar form{display:flex;gap:8px;flex:1;min-width:0}
 .searchbar input{flex:1;min-width:0;border:1px solid var(--line);background:var(--sheet);border-radius:999px;padding:8px 16px}
@@ -1460,3 +1460,12 @@ body{overflow-x:clip;position:relative;max-width:100%;touch-action:manipulation}
 @media (max-width:860px){.hero2{grid-template-columns:minmax(0,1fr)}.np-grid{grid-template-columns:minmax(0,1fr)}}
 .hero2>*,.home2>*,.welcome>*{min-width:0}
 .welcome{min-width:0}
+
+/* آيفون (سفاري): خط الحقول أقل من 16px يجعل المتصفح يكبّر الصفحة عند التركيز على حقل ولا يعيدها؛ ولمسة بلا وميض وتمرير سلس */
+@supports (-webkit-touch-callout:none){
+  input,select,textarea,.searchbar input,.rec-f select,.mp-bar select,.mp-bar input{font-size:16px!important}
+  html{-webkit-tap-highlight-color:transparent}
+  a,button,.chip{-webkit-touch-callout:none}
+  .tabbar,.recbar,.rail{-webkit-transform:translateZ(0);transform:translateZ(0)}
+  input[type=search]{-webkit-appearance:none;appearance:none}
+}

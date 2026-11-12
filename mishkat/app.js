@@ -2,6 +2,10 @@
 /* مشكاة — موسوعة القرآن الذكية. One codebase for the claude.ai build and the installable PWA build. */
 const BUILD = window.MISHKAT_BUILD || 'pwa';
 const IS_PWA = BUILD === 'pwa';
+/* iOS < 16.4 لا يدعم lookbehind: تقسيم الجمل بلا lookbehind، وكشف الدعم للتعابير الأخرى */
+const splitAfter = (t, cls, nl) => String(t).replace(new RegExp('([' + cls + '])\\s+' + (nl ? '|\\n+' : ''), 'g'), (m, a) => (a || '') + '\u0001').split('\u0001');
+const IS_IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const LB_OK = (() => { try { new RegExp('(?<!a)b'); return true; } catch (e) { return false; } })();
 const LAB = window.MISHKAT_APP === 'lab'; // «مختبر الأبحاث القرآنية»: تطبيق مستقل من الشيفرة نفسها، له اسمه وتخزينه وحساباته
 const BRAND = LAB ? 'مختبر الأبحاث القرآنية' : 'مشكاة', HOME = LAB ? 'research' : 'home';
 const $ = s => document.querySelector(s);
@@ -2511,7 +2515,7 @@ function offlinePack(onProg) {
     const cache = await caches.open(OFF_CACHE); let done = 0, failed = 0, i = 0;
     const tick = () => { done++; const p = Math.round(done / files.length * 100); offlinePack.cbs.forEach(cb => cb(done, files.length)); if (pill && !quiet) { pill.hidden = false; pill.textContent = `تجهيز ${BRAND} للعمل دون إنترنت… ${n(p)}٪`; } };
     const worker = async () => { while (i < files.length) { const f = files[i++]; try { if (!(await caches.match(f, { ignoreSearch: true }))) { const r = await fetch(f, { cache: 'no-cache' }); if (r.ok) await cache.put(f, r); else failed++; } } catch (e) { failed++; } tick(); } };
-    await Promise.all([worker(), worker(), worker(), worker()]);
+    await Promise.all((IS_IOS ? [1, 2] : [1, 2, 3, 4]).map(worker));
     if (pill) pill.hidden = true;
     if (!failed) { if (!quiet) toast(`${BRAND} جاهز الآن للعمل كاملاً دون إنترنت`); lsSet('offline', sig); }
     offlinePack.run = null; return !failed;
@@ -2519,7 +2523,7 @@ function offlinePack(onProg) {
   return offlinePack.run;
 }
 /* الإصدار ٥: يبدأ تجهيز العمل دون إنترنت فور فتح الصفحة (جوالاً أو حاسوباً) دون انتظار التثبيت؛ يُستثنى من فعّل «توفير البيانات» في جهازه */
-function offlineAuto() { const sd = !!(navigator.connection && navigator.connection.saveData); if (IS_PWA && !FILE_MODE && !sd && navigator.onLine !== false) setTimeout(() => offlinePack(), 600); }
+function offlineAuto() { const sd = !!(navigator.connection && navigator.connection.saveData); if (!IS_PWA || FILE_MODE || sd || navigator.onLine === false) return; if (IS_IOS) { /* آيفون: ذاكرة المتصفح محدودة؛ لا تنزيل خلفي لمئات الميغابايت أثناء التصفح داخل سفاري، بل بعد التثبيت على الشاشة الرئيسية وبعد استقرار الصفحة */ if (isStandalone()) setTimeout(() => offlinePack(), 15000); return; } setTimeout(() => offlinePack(), 600); }
 /* بطاقة ترحيب عند أول فتح: المتصفحات تمنع التثبيت الصامت، فتُعرض نقرة واحدة تفتح نافذة التثبيت الأصلية (أندرويد وكروم وإيدج) أو دليل آيفون، وتُعاد بعد ١٤ يوماً إن أُجّلت */
 function installWelcome() {
   if (!IS_PWA || FILE_MODE || instHidden() || Date.now() < +(lsGet('welcomeSnooze') || 0) || !$('#drawer').hidden || !/^#?(home)?$/.test(location.hash) || /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName || '')) return;
@@ -2925,7 +2929,7 @@ async function scholarsSay(prx, keys, st, per = 8) { // full-text search of the 
   for (const key of keys) { const b = TF.find(x => x.key === key); if (!b) continue; const cand = [];
     for (let s = 1; s <= 114; s++) { if (s % 15 === 1) st(`جارٍ البحث في نص «${b.title}» كاملاً… (سورة ${n(s)} من ١١٤)`); let t; try { t = await tafsir(key, s); } catch (e) { continue; }
       for (const a of Object.keys(t)) { const tx = t[a]; if (!tx || norm(tx).replace(/[^ء-ي ]/g, ' ').search(prx) < 0) continue;
-        const sents = String(tx).replace(/\[\[[^\]]*\]\]/g, '').split(/(?<=[.؟!])\s+|\n+/).map(x => x.trim()).filter(Boolean);
+        const sents = String(tx).replace(/\[\[[^\]]*\]\]/g, '').replace(/([.؟!])\s+|\n+/g, (m, a) => (a || '') + '\u0001').split('\u0001').map(x => x.trim()).filter(Boolean);
         sents.forEach((x, j) => { const nx = ' ' + norm(x).replace(/[^ء-ي ]/g, ' ').replace(/\s+/g, ' ') + ' '; const h = hits(nx, prx); if (!h) return;
           const txt = [sents[j - 1], x, sents[j + 1]].filter(y => y && (y === x || !ISNAD.test(norm(y)))).join(' ');
           cand.push({ b, s, a: +a, t: cut(txt, 900), c: x, w: h + (ISNAD.test(nx) ? -.5 : 0) + (/قال|ذهب|اختلف|القول|الصحيح|العلماء/.test(nx) ? .5 : 0) }); }); } }
@@ -3245,7 +3249,7 @@ function sira() {
 views.sira = sira;
 function excerpt(text, rts, ayahWords, max = 650) { // the sentences of a long commentary that speak to the topic or to this ayah; chains of narration and verse are left out
   const res = rts.map(x => x instanceof RegExp ? x : rootRx(x));
-  const sents = String(text).replace(/\[\[[^\]]*\]\]/g, '').split(/(?<=[.؟!:])\s+|\n+/).map(s => s.trim()).filter(s => s.length > 12);
+  const sents = String(text).replace(/\[\[[^\]]*\]\]/g, '').replace(/([.؟!:])\s+|\n+/g, (m, a) => (a || '') + '\u0001').split('\u0001').map(s => s.trim()).filter(s => s.length > 12);
   const sc = sents.map(s => { const nn = ' ' + norm(s).replace(/[^ء-ي ]/g, ' ').replace(/\s+/g, ' ') + ' '; let v = 0;
     res.forEach(re => v += 3 * hits(nn, re)); ayahWords.forEach(w => { if (nn.includes(' ' + w)) v += .5; });
     if (ISNAD.test(nn)) v -= 8; if (/\.\.\.|…/.test(s) && s.length < 160) v -= 4; return v; });
@@ -4099,7 +4103,7 @@ let surRx = null;
 const CNT0 = [[/آية واحدة/g, '1 آية'], [/آيتين|آيتان/g, '2 آية'], [/([0-9٠-٩][0-9٠-٩٬,.٫]* )آيات/g, '$1آية'], [/مرة واحدة/g, '1 مرة'], [/مرتين|مرتان/g, '2 مرة'], [/([0-9٠-٩][0-9٠-٩٬,.٫]* )مرات/g, '$1مرة'],
   [/حديث واحد/g, '1 حديث'], [/حديثين|حديثان/g, '2 حديث'], [/([0-9٠-٩][0-9٠-٩٬,.٫]* )(?:أحاديث|حديثاً)/g, '$1حديث'], [/صيغة واحدة/g, '1 صيغة'], [/صيغتين/g, '2 صيغة'], [/([0-9٠-٩][0-9٠-٩٬,.٫]* )صيغ(?!ة)/g, '$1صيغة'],
   [/واحدة مكية/g, '1 مكية'], [/اثنتان مكيتان/g, '2 مكية'], [/واحدة مدنية/g, '1 مدنية'], [/اثنتان مدنيتان/g, '2 مدنية']];
-const CNT = CNT0.map(([re, r]) => [new RegExp('(?<![\\u0600-\\u06FF])' + re.source, 'g'), r]);
+const CNT = CNT0.map(([re, r]) => LB_OK ? [new RegExp('(?<![\\u0600-\\u06FF])' + re.source, 'g'), r] : [new RegExp('(^|[^\\u0600-\\u06FF])(?:' + re.source + ')', 'g'), (m, p) => p + m.slice(p.length).replace(new RegExp('^(?:' + re.source + ')$'), r)]);
 function trRx(c) {
   if (I18N.rx) for (const [re, out] of I18N.rx) { const g = c.match(re); if (!g) continue; let bad = false;
     const r = out.replace(/\$(\d)/g, (_, i) => g[i] ?? '').replace(/%(\d)/g, (_, i) => { if (g[i] == null || g[i] === '') return ''; const t = ARX.test(g[i]) ? trKey(g[i]) : g[i]; if (t == null) bad = true; return t ?? ''; });
@@ -4120,7 +4124,7 @@ function trLookup(k) {
 }
 function trKey(k) {
   let v = trLookup(k); if (v != null) return v;
-  if (surRx) { const names = []; const k3 = k.replace(surRx, (m, a) => { names.push(I18N.sur[a]); return '@'; }); if (names.length) { v = trLookup(k3); if (v != null) { let q = 0; return v.replace(/@(\d+)?/g, (m, i) => (i ? names[i - 1] : names[q++]) ?? ''); } } }
+  if (surRx) { const names = []; const k3 = k.replace(surRx, (m, a, b) => { names.push(I18N.sur[LB_OK ? a : b]); return LB_OK ? '@' : a + '@'; }); if (names.length) { v = trLookup(k3); if (v != null) { let q = 0; return v.replace(/@(\d+)?/g, (m, i) => (i ? names[i - 1] : names[q++]) ?? ''); } } }
   for (const sep of [' | ', ' · ', ' — ', '؛ ', '، ', ': ', ' و']) if (k.includes(sep)) { const parts = k.split(sep).map(p => ARX.test(p) ? trKey(p) : p); if (parts.every(p => p != null)) return parts.join(sep === '، ' ? ', ' : sep === '؛ ' ? '; ' : sep === ' و' ? ' and ' : sep); }
   return null;
 }
@@ -4153,7 +4157,7 @@ function mtQueue(nd) {
   let e = MT.q.get(k); if (!e) MT.q.set(k, e = []); e.push([nd, src]);
   clearTimeout(MT.t); MT.t = setTimeout(mtFlush, 200);
 }
-function mtSplit(k) { if (k.length <= 4000) return [k]; const out = []; let cur = ''; for (const s of k.split(/(?<=[.!؟?،:])\s+/)) { if (cur && cur.length + s.length > 3800) { out.push(cur); cur = ''; } cur += (cur ? ' ' : '') + s; } if (cur) out.push(cur); return out.flatMap(x => x.length > 4000 ? x.match(/[\s\S]{1,3800}/g) : [x]); }
+function mtSplit(k) { if (k.length <= 4000) return [k]; const out = []; let cur = ''; for (const s of splitAfter(k, '.!؟?،:')) { if (cur && cur.length + s.length > 3800) { out.push(cur); cur = ''; } cur += (cur ? ' ' : '') + s; } if (cur) out.push(cur); return out.flatMap(x => x.length > 4000 ? x.match(/[\s\S]{1,3800}/g) : [x]); }
 async function mtFlush() {
   const entries = [...MT.q.entries()].map(([k, nodes]) => ({ k, nodes, parts: mtSplit(k), res: [] })); MT.q.clear();
   const flat = entries.flatMap(e => e.parts.map((p, i) => [e, i, p]));
@@ -4226,7 +4230,7 @@ async function i18nInit() {
   html.lang = LANG; html.dir = rtl ? 'rtl' : 'ltr'; html.classList.add('i18n', rtl ? 'i18n-rtl' : 'i18n-ltr');
   const loadDict = async code => { if (I18N.dict) return true; try { const d = await getJSON(`data/i18n/${code}.json`); I18N.sur = d.__surahs; I18N.rx = (d.__rx || []).map(([a, b]) => [new RegExp('^' + a + '$'), b]); delete d.__surahs; delete d.__rx; I18N.dict = d; I18N.dictCode = code;
     const names = Object.keys(I18N.sur).sort((a, b) => b.length - a.length).map(x => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-    surRx = new RegExp(`(?<![\\u0600-\\u06FF])(${names.join('|')})(?=:? #|$|[،؛)﴾]| ←| →)`, 'g'); return true; } catch (e) { return false; } };
+    surRx = new RegExp(LB_OK ? `(?<![\\u0600-\\u06FF])(${names.join('|')})(?=:? #|$|[،؛)﴾]| ←| →)` : `(^|[^\\u0600-\\u06FF])(${names.join('|')})(?=:? #|$|[،؛)﴾]| ←| →)`, 'g'); return true; } catch (e) { return false; } };
   // المعاني: لغة الزائر إن وُجدت لها ترجمة معتمدة، وإلا الإنجليزية
   I18N.meanCode = langRow(LANG) ? LANG : 'en';
   const meanP = gz(`data/tr/${I18N.meanCode}.txt`).then(m => { I18N.mean = m; addMeanings(document.body); }).catch(() => {});
