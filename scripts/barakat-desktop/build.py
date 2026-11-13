@@ -32,6 +32,7 @@ open(OUT+'/web/document/index.html','w',encoding='utf-8').write(d)
 a=open(SRC+'/index.html',encoding='utf-8').read()
 a,k=GF.subn(FONT,a); assert k==1
 a=rep(a,'<li><a href="desktop/">نسخة الكمبيوتر</a></li>','',1)
+a=re.sub(r'\n<link rel="manifest"[^>]*>\n<link rel="apple-touch-icon"[^>]*>','',a)
 a=rep(a,'© بركات · نموذج عامل للتجربة، والبيانات محفوظة في هذا المتصفح فقط','© بركات · نسخة الكمبيوتر المستقلة · تعمل دون إنترنت، والبيانات محفوظة على هذا الجهاز وحده',1)
 a=rep(a,"const save=()=>store.set(KEY,JSON.stringify(db));",
 """const SRV=location.protocol==='http:'&&/^(127\\.0\\.0\\.1|localhost)$/.test(location.hostname);
