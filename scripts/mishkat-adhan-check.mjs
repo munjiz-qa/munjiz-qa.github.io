@@ -17,8 +17,7 @@ for (const [name, opts] of [['الكمبيوتر', { viewport: { width: 1280, he
   await p.clock.runFor(ev.at - now + 3000);
   const sh = await p.evaluate(() => window.__shown);
   ok(sh.some(s => s[2] === 'adhan-' + ev.id && /^حان وقت صلاة/.test(s[0])), `${name}: إشعار عند دخول وقت ${ev.key}`);
-  ok(await p.evaluate(() => window.__ac >= 1), `${name}: النغمة تُشغَّل عند دخول الوقت`);
-  ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${name}: بلا تمرير أفقي`);
+    ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${name}: بلا تمرير أفقي`);
   ok(errs.length === 0, `${name}: بلا أخطاء في الصفحة`);
   await ctx.close();
 }
@@ -35,13 +34,10 @@ for (const [name, opts] of [['الكمبيوتر', { viewport: { width: 1280, he
   ok(await p.$eval('#adS', e => e.value) === 'custom' && /my-adhan/.test(await p.$eval('#adS', e => e.selectedOptions[0].textContent)), 'ملف الأذان من جهاز المستخدم يُحفظ على جهازه ويُختار');
   ok(await p.evaluate(async () => (await new Promise(r => { const q = indexedDB.open('mishkat-adhan', 1); q.onsuccess = () => { const g = q.result.transaction('f').objectStore('f').get('custom'); g.onsuccess = () => r(!!g.result); }; }))), 'الملف محفوظ في IndexedDB لا يغادر الجهاز'); await ctx.close(); }
 { const ctx = await b.newContext({ serviceWorkers: 'block' }), p = await ctx.newPage(); await p.goto(B + '#prayer'); await p.waitForSelector('#adS');
-  const o = await p.$$eval('#adS option', x => x.map(e => [e.value, e.disabled, e.selected]));
-  ok(['haram-makki', 'haram-madani', 'aqsa', 'misr', 'turkiye', 'maghrib', 'sham'].every(k => o.some(r => r[0] === k && r[1])) && o.length >= 10, 'أذانات العالم (الحرمان والأقصى ومصر وتركيا والمغرب والشام…) مدرجة وتنتظر التسجيل المرخّص ولا يمكن اختياره بلا ملف');
-  ok(o.find(r => r[2])?.[0] === 'chime', 'الصوت الافتراضي نغمة التنبيه حتى يتوفر تسجيل مرخّص');
-  await p.route('**/data/adhan/manifest.json', r => r.fulfill({ json: { muadhdhins: [{ id: 'haram-makki', name: 'أذان الحرم المكي', default: true, author: 'x', file: 'haram.mp3', license: 'CC0-1.0', source: 'https://example.org/h' }] } }));
-  await p.reload(); await p.waitForSelector('#adS');
-  ok(await p.$eval('#adS', e => e.value) === 'haram-makki', 'يصير أذان الحرم المكي الافتراضي فور توفر تسجيله المرخّص'); await ctx.close(); }
-{ const ctx = await b.newContext(), p = await ctx.newPage(); await p.goto(B + '#prayer'); await p.waitForSelector('#adOn');
-  const lic = await p.evaluate(async () => { const j = await (await fetch('data/adhan/manifest.json')).json(); return j.licenses_allowed.join(); });
-  ok(/CC0-1.0/.test(lic) && !/All-Rights/.test(lic), 'قائمة الرخص المقبولة مفتوحة فقط'); await ctx.close(); }
+  const o = await p.$$eval('#adS option', x => x.map(e => e.value));
+  ok(o.length === 1 && o[0] === 'none', 'لا صوت أذان مضمَّناً: الخيار الوحيد إشعار صامت حتى يختار المستخدم ملفه');
+  ok(await p.evaluate(() => typeof adhanTone === 'undefined' && typeof chime === 'undefined'), 'لا مولِّد صوت في الشيفرة');
+  const dead = await p.evaluate(async () => (await fetch('data/adhan/manifest.json')).status); ok(dead === 404, 'لا ملفات أذان ولا manifest في المنصة');
+  ok(/لا صوت أذان مضمَّناً/.test(await p.textContent('#adhanBox')), 'الصفحة تبيّن أن الصوت من ملف المستخدم فقط');
+  await ctx.close(); }
 await b.close(); process.exit(fail ? 1 : 0);

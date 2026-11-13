@@ -1,5 +1,5 @@
 // «خبر»: الواجهة من الذاكرة المؤقتة، والبيانات من الشبكة أولاً حتى تظهر أحدث خلاصة دائماً.
-const V='khabar-v4',SHELL=['./','index.html','assets/khabar.css','assets/app.js','assets/config.js','assets/icon.svg','manifest.webmanifest','pwa-install.js'];
+const V='khabar-v5',SHELL=['./','index.html','assets/khabar.css','assets/app.js','assets/config.js','assets/icon.svg','manifest.webmanifest','pwa-install.js'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(SHELL)));self.skipWaiting()});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x.startsWith('khabar-')&&x!==V).map(x=>caches.delete(x)))));self.clients.claim()});
 self.addEventListener('fetch',e=>{

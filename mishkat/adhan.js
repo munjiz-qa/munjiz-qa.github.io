@@ -4,12 +4,11 @@
 (() => {
   if (typeof prCfg !== 'function' || typeof prDay !== 'function') return;
   const AR = LANG === 'ar', T = (a, e) => AR ? a : e, KEY = 'adhan', ADH = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
-  const OK_LIC = ['CC0-1.0', 'PD', 'CC-BY-4.0', 'CC-BY-3.0', 'CC-BY-SA-4.0', 'CC-BY-SA-3.0', 'Own-permission'];
-  const cfgA = () => Object.assign({ on: false, p: { fajr: 1, dhuhr: 1, asr: 1, maghrib: 1, isha: 1 }, s: 'chime', v: 0.8 }, LS.get(KEY, {}) || {});
+    const cfgA = () => Object.assign({ on: false, p: { fajr: 1, dhuhr: 1, asr: 1, maghrib: 1, isha: 1 }, s: 'none', v: 0.8 }, LS.get(KEY, {}) || {});
   const saveA = c => LS.set(KEY, c);
-  const effSound = async c => { if ((LS.get(KEY, {}) || {}).s) return c.s; const d = (await loadManifest()).find(m => m.default && !m.pending); return d ? d.id : 'chime'; };
+  const effSound = async c => c.s;
   const supportsTrigger = () => typeof window.TimestampTrigger === 'function' && 'showTrigger' in Notification.prototype;
-  let timers = [], manifest = null, lastAudio = null;
+  let timers = [], lastAudio = null;
 
   /* ---------- الأحداث القادمة: خمس صلوات لثلاثة أيام قادمة ---------- */
   function upcoming(horizonDays = 3) {
@@ -26,32 +25,13 @@
   const msgFor = key => { const P = prPlace(prCfg()), nm = prName(prObj(key));
     return { title: T(`حان وقت صلاة ${nm}`, `It is time for ${nm} prayer`), body: T(`حيّ على الصلاة · حسب مواقيت ${P.city}`, `Prayer times for ${P.city}`) }; };
 
-  /* ---------- الصوت: نغمة أصلية مولَّدة بـ WebAudio (لا ملف ولا رخصة)، أو تسجيل مرخّص ---------- */
-  function chime(vol) {
-    try { const C = new (window.AudioContext || window.webkitAudioContext)(), g = C.createGain(); g.gain.value = Math.max(0.05, Math.min(1, vol)); g.connect(C.destination);
-      const notes = [392, 494, 587, 784, 587, 494, 392]; // سلّم هادئ صاعد ثم هابط
-      notes.forEach((f, i) => { const t0 = C.currentTime + i * 0.55;
-        [1, 2, 3.01].forEach((m, j) => { const o = C.createOscillator(), e = C.createGain(); o.type = 'sine'; o.frequency.value = f * m;
-          e.gain.setValueAtTime(0, t0); e.gain.linearRampToValueAtTime(0.5 / (j + 1.5), t0 + 0.02); e.gain.exponentialRampToValueAtTime(0.0008, t0 + 1.6);
-          o.connect(e); e.connect(g); o.start(t0); o.stop(t0 + 1.7); }); });
-      setTimeout(() => C.close().catch(() => {}), 6500); return true; } catch (e) { return false; }
-  }
-  async function loadManifest() {
-    if (manifest) return manifest;
-    try { const j = await (await fetch('data/adhan/manifest.json', { cache: 'no-cache' })).json();
-      manifest = (j.muadhdhins || []).filter(m => m && /^[\w-]+$/.test(m.id || '') && m.name && (m.pending === true || (/^[\w-]+\.(mp3|ogg|m4a|opus)$/.test(m.file || '') && OK_LIC.includes(m.license) && /^https:\/\//.test(m.source || '') && m.author))); }
-    catch (e) { manifest = []; }
-    return manifest;
-  }
+  /* ---------- الصوت: لا صوت مضمَّن في المنصة؛ يختار المستخدم ملف أذان من جهازه فيبقى عليه ---------- */
   const idb = (mode, fn) => new Promise((res, rej) => { const r = indexedDB.open('mishkat-adhan', 1); r.onupgradeneeded = () => r.result.createObjectStore('f'); r.onerror = () => rej(r.error);
     r.onsuccess = () => { const tx = r.result.transaction('f', mode), q = fn(tx.objectStore('f')); tx.oncomplete = () => res(q.result); tx.onerror = () => rej(tx.error); }; });
   async function play(sound, vol) {
     if (lastAudio) { try { lastAudio.pause(); } catch (e) {} lastAudio = null; }
-    if (!sound || sound === 'none') return 'none';
-    if (sound === 'custom') { try { const b = await idb('readonly', st => st.get('custom')); if (b) { const a = new Audio(URL.createObjectURL(b)); a.volume = vol; lastAudio = a; await a.play(); return 'file'; } } catch (e) { return 'blocked'; } return chime(vol) ? 'chime' : 'blocked'; }
-    if (sound !== 'chime') { const m = (await loadManifest()).find(x => x.id === sound);
-      if (m) { try { const a = new Audio('data/adhan/' + m.file); a.volume = vol; lastAudio = a; await a.play(); return 'file'; } catch (e) { return 'blocked'; } } }
-    return chime(vol) ? 'chime' : 'blocked';
+    if (sound !== 'custom') return 'none';
+    try { const b = await idb('readonly', st => st.get('custom')); if (!b) return 'none'; const a = new Audio(URL.createObjectURL(b)); a.volume = vol; lastAudio = a; await a.play(); return 'file'; } catch (e) { return 'blocked'; }
   }
 
   /* ---------- الإشعار والجدولة ---------- */
@@ -85,7 +65,7 @@
   const esc2 = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   async function ui() {
     const box = document.getElementById('adhanBox'); if (!box) { schedule(); return; }
-    const c = cfgA(), ms = await loadManifest(); c.s = await effSound(c); const perm = 'Notification' in window ? Notification.permission : 'unsupported';
+    const c = cfgA(); const perm = 'Notification' in window ? Notification.permission : 'unsupported';
     const status = !c.on ? T('التنبيه متوقف.', 'Alerts are off.')
       : perm === 'denied' ? T('الإشعارات محجوبة في إعدادات المتصفح؛ فعّلها ليصلك التنبيه.', 'Notifications are blocked in your browser settings; allow them to get alerts.')
       : perm === 'unsupported' ? T('هذا المتصفح لا يدعم الإشعارات؛ يعمل الصوت والتطبيق مفتوح.', 'This browser has no notifications; sound plays while the app is open.')
@@ -95,16 +75,13 @@
       <label class="chk"><input type="checkbox" id="adOn"${c.on ? ' checked' : ''}> ${T('نبّهني عند دخول وقت الصلاة', 'Alert me when a prayer time starts')}</label>
       <div class="toolbar">${ADH.map(k => `<label class="chk"><input type="checkbox" data-adk="${k}"${c.p[k] ? ' checked' : ''}> ${esc2(prName(prObj(k)))}</label>`).join('')}</div>
       <div class="prform"><label class="field"><span>${T('الصوت', 'Sound')}</span><select id="adS">
-        <option value="chime"${c.s === 'chime' ? ' selected' : ''}>${T('نغمة تنبيه هادئة (أصلية)', 'Soft alert tone (original)')}</option>
-        <option value="none"${c.s === 'none' ? ' selected' : ''}>${T('إشعار صامت بلا صوت', 'Silent notification')}</option>
-        ${c.cn ? `<option value="custom"${c.s === 'custom' ? ' selected' : ''}>${esc2(T('ملفي: ', 'My file: ') + c.cn)}</option>` : ''}
-        ${ms.map(m => `<option value="${esc2(m.id)}"${m.pending ? ' disabled' : ''}${c.s === m.id ? ' selected' : ''}>${esc2(mName(m))}${m.pending ? T(' (بانتظار التسجيل المرخّص)', ' (awaiting licensed recording)') : ''}</option>`).join('')}</select></label>
+        <option value="none"${c.s !== 'custom' ? ' selected' : ''}>${T('إشعار صامت بلا صوت', 'Silent notification')}</option>
+        ${c.cn ? `<option value="custom"${c.s === 'custom' ? ' selected' : ''}>${esc2(T('ملفي: ', 'My file: ') + c.cn)}</option>` : ''}</select></label>
         <label class="field"><span>${T('مستوى الصوت', 'Volume')}</span><input type="range" id="adV" min="0.1" max="1" step="0.05" value="${c.v}"></label></div>
  <label class="field"><span>${T('أذان من ملف على جهازك (يبقى على جهازك فقط)', 'Use an adhan file from your device (stays on your device only)')}</span><input type="file" id="adF" accept="audio/*"></label>
       <div class="toolbar"><button class="btn" id="adT" type="button">${T('جرّب الصوت الآن', 'Test the sound')}</button><button class="btn" id="adN" type="button">${T('جرّب إشعاراً', 'Test a notification')}</button><span class="muted small" id="adMsg"></span></div>
       <p class="muted small" id="adSt" style="margin:0">${esc2(status)}</p>
-      <p class="muted small" style="margin:0">${ms.filter(m => !m.pending).length ? ms.filter(m => !m.pending).map(m => esc2(`${mName(m)}: ${m.author} · ${m.license} · ${m.source}`)).join('<br>')
-        : T('أذانات الحرمين والأقصى ومصر وتركيا والمغرب والشام وغيرها قيد الإضافة: لا يُفعَّل إلا بتسجيل ثابت الرخصة أو بإذن صاحبه، وحتى ذلك الحين تُستعمل نغمة تنبيه هادئة. لا يُضاف تسجيل إلا بعد التحقق من رخصته (ملك عام أو رخصة مفتوحة أو إذن صاحبه)، وتُنشر بياناته هنا.', 'Adhans of Makkah, Madinah, Al-Aqsa, Egypt, Türkiye, Morocco, the Levant and more are being added: each is enabled only with a verified licence or the owner\'s permission; until then a soft alert tone is used. A recording is added only after its licence is verified (public domain, open licence or owner permission), with credits shown here.')}</p></section>`;
+      <p class="muted small" style="margin:0">${T('لا صوت أذان مضمَّناً في المنصة. اختر ملف أذان تحبه من جهازك فيُشغَّل عند دخول الوقت ويبقى على جهازك فقط.', 'No adhan sound is bundled. Pick an adhan file you like from your device; it plays at prayer time and stays on your device only.')}</p></section>`;
     const upd = ch => { const x = Object.assign(cfgA(), ch); saveA(x); schedule().then(() => ui()); };
     box.querySelector('#adOn').onchange = async e => { if (e.target.checked) { const p = await enable(); if (p === 'denied') $('#adMsg') && ($('#adMsg').textContent = ''); } upd({ on: e.target.checked }); };
     box.querySelectorAll('[data-adk]').forEach(el => el.onchange = () => upd({ p: Object.assign({}, cfgA().p, { [el.dataset.adk]: el.checked ? 1 : 0 }) }));

@@ -225,21 +225,35 @@ function viewToday(){
   main.append(allSources());
 }
 function viewZone(id){const z=BRIEF.zones.find(x=>x.id===id);main.append(edHead());if(z)main.append(zoneSection(z,true))}
+// عدد المواعيد بصيغة عربية سليمة: موعد واحد، موعدان، 3 مواعيد، 11 موعداً
+// مدى التاريخين: «13–17 نوفمبر 2026»، أو «31 أكتوبر – 13 نوفمبر 2026» إذا اختلف الشهر
+const fmtRange=(a,b)=>{const A=fmtDate(a).split(' '),B=fmtDate(b);return a.slice(0,7)===b.slice(0,7)?`${A[0]}–${B}`:a.slice(0,4)===b.slice(0,4)?`${A[0]} ${A[1]} – ${B}`:`${fmtDate(a)} – ${B}`};
+const nDates=n=>LANG==='en'?`${n} date${n===1?'':'s'}`:n===1?'موعد واحد':n===2?'موعدان':n<=10?`${n} مواعيد`:`${n} موعداً`;
 function viewRoadmap(){
   const h=el('div','ed-head');h.append(el('span','eyebrow',L('ما الذي ينتظرنا','What comes next')),el('h1',null,t('roadmap')),el('p','mute',t('road_intro')));main.append(h);
   // المواعيد التي مضت تختفي تلقائياً بتوقيت الدوحة، حتى لو تأخر تحديث الخلاصة
   const dp=dohaParts(new Date()),today=`${dp.year}-${dp.month}-${dp.day}`;
-  const items=[...BRIEF.roadmap].filter(r=>!r.date||r.date>=today).sort((a,b)=>(a.date||'9999').localeCompare(b.date||'9999'));
-  if(!items.length){main.append(el('p','empty',L('لا مواعيد قادمة مسجّلة الآن، وتُحدَّث مع الخلاصة التالية.','No upcoming dates are listed right now; they are refreshed with the next brief.')));return}
-  const ol=el('ol','road');items.forEach(r=>{const li=el('li'),w=el('div','when');if(r.date===today||(r.from&&r.from<=today&&r.date>=today))li.classList.add('is-today');
-    if(r.date){w.append(r.from?`${fmtDate(r.from).split(' ')[0]}–${fmtDate(r.date)}`:fmtDate(r.date));const d=new Date(r.date+'T00:00:00Z');w.append(el('small',null,r.from?'':DAYS[LANG][d.getUTCDay()]))}
+  // المواعيد بشهر دون يوم تختفي أيضاً بعد انقضاء شهرها
+  const month=today.slice(0,7),key=r=>r.date||(r.month?r.month+'-99':'9999');
+  const all=[...BRIEF.roadmap].filter(r=>r.date?r.date>=today:(!r.month||r.month>=month)).sort((a,b)=>key(a).localeCompare(key(b)));
+  if(!all.length){main.append(el('p','empty',L('لا مواعيد قادمة مسجّلة الآن، وتُحدَّث مع الخلاصة التالية.','No upcoming dates are listed right now; they are refreshed with the next brief.')));return}
+  // تصفية حسب الدائرة، مع عدد المواعيد في كل دائرة
+  const zf=FILTER.road||null,ch=el('div','chips road-filter');ch.setAttribute('role','group');ch.setAttribute('aria-label',L('تصفية حسب الدائرة','Filter by circle'));
+  [null,...ZONES].forEach(z=>{const n=z?all.filter(r=>r.zone===z).length:all.length;if(z&&!n)return;const b=el('button','chip',`${z?t(z):t('all')} (${n})`);b.type='button';b.setAttribute('aria-pressed',String(zf===z));b.onclick=()=>{FILTER.road=z;render()};ch.append(b)});
+  main.append(ch);
+  const items=zf?all.filter(r=>r.zone===zf):all;
+  const card=r=>{const li=el('li'),w=el('div','when');if(r.date===today||(r.from&&r.from<=today&&r.date>=today))li.classList.add('is-today');
+    if(r.date){w.append(r.from?fmtRange(r.from,r.date):fmtDate(r.date));const d=new Date(r.date+'T00:00:00Z');w.append(el('small',null,r.from?'':DAYS[LANG][d.getUTCDay()]))}
     else{w.append(r.month?fmtDate(r.month):'—');w.append(el('small',null,t('tbd')))}
     if(li.classList.contains('is-today'))w.append(el('span','today-chip',r.from&&r.date!==today?L('جارٍ الآن','Ongoing'):L('اليوم','Today')));
     const what=el('div','what'),zc=el('span','zchip',t(r.zone));zc.style.background=ZC[r.zone];zc.dataset.zone=r.zone;if(r.zone==='world')zc.style.color='var(--bg)';
     what.append(zc,el('p',null,r[LANG]),srcLine(r.src));
     if(r.scn){const s=el('p','scn');s.append(el('b',null,t('scenario')+' ('+t('outlook_tag')+'): '),r.scn[LANG]);what.append(s)}
-    li.append(w,what);ol.append(li)});
-  main.append(ol);
+    li.append(w,what);return li};
+  // المواعيد مجمّعة حسب الشهر، وما لم يُعلن موعده في آخر القائمة
+  const groups=[];items.forEach(r=>{const g=(r.date||r.month||'').slice(0,7)||'tbd';let last=groups[groups.length-1];if(!last||last.g!==g)groups.push(last={g,list:[]});last.list.push(r)});
+  groups.forEach(({g,list})=>{const hd=el('h2','road-month');hd.append(g==='tbd'?t('tbd'):fmtDate(g),el('span','count',nDates(list.length)));
+    const ol=el('ol','road');list.forEach(r=>ol.append(card(r)));main.append(hd,ol)});
 }
 function viewLedger(){
   const h=el('div','ed-head');h.append(el('span','eyebrow',L('كيف يعمل «خبر»','How Khabar works')),el('h1',null,L('سجل الشفافية','Transparency ledger')),

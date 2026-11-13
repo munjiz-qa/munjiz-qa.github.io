@@ -269,6 +269,8 @@ const mask = s => { s = String(s).replace(/\s+/g, " ").trim(); return s.length <
 const RULES = [
   { type: "مفتاح تشفير خاص", sev: "high", re: /-----BEGIN [A-Z ]*PRIVATE KEY-----/g },
   { type: "مفتاح وصول لخدمة سحابية", sev: "high", re: /\b(?:sk-[A-Za-z0-9_-]{20,}|AKIA[0-9A-Z]{16}|gh[pousr]_[A-Za-z0-9]{36}|AIza[0-9A-Za-z_-]{35}|xox[abprs]-[A-Za-z0-9-]{10,})\b/g },
+  { type: "رمز دخول JWT", sev: "high", re: /\beyJ[A-Za-z0-9_-]{8,}\.eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}/g },
+  { type: "رابط اتصال يتضمن بيانات دخول", sev: "high", re: /\b[a-z][a-z0-9+.-]{2,12}:\/\/[^\s:@\/]+:[^\s@\/]{3,}@[^\s\/]+/gi },
   { type: "كلمة مرور مكتوبة", sev: "high", re: /(?:password|passwd|pwd|كلمة\s*(?:ال)?مرور|كلمة\s*السر|الرقم\s*السري)\s*[:=：]\s*\S+/gi },
   { type: "رقم بطاقة بنكية", sev: "high", re: /\b(?:\d[ -]?){13,19}\b/g, test: m => { const d = m.replace(/\D/g, ""); return d.length >= 13 && d.length <= 19 && luhn(d) && !/^(\d)\1+$/.test(d); } },
   { type: "رقم حساب بنكي دولي IBAN", sev: "mid", re: /\b[A-Z]{2}\d{2}(?: ?[A-Z0-9]{4}){3,7}(?: ?[A-Z0-9]{1,4})?\b/g, test: m => m.replace(/\s/g, "").length >= 15 },

@@ -51,10 +51,10 @@ code{font-size:.8rem;overflow-wrap:anywhere}
 .nav a[aria-current="page"] .new{background:transparent;color:inherit}
 .rail .foot{margin-top:auto;padding:14px 8px 0;font-size:.75rem;color:var(--muted)}
 .topbar{display:none}
-.shell{margin-right:var(--rail);min-height:100vh}
+.shell{margin-right:var(--rail);min-height:100vh;min-height:100dvh}
 .wrap{max-width:1120px;margin:0 auto;padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
 main{padding-block:26px 70px}
-.searchbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.searchbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
 .searchbar .wrap{display:flex;gap:10px;align-items:center;padding-block:10px}
 .searchbar form{display:flex;gap:8px;flex:1;min-width:0}
 .searchbar input{flex:1;min-width:0;border:1px solid var(--line);background:var(--sheet);border-radius:999px;padding:8px 16px}
@@ -1348,7 +1348,7 @@ body.rec-open .toast{bottom:calc(190px + env(safe-area-inset-bottom,0px))}
 .mw-warn{margin:0;background:var(--saffron-soft);border-radius:10px;padding:6px 12px;line-height:1.8}
 .mw-tp[hidden],.mw-th[hidden]{display:none}
 
-/* ================= v3.0 · نور المشكاة: هوية بصرية أصلية — كوّة ضوء تتدرج من الأعلى، ونجمة هندسية من ثماني رؤوس، وأيقونات في إطار محراب */
+/* ================= مشكاة ٤: هوية بصرية أصلية — كوّة ضوء تتدرج من الأعلى، ونجمة هندسية من ثماني رؤوس، وأيقونات في إطار محراب */
 :root{--glow:rgba(232,176,86,.34);--glow-2:rgba(39,55,138,.10);--star:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23000' stroke-width='1.4'%3E%3Cpath d='M32 6l7 12 13-5-5 13 12 7-12 7 5 13-13-5-7 12-7-12-13 5 5-13-12-7 12-7-5-13 13 5z'/%3E%3Ccircle cx='32' cy='32' r='6'/%3E%3Cpath d='M0 0l8 8M64 0l-8 8M0 64l8-8M64 64l-8-8'/%3E%3C/g%3E%3C/svg%3E")}
 :root[data-theme="dark"]{--glow:rgba(232,176,86,.16);--glow-2:rgba(122,140,255,.12)}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--glow:rgba(232,176,86,.16);--glow-2:rgba(122,140,255,.12)}}
@@ -1367,3 +1367,105 @@ body{background-image:radial-gradient(900px 420px at 50% -120px,var(--glow),tran
 .nav .sec .dot{box-shadow:0 0 8px var(--pc)}
 @keyframes mkRise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.welcome,.path,.mindex,.today,.numbers{animation:none}}
+
+.tf-bkx{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0}.tf-bkx.own{border-color:var(--saffron)}.tf-bkx h4{margin:0 0 2px}.tf-bkx p{margin:4px 0;line-height:1.9}#bxK,#bxA{margin:6px 0}#bxK .chip,#bxA .chip{cursor:pointer;font:inherit}
+
+/* ================= مشكاة ٤ · تحديث بصري واضح: ورق دافئ، عمود تنقل ليلي بنقش ذهبي، لوحة ترحيب عميقة، وفئات بكتل ملوّنة */
+:root{--bg:#f7f2e8;--sheet:#fffdf8;--line:#e7dcc4;--accent:#1f2c78;--accent-soft:#ebe8fa}
+.path{--hb1:var(--pc);--hb2:color-mix(in srgb,var(--pc) 62%,#000)}
+:root[data-theme="dark"] .path{--hb1:color-mix(in srgb,var(--pc) 42%,#0b0f2a);--hb2:color-mix(in srgb,var(--pc) 26%,#0b0f2a)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .path{--hb1:color-mix(in srgb,var(--pc) 42%,#0b0f2a);--hb2:color-mix(in srgb,var(--pc) 26%,#0b0f2a)}}
+main h1,.welcome h1,.sec-head h2,.path-head h3{font-family:var(--f-brand)}
+/* عمود التنقل */
+.rail{background:radial-gradient(260px 200px at 100% 0,rgba(232,176,86,.22),transparent 70%),linear-gradient(180deg,#18205a,#0a0f33);border-left:0;color:#e9ecff;box-shadow:-6px 0 30px rgba(10,15,51,.25)}
+.rail::before{content:"";position:absolute;inset:0;background:#e8b056;opacity:.06;-webkit-mask:var(--star) 0 0/64px 64px;mask:var(--star) 0 0/64px 64px;pointer-events:none}
+.rail>*{position:relative}
+.rail .brand b{color:#fff;font-size:2rem}.rail .brand small{color:#b9c0f0}
+.rail .brand img{box-shadow:0 0 0 1px rgba(232,176,86,.6),0 0 26px rgba(232,176,86,.55)}
+.rail .nav a{color:#dfe3ff;border-radius:11px}.rail .nav a:hover{background:rgba(255,255,255,.1)}
+.rail .nav a[aria-current="page"]{background:linear-gradient(90deg,#f0c070,#e8b056);color:#2a1d00;font-weight:600;box-shadow:0 4px 14px rgba(232,176,86,.4)}
+.rail .nav .sec{color:color-mix(in srgb,var(--pc,#e8b056) 40%,#fff);letter-spacing:.02em}
+.rail .nav>.sec:first-child,.rail .foot{color:#b9c0f0}
+/* لوحة الترحيب */
+.welcome{background:radial-gradient(560px 280px at 85% -10%,rgba(232,176,86,.38),transparent 70%),linear-gradient(135deg,#1c2674,#0b1138);border:0;color:#fff;box-shadow:0 18px 46px rgba(15,22,80,.35)}
+.welcome::before{background:#e8b056;opacity:.13;-webkit-mask-image:linear-gradient(200deg,#000,transparent 75%),var(--star);mask-image:linear-gradient(200deg,#000,transparent 75%),var(--star)}
+.welcome h1{color:#fff;font-size:clamp(1.7rem,3.2vw,2.5rem);line-height:1.5}
+.welcome .lead,.welcome .muted{color:#cdd3ff}.welcome .eyebrow{color:#f0c070}
+.welcome .chip{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.22);color:#fff}
+.welcome .wl-pat{opacity:.25}
+/* بطاقات الفئات */
+.path{border:0;box-shadow:var(--shadow);padding:14px;gap:14px}
+.path-head{background:linear-gradient(160deg,var(--hb1),var(--hb2));color:#fff;border-radius:16px;padding:18px;position:relative;overflow:hidden}
+.path-head::after{content:"";position:absolute;inset:0;background:#fff;opacity:.1;-webkit-mask:var(--star) 100% 100%/64px 64px;mask:var(--star) 100% 100%/64px 64px;pointer-events:none}
+.path-head>*{position:relative}.path-head h3{color:#fff;font-size:1.55rem}.path-head p{color:rgba(255,255,255,.88)}
+.path .pnum{background:rgba(255,255,255,.2);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}
+.path::before{display:none}
+.mi-group .mi-t{font-family:var(--f-brand);font-size:1.15rem}
+@media (max-width:1100px){.path-head{padding:14px}}
+
+/* v4 mobile home fixes: no duplicate install button, readable search, compact install bar */
+#qinput::placeholder{text-overflow:ellipsis;white-space:nowrap;overflow:hidden}
+.searchbar form{min-width:0}
+@media (max-width:760px){
+  .shell:has(.instbar:not([hidden])) .instbtn{display:none}
+  .searchbar .wrap{gap:8px}
+  .searchbar .brand span{display:none}
+  .instbar .ib-t b{font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .instbar .ib-t small{font-size:.72rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .instbar img{width:34px;height:34px}
+  .instbar .btn{padding:7px 12px}
+}
+/* ---------- الإصدار ٥: باحث الأقسام، ورحلات مقترحة، وفهرس جوال مختصر قابل للتوسيع */
+.sfind{display:flex;align-items:center;gap:8px;background:var(--sheet);border:1px solid var(--line);border-radius:999px;padding:0 14px;min-height:46px;margin:0 0 10px;flex:1 1 260px;max-width:460px}
+.sfind:focus-within{border-color:var(--pc,#27378a);box-shadow:0 0 0 3px var(--accent-soft)}
+.sfind svg{width:20px;height:20px;flex:none;stroke:var(--muted);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.sfind input{flex:1;min-width:0;border:0;background:transparent;font:inherit;color:var(--ink);padding:10px 0;outline:0}
+.sf-n{white-space:nowrap}
+.sec-head .sfind{margin:0}
+.mi-t em{margin-inline-start:auto;font-style:normal;font-weight:500;font-size:.72rem;color:var(--muted);background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:0 8px}
+.mi-all{display:block;width:100%;margin-top:6px;min-height:44px;border:1px dashed var(--line);border-radius:12px;background:transparent;color:var(--pc);font:inherit;font-size:.84rem;font-weight:600;cursor:pointer}
+.mi-all:active{background:var(--accent-soft)}
+.mi-group.open .mi-all,.mi-group.finding .mi-all{color:var(--muted)}
+.mi-group.finding .mi-all{display:none}
+@media (max-width:640px){
+  .mi-group:not(.open):not(.finding) .mi-tile:nth-child(n+7){display:none}
+  .mindex .sfind{max-width:none;margin-top:2px}
+}
+.pcount{display:inline-block;margin-top:4px;font-size:.78rem;opacity:.85}
+.journeys{display:block}
+.jr-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.jr{background:var(--sheet);border:1px solid var(--line);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:2px}
+.jr>b{font-size:1.02rem}
+.jr>small{color:var(--muted);margin-bottom:6px}
+.jr ol{list-style:none;counter-reset:jr;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.jr li{counter-increment:jr}
+.jr-step{display:flex;align-items:center;gap:8px;min-height:44px;padding:6px 8px;border-radius:12px;text-decoration:none;color:var(--ink);font-size:.86rem;line-height:1.3}
+.jr-step::before{content:counter(jr,arabic-indic);flex:none;width:22px;height:22px;border-radius:50%;background:var(--pc);color:#fff;font-size:.72rem;display:grid;place-items:center}
+.jr-step svg{display:none}
+.jr-step:hover,.jr-step:active{background:var(--accent-soft)}
+@media (max-width:1100px){.jr-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:640px){
+  .jr-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;padding-bottom:6px;scrollbar-width:none;margin-inline:-2px}
+  .jr{flex:0 0 78%;scroll-snap-align:start}
+}
+.drawer .sfind{max-width:none;margin:4px 0}
+
+/* v5 viewport hardening: never let any decoration widen the layout viewport (phones then shrink-to-fit / "zoom") */
+html{overflow-x:hidden;max-width:100%;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{overflow-x:clip;position:relative;max-width:100%;touch-action:manipulation}
+.shell{max-width:100%;min-width:0}
+.welcome{overflow:clip;max-width:100%}
+@media (max-width:760px){.welcome .wl-pat{width:200px;height:200px;inset:auto -40px -60px auto}html[dir=ltr] .welcome .wl-pat{inset:auto auto -60px -40px}}
+.hero2{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)}
+@media (max-width:860px){.hero2{grid-template-columns:minmax(0,1fr)}.np-grid{grid-template-columns:minmax(0,1fr)}}
+.hero2>*,.home2>*,.welcome>*{min-width:0}
+.welcome{min-width:0}
+
+/* آيفون (سفاري): خط الحقول أقل من 16px يجعل المتصفح يكبّر الصفحة عند التركيز على حقل ولا يعيدها؛ ولمسة بلا وميض وتمرير سلس */
+@supports (-webkit-touch-callout:none){
+  input,select,textarea,.searchbar input,.rec-f select,.mp-bar select,.mp-bar input{font-size:16px!important}
+  html{-webkit-tap-highlight-color:transparent}
+  a,button,.chip{-webkit-touch-callout:none}
+  .tabbar,.recbar,.rail{-webkit-transform:translateZ(0);transform:translateZ(0)}
+  input[type=search]{-webkit-appearance:none;appearance:none}
+}
