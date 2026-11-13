@@ -35,7 +35,7 @@ ok((await p.$$('.path')).length >= 4 && (await p.$$('.path .scard')).length >= 2
   ok(k.s === 5 && k.a >= 5 && k.q === 3 && st === 3, 'قصة سفينة نوح: ٥ مشاهد مصوّرة بآياتها، و٣ أسئلة تمنح النجوم');
   await m.evaluate(() => location.hash = 'ulum'); await m.waitForSelector('#u-nuzul .u-q blockquote', { timeout: 60000 }).catch(() => {});
   const u = await m.evaluate(() => ({ ch: document.querySelectorAll('.u-ch').length, ix: document.querySelectorAll('.u-index li').length, q: document.querySelectorAll('#u-nuzul .u-q').length, a: document.querySelectorAll('#u-nuzul .u-ev .ayah').length }));
-  ok(u.ch >= 20 && u.ix === u.ch && u.q >= 3 && u.a >= 5, 'علوم القرآن: أبواب مسلسلة بفهرسها، وشواهد الباب الأول بآياتها ونقول المفسرين');
+  ok(u.ch >= 25 && u.ix === u.ch && u.q >= 3 && u.a >= 5, 'علوم القرآن: أبواب مسلسلة بفهرسها، وشواهد الباب الأول بآياتها ونقول المفسرين');
   for (const [v, min, nm] of [['duaa', 30, 'أدعية القرآن'], ['nisaa', 40, 'ركن المرأة في القرآن'], ['rijal', 40, 'ركن الرجل في القرآن'], ['shifa', 30, 'الأمراض والعلاج في القرآن'], ['usra', 35, 'ركن الأسرة في القرآن']]) {
     await m.evaluate(h => location.hash = h, v); await m.waitForSelector('.th-item', { timeout: 30000 }).catch(() => {});
     await m.evaluate(() => { const d = document.querySelector('.th-item'); if (d) d.open = true; }); await m.waitForSelector('.th-item .u-tf blockquote', { timeout: 60000 }).catch(() => {});
