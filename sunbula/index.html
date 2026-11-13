@@ -823,7 +823,7 @@ function renderApp(){
    </aside>
    <main class="main">
      <header class="topbar"><span class="mbrand">${LOGO}</span><h1>${TITLES[S.view]}</h1>
-       <div class="sp"><span class="pill ${open?'ok live':'bad'}" title="${open?'السوق مفتوح':'التداول متوقف'}"><span class="dot"></span><span class="pt">${open?'السوق مفتوح':'التداول متوقف'}</span></span>${admin?'':`<button class="iconbtn bell" data-act="notifs" data-bell aria-label="الإشعارات">${I.bell}</button>`}<button class="iconbtn" data-act="theme" aria-label="تبديل الوضع الليلي" title="الوضع الليلي">${I.moon}</button>
+       <div class="sp">${(()=>{const bm=!admin&&brOn()?brMktOpen():null;const on=bm===null?open:(open&&bm);const t=bm===null?(open?'السوق مفتوح':'التداول متوقف'):(!open?'التداول متوقف':bm?'السوق الأمريكي مفتوح':'السوق الأمريكي مغلق');return `<span class="pill ${on?'ok live':'bad'}" title="${t}"><span class="dot"></span><span class="pt">${t}</span></span>`})()}${admin?'':`<button class="iconbtn bell" data-act="notifs" data-bell aria-label="الإشعارات">${I.bell}</button>`}<button class="iconbtn" data-act="theme" aria-label="تبديل الوضع الليلي" title="الوضع الليلي">${I.moon}</button>
        <button class="iconbtn" data-act="logout" title="تسجيل الخروج" aria-label="تسجيل الخروج">${I.out}</button></div></header>
      <div class="content" id="content">${(VIEWS[S.view]||VIEWS.dash)(u)}</div>
    </main>
@@ -1323,6 +1323,7 @@ try{BR.cfg=JSON.parse(localStorage.getItem(BKEY)||'null')}catch(e){BR.cfg=null}
 function brSaveCfg(c){BR.cfg=c;try{c?localStorage.setItem(BKEY,JSON.stringify(c)):localStorage.removeItem(BKEY)}catch(e){}}
 const LIVE_SYMS=STOCKS.filter(x=>x.us!==false).map(x=>x.s);
 const brOn=()=>!!(BR.cfg&&me()&&me().role==='investor'&&BR.cfg.userId===me().id);
+const brMktOpen=()=>{const c=BR.clock;if(!c)return null;const now=Date.now();if(c.is_open)return now<Date.parse(c.next_close);return now>=Date.parse(c.next_open)&&now<Date.parse(c.next_open)+6.5*36e5};
 const brLive=()=>BR.quoteAt&&Date.now()-BR.quoteAt<120000;
 const brOpenSt=['new','accepted','pending_new','partially_filled','accepted_for_bidding','pending_replace','held'];
 const ORD_ST={new:'جديد',accepted:'مقبول، بانتظار التنفيذ',pending_new:'قيد الإرسال',partially_filled:'نُفّذ جزئياً',filled:'نُفّذ',canceled:'أُلغي',expired:'انتهت صلاحيته',rejected:'مرفوض',done_for_day:'انتهى لليوم',replaced:'استُبدل',held:'معلّق'};
@@ -1345,10 +1346,10 @@ async function brQuotes(){
 async function brSync(rerender){
   if(!brOn()||BR.busy)return;BR.busy=true;
   try{const [a,pos,ord,clk]=await Promise.all([brFetch('/v2/account'),brFetch('/v2/positions'),brFetch('/v2/orders?status=all&limit=30&direction=desc'),brFetch('/v2/clock')]);
-    BR.acct=a;BR.pos=pos||[];BR.orders=ord||[];BR.clock=clk;BR.err='';BR.syncAt=Date.now();
+    BR.acct=a;BR.pos=(pos||[]).filter(x=>Math.abs(+x.qty)>1e-9);BR.orders=ord||[];BR.clock=clk;BR.err='';BR.syncAt=Date.now();
     try{BR.hist=await brFetch('/v2/account/portfolio/history?period=1M&timeframe=1D')}catch(e){}
     const u=me(),eq=+a.equity,le=+a.last_equity;
-    u.broker={acct:a.account_number,status:a.status,env:'paper',equity:eq,cash:+a.cash,day:eq-le,sync:Date.now(),positions:BR.pos.length};
+    u.broker={mkt:brMktOpen(),acct:a.account_number,status:a.status,env:'paper',equity:eq,cash:+a.cash,day:eq-le,sync:Date.now(),positions:BR.pos.length};
     const td=new Date().toDateString();
     if(u.brDay!==td&&le>0){u.brDay=td;notify(u.id,`التقرير اليومي لحسابك التجريبي لدى الوسيط: القيمة ${mI(eq)}، وربح أو خسارة اليوم ${mI(eq-le)} (${pTxt((eq/le-1)*100)})، وعدد المراكز ${BR.pos.length}.`)}
     await stratDaily();
@@ -1398,7 +1399,7 @@ function brView(u){
   const eq=+a.equity,le=+a.last_equity,day=eq-le,dayP=le?(eq/le-1)*100:0;
   const hist=(BR.hist&&BR.hist.equity||[]).filter(v=>v!=null&&v>0);
   const syms=LIVE_SYMS.map(s=>`<option value="${s}">${esc(SMAP[s].n)} (${s})</option>`).join('');
-  return `<div class="banner ${BR.err?'bad':'ok'}"><div><b>${BR.err?'آخر تحديث لم ينجح':'متصل بحسابك التجريبي لدى الوسيط'}</b><span class="muted">${BR.err?esc(BR.err):`الحساب <span class="num">${esc(a.account_number)}</span> · ${ck?(ck.is_open?'السوق الأمريكي مفتوح الآن، ويُغلق '+fDT(Date.parse(ck.next_close)):'السوق الأمريكي مغلق، ويفتح '+fDT(Date.parse(ck.next_open))):''} · آخر تحديث ${fDT(BR.syncAt)}`}</span></div><div class="row" style="gap:8px"><button class="btn sm ghost" data-act="brsync">تحديث</button><button class="btn sm gold" data-act="brtest" ${BR.testing?'disabled':''}>${BR.testing?'الفحص جارٍ…':'فحص شامل للمنظومة'}</button></div></div>
+  return `<div class="banner ${BR.err?'bad':'ok'}"><div><b>${BR.err?'آخر تحديث لم ينجح':'متصل بحسابك التجريبي لدى الوسيط'}</b><span class="muted">${BR.err?esc(BR.err):`الحساب <span class="num">${esc(a.account_number)}</span> · ${ck?(brMktOpen()?'السوق الأمريكي مفتوح الآن، ويُغلق '+fDT(Date.parse(ck.next_close)):'السوق الأمريكي مغلق، ويفتح '+fDT(Date.parse(ck.next_open))):''} · آخر تحديث ${fDT(BR.syncAt)}`}</span></div><div class="row" style="gap:8px"><button class="btn sm ghost" data-act="brsync">تحديث</button><button class="btn sm gold" data-act="brtest" ${BR.testing?'disabled':''}>${BR.testing?'الفحص جارٍ…':'فحص شامل للمنظومة'}</button></div></div>
   <div class="kpis">
    <div class="kpi hero"><span>قيمة الحساب لدى الوسيط</span><b class="num">${mTxt(eq)}</b><small class="num" style="color:var(--wheat)">حساب تجريبي (Paper)</small></div>
    <div class="kpi"><span>ربح أو خسارة اليوم</span><b class="num ${day>=0?'gain':'loss'}">${(day>=0?'+':'')+mTxt(day)}</b><small class="num ${day>=0?'gain':'loss'}">${pTxt(dayP)}</small></div>
@@ -1495,7 +1496,7 @@ async function brSelfTest(){
     await run(9,async()=>{const h=await brFetch('/v2/account/portfolio/history?period=1M&timeframe=1D');return `يحتوي السجل على ${(h.equity||[]).length} نقطة.`});
   }
   await run(10,async()=>{notify(u.id,'اكتمل الفحص الشامل لربط الوسيط، والنتيجة التفصيلية في صفحة الوسيط.');return 'أُرسل إشعار بالنتيجة إلى مركز الإشعارات.'});
-  await run(11,async()=>{const n=(DB.brokerLog||[]).length-logN;if(steps[4].st==='pass'&&n<1)throw new Error('لم تُسجَّل الأوامر.');return `سُجّلت ${n} عملية لدى الوسيط، تظهر للمدير في لوحة الإدارة.`});
+  await run(11,async()=>{const n=(DB.brokerLog||[]).length-logN;if(steps[4].st==='pass'&&n<1)throw new Error('لم تُسجَّل الأوامر.');return `سُجّلت ${n===1?'عملية واحدة':n===2?'عمليتان':n+' عمليات'} لدى الوسيط، وتظهر للمدير في لوحة الإدارة.`});
   R.done=true;R.ok=!steps.some(s=>s.st==='fail');
   DB.brokerTests=(DB.brokerTests||[]).concat([{at:R.at,userId:u.id,ok:R.ok,pass:steps.filter(s=>s.st==='pass').length,total:steps.length}]).slice(-20);
   BR.testing=false;save();await brSync(false);render();toast(R.ok?'اكتمل الفحص: المنظومة تعمل بشكل صحيح.':'اكتمل الفحص، وبعض الخطوات تحتاج مراجعة.',!R.ok);
@@ -1516,7 +1517,7 @@ function dayPnl(u){
   for(const[id,sb]of Object.entries(u.subs)){const pg=pkgById(id);if(!pg)continue;const a=NAV(pg),b=navOf(pg,prevMap);d+=sb.units*(a-b);base+=sb.units*b}
   return {d,pct:base?d/base*100:0}
 }
-setInterval(()=>{if(brOn()){brQuotes();if(S.view==='broker'&&Date.now()-BR.syncAt>30000)brSync(true)}},15000);
+let brMk=null;setInterval(()=>{if(brOn()){brQuotes();if(S.view==='broker'&&Date.now()-BR.syncAt>30000)brSync(true);const m=brMktOpen();if(brMk!==null&&m!==brMk&&!$('#modal').innerHTML)render();brMk=m}},15000);
 
 /* ================= render & live ================= */
 function render(){
