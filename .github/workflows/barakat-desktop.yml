@@ -4,7 +4,7 @@ name: Barakat desktop
 on:
   push:
     branches: [main, 'claude/**']
-    paths: ['barakat/index.html', 'barakat/document/**', 'scripts/barakat-desktop/**', '.github/workflows/barakat-desktop.yml']
+    paths: ['barakat/index.html', 'barakat/sw.js', 'barakat/manifest.webmanifest', 'barakat/icons/**', 'barakat/document/**', 'scripts/barakat-desktop/**', '.github/workflows/barakat-desktop.yml']
   workflow_dispatch:
 permissions:
   contents: write
@@ -113,7 +113,7 @@ jobs:
       - run: npm init -y >/dev/null && npm i playwright@1.48.2 >/dev/null && npx playwright install --with-deps chromium
       - name: Wait until the published files match the repository
         run: |
-          for f in barakat/index.html barakat/document/index.html barakat/desktop/index.html; do
+          for f in barakat/index.html barakat/sw.js barakat/manifest.webmanifest barakat/document/index.html barakat/desktop/index.html; do
             for i in $(seq 1 40); do
               curl -fsSL "https://munjiz-qa.github.io/$f?t=$(date +%s)" -o /tmp/live && cmp -s /tmp/live "$f" && echo "published: $f" && break
               sleep 15

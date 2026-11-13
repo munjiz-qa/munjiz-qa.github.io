@@ -9,6 +9,10 @@
 <title>قُطب</title>
 <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="قُطب">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -139,5 +143,7 @@
   <symbol id="qmark" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="var(--mark-bg)"/><circle cx="32" cy="32" r="21" fill="none" stroke="var(--polar)" stroke-opacity=".5" stroke-width="2" stroke-dasharray="3 5"/><path d="M32 13l3.6 15.4L51 32l-15.4 3.6L32 51l-3.6-15.4L13 32l15.4-3.6z" fill="var(--polar)"/><circle cx="32" cy="32" r="3.2" fill="var(--mark-bg)"/><circle cx="48.8" cy="19.6" r="3.6" fill="var(--brass)"/></symbol>
 </svg>
 <script src="assets/qutb.js"></script>
+<script>if ("serviceWorker" in navigator && location.protocol === "https:") addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));</script>
+<script src="pwa-install.js" defer></script>
 </body>
 </html>
