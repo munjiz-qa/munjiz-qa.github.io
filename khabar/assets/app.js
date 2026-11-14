@@ -47,6 +47,14 @@ const MONTHS={ar:['يناير','فبراير','مارس','أبريل','مايو'
 const DAYS={ar:['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],en:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']};
 function fmtDate(iso,withDay){if(!iso)return '';const [y,m,d]=iso.split('-').map(Number);if(!d)return MONTHS[LANG][m-1]+' '+y;const dt=new Date(Date.UTC(y,m-1,d));return (withDay?DAYS[LANG][dt.getUTCDay()]+' ':'')+d+' '+MONTHS[LANG][m-1]+' '+y}
 function dohaParts(date){const p=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Qatar',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(date).map(x=>[x.type,x.value]));return p}
+// العدد مع المعدود بعربية سليمة: خبر واحد، خبران، 3 أخبار، 11 خبراً، 100 خبر
+const countAr=(n,[one,two,few,many,hundred])=>n===1?one:n===2?two:(n%100>=3&&n%100<=10)?`${n} ${few}`:(n%100>=11)?`${n} ${many}`:`${n} ${hundred}`;
+const nCount=(n,ar,en)=>LANG==='en'?`${n} ${n===1?en[0]:en[1]}`:countAr(n,ar);
+const nDates=n=>nCount(n,['موعد واحد','موعدان','مواعيد','موعداً','موعد'],['date','dates']);
+const nItems=n=>nCount(n,['خبر واحد','خبران','أخبار','خبراً','خبر'],['story','stories']);
+const nSources=n=>nCount(n,['مصدر موثّق واحد','مصدران موثّقان','مصادر موثّقة','مصدراً موثّقاً','مصدر موثّق'],['cited source','cited sources']);
+// مدى التاريخين: «13–17 نوفمبر 2026»، أو «31 أكتوبر – 13 نوفمبر 2026» إذا اختلف الشهر
+const fmtRange=(a,b)=>{const A=fmtDate(a).split(' '),B=fmtDate(b);return a.slice(0,7)===b.slice(0,7)?`${A[0]}–${B}`:a.slice(0,4)===b.slice(0,4)?`${A[0]} ${A[1]} – ${B}`:`${fmtDate(a)} – ${B}`};
 function fmtTime(isoDT){const p=dohaParts(new Date(isoDT));const h=+p.hour,m=p.minute;if(LANG==='en')return `${String(h).padStart(2,'0')}:${m} Doha time`;const h12=h%12||12;return `${h12}:${m} ${h<12?'صباحاً':'مساءً'} بتوقيت الدوحة`}
 
 let BRIEF=null,HEAD=null,ADMIN={breaking:null,hidden:[]},ARCH=null,LEDGER=null,AUTOB=null;
@@ -88,7 +96,7 @@ function header(){
     const a=el('a',null,(t('source'))+': '+(b.source||''));a.href=b.url;a.target='_blank';a.rel='noopener';w.append(a);br.append(w);br.hidden=false;
   }else if(AUTOB&&AUTOB.on&&AUTOB.until&&new Date(AUTOB.until)>new Date()&&(AUTOB.sources||[]).length>=2){
     br.textContent='';const w=el('div','wrap');w.append(el('b',null,t('breaking')),el('span',null,LANG==='en'?(AUTOB.text_en||AUTOB.text_ar):AUTOB.text_ar));
-    w.append(el('small','auto',`${t('auto_breaking')} · ${AUTOB.sources.length} ${L('مصادر مستقلة','independent sources')}`));
+    w.append(el('small','auto',`${t('auto_breaking')} · ${nCount(AUTOB.sources.length,['مصدر مستقل واحد','مصدران مستقلان','مصادر مستقلة','مصدراً مستقلاً','مصدر مستقل'],['independent source','independent sources'])}`));
     AUTOB.sources.forEach(s=>{const a=el('a',null,s[LANG]||s.ar);a.href=s.url;a.target='_blank';a.rel='noopener';w.append(a)});br.append(w);br.hidden=false;
   }else br.hidden=true;
 }
@@ -165,7 +173,7 @@ function zoneSection(z,full){
   const sec=el('section','zone');sec.id=z.id;
   const h=el('div','zone-head'),dot=el('span','dot');dot.style.background=ZC[z.id];
   const h2=full?el('h1',null,z.name[LANG]):el('h2',null,z.name[LANG]);if(full)h2.style.cssText='font-size:1.8rem;padding-top:12px';
-  h.append(dot,h2,el('span','count',`${items.length} ${t('items')}`));sec.append(h);
+  h.append(dot,h2,el('span','count',nItems(items.length)));sec.append(h);
   if(full){const cats=[...new Set(z.items.filter(i=>!hidden.has(i.id)).map(i=>i.cat[LANG]))];const ch=el('div','chips');
     [null,...cats].forEach(c=>{const b=el('button','chip',c||t('all'));b.type='button';b.setAttribute('aria-pressed',String((FILTER[z.id]||null)===c));b.onclick=()=>{FILTER[z.id]=c;render()};ch.append(b)});sec.append(ch)}
   const ul=el('ul','items');items.forEach(i=>ul.append(itemCard(i,z.id)));sec.append(ul);
@@ -177,7 +185,7 @@ function edHead(){
   const w=el('div','ed-head');w.append(el('span','eyebrow',t('edition_'+(BRIEF.edition||'am'))));
   w.append(el('h1',null,fmtDate(BRIEF.date,true)));
   const m=el('div','ed-meta');const n=BRIEF.zones.reduce((s,z)=>s+z.items.length,0);
-  m.append(el('span',null,`${t('published')}: ${fmtTime(BRIEF.published)}`),el('span',null,`${n} ${t('items')}`),el('span',null,`${Object.keys(BRIEF.sources).length} ${L('مصدراً موثّقاً','cited sources')}`));
+  m.append(el('span',null,`${t('published')}: ${fmtTime(BRIEF.published)}`),el('span',null,nItems(n)),el('span',null,nSources(Object.keys(BRIEF.sources).length)));
   w.append(m);
   if(BRIEF.auto)w.append(el('p','auto-note',L('خلاصة آلية: عناوين المصادر كما نشرتها، لكل خبر جهته وتاريخه ورابطه الأصلي. يُضاف التحليل والاستقراء حين تصدر الخلاصة التحريرية.','Automatic brief: the outlets\' own headlines, each with its outlet, date and original link. Analysis and outlook are added when the editorial brief is published.')));
   if('speechSynthesis' in window){const b=el('button','listen');b.type='button';const set=on=>{b.textContent='';b.innerHTML=on?ICON.stop:ICON.play;b.append(el('span',null,on?t('stop'):t('listen')));b.setAttribute('aria-pressed',String(on))};set(speaking());
@@ -225,10 +233,6 @@ function viewToday(){
   main.append(allSources());
 }
 function viewZone(id){const z=BRIEF.zones.find(x=>x.id===id);main.append(edHead());if(z)main.append(zoneSection(z,true))}
-// عدد المواعيد بصيغة عربية سليمة: موعد واحد، موعدان، 3 مواعيد، 11 موعداً
-// مدى التاريخين: «13–17 نوفمبر 2026»، أو «31 أكتوبر – 13 نوفمبر 2026» إذا اختلف الشهر
-const fmtRange=(a,b)=>{const A=fmtDate(a).split(' '),B=fmtDate(b);return a.slice(0,7)===b.slice(0,7)?`${A[0]}–${B}`:a.slice(0,4)===b.slice(0,4)?`${A[0]} ${A[1]} – ${B}`:`${fmtDate(a)} – ${B}`};
-const nDates=n=>LANG==='en'?`${n} date${n===1?'':'s'}`:n===1?'موعد واحد':n===2?'موعدان':n<=10?`${n} مواعيد`:`${n} موعداً`;
 function viewRoadmap(){
   const h=el('div','ed-head');h.append(el('span','eyebrow',L('ما الذي ينتظرنا','What comes next')),el('h1',null,t('roadmap')),el('p','mute',t('road_intro')));main.append(h);
   // المواعيد التي مضت تختفي تلقائياً بتوقيت الدوحة، حتى لو تأخر تحديث الخلاصة
