@@ -218,3 +218,10 @@ mark{background:var(--dawn-soft);color:inherit;border-radius:3px;padding:0 2px;b
 .road-filter{margin:4px 0 6px}
 .road-month{display:flex;align-items:baseline;gap:10px;font-size:1.25rem;margin:22px 0 0;padding-bottom:6px;border-bottom:2px solid var(--ink)}
 .road-month .count{margin-inline-start:auto;font-family:var(--body);font-size:.85rem;font-weight:400;color:var(--mute)}
+
+/* زر العودة إلى الأعلى: في الجهة المقابلة لزر تثبيت التطبيق */
+.to-top{position:fixed;z-index:35;inset-inline-end:16px;bottom:calc(18px + env(safe-area-inset-bottom,0px));width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.to-top[hidden]{display:none}
+.to-top:hover{background:var(--ink);color:var(--bg)}
+.to-top:focus-visible{outline:3px solid var(--dawn,#E39A2D);outline-offset:2px}
+@media print{.to-top{display:none}}
