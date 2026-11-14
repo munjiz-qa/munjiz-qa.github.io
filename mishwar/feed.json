@@ -1,15 +1,19 @@
 {
- "updated": "2026-11-14T03:07:05.584Z",
+ "updated": "2026-11-14T10:18:59.604Z",
  "weather": {
-  "temp": 20.6,
-  "cond": "صحو",
-  "icon": "sun",
-  "impact": "none",
-  "wind": 15.4,
-  "gust": 35.6,
-  "vis": 19.4,
-  "warning": "",
-  "advice": [],
+  "temp": 26.6,
+  "cond": "رياح قوية",
+  "icon": "wind",
+  "impact": "dust",
+  "wind": 24,
+  "gust": 51.5,
+  "vis": 23.6,
+  "warning": "رياح قوية مثيرة للغبار على الطرق الخارجية.",
+  "advice": [
+   "خفّف السرعة وشغّل المصابيح الأمامية.",
+   "أغلق النوافذ واستخدم تدوير الهواء الداخلي.",
+   "انتبه للرؤية المنخفضة على الطرق الخارجية."
+  ],
   "days": [
    {
     "day": "اليوم",
@@ -20,15 +24,15 @@
    },
    {
     "day": "غداً",
-    "hi": 27.7,
-    "lo": 19,
+    "hi": 27.6,
+    "lo": 18.9,
     "cond": "صحو",
     "rain": 0
    },
    {
     "day": "الاثنين",
     "hi": 28.4,
-    "lo": 19.9,
+    "lo": 19.8,
     "cond": "صحو",
     "rain": 0
    }
@@ -36,6 +40,14 @@
   "source": "Open-Meteo"
  },
  "news": [
+  {
+   "title": "طقس قطر اليوم: أمطار رعدية ورياح قوية وتدني الرؤية الأفقية",
+   "link": "https://news.google.com/rss/articles/CBMizgJBVV95cUxPWU81Yl95SmVrOW1aeHVsanJubzJYNzR6LXZVbDFGTlY1ZV9LQ3FET1VxaTBOOXU0MDBqSm93Mk1EaDlCMGF1bmstVnlaa0NMS0VGRVd6OEpzODQ0eGhKbF9wMU0tS3hONjNWVFNqQUVZVkk5MUlENEdoYmVJTjg1eHFjSHFNdFBnSW5HSDhyVWdlVDRpLWVmTzBMVWN1Y1ZBVVY0OU00RFE4VDF3YVFhTWxMMVVhZll4dGtBUFpNM1dWc0lfQmU1SXEza29ucGtmS3drU1Y3Z2pfNFE3b1dUQWMzYmQyUFNYekFJeDgtZnlJZTJIMVN1czRTQjZtcFVraTJlMFNhLUplYlFTeDBZaE5CVEZoOXFQOFVlNWp2TC1nQ18tX1FsNVRSWUdRSDdlUUNxaFhZVmNTS2dqVUFRSS05N2NLSGRtdXI1Y29R?oc=5",
+   "source": "منصة مشيرب",
+   "date": "2026-11-14T08:16:50.000Z",
+   "kind": "weather",
+   "lang": "ar"
+  },
   {
    "title": "\"أرصاد قطر\": تحذير بحري ورصد رياح قوية السرعة على بعض المناطق",
    "link": "https://news.google.com/rss/articles/CBMi3wNBVV95cUxORUNVbGREZllLNTltWnliSEpvMXY4UHNEY2F2eDJDcm9Wa3phM0dwSUdpVHpETTl1djJLOXdzS3VvWlBLVmJjaWJmZUhiT2JHbGhpMUNQb25xZEN4aVhYOTM0aC1pQXFIVzdRSzQxcnBDdEk5NldWX3RrOTM1R012N1BwckZrSVdfek5DMmN4QWFnbE1URGZSclZCUzZ3R2hTR3pxMDJiV19kVC12LWJQeTJHbGVBVUFrYmxJYTJkRXVDUlhDX3ZSTzFmcVBfYkk4TFNVS3pwcHJ5UDN1SlZPakZDUUZwNTVwTHJtUjdjZ2hWcTZ1Z3dSZUFGNTNta3h2WUZHZFBOU2FGT0YxWU1GazZYQkZ6bmh5QWlXS3ZSUUdGUUdvb1FWMVRTM2s1X2NmQ3BSWXB1N3VkWGpxbTZBQjRTVVVIUjZpb296WTM2Rk1UUFo2RzVpLU00cEhYYzJTYzQ1NnJJRVBfeUJ3SzhrTHM0LXQ1bHRhdGdIZ0FSQ1BjSTFHaDBSZS1icEEzelUyUjlmNno0RjNrM1U0MWdVNXhNSTF3bzJVZ0ppc3FFYkZ5VTVFN0hseEdqVkdDcmxLM3piVTVKNEUwRi1FeWgzUG9WUzh0MTdMX2hxeWlfYw?oc=5",
@@ -85,14 +97,6 @@
    "lang": "en"
   },
   {
-   "title": "Qatar expresses solidarity with UAE following traffic accident in Fujairah",
-   "link": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxOelpEb0NwQW5EcHFfRWJSOGNPeWxVQTY3T0ZKajEta2tYNzV3dVRLUGVGWFZkX2toWC1CeUVOVHIzcFQ3SV9HZk55YlNMRVJvbXBmemtDYTl4ZkZPUjRqU2JoYUZIM2VQeXRJcGp2a0FzMDIydE1vR3dmNXF2Ti1XaXU0aHFDX2ctSGNEcDVuSXNUTmlfSTQ1QlM3YjBKdDZtUmpSajJYc0hkLWZqQkNFLUs4aEJsd05NazFGblN5a3I?oc=5",
-   "source": "The Peninsula Qatar",
-   "date": "2026-11-13T10:30:23.000Z",
-   "kind": "traffic",
-   "lang": "en"
-  },
-  {
    "title": "State of Qatar expresses solidarity with UAE following a traffic accident in Fujairah",
    "link": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxQWHZVYVdhUnBiLW1ySlp0OUFPZDdURTNEV3dYWmpmQVIxS2hZZEtpTWRDeEpobU5YTmFPWnlocHpSbFNrWHpzR2QxV0xpeUlkYzF0bjAtOXljdzQzNUtXdElEMFJ2eVo4cHV1RUZJQkJacUFGQ0NWcUZzU2E0VTFSQllqZFdJVE9NZnZocmM2OVMwVjRRbW5pcE5UQ1JxY0JlZEU2dW9XUXd3QQ?oc=5",
    "source": "ILoveQatar.net",
@@ -105,6 +109,14 @@
    "link": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxPVEpPWFlQcWtUbGlhREpxb3JCeENIbVB3bjFPYjNuSWpYRThVcFhmUTdlNUtMc0pubVlPVmdJLXY1RXVNeGt1V0ExTE1OaU5SbzgybS1pbEU5NzAxN0lEYl9LbXNDNlREZFp5XzRkNmlyeHFIYXZiRVJTUmNrWG1ULUhDcmdIVThqdTZUR09FaW11WXdHbnJzSUdGNTIwc3NFSFF5VG1xYnJ5RzlHR1lqbGFSdkNvSWRpaFVDTFczdHg?oc=5",
    "source": "Motorcycle Sports",
    "date": "2026-11-13T09:59:56.000Z",
+   "kind": "traffic",
+   "lang": "en"
+  },
+  {
+   "title": "Qatar expresses solidarity with UAE following traffic accident in Fujairah",
+   "link": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxPVmVBWlpxTGlMblBld1ROYTNVUWU2amExQW5KNmIwMzhQQ09lc1dzQkxzTGxaZExZcXhvUVc3SW93LTgxbnp5Qy1YRTVqNjQ0ZllEMURzaHlEZWpUUUlCeFhHVkJDQmFHLWIxSHRwczVCdUljbkE2Q0pkdnRMNEZ5QnNsMzFOb010ZnVIMW5PbmpyVHNlWlBfYnNhQkxmT0owcmI2R1FqNzZSR0EyZGZTTWpYRWtkQXRKZVlrTGJBZUxXQUxKM2FpRHFIMFBBaVpy0gHQAUFVX3lxTE9WZUFaWnFMaUxuUGV3VE5hM1VRZTZqYTFBbko2YjAzOFBDT2VzV3NCTHNMbFpkTFlxeG9RVzdJb3ctODFuenlDLVhFNWo2NDRmWUQxRHNoeURlalRRSUJ4WEdWQkNCYUctYjFIdHBzNUJ1SWNuQTZDSmR2dEw0RnlCc2wzMU5vTXRmdUgxbk9uanJUc2VaUF9ic2FCTGZPSjByYjZHUWo3NlJHQTJkZlNNalhFa2RBdEplWWtMYkFlTFdBTEozYWlEcUgwUEFpWnI?oc=5",
+   "source": "Qatar Tribune",
+   "date": "2026-11-13T07:56:00.000Z",
    "kind": "traffic",
    "lang": "en"
   }
