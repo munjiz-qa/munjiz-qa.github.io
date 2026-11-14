@@ -36,6 +36,12 @@ function footer(){const f=document.querySelector('footer');if(!f||f.querySelecto
   facts.push([t('المقر','Office'),t(GROW.city.ar,GROW.city.en)]);
   facts.push([t('ساعات العمل','Hours'),t(GROW.hours.ar,GROW.hours.en)]);
   facts.forEach(([k,v])=>{if(!v)return;const s=el('span','gt-f');s.append(el('b',null,k+': '),el('span',null,v));w.appendChild(s)});
+  // live office status from the published office hours (6:00 to 18:00, Doha time UTC+3); when closed, offer to book a call
+  {const now=new Date(),d=new Date(now.getTime()+(now.getTimezoneOffset()+180)*60000),h=d.getHours()+d.getMinutes()/60,isOpen=h>=6&&h<18;
+   const msg=isOpen?t('المكتب مفتوح الآن حتى 6:00 مساءً','The office is open now until 6:00 pm'):h<6?t('المكتب مغلق الآن ويفتح اليوم 6:00 صباحاً','The office is closed now and opens today at 6:00 am'):t('المكتب مغلق الآن ويفتح غداً 6:00 صباحاً','The office is closed now and opens tomorrow at 6:00 am');
+   const s=el('span','gt-open '+(isOpen?'on':'off'));s.setAttribute('role','status');s.append(el('i',null,''),el('span',null,msg));
+   if(!isOpen){const a=el('a',null,t('احجز مكالمة','Book a call'));a.href=BASE+'call.html';s.append(' · ',a)}
+   w.appendChild(s)}
   if(GROW.map){const a=el('a','gt-map',t('📍 موقعنا على الخريطة','📍 Find us on the map'));a.href=GROW.map;a.target='_blank';a.rel='noopener';w.appendChild(a)}
   const pages=f.querySelector('a[href$="restaurants.html"]')?[]:(GROW.pages||[]);
   if(pages.length){const n=el('nav','grow-links');n.setAttribute('aria-label',t('صفحات تهمّك','Useful pages'));
