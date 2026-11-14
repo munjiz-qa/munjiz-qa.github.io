@@ -1,4 +1,4 @@
-<!doctype html><html lang="ar"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html lang="ar"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="app-icons/icon-180.png"><link rel="icon" href="app-icons/icon-192.png" type="image/png"><meta name="theme-color" content="#0B1E2D"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="الرازي"></head><body>
 <title>الرازي — سطح المكتب</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
@@ -457,4 +457,8 @@ applyPrefs();renderApps();
 setTimeout(()=>{const b=$('#boot');b.style.opacity=0;setTimeout(()=>{b.style.display='none'},500);openApp('welcome')},1200);
 </script>
 
+<script>if ("serviceWorker" in navigator && location.protocol === "https:") addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));</script>
+<style>/* زر التثبيت فوق شريط المهام في الجهة الخالية من سطح المكتب، فلا يغطي زر البدء ولا أيقونات سطح المكتب، وعلى الجوال شريط التثبيت عائم فوق شريط المهام بدل أعلى الشاشة حيث أزرار النافذة */.pwi-pill{bottom:calc(var(--razi-bar,56px) + 14px)!important;inset-inline-start:auto!important;inset-inline-end:18px!important}.pwi-bar{position:fixed!important;inset-inline:10px!important;top:auto!important;bottom:calc(var(--razi-bar,56px) + 10px)!important;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.3)}@media (max-width:760px){html.pwi-on body:has(.pwi-bar:not([hidden])) .win{bottom:calc(var(--razi-bar,56px) + 78px)!important}}</style>
+<script>(()=>{const b=document.getElementById("bar");if(!b)return;const f=()=>document.documentElement.style.setProperty("--razi-bar",Math.max(0,Math.round(innerHeight-b.getBoundingClientRect().top))+"px");if(window.ResizeObserver)new ResizeObserver(f).observe(b);addEventListener("resize",f);f()})();</script>
+<script src="pwa-install.js" defer></script>
 </body></html>
