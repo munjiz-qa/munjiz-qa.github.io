@@ -845,6 +845,18 @@ html[dir=ltr] .hq-matn{border-radius:10px 0 0 10px}
 @media (max-width:640px){.tw-i{padding:12px}.tw-q{font-size:1.35rem;line-height:2.1}.tw-ays{padding:4px 10px}.tw-hero::after{width:100px;height:100px}.tw-warn{flex-direction:column;gap:2px}.tw-grid{grid-template-columns:1fr}}
 @media print{.tw-links,.tw-tools{display:none}.tw-ays{background:none}.tw-i[hidden],.tw-ch[hidden]{display:block}}
 
+/* ---------- سِيَر نساء القرآن (#nsira) */
+.ns .ns-lsl{display:grid;gap:12px}
+.ns .ns-ls{border:1px solid var(--line,#d9d2c3);border-radius:14px;padding:14px;background:var(--panel,#fff);display:grid;gap:8px}
+.ns .ns-ls h3{margin:0;display:flex;gap:8px;align-items:flex-start;font-size:1.05rem;line-height:1.5}
+.ns .ns-ls h3 .u-n{flex:none}
+.ns .ns-sum{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.ns .ns-sum>div{border:1px solid var(--line,#d9d2c3);border-radius:12px;padding:12px;background:var(--panel,#fff)}
+.ns .ns-sum>div.g{border-color:var(--gold,#b8892f)}
+.ns .ns-sum b{display:block;margin-bottom:4px;font-size:.9rem;color:var(--muted,#6b6455)}
+.ns .ns-sum p{margin:0;line-height:1.8}
+@media (min-width:900px){.ns .ns-lsl{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
 /* ---------- نسخة الجوال المبسّطة: فهرس أقسام مختصر في أول الشاشة */
 .mindex{display:none}
 .mi-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px}
