@@ -1,4 +1,4 @@
-/* موسوعة القرآن الكريم · القراءة المتصلة: صفحات مصحف المدينة النبوية (٦٠٤ صفحات، ١٥ سطراً)
+/* مشكاة · المصحف المتصل: صفحات مصحف المدينة النبوية (٦٠٤ صفحات، ١٥ سطراً)
    النص: نص مجمع الملك فهد لطباعة المصحف الشريف (رواية حفص، الإصدار ١٨) بخط المجمع العثماني، دون أي تعديل.
    الصفحات والأسطر: على طبعة مصحف المدينة النبوية، وتطابقت صفحة كل آية مع بيانات المجمع (٦٢٣٦ من ٦٢٣٦).
    يعمل كاملاً دون إنترنت بعد أول تحميل، ولا يتصل بأي خدمة خارجية. */
@@ -212,9 +212,9 @@ function mpStep(d) { const sp = $('#mpRoot')?.classList.contains('mp-spread'); l
 async function mushafRead(p, opt = {}) {
   if (!$('#mpCss')) { const l = document.createElement('link'); l.id = 'mpCss'; l.rel = 'stylesheet'; l.href = 'mushaf.css'; document.head.appendChild(l); }
   if ($('#mpRoot') && MPV.data) { if (opt.surah) mpGo(MPV.data.hdr[opt.surah][0], Q.surahs[opt.surah - 1].first); else if (opt.ayah != null) mpGo(MPV.data.pageOf[opt.ayah], opt.ayah); else mpGo(p); return; }
-  V(`<p class="loading">جارٍ فتح القرآن الكريم…</p>`);
+  V(`<p class="loading">جارٍ فتح المصحف…</p>`);
   let D; try { [D] = await Promise.all([mpData(), new Promise(r => { const l = $('#mpCss'); if (l.sheet) r(); else { l.addEventListener('load', r); l.addEventListener('error', r); } }).then(() => document.fonts.load('20px "KFGQPC Hafs"', 'بِسۡمِ'))]); }
-  catch (e) { V(`<p class="loading">تعذّر فتح القرآن الكريم: ${esc(e.message)}</p>`); return; }
+  catch (e) { V(`<p class="loading">تعذّر فتح المصحف: ${esc(e.message)}</p>`); return; }
   if (!/^#p/.test(location.hash)) return; // انتقل الزائر إلى قسم آخر أثناء التحميل
   MPV.mode = ST.prefs.mpMode === 'flip' ? 'flip' : 'scroll'; MPV.zoom = Math.max(MP_ZMIN, Math.min(MP_ZMAX, Math.round(+ST.prefs.mpZoom || ({ '-1': 80, 1: 120, 2: 150, 3: 180 })[ST.prefs.mpSize] || 100))); MPV.font = MP_FONTS.some(f => f.k === ST.prefs.mpFont) ? ST.prefs.mpFont : 'hafs'; MPV.flow = false; MPV.lines = ST.prefs.mpLines === true; // الافتراضي «قراءة مريحة»، و«سطور المصحف» اختيار
   if (opt.surah) p = D.hdr[opt.surah][0]; else if (opt.ayah != null) p = D.pageOf[opt.ayah];
@@ -236,7 +236,7 @@ async function mushafRead(p, opt = {}) {
     <div class="mp-row mp-opts" id="mpOpts">
       <div class="seg" id="mpMode" role="group" aria-label="طريقة العرض"><button data-m="scroll" aria-pressed="false">قراءة متصلة</button><button data-m="flip" aria-pressed="false">تقليب الصفحات</button></div>
       <div class="seg" id="mpHz" role="group" aria-label="وضع الحفظ"><button data-h="0" aria-pressed="false">عرض كامل</button><button data-h="1" aria-pressed="false">إخفاء الآيات للحفظ</button><button data-h="2" aria-pressed="false">أول كلمة فقط</button></div>
-      <div class="seg" id="mpLay" role="group" aria-label="هيئة النص"><button data-l="0" aria-pressed="false">قراءة مريحة</button><button data-l="1" aria-pressed="false">سطور القرآن الكريم</button></div>
+      <div class="seg" id="mpLay" role="group" aria-label="هيئة النص"><button data-l="0" aria-pressed="false">قراءة مريحة</button><button data-l="1" aria-pressed="false">سطور المصحف</button></div>
       <label class="mp-fsel"><span>الخط</span><select id="mpFont" aria-label="نوع الخط">${MP_FONTS.map(f => `<option value="${f.k}">${f.n}</option>`).join('')}</select></label>
       <div class="mp-size" id="mpSize" role="group" aria-label="حجم الخط"><button class="btn" data-d="-1" aria-label="تصغير الخط">أ−</button><input type="range" id="mpZoom" min="${MP_ZMIN}" max="${MP_ZMAX}" step="${MP_ZSTEP}" aria-label="حجم الخط"><span id="mpSizeLbl" class="mp-sizel" aria-live="polite"></span><button class="btn" data-d="1" aria-label="تكبير الخط">أ+</button></div>
       <button class="btn" id="mpPrev" aria-label="الصفحة السابقة">→ السابقة</button><button class="btn" id="mpNext" aria-label="الصفحة التالية">التالية ←</button>

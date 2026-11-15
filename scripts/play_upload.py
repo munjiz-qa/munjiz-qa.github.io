@@ -19,8 +19,8 @@ code = bundle["versionCode"]
 print("uploaded versionCode", code)
 release = {"name": f"1.0.{code}", "versionCodes": [str(code)], "status": status,
            "releaseNotes": [
-               {"language": "ar", "text": "الإصدار الأول من تطبيق موسوعة القرآن الكريم."},
-               {"language": "en-US", "text": "The first release of the Holy Quran Encyclopedia."}]}
+               {"language": "ar", "text": "الإصدار الأول من تطبيق مشكاة."},
+               {"language": "en-US", "text": "The first release of Mishkat."}]}
 edits.tracks().update(packageName=package, editId=eid, track=track,
                       body={"track": track, "releases": [release]}).execute()
 edits.commit(packageName=package, editId=eid).execute()

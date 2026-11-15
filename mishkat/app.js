@@ -1,5 +1,5 @@
 'use strict';
-/* موسوعة القرآن الكريم. One codebase for the claude.ai build and the installable PWA build. */
+/* مشكاة — موسوعة القرآن الذكية. One codebase for the claude.ai build and the installable PWA build. */
 const BUILD = window.MISHKAT_BUILD || 'pwa';
 const IS_PWA = BUILD === 'pwa';
 /* iOS < 16.4 لا يدعم lookbehind: تقسيم الجمل بلا lookbehind، وكشف الدعم للتعابير الأخرى */
@@ -7,7 +7,7 @@ const splitAfter = (t, cls, nl) => String(t).replace(new RegExp('([' + cls + '])
 const IS_IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 const LB_OK = (() => { try { new RegExp('(?<!a)b'); return true; } catch (e) { return false; } })();
 const LAB = window.MISHKAT_APP === 'lab'; // «مختبر الأبحاث القرآنية»: تطبيق مستقل من الشيفرة نفسها، له اسمه وتخزينه وحساباته
-const BRAND = LAB ? 'مختبر الأبحاث القرآنية' : 'موسوعة القرآن الكريم', HOME = LAB ? 'research' : 'home';
+const BRAND = LAB ? 'مختبر الأبحاث القرآنية' : 'مشكاة', HOME = LAB ? 'research' : 'home';
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 /* اللغة: العربية أصل المنصة؛ English مترجمة ترجمة كاملة مضمّنة تعمل دون إنترنت؛ بقية اللغات بترجمة Google عند الاتصال، ومعاني القرآن بترجمات معتمدة مضمّنة */
@@ -121,7 +121,7 @@ function scriptData(url) { // file:// pages cannot fetch(); every data file also
   return new Promise((res, rej) => { const sc = document.createElement('script'); sc.src = url + '.js'; sc.onload = () => { const v = window.__ATH[url]; delete window.__ATH[url]; sc.remove(); v == null ? rej(new Error(url)) : res(v); }; sc.onerror = () => rej(new Error(url)); document.head.appendChild(sc); });
 }
 /* سلامة البيانات: بصمة SHA-256 لكل ملف بيانات تُضمَّن في app.js عند البناء، ويُرفض أي ملف معدَّل */
-const INTEGRITY = {"data/geo.json":"3a381595551873cb2f5612b47aa211a2","data/hadith/abudawud.txt":"add164bbe53224463598b5d5a8771d84","data/hadith/bukhari.txt":"a40d9810e6718b084f4a75ceb094331a","data/hadith/ibnmajah.txt":"8b9a2ecdbd11ad5aebdd3ded1dd5bf95","data/hadith/muslim.txt":"c422cf76a7e81044477b76bc052474a0","data/hadith/nasai.txt":"ca0303322e9a8b85c8beb942f8c55cce","data/hadith/tirmidhi.txt":"3cc7c7bada84ef1fa49d06e5f9666930","data/i18n/aa.json":"fbd855bd7c3751b0aaf440811c6b17a2","data/i18n/ace.json":"f6c067b150f4fca28fc2a93b59bce307","data/i18n/af.json":"0b2ee645a612f76ebdb75128b7574f9b","data/i18n/am.json":"16a8d788f9a0030071050de1c5615d03","data/i18n/as.json":"a78a3f9410dbe684e4e401d63bacf1b6","data/i18n/az.json":"a07cfaa4e75f74de5169606e814c91ac","data/i18n/ber.json":"f19ec312edd65aa4b37d01f03b178adc","data/i18n/bg.json":"772115ab0f2b4d25924c00150d478594","data/i18n/bm.json":"6f14fd1d909282b4dfe60dd145abd96e","data/i18n/bn.json":"e27db4d599330b69b22cf11912d3cfcc","data/i18n/bs.json":"42f41bbcf62a9cdb91a0f0b194d2c186","data/i18n/ca.json":"98110052b3f1e95dd28029b0ce879c99","data/i18n/cs.json":"63bf8133b0d7bd8129d5b65155328228","data/i18n/da.json":"7a2b598972fe8521ed94c73f6b7776f1","data/i18n/de.json":"47bdd726cd8a356046f252509957ce45","data/i18n/dv.json":"16aeec8feda50f79c50932d7f2d94797","data/i18n/en.json":"c883071865aa56432145c155df330ad3","data/i18n/eo.json":"d674a5f833b4b2935cef5eed6b6bd40b","data/i18n/es.json":"4dc54ba0071b06ce466f85159627bd66","data/i18n/fa.json":"d0ecff52fc99f382a9a0c27f9a8d67b3","data/i18n/ff.json":"fc118e583e5f40fdbbfe13cbb7610f98","data/i18n/fi.json":"37a72ad55aa4bab8d8386331d5685ce5","data/i18n/fr.json":"f17bb14c9f8a43a4f76b5122f48f2549","data/i18n/gu.json":"33d6114826903a5eef62a601707d8875","data/i18n/ha.json":"68bb2048a243981c24cf836c806c6ec2","data/i18n/he.json":"0075cd7d0a97da7cd9d1e71886de9d20","data/i18n/hi.json":"4dd137364dfeb83a389512dcb984eae7","data/i18n/hr.json":"4cd4128c9477b377b27af2d77618b8d6","data/i18n/hu.json":"d0d8cee2cb5352418757c70417f7e31e","data/i18n/id.json":"e90731213b688fdbc665739503e5abf1","data/i18n/it.json":"b0e7d147bfca6a389463664851728f4e","data/i18n/ja.json":"459394139720386ba155e0fcaf79f8c3","data/i18n/jv.json":"23ba461da29d3e4d6c7d032f4e5a251d","data/i18n/kk.json":"5c0fc1b726211dc8998f8151272cb749","data/i18n/km.json":"f8e0508c72b5ddb5e8dee6755b730ee2","data/i18n/kmr.json":"f48b606547398e60cafee8d07ec6ac4e","data/i18n/kn.json":"cfc85b6e55f25d3412321d8a5fa9b6dc","data/i18n/ko.json":"f82f0e409c192868de5f2625cc6a9e10","data/i18n/ku.json":"e2c37ad3578371acf22fc7b7a79ddc9a","data/i18n/ky.json":"ab2f38ce3e81813ad87b882581679e4e","data/i18n/la.json":"e6a93d7489cdc1aee96a07eace8e7e24","data/i18n/lg.json":"097647d1e516653ee1af506f420659ea","data/i18n/ln.json":"1ee5af121983aa3a7ea99c0bc82310b1","data/i18n/mk.json":"faeb94ea79fa0d026020c4cdf6fdfa0c","data/i18n/ml.json":"08d2acf847efcaf577afa5edf4efe8c2","data/i18n/mr.json":"f1986768d6d48d597c50b88965747077","data/i18n/ms.json":"f877c7e2b569c0eee7a8cbb05994b5c5","data/i18n/mt.json":"d2210aaf0c15bd5a7444e69f1a5c4dee","data/i18n/my.json":"67d4c1838f6a26957fe447cff4db35b5","data/i18n/ne.json":"01c5a71281c713385e109777db41ed19","data/i18n/nl.json":"d278a159605fe4b9847993ea6222f57f","data/i18n/no.json":"c6f2f412e3ee0d26be3370bf4f0c11a7","data/i18n/ny.json":"c5b42d06e674bee221093dc780e1e879","data/i18n/om.json":"ed24b880e977086197b77fe1d429bd29","data/i18n/pa.json":"eab86d6c06647d83533509e4df886233","data/i18n/pl.json":"a04bd28b41af802eaf12989bd1c53e8b","data/i18n/prs.json":"0c826313777cd9a331a51d00b6f90eca","data/i18n/ps.json":"5f318190404ec9efa2b231cad844b876","data/i18n/pt.json":"a4452aa48b1e86cf6953ae87925faa2c","data/i18n/rn.json":"661715d60a20dbbf30cd4f4a5552f087","data/i18n/ro.json":"1ca5a3d9d394c6eee451f8676d78274e","data/i18n/ru.json":"12feeba2d158d1b81103abc642d03bfa","data/i18n/rw.json":"9f920eeec4807190b047fa7e1abbfb57","data/i18n/sd.json":"81fc8df48f11a03a98565ff74f1ac163","data/i18n/si.json":"3b10015458a9457debcc56212e36c79e","data/i18n/sk.json":"9c709a6c3aeffe130f57817ed53ee38d","data/i18n/sn.json":"aa683c96fc1cba1eacd866c5e3bfec34","data/i18n/so.json":"50a61cbac78cbc778d75d29e9c8d1de4","data/i18n/sq.json":"649af8b0857eca800e0286f912d8a6a2","data/i18n/sr.json":"e62a26c60738b2c48f2c4c7cdf631b25","data/i18n/st.json":"8bc81eee40ecfe0ed6a6e4126f7336bb","data/i18n/sv.json":"559120c80e3ba024fedcb3ef9f98d6dc","data/i18n/sw.json":"9fef7fc1ce933fecec737b3db7c9d436","data/i18n/ta.json":"c42143f6db7af9ce5fd443e4aca051b7","data/i18n/te.json":"13902ce43272380af9cf5d02eb9b2135","data/i18n/tg.json":"5e5f18b8c2b396cef790477845adf05b","data/i18n/th.json":"2352fe0d83929cb8d24f582a982625e8","data/i18n/tl.json":"6a6fa10a171f9a05f73e87410cfc1e72","data/i18n/tr.json":"567fa2de16e415812c8266744eb6a6e4","data/i18n/tt.json":"1e1eda280035a1fefb03c16e08213ba5","data/i18n/tw.json":"9dbe45bf42bdb0baf76e8705704cc053","data/i18n/ug.json":"f5a08ff7fb7f19bbee430949da8dbd1c","data/i18n/uk.json":"3d2e395498d3599d88f9a686643b2768","data/i18n/ur.json":"8a699ea32a27aa44ba4ea694d8357e7a","data/i18n/uz.json":"115c6d2f230371eaf2934db76ae269aa","data/i18n/vi.json":"96ed159a92606c71289b02c382c04839","data/i18n/xh.json":"4816424b7094528665b3d8488309717e","data/i18n/yo.json":"a213f54281be5292ac3cc087b78028da","data/i18n/zh-CN.json":"ab20ddb5ca7ef251d4198bd0c94603c5","data/i18n/zh-TW.json":"c3f110a049597247a9da6eb3b3d265a9","data/i18n/zu.json":"e39a6ee01fd6fd1087312700e91dacc2","data/qasas.txt":"80574a78941b3c892f213076faad4111","data/quran.txt":"7e5e37a5ed56a512f434350824aa0fa0","data/t/baghawi/0.txt":"7faae25c408cdc26625a7524dca815dc","data/t/baghawi/1.txt":"30173aa5f1fcbd954b9c6bbe45f5d617","data/t/baghawi/10.txt":"7565e6bbed96f16acbb42cefb8f6facb","data/t/baghawi/11.txt":"71e2d5e8f78fb0c30444bec7ad107c84","data/t/baghawi/12.txt":"888811ec46d136bbb3a035eb60d3ff4a","data/t/baghawi/2.txt":"513bb1d9ff2ed425e78d7ab105fafff7","data/t/baghawi/3.txt":"6722e346ca4db204bb7ea92742106176","data/t/baghawi/4.txt":"b437112f9c51d6ea6431837820a05e37","data/t/baghawi/5.txt":"79474312a9168d04530565d73706d72b","data/t/baghawi/6.txt":"8e2c637220c8e6648348f34347c9420e","data/t/baghawi/7.txt":"f10d852add588e55be80e13f2c5335e7","data/t/baghawi/8.txt":"49a1e3d8b1f4660a617b1c810831d907","data/t/baghawi/9.txt":"e4150e87e5db7780c7edb5c4aa9fa309","data/t/gharib/0.txt":"d9643ca7a9e4b3ce54b4536016862492","data/t/ibnkathir/0.txt":"b9f71c8ea4bb6e1a69fa220d922ba81f","data/t/ibnkathir/1.txt":"fef628ff6ab2f8a4249d7b59df680303","data/t/ibnkathir/10.txt":"e9ebcbec4bea5c58332eb26073fd73a2","data/t/ibnkathir/11.txt":"f3ee0d04b0a9c7d651ad34ddc8123418","data/t/ibnkathir/12.txt":"1b976a9e445704d32cf4ec797b96dd91","data/t/ibnkathir/13.txt":"4a6e87593ff4eed81f39ee4deabf020f","data/t/ibnkathir/14.txt":"ac43f8a575ad304fa0bb3525f19b7e67","data/t/ibnkathir/15.txt":"45cd62ec8ea417752e9786b865f8264d","data/t/ibnkathir/16.txt":"3196b23811704529f697ca2fab7230bf","data/t/ibnkathir/17.txt":"f58d8af171c28b480eee69c1e356120e","data/t/ibnkathir/18.txt":"909ab1ac7fae9a08fb67839be52ac345","data/t/ibnkathir/19.txt":"aae865c0f16344a551d3d4010db57e48","data/t/ibnkathir/2.txt":"1bcc4c9bf088ba4c6549d31d6c65eb51","data/t/ibnkathir/20.txt":"6ac5ccb14fba012f687eab70ae563803","data/t/ibnkathir/21.txt":"0b4ef942c43911f1a835815148399ff2","data/t/ibnkathir/22.txt":"e84bcff9a5ea04a2962d5f8b0ff0a1c6","data/t/ibnkathir/23.txt":"896608268ed7e2dc1d954510b16da876","data/t/ibnkathir/24.txt":"07573e0b9362fb51206c28cb6b09b2fc","data/t/ibnkathir/25.txt":"700eb9a4166fd9dd7847252660d74065","data/t/ibnkathir/26.txt":"b289aa3fba775ab933f6608abfe2dbf0","data/t/ibnkathir/27.txt":"e62aa99726ffe79233750c372a02ff18","data/t/ibnkathir/28.txt":"3482541f88ba219443368dcb5102b57e","data/t/ibnkathir/3.txt":"960ab05782deedd3ef636cdfbc156770","data/t/ibnkathir/4.txt":"35e3fa721824520a834d44c6d5fd021b","data/t/ibnkathir/5.txt":"73c13ea42fb37331500cc1a58e07ef6b","data/t/ibnkathir/6.txt":"86e4d3270a53c4444376bea4a86d62da","data/t/ibnkathir/7.txt":"1f0bc0f74f005b942a3ac90b677ae0ff","data/t/ibnkathir/8.txt":"198963d3a1028799c8c685c7084a92ec","data/t/ibnkathir/9.txt":"40dca06d4a4dca7d1cd7aed5678d855a","data/t/jalalayn/0.txt":"808c69712a35d920348120a32cc4b136","data/t/muyassar/0.txt":"c3638ff74728fac6db2a4dcb0d48a12b","data/t/qurtubi/0.txt":"350fbe701785ef42832a49971fd1334f","data/t/qurtubi/1.txt":"69b49609871dfd2e6721fe5b73a95364","data/t/qurtubi/10.txt":"4746ae89f4d87ac3e306fdd3cf938899","data/t/qurtubi/11.txt":"22d9e2f4d222f6fff050ccc4e5fc547d","data/t/qurtubi/12.txt":"e5096a9d84fe5cacdcfb0359f8a4cc68","data/t/qurtubi/13.txt":"a58c6c63dde97bb84f7a46b683b849d5","data/t/qurtubi/14.txt":"ce8e23ae2ac906081de1b026fb4c9567","data/t/qurtubi/15.txt":"e744ea365fb4342a28b2dcd64746f006","data/t/qurtubi/16.txt":"01143d68d66d86db10578d4c5ecc70f7","data/t/qurtubi/17.txt":"f6dc50f4b1f9b7bfda020b181d39c510","data/t/qurtubi/18.txt":"ff81fe5ac87c70538649ceda4a48b719","data/t/qurtubi/19.txt":"3124580bba03ba9dd95ebea99fbb5702","data/t/qurtubi/2.txt":"1953f016d7c806d93d52735c287565d1","data/t/qurtubi/20.txt":"28a9138224c69f482a3ca7cecd64f61f","data/t/qurtubi/21.txt":"b44810e2e2ede712c16d9199ad0a9ac3","data/t/qurtubi/22.txt":"79cab53b39c91e66fab8f37959534e22","data/t/qurtubi/23.txt":"5e9e1cfd7184680a449c250372dd7ce1","data/t/qurtubi/24.txt":"c653c0a8f6a990ed3b06b1303c759111","data/t/qurtubi/25.txt":"f5acf4b4a21aabf020ca4aba50a92657","data/t/qurtubi/26.txt":"5ea26baecf62c5d2ebe1be03f6cc1045","data/t/qurtubi/3.txt":"adc1f2f78cd7a9ea701bb51c7bf2c6c6","data/t/qurtubi/4.txt":"781145f3a0c186c59941f0ca572230cd","data/t/qurtubi/5.txt":"7817db8a204a04f3dddd55240424811e","data/t/qurtubi/6.txt":"ad7e4d93acf6dd023f9f95dce6cd1cc9","data/t/qurtubi/7.txt":"9a8f5186741a80f43f758731c35a4229","data/t/qurtubi/8.txt":"084bc82055350254ac76ca9a582a133a","data/t/qurtubi/9.txt":"5d90458dc5b353c1789f8fb6b6acf30e","data/t/saadi/0.txt":"db815b6ddf5247c31372571e22bfb43a","data/t/saadi/1.txt":"3d675d6e1261c291a050367e8d45c742","data/t/saadi/10.txt":"e3f7b8585d6a1f4d7309a96452115505","data/t/saadi/11.txt":"b2f05d6d2fe897cbfa2c271019916eb9","data/t/saadi/12.txt":"e2625e384fe7395ea7432cdd57d80859","data/t/saadi/2.txt":"33af5b1e2a623c71522b73c2142f2d9a","data/t/saadi/3.txt":"51e53bcd9da2ef33e7b9cde87192b4b7","data/t/saadi/4.txt":"97848b26daa977c4215bc016c4e0196c","data/t/saadi/5.txt":"fb54c7c851141be805e91baa38788762","data/t/saadi/6.txt":"925ee23ae0b1b6f52198d86070cd7d9a","data/t/saadi/7.txt":"b1bcce418884d9eb3bcc2648ecdd84b9","data/t/saadi/8.txt":"03baf29844f76e727280c8faa0e11fae","data/t/saadi/9.txt":"2996a21ab899675d6f74348c527fa48f","data/t/tabari/0.txt":"21aea58e4dfb5cf145507d2a65586a10","data/t/tabari/1.txt":"0386493b0bef93a33f2274b4b8a80f77","data/t/tabari/10.txt":"0a625c3387aca8f7c13e952e7e94720d","data/t/tabari/11.txt":"5d0799a3601daa5e8c1aec5274d80347","data/t/tabari/12.txt":"ce3a4c2baa7e524dd75a9424d167569d","data/t/tabari/13.txt":"ab83e444f25790ff1a14040e16f1eb91","data/t/tabari/14.txt":"c956aa1a645a4befab9e016f1be572b9","data/t/tabari/15.txt":"4cb17f0859f4ab1341a70c45fe46f242","data/t/tabari/16.txt":"194c32676e1ff9452f800df13e997f5e","data/t/tabari/17.txt":"53865d3c86e98520de55ed698c66831f","data/t/tabari/18.txt":"828b76964e337cfa99665ef86acae45c","data/t/tabari/19.txt":"efeef96b7069d3a4352b4e1e5df670dc","data/t/tabari/2.txt":"b46845e07001e4add5abbca72182bf29","data/t/tabari/3.txt":"1b87a27cfe412d44b769a2b409eacbca","data/t/tabari/4.txt":"a0d883cec1eb493dfd4ce203d1b578b8","data/t/tabari/5.txt":"2bd32bc0e11391cd722b76c128094b34","data/t/tabari/6.txt":"167a05d5d934f10837804d98ab768877","data/t/tabari/7.txt":"b2b8e3353dbe8095e67174d6462b9208","data/t/tabari/8.txt":"79ed4d3197d54d2be60f6a8641be4b73","data/t/tabari/9.txt":"785500a3787ff62fc2194836b913e75a","data/tafsir.json":"0b340e92baea2ad150cc24986aefa196","data/topics.txt":"f68fb424e69865b75d9893a3cc68b132","data/tr/aa.txt":"6db3f725119a862fd48797cce594cb57","data/tr/ace.txt":"ebf7a0ce6077a8901d6991216968663e","data/tr/af.txt":"8cb3ff29d1deaf6952dd8dd1bd89469b","data/tr/am.txt":"5a62b3361537d47cf5d239cc4069ceaa","data/tr/as.txt":"bf36c16a778a210cb47134b1ddeb3a05","data/tr/az.txt":"b81701f24c2642e1f11816f73ec88b0f","data/tr/ber.txt":"1147bd28aa6dacc8f569c3ebeb461d0a","data/tr/bg.txt":"ddc0e9863a6f6c464e7fb260f29f46b5","data/tr/bm.txt":"329ed374f974c2a3c2661c7dad03d788","data/tr/bn.txt":"732b3afea91619f7406c68f3baf9acb3","data/tr/bs.txt":"895f5cd361874e0936541ffcf3ddef7c","data/tr/ca.txt":"b9adb72e9dfccad8ab48a1ba9ea2ee17","data/tr/cs.txt":"f56a8b99d853965b420441c9f559b0cd","data/tr/da.txt":"514cdf5202023bce0b9fa3a8e5ea450d","data/tr/dag.txt":"7f6dfc22d3dd0e682742fed3a67a5633","data/tr/de.txt":"3b554c9ab374d00d3ad8dd1d25c2da22","data/tr/dv.txt":"823e9e42083e852b06af3971058dbe8f","data/tr/en.txt":"68759abc70885f8ad84a6d35f58e8b59","data/tr/eo.txt":"e1ddfc523837ec5d8ce5f537f86f3540","data/tr/es.txt":"2e12b4b315a45fc4114764570bc05ac9","data/tr/fa.txt":"739de532508ebeb86f99e68c8500d634","data/tr/ff.txt":"ac4fce5af3c6a7bddd61eb7c03e75b76","data/tr/fi.txt":"5a2734bbc9c60ebbfea035274df02306","data/tr/fr.txt":"514d96682aebd7702dceeb3d95761229","data/tr/gu.txt":"8c1f6f0683737da9bad96153254be6fe","data/tr/ha.txt":"244bb98e4fbfc091f495d3fed55415d1","data/tr/he.txt":"e23b9e3510a0dd9c905d02e711fbd780","data/tr/hi.txt":"2e49c1c92ccb8e49a5c2853d94ec076b","data/tr/hr.txt":"8f52e215197d759197fbd177f7aac08c","data/tr/hu.txt":"9f1d09f4ecb83a7803450a8621371279","data/tr/id.txt":"ce0a3dbb5aaf5b071e4cf7ab81442df0","data/tr/ilp.txt":"9769844d7a19d990b18a112dbc58b442","data/tr/index.json":"bbb5abf5e6429c81e43dfa27739aaafc","data/tr/it.txt":"6fd9d367ffa96feacf10637dbeb15057","data/tr/ja.txt":"76bbe7bb7fb8820b9657beab10b55b75","data/tr/jv.txt":"e6e4faa4b17a44bdb58c3a1e4147555e","data/tr/kk.txt":"3351bf98c181f76c762b2b8ed17506ec","data/tr/km.txt":"3f398183d1248948bb833bde66887a05","data/tr/kmr.txt":"01b8a56c2f518d8090462cc995451bdf","data/tr/kn.txt":"b971aad35b50a36473e0060bcbef8f40","data/tr/knx.txt":"ec559ff35338ae4c82ae7f2df3a12992","data/tr/ko.txt":"3d480d78fdb593eb8b93c15a03981796","data/tr/ku.txt":"4a593acdb3fb3bdc7dc39aa262bd880c","data/tr/ky.txt":"b3ab45d73e9c91456109906e0e0ec684","data/tr/la.txt":"5713c542ce930b7d38b10ac59fdb2edb","data/tr/lg.txt":"f47be5e9e031f55633d08ceeb035672d","data/tr/ln.txt":"0a03ea925fa25343fccd14ff99b4bd7b","data/tr/luy.txt":"dce0ce3054d84f82fb3461a604a65643","data/tr/mk.txt":"5e09a28b9ea6c5872b645a70267b9e58","data/tr/ml.txt":"d6f04a27acd0732ad574197606219dd9","data/tr/mr.txt":"81267e60b4f42938b3a96f119beb17b5","data/tr/mrw.txt":"16aa33b43dc194d2b0d6c395d0d2ef3f","data/tr/ms.txt":"9339cd81b318a107de562ec94ff8d770","data/tr/mt.txt":"ce5f84c2d34b1f99dfb3f239d275ac90","data/tr/my.txt":"e02cb7e9b7960c2f00c33c02c18af9dc","data/tr/ne.txt":"31744c329d68eb08b5fd759e5bc5b7da","data/tr/nl.txt":"fd1a0f11b46a5d520be1fd45217e69bb","data/tr/no.txt":"e8ccab3ce5aff3fae250e4672871082f","data/tr/ny.txt":"82d02cfc3d450874c34398cd1aa10145","data/tr/om.txt":"c85c0d03278e472017cd4374095843bf","data/tr/pa.txt":"f1cfe18b5ee847276ac13d950c893d5d","data/tr/pl.txt":"d182460edec7b416ee45908417b13a8c","data/tr/prs.txt":"9de1463afbef144a37007fc347fc871b","data/tr/ps.txt":"8641a133150303e2c80baa4b13db5b4e","data/tr/pt.txt":"1128c4e578f250e1d7aebfcffbb479c2","data/tr/rn.txt":"5995763ec5e3a7dd21aa8a821c2754c3","data/tr/ro.txt":"3790733ce253647107e46dec267df6df","data/tr/ru.txt":"3a2ee252097bdffa7ab2343ab5a59ecf","data/tr/rw.txt":"380e41a1a83091847be114f95ea436f8","data/tr/sd.txt":"cad418daf644fe9eb82b5db466c14335","data/tr/si.txt":"e35ed062b53090cf4ef6d8f32f5eced5","data/tr/sk.txt":"22f6bae04ffc51c129df4007de32e28f","data/tr/sn.txt":"62fc72ece9072859eb5057dbe668a5f8","data/tr/so.txt":"18b6658ee7de4f4583091c38dfe34068","data/tr/sq.txt":"c919b1f7737a51d8d6c0e20de35bd98c","data/tr/sr.txt":"43716edda5709333c54d40d6b5c8bb94","data/tr/st.txt":"29e7a76cfa9478bb5607b1d93364a417","data/tr/sv.txt":"e2e9ef9491c4975873773aae18107ef7","data/tr/sw.txt":"e4e4becf8ea3be702b516c4860d9fdcb","data/tr/ta.txt":"b64bef347d184666505efb640a79d692","data/tr/te.txt":"fd13ec7ac64f3fa0314a4ce137e0491d","data/tr/tg.txt":"7269bc4d31c63b02bd51a869bb5dd4ea","data/tr/th.txt":"398f48130ac7395152df8c7309d52633","data/tr/tl.txt":"a04af6ca1fa790972d074daa7ea83179","data/tr/tr.txt":"1916c2a115b3da0fd22c5dad367dda6b","data/tr/tt.txt":"92e96de81be9d68fc24a822eb2ea2850","data/tr/tw.txt":"885dbbf376d5a870ce52485d628809f1","data/tr/ug.txt":"232ed978b1a1158fc4c141586e8ea308","data/tr/uk.txt":"5fe630290c5af71fdbdb2bc8e29f19b3","data/tr/ur.txt":"966e68c7d4d0215f39bbb74695fe7a29","data/tr/uz.txt":"ff35602979a11f6c0a693883f5f07eb6","data/tr/vi.txt":"36fca7fdb1cc524253758129a915b455","data/tr/xh.txt":"1df1342445407e592cd7c24bc583a027","data/tr/yao.txt":"e4fb3735b05e1295f30962322f13debc","data/tr/yo.txt":"411cfeb0e30045b121ff674926cbfaba","data/tr/zh-CN.txt":"d49c39b253674555663e80a97ded9feb","data/tr/zh-TW.txt":"6797c91ed8b7af21a5f8b87a337b46f9","data/tr/zu.txt":"03b06a023c1d15befb46bb774e046b61","data/words.txt":"6108e9bdb76a8465b9e167a416c10031"};
+const INTEGRITY = {"data/geo.json":"3a381595551873cb2f5612b47aa211a2","data/hadith/abudawud.txt":"add164bbe53224463598b5d5a8771d84","data/hadith/bukhari.txt":"a40d9810e6718b084f4a75ceb094331a","data/hadith/ibnmajah.txt":"8b9a2ecdbd11ad5aebdd3ded1dd5bf95","data/hadith/muslim.txt":"c422cf76a7e81044477b76bc052474a0","data/hadith/nasai.txt":"ca0303322e9a8b85c8beb942f8c55cce","data/hadith/tirmidhi.txt":"3cc7c7bada84ef1fa49d06e5f9666930","data/i18n/aa.json":"ff0afce2a1a1fb4cdb2c5a0ee4b6ddd5","data/i18n/ace.json":"618359c488707831c1c0c2614b2cb915","data/i18n/af.json":"5c2cbf06c87824c7642db89e07bdb9a3","data/i18n/am.json":"6b53bf7773fca1c97208f64e670aff43","data/i18n/as.json":"a03e6e7d24207770ff212e3c128fdfb8","data/i18n/az.json":"9a2d1c189dbb5af844d036e6d15bb81d","data/i18n/ber.json":"98a91046a6305cfab7d62f0fbc4a1b20","data/i18n/bg.json":"ea268344bc76ca41c77539713bfffd12","data/i18n/bm.json":"33e46292b56a284116f76953f0c85c23","data/i18n/bn.json":"ffc365093abbbac927590890c740be32","data/i18n/bs.json":"618c0ac067a840b980019148c761e99e","data/i18n/ca.json":"ebae4fa81efe68985b6a8b969c807646","data/i18n/cs.json":"11e8d22e324421fee781e74545c04f3b","data/i18n/da.json":"25b2747721561f972a4dafe11db2d886","data/i18n/de.json":"bc38949db82bf7d510166dac33b83261","data/i18n/dv.json":"760af1f4fc1fa2d9865bebc25c5c4054","data/i18n/en.json":"f517eee353378e7692d761fe9864727c","data/i18n/eo.json":"c68c052a58a03312d08102b99e07b77b","data/i18n/es.json":"6a19bf9ca0c14dccbec911a6ccd7cfda","data/i18n/fa.json":"ec97d3acddbb07d75f5867e96537f54b","data/i18n/ff.json":"95c448a82dd8161bed97c9aeb8865e4b","data/i18n/fi.json":"c1beac4eba992eb6c03ef0bedcc8f8bb","data/i18n/fr.json":"f0544ffced5d6d71b9b6fd78e8e80b3f","data/i18n/gu.json":"ac5aa72bd8db55cb43c401beae08d5c3","data/i18n/ha.json":"5a09adf673079deb868895b0f46fb0a8","data/i18n/he.json":"a9f2af8dee78dd24bc9612712f931b4e","data/i18n/hi.json":"3d06abf625a729f893525c472c6455a9","data/i18n/hr.json":"3163777e50cba19278ee5b4b4e3b116e","data/i18n/hu.json":"93cb551be8e9b815a1507cfffc6ab48d","data/i18n/id.json":"9830ab84f3cdeabc94e6f236e4275394","data/i18n/it.json":"68e589acf3a9c183943654367f4c0eab","data/i18n/ja.json":"808aa8500dc951d7507b884ff2ffc71a","data/i18n/jv.json":"34d5152578fc2c40eb6f5ce0d1674abc","data/i18n/kk.json":"72ad839073ea3dae75878bc0246b33c4","data/i18n/km.json":"90a7a36d7f2c05d5821f3d2c20d391ad","data/i18n/kmr.json":"9a007348126f5d57e817d34b464d9c83","data/i18n/kn.json":"1b54ec1b3257fdb51daf24a0d2bcbddb","data/i18n/ko.json":"26c8a2738bcdc3e34f877d97390712d6","data/i18n/ku.json":"f50be57183ba34685fdb979f6dae7709","data/i18n/ky.json":"bd69fc19e96eb6c57cede1c083f878d1","data/i18n/la.json":"5966a52c0daecaddc23ef433e601dc00","data/i18n/lg.json":"e59891d741e3134ec0a45b6fe22f80e7","data/i18n/ln.json":"0de572c43c838bb310e9de3d15defac7","data/i18n/mk.json":"cad8cb903eb823a779114632e644b68b","data/i18n/ml.json":"594e9b5fdbf4eaddf0c2f32a47d4477f","data/i18n/mr.json":"eb19c66968c124a44dbaf75f037791e3","data/i18n/ms.json":"81bd6233fe861fdd4aa2ac11f06588a4","data/i18n/mt.json":"270f3d24ff338b1e3cdbe9e251aafd29","data/i18n/my.json":"1f98e1a72a9be53ac1b8b5dd4d644c34","data/i18n/ne.json":"ad7cbbc36cb31f7c5855440509f766ba","data/i18n/nl.json":"fcdc07096e42d2177179abdac1d21c98","data/i18n/no.json":"692382f2b31986fce6a6d8331fc13cd4","data/i18n/ny.json":"e4683cb4a328021818532a249ab0edb7","data/i18n/om.json":"b9e2007f7302f3c5bf95308171dcfed1","data/i18n/pa.json":"319b1d55f3fe6c794419ad785935a583","data/i18n/pl.json":"9e89da142b109085458f9e5a38ee1d91","data/i18n/prs.json":"0620e9359c4df54366695f54cfcc47a7","data/i18n/ps.json":"d0fb97ed172cb8a7951adb35e4fc2c2a","data/i18n/pt.json":"a8dd83067a44f58843618988fa783101","data/i18n/rn.json":"2b606776470953d1e1116eb44eaab170","data/i18n/ro.json":"09d4c78ec164fad6381fabab246a7a01","data/i18n/ru.json":"1e0dbb54eeeee16a608c823bb48a72b3","data/i18n/rw.json":"23bdedca33deb7c31cd64746fb88242f","data/i18n/sd.json":"88725c15fbd36d1b41768c5b0ff318e2","data/i18n/si.json":"93adab3f12f9d3ab0ba53172e8bd756f","data/i18n/sk.json":"489521e482347094ac13299eb0bf7afb","data/i18n/sn.json":"839b64e11624a2f3a0f01b73d57db452","data/i18n/so.json":"22a3808ce552028b290efd7873ee8640","data/i18n/sq.json":"84fd879cf25df1484d9a9aee4f21ff68","data/i18n/sr.json":"d9344ea28ee390e0f1b8cec551b3f51b","data/i18n/st.json":"b2418a1d565b4adb1f19a161ac8aa2bd","data/i18n/sv.json":"fade1661fe005e636cf56d44947847fa","data/i18n/sw.json":"f31ccfa6f8acc01552c216a58df4996c","data/i18n/ta.json":"a00bfdffe74d9fb8c3cf969c73bf5d51","data/i18n/te.json":"1084b1e381a29d75dca777bdb14496e2","data/i18n/tg.json":"93bff0a62519e3ec34ad13d182f75246","data/i18n/th.json":"cf60a7b57ad208e862fac37585edb0fa","data/i18n/tl.json":"dc9f07b5c6134e41a7d8b6805cc1865f","data/i18n/tr.json":"5bb2eeacdf9c549cece41cf26e01556c","data/i18n/tt.json":"1dbdb26bde650872ca759fe42934a62a","data/i18n/tw.json":"2a2125cccc37fb45116b7768fa876f2c","data/i18n/ug.json":"4efa236e24ff1f3a1d69a0d3828dd114","data/i18n/uk.json":"0376baaa5792e72c84c1d166946301f6","data/i18n/ur.json":"95e327a53f6650182051d7cc1abc5959","data/i18n/uz.json":"e2521841d5d947289f9cdbe309e15f4e","data/i18n/vi.json":"112514fb89dce46c1b864c330f0dee7b","data/i18n/xh.json":"7ef37aaa6b9266d685fe50c6f6ff5915","data/i18n/yo.json":"0c437c5fa561234c38dfe4e5e0764abd","data/i18n/zh-CN.json":"b221aaac2c0636545f388baae0fda9e3","data/i18n/zh-TW.json":"e5748b0136fb915073dae7d381c73f2d","data/i18n/zu.json":"13830bce01b3ecdb7a94700e7d15cd59","data/qasas.txt":"80574a78941b3c892f213076faad4111","data/quran.txt":"7e5e37a5ed56a512f434350824aa0fa0","data/t/baghawi/0.txt":"7faae25c408cdc26625a7524dca815dc","data/t/baghawi/1.txt":"30173aa5f1fcbd954b9c6bbe45f5d617","data/t/baghawi/10.txt":"7565e6bbed96f16acbb42cefb8f6facb","data/t/baghawi/11.txt":"71e2d5e8f78fb0c30444bec7ad107c84","data/t/baghawi/12.txt":"888811ec46d136bbb3a035eb60d3ff4a","data/t/baghawi/2.txt":"513bb1d9ff2ed425e78d7ab105fafff7","data/t/baghawi/3.txt":"6722e346ca4db204bb7ea92742106176","data/t/baghawi/4.txt":"b437112f9c51d6ea6431837820a05e37","data/t/baghawi/5.txt":"79474312a9168d04530565d73706d72b","data/t/baghawi/6.txt":"8e2c637220c8e6648348f34347c9420e","data/t/baghawi/7.txt":"f10d852add588e55be80e13f2c5335e7","data/t/baghawi/8.txt":"49a1e3d8b1f4660a617b1c810831d907","data/t/baghawi/9.txt":"e4150e87e5db7780c7edb5c4aa9fa309","data/t/gharib/0.txt":"d9643ca7a9e4b3ce54b4536016862492","data/t/ibnkathir/0.txt":"b9f71c8ea4bb6e1a69fa220d922ba81f","data/t/ibnkathir/1.txt":"fef628ff6ab2f8a4249d7b59df680303","data/t/ibnkathir/10.txt":"e9ebcbec4bea5c58332eb26073fd73a2","data/t/ibnkathir/11.txt":"f3ee0d04b0a9c7d651ad34ddc8123418","data/t/ibnkathir/12.txt":"1b976a9e445704d32cf4ec797b96dd91","data/t/ibnkathir/13.txt":"4a6e87593ff4eed81f39ee4deabf020f","data/t/ibnkathir/14.txt":"ac43f8a575ad304fa0bb3525f19b7e67","data/t/ibnkathir/15.txt":"45cd62ec8ea417752e9786b865f8264d","data/t/ibnkathir/16.txt":"3196b23811704529f697ca2fab7230bf","data/t/ibnkathir/17.txt":"f58d8af171c28b480eee69c1e356120e","data/t/ibnkathir/18.txt":"909ab1ac7fae9a08fb67839be52ac345","data/t/ibnkathir/19.txt":"aae865c0f16344a551d3d4010db57e48","data/t/ibnkathir/2.txt":"1bcc4c9bf088ba4c6549d31d6c65eb51","data/t/ibnkathir/20.txt":"6ac5ccb14fba012f687eab70ae563803","data/t/ibnkathir/21.txt":"0b4ef942c43911f1a835815148399ff2","data/t/ibnkathir/22.txt":"e84bcff9a5ea04a2962d5f8b0ff0a1c6","data/t/ibnkathir/23.txt":"896608268ed7e2dc1d954510b16da876","data/t/ibnkathir/24.txt":"07573e0b9362fb51206c28cb6b09b2fc","data/t/ibnkathir/25.txt":"700eb9a4166fd9dd7847252660d74065","data/t/ibnkathir/26.txt":"b289aa3fba775ab933f6608abfe2dbf0","data/t/ibnkathir/27.txt":"e62aa99726ffe79233750c372a02ff18","data/t/ibnkathir/28.txt":"3482541f88ba219443368dcb5102b57e","data/t/ibnkathir/3.txt":"960ab05782deedd3ef636cdfbc156770","data/t/ibnkathir/4.txt":"35e3fa721824520a834d44c6d5fd021b","data/t/ibnkathir/5.txt":"73c13ea42fb37331500cc1a58e07ef6b","data/t/ibnkathir/6.txt":"86e4d3270a53c4444376bea4a86d62da","data/t/ibnkathir/7.txt":"1f0bc0f74f005b942a3ac90b677ae0ff","data/t/ibnkathir/8.txt":"198963d3a1028799c8c685c7084a92ec","data/t/ibnkathir/9.txt":"40dca06d4a4dca7d1cd7aed5678d855a","data/t/jalalayn/0.txt":"808c69712a35d920348120a32cc4b136","data/t/muyassar/0.txt":"c3638ff74728fac6db2a4dcb0d48a12b","data/t/qurtubi/0.txt":"350fbe701785ef42832a49971fd1334f","data/t/qurtubi/1.txt":"69b49609871dfd2e6721fe5b73a95364","data/t/qurtubi/10.txt":"4746ae89f4d87ac3e306fdd3cf938899","data/t/qurtubi/11.txt":"22d9e2f4d222f6fff050ccc4e5fc547d","data/t/qurtubi/12.txt":"e5096a9d84fe5cacdcfb0359f8a4cc68","data/t/qurtubi/13.txt":"a58c6c63dde97bb84f7a46b683b849d5","data/t/qurtubi/14.txt":"ce8e23ae2ac906081de1b026fb4c9567","data/t/qurtubi/15.txt":"e744ea365fb4342a28b2dcd64746f006","data/t/qurtubi/16.txt":"01143d68d66d86db10578d4c5ecc70f7","data/t/qurtubi/17.txt":"f6dc50f4b1f9b7bfda020b181d39c510","data/t/qurtubi/18.txt":"ff81fe5ac87c70538649ceda4a48b719","data/t/qurtubi/19.txt":"3124580bba03ba9dd95ebea99fbb5702","data/t/qurtubi/2.txt":"1953f016d7c806d93d52735c287565d1","data/t/qurtubi/20.txt":"28a9138224c69f482a3ca7cecd64f61f","data/t/qurtubi/21.txt":"b44810e2e2ede712c16d9199ad0a9ac3","data/t/qurtubi/22.txt":"79cab53b39c91e66fab8f37959534e22","data/t/qurtubi/23.txt":"5e9e1cfd7184680a449c250372dd7ce1","data/t/qurtubi/24.txt":"c653c0a8f6a990ed3b06b1303c759111","data/t/qurtubi/25.txt":"f5acf4b4a21aabf020ca4aba50a92657","data/t/qurtubi/26.txt":"5ea26baecf62c5d2ebe1be03f6cc1045","data/t/qurtubi/3.txt":"adc1f2f78cd7a9ea701bb51c7bf2c6c6","data/t/qurtubi/4.txt":"781145f3a0c186c59941f0ca572230cd","data/t/qurtubi/5.txt":"7817db8a204a04f3dddd55240424811e","data/t/qurtubi/6.txt":"ad7e4d93acf6dd023f9f95dce6cd1cc9","data/t/qurtubi/7.txt":"9a8f5186741a80f43f758731c35a4229","data/t/qurtubi/8.txt":"084bc82055350254ac76ca9a582a133a","data/t/qurtubi/9.txt":"5d90458dc5b353c1789f8fb6b6acf30e","data/t/saadi/0.txt":"db815b6ddf5247c31372571e22bfb43a","data/t/saadi/1.txt":"3d675d6e1261c291a050367e8d45c742","data/t/saadi/10.txt":"e3f7b8585d6a1f4d7309a96452115505","data/t/saadi/11.txt":"b2f05d6d2fe897cbfa2c271019916eb9","data/t/saadi/12.txt":"e2625e384fe7395ea7432cdd57d80859","data/t/saadi/2.txt":"33af5b1e2a623c71522b73c2142f2d9a","data/t/saadi/3.txt":"51e53bcd9da2ef33e7b9cde87192b4b7","data/t/saadi/4.txt":"97848b26daa977c4215bc016c4e0196c","data/t/saadi/5.txt":"fb54c7c851141be805e91baa38788762","data/t/saadi/6.txt":"925ee23ae0b1b6f52198d86070cd7d9a","data/t/saadi/7.txt":"b1bcce418884d9eb3bcc2648ecdd84b9","data/t/saadi/8.txt":"03baf29844f76e727280c8faa0e11fae","data/t/saadi/9.txt":"2996a21ab899675d6f74348c527fa48f","data/t/tabari/0.txt":"21aea58e4dfb5cf145507d2a65586a10","data/t/tabari/1.txt":"0386493b0bef93a33f2274b4b8a80f77","data/t/tabari/10.txt":"0a625c3387aca8f7c13e952e7e94720d","data/t/tabari/11.txt":"5d0799a3601daa5e8c1aec5274d80347","data/t/tabari/12.txt":"ce3a4c2baa7e524dd75a9424d167569d","data/t/tabari/13.txt":"ab83e444f25790ff1a14040e16f1eb91","data/t/tabari/14.txt":"c956aa1a645a4befab9e016f1be572b9","data/t/tabari/15.txt":"4cb17f0859f4ab1341a70c45fe46f242","data/t/tabari/16.txt":"194c32676e1ff9452f800df13e997f5e","data/t/tabari/17.txt":"53865d3c86e98520de55ed698c66831f","data/t/tabari/18.txt":"828b76964e337cfa99665ef86acae45c","data/t/tabari/19.txt":"efeef96b7069d3a4352b4e1e5df670dc","data/t/tabari/2.txt":"b46845e07001e4add5abbca72182bf29","data/t/tabari/3.txt":"1b87a27cfe412d44b769a2b409eacbca","data/t/tabari/4.txt":"a0d883cec1eb493dfd4ce203d1b578b8","data/t/tabari/5.txt":"2bd32bc0e11391cd722b76c128094b34","data/t/tabari/6.txt":"167a05d5d934f10837804d98ab768877","data/t/tabari/7.txt":"b2b8e3353dbe8095e67174d6462b9208","data/t/tabari/8.txt":"79ed4d3197d54d2be60f6a8641be4b73","data/t/tabari/9.txt":"785500a3787ff62fc2194836b913e75a","data/tafsir.json":"0b340e92baea2ad150cc24986aefa196","data/topics.txt":"f68fb424e69865b75d9893a3cc68b132","data/tr/aa.txt":"6db3f725119a862fd48797cce594cb57","data/tr/ace.txt":"ebf7a0ce6077a8901d6991216968663e","data/tr/af.txt":"8cb3ff29d1deaf6952dd8dd1bd89469b","data/tr/am.txt":"5a62b3361537d47cf5d239cc4069ceaa","data/tr/as.txt":"bf36c16a778a210cb47134b1ddeb3a05","data/tr/az.txt":"b81701f24c2642e1f11816f73ec88b0f","data/tr/ber.txt":"1147bd28aa6dacc8f569c3ebeb461d0a","data/tr/bg.txt":"ddc0e9863a6f6c464e7fb260f29f46b5","data/tr/bm.txt":"329ed374f974c2a3c2661c7dad03d788","data/tr/bn.txt":"732b3afea91619f7406c68f3baf9acb3","data/tr/bs.txt":"895f5cd361874e0936541ffcf3ddef7c","data/tr/ca.txt":"b9adb72e9dfccad8ab48a1ba9ea2ee17","data/tr/cs.txt":"f56a8b99d853965b420441c9f559b0cd","data/tr/da.txt":"514cdf5202023bce0b9fa3a8e5ea450d","data/tr/dag.txt":"7f6dfc22d3dd0e682742fed3a67a5633","data/tr/de.txt":"3b554c9ab374d00d3ad8dd1d25c2da22","data/tr/dv.txt":"823e9e42083e852b06af3971058dbe8f","data/tr/en.txt":"68759abc70885f8ad84a6d35f58e8b59","data/tr/eo.txt":"e1ddfc523837ec5d8ce5f537f86f3540","data/tr/es.txt":"2e12b4b315a45fc4114764570bc05ac9","data/tr/fa.txt":"739de532508ebeb86f99e68c8500d634","data/tr/ff.txt":"ac4fce5af3c6a7bddd61eb7c03e75b76","data/tr/fi.txt":"5a2734bbc9c60ebbfea035274df02306","data/tr/fr.txt":"514d96682aebd7702dceeb3d95761229","data/tr/gu.txt":"8c1f6f0683737da9bad96153254be6fe","data/tr/ha.txt":"244bb98e4fbfc091f495d3fed55415d1","data/tr/he.txt":"e23b9e3510a0dd9c905d02e711fbd780","data/tr/hi.txt":"2e49c1c92ccb8e49a5c2853d94ec076b","data/tr/hr.txt":"8f52e215197d759197fbd177f7aac08c","data/tr/hu.txt":"9f1d09f4ecb83a7803450a8621371279","data/tr/id.txt":"ce0a3dbb5aaf5b071e4cf7ab81442df0","data/tr/ilp.txt":"9769844d7a19d990b18a112dbc58b442","data/tr/index.json":"bbb5abf5e6429c81e43dfa27739aaafc","data/tr/it.txt":"6fd9d367ffa96feacf10637dbeb15057","data/tr/ja.txt":"76bbe7bb7fb8820b9657beab10b55b75","data/tr/jv.txt":"e6e4faa4b17a44bdb58c3a1e4147555e","data/tr/kk.txt":"3351bf98c181f76c762b2b8ed17506ec","data/tr/km.txt":"3f398183d1248948bb833bde66887a05","data/tr/kmr.txt":"01b8a56c2f518d8090462cc995451bdf","data/tr/kn.txt":"b971aad35b50a36473e0060bcbef8f40","data/tr/knx.txt":"ec559ff35338ae4c82ae7f2df3a12992","data/tr/ko.txt":"3d480d78fdb593eb8b93c15a03981796","data/tr/ku.txt":"4a593acdb3fb3bdc7dc39aa262bd880c","data/tr/ky.txt":"b3ab45d73e9c91456109906e0e0ec684","data/tr/la.txt":"5713c542ce930b7d38b10ac59fdb2edb","data/tr/lg.txt":"f47be5e9e031f55633d08ceeb035672d","data/tr/ln.txt":"0a03ea925fa25343fccd14ff99b4bd7b","data/tr/luy.txt":"dce0ce3054d84f82fb3461a604a65643","data/tr/mk.txt":"5e09a28b9ea6c5872b645a70267b9e58","data/tr/ml.txt":"d6f04a27acd0732ad574197606219dd9","data/tr/mr.txt":"81267e60b4f42938b3a96f119beb17b5","data/tr/mrw.txt":"16aa33b43dc194d2b0d6c395d0d2ef3f","data/tr/ms.txt":"9339cd81b318a107de562ec94ff8d770","data/tr/mt.txt":"ce5f84c2d34b1f99dfb3f239d275ac90","data/tr/my.txt":"e02cb7e9b7960c2f00c33c02c18af9dc","data/tr/ne.txt":"31744c329d68eb08b5fd759e5bc5b7da","data/tr/nl.txt":"fd1a0f11b46a5d520be1fd45217e69bb","data/tr/no.txt":"e8ccab3ce5aff3fae250e4672871082f","data/tr/ny.txt":"82d02cfc3d450874c34398cd1aa10145","data/tr/om.txt":"c85c0d03278e472017cd4374095843bf","data/tr/pa.txt":"f1cfe18b5ee847276ac13d950c893d5d","data/tr/pl.txt":"d182460edec7b416ee45908417b13a8c","data/tr/prs.txt":"9de1463afbef144a37007fc347fc871b","data/tr/ps.txt":"8641a133150303e2c80baa4b13db5b4e","data/tr/pt.txt":"1128c4e578f250e1d7aebfcffbb479c2","data/tr/rn.txt":"5995763ec5e3a7dd21aa8a821c2754c3","data/tr/ro.txt":"3790733ce253647107e46dec267df6df","data/tr/ru.txt":"3a2ee252097bdffa7ab2343ab5a59ecf","data/tr/rw.txt":"380e41a1a83091847be114f95ea436f8","data/tr/sd.txt":"cad418daf644fe9eb82b5db466c14335","data/tr/si.txt":"e35ed062b53090cf4ef6d8f32f5eced5","data/tr/sk.txt":"22f6bae04ffc51c129df4007de32e28f","data/tr/sn.txt":"62fc72ece9072859eb5057dbe668a5f8","data/tr/so.txt":"18b6658ee7de4f4583091c38dfe34068","data/tr/sq.txt":"c919b1f7737a51d8d6c0e20de35bd98c","data/tr/sr.txt":"43716edda5709333c54d40d6b5c8bb94","data/tr/st.txt":"29e7a76cfa9478bb5607b1d93364a417","data/tr/sv.txt":"e2e9ef9491c4975873773aae18107ef7","data/tr/sw.txt":"e4e4becf8ea3be702b516c4860d9fdcb","data/tr/ta.txt":"b64bef347d184666505efb640a79d692","data/tr/te.txt":"fd13ec7ac64f3fa0314a4ce137e0491d","data/tr/tg.txt":"7269bc4d31c63b02bd51a869bb5dd4ea","data/tr/th.txt":"398f48130ac7395152df8c7309d52633","data/tr/tl.txt":"a04af6ca1fa790972d074daa7ea83179","data/tr/tr.txt":"1916c2a115b3da0fd22c5dad367dda6b","data/tr/tt.txt":"92e96de81be9d68fc24a822eb2ea2850","data/tr/tw.txt":"885dbbf376d5a870ce52485d628809f1","data/tr/ug.txt":"232ed978b1a1158fc4c141586e8ea308","data/tr/uk.txt":"5fe630290c5af71fdbdb2bc8e29f19b3","data/tr/ur.txt":"966e68c7d4d0215f39bbb74695fe7a29","data/tr/uz.txt":"ff35602979a11f6c0a693883f5f07eb6","data/tr/vi.txt":"36fca7fdb1cc524253758129a915b455","data/tr/xh.txt":"1df1342445407e592cd7c24bc583a027","data/tr/yao.txt":"e4fb3735b05e1295f30962322f13debc","data/tr/yo.txt":"411cfeb0e30045b121ff674926cbfaba","data/tr/zh-CN.txt":"d49c39b253674555663e80a97ded9feb","data/tr/zh-TW.txt":"6797c91ed8b7af21a5f8b87a337b46f9","data/tr/zu.txt":"03b06a023c1d15befb46bb774e046b61","data/words.txt":"6108e9bdb76a8465b9e167a416c10031"};
 async function sha256hex(t) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join(''); }
 async function verified(url, t) { const want = INTEGRITY[url]; if (!want || !crypto?.subtle) return true; return (await sha256hex(t)).slice(0, want.length) === want; }
 async function getText(url) {
@@ -181,11 +181,11 @@ const MK_VERSION = window.MK_VERSION = '٥';
 /* ================= navigation */
 const NAV = LAB ? [
   ['المختبر', [['research','بحث جديد','i-flask'],['mine','أبحاثي','i-bookmark'],['prayer','مواقيت الصلاة','i-time'],['adhkar','أذكار الصباح والمساء','i-sun',1]]],
-  ['أدوات التحقق', [['mushaf','القرآن الكريم','i-book'],['words','المعجم المفهرس','i-abc']]],
+  ['أدوات التحقق', [['mushaf','المصحف','i-book'],['words','المعجم المفهرس','i-abc']]],
   ['التطبيق', [['guide','دليل المختبر','i-info'],['account','حسابي','i-user'],['settings','الإعدادات','i-gear'],['admin','لوحة الإدارة','i-shield']]],
 ] : [
   ['', [['home','الرئيسية','i-home']]],
-  ['اقرأ وتدبّر', [['mushaf','القرآن الكريم','i-book'],['tafasir','التفاسير وأسباب النزول','i-book',1],['search','البحث بالمعنى','i-search'],['recite','التلاوة المتصلة','i-play',1],['ask','اسأل موسوعة القرآن الكريم','i-spark'],['topics','الموسوعة الموضوعية','i-grid'],['mawdui','التفسير الموضوعي','i-grid',1],['kids','ركن الأطفال','i-kids',1],['tawhid','التوحيد في القرآن','i-tawhid',1],['asma','أسماء الله الحسنى وصفاته','i-asma',1],['jannah','وصف الجنة في القرآن','i-jannah',1],['rusul','الأنبياء والمرسلون','i-rusul',1],['tawsiyat','توصيات القرآن','i-tawsiyat',1],['maadin','المعادن في القرآن','i-maadin',1],['maal','المال والتجارة','i-maal',1],['fiqhq','الفقه من القرآن','i-fiqhq',1],['amal','العمل في القرآن','i-amal',1],['taqwa','التقوى','i-taqwa',1],['mumin','صفات المؤمن في القرآن','i-mumin',1],['taamul','التعاملات في القرآن','i-taamul',1],['sabr','الصبر في القرآن','i-sabr',1],['bir','البر في القرآن','i-bir',1],['hayawan','الحيوانات والطير في القرآن','i-hayawan',1],['nikah','الزواج والطلاق في القرآن','i-nikah',1],['tifl','الأطفال وأحكامهم في القرآن','i-tifl',1],['qasasx','قصص القرآن المستفيضة','i-qasasx',1],['nabat','النبات في القرآن','i-nabat',1]], 'p1'],
+  ['اقرأ وتدبّر', [['mushaf','المصحف','i-book'],['tafasir','التفاسير وأسباب النزول','i-book',1],['search','البحث بالمعنى','i-search'],['recite','التلاوة المتصلة','i-play',1],['ask','اسأل مشكاة','i-spark'],['topics','الموسوعة الموضوعية','i-grid'],['mawdui','التفسير الموضوعي','i-grid',1],['kids','ركن الأطفال','i-kids',1],['tawhid','التوحيد في القرآن','i-tawhid',1],['asma','أسماء الله الحسنى وصفاته','i-asma',1],['jannah','وصف الجنة في القرآن','i-jannah',1],['rusul','الأنبياء والمرسلون','i-rusul',1],['tawsiyat','توصيات القرآن','i-tawsiyat',1],['maadin','المعادن في القرآن','i-maadin',1],['maal','المال والتجارة','i-maal',1],['fiqhq','الفقه من القرآن','i-fiqhq',1],['amal','العمل في القرآن','i-amal',1],['taqwa','التقوى','i-taqwa',1],['mumin','صفات المؤمن في القرآن','i-mumin',1],['taamul','التعاملات في القرآن','i-taamul',1],['sabr','الصبر في القرآن','i-sabr',1],['bir','البر في القرآن','i-bir',1],['hayawan','الحيوانات والطير في القرآن','i-hayawan',1],['nikah','الزواج والطلاق في القرآن','i-nikah',1],['tifl','الأطفال وأحكامهم في القرآن','i-tifl',1],['qasasx','قصص القرآن المستفيضة','i-qasasx',1],['nabat','النبات في القرآن','i-nabat',1]], 'p1'],
   ['احفظ وتعبّد', [['adhkar','أذكار الصباح والمساء','i-sun'],['duaa','أدعية القرآن','i-hands',1],['duaq','الدعاء في القرآن','i-hands',1],['adiya','أدعية المناسبات','i-adiya',1],['ibadat','فقه العبادات','i-manasik',1],['ruqya','التداوي بالقرآن','i-ruqya',1],['hajj','الحج والعمرة','i-hajj',1],['arbain','الأحاديث الأربعون النووية','i-arbain',1],['hadithq','الأحاديث النبوية في القرآن','i-hadithq',1],['hijri','التقويم الهجري','i-cal',1],['khatma','خطة الختمة والأوسمة','i-check',1],['hifz','الحفظ والتسميع','i-mic'],['wird','وردي وتقدّمي','i-time'],['saved','محفوظاتي','i-bookmark'],['prayer','مواقيت الصلاة','i-time']], 'p2'],
   ['ابحث وحقّق', [['research','مختبر الأبحاث','i-flask'],['ulum','علوم القرآن','i-ulum',1],['jamal','الصور الجمالية في القرآن','i-jamal',1],['amthal','أمثال القرآن','i-amthal',1],['naskh','الناسخ والمنسوخ ومتشابه الآيات','i-naskh',1],['words','المعجم المفهرس','i-abc'],['stats','الإحصاء العام','i-chart'],['taam','الفاكهة والطعام في القرآن','i-taam',1],['zakat','حاسبة الزكاة','i-calc',1],['mawarith','حاسبة المواريث','i-calc',1],['lafz','عدّاد الألفاظ','i-chart',1]], 'p3'],
   ['اكتشف وتأمّل', [['awwalin','أخبار الأولين والآخرين','i-scroll'],['ijaz','الإعجاز العلمي','i-atom'],['map','أطلس القرآن','i-map'],['timeline','الخط الزمني','i-time'],['sira','السيرة النبوية من القرآن الكريم','i-sira',1],['graph','شبكة المعرفة','i-graph'],['nisaa','ركن المرأة','i-flower',1],['nsira','سير نساء القرآن','i-nsira',1],['rijal','ركن الرجل','i-user',1],['rsifat','صفات الرجال','i-rsifat',1],['usra','ركن الأسرة','i-family',1],['shifa','الأمراض والعلاج','i-heal',1],['tibb','الطب والشفاء','i-tibb',1],['wazifa','وظيفة الإنسان','i-wazifa',1]], 'p4'],
@@ -197,14 +197,14 @@ function navHTML() {
     .map(([v, l, ic, nw]) => `<a href="#${v}" data-v="${v}"><svg><use href="#${ic}"/></svg>${l}${nw ? '<span class="new">جديد</span>' : ''}</a>`).join('')).join('');
 }
 function drawNav() { $('#nav').innerHTML = navHTML(); }
-/* مسارات موسوعة القرآن الكريم: كل قسم بوصفه ولونه ومساره، تُبنى منها الرئيسية وروابط «تابع الاستكشاف» */
+/* مسارات مشكاة: كل قسم بوصفه ولونه ومساره، تُبنى منها الرئيسية وروابط «تابع الاستكشاف» */
 const PATHS = [
   ['p1', 'اقرأ وتدبّر', 'النص الكريم ومعانيه: تلاوة، وبحث بالفكرة، وموضوعات مفهرسة.', [
-    ['mushaf', 'i-book', 'القرآن الكريم', 'صفحات مصحف المدينة متصلة بخط مجمع الملك فهد، مع التفسير والمعاني لكل آية.', () => `${n(Q.surahs.length)} سورة`],
+    ['mushaf', 'i-book', 'المصحف', 'صفحات مصحف المدينة متصلة بخط مجمع الملك فهد، مع التفسير والمعاني لكل آية.', () => `${n(Q.surahs.length)} سورة`],
     ['recite', 'i-play', 'التلاوة المتصلة', 'استمع إلى المصحف متصلاً مع تظليل الآية الجارية، واختر القارئ والسرعة وتكرار الآية للحفظ.', () => ''],
     ['tafasir', 'i-book', 'التفاسير وأسباب النزول', 'ثمانية تفاسير لكل آية، وأسباب النزول مقتطفة من نصوص المفسرين مع نسبتها إلى كتبها، وبحث فيها.', () => `${n(TF.length)} كتب`],
     ['search', 'i-search', 'البحث بالمعنى', 'اكتب الفكرة بلغتك، فتظهر الآيات الأقرب إليها مرتبةً.', () => `${n(Q.ayat.length)} آية`],
-    ['ask', 'i-spark', 'اسأل موسوعة القرآن الكريم', 'سؤالك يُجاب من الآيات وأقوال المفسرين والمداخل الموضوعية.', () => ''],
+    ['ask', 'i-spark', 'اسأل مشكاة', 'سؤالك يُجاب من الآيات وأقوال المفسرين والمداخل الموضوعية.', () => ''],
     ['topics', 'i-grid', 'الموسوعة الموضوعية', 'الأنبياء والأقوام والأماكن والأحكام، كل موضوع بآياته.', () => `${n(T.length)} فهرساً`],
     ['mawdui', 'i-grid', 'التفسير الموضوعي', 'فهرس موضوعات القرآن (التوحيد والأخلاق والقصص والأحكام) مربوطة بآياتها، مع التعمق بالرأي واللطائف من أمهات التفسير بألفاظها.', () => '٢٧ موضوعاً'],
     ['kids', 'i-kids', 'ركن الأطفال', 'قصص القرآن مصوّرة للأطفال، كل مشهد بآيته، مع أسئلة ونجوم وسور قصيرة للحفظ.', () => `${n(KIDS.length)} قصة`],
@@ -250,7 +250,7 @@ const PATHS = [
     ['jamal', 'i-jamal', 'الصور الجمالية في القرآن الكريم', 'التشبيه والاستعارة ومشاهد الكون والقيامة وتصوير النفس، وذكر القرآن للجمال والزينة والصبر الجميل، بأقوال المفسرين بلفظها.', () => `${n(JAMAL.nay)} آية`],
     ['amthal', 'i-amthal', 'أمثال القرآن', 'الأمثال المضروبة في القرآن بآياتها ووجه التمثيل فيها وشرحها بنقول المفسرين، وما يفسّرها من الأمثال النبوية.', () => '38 مثلاً'],
     ['naskh', 'i-naskh', 'الناسخ والمنسوخ ومتشابه الآيات', 'حقيقة النسخ وأقسامه وأمثلته بأقوال المفسرين، ومتشابه ألفاظ الآيات مع إبراز مواضع الاختلاف.', () => `${n(9)} أحكام منسوخة`],
-    ['words', 'i-abc', 'المعجم المفهرس', 'كل لفظ وجذر في القرآن الكريم بمواضعه وصيغه.', () => `${n(W.roots.length)} جذراً`],
+    ['words', 'i-abc', 'المعجم المفهرس', 'كل لفظ وجذر في المصحف بمواضعه وصيغه.', () => `${n(W.roots.length)} جذراً`],
     ['stats', 'i-chart', 'الإحصاء العام', 'السور والكلمات والحروف وأقسام الكلم بالأرقام الموثقة.', () => `${n(W.w.length)} كلمة`],
     ['taam', 'i-taam', 'الفاكهة والطعام في القرآن الكريم', 'التين والزيتون والنخل والعسل واللبن والمن والسلوى بآياتها، وأحكام الحلال والطيبات وآداب الطعام وترك الإسراف، بالأحاديث الصحيحة وأقوال المفسرين.', () => `${n(TAAM.k.length)} صنفاً`],
     ['zakat', 'i-calc', 'حاسبة الزكاة', 'نصاب الذهب والفضة والعروض والأنعام والزروع وزكاة الفطر بمقاديرها الشرعية.', () => ''],
@@ -296,7 +296,7 @@ function bindFinder(root) {
 }
 /* رحلات مقترحة: مسارات مرتبة من أقسام قائمة فعلاً، تُرشد الزائر من أين يبدأ */
 const JOURNEYS = [
-  ['أول مرة في موسوعة القرآن الكريم؟', 'ابدأ بهذا الترتيب', ['mushaf', 'search', 'tafasir', 'adhkar', 'guide']],
+  ['أول مرة في مشكاة؟', 'ابدأ بهذا الترتيب', ['mushaf', 'search', 'tafasir', 'adhkar', 'guide']],
   ['طالب علم', 'من الأصول إلى الأدلة', ['tafasir', 'ulum', 'naskh', 'amthal', 'words']],
   ['لبيتك وأسرتك', 'للكبار والصغار معاً', ['usra', 'nikah', 'tifl', 'kids', 'nisaa', 'nsira', 'rijal', 'duaa']],
   ['رحلة إيمانية', 'من التوحيد إلى الجنة', ['tawhid', 'asma', 'rusul', 'wazifa', 'amal', 'sabr', 'bir', 'mumin', 'jannah']],
@@ -490,8 +490,8 @@ function dailyIndex() { return dailyPick().i; }
 /* ================= home */
 /* بطاقة المصحف في أعلى الرئيسية: متابعة القراءة والانتقال إلى سورة أو جزء */
 function mpHomeCard(last) {
-  return `<section class="mphome" aria-label="القرآن الكريم"><div class="mh-pat" aria-hidden="true"></div>
-    <div class="mh-head"><span class="mh-ic"><svg><use href="#i-book"/></svg></span><span><span class="eyebrow">طبعة المدينة النبوية · ٦٠٤ صفحات</span><h2>القرآن الكريم</h2></span></div>
+  return `<section class="mphome" aria-label="المصحف الشريف"><div class="mh-pat" aria-hidden="true"></div>
+    <div class="mh-head"><span class="mh-ic"><svg><use href="#i-book"/></svg></span><span><span class="eyebrow">مصحف المدينة النبوية · ٦٠٤ صفحات</span><h2>المصحف الشريف</h2></span></div>
     <p class="mh-lead">${last != null ? `توقفت عند <b>${esc(ref(last))}</b>` : 'اقرأ القرآن متصلاً صفحةً بعد صفحة، بخط مجمع الملك فهد ونصّه.'}</p>
     <div class="mh-go"><a class="btn mh-pri" href="${last != null ? `#pa${last}` : '#p1'}"><svg><use href="#i-book"/></svg>${last != null ? 'أكمل القراءة' : 'ابدأ القراءة'}</a>${last != null ? '<a class="btn mh-sec" href="#p1">من الفاتحة</a>' : '<a class="btn mh-sec" href="#mushaf">فهرس السور</a>'}</div>
     <div class="mh-sel"><select id="mhSur" aria-label="اختر سورة"><option value="">اختر سورة…</option>${Q.surahs.map(s => `<option value="${s.n}">${n(s.n)}. ${s.name}</option>`).join('')}</select>
@@ -520,27 +520,27 @@ function home() {
       <form class="wl-search" id="homeQ" role="search"><svg><use href="#i-search"/></svg><input type="search" id="homeQi" placeholder="عمّ تبحث في القرآن؟ اكتب فكرة أو كلمة" aria-label="ابحث في القرآن"><button class="btn primary" type="submit">ابحث</button></form>
       <div class="wl-chips"><span class="muted small">جرّب:</span>${QUICK.map(q => `<button type="button" class="chip" data-hq="${esc(q)}">${esc(q)}</button>`).join('')}</div>
     </section>
-    <section class="mindex" aria-label="أقسام موسوعة القرآن الكريم"><div class="mi-head"><b>أقسام موسوعة القرآن الكريم</b><span class="muted small">${n(secTotal())} قسماً في ${n(PATHS.length)} فئات</span></div>${finderHTML('sfM')}${recentHTML()}
+    <section class="mindex" aria-label="أقسام مشكاة"><div class="mi-head"><b>أقسام مشكاة</b><span class="muted small">${n(secTotal())} قسماً في ${n(PATHS.length)} فئات</span></div>${finderHTML('sfM')}${recentHTML()}
       ${PATHS.map(([pc, t, , items]) => `<div class="mi-group ${pc}"><div class="mi-t"><i class="dot"></i>${t}<em>${n(items.length)}</em></div><div class="mi-grid">${items.map(([v, ic, tt, dd]) => `<a class="mi-tile" href="#${v}" data-q="${esc(tt + ' ' + dd)}"><svg><use href="#${ic}"/></svg><span>${tt}</span></a>`).join('')}</div>${items.length > 6 ? `<button type="button" class="mi-all" data-all aria-expanded="false">عرض كل أقسام الفئة (${n(items.length)})</button>` : ''}</div>`).join('')}
       <div class="mi-more"><a href="#stats">القرآن بالأرقام</a><a href="#guide">دليل التطبيق</a><a href="#about">المنهج والمصادر</a></div>
     </section>
   </div>
   <div class="today">
     <div class="mine3">
-      ${last != null ? `<a class="mcard" href="#pa${last}"><svg><use href="#i-book"/></svg><span><small>أكمل القراءة</small><b>${esc(ref(last))}</b></span></a>` : `<a class="mcard" href="#p1"><svg><use href="#i-book"/></svg><span><small>ابدأ القراءة</small><b>افتح القرآن الكريم</b></span></a>`}
+      ${last != null ? `<a class="mcard" href="#pa${last}"><svg><use href="#i-book"/></svg><span><small>أكمل القراءة</small><b>${esc(ref(last))}</b></span></a>` : `<a class="mcard" href="#p1"><svg><use href="#i-book"/></svg><span><small>ابدأ القراءة</small><b>افتح المصحف</b></span></a>`}
       <a class="mcard" href="#hifz"><svg><use href="#i-mic"/></svg><span><small>مراجعة اليوم</small><b>${n(due.length)} مقطع</b></span></a>
       <a class="mcard" href="#saved"><svg><use href="#i-bookmark"/></svg><span><small>علاماتك</small><b>${n(ST.bookmarks.length)} آية</b></span></a>
     </div>
     ${progHomeCard()}
-    <div class="pill-row acct-row">${cloud ? '<span class="chip ok">تقدّمك محفوظ في حسابك ويتزامن بين أجهزتك</span>' : SESSION ? `<a class="chip ok" href="#account">حسابك: ${esc(SESSION.name)} · ${ROLE[SESSION.role]}</a>` : IS_PWA ? '<span class="chip">تقدّمك محفوظ على هذا الجهاز</span><a class="chip acc" href="#account">ادخل إلى حسابك</a>' : '<span class="chip">تقدّمك محفوظ على هذا الجهاز</span>'}${IS_PWA && !FILE_MODE && !isStandalone() ? '<button class="chip acc" id="homeInst">ثبّت موسوعة القرآن الكريم على جهازك</button>' : ''}</div>
+    <div class="pill-row acct-row">${cloud ? '<span class="chip ok">تقدّمك محفوظ في حسابك ويتزامن بين أجهزتك</span>' : SESSION ? `<a class="chip ok" href="#account">حسابك: ${esc(SESSION.name)} · ${ROLE[SESSION.role]}</a>` : IS_PWA ? '<span class="chip">تقدّمك محفوظ على هذا الجهاز</span><a class="chip acc" href="#account">ادخل إلى حسابك</a>' : '<span class="chip">تقدّمك محفوظ على هذا الجهاز</span>'}${IS_PWA && !FILE_MODE && !isStandalone() ? '<button class="chip acc" id="homeInst">ثبّت مشكاة على جهازك</button>' : ''}</div>
   </div>
   ${journeysHTML()}
   <section class="paths">
-    <div class="sec-head"><div><span class="eyebrow">مسارات موسوعة القرآن الكريم · ${n(secTotal())} قسماً</span><h2>اختر طريقك في الموسوعة</h2></div>${finderHTML('sfD')}<a class="btn" href="#guide">دليل التطبيق</a></div>
+    <div class="sec-head"><div><span class="eyebrow">مسارات مشكاة · ${n(secTotal())} قسماً</span><h2>اختر طريقك في الموسوعة</h2></div>${finderHTML('sfD')}<a class="btn" href="#guide">دليل التطبيق</a></div>
     ${PATHS.map(([pc, t, d, items], gi) => `<div class="path ${pc}"><div class="path-head"><span class="pnum">${n(gi + 1)}</span><div><h3>${t}</h3><span class="pcount">${n(items.length)} ${items.length > 10 ? 'قسماً' : 'أقسام'}</span><p>${d}</p></div></div><div class="path-grid">${items.map((x, i) => sCard(x, pc, i === 0)).join('')}</div></div>`).join('')}
   </section>
   <section class="numbers">
-    <div class="sec-head"><div><span class="eyebrow">القرآن بالأرقام</span><h2>إحصاء موثق من نص القرآن الكريم</h2></div><a class="btn" href="#stats">الإحصاء الكامل</a></div>
+    <div class="sec-head"><div><span class="eyebrow">القرآن بالأرقام</span><h2>إحصاء موثق من نص المصحف</h2></div><a class="btn" href="#stats">الإحصاء الكامل</a></div>
     <div class="grid tiles">${[['سورة',Q.surahs.length],['آية',Q.ayat.length],['كلمة',W.w.length],['جذراً',W.roots.length],['كتب تفسير',TF.length]].map(([k,v]) => `<div class="tile"><b>${n(v)}</b><span>${k}</span></div>`).join('')}</div>
   </section>
   <section class="stack tight">
@@ -548,7 +548,7 @@ function home() {
     <div class="cat-rail">${T.slice(0, 10).map(c => `<a class="cat" href="#t-${c.id}"><span class="eyebrow">${n(c.items.length)} مدخلاً</span><h3>${c.title}</h3><p>${esc(c.intro)}</p></a>`).join('')}</div>
   </section>
   <footer class="hfoot">
-    <div class="hf-brand"><img src="icons/icon-192.png" alt=""><span><b>موسوعة القرآن الكريم</b><small>طبعة المدينة النبوية، رواية حفص عن عاصم</small></span></div>
+    <div class="hf-brand"><img src="icons/icon-192.png" alt=""><span><b>مشكاة</b><small>موسوعة القرآن الذكية · مصحف المدينة النبوية، رواية حفص عن عاصم</small></span></div>
     <nav class="hf-links"><a href="#about">المنهج والمصادر</a><a href="#guide">دليل التطبيق</a><a href="#settings">الإعدادات</a>${IS_PWA ? '<a href="#account">حسابي</a>' : ''}</nav>
   </footer>
   </div>`);
@@ -601,7 +601,7 @@ const KSV = (() => {
     palace: (x, y, s) => g(x, y, s, `<rect x="-60" y="-50" width="120" height="50" fill="#e8d3a8"/><rect x="-70" y="-62" width="22" height="62" fill="#dcc391"/><rect x="48" y="-62" width="22" height="62" fill="#dcc391"/><path d="M-70-62h22l-11-14zM48-62h22l-11-14z" fill="#c4a06a"/><path d="M-16 0v-30a16 16 0 0 1 32 0V0z" fill="#8a6a3a"/>` + [-40, 28].map(a => `<rect x="${a}" y="-40" width="12" height="16" rx="6" fill="#8a6a3a"/>`).join('')),
     ant: (x, y, s) => g(x, y, s, `<g fill="#3b2a20"><ellipse cx="-9" cy="0" rx="6" ry="5"/><ellipse cx="0" cy="0" rx="4" ry="3.5"/><ellipse cx="8" cy="-1" rx="4.5" ry="4"/></g><g stroke="#3b2a20" stroke-width="1.3" fill="none"><path d="M-3 2l-5 7M0 3l0 8M3 2l5 7M-3-2l-5-6M3-2l5-6M10-4q4-6 8-6M10-4q6-4 9 0"/></g><circle cx="10" cy="-2" r="1" fill="#fff"/>`),
     anthill: (x, y, s) => g(x, y, s, `<path d="M-30 0q30-34 60 0z" fill="#b8865a"/><ellipse cx="0" cy="-8" rx="6" ry="4" fill="#5a3b22"/>`),
-    bird: (x, y, s) => g(x, y, s, `<path d="M-12 0q6-8 12 0q6-8 12 0" stroke="#0e4a3b" stroke-width="2.4" fill="none" stroke-linecap="round"/>`),
+    bird: (x, y, s) => g(x, y, s, `<path d="M-12 0q6-8 12 0q6-8 12 0" stroke="#1b2559" stroke-width="2.4" fill="none" stroke-linecap="round"/>`),
     stonebird: (x, y, s) => g(x, y, s, `<path d="M-12 0q6-8 12 0q6-8 12 0" stroke="#3a2a1a" stroke-width="2.4" fill="none" stroke-linecap="round"/><circle cx="0" cy="6" r="2.5" fill="#8a6a4a"/>`),
     hoopoe: (x, y, s) => g(x, y, s, `<ellipse cx="0" cy="0" rx="18" ry="11" fill="#e3a35a"/><path d="M-4-6l-8-18M0-8l-2-20M4-7l6-18M8-5l12-14" stroke="#e3a35a" stroke-width="4" stroke-linecap="round"/><path d="M-4-6l-8-18M0-8l-2-20M4-7l6-18M8-5l12-14" stroke="#2b1d12" stroke-width="1.4" stroke-dasharray="3 9" stroke-dashoffset="-9"/><path d="M-2 2q-10 10-26 6 10-2 14-10z" fill="#2b1d12"/><path d="M-6 4h18" stroke="#fff" stroke-width="2" stroke-dasharray="3 3"/><circle cx="12" cy="-3" r="2" fill="#1b1b1b"/><path d="M16-2l16 4-16 1z" fill="#3b2a20"/><path d="M-2 10l-2 10M4 10l2 10" stroke="#3b2a20" stroke-width="2"/>`),
     letter: (x, y, s) => g(x, y, s, `<rect x="-22" y="-14" width="44" height="28" rx="3" fill="#fff8e6" stroke="#c9a15a"/><path d="M-22-14l22 16 22-16" stroke="#c9a15a" fill="none"/><circle cx="0" cy="6" r="5" fill="#c0392b"/>`),
@@ -875,7 +875,7 @@ function kids(id) {
         <div class="toolbar"><a class="btn pri k-cta" href="#k-quiz">تحدّي الأسئلة</a></div><div class="k-stars" aria-label="نجومك"><span>نجومك</span><b>${'★'.repeat(Math.min(total, 10))}${total > 10 ? ' +' + n(total - 10) : ''}</b><em>${n(total)} من ${n(KIDS.length * 3)}</em></div></div></section>
       <section><div class="sec-head"><div><span class="eyebrow">${n(KIDS.length)} قصة</span><h2>اختر قصة</h2></div></div>
       <div class="k-grid">${KIDS.map((k, i) => `<a class="k-card" href="#k-${k.id}" style="--kc:${k.c}"><span class="k-art">${KSV(k.cover)}</span><span class="k-meta"><span class="k-num">${n(i + 1)}</span><b>${k.t}</b><small>${n(k.scenes.length)} مشاهد · العمر ${k.age}</small><span class="k-st" aria-label="النجوم">${'★'.repeat(st[k.id] || 0)}${'☆'.repeat(3 - (st[k.id] || 0))}</span></span></a>`).join('')}</div></section>
-      <section class="panel stack tight"><div class="sec-head"><div><span class="eyebrow">احفظ مع موسوعة القرآن الكريم</span><h2>سور قصيرة للحفظ</h2></div><a class="btn" href="#hifz">الحفظ والتسميع</a></div>
+      <section class="panel stack tight"><div class="sec-head"><div><span class="eyebrow">احفظ مع مشكاة</span><h2>سور قصيرة للحفظ</h2></div><a class="btn" href="#hifz">الحفظ والتسميع</a></div>
         <p class="muted small">ابدأ بالسور القصيرة، واقرأها مع والديك، ثم سمّعها في صفحة الحفظ.</p>
         <div class="k-surahs">${KSURAHS.map(([s, nm]) => `<a class="chip" href="#s${s}">سورة ${nm}</a>`).join('')}</div></section>
       <section class="panel stack tight k-parents"><h3>للآباء والمربّين</h3>
@@ -893,7 +893,7 @@ function kids(id) {
     <section class="panel k-quiz" id="kquiz"><h2>أسئلة القصة</h2><p class="muted small">اختر الجواب الصحيح، ولكل جواب صحيح من المحاولة الأولى نجمة.</p>
       ${qs.map(([q, ops], qi) => { const ord = ops.map((o, k) => [o, k]).sort((a, b) => ((a[1] * 7 + qi * 3) % 5) - ((b[1] * 7 + qi * 3) % 5)); return `<fieldset class="k-q" data-q="${qi}"><legend>${n(qi + 1)}. ${esc(q)}</legend>${ord.map(([o, k]) => `<button type="button" class="k-op" data-k="${k}">${esc(o)}</button>`).join('')}<span class="k-fb" aria-live="polite"></span></fieldset>`; }).join('')}
       <div class="k-score" id="kscore" hidden></div></section>
-    <section class="panel k-mem"><h2>احفظ آية القصة</h2>${kidsAyat(story.mem)}<div class="toolbar">${kidsRef(story.mem)}<a class="btn" href="#a${story.mem[0]}-${story.mem[1]}">في سياقها من القرآن الكريم</a></div></section>
+    <section class="panel k-mem"><h2>احفظ آية القصة</h2>${kidsAyat(story.mem)}<div class="toolbar">${kidsRef(story.mem)}<a class="btn" href="#a${story.mem[0]}-${story.mem[1]}">في سياقها من المصحف</a></div></section>
     <a class="k-next" href="#k-${nx.id}" style="--kc:${nx.c}"><span class="k-art">${KSV(nx.cover)}</span><span><small>القصة التالية</small><b>${nx.t}</b></span><i aria-hidden="true">←</i></a>
   </div>`);
   const got = new Set();
@@ -962,9 +962,9 @@ const ULUM = [
     ev: [[15, 9, 'لحافظون'], [75, 17, 'جمعه'], [56, 78, 'مكنون'], [98, 2, 'مطهرة/صحف']] },
   { id: 'qiraat', t: 'القراءات والأحرف السبعة', ref: 'الإتقان للسيوطي، النوع السادس عشر (المسألة في الأحرف السبعة) والأنواع من الثاني والعشرين إلى السابع والعشرين في أقسام القراءات؛ النشر في القراءات العشر لابن الجزري',
     intro: 'ثبت في الصحيحين أن النبي ﷺ قال: «إن هذا القرآن أُنزل على سبعة أحرف فاقرؤوا ما تيسّر منه». واختلف العلماء في المراد بالأحرف السبعة على أقوال كثيرة. أما القراءات فهي وجوه أداء ألفاظ القرآن المنقولة بالسند إلى النبي ﷺ، وضابط القراءة المقبولة عند ابن الجزري: صحة السند، وموافقة رسم أحد المصاحف العثمانية ولو احتمالاً، وموافقة العربية ولو بوجه.',
-    pts: ['الأحرف السبعة رخصة وتيسير على الأمة في القراءة، وهي غير القراءات السبع المشهورة.', 'القراءات العشر متواترة عند جمهور العلماء، ورواية حفص عن عاصم هي الأشيع اليوم، وهي رواية المصحف في موسوعة القرآن الكريم.', 'ما فقد ركناً من أركان القبول الثلاثة فهو شاذ لا يُقرأ به في الصلاة.'],
+    pts: ['الأحرف السبعة رخصة وتيسير على الأمة في القراءة، وهي غير القراءات السبع المشهورة.', 'القراءات العشر متواترة عند جمهور العلماء، ورواية حفص عن عاصم هي الأشيع اليوم، وهي رواية المصحف في مشكاة.', 'ما فقد ركناً من أركان القبول الثلاثة فهو شاذ لا يُقرأ به في الصلاة.'],
     ev: [[73, 4, 'ترتيلا/رتل/الترتيل/تمهل'], [54, 17, 'يسرنا'], [75, 18, 'قرأناه/قراءته']] },
-  { id: 'rasm', t: 'رسم القرآن الكريم وضبطه', ref: 'الإتقان للسيوطي، النوع السادس والسبعون: في مرسوم الخط وآداب كتابته؛ المقنع في رسم مصاحف الأمصار لأبي عمرو الداني',
+  { id: 'rasm', t: 'رسم المصحف وضبطه', ref: 'الإتقان للسيوطي، النوع السادس والسبعون: في مرسوم الخط وآداب كتابته؛ المقنع في رسم مصاحف الأمصار لأبي عمرو الداني',
     intro: 'الرسم العثماني هو الطريقة التي كُتبت بها المصاحف في عهد عثمان رضي الله عنه، وفيه حذف وزيادة وإبدال ووصل وفصل يخالف قواعد الإملاء المعتادة أحياناً. والجمهور على وجوب التزامه في كتابة المصحف. أما الضبط (النقط والشكل) فأُضيف بعد ذلك تيسيراً للقراءة الصحيحة.',
     pts: ['الرسم توقيفي أو كالتوقيفي عند الجمهور، فلا يُغيَّر المصحف إلى الإملاء الحديث.', 'من حِكم الرسم احتماله لأكثر من قراءة صحيحة في الكلمة الواحدة.', 'بدأ أبو الأسود الدؤلي بنقط الإعراب حفظاً للسان من اللحن، ثم أضاف نصر بن عاصم ويحيى بن يعمر نقط الإعجام، ثم وضع الخليل بن أحمد الشكل المعروف اليوم.'],
     ev: [[1, 4, 'مالك/ملك'], [96, 4, 'بالقلم'], [68, 1, 'القلم']] },
@@ -1014,7 +1014,7 @@ const ULUM = [
     ev: [[17, 88, 'بمثله/الإنس والجن'], [11, 13, 'عشر سور'], [2, 23, 'بسورة/تحداهم']] },
   { id: 'tafsir', t: 'التفسير ومناهجه وطبقات المفسرين', ref: 'الإتقان للسيوطي، النوع السابع والسبعون: في معرفة تفسيره وتأويله، والنوع الثمانون: في طبقات المفسرين؛ مقدمة في أصول التفسير لابن تيمية',
     intro: 'التفسير: بيان معاني القرآن والكشف عن مراد الله بقدر الطاقة البشرية. وقد أمر الله بتدبر كتابه، ووضع العلماء له أصولاً: أحسن طرقه تفسير القرآن بالقرآن، ثم بالسنة، ثم بأقوال الصحابة، ثم بأقوال التابعين، ثم بمقتضى لغة العرب.',
-    pts: ['التفسير بالمأثور: ما نُقل عن القرآن والسنة والصحابة والتابعين، والتفسير بالرأي: الاجتهاد المنضبط بأصول اللغة والشرع، أما الرأي المجرد عن الدليل فمذموم.', 'من أشهر مفسري الصحابة: ابن عباس، وابن مسعود، وأُبيّ بن كعب، وعلي بن أبي طالب رضي الله عنهم. ومن التابعين: مجاهد، وعكرمة، وسعيد بن جبير، وقتادة، والحسن البصري.', 'ثم جاءت كتب التفسير الجامعة، ومن أعظمها تفسير الطبري، ثم القرطبي، وابن كثير، والبغوي، وهي مضمّنة في موسوعة القرآن الكريم.'],
+    pts: ['التفسير بالمأثور: ما نُقل عن القرآن والسنة والصحابة والتابعين، والتفسير بالرأي: الاجتهاد المنضبط بأصول اللغة والشرع، أما الرأي المجرد عن الدليل فمذموم.', 'من أشهر مفسري الصحابة: ابن عباس، وابن مسعود، وأُبيّ بن كعب، وعلي بن أبي طالب رضي الله عنهم. ومن التابعين: مجاهد، وعكرمة، وسعيد بن جبير، وقتادة، والحسن البصري.', 'ثم جاءت كتب التفسير الجامعة، ومن أعظمها تفسير الطبري، ثم القرطبي، وابن كثير، والبغوي، وهي مضمّنة في مشكاة.'],
     ev: [[38, 29, 'ليدبروا/التدبر'], [4, 82, 'التدبر/اختلافا'], [47, 24, 'أقفالها']] },
   { id: 'adab', t: 'آداب التلاوة وحملة القرآن', ref: 'الإتقان للسيوطي، النوع الخامس والثلاثون: في آداب تلاوته وتاليه؛ التبيان في آداب حملة القرآن للنووي',
     intro: 'لتلاوة القرآن آداب ظاهرة وباطنة، تجمع بين تعظيم كلام الله وتدبره والعمل به. ومن أعظمها: الإخلاص، والطهارة، والاستعاذة، والترتيل، وحضور القلب.',
@@ -1080,7 +1080,7 @@ function wazifa() {
   if (!needMod('wazifa')) return;
   const Z = WAZIFA, enOn = LANG !== 'ar', bk = k => (HAD_BOOKS[k] || [k])[0];
   const dig = k => LANG === 'ar' ? String(k).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]) : k;
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 9); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayahHTML(i, null, false)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 9); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayahHTML(i, null, false)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const ayCard = ([t, r, kw, nt]) => `<article class="wz-ay"><h4>${t}</h4><div class="u-ref">${refLink(idxOf(r[0], r[1]))}${r[2] ? `<span>–${n(r[2])}</span>` : ''}</div>
     <div class="th-ay">${ays(r)}</div><p class="wz-note">${esc(nt)}</p>
     <details class="wz-tf"><summary>التفسير</summary><div class="u-tf" data-ev="${r[0]}|${r[1]}|${esc(kw)}"><p class="muted small">جارٍ تحميل التفسير…</p></div></details></article>`;
@@ -1129,7 +1129,7 @@ function ulum() {
       <h3>الشواهد من القرآن وأقوال المفسرين</h3>
       ${c.ev.map(([s, a, kw]) => { const ix = idxOf(s, a); return `<div class="u-ev"><div class="u-ref">${refLink(ix)}</div>${ayahHTML(ix, null, false)}<div class="u-tf" data-ev="${s}|${a}|${esc(kw)}"><p class="muted small">جارٍ تحميل التفسير…</p></div></div>`; }).join('')}
       <p class="u-src"><b>المراجع:</b> ${esc(c.ref)}.</p></div></details>`).join('')}
-    <p class="muted small">التمهيد ومسائل الباب تلخيص لما في المراجع المذكورة مع كل باب، والآيات من المصحف بنصها، والتفسير منقول بلفظه من الكتب المضمّنة في موسوعة القرآن الكريم.</p>
+    <p class="muted small">التمهيد ومسائل الباب تلخيص لما في المراجع المذكورة مع كل باب، والآيات من المصحف بنصها، والتفسير منقول بلفظه من الكتب المضمّنة في مشكاة.</p>
   </div>`);
   const load = d => { if (d.open) d.querySelectorAll('.u-tf[data-ev]:not([data-done])').forEach(el => { el.dataset.done = 1; ulumEvidence(el); }); };
   $$('.u-ch').forEach(d => { d.addEventListener('toggle', () => load(d)); load(d); });
@@ -1432,7 +1432,7 @@ function theme(id) {
   V(`<div class="stack ulum theme th-${id}">
     <section class="u-hero"><span class="eyebrow">${T0.ey}</span><h1>${T0.t}</h1><p class="lead">${T0.lead}</p></section>
     <nav class="panel u-index th-index" aria-label="الفهرس"><h2>الفهرس</h2>${T0.groups.map(([g, items], gi) => `<details${gi === 0 ? ' open' : ''}><summary>${g} <em>${n(items.length)}</em></summary><ol>${items.map(it => { k++; return `<li><a href="#${id}" data-tj="${id}-${k}"><span class="u-n">${n(k)}</span>${it[0]}</a></li>`; }).join('')}</ol></details>`).join('')}</nav>
-    ${(() => { let j = 0; return T0.groups.map(([g, items]) => `<section class="th-group"><h2 class="th-gt">${g}</h2>${items.map(([t, sub, r, kw, tx, use]) => { j++; const [s, a, b] = r, ix = idxOf(s, a); const ays = []; const last = Math.min(b || a, a + 3); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) ays.push(ayahHTML(i, null, false)); } if ((b || a) > last) ays.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`);
+    ${(() => { let j = 0; return T0.groups.map(([g, items]) => `<section class="th-group"><h2 class="th-gt">${g}</h2>${items.map(([t, sub, r, kw, tx, use]) => { j++; const [s, a, b] = r, ix = idxOf(s, a); const ays = []; const last = Math.min(b || a, a + 3); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) ays.push(ayahHTML(i, null, false)); } if ((b || a) > last) ays.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`);
       return `<details class="u-ch panel th-item" id="${id}-${j}"><summary><span class="u-n">${n(j)}</span><span class="u-t">${t}<small>${sub}</small></span></summary>
       <div class="u-body stack tight"><div class="u-ref">${refLink(ix)}${b ? `<span>–${n(b)}</span>` : ''}</div><div class="th-ay">${ays.join('')}</div>
       <p class="u-intro">${esc(tx)}</p>
@@ -1457,11 +1457,11 @@ function tawhid() {
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const num = k => LANG === 'ar' ? AR(k) : k;
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah tw-q"><span class="tw-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num tw-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] ? `<span>–${n(r[2])}</span>` : ''}`;
   const ayCard = it => `<article class="tw-ay"><h3>${it.t}</h3><div class="u-ref">${refOf(it.r)}</div>
     <div class="tw-ays">${ays(it.r)}</div><p class="tw-note">${esc(it.n)}</p>
-    <div class="tw-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a>${it.h ? `<a class="btn" href="#tawhid" data-twh="${it.h}">الحديث بتخريجه</a>` : ''}</div></article>`;
+    <div class="tw-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a>${it.h ? `<a class="btn" href="#tawhid" data-twh="${it.h}">الحديث بتخريجه</a>` : ''}</div></article>`;
   const hCard = h => `<article class="tw-h" id="twh-${h.id}"><h3>${h.t}</h3>
     <blockquote class="tw-matn notranslate" translate="no" lang="ar" dir="rtl">${esc(h.x)}</blockquote>
     ${enOn ? `<div class="tw-en"><b>معنى الحديث بالإنجليزية</b><p class="notranslate" translate="no" lang="en" dir="ltr">${esc(h.en)}</p></div>` : ''}
@@ -1506,7 +1506,7 @@ function ruqya() {
   if (!needMod('ruqya')) return;
   const R = RUQYA, enOn = LANG !== 'ar', bk = k => (HAD_BOOKS[k] || [k])[0];
   const notice = `<aside class="ruq-alert" role="note"><svg><use href="#i-info"/></svg><div><b>تنबيه مهم</b><p>هذا القسم بيان شرعي لهدي القرآن والسنة في الرقية، وليس استشارة طبية ولا وصفة علاج. الرقية لا تغني عن الطبيب ولا تؤخر مراجعته، ومن وجد عرضاً طارئاً أو مستمراً فليبادر إلى الطبيب المختص، مع الرقية والدعاء.</p></div></aside>`;
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayahHTML(i, null, false)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayahHTML(i, null, false)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const ayCard = (it, c) => `<article class="ruq-ay"><h3>${it.t}</h3><div class="u-ref">${refLink(idxOf(it.r[0], it.r[1]))}${it.r[2] ? `<span>–${n(it.r[2])}</span>` : ''}</div>
     <div class="th-ay">${ays(it.r)}</div><p class="ruq-note">${esc(it.n)}</p>
     <div class="ruq-links">${c.id === 'asl' && THEMES.shifa ? `<a class="btn" href="#shifa"><svg><use href="#i-heal"/></svg>تفسيرها ومسائلها في قسم الأمراض والعلاج</a>` : ''}${it.h ? `<a class="btn" href="#ruqya" data-ruqh="${it.h}">الحديث بتخريجه</a>` : ''}</div></article>`;
@@ -1519,7 +1519,7 @@ function ruqya() {
   const qCard = q => { const b = q.bk && TF.find(x => x.key === q.bk);
     return `<figure class="qs-quote ruq-q"><blockquote class="notranslate" translate="no" lang="ar" dir="rtl">${esc(q.x)}</blockquote>
     ${enOn ? `<p class="ruq-qen notranslate" translate="no" lang="en" dir="ltr">${esc(q.en)}</p>` : ''}
-    <figcaption><b>${q.w}</b> · ${b ? `<span>نقل بلفظه من</span> <span>${esc(b.title)}</span> · <span>عند تفسير</span> ${refLink(idxOf(q.s, q.ay))}` : `<span>${q.ref}</span> <small class="muted">من كتاب غير مضمّن في موسوعة القرآن الكريم، يُراجع في مطبوعاته</small>`}</figcaption>
+    <figcaption><b>${q.w}</b> · ${b ? `<span>نقل بلفظه من</span> <span>${esc(b.title)}</span> · <span>عند تفسير</span> ${refLink(idxOf(q.s, q.ay))}` : `<span>${q.ref}</span> <small class="muted">من كتاب غير مضمّن في مشكاة، يُراجع في مطبوعاته</small>`}</figcaption>
     <p class="ruq-note">${esc(q.n)}</p></figure>`; };
   const list = (arr, cls) => `<ol class="ruq-list ${cls}">${arr.map(([t, d]) => `<li><b>${t}</b><p>${esc(d)}</p></li>`).join('')}</ol>`;
   const body = c => {
@@ -1559,7 +1559,7 @@ function stats() {
   const gsum = Object.entries(grp).map(([k, v]) => [k, v.reduce((s, p) => s + (posC[p] || 0), 0)]);
   const longest = [...S].sort((a, b) => b.ayas - a.ayas)[0], shortest = [...S].sort((a, b) => a.words - b.words)[0];
   V(`<div class="stack">
-  <div><div class="eyebrow">الإحصاء العام للقرآن الكريم</div><h1>كل لفظ، وكل جذر، وكل حرف في القرآن الكريم</h1>
+  <div><div class="eyebrow">الإحصاء العام للقرآن الكريم</div><h1>كل لفظ، وكل جذر، وكل حرف في المصحف</h1>
   <p class="lead">إحصاء مبني على نص مصحف المدينة النبوية (مجمع الملك فهد، رواية حفص عن عاصم) مطابقاً بمدونة القرآن الصرفية.</p></div>
   <div class="grid tiles">
     ${[['السور',S.length],['الآيات',Q.ayat.length],['الكلمات',tot],['الصيغ المختلفة',uniqForms.size],['اللمّات (الأصول المعجمية)',W.lemmas.length],['الجذور',W.roots.length],['الحروف',c.letters],['الأجزاء',30],['الصفحات',604],['سجدات التلاوة',Q.sajdas.length]]
@@ -1600,11 +1600,11 @@ function taam() {
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const num = k => LANG === 'ar' ? AR(k) : k;
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah tm-q"><span class="tm-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num tm-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] ? `<span>–${n(r[2])}</span>` : ''}`;
   const ayCard = it => `<article class="tm-ay"><h3>${it.t}</h3><div class="u-ref">${refOf(it.r)}</div>
     <div class="tm-ays">${ays(it.r)}</div><p class="tm-note">${esc(it.n)}</p>
-    <div class="tm-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a>${it.h ? `<a class="btn" href="#taam" data-tmh="${it.h}">الحديث بتخريجه</a>` : ''}</div></article>`;
+    <div class="tm-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a>${it.h ? `<a class="btn" href="#taam" data-tmh="${it.h}">الحديث بتخريجه</a>` : ''}</div></article>`;
   const hCard = h => `<article class="tm-h" id="tmh-${h.id}"><h3>${h.t}</h3>
     <blockquote class="tm-matn notranslate" translate="no" lang="ar" dir="rtl">${esc(h.x)}</blockquote>
     ${enOn ? `<div class="tm-en"><b>معنى الحديث بالإنجليزية</b><p class="notranslate" translate="no" lang="en" dir="ltr">${esc(h.en)}</p></div>` : ''}
@@ -1664,11 +1664,11 @@ function rusul() {
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const num = k => LANG === 'ar' ? AR(k) : k;
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah rs-q"><span class="rs-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num rs-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] ? `<span>–${n(r[2])}</span>` : ''}`;
   const ayCard = it => `<article class="rs-ay"><h3>${it.t}</h3><div class="u-ref">${refOf(it.r)}</div>
     <div class="rs-ays">${ays(it.r)}</div><p class="rs-note">${esc(it.n)}</p>
-    <div class="rs-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a></div></article>`;
+    <div class="rs-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div></article>`;
   const hCard = h => `<article class="rs-h" id="rsh-${h.id}"><h3>${h.t}</h3>
     <blockquote class="rs-matn notranslate" translate="no" lang="ar" dir="rtl">${esc(h.x)}</blockquote>
     ${enOn ? `<div class="rs-en"><b>معنى الحديث بالإنجليزية</b><p class="notranslate" translate="no" lang="en" dir="ltr">${esc(h.en)}</p></div>` : ''}
@@ -1695,7 +1695,7 @@ function rusul() {
         <p class="rs-sites small"><span class="num">${n(p.c)}</span> <span>مرة</span> · <span class="num">${n(p.ns)}</span> <span>سورة</span> · ${p.sr.slice(0, 6).map(r => refLink(r[0])).join('، ')}</p>
         <h4 class="rs-h4">من أقوال المفسرين</h4>${qCard({ ...p.q, ch: 'p' })}
         ${hs.length ? `<h4 class="rs-h4">من السنة الصحيحة</h4><div class="rs-grid">${hs.map(hCard).join('')}</div>` : ''}
-        <div class="rs-links"><a class="btn" href="#pa${idxOf(p.ay[0][0], p.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a><a class="btn" data-open="anbiya|${esc(full)}" href="#t-anbiya">القصة الموسّعة</a></div>
+        <div class="rs-links"><a class="btn" href="#pa${idxOf(p.ay[0][0], p.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a><a class="btn" data-open="anbiya|${esc(full)}" href="#t-anbiya">القصة الموسّعة</a></div>
       </div></details>`; };
   const body = c => { const hs = c.id === 'named' ? [] : D.h.filter(h => h.ch === c.id), qs = D.q.filter(q => q.ch === c.id);
     return `${c.id === 'named' ? `<div class="rs-chips2" role="group"><button type="button" class="rs-fc on" data-rsf="">الكل</button><button type="button" class="rs-fc" data-rsf="ulu">أولو العزم</button><button type="button" class="rs-fc" data-rsf="rl">وُصفوا بالرسالة</button></div>
@@ -1731,7 +1731,7 @@ function fiqhq() {
   const D = FIQHQ, enOn = LANG !== 'ar';
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah rs-q"><span class="rs-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num rs-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] && r[2] !== r[1] ? `<span>–${n(r[2])}</span>` : ''}`;
   const qCard = q => { const b = TF.find(x => x.key === q.bk);
     return `<figure class="qs-quote rs-qt"><blockquote class="notranslate" translate="no" lang="ar" dir="rtl">${esc(q.x)}</blockquote>
@@ -1744,11 +1744,11 @@ function fiqhq() {
       <div class="rs-grid">${t.ay.map(r => `<article class="rs-ay"><div class="u-ref">${refOf(r)}</div><div class="rs-ays">${ays(r)}</div></article>`).join('')}</div>
       <h4 class="rs-h4">أقوال العلماء</h4>
       <div class="rs-grid">${t.q.map(qCard).join('')}</div>
-      <div class="rs-links"><a class="btn" href="#pa${idxOf(t.ay[0][0], t.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a></div>
+      <div class="rs-links"><a class="btn" href="#pa${idxOf(t.ay[0][0], t.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div>
     </div></details>`;
   let k = 0;
   const cross = [['ibadat', 'فقه العبادات: الصيام والزكاة', 'الصيام والزكاة: أحكامهما من الآيات وأقوال المفسرين والخلاف بين المذاهب.'], ['hajj', 'الحج والعمرة', 'مناسك الحج والعمرة خطوة بخطوة بآياتها.'], ['nikah', 'الزواج والطلاق وأحكام الأسرة المسلمة', 'الخطبة والعقد والمهر والمعاشرة والنشوز والفراق وبرّ الوالدين.'], ['tifl', 'الأطفال وأحكامهم في القرآن', 'النسب واليتيم والتربية والاستئذان والبلوغ والرشد.']].filter(c => typeof views[c[0]] === 'function');
-  const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>نصوص الآيات بلفظ مصحف المدينة وبخطه، وأقوال العلماء مقتطعة بلفظها من كتبهم المضمّنة في موسوعة القرآن الكريم: «تيسير الكريم الرحمن» للسعدي و«الجامع لأحكام القرآن» للقرطبي و«تفسير القرآن العظيم» لابن كثير؛ والاقتطاع قد يحذف ما بين المقتطفات وتدل عليه علامة «…». وما بين الأقوال من خلاف يُعرض كما قاله أصحابه دون ترجيح من موسوعة القرآن الكريم. هذا الباب للتعلّم والمدارسة وليس فتوى، ويُرجع في النوازل إلى أهل العلم.</p></div>`;
+  const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>نصوص الآيات بلفظ مصحف المدينة وبخطه، وأقوال العلماء مقتطعة بلفظها من كتبهم المضمّنة في مشكاة: «تيسير الكريم الرحمن» للسعدي و«الجامع لأحكام القرآن» للقرطبي و«تفسير القرآن العظيم» لابن كثير؛ والاقتطاع قد يحذف ما بين المقتطفات وتدل عليه علامة «…». وما بين الأقوال من خلاف يُعرض كما قاله أصحابه دون ترجيح من مشكاة. هذا الباب للتعلّم والمدارسة وليس فتوى، ويُرجع في النوازل إلى أهل العلم.</p></div>`;
   V(`<div class="stack ulum rs fq">
     <section class="u-hero rs-hero"><span class="eyebrow">اقرأ وتدبّر</span><h1>الفقه من القرآن الكريم</h1>
       <p class="lead">آيات الأحكام مبوّبة على أبواب الفقه، بآياتها بخط المصحف وأقوال العلماء بألفاظها من كتب التفسير والأحكام المضمّنة، مع معنى كل قول بالإنجليزية.</p>
@@ -1778,7 +1778,7 @@ function qasasx() {
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const num = k => LANG === 'ar' ? AR(k) : k;
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah rs-q"><span class="rs-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num rs-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b], cap) => { const o = [], last = Math.min(b || a, a + cap - 1); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b], cap) => { const o = [], last = Math.min(b || a, a + cap - 1); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] > r[1] ? `<span>–${n(r[2])}</span>` : ''}`;
   const qCard = q => { const b = TF.find(x => x.key === q.bk);
     return `<figure class="qs-quote rs-qt"><blockquote class="notranslate" translate="no" lang="ar" dir="rtl">${esc(q.x)}</blockquote>
@@ -1806,7 +1806,7 @@ function qasasx() {
         ${st.ctx ? `<h4 class="rs-h4">من أقوال المفسرين</h4>${qCard(st.ctx)}` : ''}
         <h4 class="rs-h4">الدروس المستفادة</h4><div class="qm-lsl">${st.ls.map(lsCard).join('')}</div>
         ${hs.length ? `<h4 class="rs-h4">من السنة الصحيحة</h4><div class="rs-grid">${hs.map(hCard).join('')}</div>` : ''}
-        <div class="rs-links"><a class="btn" href="#pa${idxOf(st.eps[0].r[0], st.eps[0].r[1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a>${st.cat === 'a' ? '<a class="btn" href="#rusul">الأنبياء والمرسلون</a>' : ''}</div>
+        <div class="rs-links"><a class="btn" href="#pa${idxOf(st.eps[0].r[0], st.eps[0].r[1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a>${st.cat === 'a' ? '<a class="btn" href="#rusul">الأنبياء والمرسلون</a>' : ''}</div>
       </div></details>`; };
   const snCard = (l, i) => `<article class="qm-ls"><h3><span class="u-n">${num(i + 1)}</span>${l.t}</h3>
     <div class="u-ref">${refOf(l.r)}</div><div class="rs-ays">${ays(l.r, 3)}</div>${qCard(l.q)}</article>`;
@@ -1839,7 +1839,7 @@ function hadithq() {
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const num = k => LANG === 'ar' ? AR(k) : k;
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah hq-q"><span class="hq-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num hq-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] ? `<span>–${n(r[2])}</span>` : ''}`;
   const hCard = h => `<div class="hq-h"><blockquote class="hq-matn notranslate" translate="no" lang="ar" dir="rtl">${esc(h.x)}</blockquote>
     <p class="hq-tx"><span>رواه</span> <b>${bk(h.b)}</b> <span class="num">(${num(h.n)})</span></p>
@@ -1859,7 +1859,7 @@ function hadithq() {
       ${enOn ? `<div class="hq-en"><b>معنى الحديث بالإنجليزية</b><p class="notranslate" translate="no" lang="en" dir="ltr">${esc(e.en_h)}</p></div>` : ''}
       <div class="th-use"><b>الصلة بين الحديث والآية</b><p>${esc(e.f)}</p></div>
       <h4 class="hq-h4">من أقوال المفسرين</h4>${qCard(e.q)}
-      <div class="hq-links"><a class="btn" href="#pa${idxOf(e.ay[0][0], e.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a></div>
+      <div class="hq-links"><a class="btn" href="#pa${idxOf(e.ay[0][0], e.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div>
     </div></details>`;
   let k = 0; const idxOfE = {}; D.e.forEach(e => { idxOfE[e.id] = k++; });
   const body = c => `<div class="hq-list">${D.e.filter(e => e.ch === c.id).map(e => eCard(e, idxOfE[e.id])).join('')}</div>`;
@@ -1900,7 +1900,7 @@ function tawsiyat() {
   const D = TAWSIYAT, enOn = LANG !== 'ar';
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah tw-q"><span class="tw-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num tw-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] ? `<span>–${n(r[2])}</span>` : ''}`;
   const qCard = q => { const b = TF.find(x => x.key === q.bk);
     return `<figure class="qs-quote tw-qt"><blockquote class="notranslate" translate="no" lang="ar" dir="rtl">${esc(q.x)}</blockquote>
@@ -1910,7 +1910,7 @@ function tawsiyat() {
     <div class="u-ref">${refOf(it.r)}</div><div class="tw-ays">${ays(it.r)}</div>
     <p class="tw-note"><b>ما توصي به الآيات</b> ${esc(it.n)}</p>
     <h4 class="tw-h4">من أقوال المفسرين</h4>${qCard(it.q)}
-    <div class="tw-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a></div></article>`;
+    <div class="tw-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div></article>`;
   const body = c => D.i.filter(x => x.ch === c.id).map(card).join('');
   const nIt = D.i.length;
   V(`<div class="stack ulum tw">
@@ -1944,7 +1944,7 @@ function nikah() {
   const D = NIKAH, enOn = LANG !== 'ar';
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah rs-q"><span class="rs-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num rs-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] && r[2] !== r[1] ? `<span>–${n(r[2])}</span>` : ''}`;
   const qCard = q => { const b = TF.find(x => x.key === q.bk);
     return `<figure class="qs-quote rs-qt"><blockquote class="notranslate" translate="no" lang="ar" dir="rtl">${esc(q.x)}</blockquote>
@@ -1957,11 +1957,11 @@ function nikah() {
       <div class="rs-grid">${t.ay.map(r => `<article class="rs-ay"><div class="u-ref">${refOf(r)}</div><div class="rs-ays">${ays(r)}</div></article>`).join('')}</div>
       <h4 class="rs-h4">أقوال العلماء</h4>
       <div class="rs-grid">${t.q.map(qCard).join('')}</div>
-      <div class="rs-links"><a class="btn" href="#pa${idxOf(t.ay[0][0], t.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a></div>
+      <div class="rs-links"><a class="btn" href="#pa${idxOf(t.ay[0][0], t.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div>
     </div></details>`;
   let k = 0;
   const cross = [['fiqhq', 'الفقه من القرآن الكريم', 'مسائل النكاح والمهر والمحرَّمات والتعدد والطلاق والخلع والعدة والإيلاء والظهار والرضاع والنفقة واللعان.'], ['tifl', 'الأطفال وأحكامهم في القرآن', 'النسب واليتيم والتربية والاستئذان والبلوغ والرشد.'], ['usra', 'ركن الأسرة في القرآن', 'الزواج والوالدان والأبناء والتربية وقصص الأسر.']].filter(c => typeof views[c[0]] === 'function');
-  const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>نصوص الآيات بلفظ مصحف المدينة وبخطه، وأقوال العلماء مقتطعة بلفظها من كتبهم المضمّنة في موسوعة القرآن الكريم: «تيسير الكريم الرحمن» للسعدي و«الجامع لأحكام القرآن» للقرطبي؛ والاقتطاع قد يحذف ما بين المقتطفات وتدل عليه علامة «…». وما بين الأقوال من خلاف يُعرض كما قاله أصحابه دون ترجيح من موسوعة القرآن الكريم. هذا الركن للتعلّم والمدارسة وليس فتوى، ويُرجع في النوازل الأسرية إلى أهل العلم.</p></div>`;
+  const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>نصوص الآيات بلفظ مصحف المدينة وبخطه، وأقوال العلماء مقتطعة بلفظها من كتبهم المضمّنة في مشكاة: «تيسير الكريم الرحمن» للسعدي و«الجامع لأحكام القرآن» للقرطبي؛ والاقتطاع قد يحذف ما بين المقتطفات وتدل عليه علامة «…». وما بين الأقوال من خلاف يُعرض كما قاله أصحابه دون ترجيح من مشكاة. هذا الركن للتعلّم والمدارسة وليس فتوى، ويُرجع في النوازل الأسرية إلى أهل العلم.</p></div>`;
   V(`<div class="stack ulum rs fq">
     <section class="u-hero rs-hero"><span class="eyebrow">اقرأ وتدبّر</span><h1>الزواج والطلاق وأحكام الأسرة المسلمة</h1>
       <p class="lead">آيات الزواج والفراق وأحكام الأسرة: الخطبة والعقد والمهر والمعاشرة والنشوز والفراق والوالدان والأولاد، بآياتها بخط المصحف وأقوال العلماء بألفاظها، ومعنى كل قول بالإنجليزية.</p>
@@ -1990,7 +1990,7 @@ function amal() {
   const D = AMAL, enOn = LANG !== 'ar';
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah rs-q"><span class="rs-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num rs-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] && r[2] !== r[1] ? `<span>–${n(r[2])}</span>` : ''}`;
   const qCard = q => { const b = TF.find(x => x.key === q.bk);
     return `<figure class="qs-quote rs-qt"><blockquote class="notranslate" translate="no" lang="ar" dir="rtl">${esc(q.x)}</blockquote>
@@ -2003,11 +2003,11 @@ function amal() {
       <div class="rs-grid">${t.ay.map(r => `<article class="rs-ay"><div class="u-ref">${refOf(r)}</div><div class="rs-ays">${ays(r)}</div></article>`).join('')}</div>
       <h4 class="rs-h4">أقوال العلماء</h4>
       <div class="rs-grid">${t.q.map(qCard).join('')}</div>
-      <div class="rs-links"><a class="btn" href="#pa${idxOf(t.ay[0][0], t.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a></div>
+      <div class="rs-links"><a class="btn" href="#pa${idxOf(t.ay[0][0], t.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div>
     </div></details>`;
   let k = 0;
   const cross = [['wazifa', 'وظيفة الإنسان في القرآن', 'الوظيفة الوجودية للإنسان: العبادة والخلافة والعمارة والأمانة.'], ['fiqhq', 'الفقه من القرآن الكريم', 'أحكام المعاملات المالية من الآيات: الربا والبيع والدَّين.'], ['asnaf', 'أقسام الناس وأنواعهم', 'أصناف الناس في القرآن بحسب أعمالهم ومقاماتهم.']].filter(c => typeof views[c[0]] === 'function');
-  const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>نصوص الآيات بلفظ مصحف المدينة وبخطه، وأقوال المفسرين مقتطعة بلفظها من كتبهم المضمّنة في موسوعة القرآن الكريم: «تيسير الكريم الرحمن» للسعدي و«تفسير القرآن العظيم» لابن كثير و«الجامع لأحكام القرآن» للقرطبي؛ والاقتطاع قد يحذف ما بين المقتطفات وتدل عليه علامة «…». وما ورد في الأقوال من أحاديث فهو كما أورده صاحب الكتاب، وقد يكون في إسناده كلام. هذا الباب للتدبّر والمدارسة وليس فتوى، ويُرجع في النوازل إلى أهل العلم.</p></div>`;
+  const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>نصوص الآيات بلفظ مصحف المدينة وبخطه، وأقوال المفسرين مقتطعة بلفظها من كتبهم المضمّنة في مشكاة: «تيسير الكريم الرحمن» للسعدي و«تفسير القرآن العظيم» لابن كثير و«الجامع لأحكام القرآن» للقرطبي؛ والاقتطاع قد يحذف ما بين المقتطفات وتدل عليه علامة «…». وما ورد في الأقوال من أحاديث فهو كما أورده صاحب الكتاب، وقد يكون في إسناده كلام. هذا الباب للتدبّر والمدارسة وليس فتوى، ويُرجع في النوازل إلى أهل العلم.</p></div>`;
   V(`<div class="stack ulum rs am">
     <section class="u-hero rs-hero"><span class="eyebrow">اقرأ وتدبّر</span><h1>العمل في القرآن الكريم</h1>
       <p class="lead">منزلة العمل والكسب والسعي في الأرض كما وردت في القرآن: آياتها بخط المصحف وأقوال المفسرين بألفاظها في معناها وما يُستفاد منها، مع معنى كل قول بالإنجليزية.</p>
@@ -2036,7 +2036,7 @@ function tifl() {
   const D = TIFL, enOn = LANG !== 'ar';
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah rs-q"><span class="rs-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num rs-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] && r[2] !== r[1] ? `<span>–${n(r[2])}</span>` : ''}`;
   const qCard = q => { const b = TF.find(x => x.key === q.bk);
     return `<figure class="qs-quote rs-qt"><blockquote class="notranslate" translate="no" lang="ar" dir="rtl">${esc(q.x)}</blockquote>
@@ -2049,11 +2049,11 @@ function tifl() {
       <div class="rs-grid">${t.ay.map(r => `<article class="rs-ay"><div class="u-ref">${refOf(r)}</div><div class="rs-ays">${ays(r)}</div></article>`).join('')}</div>
       <h4 class="rs-h4">أقوال العلماء</h4>
       <div class="rs-grid">${t.q.map(qCard).join('')}</div>
-      <div class="rs-links"><a class="btn" href="#pa${idxOf(t.ay[0][0], t.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a></div>
+      <div class="rs-links"><a class="btn" href="#pa${idxOf(t.ay[0][0], t.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div>
     </div></details>`;
   let k = 0;
   const cross = [['fiqhq', 'الفقه من القرآن الكريم', 'الرضاع والحضانة والنفقة والميراث والوصية.'], ['nikah', 'الزواج والطلاق وأحكام الأسرة المسلمة', 'برّ الوالدين والحمل والفصال وأحكام الأسرة.'], ['kids', 'الأطفال في القرآن', 'قصص الأطفال والصغار في القرآن.'], ['usra', 'ركن الأسرة في القرآن', 'الزواج والوالدان والأبناء والتربية وقصص الأسر.']].filter(c => typeof views[c[0]] === 'function');
-  const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>نصوص الآيات بلفظ مصحف المدينة وبخطه، وأقوال العلماء مقتطعة بلفظها من كتبهم المضمّنة في موسوعة القرآن الكريم: «تيسير الكريم الرحمن» للسعدي و«الجامع لأحكام القرآن» للقرطبي؛ والاقتطاع قد يحذف ما بين المقتطفات وتدل عليه علامة «…». وما بين الأقوال من خلاف يُعرض كما قاله أصحابه دون ترجيح من موسوعة القرآن الكريم. هذا الركن للتعلّم والمدارسة وليس فتوى، ويُرجع في أحكام الأطفال والوصاية والحجر إلى أهل العلم.</p></div>`;
+  const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>نصوص الآيات بلفظ مصحف المدينة وبخطه، وأقوال العلماء مقتطعة بلفظها من كتبهم المضمّنة في مشكاة: «تيسير الكريم الرحمن» للسعدي و«الجامع لأحكام القرآن» للقرطبي؛ والاقتطاع قد يحذف ما بين المقتطفات وتدل عليه علامة «…». وما بين الأقوال من خلاف يُعرض كما قاله أصحابه دون ترجيح من مشكاة. هذا الركن للتعلّم والمدارسة وليس فتوى، ويُرجع في أحكام الأطفال والوصاية والحجر إلى أهل العلم.</p></div>`;
   V(`<div class="stack ulum rs fq">
     <section class="u-hero rs-hero"><span class="eyebrow">اقرأ وتدبّر</span><h1>الأطفال وأحكامهم في القرآن</h1>
       <p class="lead">آيات الأطفال وأحكامهم: النسب وحق اليتيم وحرمة النفس والتربية والدعاء بصلاح الذرية والاستئذان والبلوغ والرشد، بآياتها بخط المصحف وأقوال العلماء بألفاظها، ومعنى كل قول بالإنجليزية.</p>
@@ -2082,7 +2082,7 @@ function hayawan() {
   const D = HAYAWAN, enOn = LANG !== 'ar';
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah rs-q"><span class="rs-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num rs-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] && r[2] !== r[1] ? `<span>–${n(r[2])}</span>` : ''}`;
   const qCard = q => { const b = TF.find(x => x.key === q.bk);
     return `<figure class="qs-quote rs-qt"><blockquote class="notranslate" translate="no" lang="ar" dir="rtl">${esc(q.x)}</blockquote>
@@ -2095,11 +2095,11 @@ function hayawan() {
       <div class="rs-grid">${t.ay.map(r => `<article class="rs-ay"><div class="u-ref">${refOf(r)}</div><div class="rs-ays">${ays(r)}</div></article>`).join('')}</div>
       <h4 class="rs-h4">أقوال العلماء</h4>
       <div class="rs-grid">${t.q.map(qCard).join('')}</div>
-      <div class="rs-links"><a class="btn" href="#pa${idxOf(t.ay[0][0], t.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a></div>
+      <div class="rs-links"><a class="btn" href="#pa${idxOf(t.ay[0][0], t.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div>
     </div></details>`;
   let k = 0;
   const cross = [['rusul', 'الأنبياء والمرسلون', 'قصص الأنبياء والمرسلين بآياتها وأحاديثها.'], ['qasasx', 'قصص القرآن المستفيضة', 'قصص الأنبياء مفصّلة بأقوال المفسرين.'], ['amthal', 'أمثال القرآن', 'الأمثال المضروبة في القرآن وأمثال النبي ﷺ.'], ['taam', 'الفاكهة والطعام في القرآن', 'ما ذُكر من الطعام والشراب والثمار، ومنه العسل واللحم.']].filter(c => typeof views[c[0]] === 'function');
-  const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>نصوص الآيات بلفظ مصحف المدينة وبخطه، وأقوال المفسرين مقتطعة بلفظها من كتبهم المضمّنة في موسوعة القرآن الكريم: «تيسير الكريم الرحمن» للسعدي و«تفسير القرآن العظيم» لابن كثير و«الجامع لأحكام القرآن» للقرطبي؛ والاقتطاع قد يحذف ما بين المقتطفات وتدل عليه علامة «…». وما ورد في الأقوال من أحاديث وآثار وقصص فهو كما أورده صاحب الكتاب، وقد يكون في إسناده كلام. وكل كائن ورد في أكثر من باب (قصص الأنبياء، الأمثال) فهنا جمع لمواضعه وأقوال المفسرين في عبرته، وللتفصيل الكامل يُنظر الباب الآخر. هذا الباب للتدبّر والمدارسة وليس فتوى.</p></div>`;
+  const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>نصوص الآيات بلفظ مصحف المدينة وبخطه، وأقوال المفسرين مقتطعة بلفظها من كتبهم المضمّنة في مشكاة: «تيسير الكريم الرحمن» للسعدي و«تفسير القرآن العظيم» لابن كثير و«الجامع لأحكام القرآن» للقرطبي؛ والاقتطاع قد يحذف ما بين المقتطفات وتدل عليه علامة «…». وما ورد في الأقوال من أحاديث وآثار وقصص فهو كما أورده صاحب الكتاب، وقد يكون في إسناده كلام. وكل كائن ورد في أكثر من باب (قصص الأنبياء، الأمثال) فهنا جمع لمواضعه وأقوال المفسرين في عبرته، وللتفصيل الكامل يُنظر الباب الآخر. هذا الباب للتدبّر والمدارسة وليس فتوى.</p></div>`;
   V(`<div class="stack ulum rs hy">
     <section class="u-hero rs-hero"><span class="eyebrow">اقرأ وتدبّر</span><h1>الحيوانات والطير في القرآن الكريم</h1>
       <p class="lead">ما ذُكر في القرآن من الحيوان والطير والدواب، كل كائن بمواضع ذكره بخط المصحف وأقوال المفسرين بألفاظها في وجه العبرة والحكمة من ذكره، مع معنى كل قول بالإنجليزية.</p>
@@ -2129,7 +2129,7 @@ function nsira() {
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const num = k => LANG === 'ar' ? AR(k) : k;
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah rs-q"><span class="rs-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num rs-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b], cap) => { const o = [], last = Math.min(b || a, a + cap - 1); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b], cap) => { const o = [], last = Math.min(b || a, a + cap - 1); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] > r[1] ? `<span>–${n(r[2])}</span>` : ''}`;
   const qCard = q => { const b = TF.find(x => x.key === q.bk);
     return `<figure class="qs-quote rs-qt"><blockquote class="notranslate" translate="no" lang="ar" dir="rtl">${esc(q.x)}</blockquote>
@@ -2153,7 +2153,7 @@ function nsira() {
         ${w.ctx ? `<h4 class="rs-h4">من أقوال المفسرين</h4>${qCard(w.ctx)}` : ''}
         <h4 class="rs-h4">ما يُستفاد من سيرتها</h4><div class="ns-lsl">${w.ls.map(lsCard).join('')}</div>
         ${hs.length ? `<h4 class="rs-h4">من السنة الصحيحة</h4><div class="rs-grid">${hs.map(hCard).join('')}</div>` : ''}
-        <div class="rs-links"><a class="btn" href="#pa${idxOf(w.eps[0].r[0], w.eps[0].r[1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a><a class="btn" href="#nisaa">ركن المرأة</a></div>
+        <div class="rs-links"><a class="btn" href="#pa${idxOf(w.eps[0].r[0], w.eps[0].r[1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a><a class="btn" href="#nisaa">ركن المرأة</a></div>
       </div></details>`; };
   const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>التمهيدات وعناوين الدروس صياغتنا الموجزة مما صرّح به القرآن، أما الآيات بلفظ مصحف المدينة، وأقوال المفسرين والأحاديث فبألفاظها من المصادر المضمّنة. وما لم يُسمَّ في القرآن من هؤلاء النساء نبّهنا إليه، وما نُقل من أسمائهن فمن المفسرين لا من القرآن. الترجمة الإنجليزية لنقول المفسرين موجزة بالمعنى.</p></div>`;
   const side = `<p class="small">هذا الباب سيَر النساء المذكورات؛ أما مكانة المرأة وحقوقها وأحكامها فتجدها في <a href="#nisaa">ركن المرأة</a>، وأحكام الأسرة في <a href="#nikah">ركن الزواج والطلاق</a>.</p>`;
@@ -2181,7 +2181,7 @@ function duaq() {
   const D = DUAQ, enOn = LANG !== 'ar';
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah rs-q"><span class="rs-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num rs-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] && r[2] !== r[1] ? `<span>–${n(r[2])}</span>` : ''}`;
   const qCard = q => { const b = TF.find(x => x.key === q.bk);
     return `<figure class="qs-quote rs-qt"><blockquote class="notranslate" translate="no" lang="ar" dir="rtl">${esc(q.x)}</blockquote>
@@ -2194,11 +2194,11 @@ function duaq() {
       <div class="rs-grid">${t.ay.map(r => `<article class="rs-ay"><div class="u-ref">${refOf(r)}</div><div class="rs-ays">${ays(r)}</div></article>`).join('')}</div>
       <h4 class="rs-h4">أقوال العلماء</h4>
       <div class="rs-grid">${t.q.map(qCard).join('')}</div>
-      <div class="rs-links"><a class="btn" href="#pa${idxOf(t.ay[0][0], t.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a></div>
+      <div class="rs-links"><a class="btn" href="#pa${idxOf(t.ay[0][0], t.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div>
     </div></details>`;
   let k = 0;
   const cross = [['duaa', 'أدعية القرآن', 'فهرس الأدعية القرآنية القصيرة بموضوعاتها وكيف تستعملها في يومك.'], ['adiya', 'أدعية المناسبات', 'أدعية الكرب والسفر والنوم وليلة القدر وغيرها بنص المصحف والأحاديث الصحيحة.'], ['rusul', 'الأنبياء والمرسلون', 'قصص الأنبياء الذين وردت أدعيتهم في هذا الباب.']].filter(c => typeof views[c[0]] === 'function');
-  const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>نصوص الآيات بلفظ مصحف المدينة وبخطه، وأقوال المفسرين مقتطعة بلفظها من كتبهم المضمّنة في موسوعة القرآن الكريم: «تيسير الكريم الرحمن» للسعدي و«تفسير القرآن العظيم» لابن كثير و«الجامع لأحكام القرآن» للقرطبي؛ والاقتطاع قد يحذف ما بين المقتطفات وتدل عليه علامة «…». وما ورد في الأقوال من أحاديث فهو كما أورده صاحب الكتاب، وقد يكون في إسناده كلام. هذا الباب للتدبّر والمدارسة وليس فتوى، ويُرجع في النوازل إلى أهل العلم.</p></div>`;
+  const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>نصوص الآيات بلفظ مصحف المدينة وبخطه، وأقوال المفسرين مقتطعة بلفظها من كتبهم المضمّنة في مشكاة: «تيسير الكريم الرحمن» للسعدي و«تفسير القرآن العظيم» لابن كثير و«الجامع لأحكام القرآن» للقرطبي؛ والاقتطاع قد يحذف ما بين المقتطفات وتدل عليه علامة «…». وما ورد في الأقوال من أحاديث فهو كما أورده صاحب الكتاب، وقد يكون في إسناده كلام. هذا الباب للتدبّر والمدارسة وليس فتوى، ويُرجع في النوازل إلى أهل العلم.</p></div>`;
   V(`<div class="stack ulum rs dq">
     <section class="u-hero rs-hero"><span class="eyebrow">اقرأ وتدبّر</span><h1>الدعاء في القرآن الكريم</h1>
       <p class="lead">دعاء الأنبياء والصالحين في القرآن بنصه الحرفي ومناسبته وما يُستفاد منه من أقوال المفسرين بألفاظها، مع آداب الدعاء وإجابته، ومعنى كل قول بالإنجليزية.</p>
@@ -2228,7 +2228,7 @@ function nabat() {
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const num = k => LANG === 'ar' ? AR(k) : k;
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah rs-q"><span class="rs-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num rs-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b], cap) => { const o = [], last = Math.min(b || a, a + cap - 1); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b], cap) => { const o = [], last = Math.min(b || a, a + cap - 1); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] > r[1] ? `<span>–${n(r[2])}</span>` : ''}`;
   const qCard = q => { const b = TF.find(x => x.key === q.bk);
     return `<figure class="qs-quote rs-qt"><blockquote class="notranslate" translate="no" lang="ar" dir="rtl">${esc(q.x)}</blockquote>
@@ -2250,7 +2250,7 @@ function nabat() {
         <h4 class="rs-h4">تمهيد</h4><p class="rs-sum">${esc(st.intro)}</p>
         <h4 class="rs-h4">مواضع الذكر في القرآن</h4><div class="rs-grid">${st.eps.map(epCard).join('')}</div>
         <h4 class="rs-h4">الدروس والعبر</h4><div class="nb-lsl">${st.ls.map(lsCard).join('')}</div>
-        <div class="rs-links"><a class="btn" href="#pa${idxOf(st.eps[0].r[0], st.eps[0].r[1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a>${typeof views.taam === 'function' ? '<a class="btn" href="#taam">باب الفاكهة والطعام</a>' : ''}</div>
+        <div class="rs-links"><a class="btn" href="#pa${idxOf(st.eps[0].r[0], st.eps[0].r[1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a>${typeof views.taam === 'function' ? '<a class="btn" href="#taam">باب الفاكهة والطعام</a>' : ''}</div>
       </div></details>`;
   const list = a => `<div class="nb-lsl">${a.map(lsCard).join('')}</div>`;
   const chapters = [
@@ -2282,7 +2282,7 @@ function maal() {
   const D = MAAL, enOn = LANG !== 'ar';
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah mq-q"><span class="mq-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num mq-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] ? `<span>–${n(r[2])}</span>` : ''}`;
   const qCard = q => { const b = TF.find(x => x.key === q.bk);
     return `<figure class="qs-quote mq-qt"><blockquote class="notranslate" translate="no" lang="ar" dir="rtl">${esc(q.x)}</blockquote>
@@ -2292,7 +2292,7 @@ function maal() {
     <div class="u-ref">${refOf(it.r)}</div><div class="mq-ays">${ays(it.r)}</div>
     <p class="mq-note"><b>ما تدل عليه الآيات</b> ${esc(it.n)}</p>
     <h4 class="mq-h4">من أقوال المفسرين</h4>${qCard(it.q)}
-    <div class="mq-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a></div></article>`;
+    <div class="mq-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div></article>`;
   const body = c => D.i.filter(x => x.ch === c.id).map(card).join('');
   const nIt = D.i.length;
   V(`<div class="stack ulum mq">
@@ -2323,7 +2323,7 @@ function bir() {
   const D = BIR, enOn = LANG !== 'ar';
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah rs-q"><span class="rs-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num rs-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] && r[2] !== r[1] ? `<span>–${n(r[2])}</span>` : ''}`;
   const qCard = q => { const b = TF.find(x => x.key === q.bk);
     return `<figure class="qs-quote rs-qt"><blockquote class="notranslate" translate="no" lang="ar" dir="rtl">${esc(q.x)}</blockquote>
@@ -2336,11 +2336,11 @@ function bir() {
       <div class="rs-grid">${t.ay.map(r => `<article class="rs-ay"><div class="u-ref">${refOf(r)}</div><div class="rs-ays">${ays(r)}</div></article>`).join('')}</div>
       <h4 class="rs-h4">أقوال العلماء</h4>
       <div class="rs-grid">${t.q.map(qCard).join('')}</div>
-      <div class="rs-links"><a class="btn" href="#pa${idxOf(t.ay[0][0], t.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a></div>
+      <div class="rs-links"><a class="btn" href="#pa${idxOf(t.ay[0][0], t.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div>
     </div></details>`;
   let k = 0;
   const cross = [['tawsiyat', 'توصيات القرآن الكريم من كلام رب العالمين', 'الوصايا والتوجيهات المباشرة من الله، ومنها الوصية بالوالدين.'], ['asnaf', 'أقسام الناس في القرآن', 'أصناف الناس في القرآن، ومنهم الأبرار والمقربون وأصحاب اليمين.'], ['nikah', 'الزواج والطلاق وأحكام الأسرة المسلمة', 'أحكام الأسرة، ومنها برّ الوالدين والإنفاق عليهما.'], ['jannah', 'وصف الجنة وأنواعها في القرآن الكريم', 'أسماء الجنة ودرجاتها ونعيمها وأهلها.']].filter(c => typeof views[c[0]] === 'function');
-  const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>نصوص الآيات بلفظ مصحف المدينة وبخطه، وأقوال المفسرين مقتطعة بلفظها من كتبهم المضمّنة في موسوعة القرآن الكريم: «تيسير الكريم الرحمن» للسعدي و«تفسير القرآن العظيم» لابن كثير و«الجامع لأحكام القرآن» للقرطبي؛ والاقتطاع قد يحذف ما بين المقتطفات وتدل عليه علامة «…». وما ورد في الأقوال من أحاديث فهو كما أورده صاحب الكتاب، وقد يكون في إسناده كلام. هذا الباب للتدبّر والمدارسة وليس فتوى، ويُرجع في النوازل إلى أهل العلم.</p></div>`;
+  const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>نصوص الآيات بلفظ مصحف المدينة وبخطه، وأقوال المفسرين مقتطعة بلفظها من كتبهم المضمّنة في مشكاة: «تيسير الكريم الرحمن» للسعدي و«تفسير القرآن العظيم» لابن كثير و«الجامع لأحكام القرآن» للقرطبي؛ والاقتطاع قد يحذف ما بين المقتطفات وتدل عليه علامة «…». وما ورد في الأقوال من أحاديث فهو كما أورده صاحب الكتاب، وقد يكون في إسناده كلام. هذا الباب للتدبّر والمدارسة وليس فتوى، ويُرجع في النوازل إلى أهل العلم.</p></div>`;
   V(`<div class="stack ulum rs br">
     <section class="u-hero rs-hero"><span class="eyebrow">اقرأ وتدبّر</span><h1>البر في القرآن الكريم</h1>
       <p class="lead">معنى البر وصوره كما وردت في القرآن: الآية الجامعة في البقرة، وبر الوالدين، والبر بالأقارب واليتامى والمساكين، والتعاون على البر، والأبرار وجزاؤهم؛ بآياتها بخط المصحف وأقوال المفسرين بألفاظها، مع معنى كل قول بالإنجليزية.</p>
@@ -2369,7 +2369,7 @@ function sabr() {
   const D = SABR, enOn = LANG !== 'ar';
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah rs-q"><span class="rs-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num rs-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] && r[2] !== r[1] ? `<span>–${n(r[2])}</span>` : ''}`;
   const qCard = q => { const b = TF.find(x => x.key === q.bk);
     return `<figure class="qs-quote rs-qt"><blockquote class="notranslate" translate="no" lang="ar" dir="rtl">${esc(q.x)}</blockquote>
@@ -2382,11 +2382,11 @@ function sabr() {
       <div class="rs-grid">${t.ay.map(r => `<article class="rs-ay"><div class="u-ref">${refOf(r)}</div><div class="rs-ays">${ays(r)}</div></article>`).join('')}</div>
       <h4 class="rs-h4">أقوال العلماء</h4>
       <div class="rs-grid">${t.q.map(qCard).join('')}</div>
-      <div class="rs-links"><a class="btn" href="#pa${idxOf(t.ay[0][0], t.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a></div>
+      <div class="rs-links"><a class="btn" href="#pa${idxOf(t.ay[0][0], t.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div>
     </div></details>`;
   let k = 0;
   const cross = [['wazifa', 'وظيفة الإنسان في القرآن', 'الوظيفة الوجودية للإنسان: العبادة والخلافة والعمارة والأمانة.'], ['qasasx', 'قصص القرآن المستفيضة والعبر', 'قصص الأنبياء والأمم بعبرها وسننها.'], ['asnaf', 'أقسام الناس وأنواعهم', 'أصناف الناس في القرآن بحسب أعمالهم ومقاماتهم.']].filter(c => typeof views[c[0]] === 'function');
-  const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>نصوص الآيات بلفظ مصحف المدينة وبخطه، وأقوال المفسرين مقتطعة بلفظها من كتبهم المضمّنة في موسوعة القرآن الكريم: «تيسير الكريم الرحمن» للسعدي و«تفسير القرآن العظيم» لابن كثير و«الجامع لأحكام القرآن» للقرطبي؛ والاقتطاع قد يحذف ما بين المقتطفات وتدل عليه علامة «…». وما ورد في الأقوال من أحاديث فهو كما أورده صاحب الكتاب، وقد يكون في إسناده كلام. هذا الباب للتدبّر والمدارسة وليس فتوى، ويُرجع في النوازل إلى أهل العلم.</p></div>`;
+  const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>نصوص الآيات بلفظ مصحف المدينة وبخطه، وأقوال المفسرين مقتطعة بلفظها من كتبهم المضمّنة في مشكاة: «تيسير الكريم الرحمن» للسعدي و«تفسير القرآن العظيم» لابن كثير و«الجامع لأحكام القرآن» للقرطبي؛ والاقتطاع قد يحذف ما بين المقتطفات وتدل عليه علامة «…». وما ورد في الأقوال من أحاديث فهو كما أورده صاحب الكتاب، وقد يكون في إسناده كلام. هذا الباب للتدبّر والمدارسة وليس فتوى، ويُرجع في النوازل إلى أهل العلم.</p></div>`;
   V(`<div class="stack ulum rs sb">
     <section class="u-hero rs-hero"><span class="eyebrow">اقرأ وتدبّر</span><h1>الصبر في القرآن الكريم</h1>
       <p class="lead">حقيقة الصبر وأنواعه ومواطنه وقصص الصابرين وجزاؤهم كما وردت في القرآن: آياتها بخط المصحف وأقوال المفسرين بألفاظها في معناها وما يُستفاد منها، مع معنى كل قول بالإنجليزية.</p>
@@ -2414,7 +2414,7 @@ function taamul() {
   const D = TAAMUL, enOn = LANG !== 'ar';
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah rs-q"><span class="rs-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num rs-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] && r[2] !== r[1] ? `<span>–${n(r[2])}</span>` : ''}`;
   const qCard = q => { const b = TF.find(x => x.key === q.bk);
     return `<figure class="qs-quote rs-qt"><blockquote class="notranslate" translate="no" lang="ar" dir="rtl">${esc(q.x)}</blockquote>
@@ -2427,11 +2427,11 @@ function taamul() {
       <div class="rs-grid">${t.ay.map(r => `<article class="rs-ay"><div class="u-ref">${refOf(r)}</div><div class="rs-ays">${ays(r)}</div></article>`).join('')}</div>
       <h4 class="rs-h4">أقوال العلماء</h4>
       <div class="rs-grid">${t.q.map(qCard).join('')}</div>
-      <div class="rs-links"><a class="btn" href="#pa${idxOf(t.ay[0][0], t.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a></div>
+      <div class="rs-links"><a class="btn" href="#pa${idxOf(t.ay[0][0], t.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div>
     </div></details>`;
   let k = 0;
   const cross = [['fiqhq', 'الفقه من القرآن الكريم', 'أحكام المعاملات المالية من الآيات: الربا والبيع والدَّين والعقود.'], ['amal', 'العمل في القرآن الكريم', 'منزلة العمل والكسب وأمانة الكيل والوزن والأجرة.'], ['asnaf', 'أقسام الناس وأنواعهم', 'أصناف الناس في القرآن بحسب أعمالهم ومقاماتهم.']].filter(c => typeof views[c[0]] === 'function');
-  const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>نصوص الآيات بلفظ مصحف المدينة وبخطه، وأقوال المفسرين مقتطعة بلفظها من كتبهم المضمّنة في موسوعة القرآن الكريم: «تيسير الكريم الرحمن» للسعدي و«تفسير القرآن العظيم» لابن كثير و«الجامع لأحكام القرآن» للقرطبي؛ والاقتطاع قد يحذف ما بين المقتطفات وتدل عليه علامة «…». وما ورد في الأقوال من أحاديث فهو كما أورده صاحب الكتاب، وقد يكون في إسناده كلام. هذا الباب للتدبّر والمدارسة وليس فتوى، ويُرجع في النوازل إلى أهل العلم.</p></div>`;
+  const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>نصوص الآيات بلفظ مصحف المدينة وبخطه، وأقوال المفسرين مقتطعة بلفظها من كتبهم المضمّنة في مشكاة: «تيسير الكريم الرحمن» للسعدي و«تفسير القرآن العظيم» لابن كثير و«الجامع لأحكام القرآن» للقرطبي؛ والاقتطاع قد يحذف ما بين المقتطفات وتدل عليه علامة «…». وما ورد في الأقوال من أحاديث فهو كما أورده صاحب الكتاب، وقد يكون في إسناده كلام. هذا الباب للتدبّر والمدارسة وليس فتوى، ويُرجع في النوازل إلى أهل العلم.</p></div>`;
   V(`<div class="stack ulum rs tq">
     <section class="u-hero rs-hero"><span class="eyebrow">اقرأ وتدبّر</span><h1>التعاملات في القرآن الكريم</h1>
       <p class="lead">آداب التعامل بين الناس وأخلاقه كما وردت في القرآن: الصدق والوفاء بالعهد والشهادة والعدل والإصلاح والعفو وآداب الجوار والمجالس وحق المحتاج، بآياتها بخط المصحف وأقوال المفسرين بألفاظها، مع معنى كل قول بالإنجليزية. أما الأحكام المالية من بيع ودَين وربا فمحلها «الفقه من القرآن الكريم».</p>
@@ -2460,7 +2460,7 @@ function maadin() {
   const D = MAADIN, enOn = LANG !== 'ar';
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah mn-q"><span class="mn-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num mn-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] ? `<span>–${n(r[2])}</span>` : ''}`;
   const enP = q => enOn && q.en ? `<p class="mn-qen notranslate" translate="no" lang="en" dir="ltr">${esc(q.en)}</p>` : '';
   const qCard = q => { const b = TF.find(x => x.key === q.bk);
@@ -2473,7 +2473,7 @@ function maadin() {
     <p class="mn-note"><b>ما تدل عليه الآيات</b> ${esc(it.n)}</p>
     <h4 class="mn-h4">من أقوال المفسرين</h4>${it.q.map(qCard).join('')}
     ${it.h.length ? `<h4 class="mn-h4">من السنة النبوية</h4>${it.h.map(hCard).join('')}` : ''}
-    <div class="mn-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a></div></article>`;
+    <div class="mn-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div></article>`;
   const body = c => D.i.filter(x => x.ch === c.id).map(card).join('');
   const nIt = D.i.length;
   const MET = [['', 'الكل'], ['fe', 'الحديد'], ['cu', 'النحاس والقطر'], ['au', 'الذهب'], ['ag', 'الفضة'], ['gem', 'الجواهر'], ['earth', 'الأرض']];
@@ -2507,7 +2507,7 @@ function rsifat() {
   const D = RSIFAT, enOn = LANG !== 'ar';
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah rs-q"><span class="rs-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num rs-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] && r[2] !== r[1] ? `<span>–${n(r[2])}</span>` : ''}`;
   const qCard = q => { const b = TF.find(x => x.key === q.bk);
     return `<figure class="qs-quote rs-qt"><blockquote class="notranslate" translate="no" lang="ar" dir="rtl">${esc(q.x)}</blockquote>
@@ -2520,11 +2520,11 @@ function rsifat() {
       <div class="rs-grid">${t.ay.map(r => `<article class="rs-ay"><div class="u-ref">${refOf(r)}</div><div class="rs-ays">${ays(r)}</div></article>`).join('')}</div>
       <h4 class="rs-h4">أقوال العلماء</h4>
       <div class="rs-grid">${t.q.map(qCard).join('')}</div>
-      <div class="rs-links"><a class="btn" href="#pa${idxOf(t.ay[0][0], t.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a></div>
+      <div class="rs-links"><a class="btn" href="#pa${idxOf(t.ay[0][0], t.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div>
     </div></details>`;
   let k = 0;
   const cross = [['rijal', 'ركن الرجل في القرآن', 'رجال ذكرهم القرآن وقصصهم، وخصال الرجولة، ومسؤوليات الرجل وأحكامه.'], ['usra', 'ركن الأسرة', 'أحكام الأسرة ومسؤولياتها بآياتها.'], ['amal', 'العمل في القرآن الكريم', 'منزلة العمل والكسب والسعي وأمانته وأجره.'], ['nikah', 'الزواج والطلاق وأحكام الأسرة المسلمة', 'أحكام الزواج والطلاق بآياتها وأقوال العلماء.']].filter(c => typeof views[c[0]] === 'function');
-  const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>نصوص الآيات بلفظ مصحف المدينة وبخطه، وأقوال المفسرين مقتطعة بلفظها من كتبهم المضمّنة في موسوعة القرآن الكريم: «تيسير الكريم الرحمن» للسعدي و«تفسير القرآن العظيم» لابن كثير و«الجامع لأحكام القرآن» للقرطبي؛ والاقتطاع قد يحذف ما بين المقتطفات وتدل عليه علامة «…». وما ورد في الأقوال من أحاديث فهو كما أورده صاحب الكتاب، وقد يكون في إسناده كلام. هذا الباب للتدبّر والمدارسة وليس فتوى، ويُرجع في النوازل إلى أهل العلم.</p></div>`;
+  const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>نصوص الآيات بلفظ مصحف المدينة وبخطه، وأقوال المفسرين مقتطعة بلفظها من كتبهم المضمّنة في مشكاة: «تيسير الكريم الرحمن» للسعدي و«تفسير القرآن العظيم» لابن كثير و«الجامع لأحكام القرآن» للقرطبي؛ والاقتطاع قد يحذف ما بين المقتطفات وتدل عليه علامة «…». وما ورد في الأقوال من أحاديث فهو كما أورده صاحب الكتاب، وقد يكون في إسناده كلام. هذا الباب للتدبّر والمدارسة وليس فتوى، ويُرجع في النوازل إلى أهل العلم.</p></div>`;
   V(`<div class="stack ulum rs rf">
     <section class="u-hero rs-hero"><span class="eyebrow">اقرأ وتدبّر</span><h1>صفات الرجال في القرآن الكريم</h1>
       <p class="lead">الصفات التي وصف الله بها الرجال في القرآن بوصفهم الاجتماعي والأخلاقي: صدق العهد والثبات والذكر والنصيحة والصدع بالحق ومسؤوليات الجماعة، وأمثالهم وفتيانهم؛ آياتها بخط المصحف وأقوال المفسرين بألفاظها مع معنى كل قول بالإنجليزية.</p>
@@ -2554,7 +2554,7 @@ function tibb() {
   const D = TIBB, enOn = LANG !== 'ar';
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah tb-q"><span class="tb-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num tb-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] && r[2] !== r[1] ? `<span>–${n(r[2])}</span>` : ''}`;
   const qCard = q => { const b = TF.find(x => x.key === q.bk);
     return `<figure class="qs-quote tb-qt"><blockquote class="notranslate" translate="no" lang="ar" dir="rtl">${esc(q.x)}</blockquote>
@@ -2568,7 +2568,7 @@ function tibb() {
     <p class="tb-note"><b>ما تشير إليه الآيات</b> ${esc(it.n)}</p>
     <h4 class="tb-h4">من أقوال المفسرين</h4>${it.qs.map(qCard).join('')}
     ${it.h.length ? `<h4 class="tb-h4">من السنة الصحيحة</h4>${it.h.map(hCard).join('')}` : ''}
-    <div class="tb-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a></div></article>`;
+    <div class="tb-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div></article>`;
   const body = c => D.i.filter(x => x.ch === c.id).map(card).join('');
   const nIt = D.i.length, sh = typeof views.shifa === 'function', rq = typeof views.ruqya === 'function', ij = typeof views.ijaz === 'function';
   const see = [sh && '<a href="#shifa">الأمراض والعلاج في القرآن</a>', rq && '<a href="#ruqya">التداوي بالقرآن</a>', ij && '<a href="#ijaz">الإعجاز العلمي</a>'].filter(Boolean).join(' · ');
@@ -2603,7 +2603,7 @@ function mumin() {
   const D = MUMIN, enOn = LANG !== 'ar';
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah rs-q"><span class="rs-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num rs-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] && r[2] !== r[1] ? `<span>–${n(r[2])}</span>` : ''}`;
   const qCard = q => { const b = TF.find(x => x.key === q.bk);
     return `<figure class="qs-quote rs-qt"><blockquote class="notranslate" translate="no" lang="ar" dir="rtl">${esc(q.x)}</blockquote>
@@ -2616,11 +2616,11 @@ function mumin() {
       <div class="rs-grid">${t.ay.map(r => `<article class="rs-ay"><div class="u-ref">${refOf(r)}</div><div class="rs-ays">${ays(r)}</div></article>`).join('')}</div>
       <h4 class="rs-h4">أقوال العلماء</h4>
       <div class="rs-grid">${t.q.map(qCard).join('')}</div>
-      <div class="rs-links"><a class="btn" href="#pa${idxOf(t.ay[0][0], t.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a></div>
+      <div class="rs-links"><a class="btn" href="#pa${idxOf(t.ay[0][0], t.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div>
     </div></details>`;
   let k = 0;
   const cross = [['asnaf', 'أقسام الناس وأنواعهم', 'أصناف الناس في القرآن بحسب أعمالهم ومقاماتهم.'], ['wazifa', 'وظيفة الإنسان في القرآن', 'الوظيفة الوجودية للإنسان: العبادة والخلافة والعمارة والأمانة.'], ['tawsiyat', 'توصيات القرآن الكريم من كلام رب العالمين', 'الوصايا التي أوصى الله بها عباده في العقيدة والعبادة والأسرة والخلق.'], ['rijal', 'ركن الرجل', 'ما ذكره القرآن عن الرجال وخصال الرجولة ومسؤولياته.'], ['nisaa', 'ركن المرأة', 'ما ذكره القرآن عن النساء وأحكامهن وصفاتهن.'], ['bir', 'البر في القرآن الكريم', 'معنى البر وصوره: الآية الجامعة في البقرة وبر الوالدين والبر بالأقارب واليتامى.']].filter(c => typeof views[c[0]] === 'function');
-  const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>نصوص الآيات بلفظ مصحف المدينة وبخطه، وأقوال المفسرين مقتطعة بلفظها من كتبهم المضمّنة في موسوعة القرآن الكريم: «تيسير الكريم الرحمن» للسعدي و«تفسير القرآن العظيم» لابن كثير و«الجامع لأحكام القرآن» للقرطبي؛ والاقتطاع قد يحذف ما بين المقتطفات وتدل عليه علامة «…». وما ورد في الأقوال من أحاديث فهو كما أورده صاحب الكتاب، وقد يكون في إسناده كلام. هذا الباب للتدبّر والمدارسة وليس فتوى، ويُرجع في النوازل إلى أهل العلم.</p></div>`;
+  const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>نصوص الآيات بلفظ مصحف المدينة وبخطه، وأقوال المفسرين مقتطعة بلفظها من كتبهم المضمّنة في مشكاة: «تيسير الكريم الرحمن» للسعدي و«تفسير القرآن العظيم» لابن كثير و«الجامع لأحكام القرآن» للقرطبي؛ والاقتطاع قد يحذف ما بين المقتطفات وتدل عليه علامة «…». وما ورد في الأقوال من أحاديث فهو كما أورده صاحب الكتاب، وقد يكون في إسناده كلام. هذا الباب للتدبّر والمدارسة وليس فتوى، ويُرجع في النوازل إلى أهل العلم.</p></div>`;
   V(`<div class="stack ulum rs mu">
     <section class="u-hero rs-hero"><span class="eyebrow">اقرأ وتدبّر</span><h1>صفات المؤمن في القرآن الكريم</h1>
       <p class="lead">الصفات التي وصف الله بها المؤمنين الصادقين: المؤمنون حقاً، وأهل الفلاح في سورة المؤمنون، وعباد الرحمن، والمتقون والمحسنون، وصفات القلب والأخلاق، وثمرات الإيمان؛ بآياتها بخط المصحف وأقوال المفسرين بألفاظها، مع معنى كل قول بالإنجليزية.</p>
@@ -2648,7 +2648,7 @@ function taqwa() {
   const D = TAQWA, enOn = LANG !== 'ar';
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah rs-q"><span class="rs-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num rs-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] && r[2] !== r[1] ? `<span>–${n(r[2])}</span>` : ''}`;
   const qCard = q => { const b = TF.find(x => x.key === q.bk);
     return `<figure class="qs-quote rs-qt"><blockquote class="notranslate" translate="no" lang="ar" dir="rtl">${esc(q.x)}</blockquote>
@@ -2661,11 +2661,11 @@ function taqwa() {
       <div class="rs-grid">${t.ay.map(r => `<article class="rs-ay"><div class="u-ref">${refOf(r)}</div><div class="rs-ays">${ays(r)}</div></article>`).join('')}</div>
       <h4 class="rs-h4">أقوال العلماء</h4>
       <div class="rs-grid">${t.q.map(qCard).join('')}</div>
-      <div class="rs-links"><a class="btn" href="#pa${idxOf(t.ay[0][0], t.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a></div>
+      <div class="rs-links"><a class="btn" href="#pa${idxOf(t.ay[0][0], t.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div>
     </div></details>`;
   let k = 0;
   const cross = [['wazifa', 'وظيفة الإنسان في القرآن', 'الوظيفة الوجودية للإنسان: العبادة والخلافة والعمارة والأمانة.'], ['asnaf', 'أقسام الناس وأنواعهم', 'أصناف الناس في القرآن بحسب أعمالهم ومقاماتهم.'], ['tawsiyat', 'توصيات القرآن الكريم من كلام رب العالمين', 'وصايا الله لعباده في العقيدة والعبادة والأسرة والمال والمجتمع.'], ['mumin', 'صفات المؤمن في القرآن الكريم', 'صفات المؤمنين بالتفصيل: الإيمان والعبادة والأخلاق والمعاملة.'], ['bir', 'البر في القرآن الكريم', 'معنى البر وصوره: بر الوالدين والأقارب والتعاون على البر، وجزاء الأبرار.']].filter(c => typeof views[c[0]] === 'function');
-  const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>نصوص الآيات بلفظ مصحف المدينة وبخطه، وأقوال المفسرين مقتطعة بلفظها من كتبهم المضمّنة في موسوعة القرآن الكريم: «تيسير الكريم الرحمن» للسعدي و«تفسير القرآن العظيم» لابن كثير و«الجامع لأحكام القرآن» للقرطبي؛ والاقتطاع قد يحذف ما بين المقتطفات وتدل عليه علامة «…». وما ورد في الأقوال من أحاديث فهو كما أورده صاحب الكتاب، وقد يكون في إسناده كلام. هذا الباب للتدبّر والمدارسة وليس فتوى، ويُرجع في النوازل إلى أهل العلم.</p></div>`;
+  const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>نصوص الآيات بلفظ مصحف المدينة وبخطه، وأقوال المفسرين مقتطعة بلفظها من كتبهم المضمّنة في مشكاة: «تيسير الكريم الرحمن» للسعدي و«تفسير القرآن العظيم» لابن كثير و«الجامع لأحكام القرآن» للقرطبي؛ والاقتطاع قد يحذف ما بين المقتطفات وتدل عليه علامة «…». وما ورد في الأقوال من أحاديث فهو كما أورده صاحب الكتاب، وقد يكون في إسناده كلام. هذا الباب للتدبّر والمدارسة وليس فتوى، ويُرجع في النوازل إلى أهل العلم.</p></div>`;
   V(`<div class="stack ulum rs tq">
     <section class="u-hero rs-hero"><span class="eyebrow">اقرأ وتدبّر</span><h1>التقوى في القرآن الكريم</h1>
       <p class="lead">معنى التقوى وحقيقتها وصفات المتقين وثمراتها وأسبابها كما بيّنها القرآن: آياتها بخط المصحف وأقوال المفسرين بألفاظها، مع معنى كل قول بالإنجليزية.</p>
@@ -2693,8 +2693,8 @@ function mushaf() {
     const rows = Q.surahs.filter(s => !filt || s.type === filt).sort((a, b) => (a[sort] > b[sort] ? 1 : -1) * dir);
     $('#stbl').innerHTML = rows.map(s => `<tr class="clk" data-mps="${s.n}"><td>${n(s.n)}</td><td><b>${s.name}</b> <a class="chip" href="#s${s.n}">دراسة</a></td><td>${s.type}</td><td>${n(s.ayas)}</td><td>${n(s.words)}</td><td>${n(s.letters)}</td><td>${n(Q.ayat[s.first][5])}</td><td>${n(Q.ayat[s.first][6])}</td></tr>`).join('');
   };
-  V(`<div class="stack"><div><div class="eyebrow">القرآن الكريم وفهرس السور</div><h1>السور المئة والأربع عشرة</h1><p class="lead">اضغط على السورة لقراءتها، وعلى أي كلمة لمعرفة جذرها ومعناها، وعلى رقم الآية لتفسيرها وحفظها ومشاركتها.</p></div>
-  <div class="toolbar"><a class="btn pri" href="${ST.last != null ? `#pa${ST.last}` : '#p1'}"><svg><use href="#i-book"/></svg>${ST.last != null ? `أكمل القراءة في القرآن الكريم: ${esc(ref(ST.last))}` : 'اقرأ القرآن الكريم متصلاً من أوله'}</a>${ST.last != null ? '<a class="btn" href="#p1">من أول القرآن الكريم</a>' : ''}</div>
+  V(`<div class="stack"><div><div class="eyebrow">المصحف وفهرس السور</div><h1>السور المئة والأربع عشرة</h1><p class="lead">اضغط على السورة لقراءتها، وعلى أي كلمة لمعرفة جذرها ومعناها، وعلى رقم الآية لتفسيرها وحفظها ومشاركتها.</p></div>
+  <div class="toolbar"><a class="btn pri" href="${ST.last != null ? `#pa${ST.last}` : '#p1'}"><svg><use href="#i-book"/></svg>${ST.last != null ? `أكمل القراءة في المصحف: ${esc(ref(ST.last))}` : 'اقرأ المصحف متصلاً من أوله'}</a>${ST.last != null ? '<a class="btn" href="#p1">من أول المصحف</a>' : ''}</div>
   <p class="muted small" style="margin:0">القراءة المتصلة على صفحات مصحف المدينة النبوية (٦٠٤ صفحات)، بخط مجمع الملك فهد ونصه. اضغط اسم السورة لقراءتها في المصحف، أو «دراسة» لعرض ألفاظها وتفسيرها آيةً آية.</p>
   <div class="toolbar"><div class="seg" id="tseg"><button aria-pressed="true" data-f="">الكل</button><button aria-pressed="false" data-f="مكية">المكية</button><button aria-pressed="false" data-f="مدنية">المدنية</button></div>
    <select id="juzSel" aria-label="الانتقال إلى جزء"><option value="">الانتقال إلى جزء…</option>${Array.from({length: 30}, (_, j) => `<option value="${j+1}">الجزء ${n(j+1)}</option>`).join('')}</select></div>
@@ -2705,11 +2705,11 @@ function mushaf() {
   $('#tseg').onclick = e => { const b = e.target.closest('button'); if (!b) return; filt = b.dataset.f; $('#tseg').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); draw(); };
   $('#juzSel').onchange = e => { const j = +e.target.value; if (!j) return; const i = Q.ayat.findIndex(a => a[5] === j); location.hash = `pa${i}`; };
 }
-/* القراءة المتصلة (صفحات مصحف المدينة): يُحمَّل عند أول فتح من mushaf.js */
+/* المصحف المتصل (صفحات مصحف المدينة): يُحمَّل عند أول فتح من mushaf.js */
 function mpOpen(p, opt) {
-  INTEGRITY['data/mushaf.txt'] = '183ddc3b7ae7fdc81416991f24f580cd'; // بصمة ملف القراءة المتصلة: نص مجمع الملك فهد وصفحات مصحف المدينة
+  INTEGRITY['data/mushaf.txt'] = '183ddc3b7ae7fdc81416991f24f580cd'; // بصمة ملف المصحف المتصل: نص مجمع الملك فهد وصفحات مصحف المدينة
   if (window.mushafRead) return mushafRead(p, opt);
-  if (!mpOpen.s) { V(`<p class="loading">جارٍ فتح القرآن الكريم…</p>`); mpOpen.s = document.createElement('script'); mpOpen.s.src = 'mushaf.js'; document.head.appendChild(mpOpen.s); }
+  if (!mpOpen.s) { V(`<p class="loading">جارٍ فتح المصحف…</p>`); mpOpen.s = document.createElement('script'); mpOpen.s.src = 'mushaf.js'; document.head.appendChild(mpOpen.s); }
   mpOpen.s.addEventListener('load', () => mushafRead(p, opt), { once: true });
   mpOpen.s.addEventListener('error', () => { mpOpen.s.remove(); mpOpen.s = null; V(`<p class="loading">تعذّر فتح المصحف، تحقق من الاتصال ثم أعد المحاولة.</p>`); }, { once: true });
 }
@@ -2728,7 +2728,7 @@ function surah(sn, focusA) {
   V(`<div class="stack"><div><div class="eyebrow">سورة رقم ${n(sn)} · ${s.type}</div><h1>سورة ${s.name}</h1>
     <div class="pill-row" style="margin-top:8px"><span class="chip">${n(s.ayas)} آية</span><span class="chip">${n(s.words)} كلمة</span><span class="chip">${n(s.letters)} حرف</span><span class="chip">${n(lc.size)} لفظاً مختلفاً</span><span class="chip">الجزء ${n(Q.ayat[s.first][5])} · الصفحة ${n(Q.ayat[s.first][6])}</span></div>
     <div class="toolbar" style="margin-top:10px">${sn > 1 ? `<a class="btn" href="#s${sn-1}">→ ${Q.surahs[sn-2].name}</a>` : ''}${sn < 114 ? `<a class="btn" href="#s${sn+1}">${Q.surahs[sn].name} ←</a>` : ''}
-    <a class="btn pri" href="#ps${sn}"><svg><use href="#i-book"/></svg>اقرأها في القرآن الكريم</a><a class="btn" href="#hifz" data-hifz="${sn}"><svg><use href="#i-mic"/></svg>احفظ هذه السورة</a>${IS_PWA ? `<button class="btn" id="playSurah"><svg><use href="#i-play"/></svg>استمع</button>` : ''}</div></div>
+    <a class="btn pri" href="#ps${sn}"><svg><use href="#i-book"/></svg>اقرأها في المصحف</a><a class="btn" href="#hifz" data-hifz="${sn}"><svg><use href="#i-mic"/></svg>احفظ هذه السورة</a>${IS_PWA ? `<button class="btn" id="playSurah"><svg><use href="#i-play"/></svg>استمع</button>` : ''}</div></div>
     <section class="panel"><h3>أكثر ألفاظ السورة وروداً</h3><div class="pill-row" style="margin-top:8px">${top.map(([l, c]) => `<a class="chip acc" data-lem="${l}">${esc(W.lemmas[l][0])} · ${n(c)}</a>`).join('')}</div></section>
     <section class="panel" id="reader"><p class="muted small" style="margin:0 0 6px">اضغط أي كلمة لمعرفة جذرها ووزنها ومواضعها، أو رقم الآية لعرض تفسيرها.</p>${bas}
     ${ay.map(i => `<div class="occ" id="ay${i}" data-i="${i}">${ayahHTML(i)}</div>`).join('')}</section></div>`);
@@ -2808,7 +2808,7 @@ function rootView(ri) { const r = W.roots[ri]; if (!r) return words();
 function lemmaView(li) { const l = W.lemmas[li]; if (!l) return words();
   const ws = wordsByLemma.get(li); const ri = W.roots.findIndex(r => r[0] === l[1]);
   occList(ws, esc(l[0]), `لفظ (${l[2]==='V'?'فعل':l[2]==='N'?'اسم':'حرف'})`, ri >= 0 ? `<div class="toolbar"><a class="btn" href="#root${ri}">الجذر: ${rootFmt(l[1])} · ${n(W.roots[ri][1])} مرة</a></div>` : ''); }
-function formView(f) { const ws = []; W.w.forEach((w, i) => { if (strip(w[0]) === f) ws.push(i); }); occList(ws, esc(f), 'صيغة كما رُسمت في القرآن الكريم'); }
+function formView(f) { const ws = []; W.w.forEach((w, i) => { if (strip(w[0]) === f) ws.push(i); }); occList(ws, esc(f), 'صيغة كما رُسمت في المصحف'); }
 
 /* ================= topics (from v1) */
 function topics() {
@@ -2935,7 +2935,7 @@ function snippet(text, terms) {
 function search(q0) {
   const q = typeof q0 === 'string' ? q0 : ($('#qinput').value || '');
   const EX = ['الصبر على البلاء','بر الوالدين','آداب الكلام مع الناس','خلق السماوات والأرض','الرزق والتوكل','التوبة والمغفرة','حقوق اليتيم'];
-  V(`<div class="stack"><div><div class="eyebrow">البحث بالمعنى</div><h1>ابحث بالفكرة، لا بالحرف فقط</h1><p class="lead">اكتب ما تريد بلغتك المعتادة. يبحث «موسوعة القرآن الكريم» في نص الآيات وفي معانيها من التفسير الميسر، ويوسّع بحثك بالجذور القرآنية والمترادفات، ثم يرتب الآيات بالأقرب إلى سؤالك. يعمل دون إنترنت.</p></div>
+  V(`<div class="stack"><div><div class="eyebrow">البحث بالمعنى</div><h1>ابحث بالفكرة، لا بالحرف فقط</h1><p class="lead">اكتب ما تريد بلغتك المعتادة. يبحث «مشكاة» في نص الآيات وفي معانيها من التفسير الميسر، ويوسّع بحثك بالجذور القرآنية والمترادفات، ثم يرتب الآيات بالأقرب إلى سؤالك. يعمل دون إنترنت.</p></div>
   <form class="toolbar" id="sform"><input id="sq" type="search" value="${esc(q)}" placeholder="مثال: الصبر على البلاء"><div class="seg" id="smode"><button type="button" aria-pressed="true" data-m="meaning">بالمعنى</button><button type="button" aria-pressed="false" data-m="exact">بالنص الحرفي</button><button type="button" aria-pressed="false" data-m="tafsir">الآيات والتفاسير</button></div><button class="btn pri">بحث</button></form>
   <div class="suggest">${EX.map(x => `<button type="button" data-q="${x}">${x}</button>`).join('')}</div>
   <div id="sres"></div></div>`);
@@ -2954,7 +2954,7 @@ function search(q0) {
     $('#sres').innerHTML = `<div class="stack"><section class="panel stack tight"><div class="pill-row"><span class="chip acc">${n(r.total)} آية ذات صلة</span>${r.concepts.map(c => `<span class="chip gold">مفهوم: ${esc(c)}</span>`).join('')}${r.roots.slice(0, 8).map(ri => `<a class="chip" href="#root${ri}">الجذر ${rootFmt(W.roots[ri][0])}</a>`).join('')}</div>
       <p class="muted small" style="margin:0">مرتبة بالأقرب. يظهر تحت كل آية معناها من التفسير الميسر، والكلمات التي طابقت بحثك مظللة.</p></section>
       <section class="panel"><div id="shits"></div></section>
-      ${true ? `<section class="panel"><div class="toolbar"><span>${IS_PWA ? 'أتريد الآيات مع أقوال المفسرين والمداخل الموضوعية معاً؟' : 'أتريد جواباً مركّزاً مع الأدلة؟'}</span><a class="btn pri" href="#ask" id="toAsk"><svg><use href="#i-spark"/></svg>اسأل موسوعة القرآن الكريم عن «${esc(raw)}»</a></div></section>` : ''}</div>`;
+      ${true ? `<section class="panel"><div class="toolbar"><span>${IS_PWA ? 'أتريد الآيات مع أقوال المفسرين والمداخل الموضوعية معاً؟' : 'أتريد جواباً مركّزاً مع الأدلة؟'}</span><a class="btn pri" href="#ask" id="toAsk"><svg><use href="#i-spark"/></svg>اسأل مشكاة عن «${esc(raw)}»</a></div></section>` : ''}</div>`;
     const ta = $('#toAsk'); if (ta) ta.onclick = () => { pendingAsk = raw; };
     if (!r.ids.length) { $('#shits').innerHTML = '<p class="muted">لم أجد آيات قريبة. جرّب كلمة أخرى قريبة من المعنى.</p>'; return; }
     renderOcc($('#shits'), r.ids, null, 20, i => `<p class="snip">${snippet((r.mu[Q.ayat[i][0]] || {})[Q.ayat[i][1]] || '', r.terms)}</p><div class="why"><span class="chip">درجة القرب ${n(Math.max(1, Math.round(r.score[i] / top * 100)))}٪</span></div>`);
@@ -2985,7 +2985,7 @@ function search(q0) {
 /* ================= ask (claude.ai build): Claude answers from the app's own verified texts through page tools */
 let pendingAsk = null, chatTurns = [], askCtl = null;
 const BOOKS = () => TF.map(b => `${b.key}: ${b.title} (${b.author})`).join('، ');
-const RULES = () => `أنت «موسوعة القرآن الكريم»، مساعد بحثي في القرآن الكريم داخل تطبيق يحوي نص مصحف المدينة النبوية (رواية حفص) وثمانية كتب تفسير: ${BOOKS()}، وفهارس موضوعية وإحصاءات صرفية.
+const RULES = () => `أنت «مشكاة»، مساعد بحثي في القرآن الكريم داخل تطبيق يحوي نص مصحف المدينة النبوية (رواية حفص) وثمانية كتب تفسير: ${BOOKS()}، وفهارس موضوعية وإحصاءات صرفية.
 القواعد:
 ١. اكتب بالعربية الفصحى الواضحة، بصياغة علمية مهذبة وموجزة.
 ٢. لا تذكر نص آية من حفظك أبداً؛ استعمل الأدوات لجلب النص، وانقله كما جاء حرفياً في سطر يبدأ بـ «> ».
@@ -3037,7 +3037,7 @@ function md(text) {
 }
 async function askOffline() {
   const EX = ['الصبر عند المصيبة','الجنة وصفاتها','قصة يوسف','آية الوضوء','الخوف والخشية','حقوق اليتيم'];
-  V(`<div class="stack" style="max-width:900px"><div><div class="eyebrow">مساعد البحث</div><h1>اسأل موسوعة القرآن الكريم</h1><p class="lead">اكتب سؤالك أو موضوعك، فيجمع لك مساعد البحث من داخل التطبيق: أقرب الآيات مع تفسيرها الميسر، والمداخل الموضوعية، وإحصاء الألفاظ، وأقوال المفسرين في الآية الأقرب. يعمل كله على جهازك دون إنترنت ودون أي خدمة خارجية.</p></div>
+  V(`<div class="stack" style="max-width:900px"><div><div class="eyebrow">مساعد البحث</div><h1>اسأل مشكاة</h1><p class="lead">اكتب سؤالك أو موضوعك، فيجمع لك مساعد البحث من داخل التطبيق: أقرب الآيات مع تفسيرها الميسر، والمداخل الموضوعية، وإحصاء الألفاظ، وأقوال المفسرين في الآية الأقرب. يعمل كله على جهازك دون إنترنت ودون أي خدمة خارجية.</p></div>
   <form class="toolbar" id="oform"><input id="oq" type="search" placeholder="مثال: ما الآيات التي تتحدث عن الصبر عند المصيبة؟"><button class="btn pri"><svg><use href="#i-spark"/></svg>ابحث وأجب</button></form>
   <div class="suggest" id="osug">${EX.map(x => `<button type="button" data-q="${esc(x)}">${esc(x)}</button>`).join('')}</div><div id="ores"></div>
   <div class="note">المساعد يجمع النصوص ويرتّبها، ولا يؤلّف جواباً ولا يفتي. اقرأ الآيات في سياقها، وارجع إلى أهل العلم في الأحكام.</div></div>`);
@@ -3063,7 +3063,7 @@ async function askOffline() {
 }
 async function ask() {
   const EX = ['ما الآيات التي تتحدث عن الصبر عند المصيبة؟ وما معناها؟','كم مرة ورد ذكر الجنة في القرآن، وما أبرز صفاتها؟','لخّص قصة يوسف عليه السلام من القرآن بإيجاز','ما أقوال المفسرين في آية الوضوء؟','ما الفرق بين الخوف والخشية في الاستعمال القرآني؟'];
-  V(`<div class="stack" style="max-width:860px"><div><div class="eyebrow">مساعد ذكي</div><h1>اسأل موسوعة القرآن الكريم</h1><p class="lead">اكتب سؤالك، فيبحث المساعد في نصوص هذا التطبيق نفسها: الآيات، والتفاسير الثمانية، والفهارس الموضوعية، والإحصاءات، ثم يجيب ويذكر مواضع الآيات. اضغط أي مرجع لفتح الآية وتفسيرها.</p></div>
+  V(`<div class="stack" style="max-width:860px"><div><div class="eyebrow">مساعد ذكي</div><h1>اسأل مشكاة</h1><p class="lead">اكتب سؤالك، فيبحث المساعد في نصوص هذا التطبيق نفسها: الآيات، والتفاسير الثمانية، والفهارس الموضوعية، والإحصاءات، ثم يجيب ويذكر مواضع الآيات. اضغط أي مرجع لفتح الآية وتفسيرها.</p></div>
   <div class="note">المساعد أداة للبحث والتدبر، وليس مفتياً. راجع النصوص المذكورة، وارجع إلى أهل العلم في الأحكام.</div>
   <div class="chat" id="chat"></div>
   <div class="suggest" id="asug">${EX.map(x => `<button type="button" data-q="${esc(x)}">${esc(x)}</button>`).join('')}</div>
@@ -3310,7 +3310,7 @@ function timeline() {
   if (tab === 'qasas') return timelineQ();
   const ak = T.find(x => x.id === 'akhbar');
   const body = tab === 'anbiya' ? ERAS.map(([era, ps]) => `<div class="ev era"><h3>${era}</h3></div>` + ps.map(nm => { const e = prophetItem(nm); if (!e) return ''; const ay = itemAyat(e.it); const ss = new Set(ay.map(i => Q.ayat[i][0]));
-      return `<div class="ev"><h3><a data-open="anbiya|${esc(e.it.n)}" href="#t-anbiya">${esc(e.it.n)}</a>${e.it.c ? `<span class="chip acc">${n(e.it.c)} مرة</span>` : ''}<span class="chip">${n(ss.size)} سورة</span>${KIN[nm] ? `<span class="chip gold">${KIN[nm]}</span>` : ''}</h3><p style="margin:2px 0" class="small">${esc(e.it.d || '')}</p>${e.it.g ? `<p class="muted small" style="margin:0">${esc(e.it.g)}</p>` : ''}${ay[0] != null ? `<p class="muted small" style="margin:2px 0">أول ذكر في ترتيب القرآن الكريم: ${refLink(ay[0])}</p>` : ''}</div>`; }).join('')).join('')
+      return `<div class="ev"><h3><a data-open="anbiya|${esc(e.it.n)}" href="#t-anbiya">${esc(e.it.n)}</a>${e.it.c ? `<span class="chip acc">${n(e.it.c)} مرة</span>` : ''}<span class="chip">${n(ss.size)} سورة</span>${KIN[nm] ? `<span class="chip gold">${KIN[nm]}</span>` : ''}</h3><p style="margin:2px 0" class="small">${esc(e.it.d || '')}</p>${e.it.g ? `<p class="muted small" style="margin:0">${esc(e.it.g)}</p>` : ''}${ay[0] != null ? `<p class="muted small" style="margin:2px 0">أول ذكر في ترتيب المصحف: ${refLink(ay[0])}</p>` : ''}</div>`; }).join('')).join('')
     : SIRA.map(([nm, when]) => { const it = ak.items.find(x => x.n.startsWith(nm)); if (!it) return ''; return `<div class="ev"><h3><a data-open="akhbar|${esc(it.n)}" href="#t-akhbar">${esc(it.n)}</a><span class="chip gold">${when}</span><span class="chip">${esc(it.g || '')}</span></h3><p style="margin:2px 0" class="small">${esc(it.d || '')}</p><p class="muted small" style="margin:0">الآيات: ${it.r.slice(0, 3).map(([s, e]) => refLink(s) + (e > s ? '–' + n(Q.ayat[e][1]) : '')).join('، ')}</p></div>`; }).join('');
   V(`<div class="stack" style="max-width:900px"><div><div class="eyebrow">الخط الزمني</div><h1>${tab === 'anbiya' ? 'الأنبياء على ترتيب المؤرخين' : 'أحداث السيرة في القرآن'}</h1>
   <p class="lead">${tab === 'anbiya' ? 'ترتيب تقريبي على ما في «قصص الأنبياء» و«البداية والنهاية» لابن كثير. لا تُعرف تواريخ دقيقة لبعثة الأنبياء السابقين، ولذلك رُتّبوا في عصور لا في سنوات.' : 'الأحداث التي نزلت فيها آيات، بسنواتها على المشهور في كتب السيرة (سيرة ابن هشام، وزاد المعاد). وما فيه خلاف ذُكر معه.'}</p></div>
@@ -3445,7 +3445,7 @@ async function makeCard(i) {
   const a = Q.ayat[i]; const txt = ayahText(i);
   await document.fonts.load('48px "Amiri Quran"').catch(() => {}); await document.fonts.load('700 40px "Aref Ruqaa"').catch(() => {});
   const S = 1080, c = document.createElement('canvas'); c.width = S; c.height = S; const x = c.getContext('2d');
-  x.fillStyle = '#0e4a3b'; x.fillRect(0, 0, S, S);
+  x.fillStyle = '#1b2559'; x.fillRect(0, 0, S, S);
   x.strokeStyle = 'rgba(227,164,64,.55)'; x.lineWidth = 3; x.strokeRect(48, 48, S - 96, S - 96);
   x.fillStyle = '#e3a440'; [[120, 950, 14], [100, 905, 10], [88, 868, 7]].forEach(([cx, cy, r]) => { x.beginPath(); x.arc(cx, cy, r, 0, 7); x.fill(); });
   x.direction = 'rtl'; x.textAlign = 'center'; x.fillStyle = '#f5f2ea';
@@ -3454,7 +3454,7 @@ async function makeCard(i) {
   const lh = size * 1.9, top = S / 2 - lines.length * lh / 2 + size * .6 - 30;
   lines.forEach((l, k) => x.fillText(l, S / 2, top + k * lh));
   x.font = '34px "Readex Pro", sans-serif'; x.fillStyle = '#e3a440'; x.fillText(`سورة ${Q.surahs[a[0]-1].name} · الآية ${n(a[1])}`, S / 2, S - 170);
-  x.font = '700 44px "Aref Ruqaa", serif'; x.fillStyle = '#f5f2ea'; x.textAlign = 'left'; x.fillText('موسوعة القرآن الكريم', 120, 140);
+  x.font = '700 44px "Aref Ruqaa", serif'; x.fillStyle = '#f5f2ea'; x.textAlign = 'left'; x.fillText('مشكاة', 120, 140);
   return new Promise(r => c.toBlob(r, 'image/png'));
 }
 async function cardDrawer(i) {
@@ -3560,14 +3560,14 @@ function settings() {
   V(`<div class="stack" style="max-width:860px"><div><div class="eyebrow">الإعدادات</div><h1>الإعدادات والتنزيل</h1></div>
   <section class="panel stack tight"><h3>العرض</h3>
     <div class="toolbar"><span>الوضع:</span><div class="seg" id="thSeg">${[['auto','حسب الجهاز'],['light','فاتح'],['dark','داكن']].map(([k, l]) => `<button aria-pressed="${ST.prefs.theme === k}" data-t="${k}">${l}</button>`).join('')}</div></div>
-    <div class="toolbar"><span>حجم خط القرآن الكريم:</span><div class="seg" id="szSeg">${[[0.9,'صغير'],[1,'متوسط'],[1.2,'كبير'],[1.45,'كبير جداً']].map(([k, l]) => `<button aria-pressed="${ST.prefs.size === k}" data-s="${k}">${l}</button>`).join('')}</div></div>
+    <div class="toolbar"><span>حجم خط المصحف:</span><div class="seg" id="szSeg">${[[0.9,'صغير'],[1,'متوسط'],[1.2,'كبير'],[1.45,'كبير جداً']].map(([k, l]) => `<button aria-pressed="${ST.prefs.size === k}" data-s="${k}">${l}</button>`).join('')}</div></div>
     <div class="toolbar"><span>التفسير الافتراضي:</span><select id="tfSel">${TF.map(b => `<option value="${b.key}" ${b.key === ST.prefs.tafsir ? 'selected' : ''}>${b.title}</option>`).join('')}</select></div></section>
   <section class="panel stack tight"><h3>التثبيت والعمل دون إنترنت</h3>
     ${IS_PWA ? `<p style="margin:0">بعد تثبيت التطبيق تُنزَّل التفاسير والأحاديث كلها تلقائياً في الخلفية، فيعمل كاملاً دون إنترنت. ويمكنك تنزيلها الآن من هذا الزر (نحو ٦٠ ميغابايت).</p>
       <div class="toolbar"><button class="btn pri" id="dlAll">تنزيل كل التفاسير للعمل دون إنترنت</button><span id="dlStat" class="muted small"></span></div><div class="meter"><i id="dlBar" style="width:0"></i></div>
       <div class="toolbar"><button class="btn" id="instBtn" ${instHidden() ? 'hidden' : ''}>ثبّت ${BRAND} على هذا الجهاز</button></div>
       <p class="muted small" style="margin:0">على آيفون: افتح الرابط في سفاري، ثم «مشاركة» ثم «إضافة إلى الشاشة الرئيسية». على أندرويد والكمبيوتر: زر التثبيت في المتصفح أو الزر أعلاه.</p>`
-      : `<p style="margin:0">هذه نسخة موسوعة القرآن الكريم على claude.ai. توجد نسخة قابلة للتثبيت على الجوال والكمبيوتر تعمل دون إنترنت وتدعم التسميع بالصوت والاستماع للتلاوة.</p>`}
+      : `<p style="margin:0">هذه نسخة مشكاة على claude.ai. توجد نسخة قابلة للتثبيت على الجوال والكمبيوتر تعمل دون إنترنت وتدعم التسميع بالصوت والاستماع للتلاوة.</p>`}
   </section>
   <section class="panel stack tight"><h3>بياناتك</h3><p class="muted small" style="margin:0">${cloud ? 'تقدّمك محفوظ في حسابك (خاص بك ولا يراه غيرك) ونسخة منه على هذا الجهاز.' : 'تقدّمك محفوظ على هذا الجهاز وحده.'} من «وردي وتقدّمي» تجد علامة التوقف وهدف القراءة اليومي.</p><div class="toolbar"><a class="btn" href="#wird">وردي وتقدّمي</a><a class="btn" href="#whatsnew">ما الجديد</a></div></section>
   <div id="dataMount"></div>
@@ -3589,10 +3589,10 @@ function applyPrefs() {
   st.textContent = `.ayah{font-size:calc(1.5rem * ${ST.prefs.size})}@media (max-width:640px){.ayah{font-size:calc(1.32rem * ${ST.prefs.size})}}`;
 }
 
-const CONTACT = `<section class="panel stack tight"><h2>التواصل</h2><p style="margin:0">يصدر تطبيق «موسوعة القرآن الكريم» عن <b>منجز</b>. للملاحظات والاقتراحات وتصحيح أي خطأ:</p><dl class="kv"><dt>البريد</dt><dd><span dir="ltr">munijizqa@gmail.com</span> <button class="btn ghost" data-copy="munijizqa@gmail.com">نسخ</button></dd><dt>الهاتف وواتساب</dt><dd><span dir="ltr">+974 5160 0498</span> <button class="btn ghost" data-copy="+97451600498">نسخ</button></dd></dl></section>`;
+const CONTACT = `<section class="panel stack tight"><h2>التواصل</h2><p style="margin:0">يصدر تطبيق «مشكاة» عن <b>منجز</b>. للملاحظات والاقتراحات وتصحيح أي خطأ:</p><dl class="kv"><dt>البريد</dt><dd><span dir="ltr">munijizqa@gmail.com</span> <button class="btn ghost" data-copy="munijizqa@gmail.com">نسخ</button></dd><dt>الهاتف وواتساب</dt><dd><span dir="ltr">+974 5160 0498</span> <button class="btn ghost" data-copy="+97451600498">نسخ</button></dd></dl></section>`;
 /* ================= about */
 function about() {
-  V(`<div class="stack" style="max-width:860px"><div><div class="eyebrow">المنهج والمصادر</div><h1>كيف بُنيت موسوعة القرآن الكريم</h1></div>
+  V(`<div class="stack" style="max-width:860px"><div><div class="eyebrow">المنهج والمصادر</div><h1>كيف بُنيت مشكاة</h1></div>
   <section class="panel stack"><h2>النص القرآني</h2><p style="margin:0">النص المعروض هو نص مصحف المدينة النبوية برواية حفص عن عاصم، من إصدار مجمع الملك فهد لطباعة المصحف الشريف (الإصدار ١٣). وقد قوبل رسم كل آية بنص مدونة القرآن العربية المبني على نسخة «تنزيل» الموثقة، فتطابقا في ${n(Q.ayat.length - 2)} آية، والفرق في الآيتين الباقيتين فرق في رسم الياء الصغيرة لا في القراءة.</p></section>
   <section class="panel stack"><h2>طريقة العدّ</h2><ul style="margin:0;padding-inline-start:1.2em">
    <li><b>الكلمة:</b> بحسب تقسيم مدونة القرآن الصرفية (${n(W.w.length)} كلمة). وتختلف كتب علوم القرآن في عدد الكلمات لاختلافها في عدّ الحروف المتصلة والمنفصلة.</li>
@@ -3601,7 +3601,7 @@ function about() {
    <p class="note" style="margin:0">لا يُبنى على هذه الأعداد ما يُسمّى «الإعجاز العددي» دون منهج علمي منضبط، لأن نتائج العدّ تتغير بتغير طريقته.</p></section>
   <section class="panel stack"><h2>المزايا الذكية وحدودها</h2><ul style="margin:0;padding-inline-start:1.2em">
    <li><b>البحث بالمعنى:</b> يعمل على الجهاز نفسه، ويطابق كلماتك مع نص الآيات والتفسير الميسر بعد ردّها إلى أصولها، ويوسّعها بالجذور القرآنية وبقاموس مفاهيم. وهو ترتيب حسابي للقرب لا يغني عن التدبر.</li>
-   <li><b>اسأل موسوعة القرآن الكريم:</b> ${IS_PWA ? 'مساعد بحث يجمع النصوص من داخل التطبيق ويرتبها، ولا يؤلف جواباً. ولا يُعتمد عليه في الفتوى.' : 'يجيب بنموذج Claude من نصوص التطبيق فقط عبر أدوات بحث داخلية، ويذكر المواضع لتتحقق منها. ولا يُعتمد عليه في الفتوى.'}</li>
+   <li><b>اسأل مشكاة:</b> ${IS_PWA ? 'مساعد بحث يجمع النصوص من داخل التطبيق ويرتبها، ولا يؤلف جواباً. ولا يُعتمد عليه في الفتوى.' : 'يجيب بنموذج Claude من نصوص التطبيق فقط عبر أدوات بحث داخلية، ويذكر المواضع لتتحقق منها. ولا يُعتمد عليه في الفتوى.'}</li>
    <li><b>التسميع بالصوت:</b> يعتمد على خدمة التعرف على الكلام في المتصفح، وقد يخطئ في بعض الكلمات، فيُستعمل للمراجعة لا للإجازة.</li>
    <li><b>الأطلس والخط الزمني:</b> تعيين الأماكن غير المقطوع بها وترتيب الأنبياء تقريبيان، ونُبّه على ذلك في مواضعه.</li></ul></section>
   <section class="panel stack"><h2>كتب التفسير والمعاني</h2><div class="list">${TF.map(b => `<div class="row" style="cursor:default"><span class="t"><b>${b.title}</b> <span class="muted">· ${b.author}</span></span><span class="n">${n(b.covered)} آية</span></div>`).join('')}</div></section>
@@ -3628,11 +3628,11 @@ function asnaf() {
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const num = k => LANG === 'ar' ? AR(k) : k;
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah as-q"><span class="as-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num as-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] ? `<span>–${n(r[2])}</span>` : ''}`;
   const ayCard = it => `<article class="as-ay"><h3>${it.t}</h3><div class="u-ref">${refOf(it.r)}</div>
     <div class="as-ays">${ays(it.r)}</div><p class="as-note">${esc(it.n)}</p>
-    <div class="as-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a></div></article>`;
+    <div class="as-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div></article>`;
   const hCard = h => `<article class="as-h" id="ash-${h.id}"><h3>${h.t}</h3>
     <blockquote class="as-matn notranslate" translate="no" lang="ar" dir="rtl">${esc(h.x)}</blockquote>
     ${enOn ? `<div class="as-en"><b>معنى الحديث بالإنجليزية</b><p class="notranslate" translate="no" lang="en" dir="ltr">${esc(h.en)}</p></div>` : ''}
@@ -3731,7 +3731,7 @@ function ijaz() {
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const LVL = { z: ['معنى ظاهر يوافقه العلم', 'ok'], m: ['قراءة معاصرة مشهورة', 'gold'], x: ['ربط محل نقاش، لا يُجزم به', 'muted'] };
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah rs-q"><span class="rs-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num rs-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] && r[2] !== r[1] ? `<span>–${n(r[2])}</span>` : ''}`;
   const qCard = q => { const b = TF.find(x => x.key === q.bk);
     return `<figure class="qs-quote rs-qt"><blockquote class="notranslate" translate="no" lang="ar" dir="rtl">${esc(q.x)}</blockquote>
@@ -3752,12 +3752,12 @@ function ijaz() {
       <p class="ij-sci">${t.sci}</p>
       <div class="rs-warn" role="note"><b>حدود الربط</b><p>${t.note}</p></div>
       <details class="ij-refs"><summary>المراجع العلمية للحقيقة العلمية</summary><ul>${t.refs.map(r => `<li class="notranslate" translate="no">${esc(r)}</li>`).join('')}</ul></details>
-      <div class="rs-links"><a class="btn" href="#pa${idxOf(t.ay[0][0], t.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a></div>
+      <div class="rs-links"><a class="btn" href="#pa${idxOf(t.ay[0][0], t.ay[0][1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div>
     </div></details>`; };
   let k = 0;
   const cross = [['t-ilm', 'الآيات الكونية في الموسوعة', 'كل الآيات الكونية والعلمية مفهرسة بموضوعها.'], ['ulum', 'علوم القرآن', 'إعجاز القرآن ووجوهه في علوم القرآن.'], ['hayawan', 'الحيوانات والطير في القرآن الكريم', 'النحل وسائر الكائنات في القرآن: آياتها وأقوال المفسرين.'], ['nabat', 'النبات في القرآن الكريم', 'النبات والماء والإنبات في القرآن: آياتها وأقوال المفسرين.'], ['wazifa', 'وظيفة الإنسان في القرآن', 'الوظيفة الوجودية للإنسان.']].filter(c => c[0] === 't-ilm' || typeof views[c[0]] === 'function');
   const cnt = v => D.tp.filter(t => t.lv === v).length;
-  const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>القرآن كتاب هداية، وآياته الكونية دعوة إلى التفكر، وليس كتاب علوم تجريبية. فنقتصر هنا على ما استقر عليه العلم بثقة، ولا يُحمل النص على فرضية قابلة للتغير، ولا يُخرج اللفظ عن معناه في لغة العرب، ويُعرض الفهم المعاصر مع تفسير المفسرين ولا يُقدَّم عليه. وقد تحفّظ الشاطبي في «الموافقات» على حمل القرآن على علوم لم تعرفها العرب، وفصّل ابن عاشور في المقدمة الرابعة من «التحرير والتنوير»، وتوسّع آخرون؛ ولذلك بيّنّا لكل محور درجته. نصوص الآيات بلفظ مصحف المدينة وبخطه، وأقوال المفسرين والأحاديث مقتطعة بلفظها من كتبها المضمّنة في موسوعة القرآن الكريم، وتدل علامة «…» على حذف ما بين المقتطفات. أما «ما يقوله العلم اليوم» فتلخيص بصياغتنا لحقائق مثبتة في المراجع المذكورة، وليس نقلاً من عالم بعينه. هذا الباب للتدبّر والمدارسة، وليس فتوى.</p></div>`;
+  const note = `<div class="rs-warn" role="note"><b>تنبيه المنهج</b><p>القرآن كتاب هداية، وآياته الكونية دعوة إلى التفكر، وليس كتاب علوم تجريبية. فنقتصر هنا على ما استقر عليه العلم بثقة، ولا يُحمل النص على فرضية قابلة للتغير، ولا يُخرج اللفظ عن معناه في لغة العرب، ويُعرض الفهم المعاصر مع تفسير المفسرين ولا يُقدَّم عليه. وقد تحفّظ الشاطبي في «الموافقات» على حمل القرآن على علوم لم تعرفها العرب، وفصّل ابن عاشور في المقدمة الرابعة من «التحرير والتنوير»، وتوسّع آخرون؛ ولذلك بيّنّا لكل محور درجته. نصوص الآيات بلفظ مصحف المدينة وبخطه، وأقوال المفسرين والأحاديث مقتطعة بلفظها من كتبها المضمّنة في مشكاة، وتدل علامة «…» على حذف ما بين المقتطفات. أما «ما يقوله العلم اليوم» فتلخيص بصياغتنا لحقائق مثبتة في المراجع المذكورة، وليس نقلاً من عالم بعينه. هذا الباب للتدبّر والمدارسة، وليس فتوى.</p></div>`;
   V(`<div class="stack ulum rs ij">
     <section class="u-hero rs-hero"><span class="eyebrow">اكتشف وتأمّل</span><h1>الإعجاز العلمي في القرآن الكريم</h1>
       <p class="lead">آيات كونية وعلمية يذكرها الباحثون في الإعجاز العلمي. تُعرض كل آية بنصها بخط المصحف، ثم أقوال المفسرين بألفاظها في معناها، ثم ما يقوله العلم اليوم بإيجاز، ثم درجة الربط: أهو ظاهر يوافقه العلم، أم قراءة معاصرة مشهورة، أم محل نقاش لا يُجزم به.</p>
@@ -3792,11 +3792,11 @@ function jannah() {
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const num = k => LANG === 'ar' ? AR(k) : k;
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah jn-q"><span class="jn-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num jn-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] ? `<span>–${n(r[2])}</span>` : ''}`;
   const ayCard = it => `<article class="jn-ay"><h3>${it.t}</h3><div class="u-ref">${refOf(it.r)}</div>
     <div class="jn-ays">${ays(it.r)}</div><p class="jn-note">${esc(it.n)}</p>
-    <div class="jn-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a>${it.h ? `<a class="btn" href="#jannah" data-jnh="${it.h}">الحديث بتخريجه</a>` : ''}</div></article>`;
+    <div class="jn-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a>${it.h ? `<a class="btn" href="#jannah" data-jnh="${it.h}">الحديث بتخريجه</a>` : ''}</div></article>`;
   const hCard = h => `<article class="jn-h" id="jnh-${h.id}"><h3>${h.t}</h3>
     <blockquote class="jn-matn notranslate" translate="no" lang="ar" dir="rtl">${esc(h.x)}</blockquote>
     ${enOn ? `<div class="jn-en"><b>معنى الحديث بالإنجليزية</b><p class="notranslate" translate="no" lang="en" dir="ltr">${esc(h.en)}</p></div>` : ''}
@@ -3980,11 +3980,11 @@ function jamal() {
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const num = k => LANG === 'ar' ? AR(k) : k;
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah jm-q"><span class="jm-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num jm-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] ? `<span>–${n(r[2])}</span>` : ''}`;
   const ayCard = it => `<article class="jm-ay"><h3>${it.t}</h3><div class="u-ref">${refOf(it.r)}</div>
     <div class="jm-ays">${ays(it.r)}</div><p class="jm-note"><b class="jm-lbl">وجه الصورة</b> ${esc(it.n)}</p>
-    <div class="jm-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a>${it.h ? `<a class="btn" href="#jamal" data-jmh="${it.h}">الحديث بتخريجه</a>` : ''}</div></article>`;
+    <div class="jm-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a>${it.h ? `<a class="btn" href="#jamal" data-jmh="${it.h}">الحديث بتخريجه</a>` : ''}</div></article>`;
   const hCard = h => `<article class="jm-h" id="jmh-${h.id}"><h3>${h.t}</h3>
     <blockquote class="jm-matn notranslate" translate="no" lang="ar" dir="rtl">${esc(h.x)}</blockquote>
     ${enOn ? `<div class="jm-en"><b>معنى الحديث بالإنجليزية</b><p class="notranslate" translate="no" lang="en" dir="ltr">${esc(h.en)}</p></div>` : ''}
@@ -4012,7 +4012,7 @@ function jamal() {
     <nav class="panel u-index" aria-label="الفهرس"><h2>الفهرس</h2><ol>${D.ch.map((c, i) => `<li><a href="#jamal" data-jmj="${c.id}"><span class="u-n">${n(i + 1)}</span>${c.t}</a></li>`).join('')}</ol></nav>
     ${D.ch.map((c, i) => `<details class="u-ch panel jm-ch" id="jm-${c.id}"${i === 0 ? ' open' : ''}><summary><span class="u-n">${n(i + 1)}</span><span class="u-t">${c.t}</span></summary>
       <div class="u-body stack tight"><p class="u-intro">${esc(c.d)}</p>${body(c)}</div></details>`).join('')}
-    <p class="muted small">نصوص الآيات بلفظ مصحف المدينة النبوية (مجمع الملك فهد، الإصدار ١٨) وبخطه، ونصوص الأحاديث من الصحيحين المضمّنين بترقيمهما، ونقول المفسرين بلفظها من كتبهم المضمّنة في موسوعة القرآن الكريم (السعدي، والقرطبي، وابن كثير، والبغوي)؛ أما التمهيدات ووجوه الصور فصياغة موجزة. وتفسيرا الزمخشري (الكشاف) وابن عاشور (التحرير والتنوير) غير مضمّنين في موسوعة القرآن الكريم، فلم يُنقل عنهما.</p>
+    <p class="muted small">نصوص الآيات بلفظ مصحف المدينة النبوية (مجمع الملك فهد، الإصدار ١٨) وبخطه، ونصوص الأحاديث من الصحيحين المضمّنين بترقيمهما، ونقول المفسرين بلفظها من كتبهم المضمّنة في مشكاة (السعدي، والقرطبي، وابن كثير، والبغوي)؛ أما التمهيدات ووجوه الصور فصياغة موجزة. وتفسيرا الزمخشري (الكشاف) وابن عاشور (التحرير والتنوير) غير مضمّنين في مشكاة، فلم يُنقل عنهما.</p>
   </div>`);
   const go = el => { if (!el) return; const d = el.closest('details'); if (d) d.open = true; el.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
   $$('[data-jmj]').forEach(a => a.onclick = e => { e.preventDefault(); go($('#jm-' + a.dataset.jmj)); });
@@ -4027,7 +4027,7 @@ function asma() {
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const num = k => LANG === 'ar' ? AR(k) : k;
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah an-q"><span class="an-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num an-nm" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 5); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 5); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] ? `<span>–${n(r[2])}</span>` : ''}`;
   const tt = (a, e) => enOn ? `<span class="notranslate" translate="no" lang="en" dir="ltr">${esc(e)}</span>` : a;
   const qCard = q => { const b = TF.find(x => x.key === q.bk);
@@ -4036,7 +4036,7 @@ function asma() {
   const ayCard = it => `<article class="an-ay"><h3>${enOn ? '' : it.t}${enOn ? `<span class="notranslate" translate="no" lang="en" dir="ltr">${esc(it.et)}</span>` : ''}</h3><div class="u-ref">${refOf(it.r)}</div>
     <div class="an-ays">${ays(it.r)}</div><p class="an-note">${enOn ? `<span class="notranslate" translate="no" lang="en" dir="ltr">${esc(it.en)}</span>` : esc(it.n)}</p>
     ${it.q ? qCard(it.q) : ''}
-    <div class="an-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a></div></article>`;
+    <div class="an-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div></article>`;
   const hCard = h => `<article class="an-h" id="anh-${h.id}"><h3>${enOn ? '' : h.t}${enOn ? `<span class="notranslate" translate="no" lang="en" dir="ltr">${esc(h.et)}</span>` : ''}</h3>
     <blockquote class="an-matn notranslate" translate="no" lang="ar" dir="rtl">${esc(h.x)}</blockquote>
     ${enOn ? `<div class="an-en"><b>معنى الحديث بالإنجليزية</b><p class="notranslate" translate="no" lang="en" dir="ltr">${esc(h.en)}</p></div>` : ''}
@@ -4049,7 +4049,7 @@ function asma() {
     <div class="an-ays">${x.r.map(r => ays(r)).join('')}</div>
     <div class="u-ref">${x.r.map(r => refLink(idxOf(r[0], r[1]))).join(' · ')}</div>
     ${x.q ? qCard(x.q) : ''}
-    <div class="an-links"><a class="btn" href="#pa${idxOf(x.r[0][0], x.r[0][1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a></div></article>`;
+    <div class="an-links"><a class="btn" href="#pa${idxOf(x.r[0][0], x.r[0][1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div></article>`;
   const body = c => {
     if (c.id === 'hadith' || c.id === 'sunna') return `<div class="an-grid">${D.h.filter(h => h.ch === c.id).map(hCard).join('')}</div>`;
     const ns = D.n.filter(x => x.c === c.id).concat((D.s || []).filter(x => x.c === c.id));
@@ -4065,7 +4065,7 @@ function asma() {
     <details class="panel an-chips"><summary><h2>فهرس الصفات</h2></summary><div class="an-chipr">${D.s.map(x => `<a href="#asma" data-ann="${x.id}" class="notranslate" translate="no" lang="ar">${x.a}</a>`).join('')}</div></details>
     ${D.ch.map((c, i) => `<details class="u-ch panel an-ch" id="an-ch-${c.id}"${i === 0 ? ' open' : ''}><summary><span class="u-n">${n(i + 1)}</span><span class="u-t">${chT(c)}</span></summary>
       <div class="u-body stack tight"><p class="u-intro">${chD(c)}</p>${body(c)}</div></details>`).join('')}
-    <p class="muted small">الآيات بلفظ مصحف المدينة النبوية (مجمع الملك فهد، الإصدار ١٨) وبخطه، والأحاديث من الكتب المضمّنة في موسوعة القرآن الكريم بترقيمها ودرجتها كما في المصدر، ونقول المفسرين بلفظها من السعدي والبغوي وابن كثير والقرطبي. أما «المعنى إجمالاً» والتمهيدات فصياغة موجزة وليست نقلاً. وكتب ابن القيم وغيره في الأسماء الحسنى غير مضمّنة في موسوعة القرآن الكريم، فلم يُنقل عنها. والأسماء الحسنى لا تنحصر في عدد، وهذا القسم يقتصر على ما ورد لفظه في القرآن. وأبواب الصفات تثبت ما أثبته الله لنفسه في كتابه، ولا تخوض في كيفيتها ولا في مسائل الكلام المختلف فيها؛ ولم تُنقل فيها أقوال القرطبي في تأويل الصفات، لأن المنهج هنا منهج السلف. وقد نُقل في أبواب الصفات عن السعدي وابن كثير والبغوي، والأحاديث من الصحيحين.</p>
+    <p class="muted small">الآيات بلفظ مصحف المدينة النبوية (مجمع الملك فهد، الإصدار ١٨) وبخطه، والأحاديث من الكتب المضمّنة في مشكاة بترقيمها ودرجتها كما في المصدر، ونقول المفسرين بلفظها من السعدي والبغوي وابن كثير والقرطبي. أما «المعنى إجمالاً» والتمهيدات فصياغة موجزة وليست نقلاً. وكتب ابن القيم وغيره في الأسماء الحسنى غير مضمّنة في مشكاة، فلم يُنقل عنها. والأسماء الحسنى لا تنحصر في عدد، وهذا القسم يقتصر على ما ورد لفظه في القرآن. وأبواب الصفات تثبت ما أثبته الله لنفسه في كتابه، ولا تخوض في كيفيتها ولا في مسائل الكلام المختلف فيها؛ ولم تُنقل فيها أقوال القرطبي في تأويل الصفات، لأن المنهج هنا منهج السلف. وقد نُقل في أبواب الصفات عن السعدي وابن كثير والبغوي، والأحاديث من الصحيحين.</p>
   </div>`);
   const go = el => { if (!el) return; const d = el.closest('details'); if (d) d.open = true; el.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
   $$('[data-anj]').forEach(a => a.onclick = e => { e.preventDefault(); go($('#an-ch-' + a.dataset.anj)); });
@@ -4080,7 +4080,7 @@ function amthal() {
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const num = k => LANG === 'ar' ? AR(k) : k;
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah am-q"><span class="am-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num am-nm" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 5); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 5); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] ? `<span>–${n(r[2])}</span>` : ''}`;
   const en = (cls, x) => `<span class="${cls} notranslate" translate="no" lang="en" dir="ltr">${esc(x)}</span>`;
   const qCard = q => { const b = TF.find(x => x.key === q.bk);
@@ -4090,7 +4090,7 @@ function amthal() {
     <div class="am-ays">${ays(x.r)}</div>
     <p class="am-note"><b class="am-lbl">وجه التمثيل</b> ${enOn ? en('', x.en) : esc(x.n)}</p>
     ${x.q ? qCard(x.q) : ''}
-    <div class="am-links"><a class="btn" href="#pa${idxOf(x.r[0], x.r[1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a></div></article>`;
+    <div class="am-links"><a class="btn" href="#pa${idxOf(x.r[0], x.r[1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div></article>`;
   const bk2 = h => h;
   const hCard = h => `<article class="am-h" id="amh-${h.id}"><h3>${enOn ? en('', h.et) : h.t}</h3>
     <blockquote class="am-matn notranslate" translate="no" lang="ar" dir="rtl">${esc(h.x)}</blockquote>
@@ -4108,7 +4108,7 @@ function amthal() {
     <nav class="panel u-index" aria-label="الفهرس"><h2>الفهرس</h2><ol>${D.ch.map((c, i) => `<li><a href="#amthal" data-amj="${c.id}"><span class="u-n">${n(i + 1)}</span>${chT(c)}</a></li>`).join('')}</ol></nav>
     ${D.ch.map((c, i) => `<details class="u-ch panel am-ch" id="am-ch-${c.id}"${i === 0 ? ' open' : ''}><summary><span class="u-n">${n(i + 1)}</span><span class="u-t">${chT(c)}</span></summary>
       <div class="u-body stack tight"><p class="u-intro">${enOn ? en('', c.ed) : esc(c.d)}</p>${body(c)}</div></details>`).join('')}
-    <p class="muted small">الآيات بلفظ مصحف المدينة النبوية (مجمع الملك فهد، الإصدار ١٨) وبخطه، ونقول المفسرين بلفظها من كتبهم المضمّنة في موسوعة القرآن الكريم (السعدي والبغوي وابن كثير والقرطبي)، والأحاديث من الصحيحين بترقيمهما. أما التمهيدات و«وجه التمثيل» فصياغة موجزة وليست نقلاً. وبعض الأمثال لا نقل معها لأن العبارة المناسبة لم تُوجد في كتب التفسير المضمّنة، فلم يُنقل شيء غير ثابت.</p>
+    <p class="muted small">الآيات بلفظ مصحف المدينة النبوية (مجمع الملك فهد، الإصدار ١٨) وبخطه، ونقول المفسرين بلفظها من كتبهم المضمّنة في مشكاة (السعدي والبغوي وابن كثير والقرطبي)، والأحاديث من الصحيحين بترقيمهما. أما التمهيدات و«وجه التمثيل» فصياغة موجزة وليست نقلاً. وبعض الأمثال لا نقل معها لأن العبارة المناسبة لم تُوجد في كتب التفسير المضمّنة، فلم يُنقل شيء غير ثابت.</p>
   </div>`);
   const go = el => { if (!el) return; const d = el.closest('details'); if (d) d.open = true; el.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
   $$('[data-amj]').forEach(a => a.onclick = e => { e.preventDefault(); go($('#am-ch-' + a.dataset.amj)); });
@@ -4133,7 +4133,7 @@ function mawdui() {
   const nT = MAWDUI.reduce((t, h) => t + h.tp.length, 0), nQ = MAWDUI.reduce((t, h) => t + h.tp.reduce((u, p) => u + p.q.length + p.l.length, 0), 0);
   const nA = new Set(MAWDUI.flatMap(h => h.tp.flatMap(p => p.r.flatMap(([s, a, b]) => { const o = []; for (let k = a; k <= b; k++) o.push(idxOf(s, k)); return o; })))).size;
   const rng = ([s, a, b]) => { const o = [], last = Math.min(b, a + 3); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayahHTML(i, null, false)); }
-    return `<div class="mw-r"><div class="u-ref">${refLink(idxOf(s, a))}${b > a ? `<span>–${n(b)}</span>` : ''}</div><div class="th-ay">${o.join('')}</div>${b > last ? `<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>` : ''}</div>`; };
+    return `<div class="mw-r"><div class="u-ref">${refLink(idxOf(s, a))}${b > a ? `<span>–${n(b)}</span>` : ''}</div><div class="th-ay">${o.join('')}</div>${b > last ? `<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>` : ''}</div>`; };
   const quote = (x, kind) => { const [bk, s, a, tag, tx] = x, b = TF.find(z => z.key === bk) || { title: bk, author: '' };
     return `<figure class="qs-quote mw-q mw-${kind}"><blockquote class="notranslate" translate="no" lang="ar" dir="rtl">${esc(tx)}${/[.؟!)\]»]\s*$/.test(tx) ? '' : ' …'}</blockquote>
     <figcaption><span class="mw-tag"><span>${MW_TYPE[tag] || tag}</span> · <span>${esc(b.title)}</span></span><span class="muted">${esc(b.author)}</span><span>عند تفسير</span> ${refLink(idxOf(s, a))}</figcaption></figure>`; };
@@ -4177,11 +4177,11 @@ function sxKit(D) {
   const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
   const num = k => LANG === 'ar' ? AR(k) : k;
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah jm-q"><span class="jm-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num jm-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] && r[2] !== r[1] ? `<span>–${n(r[2])}</span>` : ''}`;
   const ayCard = it => `<article class="jm-ay"><h3>${esc(it.t)}</h3><div class="u-ref">${refOf(it.r)}</div>
     <div class="jm-ays">${ays(it.r)}</div><p class="jm-note"><b class="jm-lbl">وجه الدلالة</b> ${esc(it.n)}</p>
-    <div class="jm-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a></div></article>`;
+    <div class="jm-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div></article>`;
   const hCard = (h, id) => `<article class="jm-h" ${id ? `id="${id}"` : ''}><h3>${esc(h.t)}</h3>
     <blockquote class="jm-matn notranslate" translate="no" lang="ar" dir="rtl">${esc(h.x)}</blockquote>
     ${enOn && h.en ? `<div class="jm-en"><b>معنى الحديث بالإنجليزية</b><p class="notranslate" translate="no" lang="en" dir="ltr">${esc(h.en)}</p></div>` : ''}
@@ -4205,12 +4205,12 @@ function arbain() {
     return K.hCard({ ...h, t: h.t }, 'ar-' + nn).replace('<h3>', `<h3><span class="ar-num">${K.num(nn)}</span> `); };
   V(`<div class="stack ulum jm ar">
     <section class="u-hero jm-hero"><span class="eyebrow">احفظ وتعبّد</span><h1>الأحاديث الأربعون النووية</h1>
-      <p class="lead">جوامع الكلم التي جمعها الإمام النووي، كل حديث بمتنه بلفظ كتب السنة المضمّنة في موسوعة القرآن الكريم وبتخريجه ودرجته، مع شرح موجز لفقهه ومعناه بالإنجليزية.</p>
+      <p class="lead">جوامع الكلم التي جمعها الإمام النووي، كل حديث بمتنه بلفظ كتب السنة المضمّنة في مشكاة وبتخريجه ودرجته، مع شرح موجز لفقهه ومعناه بالإنجليزية.</p>
       <div class="jm-stats"><span><b class="num">${n(D.h.length)}</b> <span>حديثاً بنصه</span></span><span><b class="num">${n(D.ch.length - 1)}</b> <span>أبواب</span></span><span><b class="num">${n(42)}</b> <span>حديثاً مع حديثَي ابن رجب</span></span></div></section>
     <details class="panel u-index sx-idx" open><summary><h2>الفهرس</h2></summary><div class="sx-idxg">${D.ch.map((c, i) => `<details${i === 0 ? ' open' : ''}><summary>${c.t} <em>${n(c.ids.length)}</em></summary><ol>${c.ids.map(k => `<li><a href="#arbain" data-sxj="ar-${k}"><span class="u-n">${n(k)}</span>${esc((by[k] || D.no[k]).t)}</a></li>`).join('')}</ol></details>`).join('')}</div></details>
     ${D.ch.map((c, i) => `<details class="u-ch panel jm-ch" id="arc-${c.id}"${i === 0 ? ' open' : ''}><summary><span class="u-n">${n(i + 1)}</span><span class="u-t">${c.t}</span></summary>
       <div class="u-body stack tight"><p class="u-intro">${esc(c.d)}</p><div class="jm-grid">${c.ids.map(card).join('')}</div></div></details>`).join('')}
-    <p class="muted small">متون الأحاديث مقتطعة بلفظها من صحيح البخاري وصحيح مسلم وجامع الترمذي وسنن أبي داود وسنن ابن ماجه المضمّنة في موسوعة القرآن الكريم بترقيمها، ودرجات السنن من أقوال المحققين المثبتة في الكتب نفسها. وقد رتّبنا الأحاديث في أبواب موضوعية مع إبقاء رقم كل حديث في «الأربعين النووية». أما الحديثان ٣٠ و٤١ فليسا في الكتب الستة المضمّنة، فلم يُورد نصهما. والعناوين والفوائد المختصرة صياغة موجزة لا تُنسب إلى النووي.</p>
+    <p class="muted small">متون الأحاديث مقتطعة بلفظها من صحيح البخاري وصحيح مسلم وجامع الترمذي وسنن أبي داود وسنن ابن ماجه المضمّنة في مشكاة بترقيمها، ودرجات السنن من أقوال المحققين المثبتة في الكتب نفسها. وقد رتّبنا الأحاديث في أبواب موضوعية مع إبقاء رقم كل حديث في «الأربعين النووية». أما الحديثان ٣٠ و٤١ فليسا في الكتب الستة المضمّنة، فلم يُورد نصهما. والعناوين والفوائد المختصرة صياغة موجزة لا تُنسب إلى النووي.</p>
   </div>`);
   K.wire();
 }
@@ -4247,7 +4247,7 @@ function naskh() {
     <details class="u-ch panel jm-ch" id="nc-mutashabih"><summary><span class="u-n">${n(D.ch.length + 1)}</span><span class="u-t">متشابه اللفظ: آيات تتفق وتختلف</span></summary>
       <div class="u-body stack tight"><p class="u-intro">آيات تتشابه ألفاظها وتختلف في كلمة أو حرف أو ترتيب، فيقع الاشتباه عند الحفظ والتلاوة. أُبرزت الكلمات المختلفة بين الآيتين بلون خاص من نص المصحف نفسه، ثم تنبيه موجز يعين على التفريق.</p>
       <div class="jm-grid sx-pairs">${D.p.map(pairCard).join('')}</div>
-      <p class="muted small">للتوسع في أسرار هذه الفروق ينظر في كتب المتشابه اللفظي، مثل «البرهان في متشابه القرآن» للكرماني، و«ملاك التأويل» لابن الزبير الغرناطي، و«درة التنزيل وغرة التأويل» للخطيب الإسكافي؛ وهي غير مضمّنة في موسوعة القرآن الكريم، فلم يُنقل عنها، والتنبيهات هنا وصف للفروق الظاهرة في النص.</p></div></details>
+      <p class="muted small">للتوسع في أسرار هذه الفروق ينظر في كتب المتشابه اللفظي، مثل «البرهان في متشابه القرآن» للكرماني، و«ملاك التأويل» لابن الزبير الغرناطي، و«درة التنزيل وغرة التأويل» للخطيب الإسكافي؛ وهي غير مضمّنة في مشكاة، فلم يُنقل عنها، والتنبيهات هنا وصف للفروق الظاهرة في النص.</p></div></details>
     <p class="muted small">نصوص الآيات بلفظ مصحف المدينة النبوية (مجمع الملك فهد، الإصدار ١٨) وبخطه، والأحاديث مقتطعة بلفظها من الكتب المضمّنة بترقيمها وأحكام المحققين المثبتة فيها، ونقول المفسرين بلفظها من كتبهم المضمّنة (ابن كثير والسعدي والقرطبي وغيرهما)؛ أما التمهيدات والتنبيهات فصياغة موجزة. وللعلماء خلاف معروف في عدد المنسوخ وفي كثير من الأمثلة، فاقرأ الخلاف في بابه ولا تُعمّم.</p>
   </div>`);
   K.wire();
@@ -4267,7 +4267,7 @@ function sira() {
       <div class="jm-stats"><span><b class="num">${n(D.ev.length)}</b> <span>حدثاً</span></span><span><b class="num">${n(D.nay)}</b> <span>آية</span></span><span><b class="num">${n(nh)}</b> <span>حديثاً</span></span><span><b class="num">${n(nq)}</b> <span>نقلاً</span></span></div></section>
     <details class="panel u-index sx-idx" open><summary><h2>الفهرس</h2></summary><div class="sx-idxg">${D.ph.map((p, pi) => `<details${pi === 0 ? ' open' : ''}><summary>${p.t} <em>${n(D.ev.filter(e => e.ph === p.id).length)}</em></summary><ol>${D.ev.filter(e => e.ph === p.id).map(e => `<li><a href="#sira" data-sxj="sr-${e.id}"><span class="u-n">${n(order(e) + 1)}</span>${e.t}</a></li>`).join('')}</ol></details>`).join('')}</div></details>
     ${D.ph.map(p => `<h2 class="sx-ph">${p.t}</h2><p class="muted">${esc(p.d)}</p>${D.ev.filter(e => e.ph === p.id).map(e => evCard(e, order(e))).join('')}`).join('')}
-    <p class="muted small">نصوص الآيات بلفظ مصحف المدينة النبوية (مجمع الملك فهد، الإصدار ١٨) وبخطه، والأحاديث مقتطعة بلفظها من الصحيحين المضمّنين بترقيمهما، ونقول المفسرين بلفظها من كتبهم المضمّنة. وأما التمهيدات فصياغة موجزة، والتواريخ الهجرية على المشهور عند أهل السير، وفي بعضها خلاف. وكتب السير المستقلة (كسيرة ابن هشام) غير مضمّنة في موسوعة القرآن الكريم فلم يُنقل عنها.</p>
+    <p class="muted small">نصوص الآيات بلفظ مصحف المدينة النبوية (مجمع الملك فهد، الإصدار ١٨) وبخطه، والأحاديث مقتطعة بلفظها من الصحيحين المضمّنين بترقيمهما، ونقول المفسرين بلفظها من كتبهم المضمّنة. وأما التمهيدات فصياغة موجزة، والتواريخ الهجرية على المشهور عند أهل السير، وفي بعضها خلاف. وكتب السير المستقلة (كسيرة ابن هشام) غير مضمّنة في مشكاة فلم يُنقل عنها.</p>
   </div>`);
   K.wire();
 }
@@ -4382,7 +4382,7 @@ async function buildResearch(o) {
     if (says.length) facts.push(`تناوله من المفسرين: ${[...new Set(says.map(x => x.b.author))].join('، ')}، ونُقلت أقوالهم بنصها في المبحث الخاص بها.`);
     if (hl.length) facts.push(`ووردت ${had.strong ? 'عبارة الموضوع' : 'ألفاظ الموضوع'} في ${countOf(had.total, 'حديث واحد', 'حديثين', 'أحاديث', 'حديثاً')} من كتب السنة المختارة بعد جمع رواياته، أقربها إلى الموضوع ما رواه ${hl[0][4].map(m => `${HAD_SHORT[m.k]} (${hadNum(m.h.l)})`).join(' و')}.`);
     const now = new Date(), ayLi = (i, why) => `<li><div class="ayah">${ayahHTML(i, rootWords, false).replace(/^<div class="ayah">|<\/div>$/g, '')}</div><div class="small"><a data-ayah="${i}">﴿${esc(ref(i))}﴾</a> <span class="chip">${Q.surahs[Q.ayat[i][0]-1].type}</span>${why || ''}</div></li>`;
-    $('#rdoc').innerHTML = `<header class="rhead"><div class="eyebrow">بحث علمي · ${LAB ? 'مختبر الأبحاث القرآنية' : 'موسوعة القرآن الكريم'}</div><h1>${esc(o.q)}</h1>
+    $('#rdoc').innerHTML = `<header class="rhead"><div class="eyebrow">بحث علمي · ${LAB ? 'مختبر الأبحاث القرآنية' : 'مشكاة: موسوعة القرآن الذكية'}</div><h1>${esc(o.q)}</h1>
       <p class="muted small" style="margin:0">إعداد: ${esc(SESSION?.name || 'زائر')} · التاريخ: ${fmtDate(now)} · كل نص منقول بلفظه من مصدره، وموضعه مذكور معه</p></header>
     <section><h2>المقدمة</h2><p>يتناول هذا البحث موضوع «${esc(core)}» في القرآن الكريم والسنة النبوية${rts.length ? `، انطلاقاً من ${rts.length > 1 ? 'ألفاظه' : 'لفظه'} في اللغة: ${rts.map(ri => '«' + unitLabel(ri) + '»' + (typeof ri === 'number' ? '' : ` (من جذر ${rootFmt(W.roots[unitRoot(ri)][0])})`)).join(' و')}` : ''}. فيحصي مواضع ورود اللفظ في المصحف كلها، ويبيّن صيغه ومعانيه، ثم يورد الآيات التي دلّت على المعنى دون اللفظ، وأقوال المفسرين والعلماء فيها، وما جاء في الموضوع من أحاديث الكتب الستة بأحكامها.</p>
       <p>ومنهجه النقل بالنص لا بالمعنى: الآيات من مصحف المدينة النبوية برواية حفص عن عاصم، والإحصاء من مدونة القرآن العربية، والتفسير من ${tfUsed.map(b => '«' + b.title + '»').join(' و')}${says.length ? '، مع البحث في نصوصها كاملة عن أقوال العلماء' : ''}${gloss.size ? '، ومعاني المفردات من «الميسر في غريب القرآن»' : ''}${hl.length ? (o.sunan === false ? '، والأحاديث من متون صحيحي البخاري ومسلم' : '، والأحاديث من متون الكتب الستة مع أحكام العلماء عليها') : ''}. ويُذكر مع كل نقل موضعه ليرجع إليه القارئ.</p></section>
@@ -4416,7 +4416,7 @@ async function buildResearch(o) {
     $('#rprint').onclick = () => window.print();
     $('#rcopy').onclick = () => copyText($('#rdoc').innerText.replace(/\n{3,}/g, '\n\n'));
     $('#rdl').onclick = () => { const doc = $('#rdoc').cloneNode(true); doc.querySelectorAll('.no-print').forEach(x => x.remove());
-      const html = `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(o.q)} · ${LAB ? 'مختبر الأبحاث القرآنية' : 'بحث من موسوعة القرآن الكريم'}</title><style>body{font-family:"Readex Pro","Segoe UI",Tahoma,sans-serif;max-width:860px;margin:32px auto;padding:0 16px;line-height:1.9;color:#1b2340}h1,h2,h3{color:#0e4a3b}.ayah{font-family:"Amiri Quran","Amiri","Traditional Arabic",serif;font-size:1.35rem}table{border-collapse:collapse;width:100%}td,th{border:1px solid #d9dceb;padding:6px 8px;vertical-align:top}blockquote{border-inline-start:3px solid #b8721c;margin:10px 0;padding:4px 14px;background:#faf7f0}cite{display:block;color:#6b7290;font-style:normal;font-size:.9rem}.chip{font-size:.8rem;border:1px solid #d9dceb;border-radius:99px;padding:0 8px}.muted,.small{color:#6b7290;font-size:.9rem}.note{background:#fbefdc;padding:8px 12px;border-radius:8px}a{color:#0f5a46;text-decoration:none}ol{list-style:arabic-indic}</style></head><body>${doc.innerHTML}</body></html>`;
+      const html = `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(o.q)} · ${LAB ? 'مختبر الأبحاث القرآنية' : 'بحث من مشكاة'}</title><style>body{font-family:"Readex Pro","Segoe UI",Tahoma,sans-serif;max-width:860px;margin:32px auto;padding:0 16px;line-height:1.9;color:#1b2340}h1,h2,h3{color:#1b2559}.ayah{font-family:"Amiri Quran","Amiri","Traditional Arabic",serif;font-size:1.35rem}table{border-collapse:collapse;width:100%}td,th{border:1px solid #d9dceb;padding:6px 8px;vertical-align:top}blockquote{border-inline-start:3px solid #b8721c;margin:10px 0;padding:4px 14px;background:#faf7f0}cite{display:block;color:#6b7290;font-style:normal;font-size:.9rem}.chip{font-size:.8rem;border:1px solid #d9dceb;border-radius:99px;padding:0 8px}.muted,.small{color:#6b7290;font-size:.9rem}.note{background:#fbefdc;padding:8px 12px;border-radius:8px}a{color:#27378a;text-decoration:none}ol{list-style:arabic-indic}</style></head><body>${doc.innerHTML}</body></html>`;
       saveFile(`${LAB ? "quran-lab" : "mishkat"}-research-${new Date().toISOString().slice(0, 10)}.html`, new Blob([html], { type: 'text/html' })); toast('نُزّل البحث'); };
     $('#rsave').onclick = () => { ST.research = (ST.research || []).filter(x => x.q !== o.q); ST.research.unshift({ ...o, at: Date.now() }); save(); toast(SESSION ? 'حُفظ في أبحاثك' : 'حُفظ على هذا الجهاز. ادخل إلى حسابك ليُحفظ باسمك'); };
     const nq = tq.reduce((s, [, p]) => s + p.length, 0); st(`اكتمل البحث: ${countOf(explicit.length + meaning.length, 'آية واحدة', 'آيتان', 'آيات', 'آية')}، و${countOf(nq, 'نقل واحد', 'نقلان', 'نقول', 'نقلاً')} من التفاسير${hl.length ? `، و${countOf(hl.length, 'حديث واحد', 'حديثان', 'أحاديث', 'حديثاً')}` : ''}.`);
@@ -4442,12 +4442,12 @@ function labGuide() {
   <section class="panel stack tight"><h2>منهج إعداد البحث</h2>${M.map(([t, d]) => `<div class="due" style="align-items:flex-start"><b style="min-width:9em">${t}</b><span class="small">${d}</span></div>`).join('')}</section>
   <section class="panel stack tight"><h2>الأدوار والصلاحيات</h2>${RL.map(([t, d]) => `<div class="due" style="align-items:flex-start"><b style="min-width:9em">${t}</b><span class="small">${d}</span></div>`).join('')}</section>
   <section class="panel stack tight"><h2>حدود المصادر الحالية</h2><p style="margin:0" class="small">لا يحوي المختبر بعدُ مسند أحمد ولا مستدرك الحاكم ولا شروح الحديث (كفتح الباري) ولا المؤلفات المفردة (كالدر المنظم للسيوطي)، فلا يخرّج منها ولا ينقل عنها. وما يذكره العلماء في التفاسير المضمّنة من عزو إليها يظهر بنصه في «أقوال العلماء».</p></section>
-  ${CONTACT.replace('«موسوعة القرآن الكريم»', '«' + BRAND + '»')}</div>`);
+  ${CONTACT.replace('«مشكاة»', '«' + BRAND + '»')}</div>`);
 }
 function guide() {
   if (LAB) return labGuide();
   const F = [
-    IS_PWA ? ['اسأل موسوعة القرآن الكريم (مساعد البحث)','تكتب سؤالك فيجمع لك من داخل التطبيق أقرب الآيات مع تفسيرها، وأقوال السعدي وابن كثير والقرطبي في أقربها، والمداخل الموضوعية، وإحصاء الألفاظ. يعمل على جهازك دون إنترنت ودون أي خدمة خارجية.'] : ['اسأل موسوعة القرآن الكريم (مساعد ذكي)','يجيب عن أسئلتك بالعربية من نصوص التطبيق نفسها: يبحث في الآيات، ويقرأ التفاسير الثمانية، ويستخرج الإحصاءات، ثم يكتب جواباً منظماً كل آية فيه رابط إلى موضعها. لا يذكر آية من حفظه، ولا يفتي.'],
+    IS_PWA ? ['اسأل مشكاة (مساعد البحث)','تكتب سؤالك فيجمع لك من داخل التطبيق أقرب الآيات مع تفسيرها، وأقوال السعدي وابن كثير والقرطبي في أقربها، والمداخل الموضوعية، وإحصاء الألفاظ. يعمل على جهازك دون إنترنت ودون أي خدمة خارجية.'] : ['اسأل مشكاة (مساعد ذكي)','يجيب عن أسئلتك بالعربية من نصوص التطبيق نفسها: يبحث في الآيات، ويقرأ التفاسير الثمانية، ويستخرج الإحصاءات، ثم يكتب جواباً منظماً كل آية فيه رابط إلى موضعها. لا يذكر آية من حفظه، ولا يفتي.'],
     ['البحث بالمعنى','تكتب الفكرة بلغتك (مثل: بر الوالدين)، فيبحث في الآيات وفي معانيها من التفسير الميسر، ويوسّع البحث بالجذور القرآنية وقاموس مفاهيم، ويرتب النتائج بالأقرب. يعمل على الجهاز دون خادم.'],
     ['الحفظ والتسميع','خمسة أوضاع: قراءة، وأوائل الكلمات، وإخفاء كامل، وتسميع بالكتابة يصحح كلمةً كلمة، وتسميع بالصوت. وجدول مراجعة بالتكرار المتباعد يحدد موعد مراجعة كل مقطع حسب تقييمك.'],
     ['مختبر الأبحاث','تكتب موضوع البحث، فيجمع الآيات وإحصاء الألفاظ والجذور وأقوال المفسرين وأحاديث الصحيحين ومداخل الموسوعة، ويوثّق كل نقل بمرجعه، ويُخرج بحثاً منظماً بمقدمة ومباحث وخلاصة ومراجع، يُطبع أو يُحفظ PDF أو يُنزَّل. يعمل على الجهاز دون إنترنت.'],
@@ -4456,7 +4456,7 @@ function guide() {
     ['أطلس القرآن','خريطة تفاعلية مرسومة داخل التطبيق لاثنين وعشرين موضعاً قرآنياً، تفرّق بين الموضع المعروف والمختلف في تعيينه، ومن كل موضع إلى آياته وأقوامه وأنبيائه.'],
     ['الخط الزمني','الأنبياء في عصورهم على ترتيب ابن كثير، وواحد وعشرون حدثاً من السيرة بسنواتها على المشهور مع آياتها.'],
     ['شبكة المعرفة','خريطة علاقات تربط الأنبياء بأقوامهم وديارهم وصلات قرابتهم والسور التي ذُكروا فيها أكثر.'],
-    ['بطاقة الآية','صورة مربعة جاهزة للمشاركة بخط المصحف وهوية موسوعة القرآن الكريم، تُحفظ بضغطة.'],
+    ['بطاقة الآية','صورة مربعة جاهزة للمشاركة بخط المصحف وهوية مشكاة، تُحفظ بضغطة.'],
     IS_PWA ? ['يعمل دون إنترنت ويُثبَّت','بعد أول فتح يعمل التطبيق دون اتصال، ويُثبَّت على الجوال والكمبيوتر كأي تطبيق. ومعه التسميع بالصوت والاستماع إلى تلاوة الشيخ مشاري العفاسي.'] : ['متابعتك محفوظة في حسابك','العلامات وموضع القراءة وجدول الحفظ تُحفظ في حسابك على claude.ai وتتزامن بين الجوال والكمبيوتر، وهي خاصة بك لا يراها غيرك.'],
     ['الحسابات ولوحة الإدارة', IS_PWA ? 'ثلاثة أدوار: زائر وعميل ومدير شامل. المدير يدير الإعلان العام والآية المختارة والحسابات كلها، ويُحفظ ذلك في ملف config.json يُرفع إلى الموقع فيعمّ كل الأجهزة. والتطبيق كله يعمل في المتصفح دون أي خدمة خارجية.' : 'لمالك الموسوعة وحده: إعلان عام يظهر لكل الزوار، وآية مختارة للصفحة الرئيسية، وتقرير سلامة البيانات.'],
   ];
@@ -4490,8 +4490,8 @@ function guide() {
     'صور صفحات مصحف المدينة نفسها، والانتقال بين الصفحة والإحصاء.',
     'مجموعات حفظ مشتركة لحلقات التحفيظ: المعلّم يرى تقدّم طلابه ومواعيد مراجعتهم.',
   ];
-  V(`<div class="stack" style="max-width:900px"><div><div class="eyebrow">دليل التطبيق</div><h1>موسوعة القرآن الكريم: ما الذي يقدّمه، ومن يستعمله، وما المطلوب لإطلاقه</h1>
-  <p class="lead">«موسوعة القرآن الكريم» هي الإصدار الثاني من موسوعة إحصاء القرآن الكريم، باسم وهوية مستقلين. وكان اسمها السابق «مشكاة» من قوله تعالى: <span style="font-family:var(--f-quran);font-size:1.15em">﴿${mishkatAyah()}﴾</span> [النور: ٣٥]. والمشكاة كُوّة في الجدار يوضع فيها المصباح فتجمع نوره وتردّه، وكذلك يجمع التطبيق نصوص القرآن وعلومه في موضع واحد. يضم كل ما في الإصدار الأول، وتُضاف إليه المزايا الذكية الآتية.</p></div>
+  V(`<div class="stack" style="max-width:900px"><div><div class="eyebrow">دليل التطبيق</div><h1>مشكاة: ما الذي يقدّمه، ومن يستعمله، وما المطلوب لإطلاقه</h1>
+  <p class="lead">«مشكاة» هي الإصدار الثاني من موسوعة إحصاء القرآن الكريم، باسم وهوية مستقلين. والاسم من قوله تعالى: <span style="font-family:var(--f-quran);font-size:1.15em">﴿${mishkatAyah()}﴾</span> [النور: ٣٥]. والمشكاة كُوّة في الجدار يوضع فيها المصباح فتجمع نوره وتردّه، وكذلك يجمع التطبيق نصوص القرآن وعلومه في موضع واحد. يضم كل ما في الإصدار الأول، وتُضاف إليه المزايا الذكية الآتية.</p></div>
   <section class="panel stack tight"><h2>ما بقي من الإصدار الأول</h2><p style="margin:0">نص مصحف المدينة النبوية المتحقَّق منه، وإحصاء ${n(W.w.length)} كلمة و${n(W.roots.length)} جذراً و${n(W.lemmas.length)} لمّة، والمعجم المفهرس، وثمانية كتب تفسير، و${n(T.length)} فهرساً موضوعياً منها الأحكام الفقهية على أبواب الفقه.</p></section>
   <section class="panel stack tight"><h2>الجديد في هذا الإصدار</h2>${F.map(([t, d]) => `<div class="due" style="align-items:flex-start"><b style="min-width:12em">${t}</b><span class="small" style="flex:1;min-width:220px">${d}</span></div>`).join('')}</section>
   <section class="panel stack tight"><h2>الأدوار والصلاحيات</h2>${R.map(([t, d]) => `<div class="due" style="align-items:flex-start"><b style="min-width:12em">${t}</b><span class="small" style="flex:1;min-width:220px">${d}</span></div>`).join('')}
@@ -4701,7 +4701,7 @@ function wordDrawer(wi) {
   <section><h3>الآية</h3>${ayahHTML(i, new Set([wi]), false)}<button class="btn" data-ayah="${i}">عرض تفسير الآية</button></section></div>`);
   tafsir('gharib', Q.ayat[i][0]).then(t => { $('#gbody').textContent = t[Q.ayat[i][1]] || 'لم يذكر كتاب «الميسر في غريب القرآن» ألفاظاً غريبة في هذه الآية. اضغط «عرض تفسير الآية» لقراءة التفسير.'; }).catch(() => { $('#gbody').textContent = 'تعذّر التحميل.'; });
 }
-function moreMenu() { openDrawer(`<div class="stack mm"><a class="brand" href="#${HOME}" data-close style="padding:0"><img src="icons/icon-192.png" alt="" style="width:40px;height:40px;border-radius:10px"><span><b>${LAB ? 'مختبر الأبحاث' : 'موسوعة القرآن الكريم'}</b><small>${LAB ? 'القرآنية والحديثية' : ''}</small></span></a>${LAB ? '' : finderHTML('sfS')}<nav class="nav${LAB ? '' : ' nav-tiles'}">${navHTML()}</nav></div>`); if (!LAB) bindFinder($('#sheet')); }
+function moreMenu() { openDrawer(`<div class="stack mm"><a class="brand" href="#${HOME}" data-close style="padding:0"><img src="icons/icon-192.png" alt="" style="width:40px;height:40px;border-radius:10px"><span><b>${LAB ? 'مختبر الأبحاث' : 'مشكاة'}</b><small>${LAB ? 'القرآنية والحديثية' : 'موسوعة القرآن الذكية'}</small></span></a>${LAB ? '' : finderHTML('sfS')}<nav class="nav${LAB ? '' : ' nav-tiles'}">${navHTML()}</nav></div>`); if (!LAB) bindFinder($('#sheet')); }
 
 /* ================= global events */
 document.addEventListener('click', e => {
@@ -5305,7 +5305,7 @@ async function connectCloud() {
    لإضافة قسم جديد: views.x = fn؛ ثم أضفه إلى PATHS بأي فئة، ثم registerSection('x', 'p3') أو أضف معرّفه إلى SEC_ORDER.
    كل قسم غير مسجّل يقع تلقائياً في «الأدوات والاستكشاف» فلا يضيع من القائمة ولا من الرئيسية. */
 const SEC_CATS = [
-  ['p1', 'القرآن الكريم', 'اقرأ القرآن الكريم، وابحث بالمعنى، واحفظ واسأل.', ['mushaf', 'recite', 'search', 'ask', 'topics', 'hifz', 'saved']],
+  ['p1', 'القرآن الكريم', 'اقرأ المصحف، وابحث بالمعنى، واحفظ واسأل.', ['mushaf', 'recite', 'search', 'ask', 'topics', 'hifz', 'saved']],
   ['p4', 'التفسير والعلوم', 'التفاسير وأسباب النزول وعلوم القرآن والبلاغة والإعجاز والمعجم.', ['tafasir', 'mawdui', 'ulum', 'naskh', 'amthal', 'jamal', 'ijaz', 'arbain', 'hadithq', 'words', 'stats']],
   ['p3', 'موضوعات في القرآن', 'دراسات موثّقة بالآيات والأحاديث الصحيحة وأقوال المفسرين.', ['tawhid', 'asma', 'jannah', 'wazifa', 'tawsiyat', 'maal', 'asnaf', 'taam', 'maadin', 'awwalin', 'rusul', 'nabat', 'qasasx', 'fiqhq', 'amal', 'taqwa', 'mumin', 'taamul', 'sabr', 'nsira', 'hayawan', 'nikah', 'tifl', 'sira']],
   ['p2', 'العبادات والأذكار', 'رفيقك اليومي: أذكار ومواقيت وأدعية وتداوٍ بالقرآن.', ['adhkar', 'prayer', 'wird', 'khatma', 'duaa', 'duaq', 'adiya', 'ibadat', 'hajj', 'hijri', 'ruqya', 'shifa', 'tibb']],

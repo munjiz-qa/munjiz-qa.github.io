@@ -1,4 +1,4 @@
-// فحص «فهرس كتب التفسير» في موسوعة القرآن الكريم: جوال وكمبيوتر، تصفية وبحث. يعمل مستقلاً دون أي اتصال بـ Claude.
+// فحص «فهرس كتب التفسير» في مشكاة: جوال وكمبيوتر، تصفية وبحث. يعمل مستقلاً دون أي اتصال بـ Claude.
 const { chromium } = require(process.env.PW || 'playwright');
 const B = process.env.MISHKAT_URL || 'http://localhost:8123/';
 const OUT = process.env.SHOTS ? process.env.SHOTS + '/' : '/tmp/';
