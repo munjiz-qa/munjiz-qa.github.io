@@ -1,4 +1,4 @@
-# تطبيق «مشكاة» لأندرويد (Trusted Web Activity من Bubblewrap) لمتجر Google Play وHuawei AppGallery وSamsung Galaxy Store.
+# تطبيق «موسوعة القرآن الكريم» لأندرويد (Trusted Web Activity من Bubblewrap) لمتجر Google Play وHuawei AppGallery وSamsung Galaxy Store.
 # يبني هذا المسار نسخة غير موقّعة (AAB وAPK)، ثم توقَّع خارج المستودع بمفتاح الرفع الذي يحتفظ به المالك وحده.
 # النسخة الموقّعة للتثبيت المباشر محفوظة في mishkat/android/mishkat.apk، ويختبرها هذا المسار على محاكي أندرويد فيه Chrome.
 name: Mishkat Android
@@ -46,7 +46,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          gh release view $TAG >/dev/null 2>&1 || gh release create $TAG --prerelease --title "مشكاة لأندرويد (نسخة البناء)" --notes "ملفات بناء غير موقّعة لتطبيق مشكاة. النسخة الموقّعة تُرفع إلى المتاجر من حساب المالك."
+          gh release view $TAG >/dev/null 2>&1 || gh release create $TAG --prerelease --title "موسوعة القرآن الكريم لأندرويد (نسخة البناء)" --notes "ملفات بناء غير موقّعة لتطبيق موسوعة القرآن الكريم. النسخة الموقّعة تُرفع إلى المتاجر من حساب المالك."
           gh release upload $TAG out/* --clobber
 
   emulator-test:
