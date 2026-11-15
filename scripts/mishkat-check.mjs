@@ -119,6 +119,15 @@ ok(/الآيات القرآنية/.test(doc) && /أقوال المفسرين/.te
   ok(t.ch === 6 && t.ix === t.ch && t.tp === 21 && t.a >= 28 && t.q >= 30 && t.link, `الزواج والطلاق: ${t.tp} مسألة، ${t.ch} أبواب، ${t.a} آية، ${t.q} نقلاً، مع الربط بالفقه من القرآن`);
   ok(!/claude|anthropic/i.test(t.txt), 'صفحة nikah تعمل ولا تذكر Claude');
 }
+{ // العمل في القرآن الكريم: ٣٥ محوراً في ٦ أبواب، آيات بخط المصحف، وأقوال المفسرين بلفظها مع معناها بالإنجليزية، والبحث في المحاور
+  await p.evaluate(() => location.hash = 'amal'); await p.waitForSelector('.am-ch', { timeout: 30000 }).catch(() => {});
+  await p.evaluate(() => document.querySelectorAll('.am-ch,.am-t').forEach(d => d.open = true));
+  const t = await p.evaluate(() => ({ ch: document.querySelectorAll('.am-ch').length, ix: document.querySelectorAll('.u-index li').length, tp: document.querySelectorAll('.am-t').length, a: document.querySelectorAll('.am-t .rs-q').length, q: document.querySelectorAll('.am-t .rs-qt blockquote').length, warn: !!document.querySelector('.rs-warn'), txt: document.body.innerText }));
+  ok(t.ch === 6 && t.ix === t.ch && t.tp === 35 && t.a >= 80 && t.q >= 60 && t.warn, `العمل في القرآن: ${t.tp} محوراً، ${t.ch} أبواب، ${t.a} آية بخط المصحف، ${t.q} نقلاً`);
+  ok(!/claude|anthropic/i.test(t.txt), 'صفحة amal تعمل ولا تذكر Claude');
+  await p.fill('.am-find', 'الأمانة'); await p.waitForTimeout(300);
+  ok(await p.evaluate(() => [...document.querySelectorAll('.am-t')].filter(x => !x.hidden).length >= 1 && [...document.querySelectorAll('.am-t')].filter(x => !x.hidden).length < 8), 'البحث في محاور العمل يرشّح النتائج');
+}
 { // الحج والعمرة: آيات بنص مجمع الملك فهد، وأحاديث بتخريجها ودرجتها، ونقول المفسرين، ورسوم متحركة تعمل
   await p.evaluate(() => location.hash = 'hajj'); await p.waitForSelector('.hj-ch', { timeout: 30000 }).catch(() => {});
   await p.evaluate(() => document.querySelectorAll('.hj-ch').forEach(d => d.open = true)); await p.waitForTimeout(3500);
