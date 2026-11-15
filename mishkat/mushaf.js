@@ -154,7 +154,37 @@ function mpSetCur(p) {
   $('#mpSur').value = Q.ayat[a][0]; $('#mpJuz').value = D.j[a];
   let k = 0; for (let x = 0; x < D.q.length && D.pageOf[D.q[x]] <= p; x++) k = x; $('#mpHizb').value = (k >> 2) + 1;
   if (location.hash !== '#p' + p) history.replaceState(null, '', '#p' + p);
-  if (ST.last !== a) { ST.last = a; clearTimeout(mpSetCur.t); mpSetCur.t = setTimeout(save, 900); }
+  mpTrack(mpVisAyah(p, a));
+}
+/* تذكّر موضع التوقف بدقة الآية: أول آية ظاهرة تحت الشريط، وتُحفظ بعد أن يستقر القارئ عليها (نحو ثانيتين ونصف) فلا يُمحى موضعه القديم بمجرد فتح المصحف من أوله */
+function mpVisAyah(p, dflt) {
+  if (MPV.mode === 'flip') return dflt;
+  const lim = $('#mpBar').getBoundingClientRect().bottom + 4;
+  for (const w of document.querySelectorAll('#mpg' + p + ' .w')) { const r = w.getBoundingClientRect(); if (r.bottom > lim + 6 && r.top < innerHeight) return +w.dataset.a; }
+  return dflt;
+}
+function mpTrack(a) {
+  MPV.pend = a; clearTimeout(MPV.pt);
+  MPV.pt = setTimeout(() => { if (ST.last !== MPV.pend) { ST.last = MPV.pend; ST.lastAt = Date.now(); save(); } }, window.MISHKAT_DWELL != null ? Math.min(window.MISHKAT_DWELL, 2500) : 2500);
+}
+function mpFlush() { if (MPV.pt && MPV.pend != null && ST.last !== MPV.pend && $('#mpRoot')) { clearTimeout(MPV.pt); ST.last = MPV.pend; ST.lastAt = Date.now(); save(); } }
+addEventListener('pagehide', mpFlush); document.addEventListener('visibilitychange', () => { if (document.hidden) mpFlush(); });
+function mpStopStyle() {
+  let st = $('#mpStopStyle'); if (!st) { st = document.createElement('style'); st.id = 'mpStopStyle'; document.head.appendChild(st); }
+  st.textContent = MPV.resume != null && !MPV.resumeHide ? `#mpRoot .mp-n[data-ayah="${MPV.resume}"]{background:var(--rule);color:var(--paper)!important;box-shadow:0 0 0 .14em var(--rule);border-radius:50%}` : '';
+}
+function mpResumeBar(p, opt) {
+  const old = $('#mpResume'); if (old) old.remove();
+  const r = MPV.resume; if (r == null || r < 0 || r >= Q.ayat.length) return;
+  const rp = MPV.data.pageOf[r], here = p === rp;
+  const when = ST.lastAt ? (() => { const m = Math.round((Date.now() - ST.lastAt) / 60000); return m < 2 ? 'قبل لحظات' : m < 60 ? `قبل ${MP_AR(m)} دقيقة` : m < 1440 ? `قبل ${MP_AR(Math.round(m / 60))} ساعة` : `قبل ${MP_AR(Math.round(m / 1440))} يوماً`; })() : '';
+  const el = document.createElement('div'); el.id = 'mpResume'; el.className = 'mp-resume'; el.setAttribute('role', 'status');
+  el.innerHTML = `<span class="mp-rt"><small>${here ? 'تكمل من حيث توقفت' : 'آخر موضع توقفت عنده'}${when ? ' · ' + when : ''}</small><b>${esc(ref(r))} · صفحة ${MP_AR(rp)}</b></span>${here ? '' : '<button class="btn pri" id="mpRGo" type="button">أكمل من هنا</button>'}<button class="btn" id="mpRX" type="button" aria-label="إخفاء التذكير">✕</button>`;
+  $('#mpBar').append(el);
+  const hide = () => { MPV.resumeHide = true; mpStopStyle(); el.remove(); };
+  $('#mpRX').onclick = hide; if (here) setTimeout(() => el.isConnected && el.classList.add('mp-rfade'), 5000), setTimeout(() => el.isConnected && el.remove(), 6200);
+  const g = $('#mpRGo'); if (g) g.onclick = () => { mpGo(rp, r); el.remove(); };
+  MPV.resumeHide = false; mpStopStyle();
 }
 function mpGo(p, ayah, instant) {
   p = Math.max(1, Math.min(604, (+p || 1) | 0)); const el = $('#mpg' + p); if (!el) return;
@@ -200,6 +230,7 @@ async function mushafRead(p, opt = {}) {
       <select id="mpHizb" class="mp-opt" aria-label="الحزب">${hOpts}</select>
       <label class="mp-pg"><span class="mp-pgl">صفحة</span><input id="mpPage" type="number" inputmode="numeric" min="1" max="604" value="${p}" aria-label="رقم الصفحة"></label>
       ${IS_PWA ? '<button class="btn" id="mpPlay" type="button" aria-label="استمع إلى التلاوة"><svg><use href="#i-play"/></svg><span>استمع</span></button>' : ''}
+      <button class="btn" id="mpRBtn" type="button" aria-label="موضع توقفي"><svg><use href="#i-bookmark"/></svg><span>موضعي</span></button>
       <button class="btn mp-more" id="mpMore" aria-expanded="false" aria-controls="mpOpts" aria-label="خيارات العرض">خيارات</button>
     </div>
     <div class="mp-row mp-opts" id="mpOpts">
@@ -240,9 +271,14 @@ async function mushafRead(p, opt = {}) {
   $('#mpFull').onclick = () => { if (document.fullscreenElement) document.exitFullscreen?.(); else root.requestFullscreen?.().catch(() => toast('ملء الشاشة غير متاح في هذا المتصفح')); };
   root.classList.add(MPV.mode === 'flip' ? 'mp-flip' : 'mp-scroll');
   $$('#mpMode button').forEach(b => b.setAttribute('aria-pressed', b.dataset.m === MPV.mode)); $('#mpSize').hidden = MPV.mode === 'flip';
+  MPV.resume = ST.last != null ? ST.last : null;
   mpMeasure(); mpObserve();
   mpGo(p, opt.surah ? Q.surahs[opt.surah - 1].first : opt.ayah, true);
+  mpResumeBar(p, opt);
+  const rb = $('#mpRBtn'); if (rb) rb.onclick = () => { if (MPV.resume != null) { MPV.resumeHide = false; mpGo(D.pageOf[MPV.resume], MPV.resume); mpResumeBar(D.pageOf[MPV.resume], {}); } else toast('لا يوجد موضع توقف محفوظ بعد، ابدأ القراءة وسيُحفظ تلقائياً'); };
 }
+let mpScrT;
+addEventListener('scroll', () => { if (!$('#mpRoot') || MPV.jumping) return; clearTimeout(mpScrT); mpScrT = setTimeout(() => { if (!MPV.jumping && MPV.data) mpSetCur(MPV.cur); }, 220); }, { passive: true });
 addEventListener('resize', () => { if (!$('#mpRoot')) return; clearTimeout(mpMeasure.t); mpMeasure.t = setTimeout(() => { const p = MPV.cur; mpMeasure(); mpGo(p, null, true); }, 180); });
 document.addEventListener('fullscreenchange', () => { if ($('#mpRoot')) setTimeout(() => { const p = MPV.cur; mpMeasure(); mpGo(p, null, true); }, 150); });
 document.addEventListener('keydown', e => {
