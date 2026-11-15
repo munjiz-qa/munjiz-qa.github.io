@@ -103,6 +103,15 @@ ok(/الآيات القرآنية/.test(doc) && /أقوال المفسرين/.te
     ok(!/claude|anthropic/i.test(t.txt), `صفحة ${k} تعمل ولا تذكر Claude`);
   }
 }
+{ // الفقه من القرآن الكريم: ٤٣ مسألة في ٧ أبواب، آيات بخط المصحف، وأقوال العلماء بلفظها مع معناها بالإنجليزية، والبحث في المسائل
+  await p.evaluate(() => location.hash = 'fiqhq'); await p.waitForSelector('.fq-ch', { timeout: 30000 }).catch(() => {});
+  await p.evaluate(() => document.querySelectorAll('.fq-ch,.fq-t').forEach(d => d.open = true));
+  const t = await p.evaluate(() => ({ ch: document.querySelectorAll('.fq-ch').length, ix: document.querySelectorAll('.u-index li').length, tp: document.querySelectorAll('.fq-t').length, a: document.querySelectorAll('.fq-t .rs-q').length, q: document.querySelectorAll('.fq-t .rs-qt blockquote').length, warn: !!document.querySelector('.rs-warn'), txt: document.body.innerText }));
+  ok(t.ch === 7 && t.ix === t.ch && t.tp === 43 && t.a >= 80 && t.q >= 70 && t.warn, `الفقه من القرآن: ${t.tp} مسألة، ${t.ch} أبواب، ${t.a} آية بخط المصحف، ${t.q} نقلاً`);
+  ok(!/claude|anthropic/i.test(t.txt), 'صفحة fiqhq تعمل ولا تذكر Claude');
+  await p.fill('.fq-find', 'الربا'); await p.waitForTimeout(300);
+  ok(await p.evaluate(() => [...document.querySelectorAll('.fq-t')].filter(x => !x.hidden).length >= 1 && [...document.querySelectorAll('.fq-t')].filter(x => !x.hidden).length < 5), 'البحث في مسائل الفقه من القرآن يرشّح النتائج');
+}
 { // الحج والعمرة: آيات بنص مجمع الملك فهد، وأحاديث بتخريجها ودرجتها، ونقول المفسرين، ورسوم متحركة تعمل
   await p.evaluate(() => location.hash = 'hajj'); await p.waitForSelector('.hj-ch', { timeout: 30000 }).catch(() => {});
   await p.evaluate(() => document.querySelectorAll('.hj-ch').forEach(d => d.open = true)); await p.waitForTimeout(3500);
