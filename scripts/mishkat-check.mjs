@@ -119,6 +119,15 @@ ok(/الآيات القرآنية/.test(doc) && /أقوال المفسرين/.te
   ok(t.ch === 6 && t.ix === t.ch && t.tp === 21 && t.a >= 28 && t.q >= 30 && t.link, `الزواج والطلاق: ${t.tp} مسألة، ${t.ch} أبواب، ${t.a} آية، ${t.q} نقلاً، مع الربط بالفقه من القرآن`);
   ok(!/claude|anthropic/i.test(t.txt), 'صفحة nikah تعمل ولا تذكر Claude');
 }
+{ // التعاملات في القرآن الكريم: ٢٦ محوراً في ٦ أبواب، آيات بخط المصحف، وأقوال المفسرين بلفظها مع معناها بالإنجليزية، والبحث في المحاور
+  await p.evaluate(() => location.hash = 'taamul'); await p.waitForSelector('.tq-ch', { timeout: 30000 }).catch(() => {});
+  await p.evaluate(() => document.querySelectorAll('.tq-ch,.tq-t').forEach(d => d.open = true));
+  const t = await p.evaluate(() => ({ ch: document.querySelectorAll('.tq-ch').length, ix: document.querySelectorAll('.u-index li').length, tp: document.querySelectorAll('.tq-t').length, a: document.querySelectorAll('.tq-t .rs-q').length, q: document.querySelectorAll('.tq-t .rs-qt blockquote').length, warn: !!document.querySelector('.rs-warn'), link: !!document.querySelector('a[href="#fiqhq"]'), txt: document.body.innerText }));
+  ok(t.ch === 6 && t.ix === t.ch && t.tp === 26 && t.a >= 50 && t.q >= 55 && t.warn && t.link, `التعاملات في القرآن: ${t.tp} محوراً، ${t.ch} أبواب، ${t.a} آية بخط المصحف، ${t.q} نقلاً`);
+  ok(!/claude|anthropic/i.test(t.txt), 'صفحة taamul تعمل ولا تذكر Claude');
+  await p.fill('.tq-find', 'الجار'); await p.waitForTimeout(300);
+  ok(await p.evaluate(() => [...document.querySelectorAll('.tq-t')].filter(x => !x.hidden).length >= 1 && [...document.querySelectorAll('.tq-t')].filter(x => !x.hidden).length < 8), 'البحث في محاور التعاملات يرشّح النتائج');
+}
 { // العمل في القرآن الكريم: ٣٥ محوراً في ٦ أبواب، آيات بخط المصحف، وأقوال المفسرين بلفظها مع معناها بالإنجليزية، والبحث في المحاور
   await p.evaluate(() => location.hash = 'amal'); await p.waitForSelector('.am-ch', { timeout: 30000 }).catch(() => {});
   await p.evaluate(() => document.querySelectorAll('.am-ch,.am-t').forEach(d => d.open = true));
