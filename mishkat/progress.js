@@ -34,7 +34,7 @@ const RELEASES = [
     'صفحة «ما الجديد» هذه، تُعرف بها كل إضافة في كل إصدار.' ] },
   { v: '٢٫٠', d: 'نوفمبر ٢٠٢٦', t: 'أقسام جديدة، وتثبيت بضغطة، وعمل دون إنترنت', items: [
     'التثبيت على الهاتف بضغطة واحدة، والعمل كاملاً دون إنترنت بعد التثبيت، وصفحة تنزيل لكل الأجهزة.',
-    'المصحف المتصل بصفحات مصحف المدينة بخط مجمع الملك فهد.',
+    'القراءة المتصلة بصفحات مصحف المدينة بخط مجمع الملك فهد.',
     'أقسام: التداوي بالقرآن، ووظيفة الإنسان، والتوحيد، ووصف الجنة، وأقسام الناس، والصور الجمالية، والفاكهة والطعام، وأركان الأسرة والمرأة والرجل.',
     'أذكار الصباح والمساء بنصوص حصن المسلم وتخريجها، ومواقيت الصلاة حسب بلدك ومذهبك.',
     'واجهة بمسارات أربعة، وقائمة لغات بمعاني القرآن بأكثر من سبعين لغة.',
@@ -144,13 +144,13 @@ function wird() {
   const mx = Math.max(g, 1, ...days.map(x => x[1]));
   const notes = Object.entries(ST.notes).sort((a, b) => b[1].at - a[1].at), allPg = Object.values(ST.log).reduce((t, a) => t + a.length, 0);
   V(`<div class="stack" style="max-width:860px"><div><div class="eyebrow">وردي وتقدّمي</div><h1>ورد القراءة وموضع توقفك</h1><p class="lead">كل شيء هنا على جهازك. تنقله بين أجهزتك من النسخ الاحتياطي والمزامنة أسفل الصفحة.</p></div>
-  <section class="panel stack tight"><h3>توقفت هنا</h3>${mk ? `<p style="margin:0"><b id="wMark">${esc(ref(mk.i))}</b></p><div class="verse">${ayahHTML(mk.i, null, false)}</div><div class="toolbar"><a class="btn pri" href="#pa${mk.i}"><svg><use href="#i-book"/></svg>أكمل القراءة من هنا</a><button class="btn" id="wMarkClr" type="button">إزالة العلامة</button></div>` : `<p class="muted" style="margin:0">لم تضع علامة بعد. افتح أي آية بالضغط على رقمها، ثم اضغط «توقفت هنا».</p><div class="toolbar"><a class="btn pri" href="#p1">افتح المصحف</a></div>`}</section>
+  <section class="panel stack tight"><h3>توقفت هنا</h3>${mk ? `<p style="margin:0"><b id="wMark">${esc(ref(mk.i))}</b></p><div class="verse">${ayahHTML(mk.i, null, false)}</div><div class="toolbar"><a class="btn pri" href="#pa${mk.i}"><svg><use href="#i-book"/></svg>أكمل القراءة من هنا</a><button class="btn" id="wMarkClr" type="button">إزالة العلامة</button></div>` : `<p class="muted" style="margin:0">لم تضع علامة بعد. افتح أي آية بالضغط على رقمها، ثم اضغط «توقفت هنا».</p><div class="toolbar"><a class="btn pri" href="#p1">افتح القرآن الكريم</a></div>`}</section>
   <section class="panel stack tight"><h3>هدفي اليومي</h3>
     <div class="toolbar"><span>عدد الصفحات كل يوم:</span><div class="seg" id="gSeg">${[[0, 'بلا هدف'], [1, '١'], [2, '٢'], [5, '٥'], [10, '١٠'], [20, '٢٠']].map(([k, l]) => `<button type="button" aria-pressed="${g === k}" data-g="${k}">${l}</button>`).join('')}</div></div>
     ${g ? `<p class="muted small" style="margin:0">بهذا الهدف تختم المصحف (٦٠٤ صفحة) في نحو ${n(Math.ceil(604 / g))} يوماً.</p>` : ''}
     <div class="tiles grid t4"><div class="tile"><b id="wToday">${n(g ? Math.min(tp.length, g) : tp.length)}${g ? ` / ${n(g)}` : ''}</b><span>صفحة اليوم</span></div><div class="tile"><b id="wStreak">${n(st)}</b><span>يوم متتابع</span></div><div class="tile"><b>${n(allPg)}</b><span>صفحة في سجلك</span></div><div class="tile"><b>${n(Object.keys(ST.log).length)}</b><span>يوم قرأت فيه</span></div></div>
     <div class="meter" aria-hidden="true"><i style="width:${g ? Math.min(100, tp.length / g * 100) : (tp.length ? 100 : 0)}%"></i></div>
-    <p class="muted small" style="margin:0">تُحسب الصفحة قراءةً إذا بقيت مفتوحة أمامك نحو ثماني ثوانٍ في المصحف المتصل أو في السورة.</p>
+    <p class="muted small" style="margin:0">تُحسب الصفحة قراءةً إذا بقيت مفتوحة أمامك نحو ثماني ثوانٍ في القراءة المتصلة أو في السورة.</p>
     <div class="wbars" role="img" aria-label="الصفحات المقروءة في آخر أربعة عشر يوماً">${days.map(([t, c]) => `<div class="wbar${g && c >= g ? ' met' : ''}"><i style="height:${Math.round(c / mx * 100)}%"></i><b>${n(c)}</b><span>${n(new Date(t).getDate())}</span></div>`).join('')}</div></section>
   <section class="panel stack tight"><h3>ختمتي</h3><p style="margin:0">قرأت <b id="wKh">${n(Math.min(kh, 604))}</b> من ٦٠٤ صفحة${ST.khatma ? '' : ' من سجلك'}.</p><div class="meter" aria-hidden="true"><i style="width:${Math.min(100, kh / 604 * 100)}%"></i></div>
     ${kh >= 604 ? '<p class="okmsg" style="margin:0">ما شاء الله، أتممت ختمة. تقبّل الله منك.</p>' : ''}<div class="toolbar"><button class="btn" id="wNew" type="button">ابدأ ختمة جديدة من اليوم</button></div></section>
@@ -165,7 +165,7 @@ function whatsnew() {
   try { localStorage.setItem('mishkat:seenVer', VERSION); } catch (e) {}
   V(`<div class="stack" style="max-width:860px"><div><div class="eyebrow">ما الجديد</div><h1>سجل الإصدارات</h1><p class="lead">كل ما أُضيف إلى موسوعة القرآن الكريم، الأحدث أولاً. أنت الآن على الإصدار ${VERSION}.</p></div>
   ${RELEASES.map(r => `<section class="panel stack tight wn-rel"><div class="toolbar"><span class="chip acc">الإصدار ${r.v}</span><span class="muted small">${r.d}</span></div><h3>${r.t}</h3><ul class="wn-list">${r.items.map(x => `<li>${x}</li>`).join('')}</ul></section>`).join('')}
-  <section class="panel stack tight wn-keep"><h3>ما بقي من الإصدار الأول</h3><p style="margin:0">الأساس الذي بدأت منه موسوعة القرآن الكريم باقٍ كما هو في كل إصدار لاحق: نص مصحف المدينة النبوية المتحقَّق منه، وإحصاء الألفاظ والجذور واللمّات، والمعجم المفهرس، وثمانية كتب تفسير، والفهارس الموضوعية ومنها الأحكام الفقهية على أبواب الفقه، والبحث بالمعنى، والحفظ والتسميع، ومختبر الأبحاث. وما تغيّر عنه: صارت الأقسام ست فئات، وأُضيف المصحف المتصل والأذكار والمواقيت وعشرات الأقسام الموثّقة، ويعمل التطبيق كاملاً دون إنترنت بعد تثبيته.</p></section></div>`);
+  <section class="panel stack tight wn-keep"><h3>ما بقي من الإصدار الأول</h3><p style="margin:0">الأساس الذي بدأت منه موسوعة القرآن الكريم باقٍ كما هو في كل إصدار لاحق: نص مصحف المدينة النبوية المتحقَّق منه، وإحصاء الألفاظ والجذور واللمّات، والمعجم المفهرس، وثمانية كتب تفسير، والفهارس الموضوعية ومنها الأحكام الفقهية على أبواب الفقه، والبحث بالمعنى، والحفظ والتسميع، ومختبر الأبحاث. وما تغيّر عنه: صارت الأقسام ست فئات، وأُضيف القراءة المتصلة والأذكار والمواقيت وعشرات الأقسام الموثّقة، ويعمل التطبيق كاملاً دون إنترنت بعد تثبيته.</p></section></div>`);
 }
 window.progressUI = { wird, whatsnew, dataPanel, snapshot, mergeInto, replaceWith, readAny, seal, unseal, VERSION };
 })();

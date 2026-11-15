@@ -7,7 +7,7 @@
   const REC_LIST = [
     ['Alafasy_128kbps', 'مشاري راشد العفاسي', 'Mishary Rashid Alafasy', 'مرتّل'],
     ['Husary_128kbps', 'محمود خليل الحصري', 'Mahmoud Khalil Al-Husary', 'مرتّل'],
-    ['Husary_Muallim_128kbps', 'محمود خليل الحصري (المصحف المعلّم)', 'Al-Husary (Teaching Mushaf)', 'معلّم'],
+    ['Husary_Muallim_128kbps', 'محمود خليل الحصري (القرآن الكريم المعلّم)', 'Al-Husary (Teaching Mushaf)', 'معلّم'],
     ['Minshawy_Murattal_128kbps', 'محمد صديق المنشاوي', 'Muhammad Siddiq Al-Minshawi', 'مرتّل'],
     ['Minshawy_Mujawwad_192kbps', 'محمد صديق المنشاوي (مجوّد)', 'Al-Minshawi (Mujawwad)', 'مجوّد'],
     ['Abdul_Basit_Murattal_192kbps', 'عبد الباسط عبد الصمد', 'Abdul Basit Abdus-Samad', 'مرتّل'],
@@ -58,7 +58,7 @@
     const a = S.i >= 0 ? Q.ayat[S.i] : null;
     const t = $('#recTitle'); if (t && a) t.textContent = S.bas ? 'البسملة · ' + Q.surahs[a[0] - 1].name : `${Q.surahs[a[0] - 1].name} · الآية ${n(a[1])}`;
     const sub = $('#recSub'); if (sub) sub.textContent = nm(REC_LIST.find(r => r[0] === p.r)) + (p.p > 1 && S.rep ? ` · المرة ${n(S.rep + 1)} من ${n(p.p)}` : '');
-    const live = $('#recLive'); if (live && a) live.innerHTML = `<div class="rec-livet"><span class="muted small">الآية الجارية</span><div class="ayah">${ayahText(S.i) ? esc(ayahText(S.i)) : ''} <span class="num">﴿${n(a[1])}﴾</span></div><a class="chip" data-ayah="${S.i}">${esc(ref(S.i))} · التفسير</a> <a class="chip acc" href="#pa${S.i}">تابعها في المصحف</a></div>`;
+    const live = $('#recLive'); if (live && a) live.innerHTML = `<div class="rec-livet"><span class="muted small">الآية الجارية</span><div class="ayah">${ayahText(S.i) ? esc(ayahText(S.i)) : ''} <span class="num">﴿${n(a[1])}﴾</span></div><a class="chip" data-ayah="${S.i}">${esc(ref(S.i))} · التفسير</a> <a class="chip acc" href="#pa${S.i}">تابعها في القرآن الكريم</a></div>`;
     document.body.classList.toggle('rec-open', S.on);
     if ('mediaSession' in navigator && a) {
       try { navigator.mediaSession.metadata = new MediaMetadata({ title: `${Q.surahs[a[0] - 1].name} · ${a[1]}`, artist: nm(REC_LIST.find(r => r[0] === p.r)), album: 'موسوعة القرآن الكريم' });
@@ -142,17 +142,17 @@
   window.reciteView = function () {
     const p = P(), at = Number.isInteger(ST.prefs.recAt) ? ST.prefs.recAt : null;
     const cur = S.on ? S.i : (ST.last != null ? ST.last : 0), ca = Q.ayat[cur];
-    V(`<div class="stack" style="max-width:980px"><div><div class="eyebrow">التلاوة المتصلة</div><h1>استمع إلى المصحف، وتابع الآية بعينك</h1>
+    V(`<div class="stack" style="max-width:980px"><div><div class="eyebrow">التلاوة المتصلة</div><h1>استمع إلى القرآن الكريم، وتابع الآية بعينك</h1>
       <p class="lead">تُتلى الآيات آيةً بعد آية دون انقطاع، وتُظلَّل الآية الجارية في المصحف وفي السورة. اختر القارئ والسرعة، وكرّر كل آية ما شئت للحفظ. وتستمر التلاوة وأنت تتنقّل في التطبيق.</p></div>
       <section class="panel stack"><div class="rec-grid">
         <label class="field"><span>السورة</span><select id="rcS">${Q.surahs.map(s => `<option value="${s.n}"${s.n === ca[0] ? ' selected' : ''}>${n(s.n)}. ${s.name}</option>`).join('')}</select></label>
         <label class="field"><span>من الآية</span><input id="rcA" type="number" min="1" inputmode="numeric" value="${ca[1]}"></label>
-        <label class="field"><span>إلى</span><select id="rcE"><option value="surah">نهاية السورة</option><option value="juz">نهاية الجزء</option><option value="quran">نهاية المصحف</option><option value="ayah">هذه الآية فقط</option></select></label>
+        <label class="field"><span>إلى</span><select id="rcE"><option value="surah">نهاية السورة</option><option value="juz">نهاية الجزء</option><option value="quran">نهاية القرآن الكريم</option><option value="ayah">هذه الآية فقط</option></select></label>
         <label class="field"><span>القارئ</span><select id="rcR">${REC_LIST.map(r => `<option value="${r[0]}"${r[0] === p.r ? ' selected' : ''}>${esc(nm(r))} · ${r[3]}</option>`).join('')}</select></label>
         <label class="field"><span>السرعة</span><select id="rcV">${RATES.map(x => `<option value="${x}"${x === p.s ? ' selected' : ''}>${x === 1 ? 'عادية' : '×' + x}</option>`).join('')}</select></label>
         <label class="field"><span>تكرار كل آية</span><select id="rcP">${REPS.map(x => `<option value="${x}"${x === p.p ? ' selected' : ''}>${x === 1 ? 'دون تكرار' : n(x) + ' مرات'}</option>`).join('')}</select></label></div>
         <label class="chk"><input type="checkbox" id="rcB"${p.b ? ' checked' : ''}> أتلو البسملة عند بداية كل سورة (عدا التوبة)</label>
-        <div class="toolbar"><button class="btn pri" id="rcGo" type="button"><svg><use href="#i-play"/></svg>ابدأ التلاوة</button>${at != null ? `<button class="btn" id="rcResume" type="button">أكمل من حيث توقفت: ${esc(ref(at))}</button>` : ''}<button class="btn" id="rcAll" type="button">المصحف كاملاً من الفاتحة</button><a class="btn" href="#pa${cur}">افتح المصحف لمتابعتها</a></div>
+        <div class="toolbar"><button class="btn pri" id="rcGo" type="button"><svg><use href="#i-play"/></svg>ابدأ التلاوة</button>${at != null ? `<button class="btn" id="rcResume" type="button">أكمل من حيث توقفت: ${esc(ref(at))}</button>` : ''}<button class="btn" id="rcAll" type="button">القرآن الكريم كاملاً من الفاتحة</button><a class="btn" href="#pa${cur}">افتح القرآن الكريم لمتابعتها</a></div>
         <p class="muted small" id="rcMsg" style="margin:0" aria-live="polite"></p></section>
       <section class="panel" id="recLive"><p class="muted" style="margin:0">اضغط «ابدأ التلاوة» ليظهر نص الآية الجارية هنا، ويظهر المشغّل في أسفل الشاشة.</p></section>
       <section class="panel stack tight"><h3>القرّاء</h3><div class="tablebox"><table class="wtable"><thead><tr><th>القارئ</th><th>الأداء</th><th>الرواية</th></tr></thead><tbody>${REC_LIST.map(r => `<tr><td>${esc(nm(r))}</td><td>${r[3]}</td><td>حفص عن عاصم</td></tr>`).join('')}</tbody></table></div>
