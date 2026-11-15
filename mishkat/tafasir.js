@@ -127,7 +127,7 @@ async function surahView(sn) {
   const su = Q.surahs[sn - 1]; if (!su) return home();
   V(`<div class="stack">${head(sn)}<div id="tfHome"><p class="loading">جارٍ التحميل…</p></div></div>`); wire(sn); $('#tfA').max = su.ayas;
   const D = await load(), m = D[sn] || {}, keys = Object.keys(m).map(Number).sort((a, b) => a - b);
-  $('#tfHome').innerHTML = `<section class="panel"><h2>سورة ${esc(su.name)}</h2><div class="toolbar">${sn > 1 ? `<a class="btn" href="#tf${sn - 1}">→ ${esc(Q.surahs[sn - 2].name)}</a>` : ''}${sn < 114 ? `<a class="btn" href="#tf${sn + 1}">${esc(Q.surahs[sn].name)} ←</a>` : ''}<a class="btn" href="#tf${sn}-1">تفسير الآية الأولى</a><a class="btn" href="#ps${sn}">اقرأها في القرآن الكريم</a></div></section>
+  $('#tfHome').innerHTML = `<section class="panel"><h2>سورة ${esc(su.name)}</h2><div class="toolbar">${sn > 1 ? `<a class="btn" href="#tf${sn - 1}">→ ${esc(Q.surahs[sn - 2].name)}</a>` : ''}${sn < 114 ? `<a class="btn" href="#tf${sn + 1}">${esc(Q.surahs[sn].name)} ←</a>` : ''}<a class="btn" href="#tf${sn}-1">تفسير الآية الأولى</a><a class="btn" href="#ps${sn}">اقرأها في المصحف</a></div></section>
   <section class="panel"><h3>الآيات التي ورد لها سبب نزول (${AR(keys.length)})</h3>${keys.length ? keys.map(a => { const i = idxOf(sn, a), bs = Object.keys(m[a]); return `<a class="tf-hit" href="#tf${sn}-${a}"><b>آية ${AR(a)}</b><small>${bs.map(BOOKT).map(esc).join(' · ')}</small><span>${esc(ayahText(i).slice(0, 140))}</span></a>`; }).join('') : `<p class="muted">لم يرد في كتب التفسير المضمّنة سبب نزول مخصوص لآيات هذه السورة. يمكنك فتح أي آية بإدخال رقمها أعلاه لقراءة تفاسيرها.</p>`}</section>`;
 }
 const LVL = ['b', 'm', 'x'], LVN = { b: 'مبتدئ', m: 'متوسط', x: 'متخصص' };
@@ -176,7 +176,7 @@ async function ayahView(sn, an) {
   // ٨ مقارنة
   if (L >= 2) parts.push(sec('مقارنة سريعة بين المفسرين', 'مقارنة', `<div id="tfCmp"><button class="btn pri" id="tfCmpB">اعرض مطلع كل تفسير جنبًا إلى جنب</button></div>`, 'يُعرض مطلع كلام كل مفسّر على الآية؛ لقراءة الكلام كاملًا افتح كتابه في الطبقات أعلاه.'));
   const lvBtn = LVL.map(x => `<button data-l="${x}" aria-pressed="${x === lv}">${LVN[x]}</button>`).join('');
-  const nav = `<div class="toolbar">${an > 1 ? `<a class="btn" href="#tf${sn}-${an - 1}">→ السابقة</a>` : ''}${an < su.ayas ? `<a class="btn" href="#tf${sn}-${an + 1}">التالية ←</a>` : ''}<a class="btn" href="#tf${sn}">آيات السورة</a><a class="btn" href="#pa${i}">في القرآن الكريم</a></div>`;
+  const nav = `<div class="toolbar">${an > 1 ? `<a class="btn" href="#tf${sn}-${an - 1}">→ السابقة</a>` : ''}${an < su.ayas ? `<a class="btn" href="#tf${sn}-${an + 1}">التالية ←</a>` : ''}<a class="btn" href="#tf${sn}">آيات السورة</a><a class="btn" href="#pa${i}">في المصحف</a></div>`;
   $('#tfHome').innerHTML = `<section class="panel"><div class="eyebrow">${esc(su.name)} · آية ${AR(an)} · ${su.type}</div><div class="ayah tf-ay">${ayahHTML(i, null, false)}</div>${nav}</section>
   <section class="panel tf-sum"><b class="muted small">خلاصة الآية</b><p id="tfSum" class="tf-s">جارٍ التحميل…</p></section>
   <div class="tf-lvl"><span>مستوى القراءة:</span><div class="seg" id="tfL" role="group" aria-label="مستوى القراءة">${lvBtn}</div></div>
