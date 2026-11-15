@@ -64,7 +64,7 @@ ok((await p.$$('.path')).length >= 4 && (await p.$$('.path .scard')).length >= 2
   await m.close();
 }
 ok(await p.evaluate(() => typeof window.claude === 'undefined'), 'لا يوجد أي مكوّن من Claude في الصفحة');
-for (const v of ['account', 'admin', 'search', 'hifz', 'map', 'awwalin', 'ijaz', 'research', 'kids', 'ulum', 'duaa', 'nisaa', 'rijal', 'shifa', 'usra', 'tawhid', 'jannah', 'ruqya', 'tawsiyat']) {
+for (const v of ['account', 'admin', 'search', 'hifz', 'map', 'awwalin', 'ijaz', 'research', 'kids', 'ulum', 'duaa', 'nisaa', 'rijal', 'shifa', 'usra', 'tawhid', 'jannah', 'ruqya', 'tawsiyat', 'maal']) {
   await p.evaluate(v => location.hash = v, v); await p.waitForTimeout(700);
   const t = await p.evaluate(() => document.body.innerText); ok(!/claude|anthropic/i.test(t) && t.length > 200, `صفحة ${v} تعمل ولا تذكر Claude`);
 }
@@ -119,6 +119,15 @@ ok(/الآيات القرآنية/.test(doc) && /أقوال المفسرين/.te
   ok(t.ch === 6 && t.ix === t.ch && t.tp === 21 && t.a >= 28 && t.q >= 30 && t.link, `الزواج والطلاق: ${t.tp} مسألة، ${t.ch} أبواب، ${t.a} آية، ${t.q} نقلاً، مع الربط بالفقه من القرآن`);
   ok(!/claude|anthropic/i.test(t.txt), 'صفحة nikah تعمل ولا تذكر Claude');
 }
+{ // التعاملات في القرآن الكريم: ٢٦ محوراً في ٦ أبواب، آيات بخط المصحف، وأقوال المفسرين بلفظها مع معناها بالإنجليزية، والبحث في المحاور
+  await p.evaluate(() => location.hash = 'taamul'); await p.waitForSelector('.tq-ch', { timeout: 30000 }).catch(() => {});
+  await p.evaluate(() => document.querySelectorAll('.tq-ch,.tq-t').forEach(d => d.open = true));
+  const t = await p.evaluate(() => ({ ch: document.querySelectorAll('.tq-ch').length, ix: document.querySelectorAll('.u-index li').length, tp: document.querySelectorAll('.tq-t').length, a: document.querySelectorAll('.tq-t .rs-q').length, q: document.querySelectorAll('.tq-t .rs-qt blockquote').length, warn: !!document.querySelector('.rs-warn'), link: !!document.querySelector('a[href="#fiqhq"]'), txt: document.body.innerText }));
+  ok(t.ch === 6 && t.ix === t.ch && t.tp === 26 && t.a >= 50 && t.q >= 55 && t.warn && t.link, `التعاملات في القرآن: ${t.tp} محوراً، ${t.ch} أبواب، ${t.a} آية بخط المصحف، ${t.q} نقلاً`);
+  ok(!/claude|anthropic/i.test(t.txt), 'صفحة taamul تعمل ولا تذكر Claude');
+  await p.fill('.tq-find', 'الجار'); await p.waitForTimeout(300);
+  ok(await p.evaluate(() => [...document.querySelectorAll('.tq-t')].filter(x => !x.hidden).length >= 1 && [...document.querySelectorAll('.tq-t')].filter(x => !x.hidden).length < 8), 'البحث في محاور التعاملات يرشّح النتائج');
+}
 { // العمل في القرآن الكريم: ٣٥ محوراً في ٦ أبواب، آيات بخط المصحف، وأقوال المفسرين بلفظها مع معناها بالإنجليزية، والبحث في المحاور
   await p.evaluate(() => location.hash = 'amal'); await p.waitForSelector('.am-ch', { timeout: 30000 }).catch(() => {});
   await p.evaluate(() => document.querySelectorAll('.am-ch,.am-t').forEach(d => d.open = true));
@@ -127,6 +136,15 @@ ok(/الآيات القرآنية/.test(doc) && /أقوال المفسرين/.te
   ok(!/claude|anthropic/i.test(t.txt), 'صفحة amal تعمل ولا تذكر Claude');
   await p.fill('.am-find', 'الأمانة'); await p.waitForTimeout(300);
   ok(await p.evaluate(() => [...document.querySelectorAll('.am-t')].filter(x => !x.hidden).length >= 1 && [...document.querySelectorAll('.am-t')].filter(x => !x.hidden).length < 8), 'البحث في محاور العمل يرشّح النتائج');
+}
+{ // صفات الرجال في القرآن الكريم: ٢٣ محوراً في ٧ أبواب، آيات بخط المصحف، وأقوال المفسرين بلفظها مع معناها بالإنجليزية، وتمييز عن ركن الرجل، والبحث في المحاور
+  await p.evaluate(() => location.hash = 'rsifat'); await p.waitForSelector('.rf-ch', { timeout: 30000 }).catch(() => {});
+  await p.evaluate(() => document.querySelectorAll('.rf-ch,.rf-t').forEach(d => d.open = true));
+  const t = await p.evaluate(() => ({ ch: document.querySelectorAll('.rf-ch').length, ix: document.querySelectorAll('.u-index li').length, tp: document.querySelectorAll('.rf-t').length, a: document.querySelectorAll('.rf-t .rs-q').length, q: document.querySelectorAll('.rf-t .rs-qt blockquote').length, warn: document.querySelectorAll('.rs-warn').length, link: !!document.querySelector('a[href="#rijal"]'), txt: document.body.innerText }));
+  ok(t.ch === 7 && t.ix === t.ch && t.tp === 23 && t.a >= 40 && t.q >= 50 && t.warn >= 2 && t.link, `صفات الرجال: ${t.tp} محوراً، ${t.ch} أبواب، ${t.a} آية بخط المصحف، ${t.q} نقلاً، مع التمييز عن ركن الرجل`);
+  ok(!/claude|anthropic/i.test(t.txt), 'صفحة rsifat تعمل ولا تذكر Claude');
+  await p.fill('.rf-find', 'الكهف'); await p.waitForTimeout(300);
+  ok(await p.evaluate(() => [...document.querySelectorAll('.rf-t')].filter(x => !x.hidden).length >= 1 && [...document.querySelectorAll('.rf-t')].filter(x => !x.hidden).length < 6), 'البحث في محاور صفات الرجال يرشّح النتائج');
 }
 { // الأطفال وأحكامهم في القرآن: ١٣ مسألة في ٣ أبواب بآياتها وأقوال العلماء بلفظها، وربط بالفقه من القرآن والزواج والطلاق، وفهرس يعمل
   await p.evaluate(() => location.hash = 'tifl'); await p.waitForSelector('.tl-ch', { timeout: 30000 }).catch(() => {});
@@ -139,6 +157,15 @@ ok(/الآيات القرآنية/.test(doc) && /أقوال المفسرين/.te
   ok(await p.evaluate(() => { const c = document.getElementById('tl-ch-taklif'); return !!c && c.open; }), 'فهرس الأطفال يفتح الباب المطلوب');
   await p.fill('.tl-find', 'اليتيم'); await p.waitForTimeout(300);
   ok(await p.evaluate(() => { const v = [...document.querySelectorAll('.tl-t')].filter(x => !x.hidden).length; return v >= 1 && v < 6; }), 'البحث في مسائل الأطفال يرشّح النتائج');
+}
+{ // الحيوانات والطير في القرآن: ٣٦ كائناً في ٥ أبواب، آيات بخط المصحف، وأقوال المفسرين بلفظها مع معناها بالإنجليزية، والبحث، وروابط الأبواب الأخرى
+  await p.evaluate(() => location.hash = 'hayawan'); await p.waitForSelector('.hy-ch', { timeout: 30000 }).catch(() => {});
+  await p.evaluate(() => document.querySelectorAll('.hy-ch,.hy-t').forEach(d => d.open = true));
+  const t = await p.evaluate(() => ({ ch: document.querySelectorAll('.hy-ch').length, ix: document.querySelectorAll('.u-index li').length, tp: document.querySelectorAll('.hy-t').length, a: document.querySelectorAll('.hy-t .rs-q').length, q: document.querySelectorAll('.hy-t .rs-qt blockquote').length, warn: !!document.querySelector('.rs-warn'), txt: document.body.innerText }));
+  ok(t.ch === 5 && t.ix === t.ch && t.tp === 36 && t.a >= 100 && t.q >= 80 && t.warn, `الحيوانات والطير: ${t.tp} كائناً، ${t.ch} أبواب، ${t.a} آية بخط المصحف، ${t.q} نقلاً`);
+  ok(!/claude|anthropic/i.test(t.txt), 'صفحة hayawan تعمل ولا تذكر Claude');
+  await p.fill('.hy-find', 'النمل'); await p.waitForTimeout(300);
+  ok(await p.evaluate(() => [...document.querySelectorAll('.hy-t')].filter(x => !x.hidden).length >= 1 && [...document.querySelectorAll('.hy-t')].filter(x => !x.hidden).length < 6), 'البحث في الكائنات يرشّح النتائج');
 }
 { // الحج والعمرة: آيات بنص مجمع الملك فهد، وأحاديث بتخريجها ودرجتها، ونقول المفسرين، ورسوم متحركة تعمل
   await p.evaluate(() => location.hash = 'hajj'); await p.waitForSelector('.hj-ch', { timeout: 30000 }).catch(() => {});
