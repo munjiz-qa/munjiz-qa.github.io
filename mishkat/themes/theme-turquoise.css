@@ -1,0 +1,20 @@
+/* مشكاة · خيار تصميم «فيروز وعنّاب» — فيروزي إزنيق صافٍ مع عنّابي داكن: حيوية هادئة ووضوح عالٍ
+   تجريبي: يُحمَّل بعد app.css ولا يغيّر أي سلوك، ألوان وخلفيات فقط. */
+:root{--bg:#eef5f5;--sheet:#fbfefe;--ink:#142630;--muted:#52687a;--line:#d5e4e6;--accent:#0a6577;--accent-ink:#ffffff;--accent-soft:#dcf0f2;--saffron:#9a2f62;--saffron-soft:#f7e3ec;--mark:#fbd6e4;--mark-ink:#3a0f26;--ok:#1b7d58;--ok-soft:#ddf2ea;}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#071419;--sheet:#0d222a;--ink:#e6f1f3;--muted:#9bb7bf;--line:#1b3a45;--accent:#62d3dc;--accent-ink:#041419;--accent-soft:#12353f;--saffron:#f09ac0;--saffron-soft:#391a2a;--mark:#5a2340;--mark-ink:#ffe3ef;--ok:#63dca6;--ok-soft:#0f3326;}}
+:root[data-theme="dark"]{--bg:#071419;--sheet:#0d222a;--ink:#e6f1f3;--muted:#9bb7bf;--line:#1b3a45;--accent:#62d3dc;--accent-ink:#041419;--accent-soft:#12353f;--saffron:#f09ac0;--saffron-soft:#391a2a;--mark:#5a2340;--mark-ink:#ffe3ef;--ok:#63dca6;--ok-soft:#0f3326;}
+.mh-pat{background:repeating-linear-gradient(45deg,#f09ac0 0 1px,transparent 1px 22px),repeating-linear-gradient(-45deg,#f09ac0 0 1px,transparent 1px 22px)}
+.rail{background:radial-gradient(260px 200px at 100% 0,rgba(98,211,220.22),transparent 70%),linear-gradient(180deg,#0a4f5e,#03212a);box-shadow:-6px 0 30px #03212a55;color:#e4f6f8}
+.rail::before{background:#f09ac0}
+.rail .brand small,.rail .nav>.sec:first-child,.rail .foot{color:#a6d3da}
+.rail .brand img{box-shadow:0 0 0 1px #f09ac099,0 0 26px #f09ac088}
+.rail .nav a{color:#e4f6f8}
+.rail .nav a[aria-current="page"]{background:linear-gradient(90deg,#7fe0e6,#4cc3cf);color:#03222a;box-shadow:0 4px 14px rgba(76,195,207,.4)}
+.welcome{background:radial-gradient(560px 280px at 85% -10%,rgba(98,211,220.38),transparent 70%),linear-gradient(135deg,#0b5a6b,#2b1030);box-shadow:0 18px 46px #2b103059}
+.welcome::before{background:#f09ac0}
+.welcome .lead,.welcome .muted{color:#a6d3da}.welcome .eyebrow{color:#f09ac0}
+.mphome{background:radial-gradient(120% 140% at 100% 0%,#0b5a6b 0%,#0a4f5e 55%,#2b1030 100%);border-color:#f09ac055}
+.mphome .mh-pri{background:#f09ac0;border-color:#f09ac0;color:#03222a}
+.adhbar.e,.adh.e{--adh:var(--accent);--adh-soft:var(--accent-soft)}
+.adh-tab.e[aria-selected=true]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.p1{--pc:var(--accent)}

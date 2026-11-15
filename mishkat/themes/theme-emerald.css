@@ -1,0 +1,20 @@
+/* مشكاة · خيار تصميم «زمرد وعاج» — أخضر زمردي عميق مع عاج دافئ ولمسة نحاس مذهّب: هدوء المصحف المطبوع
+   تجريبي: يُحمَّل بعد app.css ولا يغيّر أي سلوك، ألوان وخلفيات فقط. */
+:root{--bg:#f5f0e2;--sheet:#fffdf6;--ink:#13281f;--muted:#55655c;--line:#e3dac0;--accent:#0f5a46;--accent-ink:#ffffff;--accent-soft:#e2f0e8;--saffron:#a8731a;--saffron-soft:#f8ecd2;--mark:#f4dc8e;--mark-ink:#33290a;--ok:#1d7a4a;--ok-soft:#dff2e7;}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#07140f;--sheet:#0e211a;--ink:#e8efe9;--muted:#9db4a8;--line:#1c3a2f;--accent:#6fd0a6;--accent-ink:#06140e;--accent-soft:#143428;--saffron:#e2b95e;--saffron-soft:#33290f;--mark:#5f4a10;--mark-ink:#fff3d0;--ok:#6fe0a4;--ok-soft:#10321f;}}
+:root[data-theme="dark"]{--bg:#07140f;--sheet:#0e211a;--ink:#e8efe9;--muted:#9db4a8;--line:#1c3a2f;--accent:#6fd0a6;--accent-ink:#06140e;--accent-soft:#143428;--saffron:#e2b95e;--saffron-soft:#33290f;--mark:#5f4a10;--mark-ink:#fff3d0;--ok:#6fe0a4;--ok-soft:#10321f;}
+.mh-pat{background:repeating-linear-gradient(45deg,#e2b95e 0 1px,transparent 1px 22px),repeating-linear-gradient(-45deg,#e2b95e 0 1px,transparent 1px 22px)}
+.rail{background:radial-gradient(260px 200px at 100% 0,rgba(226,185,94.22),transparent 70%),linear-gradient(180deg,#0e4a3b,#04201a);box-shadow:-6px 0 30px #04201a55;color:#e8f3ec}
+.rail::before{background:#e2b95e}
+.rail .brand small,.rail .nav>.sec:first-child,.rail .foot{color:#a9c8ba}
+.rail .brand img{box-shadow:0 0 0 1px #e2b95e99,0 0 26px #e2b95e88}
+.rail .nav a{color:#e8f3ec}
+.rail .nav a[aria-current="page"]{background:linear-gradient(90deg,#e8c777,#d6a843);color:#2a1d00;box-shadow:0 4px 14px rgba(214,168,67,.4)}
+.welcome{background:radial-gradient(560px 280px at 85% -10%,rgba(226,185,94.38),transparent 70%),linear-gradient(135deg,#0f5a46,#04231b);box-shadow:0 18px 46px #04231b59}
+.welcome::before{background:#e2b95e}
+.welcome .lead,.welcome .muted{color:#a9c8ba}.welcome .eyebrow{color:#e2b95e}
+.mphome{background:radial-gradient(120% 140% at 100% 0%,#0f5a46 0%,#0e4a3b 55%,#04231b 100%);border-color:#e2b95e55}
+.mphome .mh-pri{background:#e2b95e;border-color:#e2b95e;color:#2a1d00}
+.adhbar.e,.adh.e{--adh:var(--accent);--adh-soft:var(--accent-soft)}
+.adh-tab.e[aria-selected=true]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.p1{--pc:var(--accent)}
