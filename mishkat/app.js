@@ -4884,7 +4884,9 @@ function prNext(cfg) { // {name, at(Date)} of the next prayer, in the place's ow
   for (const x of PR_NAMES) if (x[0] !== 'sunrise' && t[x[0]] > nowH) return { x, h: t[x[0]], left: t[x[0]] - nowH };
   const tm = prDay(new Date(now.getTime() + 864e5), cfg).t; return { x: PR_NAMES[0], h: tm.fajr, left: 24 - nowH + tm.fajr };
 }
-const prLeft = h => { const m = Math.max(0, Math.round(h * 60)); return LANG === 'ar' ? `بعد ${n(Math.floor(m / 60))} ساعة و${n(m % 60)} دقيقة` : `in ${Math.floor(m / 60)} h ${m % 60} min`; };
+const prLeft = h => { const m = Math.max(0, Math.round(h * 60)), hr = Math.floor(m / 60), mi = m % 60;
+  if (LANG === 'ar') return 'بعد ' + (hr ? n(hr) + ' ساعة' + (mi ? ' و' + n(mi) + ' دقيقة' : '') : n(mi) + ' دقيقة');
+  return 'in ' + (hr ? hr + ' h' + (mi ? ' ' + mi + ' min' : '') : mi + ' min'); };
 let prTimer = 0;
 function prayer() {
   const cfg = prCfg(), P = prPlace(cfg), now = new Date(), { t } = prDay(now, cfg), nx = prNext(cfg);
@@ -4892,7 +4894,7 @@ function prayer() {
   const ctry = PR_PLACES.find(x => x[0] === cfg.c);
   V(`<div class="stack" style="max-width:980px"><div><div class="eyebrow">مواقيت الصلاة</div><h1 class="notranslate" translate="no">${esc(P.city)}${P.country ? (LANG === 'ar' ? '، ' : ', ') + esc(P.country) : ''}</h1>
     <p class="lead" style="margin:4px 0 0">${esc(new Intl.DateTimeFormat(LANG === 'ar' ? 'ar-EG' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(now))} · ${esc(hijri(now))}</p></div>
-  <section class="prnext panel"><div><span class="eyebrow">الصلاة القادمة</span><b class="prnm">${prName(nx.x)}</b><span class="prat">${prFmt(nx.h, cfg.f24)}</span></div><span class="chip acc" id="prLeft">${prLeft(nx.left)}</span></section>
+  <section class="prnext panel"><div><span class="eyebrow">الصلاة القادمة</span><b class="prnm">${prName(nx.x)}</b><span class="prat">${prFmt(nx.h, cfg.f24)}</span></div><span class="chip acc" id="prLeft" data-nx="${nx.x[0]}">${prLeft(nx.left)}</span></section>
   <div class="prgrid">${PR_NAMES.map(x => `<div class="prcell${x === nx.x ? ' on' : ''}${x[0] === 'sunrise' ? ' sun' : ''}"><span>${prName(x)}</span><b>${prFmt(t[x[0]], cfg.f24)}</b></div>`).join('')}</div>
   <div id="adhanBox"></div>
   <section class="panel stack tight"><h2>البلد وطريقة الحساب</h2>
@@ -4922,8 +4924,21 @@ function prayer() {
   $('#prAuto').onchange = e => { LS.set('prayer', Object.assign(prCfg(), { auto: e.target.checked })); if (e.target.checked) prLocate(false); };
   $('#prGeo').onclick = () => prLocate(false);
   if (prCfg().auto && Date.now() - prAutoAt > 6e5) { prAutoAt = Date.now(); prLocate(true); }
-  clearInterval(prTimer); prTimer = setInterval(() => { const el = $('#prLeft'); if (!el) return clearInterval(prTimer); const x = prNext(prCfg()); el.textContent = prLeft(x.left); if (x.left < 1 / 120) prayer(); }, 30000);
+  clearInterval(prTimer); prTimer = setInterval(prTick, 20000);
 }
+/* العدّ التنازلي يُحسب من الساعة الحالية في كل مرة، ويُجدَّد دورياً وعند عودة التطبيق من الخلفية؛ فلا يبقى رقم قديم معروضاً */
+function prTick() {
+  try {
+    const bar = $('#prBar'), el = $('#prLeft');
+    if (!bar && !el) return;
+    const x = prNext(prCfg());
+    if (el) { if (el.dataset.nx !== x.x[0] && curRoute === 'prayer') return prayer(); el.textContent = prLeft(x.left); }
+    if (bar) { const tmp = document.createElement('div'); tmp.innerHTML = prHomeCard(); const nb = tmp.firstElementChild; if (nb && nb.outerHTML !== bar.outerHTML) bar.replaceWith(nb); }
+  } catch (e) {}
+}
+setInterval(prTick, 20000);
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') prTick(); });
+window.addEventListener('focus', prTick); window.addEventListener('pageshow', prTick);
 /* ---- الموقع التلقائي: أقرب مدينة معروفة تعطي الاسم وطريقة الحساب المعتمدة في بلدها ---- */
 const kmBetween = (la1, lo1, la2, lo2) => { const R = Math.PI / 180, a = Math.sin((la2 - la1) * R / 2) ** 2 + Math.cos(la1 * R) * Math.cos(la2 * R) * Math.sin((lo2 - lo1) * R / 2) ** 2; return 12742 * Math.asin(Math.sqrt(a)); };
 function prNearest(lat, lng) {
@@ -5027,7 +5042,7 @@ function qInit(P) {
 }
 function prHomeCard() {
   try { const cfg = prCfg(), P = prPlace(cfg), nx = prNext(cfg), { t } = prDay(new Date(), cfg);
-    return `<a class="prbar panel" href="#prayer"><span class="prwho"><svg><use href="#i-time"/></svg><span><span class="eyebrow">مواقيت الصلاة · <span class="notranslate" translate="no">${esc(P.city)}</span></span><b>${prName(nx.x)} ${prFmt(nx.h, cfg.f24)}</b> <span class="muted small">${prLeft(nx.left)}</span></span></span><span class="prmini">${PR_NAMES.filter(x => x[0] !== 'sunrise').map(x => `<span${x === nx.x ? ' class="on"' : ''}><small>${prName(x)}</small>${prFmt(t[x[0]], cfg.f24)}</span>`).join('')}</span></a>`; }
+    return `<a class="prbar panel" id="prBar" data-nx="${nx.x[0]}" href="#prayer"><span class="prwho"><svg><use href="#i-time"/></svg><span><span class="eyebrow">مواقيت الصلاة · <span class="notranslate" translate="no">${esc(P.city)}</span></span><b>${prName(nx.x)} ${prFmt(nx.h, cfg.f24)}</b> <span class="muted small">${prLeft(nx.left)}</span></span></span><span class="prmini">${PR_NAMES.filter(x => x[0] !== 'sunrise').map(x => `<span${x === nx.x ? ' class="on"' : ''}><small>${prName(x)}</small>${prFmt(t[x[0]], cfg.f24)}</span>`).join('')}</span></a>`; }
   catch (e) { return ''; }
 }
 
