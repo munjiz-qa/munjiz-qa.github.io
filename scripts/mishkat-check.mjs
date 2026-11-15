@@ -191,6 +191,15 @@ ok(/الآيات القرآنية/.test(doc) && /أقوال المفسرين/.te
 }
 await p.evaluate(() => location.hash = 'account'); await p.waitForTimeout(700);
 ok(!!(await p.$('#uform')) && !!(await p.$('#rform')), 'صفحة الدخول للعميل والمدير وإنشاء الحساب تعمل');
+{ // الطب والشفاء في القرآن الكريم: 36 موضعاً في ٧ أبواب بآياتها وأقوال المفسرين والأحاديث الصحيحة بألفاظها، مع التنبيه الطبي والتصفية والبحث
+  await p.evaluate(() => location.hash = 'tibb'); await p.waitForSelector('.tb-ch', { timeout: 30000 }).catch(() => {});
+  await p.evaluate(() => document.querySelectorAll('.tb-ch').forEach(d => d.open = true));
+  const t = await p.evaluate(() => ({ ch: document.querySelectorAll('.tb-ch').length, ix: document.querySelectorAll('.u-index li').length, it: document.querySelectorAll('.tb-i').length, a: document.querySelectorAll('.tb-i .tb-q').length, q: document.querySelectorAll('.tb-qt blockquote').length, h: document.querySelectorAll('.tb-ht blockquote').length, alert: !!document.querySelector('.tb-alert'), txt: document.body.innerText }));
+  ok(t.ch === 7 && t.ix === t.ch && t.it === 36 && t.a >= 50 && t.q >= 40 && t.h >= 12 && t.alert, `الطب والشفاء: ${t.it} موضعاً، ${t.ch} أبواب، ${t.a} آية، ${t.q} نقلاً، ${t.h} حديثاً، مع التنبيه الطبي`);
+  ok(!/claude|anthropic/i.test(t.txt), 'صفحة tibb تعمل ولا تذكر Claude');
+  await p.fill('#tb-find', 'عسل'); await p.waitForTimeout(300);
+  ok(await p.evaluate(() => { const n = [...document.querySelectorAll('.tb-i')].filter(x => !x.hidden).length; return n >= 1 && n < 10; }), 'البحث في الطب والشفاء يرشّح النتائج');
+}
 { // اللغات ومواقيت الصلاة: الإنجليزية مضمّنة، ومعاني الآيات بالترجمة المعتمدة، والمواقيت تُحسب على الجهاز
   const c2 = await b.newContext(); await c2.route(/translate\.(google|googleapis)/, r => r.abort()); const q = await c2.newPage(); const e2 = []; q.on('pageerror', e => e2.push(e.message));
   await q.addInitScript(() => { if (!sessionStorage.getItem('t')) { sessionStorage.setItem('t', '1'); localStorage.setItem('quran-lang', 'en'); } }); await q.goto(B + '#s1'); await q.waitForTimeout(6000);
