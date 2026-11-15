@@ -754,6 +754,18 @@ html[dir=ltr] .rs-matn{border-radius:10px 0 0 10px}
 @media (max-width:640px){.rs-ay,.rs-h{padding:12px}.rs-q{font-size:1.35rem;line-height:2.1}.rs-ays{padding:4px 10px}.rs-matn{font-size:1.02rem;padding:8px 10px}.rs-hero::after{width:100px;height:100px}.rs-warn{flex-direction:column;gap:2px}}
 @media print{.rs-links,.rs-chips2{display:none}.rs-p[hidden]{display:block}.rs-ays{background:none}}
 
+/* ---------- قصص القرآن المستفيضة والعبر (#qasasx) */
+.qm .qm-lsl{display:grid;gap:12px}
+.qm .qm-ls{border:1px solid var(--line,#d9d2c3);border-radius:14px;padding:14px;background:var(--panel,#fff);display:grid;gap:8px}
+.qm .qm-ls h3{margin:0;display:flex;gap:8px;align-items:flex-start;font-size:1.05rem;line-height:1.5}
+.qm .qm-ls h3 .u-n{flex:none}
+.qm .qm-sum{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.qm .qm-sum>div{border:1px solid var(--line,#d9d2c3);border-radius:12px;padding:12px;background:var(--panel,#fff)}
+.qm .qm-sum>div.g{border-color:var(--gold,#b8892f)}
+.qm .qm-sum b{display:block;margin-bottom:4px;font-size:.9rem;color:var(--muted,#6b6455)}
+.qm .qm-sum p{margin:0;line-height:1.8}
+@media (min-width:900px){.qm .qm-lsl{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
 /* ---------- نسخة الجوال المبسّطة: فهرس أقسام مختصر في أول الشاشة */
 .mindex{display:none}
 .mi-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px}
