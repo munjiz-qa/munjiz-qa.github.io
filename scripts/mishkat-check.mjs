@@ -140,6 +140,15 @@ ok(/الآيات القرآنية/.test(doc) && /أقوال المفسرين/.te
   await p.fill('.tl-find', 'اليتيم'); await p.waitForTimeout(300);
   ok(await p.evaluate(() => { const v = [...document.querySelectorAll('.tl-t')].filter(x => !x.hidden).length; return v >= 1 && v < 6; }), 'البحث في مسائل الأطفال يرشّح النتائج');
 }
+{ // الحيوانات والطير في القرآن: ٣٦ كائناً في ٥ أبواب، آيات بخط المصحف، وأقوال المفسرين بلفظها مع معناها بالإنجليزية، والبحث، وروابط الأبواب الأخرى
+  await p.evaluate(() => location.hash = 'hayawan'); await p.waitForSelector('.hy-ch', { timeout: 30000 }).catch(() => {});
+  await p.evaluate(() => document.querySelectorAll('.hy-ch,.hy-t').forEach(d => d.open = true));
+  const t = await p.evaluate(() => ({ ch: document.querySelectorAll('.hy-ch').length, ix: document.querySelectorAll('.u-index li').length, tp: document.querySelectorAll('.hy-t').length, a: document.querySelectorAll('.hy-t .rs-q').length, q: document.querySelectorAll('.hy-t .rs-qt blockquote').length, warn: !!document.querySelector('.rs-warn'), txt: document.body.innerText }));
+  ok(t.ch === 5 && t.ix === t.ch && t.tp === 36 && t.a >= 100 && t.q >= 80 && t.warn, `الحيوانات والطير: ${t.tp} كائناً، ${t.ch} أبواب، ${t.a} آية بخط المصحف، ${t.q} نقلاً`);
+  ok(!/claude|anthropic/i.test(t.txt), 'صفحة hayawan تعمل ولا تذكر Claude');
+  await p.fill('.hy-find', 'النمل'); await p.waitForTimeout(300);
+  ok(await p.evaluate(() => [...document.querySelectorAll('.hy-t')].filter(x => !x.hidden).length >= 1 && [...document.querySelectorAll('.hy-t')].filter(x => !x.hidden).length < 6), 'البحث في الكائنات يرشّح النتائج');
+}
 { // الحج والعمرة: آيات بنص مجمع الملك فهد، وأحاديث بتخريجها ودرجتها، ونقول المفسرين، ورسوم متحركة تعمل
   await p.evaluate(() => location.hash = 'hajj'); await p.waitForSelector('.hj-ch', { timeout: 30000 }).catch(() => {});
   await p.evaluate(() => document.querySelectorAll('.hj-ch').forEach(d => d.open = true)); await p.waitForTimeout(3500);
