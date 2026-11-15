@@ -137,6 +137,15 @@ ok(/الآيات القرآنية/.test(doc) && /أقوال المفسرين/.te
   await p.fill('.am-find', 'الأمانة'); await p.waitForTimeout(300);
   ok(await p.evaluate(() => [...document.querySelectorAll('.am-t')].filter(x => !x.hidden).length >= 1 && [...document.querySelectorAll('.am-t')].filter(x => !x.hidden).length < 8), 'البحث في محاور العمل يرشّح النتائج');
 }
+{ // صفات الرجال في القرآن الكريم: ٢٣ محوراً في ٧ أبواب، آيات بخط المصحف، وأقوال المفسرين بلفظها مع معناها بالإنجليزية، وتمييز عن ركن الرجل، والبحث في المحاور
+  await p.evaluate(() => location.hash = 'rsifat'); await p.waitForSelector('.rf-ch', { timeout: 30000 }).catch(() => {});
+  await p.evaluate(() => document.querySelectorAll('.rf-ch,.rf-t').forEach(d => d.open = true));
+  const t = await p.evaluate(() => ({ ch: document.querySelectorAll('.rf-ch').length, ix: document.querySelectorAll('.u-index li').length, tp: document.querySelectorAll('.rf-t').length, a: document.querySelectorAll('.rf-t .rs-q').length, q: document.querySelectorAll('.rf-t .rs-qt blockquote').length, warn: document.querySelectorAll('.rs-warn').length, link: !!document.querySelector('a[href="#rijal"]'), txt: document.body.innerText }));
+  ok(t.ch === 7 && t.ix === t.ch && t.tp === 23 && t.a >= 40 && t.q >= 50 && t.warn >= 2 && t.link, `صفات الرجال: ${t.tp} محوراً، ${t.ch} أبواب، ${t.a} آية بخط المصحف، ${t.q} نقلاً، مع التمييز عن ركن الرجل`);
+  ok(!/claude|anthropic/i.test(t.txt), 'صفحة rsifat تعمل ولا تذكر Claude');
+  await p.fill('.rf-find', 'الكهف'); await p.waitForTimeout(300);
+  ok(await p.evaluate(() => [...document.querySelectorAll('.rf-t')].filter(x => !x.hidden).length >= 1 && [...document.querySelectorAll('.rf-t')].filter(x => !x.hidden).length < 6), 'البحث في محاور صفات الرجال يرشّح النتائج');
+}
 { // الأطفال وأحكامهم في القرآن: ١٣ مسألة في ٣ أبواب بآياتها وأقوال العلماء بلفظها، وربط بالفقه من القرآن والزواج والطلاق، وفهرس يعمل
   await p.evaluate(() => location.hash = 'tifl'); await p.waitForSelector('.tl-ch', { timeout: 30000 }).catch(() => {});
   await p.evaluate(() => document.querySelectorAll('.tl-ch,.tl-t').forEach(d => d.open = true));
