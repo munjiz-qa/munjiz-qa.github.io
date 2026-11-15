@@ -137,6 +137,15 @@ ok(/الآيات القرآنية/.test(doc) && /أقوال المفسرين/.te
   await p.fill('.am-find', 'الأمانة'); await p.waitForTimeout(300);
   ok(await p.evaluate(() => [...document.querySelectorAll('.am-t')].filter(x => !x.hidden).length >= 1 && [...document.querySelectorAll('.am-t')].filter(x => !x.hidden).length < 8), 'البحث في محاور العمل يرشّح النتائج');
 }
+{ // التقوى وصفات المؤمنين في القرآن الكريم: ٤٣ محوراً في ٥ أبواب، آيات بخط المصحف، وأقوال المفسرين بلفظها مع معناها بالإنجليزية، والبحث في المحاور
+  await p.evaluate(() => location.hash = 'taqwa'); await p.waitForSelector('.tq-ch', { timeout: 30000 }).catch(() => {});
+  await p.evaluate(() => document.querySelectorAll('.tq-ch,.tq-t').forEach(d => d.open = true));
+  const t = await p.evaluate(() => ({ ch: document.querySelectorAll('.tq-ch').length, ix: document.querySelectorAll('.u-index li').length, tp: document.querySelectorAll('.tq-t').length, a: document.querySelectorAll('.tq-t .rs-q').length, q: document.querySelectorAll('.tq-t .rs-qt blockquote').length, warn: !!document.querySelector('.rs-warn'), txt: document.body.innerText }));
+  ok(t.ch === 5 && t.ix === t.ch && t.tp === 43 && t.a >= 85 && t.q >= 57 && t.warn, `التقوى وصفات المؤمنين: ${t.tp} محوراً، ${t.ch} أبواب، ${t.a} آية بخط المصحف، ${t.q} نقلاً`);
+  ok(!/claude|anthropic/i.test(t.txt), 'صفحة taqwa تعمل ولا تذكر Claude');
+  await p.fill('.tq-find', 'الصبر'); await p.waitForTimeout(300);
+  ok(await p.evaluate(() => [...document.querySelectorAll('.tq-t')].filter(x => !x.hidden).length >= 1 && [...document.querySelectorAll('.tq-t')].filter(x => !x.hidden).length < 8), 'البحث في محاور التقوى يرشّح النتائج');
+}
 { // صفات الرجال في القرآن الكريم: ٢٣ محوراً في ٧ أبواب، آيات بخط المصحف، وأقوال المفسرين بلفظها مع معناها بالإنجليزية، وتمييز عن ركن الرجل، والبحث في المحاور
   await p.evaluate(() => location.hash = 'rsifat'); await p.waitForSelector('.rf-ch', { timeout: 30000 }).catch(() => {});
   await p.evaluate(() => document.querySelectorAll('.rf-ch,.rf-t').forEach(d => d.open = true));
