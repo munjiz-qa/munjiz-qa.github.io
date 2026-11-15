@@ -119,6 +119,18 @@ ok(/الآيات القرآنية/.test(doc) && /أقوال المفسرين/.te
   ok(t.ch === 6 && t.ix === t.ch && t.tp === 21 && t.a >= 28 && t.q >= 30 && t.link, `الزواج والطلاق: ${t.tp} مسألة، ${t.ch} أبواب، ${t.a} آية، ${t.q} نقلاً، مع الربط بالفقه من القرآن`);
   ok(!/claude|anthropic/i.test(t.txt), 'صفحة nikah تعمل ولا تذكر Claude');
 }
+{ // الأطفال وأحكامهم في القرآن: ١٣ مسألة في ٣ أبواب بآياتها وأقوال العلماء بلفظها، وربط بالفقه من القرآن والزواج والطلاق، وفهرس يعمل
+  await p.evaluate(() => location.hash = 'tifl'); await p.waitForSelector('.tl-ch', { timeout: 30000 }).catch(() => {});
+  await p.evaluate(() => document.querySelectorAll('.tl-ch,.tl-t').forEach(d => d.open = true));
+  const t = await p.evaluate(() => ({ ch: document.querySelectorAll('.tl-ch').length, ix: document.querySelectorAll('.u-index li').length, tp: document.querySelectorAll('.tl-t').length, a: document.querySelectorAll('.tl-t .rs-q').length, q: document.querySelectorAll('.tl-t .rs-qt').length, link: !!document.querySelector('a[href="#fiqhq"]') && !!document.querySelector('a[href="#nikah"]'), txt: document.body.innerText }));
+  ok(t.ch === 3 && t.ix === t.ch && t.tp === 13 && t.a >= 20 && t.q >= 20 && t.link, `الأطفال وأحكامهم: ${t.tp} مسألة، ${t.ch} أبواب، ${t.a} آية، ${t.q} نقلاً، مع الربط بالفقه والزواج`);
+  ok(!/claude|anthropic/i.test(t.txt), 'صفحة tifl تعمل ولا تذكر Claude');
+  await p.evaluate(() => { const a = document.querySelector('[data-tlj="taklif"]'); a && a.click(); });
+  await p.waitForTimeout(400);
+  ok(await p.evaluate(() => { const c = document.getElementById('tl-ch-taklif'); return !!c && c.open; }), 'فهرس الأطفال يفتح الباب المطلوب');
+  await p.fill('.tl-find', 'اليتيم'); await p.waitForTimeout(300);
+  ok(await p.evaluate(() => { const v = [...document.querySelectorAll('.tl-t')].filter(x => !x.hidden).length; return v >= 1 && v < 6; }), 'البحث في مسائل الأطفال يرشّح النتائج');
+}
 { // الحج والعمرة: آيات بنص مجمع الملك فهد، وأحاديث بتخريجها ودرجتها، ونقول المفسرين، ورسوم متحركة تعمل
   await p.evaluate(() => location.hash = 'hajj'); await p.waitForSelector('.hj-ch', { timeout: 30000 }).catch(() => {});
   await p.evaluate(() => document.querySelectorAll('.hj-ch').forEach(d => d.open = true)); await p.waitForTimeout(3500);
