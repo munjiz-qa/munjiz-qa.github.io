@@ -86,6 +86,14 @@ ok(/الآيات القرآنية/.test(doc) && /أقوال المفسرين/.te
   ok(ad && ad.shown && ad.n === (ad.k === 'm' ? 23 : 21) && ad.src === ad.n && ad.home, `أذكار الصباح والمساء: يظهر ورد ${ad?.k === 'm' ? 'الصباح' : 'المساء'} في وقته (${ad?.n} ذكراً بتخريجها) مع بطاقة الرئيسية`);
   await p.click('.adh-card [data-adhc]'); ok(await p.evaluate(() => /[١1]/.test(document.querySelector('.adh-card .adh-count b').textContent)), 'عدّاد الأذكار يعمل');
 }
+{ // السيرة النبوية من القرآن الكريم: ٣٠ محطة مرتبة، لكل محطة جديدة آياتها وحديثها ونقلها
+  await p.evaluate(() => location.hash = 'sira'); await p.waitForSelector('.sx-ev', { timeout: 30000 }).catch(() => {});
+  await p.evaluate(() => document.querySelectorAll('.sx-ev').forEach(d => d.open = true));
+  const t = await p.evaluate(() => ({ h1: document.querySelector('h1')?.textContent, ev: document.querySelectorAll('.sx-ev').length, ix: document.querySelectorAll('.sx-idx li').length, ay: document.querySelectorAll('.sx-ev .jm-ay').length, h: document.querySelectorAll('.sx-ev .jm-h').length, q: document.querySelectorAll('.sx-ev .jm-qt').length,
+    miss: ['duha', 'abasa', 'qamar', 'jinn', 'jumua', 'hamra', 'riqa', 'zaynab', 'takhyir', 'muraysi', 'hatib', 'nisaa', 'baraa'].filter(i => { const e = document.getElementById('sr-' + i); return !e || !e.querySelector('.jm-ay') || !e.querySelector('.jm-h') || !e.querySelector('.jm-qt'); }), sw: document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1 }));
+  ok(t.h1 === 'السيرة النبوية من القرآن الكريم' && t.ev === 30 && t.ix === 30 && t.ay >= 60 && t.h >= 35 && t.q >= 30 && !t.miss.length && t.sw, `السيرة النبوية من القرآن الكريم: ${t.ev} محطة، ${t.ay} بطاقة آيات، ${t.h} حديثاً، ${t.q} نقلاً${t.miss.length ? '، ناقص: ' + t.miss : ''}`);
+  const tt = await p.evaluate(() => document.body.innerText); ok(!/claude|anthropic/i.test(tt), 'صفحة sira تعمل ولا تذكر Claude');
+}
 { // الفاكهة والطعام في القرآن الكريم: الأصناف المسمّاة بآياتها، والأبواب بنص مجمع الملك فهد، والأحاديث بتخريجها، ونقول المفسرين، والتنبيه الطبي
   await p.evaluate(() => location.hash = 'taam'); await p.waitForSelector('.tm-ch', { timeout: 30000 }).catch(() => {});
   await p.evaluate(() => document.querySelectorAll('.tm-ch').forEach(d => d.open = true));
