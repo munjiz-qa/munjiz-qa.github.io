@@ -1,4 +1,4 @@
-// فحص ركن «التفاسير وأسباب النزول» في مشكاة: جوال وكمبيوتر، تصفح وبحث ودون إنترنت. يعمل مستقلاً دون أي اتصال بـ Claude.
+// فحص ركن «التفاسير وأسباب النزول» في موسوعة القرآن الكريم: جوال وكمبيوتر، تصفح وبحث ودون إنترنت. يعمل مستقلاً دون أي اتصال بـ Claude.
 import pw from 'playwright';
 // انتظار بالاستطلاع عبر evaluate: waitForFunction تُنشئ دالة بـ eval فتمنعها سياسة أمان المحتوى
 async function until(p, fn, ms = 30000) { const t = Date.now(); for (;;) { if (await p.evaluate(fn).catch(() => false)) return; if (Date.now() - t > ms) throw new Error('until: انتهت المهلة'); await p.waitForTimeout(250); } }
@@ -19,7 +19,7 @@ for (const [dev, vp] of [['جوال', { width: 390, height: 844 }], ['كمبيو
   ok((await p.$$('.tf-pick select option')).length === 114, `${dev}: قائمة ١١٤ سورة`);
   await p.waitForSelector('.tf-types details', { timeout: 30000 });
   ok((await p.$$('.tf-types details')).length === 10, `${dev}: عشرة أنواع من التفاسير بتعريفاتها`);
-  ok((await p.$$('.tf-types .chip.acc')).length >= 3, `${dev}: تُعلَّم الكتب المضمّنة في مشكاة`);
+  ok((await p.$$('.tf-types .chip.acc')).length >= 3, `${dev}: تُعلَّم الكتب المضمّنة في موسوعة القرآن الكريم`);
   await noOverflow('الصفحة الرئيسية للركن'); await shot(p, `${dev}-1-الركن`);
   // آية الخمر
   await p.goto(B + '#tf2-219'); await p.waitForSelector('.tf-ay', { timeout: 30000 });
