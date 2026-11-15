@@ -857,6 +857,18 @@ html[dir=ltr] .hq-matn{border-radius:10px 0 0 10px}
 .ns .ns-sum p{margin:0;line-height:1.8}
 @media (min-width:900px){.ns .ns-lsl{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
+/* ---------- النبات في القرآن الكريم (#nabat) */
+.nb .nb-lsl{display:grid;gap:12px}
+.nb .nb-ls{border:1px solid var(--line,#d9d2c3);border-radius:14px;padding:14px;background:var(--panel,#fff);display:grid;gap:8px}
+.nb .nb-ls h3{margin:0;display:flex;gap:8px;align-items:flex-start;font-size:1.05rem;line-height:1.5}
+.nb .nb-ls h3 .u-n{flex:none}
+.nb .nb-sum{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.nb .nb-sum>div{border:1px solid var(--line,#d9d2c3);border-radius:12px;padding:12px;background:var(--panel,#fff)}
+.nb .nb-sum>div.g{border-color:var(--gold,#b8892f)}
+.nb .nb-sum b{display:block;margin-bottom:4px;font-size:.9rem;color:var(--muted,#6b6455)}
+.nb .nb-sum p{margin:0;line-height:1.8}
+@media (min-width:900px){.nb .nb-lsl{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
 /* ---------- نسخة الجوال المبسّطة: فهرس أقسام مختصر في أول الشاشة */
 .mindex{display:none}
 .mi-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px}
