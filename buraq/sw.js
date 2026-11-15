@@ -4,7 +4,7 @@
 const CACHE = 'buraq-v20261110b';
 const CORE = ['./', 'index.html', 'account.html', 'admin.html', 'manifest.webmanifest',
   'app/icon.svg', 'app/icon-192.png', 'app/icon-512.png', 'app/maskable-512.png', 'app/apple-touch-icon.png', 'app/pwa.js?v=1',
-  'ux/ux.css?v=3', 'ux/ux.js?v=3', 'ux/share.js?v=1', 'ux/printplan.js?v=2', 'acct/cur.js?v=2', 'acct/acct.css?v=3', 'acct/hook.js?v=4',
+  'ux/ux.css?v=3', 'ux/ux.js?v=3', 'ux/share.js?v=1', 'ux/printplan.js?v=2', 'ux/compare.js?v=4', 'acct/cur.js?v=2', 'acct/acct.css?v=3', 'acct/hook.js?v=4',
   'img/bq10_chassis_exploded.jpg', 'img/bq10_chassis_hero.jpg', 'pwa-install.js'];
 const BASE = new URL('./', self.location).pathname;
 self.addEventListener('install', e => {

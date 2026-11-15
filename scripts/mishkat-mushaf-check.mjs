@@ -62,7 +62,7 @@ for (const [name, o] of [['الكمبيوتر', { viewport: { width: 1366, heigh
   }
   const go = async (sel, v) => { await p.selectOption(sel, String(v)); await p.waitForTimeout(1200); return p.evaluate(() => MPV.cur); };
   ok(await go('#mpSur', 18) === 293 && await go('#mpJuz', 30) === 582, `${name}: الانتقال إلى سورة وجزء`);
-  await p.fill('#mpPage', '201'); await p.press('#mpPage', 'Enter'); await p.waitForTimeout(1500);
+  await p.fill('#mpPage', '201'); await p.press('#mpPage', 'Enter'); await p.waitForTimeout(4000); // يُحفظ موضع التوقف بعد استقرار القارئ نحو ثانيتين ونصف
   await p.goto(B + '#mushaf'); await p.waitForSelector('#stbl tr', { timeout: 60000 });
   const href = await p.evaluate(() => document.querySelector('#view a.btn.pri')?.getAttribute('href'));
   await p.click('#view a.btn.pri'); let cur = 0; for (let i = 0; i < 60 && cur !== 201; i++) { await p.waitForTimeout(250); cur = await p.evaluate(() => typeof MPV !== 'undefined' ? MPV.cur : 0); }
