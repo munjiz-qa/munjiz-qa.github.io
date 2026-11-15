@@ -1,4 +1,4 @@
-/* ركن «تفاسير القرآن وأسباب النزول»: يُحمَّل عند أول فتحه. التفاسير هي نفسها المضمّنة في موسوعة القرآن الكريم، وأسباب النزول مقتطفات من نصوص المفسرين أنفسهم. */
+/* ركن «تفاسير القرآن وأسباب النزول»: يُحمَّل عند أول فتحه. التفاسير هي نفسها المضمّنة في مشكاة، وأسباب النزول مقتطفات من نصوص المفسرين أنفسهم. */
 (() => {
 const AR = x => String(x).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
 const TAS = /[ً-ٰٟۖ-ۭـ]/g;
@@ -19,15 +19,15 @@ const TYPES = [
   ['التفسير بالمأثور', 'تفسير القرآن بالقرآن، ثم بصحيح السنة، ثم بأقوال الصحابة والتابعين. هو أوثق الطرق وأولاها بالتقديم، ويُحذر فيه من الروايات الضعيفة والإسرائيليات.', 'الطبري، البغوي، ابن كثير', ['tabari', 'baghawi', 'ibnkathir']],
   ['التفسير بالرأي المحمود', 'اجتهاد المفسّر بعد علمه باللغة وأصول الدين وأقوال السلف ومقاصد الشرع، دون مخالفة نص ولا إجماع. أما الرأي المذموم فما كان بغير علم، أو تأييداً لهوى أو بدعة.', 'الرازي «مفاتيح الغيب»، البيضاوي «أنوار التنزيل»', []],
   ['التفسير الفقهي (أحكام القرآن)', 'يُعنى باستخراج الأحكام الشرعية من الآيات وبيان خلاف الفقهاء وأدلتهم.', 'القرطبي «الجامع لأحكام القرآن»، الجصاص، ابن العربي', ['qurtubi']],
-  ['التفسير اللغوي والبلاغي', 'يفسّر الألفاظ والتراكيب ووجوه الإعراب والبيان، ويشرح غريب القرآن.', 'أبو حيان «البحر المحيط»، الزمخشري «الكشاف» (وفيه مآخذ اعتزالية يُنتبه لها)، ومعجم الغريب المضمّن في موسوعة القرآن الكريم', ['gharib']],
+  ['التفسير اللغوي والبلاغي', 'يفسّر الألفاظ والتراكيب ووجوه الإعراب والبيان، ويشرح غريب القرآن.', 'أبو حيان «البحر المحيط»، الزمخشري «الكشاف» (وفيه مآخذ اعتزالية يُنتبه لها)، ومعجم الغريب المضمّن في مشكاة', ['gharib']],
   ['التفسير الإجمالي (الوجيز والميسّر)', 'بيان معنى الآيات بعبارة مختصرة واضحة دون تفصيل الخلاف ولا الاستطراد، وهو أنسب للقراءة السريعة والتعليم.', 'تفسير الجلالين، التفسير الميسر', ['jalalayn', 'muyassar']],
   ['التفسير التحليلي (آيةً آية)', 'يمضي مع الآيات بترتيب المصحف، فيتناول كل آية بألفاظها وسبب نزولها ومعناها وأحكامها وهداياتها. وأكثر كتب التفسير المشهورة على هذا النحو.', 'السعدي «تيسير الكريم الرحمن»، وغيره من الكتب المضمّنة', ['saadi']],
-  ['التفسير الموضوعي', 'يجمع الآيات المتفرقة في موضوع واحد، ويستخلص منها رؤية القرآن فيه.', 'الموسوعة الموضوعية في موسوعة القرآن الكريم', []],
+  ['التفسير الموضوعي', 'يجمع الآيات المتفرقة في موضوع واحد، ويستخلص منها رؤية القرآن فيه.', 'الموسوعة الموضوعية في مشكاة', []],
   ['التفسير الإشاري', 'ما يُستنبط من الآية من معانٍ ولطائف وراء ظاهرها. يُقبل بشروط: ألا يناقض الظاهر، وأن يشهد له أصل شرعي، وألا يُدّعى أنه المراد وحده.', '', []],
   ['التفسير العلمي', 'ربط الآيات بما ثبت من حقائق العلم الكوني. يُحتاط فيه: لا تُحمَّل الآية على نظرية متغيرة، ولا يُجزم بالمراد.', '', []],
   ['التفسير الحديث والاجتماعي', 'يعالج قضايا العصر ومقاصد الهداية في المجتمع والحياة.', 'المنار، التحرير والتنوير، في ظلال القرآن', []],
 ];
-const typesHTML = () => `<section class="panel tf-types"><h3>أنواع التفاسير</h3><p class="muted small">تتنوع كتب التفسير بحسب المنهج. هذه أشهر الأنواع، وتُعلَّم هنا الكتب المضمّنة في موسوعة القرآن الكريم.</p>${TYPES.map(([t, d, ex, ks]) => `<details><summary>${esc(t)}${ks.length ? ` <span class="chip acc">في موسوعة القرآن الكريم</span>` : ''}</summary><p>${esc(d)}</p>${ex ? `<p class="muted small"><b>من أمثلته:</b> ${esc(ex)}</p>` : ''}${ks.length ? `<p class="pill-row">${ks.map(k => `<span class="chip">${esc(BOOKT(k))}</span>`).join('')}</p>` : ''}</details>`).join('')}</section>`;
+const typesHTML = () => `<section class="panel tf-types"><h3>أنواع التفاسير</h3><p class="muted small">تتنوع كتب التفسير بحسب المنهج. هذه أشهر الأنواع، وتُعلَّم هنا الكتب المضمّنة في مشكاة.</p>${TYPES.map(([t, d, ex, ks]) => `<details><summary>${esc(t)}${ks.length ? ` <span class="chip acc">في مشكاة</span>` : ''}</summary><p>${esc(d)}</p>${ex ? `<p class="muted small"><b>من أمثلته:</b> ${esc(ex)}</p>` : ''}${ks.length ? `<p class="pill-row">${ks.map(k => `<span class="chip">${esc(BOOKT(k))}</span>`).join('')}</p>` : ''}</details>`).join('')}</section>`;
 
 /* الكتب الموسّعة: نصوصها قطع مضغوطة تُحمَّل عند أول فتح وتحفظها ذاكرة التطبيق دائماً (مسار data/t/)، فتعمل دون إنترنت بعد ذلك، ولا تدخل في حزمة التثبيت. */
 let XM = null; const xc = {};
@@ -92,12 +92,12 @@ const BKINDS = ["مأثور","رأي محمود","فقهي","لغوي","ميسّ
 const booksView = () => {
   const own = BOOKS.filter(b => b[6]).length;
   V(`<div class="stack"><div><div class="eyebrow">ركن التفاسير</div><h1>فهرس كتب التفسير</h1>
-  <p class="muted">${AR(BOOKS.length)} كتاباً مختاراً مرتبةً بحسب المنهج، مع المؤلف وسنة وفاته وبيان نوع كل كتاب. المتاح نصه داخل موسوعة القرآن الكريم ${AR(own)} كتب، وما سواها للاطلاع فقط. القائمة تشمل أبرز التفاسير بحسب النوع والمدرسة والعصر، وليست حصراً.</p>
+  <p class="muted">${AR(BOOKS.length)} كتاباً مختاراً مرتبةً بحسب المنهج، مع المؤلف وسنة وفاته وبيان نوع كل كتاب. المتاح نصه داخل مشكاة ${AR(own)} كتب، وما سواها للاطلاع فقط. القائمة تشمل أبرز التفاسير بحسب النوع والمدرسة والعصر، وليست حصراً.</p>
   <div class="toolbar"><a class="btn" href="#tafasir">← ركن التفاسير</a></div></div>
   <section class="panel tf-bx"><h3>التفاسير الموسّعة للعمل دون إنترنت</h3><p class="muted small">تُحمَّل نصوص هذه الكتب عند أول فتح لكل كتاب وتبقى محفوظة. ويمكنك تنزيلها كلها الآن لتعمل دون اتصال (حجمها نحو 170 ميغابايت).</p><div class="toolbar"><button class="btn pri" id="xAll">تنزيل كل التفاسير الموسّعة</button><span class="muted small" id="xSt"></span></div></section>
   <section class="panel tf-bx"><div class="tf-row"><input id="bxQ" type="search" placeholder="ابحث باسم الكتاب أو المؤلف" aria-label="بحث في الفهرس" autocomplete="off"></div>
   <div class="pill-row" id="bxK" role="group" aria-label="التصفية بالنوع"><button class="chip acc" data-k="" aria-pressed="true">الكل</button>${BKINDS.map(k => `<button class="chip" data-k="${esc(k)}" aria-pressed="false">${esc(k)}</button>`).join('')}</div>
-  <div class="pill-row" id="bxA" role="group" aria-label="التصفية بالتوفر"><button class="chip acc" data-a="" aria-pressed="true">الكل</button><button class="chip" data-a="1" aria-pressed="false">متاح نصه في موسوعة القرآن الكريم</button><button class="chip" data-a="0" aria-pressed="false">للاطلاع فقط</button></div>
+  <div class="pill-row" id="bxA" role="group" aria-label="التصفية بالتوفر"><button class="chip acc" data-a="" aria-pressed="true">الكل</button><button class="chip" data-a="1" aria-pressed="false">متاح نصه في مشكاة</button><button class="chip" data-a="0" aria-pressed="false">للاطلاع فقط</button></div>
   <p class="muted small" id="bxN"></p></section><div id="bxL"></div></div>`);
   let K = '', A = '', Qs = '';
   const draw = () => {
@@ -105,7 +105,7 @@ const booksView = () => {
     const html = BGR.map(([g, gt]) => {
       const rs = BOOKS.filter(b => b[0] === g && (!K || b[4] === K) && (A === '' || (A === '1') === !!b[6]) && (!q || norm(b[1] + ' ' + b[2]).includes(q)));
       n += rs.length;
-      return rs.length ? `<section class="panel tf-bx"><h3>${esc(gt)} <span class="chip">${LANG === 'ar' ? AR(rs.length) : rs.length}</span></h3>${rs.map(b => `<article class="tf-bkx${b[6] ? ' own' : ''}"><h4>${esc(b[1])}</h4><p class="muted small">${esc(b[2])} · <b>${esc(b[3])}</b></p><p class="pill-row"><span class="chip">${esc(b[4])}</span>${b[6] ? `<a class="chip acc" href="#tf1-1">متاح نصه داخل موسوعة القرآن الكريم</a>` : `<span class="chip">للاطلاع فقط</span>`}</p><p>${esc(b[5])}</p>${b[7] ? `<p class="small"><a href="${esc(b[7])}" target="_blank" rel="noopener noreferrer">${b[7].includes('shamela') ? 'ابحث عنه في المكتبة الشاملة' : 'اقرأه على الموسوعة الشاملة للتفسير'}</a></p>` : ''}</article>`).join('')}</section>` : '';
+      return rs.length ? `<section class="panel tf-bx"><h3>${esc(gt)} <span class="chip">${LANG === 'ar' ? AR(rs.length) : rs.length}</span></h3>${rs.map(b => `<article class="tf-bkx${b[6] ? ' own' : ''}"><h4>${esc(b[1])}</h4><p class="muted small">${esc(b[2])} · <b>${esc(b[3])}</b></p><p class="pill-row"><span class="chip">${esc(b[4])}</span>${b[6] ? `<a class="chip acc" href="#tf1-1">متاح نصه داخل مشكاة</a>` : `<span class="chip">للاطلاع فقط</span>`}</p><p>${esc(b[5])}</p>${b[7] ? `<p class="small"><a href="${esc(b[7])}" target="_blank" rel="noopener noreferrer">${b[7].includes('shamela') ? 'ابحث عنه في المكتبة الشاملة' : 'اقرأه على الموسوعة الشاملة للتفسير'}</a></p>` : ''}</article>`).join('')}</section>` : '';
     }).join('');
     $('#bxL').innerHTML = html || '<p class="muted">لا كتب مطابقة. غيّر التصفية أو كلمة البحث.</p>';
     $('#bxN').textContent = AR(n) + ' من ' + AR(BOOKS.length) + ' كتاباً';
@@ -120,7 +120,7 @@ async function home() {
   V(`<div class="stack">${head(0)}<div id="tfHome"><p class="loading">جارٍ التحميل…</p></div></div>`); wire(0);
   const D = await load(), c = cnt(D), tot = Object.values(c).reduce((a, b) => a + b, 0);
   const fam = FAMOUS.filter(([s, a]) => D[s] && D[s][a]);
-  $('#tfHome').innerHTML = `<section class="panel"><h3>فهرس كتب التفسير</h3><p class="muted small">${AR(BOOKS.length)} كتاباً مرتبةً بحسب المنهج، مع المؤلف وسنة الوفاة، وبيان ما هو متاح نصه في موسوعة القرآن الكريم.</p><a class="btn pri" href="#tfbooks">افتح فهرس الكتب</a></section><section class="panel"><h3>من أشهر أسباب النزول</h3><div class="pill-row" style="margin-top:8px">${fam.map(([s, a, t]) => `<a class="chip acc" href="#tf${s}-${a}">${esc(t)} · ${esc(Q.surahs[s - 1].name)} ${AR(a)}</a>`).join('')}</div></section>
+  $('#tfHome').innerHTML = `<section class="panel"><h3>فهرس كتب التفسير</h3><p class="muted small">${AR(BOOKS.length)} كتاباً مرتبةً بحسب المنهج، مع المؤلف وسنة الوفاة، وبيان ما هو متاح نصه في مشكاة.</p><a class="btn pri" href="#tfbooks">افتح فهرس الكتب</a></section><section class="panel"><h3>من أشهر أسباب النزول</h3><div class="pill-row" style="margin-top:8px">${fam.map(([s, a, t]) => `<a class="chip acc" href="#tf${s}-${a}">${esc(t)} · ${esc(Q.surahs[s - 1].name)} ${AR(a)}</a>`).join('')}</div></section>
   <section class="panel"><h3>السور وعدد الآيات التي ورد لها سبب نزول</h3><p class="muted small">${AR(tot)} آية في ${AR(Object.keys(c).length)} سورة.</p><div class="pill-row" style="margin-top:8px">${Q.surahs.filter(s => c[s.n]).map(s => `<a class="chip" href="#tf${s.n}">${esc(s.name)} · ${AR(c[s.n])}</a>`).join('')}</div></section>${typesHTML()}`;
 }
 async function surahView(sn) {

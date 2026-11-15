@@ -1,5 +1,5 @@
 'use strict';
-/* موسوعة القرآن الكريم — التلاوة المتصلة: تشغيل المصحف آيةً آية مع تتبّع الآية الجارية، واختيار القارئ والسرعة والتكرار.
+/* مشكاة — التلاوة المتصلة: تشغيل المصحف آيةً آية مع تتبّع الآية الجارية، واختيار القارئ والسرعة والتكرار.
    مصدر الصوت: موقع «آية بآية» everyayah.com (استماع مجاني)، وتبقى حقوق التسجيلات لأصحابها. لا يُرسَل إلى الموقع أي شيء عن المستمع سوى طلب ملف الآية. */
 (() => {
   const BASE = 'https://everyayah.com/data/';
@@ -61,7 +61,7 @@
     const live = $('#recLive'); if (live && a) live.innerHTML = `<div class="rec-livet"><span class="muted small">الآية الجارية</span><div class="ayah">${ayahText(S.i) ? esc(ayahText(S.i)) : ''} <span class="num">﴿${n(a[1])}﴾</span></div><a class="chip" data-ayah="${S.i}">${esc(ref(S.i))} · التفسير</a> <a class="chip acc" href="#pa${S.i}">تابعها في المصحف</a></div>`;
     document.body.classList.toggle('rec-open', S.on);
     if ('mediaSession' in navigator && a) {
-      try { navigator.mediaSession.metadata = new MediaMetadata({ title: `${Q.surahs[a[0] - 1].name} · ${a[1]}`, artist: nm(REC_LIST.find(r => r[0] === p.r)), album: 'موسوعة القرآن الكريم' });
+      try { navigator.mediaSession.metadata = new MediaMetadata({ title: `${Q.surahs[a[0] - 1].name} · ${a[1]}`, artist: nm(REC_LIST.find(r => r[0] === p.r)), album: 'مشكاة' });
         navigator.mediaSession.playbackState = S.playing ? 'playing' : 'paused'; } catch (e) {}
     }
   }
