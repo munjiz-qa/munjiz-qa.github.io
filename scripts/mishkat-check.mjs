@@ -112,6 +112,13 @@ ok(/الآيات القرآنية/.test(doc) && /أقوال المفسرين/.te
   await p.fill('.fq-find', 'الربا'); await p.waitForTimeout(300);
   ok(await p.evaluate(() => [...document.querySelectorAll('.fq-t')].filter(x => !x.hidden).length >= 1 && [...document.querySelectorAll('.fq-t')].filter(x => !x.hidden).length < 5), 'البحث في مسائل الفقه من القرآن يرشّح النتائج');
 }
+{ // الزواج والطلاق وأحكام الأسرة المسلمة: ٢١ مسألة في ٦ أبواب بآياتها وأقوال العلماء بلفظها، وربط بباب الفقه من القرآن
+  await p.evaluate(() => location.hash = 'nikah'); await p.waitForSelector('.nk-ch', { timeout: 30000 }).catch(() => {});
+  await p.evaluate(() => document.querySelectorAll('.nk-ch,.nk-t').forEach(d => d.open = true));
+  const t = await p.evaluate(() => ({ ch: document.querySelectorAll('.nk-ch').length, ix: document.querySelectorAll('.u-index li').length, tp: document.querySelectorAll('.nk-t').length, a: document.querySelectorAll('.nk-t .rs-q').length, q: document.querySelectorAll('.nk-t .rs-qt blockquote').length, link: !!document.querySelector('a[href="#fiqhq"]'), txt: document.body.innerText }));
+  ok(t.ch === 6 && t.ix === t.ch && t.tp === 21 && t.a >= 28 && t.q >= 30 && t.link, `الزواج والطلاق: ${t.tp} مسألة، ${t.ch} أبواب، ${t.a} آية، ${t.q} نقلاً، مع الربط بالفقه من القرآن`);
+  ok(!/claude|anthropic/i.test(t.txt), 'صفحة nikah تعمل ولا تذكر Claude');
+}
 { // الحج والعمرة: آيات بنص مجمع الملك فهد، وأحاديث بتخريجها ودرجتها، ونقول المفسرين، ورسوم متحركة تعمل
   await p.evaluate(() => location.hash = 'hajj'); await p.waitForSelector('.hj-ch', { timeout: 30000 }).catch(() => {});
   await p.evaluate(() => document.querySelectorAll('.hj-ch').forEach(d => d.open = true)); await p.waitForTimeout(3500);
