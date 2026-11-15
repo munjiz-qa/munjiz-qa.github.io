@@ -478,7 +478,7 @@
       let h = '';
       if (r.root != null) { const ws = wordsByRoot.get(r.root); h += card(`${X('الجذر', 'Root')}: ${rootFmt(W.roots[r.root][0])}`, X('كل ما اشتُق من هذا الجذر: أسماء وأفعالاً.', 'Every noun and verb derived from this root.'), ws, `#root${r.root}`); }
       r.lem.slice(0, 4).forEach(li => { const l = W.lemmas[li]; h += card(`${X('اللفظ', 'Lemma')}: ${esc(l[0])}`, X('الصيغ المنسوبة إلى هذا اللفظ في المدونة الصرفية.', 'Forms assigned to this lemma in the morphology corpus.'), wordsByLemma.get(li), `#lem${li}`); });
-      if (r.form.length) h += card(`${X('الصيغة', 'Form')}: ${esc(strip(W.w[r.form[0]][0]))}`, X('اللفظ كما رُسم في المصحف بهذه الصورة تماماً.', 'The word exactly as written in the mushaf.'), r.form, '');
+      if (r.form.length) h += card(`${X('الصيغة', 'Form')}: ${esc(strip(W.w[r.form[0]][0]))}`, X('اللفظ كما رُسم في القرآن الكريم بهذه الصورة تماماً.', 'The word exactly as written in the mushaf.'), r.form, '');
       if (!h) {
         const near = [...getFormIx().keys()].filter(k => k.includes(r.nq)).slice(0, 12);
         h = `<p class="muted">${X('لم أجد هذا اللفظ بهذه الصورة. جرّب الجذر (مثل: رحم) أو الصيغة المجرّدة.', 'No exact match. Try the root (e.g. رحم) or the bare form.')}</p>${near.length ? `<div class="pill-row">${near.map(k => `<a class="chip" href="#lafz/${encodeURIComponent(k)}">${esc(k)}</a>`).join('')}</div>` : ''}`;

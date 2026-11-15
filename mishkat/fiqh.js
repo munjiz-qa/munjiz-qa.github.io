@@ -29,11 +29,11 @@ window.fiqhRender = function (key) {
     }
   }[key];
   const ayLine = i => { const a = Q.ayat[i]; return `<div class="ayah tm-q"><span class="tm-t">${esc(D.ay[i] || ayahText(i))}</span> <span class="num tm-n" data-ayah="${i}" title="${esc(ref(i))}">${AR(a[1])}</span></div>`; };
-  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في المصحف</a>`); return o.join(''); };
+  const ays = ([s, a, b]) => { const o = [], last = Math.min(b || a, a + 6); for (let q = a; q <= last; q++) { const i = idxOf(s, q); if (i >= 0) o.push(ayLine(i)); } if ((b || a) > last) o.push(`<a class="btn th-more" href="#a${s}-${last + 1}">أكمل الآيات في القرآن الكريم</a>`); return o.join(''); };
   const refOf = r => `${refLink(idxOf(r[0], r[1]))}${r[2] ? `<span>–${n(r[2])}</span>` : ''}`;
   const ayCard = it => `<article class="tm-ay fq-c"><h3>${it.t}</h3><div class="u-ref">${refOf(it.r)}</div>
     <div class="tm-ays">${ays(it.r)}</div><p class="tm-note">${esc(it.n)}</p>
-    <div class="tm-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في المصحف</a></div></article>`;
+    <div class="tm-links"><a class="btn" href="#pa${idxOf(it.r[0], it.r[1])}"><svg><use href="#i-book"/></svg>افتح في القرآن الكريم</a></div></article>`;
   const hCard = h => `<article class="tm-h fq-c" id="fq-${h.id}"><h3>${h.t}</h3>
     <blockquote class="tm-matn notranslate" translate="no" lang="ar" dir="rtl">${esc(h.x)}</blockquote>
     ${enOn ? `<div class="tm-en"><b>معنى الحديث بالإنجليزية</b><p class="notranslate" translate="no" lang="en" dir="ltr">${esc(h.en)}</p></div>` : ''}
