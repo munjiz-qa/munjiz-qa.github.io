@@ -904,6 +904,42 @@ html[dir=ltr] .hq-matn{border-radius:10px 0 0 10px}
 @media (max-width:640px){.mq-i{padding:12px}.mq-q{font-size:1.35rem;line-height:2.1}.mq-ays{padding:4px 10px}.mq-hero::after{width:100px;height:100px}.mq-warn{flex-direction:column;gap:2px}.mq-grid{grid-template-columns:1fr}}
 @media print{.mq-links,.mq-tools{display:none}.mq-ays{background:none}.mq-i[hidden],.mq-ch[hidden]{display:block}}
 
+/* ---------- المعادن في القرآن الكريم (#maadin) */
+@font-face{font-family:'KFGQPC Hafs';src:url(fonts/kfgqpc-hafs-uthmanic-v18.woff2) format('woff2');font-display:swap}
+.mn-hero{background:radial-gradient(120% 140% at 100% 0,var(--accent-soft),transparent 62%),linear-gradient(135deg,var(--saffron-soft),var(--sheet));position:relative;overflow:hidden}
+.mn-hero::after{content:"";position:absolute;inset-inline-start:-26px;bottom:-34px;width:150px;height:150px;border-radius:50%;background:repeating-conic-gradient(from 0deg,var(--saffron) 0 4deg,transparent 4deg 20deg);opacity:.2;-webkit-mask:radial-gradient(circle,transparent 0 38%,#000 39% 70%,transparent 71%);mask:radial-gradient(circle,transparent 0 38%,#000 39% 70%,transparent 71%)}
+.mn-hero>*{position:relative;z-index:1}
+.mn-stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.mn-stats>span{background:var(--sheet);border:1px solid var(--line);border-radius:999px;padding:4px 14px;font-size:.88rem}
+.mn-stats b{color:var(--accent);font-size:1.05rem}
+.mn-warn{border:1px solid var(--saffron);background:var(--saffron-soft);border-radius:14px;padding:10px 14px;display:flex;gap:10px;align-items:baseline}
+.mn-warn b{color:var(--saffron);white-space:nowrap}.mn-warn p{margin:0;line-height:1.8;font-size:.92rem}
+.mn-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.mn-chips2{display:flex;flex-wrap:wrap;gap:6px}
+.mn-fc{font:inherit;font-size:.86rem;border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:999px;padding:4px 14px;cursor:pointer;min-height:34px}
+.mn-fc.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.mn-fc:focus-visible,.mn-find:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mn-find{font:inherit;flex:1 1 220px;min-height:38px;border:1px solid var(--line);border-radius:999px;padding:4px 16px;background:var(--sheet);color:var(--ink)}
+.mn-none{text-align:center;margin:8px 0}
+.mn-ch[hidden],.mn-i[hidden]{display:none}
+.mn-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,430px),1fr));align-items:start}
+.mn-i{display:grid;gap:8px;min-width:0;padding:14px;scroll-margin-top:80px}
+.mn-i header{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline;justify-content:space-between}
+.mn-i h3{margin:0;font-size:1.06rem;color:var(--accent)}
+.mn-chip{font-size:.74rem;font-weight:700;border:1px solid var(--accent);color:var(--accent);border-radius:999px;padding:0 9px;white-space:nowrap}
+.mn-chip.gold{border-color:var(--saffron);color:var(--saffron)}
+.mn-ays{background:var(--saffron-soft);border-radius:12px;padding:6px 12px}
+.mn-q{font-family:'KFGQPC Hafs',var(--f-quran);font-size:1.6rem;line-height:2.2}
+.mn-q .mn-n{font-family:'KFGQPC Hafs',var(--f-quran);color:var(--saffron);cursor:pointer;font-size:1em}
+.mn-note{margin:0;line-height:1.85}.mn-note b{display:block;font-size:.82rem;color:var(--muted);margin-bottom:2px}
+.mn-h4{margin:4px 0 0;font-size:.95rem;color:var(--muted)}
+.mn-qt{margin:0}
+.mn-qen{margin:8px 0 0;line-height:1.7;font-size:.92rem;text-align:left}
+.mn-links{display:flex;flex-wrap:wrap;gap:8px}.mn-links .btn{font-size:.82rem}
+@media (max-width:640px){.mn-i{padding:12px}.mn-q{font-size:1.35rem;line-height:2.1}.mn-ays{padding:4px 10px}.mn-hero::after{width:100px;height:100px}.mn-warn{flex-direction:column;gap:2px}.mn-grid{grid-template-columns:1fr}}
+@media print{.mn-links,.mn-tools{display:none}.mn-ays{background:none}.mn-i[hidden],.mn-ch[hidden]{display:block}}
+.mn-hd{border-inline-start:3px solid var(--saffron)}
+
 /* ---------- نسخة الجوال المبسّطة: فهرس أقسام مختصر في أول الشاشة */
 .mindex{display:none}
 .mi-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px}
