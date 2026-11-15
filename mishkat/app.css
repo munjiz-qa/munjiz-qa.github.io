@@ -754,6 +754,234 @@ html[dir=ltr] .rs-matn{border-radius:10px 0 0 10px}
 @media (max-width:640px){.rs-ay,.rs-h{padding:12px}.rs-q{font-size:1.35rem;line-height:2.1}.rs-ays{padding:4px 10px}.rs-matn{font-size:1.02rem;padding:8px 10px}.rs-hero::after{width:100px;height:100px}.rs-warn{flex-direction:column;gap:2px}}
 @media print{.rs-links,.rs-chips2{display:none}.rs-p[hidden]{display:block}.rs-ays{background:none}}
 
+/* ---------- قصص القرآن المستفيضة والعبر (#qasasx) */
+.qm .qm-lsl{display:grid;gap:12px}
+.qm .qm-ls{border:1px solid var(--line,#d9d2c3);border-radius:14px;padding:14px;background:var(--panel,#fff);display:grid;gap:8px}
+.qm .qm-ls h3{margin:0;display:flex;gap:8px;align-items:flex-start;font-size:1.05rem;line-height:1.5}
+.qm .qm-ls h3 .u-n{flex:none}
+.qm .qm-sum{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.qm .qm-sum>div{border:1px solid var(--line,#d9d2c3);border-radius:12px;padding:12px;background:var(--panel,#fff)}
+.qm .qm-sum>div.g{border-color:var(--gold,#b8892f)}
+.qm .qm-sum b{display:block;margin-bottom:4px;font-size:.9rem;color:var(--muted,#6b6455)}
+.qm .qm-sum p{margin:0;line-height:1.8}
+@media (min-width:900px){.qm .qm-lsl{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* ---------- الأحاديث النبوية وذكرها في القرآن الكريم (#hadithq) */
+@font-face{font-family:'KFGQPC Hafs';src:url(fonts/kfgqpc-hafs-uthmanic-v18.woff2) format('woff2');font-display:swap}
+.hq-hero{background:radial-gradient(120% 140% at 0 0,var(--accent-soft),transparent 62%),linear-gradient(135deg,var(--saffron-soft),var(--sheet));position:relative;overflow:hidden}
+.hq-hero::after{content:"";position:absolute;inset-inline-end:-22px;bottom:-26px;width:140px;height:140px;border-radius:50%;background:conic-gradient(from 0deg,var(--saffron) 0 8%,transparent 8% 25%,var(--accent) 25% 33%,transparent 33% 50%,var(--saffron) 50% 58%,transparent 58% 75%,var(--accent) 75% 83%,transparent 83%);opacity:.22;-webkit-mask:radial-gradient(circle,transparent 0 38%,#000 39% 62%,transparent 63%);mask:radial-gradient(circle,transparent 0 38%,#000 39% 62%,transparent 63%)}
+.hq-hero>*{position:relative;z-index:1}
+.hq-stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.hq-stats>span{background:var(--sheet);border:1px solid var(--line);border-radius:999px;padding:4px 14px;font-size:.88rem}
+.hq-stats b{color:var(--accent);font-size:1.05rem}
+.hq-warn{border:1px solid var(--saffron);background:var(--saffron-soft);border-radius:14px;padding:10px 14px;display:flex;gap:10px;align-items:baseline}
+.hq-warn b{color:var(--saffron);white-space:nowrap}.hq-warn p{margin:0;line-height:1.8;font-size:.92rem}
+.hq-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.hq-search{flex:1 1 220px;min-height:44px;border:1px solid var(--line);border-radius:12px;padding:6px 14px;font:inherit;background:var(--sheet);color:var(--ink)}
+.hq-search:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.hq-chips2{display:flex;flex-wrap:wrap;gap:6px}
+.hq-fc{font:inherit;font-size:.86rem;border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:999px;padding:4px 14px;cursor:pointer;min-height:44px}
+.hq-fc.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.hq-fc:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.hq-none[hidden],.hq-e[hidden],.hq-ch[hidden]{display:none}
+.hq-cnt{font-style:normal;font-size:.78rem;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:0 8px;margin-inline-start:6px}
+.hq-list{display:grid;gap:10px}
+.hq-e>summary{display:flex;align-items:center;gap:10px;flex-wrap:wrap;cursor:pointer;list-style:none;padding:2px 0}
+.hq-e>summary::-webkit-details-marker{display:none}
+.hq-sn{display:flex;flex-direction:column;min-width:0;flex:1 1 180px}
+.hq-sn .u-t{font-size:1.05rem;color:var(--ink)}.hq-e2{font-size:.82rem;color:var(--muted)}
+.hq-chips{display:flex;flex-wrap:wrap;gap:6px}
+.hq-chip{font-size:.74rem;font-weight:700;border:1px solid var(--accent);color:var(--accent);border-radius:999px;padding:0 9px}
+.hq-ays{background:var(--saffron-soft);border-radius:12px;padding:6px 12px}
+.hq-q{font-family:'KFGQPC Hafs',var(--f-quran);font-size:1.6rem;line-height:2.2}
+.hq-q .hq-n{font-family:'KFGQPC Hafs',var(--f-quran);color:var(--saffron);cursor:pointer;font-size:1em}
+.hq-h{display:grid;gap:6px}
+.hq-matn{margin:0;font-family:var(--f-quran);font-size:1.12rem;line-height:2.05;background:var(--accent-soft);border-inline-start:3px solid var(--accent);border-radius:0 10px 10px 0;padding:10px 14px;overflow-wrap:anywhere;text-align:right}
+html[dir=ltr] .hq-matn{border-radius:10px 0 0 10px}
+.hq-en{background:var(--ok-soft);border-radius:10px;padding:8px 12px}.hq-en b{font-size:.8rem;color:var(--ok)}.hq-en p{margin:4px 0 0;line-height:1.7;text-align:left}
+.hq-tx,.hq-gr{margin:0;font-size:.86rem;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline}
+.hq-tx>span:first-child,.hq-gr>span:first-child{color:var(--muted)}
+.hq-badge{font-style:normal;background:var(--ok-soft);color:var(--ok);border-radius:10px;padding:1px 10px;font-weight:700;line-height:1.7;overflow-wrap:anywhere}
+.hq-h4{margin:8px 0 2px;font-size:.98rem;color:var(--muted)}
+.hq-qt{margin:0}
+.hq-qen{margin:8px 0 0;line-height:1.7;font-size:.92rem;text-align:left}
+.hq-links{display:flex;flex-wrap:wrap;gap:8px}.hq-links .btn{font-size:.82rem}
+.hq-see a{color:var(--accent)}
+@media (max-width:640px){.hq-q{font-size:1.35rem;line-height:2.1}.hq-ays{padding:4px 10px}.hq-matn{font-size:1.02rem;padding:8px 10px}.hq-hero::after{width:96px;height:96px}.hq-warn{flex-direction:column;gap:2px}}
+@media print{.hq-tools,.hq-links{display:none}.hq-e[hidden]{display:block}.hq-ays{background:none}}
+
+/* ---------- توصيات القرآن الكريم من كلام رب العالمين (#tawsiyat) */
+@font-face{font-family:'KFGQPC Hafs';src:url(fonts/kfgqpc-hafs-uthmanic-v18.woff2) format('woff2');font-display:swap}
+.tw-hero{background:radial-gradient(120% 140% at 100% 0,var(--accent-soft),transparent 62%),linear-gradient(135deg,var(--saffron-soft),var(--sheet));position:relative;overflow:hidden}
+.tw-hero::after{content:"";position:absolute;inset-inline-start:-26px;bottom:-34px;width:150px;height:150px;border-radius:50%;background:repeating-conic-gradient(from 0deg,var(--saffron) 0 4deg,transparent 4deg 20deg);opacity:.2;-webkit-mask:radial-gradient(circle,transparent 0 38%,#000 39% 70%,transparent 71%);mask:radial-gradient(circle,transparent 0 38%,#000 39% 70%,transparent 71%)}
+.tw-hero>*{position:relative;z-index:1}
+.tw-stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.tw-stats>span{background:var(--sheet);border:1px solid var(--line);border-radius:999px;padding:4px 14px;font-size:.88rem}
+.tw-stats b{color:var(--accent);font-size:1.05rem}
+.tw-warn{border:1px solid var(--saffron);background:var(--saffron-soft);border-radius:14px;padding:10px 14px;display:flex;gap:10px;align-items:baseline}
+.tw-warn b{color:var(--saffron);white-space:nowrap}.tw-warn p{margin:0;line-height:1.8;font-size:.92rem}
+.tw-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.tw-chips2{display:flex;flex-wrap:wrap;gap:6px}
+.tw-fc{font:inherit;font-size:.86rem;border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:999px;padding:4px 14px;cursor:pointer;min-height:34px}
+.tw-fc.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.tw-fc:focus-visible,.tw-find:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tw-find{font:inherit;flex:1 1 220px;min-height:38px;border:1px solid var(--line);border-radius:999px;padding:4px 16px;background:var(--sheet);color:var(--ink)}
+.tw-none{text-align:center;margin:8px 0}
+.tw-ch[hidden],.tw-i[hidden]{display:none}
+.tw-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,430px),1fr));align-items:start}
+.tw-i{display:grid;gap:8px;min-width:0;padding:14px;scroll-margin-top:80px}
+.tw-i header{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline;justify-content:space-between}
+.tw-i h3{margin:0;font-size:1.06rem;color:var(--accent)}
+.tw-chip{font-size:.74rem;font-weight:700;border:1px solid var(--accent);color:var(--accent);border-radius:999px;padding:0 9px;white-space:nowrap}
+.tw-chip.gold{border-color:var(--saffron);color:var(--saffron)}
+.tw-ays{background:var(--saffron-soft);border-radius:12px;padding:6px 12px}
+.tw-q{font-family:'KFGQPC Hafs',var(--f-quran);font-size:1.6rem;line-height:2.2}
+.tw-q .tw-n{font-family:'KFGQPC Hafs',var(--f-quran);color:var(--saffron);cursor:pointer;font-size:1em}
+.tw-note{margin:0;line-height:1.85}.tw-note b{display:block;font-size:.82rem;color:var(--muted);margin-bottom:2px}
+.tw-h4{margin:4px 0 0;font-size:.95rem;color:var(--muted)}
+.tw-qt{margin:0}
+.tw-qen{margin:8px 0 0;line-height:1.7;font-size:.92rem;text-align:left}
+.tw-links{display:flex;flex-wrap:wrap;gap:8px}.tw-links .btn{font-size:.82rem}
+@media (max-width:640px){.tw-i{padding:12px}.tw-q{font-size:1.35rem;line-height:2.1}.tw-ays{padding:4px 10px}.tw-hero::after{width:100px;height:100px}.tw-warn{flex-direction:column;gap:2px}.tw-grid{grid-template-columns:1fr}}
+@media print{.tw-links,.tw-tools{display:none}.tw-ays{background:none}.tw-i[hidden],.tw-ch[hidden]{display:block}}
+
+/* ---------- سِيَر نساء القرآن (#nsira) */
+.ns .ns-lsl{display:grid;gap:12px}
+.ns .ns-ls{border:1px solid var(--line,#d9d2c3);border-radius:14px;padding:14px;background:var(--panel,#fff);display:grid;gap:8px}
+.ns .ns-ls h3{margin:0;display:flex;gap:8px;align-items:flex-start;font-size:1.05rem;line-height:1.5}
+.ns .ns-ls h3 .u-n{flex:none}
+.ns .ns-sum{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.ns .ns-sum>div{border:1px solid var(--line,#d9d2c3);border-radius:12px;padding:12px;background:var(--panel,#fff)}
+.ns .ns-sum>div.g{border-color:var(--gold,#b8892f)}
+.ns .ns-sum b{display:block;margin-bottom:4px;font-size:.9rem;color:var(--muted,#6b6455)}
+.ns .ns-sum p{margin:0;line-height:1.8}
+@media (min-width:900px){.ns .ns-lsl{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* ---------- النبات في القرآن الكريم (#nabat) */
+.nb .nb-lsl{display:grid;gap:12px}
+.nb .nb-ls{border:1px solid var(--line,#d9d2c3);border-radius:14px;padding:14px;background:var(--panel,#fff);display:grid;gap:8px}
+.nb .nb-ls h3{margin:0;display:flex;gap:8px;align-items:flex-start;font-size:1.05rem;line-height:1.5}
+.nb .nb-ls h3 .u-n{flex:none}
+.nb .nb-sum{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.nb .nb-sum>div{border:1px solid var(--line,#d9d2c3);border-radius:12px;padding:12px;background:var(--panel,#fff)}
+.nb .nb-sum>div.g{border-color:var(--gold,#b8892f)}
+.nb .nb-sum b{display:block;margin-bottom:4px;font-size:.9rem;color:var(--muted,#6b6455)}
+.nb .nb-sum p{margin:0;line-height:1.8}
+@media (min-width:900px){.nb .nb-lsl{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* ---------- المال والتجارة في القرآن الكريم (#maal) */
+@font-face{font-family:'KFGQPC Hafs';src:url(fonts/kfgqpc-hafs-uthmanic-v18.woff2) format('woff2');font-display:swap}
+.mq-hero{background:radial-gradient(120% 140% at 100% 0,var(--accent-soft),transparent 62%),linear-gradient(135deg,var(--saffron-soft),var(--sheet));position:relative;overflow:hidden}
+.mq-hero::after{content:"";position:absolute;inset-inline-start:-26px;bottom:-34px;width:150px;height:150px;border-radius:50%;background:repeating-conic-gradient(from 0deg,var(--saffron) 0 4deg,transparent 4deg 20deg);opacity:.2;-webkit-mask:radial-gradient(circle,transparent 0 38%,#000 39% 70%,transparent 71%);mask:radial-gradient(circle,transparent 0 38%,#000 39% 70%,transparent 71%)}
+.mq-hero>*{position:relative;z-index:1}
+.mq-stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.mq-stats>span{background:var(--sheet);border:1px solid var(--line);border-radius:999px;padding:4px 14px;font-size:.88rem}
+.mq-stats b{color:var(--accent);font-size:1.05rem}
+.mq-warn{border:1px solid var(--saffron);background:var(--saffron-soft);border-radius:14px;padding:10px 14px;display:flex;gap:10px;align-items:baseline}
+.mq-warn b{color:var(--saffron);white-space:nowrap}.mq-warn p{margin:0;line-height:1.8;font-size:.92rem}
+.mq-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.mq-chips2{display:flex;flex-wrap:wrap;gap:6px}
+.mq-fc{font:inherit;font-size:.86rem;border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:999px;padding:4px 14px;cursor:pointer;min-height:34px}
+.mq-fc.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.mq-fc:focus-visible,.mq-find:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mq-find{font:inherit;flex:1 1 220px;min-height:38px;border:1px solid var(--line);border-radius:999px;padding:4px 16px;background:var(--sheet);color:var(--ink)}
+.mq-none{text-align:center;margin:8px 0}
+.mq-ch[hidden],.mq-i[hidden]{display:none}
+.mq-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,430px),1fr));align-items:start}
+.mq-i{display:grid;gap:8px;min-width:0;padding:14px;scroll-margin-top:80px}
+.mq-i header{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline;justify-content:space-between}
+.mq-i h3{margin:0;font-size:1.06rem;color:var(--accent)}
+.mq-chip{font-size:.74rem;font-weight:700;border:1px solid var(--accent);color:var(--accent);border-radius:999px;padding:0 9px;white-space:nowrap}
+.mq-chip.gold{border-color:var(--saffron);color:var(--saffron)}
+.mq-ays{background:var(--saffron-soft);border-radius:12px;padding:6px 12px}
+.mq-q{font-family:'KFGQPC Hafs',var(--f-quran);font-size:1.6rem;line-height:2.2}
+.mq-q .mq-n{font-family:'KFGQPC Hafs',var(--f-quran);color:var(--saffron);cursor:pointer;font-size:1em}
+.mq-note{margin:0;line-height:1.85}.mq-note b{display:block;font-size:.82rem;color:var(--muted);margin-bottom:2px}
+.mq-h4{margin:4px 0 0;font-size:.95rem;color:var(--muted)}
+.mq-qt{margin:0}
+.mq-qen{margin:8px 0 0;line-height:1.7;font-size:.92rem;text-align:left}
+.mq-links{display:flex;flex-wrap:wrap;gap:8px}.mq-links .btn{font-size:.82rem}
+@media (max-width:640px){.mq-i{padding:12px}.mq-q{font-size:1.35rem;line-height:2.1}.mq-ays{padding:4px 10px}.mq-hero::after{width:100px;height:100px}.mq-warn{flex-direction:column;gap:2px}.mq-grid{grid-template-columns:1fr}}
+@media print{.mq-links,.mq-tools{display:none}.mq-ays{background:none}.mq-i[hidden],.mq-ch[hidden]{display:block}}
+
+/* ---------- المعادن في القرآن الكريم (#maadin) */
+@font-face{font-family:'KFGQPC Hafs';src:url(fonts/kfgqpc-hafs-uthmanic-v18.woff2) format('woff2');font-display:swap}
+.mn-hero{background:radial-gradient(120% 140% at 100% 0,var(--accent-soft),transparent 62%),linear-gradient(135deg,var(--saffron-soft),var(--sheet));position:relative;overflow:hidden}
+.mn-hero::after{content:"";position:absolute;inset-inline-start:-26px;bottom:-34px;width:150px;height:150px;border-radius:50%;background:repeating-conic-gradient(from 0deg,var(--saffron) 0 4deg,transparent 4deg 20deg);opacity:.2;-webkit-mask:radial-gradient(circle,transparent 0 38%,#000 39% 70%,transparent 71%);mask:radial-gradient(circle,transparent 0 38%,#000 39% 70%,transparent 71%)}
+.mn-hero>*{position:relative;z-index:1}
+.mn-stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.mn-stats>span{background:var(--sheet);border:1px solid var(--line);border-radius:999px;padding:4px 14px;font-size:.88rem}
+.mn-stats b{color:var(--accent);font-size:1.05rem}
+.mn-warn{border:1px solid var(--saffron);background:var(--saffron-soft);border-radius:14px;padding:10px 14px;display:flex;gap:10px;align-items:baseline}
+.mn-warn b{color:var(--saffron);white-space:nowrap}.mn-warn p{margin:0;line-height:1.8;font-size:.92rem}
+.mn-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.mn-chips2{display:flex;flex-wrap:wrap;gap:6px}
+.mn-fc{font:inherit;font-size:.86rem;border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:999px;padding:4px 14px;cursor:pointer;min-height:34px}
+.mn-fc.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.mn-fc:focus-visible,.mn-find:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mn-find{font:inherit;flex:1 1 220px;min-height:38px;border:1px solid var(--line);border-radius:999px;padding:4px 16px;background:var(--sheet);color:var(--ink)}
+.mn-none{text-align:center;margin:8px 0}
+.mn-ch[hidden],.mn-i[hidden]{display:none}
+.mn-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,430px),1fr));align-items:start}
+.mn-i{display:grid;gap:8px;min-width:0;padding:14px;scroll-margin-top:80px}
+.mn-i header{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline;justify-content:space-between}
+.mn-i h3{margin:0;font-size:1.06rem;color:var(--accent)}
+.mn-chip{font-size:.74rem;font-weight:700;border:1px solid var(--accent);color:var(--accent);border-radius:999px;padding:0 9px;white-space:nowrap}
+.mn-chip.gold{border-color:var(--saffron);color:var(--saffron)}
+.mn-ays{background:var(--saffron-soft);border-radius:12px;padding:6px 12px}
+.mn-q{font-family:'KFGQPC Hafs',var(--f-quran);font-size:1.6rem;line-height:2.2}
+.mn-q .mn-n{font-family:'KFGQPC Hafs',var(--f-quran);color:var(--saffron);cursor:pointer;font-size:1em}
+.mn-note{margin:0;line-height:1.85}.mn-note b{display:block;font-size:.82rem;color:var(--muted);margin-bottom:2px}
+.mn-h4{margin:4px 0 0;font-size:.95rem;color:var(--muted)}
+.mn-qt{margin:0}
+.mn-qen{margin:8px 0 0;line-height:1.7;font-size:.92rem;text-align:left}
+.mn-links{display:flex;flex-wrap:wrap;gap:8px}.mn-links .btn{font-size:.82rem}
+@media (max-width:640px){.mn-i{padding:12px}.mn-q{font-size:1.35rem;line-height:2.1}.mn-ays{padding:4px 10px}.mn-hero::after{width:100px;height:100px}.mn-warn{flex-direction:column;gap:2px}.mn-grid{grid-template-columns:1fr}}
+@media print{.mn-links,.mn-tools{display:none}.mn-ays{background:none}.mn-i[hidden],.mn-ch[hidden]{display:block}}
+.mn-hd{border-inline-start:3px solid var(--saffron)}
+
+/* ---------- الطب والشفاء في القرآن الكريم (#tibb) */
+@font-face{font-family:'KFGQPC Hafs';src:url(fonts/kfgqpc-hafs-uthmanic-v18.woff2) format('woff2');font-display:swap}
+.tb-hero{background:radial-gradient(120% 140% at 100% 0,var(--accent-soft),transparent 62%),linear-gradient(135deg,var(--saffron-soft),var(--sheet));position:relative;overflow:hidden}
+.tb-hero::after{content:"";position:absolute;inset-inline-start:-26px;bottom:-34px;width:150px;height:150px;border-radius:50%;background:repeating-conic-gradient(from 0deg,var(--saffron) 0 4deg,transparent 4deg 20deg);opacity:.2;-webkit-mask:radial-gradient(circle,transparent 0 38%,#000 39% 70%,transparent 71%);mask:radial-gradient(circle,transparent 0 38%,#000 39% 70%,transparent 71%)}
+.tb-hero>*{position:relative;z-index:1}
+.tb-stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.tb-stats>span{background:var(--sheet);border:1px solid var(--line);border-radius:999px;padding:4px 14px;font-size:.88rem}
+.tb-stats b{color:var(--accent);font-size:1.05rem}
+.tb-warn{border:1px solid var(--saffron);background:var(--saffron-soft);border-radius:14px;padding:10px 14px;display:flex;gap:10px;align-items:baseline}
+.tb-warn b{color:var(--saffron);white-space:nowrap}.tb-warn p{margin:0;line-height:1.8;font-size:.92rem}
+.tb-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.tb-chips2{display:flex;flex-wrap:wrap;gap:6px}
+.tb-fc{font:inherit;font-size:.86rem;border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:999px;padding:4px 14px;cursor:pointer;min-height:34px}
+.tb-fc.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.tb-fc:focus-visible,.tb-find:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tb-find{font:inherit;flex:1 1 220px;min-height:38px;border:1px solid var(--line);border-radius:999px;padding:4px 16px;background:var(--sheet);color:var(--ink)}
+.tb-none{text-align:center;margin:8px 0}
+.tb-ch[hidden],.tb-i[hidden]{display:none}
+.tb-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,430px),1fr));align-items:start}
+.tb-i{display:grid;gap:8px;min-width:0;padding:14px;scroll-margin-top:80px}
+.tb-i header{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline;justify-content:space-between}
+.tb-i h3{margin:0;font-size:1.06rem;color:var(--accent)}
+.tb-chip{font-size:.74rem;font-weight:700;border:1px solid var(--accent);color:var(--accent);border-radius:999px;padding:0 9px;white-space:nowrap}
+.tb-chip.gold{border-color:var(--saffron);color:var(--saffron)}
+.tb-ays{background:var(--saffron-soft);border-radius:12px;padding:6px 12px}
+.tb-q{font-family:'KFGQPC Hafs',var(--f-quran);font-size:1.6rem;line-height:2.2}
+.tb-q .tb-n{font-family:'KFGQPC Hafs',var(--f-quran);color:var(--saffron);cursor:pointer;font-size:1em}
+.tb-note{margin:0;line-height:1.85}.tb-note b{display:block;font-size:.82rem;color:var(--muted);margin-bottom:2px}
+.tb-h4{margin:4px 0 0;font-size:.95rem;color:var(--muted)}
+.tb-qt{margin:0}
+.tb-qen{margin:8px 0 0;line-height:1.7;font-size:.92rem;text-align:left}
+.tb-links{display:flex;flex-wrap:wrap;gap:8px}.tb-links .btn{font-size:.82rem}
+@media (max-width:640px){.tb-i{padding:12px}.tb-q{font-size:1.35rem;line-height:2.1}.tb-ays{padding:4px 10px}.tb-hero::after{width:100px;height:100px}.tb-warn{flex-direction:column;gap:2px}.tb-grid{grid-template-columns:1fr}}
+@media print{.tb-links,.tb-tools{display:none}.tb-ays{background:none}.tb-i[hidden],.tb-ch[hidden]{display:block}}
+
+.tb-alert{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--accent);background:var(--accent-soft);border-radius:14px;padding:10px 14px}
+.tb-alert svg{width:20px;height:20px;flex:none;margin-top:3px;fill:none;stroke:var(--accent);stroke-width:2}
+.tb-alert b{color:var(--accent);white-space:nowrap}.tb-alert p{margin:2px 0 0;line-height:1.8;font-size:.92rem}
+.tb-see{margin:4px 0 0!important}.tb-see a{font-weight:700}
+.tb-ht{margin:0;border-inline-start:3px solid var(--saffron)}
+@media (max-width:640px){.tb-alert{flex-direction:column;gap:4px}}
+
 /* ---------- نسخة الجوال المبسّطة: فهرس أقسام مختصر في أول الشاشة */
 .mindex{display:none}
 .mi-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px}
@@ -1469,3 +1697,6 @@ body{overflow-x:clip;position:relative;max-width:100%;touch-action:manipulation}
   .tabbar,.recbar,.rail{-webkit-transform:translateZ(0);transform:translateZ(0)}
   input[type=search]{-webkit-appearance:none;appearance:none}
 }
+/* الإعجاز العلمي (#ijaz) */
+.ij-sci{margin:0;line-height:1.9}.ij-refs summary{cursor:pointer;font-weight:700;font-size:.9rem;color:var(--muted)}.ij-refs ul{margin:6px 0 0;padding-inline-start:1.2em;font-size:.85rem;line-height:1.7;overflow-wrap:anywhere}
+.rs-chip.ok{border-color:var(--ok);color:var(--ok)}button.rs-chip{background:none;cursor:pointer;font-family:inherit}button.rs-chip.on{background:var(--accent);color:var(--bg,#fff);border-color:var(--accent)}

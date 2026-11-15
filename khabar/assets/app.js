@@ -338,6 +338,11 @@ async function route(){
   }catch(e){console.error(e);BRIEF=null}
   render.keep=false;render();if(prev!==VIEW)scrollTo(0,0);
 }
+// زر «العودة إلى الأعلى»: يظهر بعد تمرير شاشتين في الصفحات الطويلة، خصوصاً على الجوال
+{const up=el('button','to-top');up.type='button';up.hidden=true;up.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 5l-7 7m7-7l7 7M12 5v14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+ const lbl=()=>{const t=LANG==='en'?'Back to top':'العودة إلى الأعلى';up.setAttribute('aria-label',t);up.title=t};lbl();
+ up.onclick=()=>{scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});const m=document.querySelector('main,#main');if(m){m.setAttribute('tabindex','-1');m.focus({preventScroll:true})}};
+ let tk=0;addEventListener('scroll',()=>{if(tk)return;tk=requestAnimationFrame(()=>{tk=0;up.hidden=scrollY<innerHeight*2;lbl()})},{passive:true});document.body.append(up)}
 addEventListener('hashchange',route);
 $('#lang-btn').onclick=()=>{LANG=LANG==='en'?'ar':'en';document.documentElement.lang=LANG;document.documentElement.dir=LANG==='en'?'ltr':'rtl';try{localStorage.setItem('khabar-lang',LANG)}catch(e){}FILTER={};if(BRIEF)BRIEF.zones.forEach(z=>{z.items=(z.all||z.items).filter(i=>i[LANG])});render()};
 $('#theme-btn').onclick=()=>{const r=document.documentElement;const dark=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=dark?'light':'dark';try{localStorage.setItem('khabar-theme',r.dataset.theme)}catch(e){}header()};

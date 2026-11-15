@@ -28,7 +28,9 @@
 #mpLay[hidden]{display:none}
 .mp-info{color:var(--muted);font-size:.85rem;margin-inline-start:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:24em}
 .mp-ix svg{width:18px;height:18px}
-.mp-more{display:none}
+.mp-more{display:inline-flex}
+.mp-opts{display:none;flex-wrap:wrap}.mp-showopts .mp-opts{display:flex}
+#mpRBtn svg{width:17px;height:17px}
 
 /* الصفحة */
 .mp-scroller{display:flex;flex-direction:column;align-items:center;gap:16px}
@@ -103,3 +105,10 @@
 #mpRoot[data-hz="1"] .mp-t .w,#mpRoot[data-hz="2"] .mp-t .w:not([data-t="0"]){filter:blur(7px);cursor:pointer;transition:filter .2s;user-select:none;-webkit-user-select:none}
 #mpRoot[data-hz] .mp-t .w.rec-on{filter:none}
 #mpHz button{font-size:.85rem}
+
+/* تذكير موضع التوقف */
+.mp-resume{display:flex;align-items:center;gap:8px;margin:0;padding:9px 12px;border:1px solid var(--rule);border-radius:12px;background:color-mix(in srgb,var(--mphl) 55%,var(--bg));box-shadow:0 4px 14px rgba(40,30,10,.12);transition:opacity .9s}
+.mp-resume.mp-rfade{opacity:0}
+.mp-rt{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}.mp-rt small{color:var(--muted);font-size:.78rem}.mp-rt b{font-size:.95rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mp-resume .btn{height:36px;padding:5px 12px;flex:none}
+@media (max-width:640px){.mp-resume{padding:6px 10px}.mp-rt small{font-size:.72rem}#mpRBtn span{display:none}.mp-root{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}}
