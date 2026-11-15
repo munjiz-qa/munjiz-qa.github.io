@@ -1,7 +1,7 @@
 /* Layout: app shell — a fixed index rail on wide screens, a bottom tab bar on phones; content reads like a scholar's working desk (text column + side apparatus) */
 :root{
   --bg:#f3f5f9; --sheet:#ffffff; --ink:#151b33; --muted:#5d6580; --line:#dfe3ee;
-  --accent:#0f5a46; --accent-ink:#ffffff; --accent-soft:#e2f0e8;
+  --accent:#27378a; --accent-ink:#ffffff; --accent-soft:#e7eafa;
   --saffron:#b8721c; --saffron-soft:#fbefdc; --mark:#ffe39b; --mark-ink:#3a2a05;
   --ok:#1e7a4c; --ok-soft:#e1f3ea; --bad:#b3261e; --bad-soft:#fbe4e2;
   --shadow:0 1px 2px rgba(21,27,51,.06),0 6px 24px rgba(21,27,51,.06);
@@ -11,14 +11,14 @@
   --r:12px; --rail:236px;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#07140f; --sheet:#141a33; --ink:#e6e9f5; --muted:#9aa3c2; --line:#252d4d;
-  --accent:#6fd0a6; --accent-ink:#07140f; --accent-soft:#143428;
+  --bg:#0c1022; --sheet:#141a33; --ink:#e6e9f5; --muted:#9aa3c2; --line:#252d4d;
+  --accent:#9aabff; --accent-ink:#0c1022; --accent-soft:#1f2850;
   --saffron:#f0b45c; --saffron-soft:#3a2b14; --mark:#6a4f12; --mark-ink:#fff3d4;
   --ok:#5fd49a; --ok-soft:#123326; --bad:#ff8a80; --bad-soft:#3d1714;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 24px rgba(0,0,0,.25); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#07140f; --sheet:#141a33; --ink:#e6e9f5; --muted:#9aa3c2; --line:#252d4d;
-  --accent:#6fd0a6; --accent-ink:#07140f; --accent-soft:#143428;
+  --bg:#0c1022; --sheet:#141a33; --ink:#e6e9f5; --muted:#9aa3c2; --line:#252d4d;
+  --accent:#9aabff; --accent-ink:#0c1022; --accent-soft:#1f2850;
   --saffron:#f0b45c; --saffron-soft:#3a2b14; --mark:#6a4f12; --mark-ink:#fff3d4;
   --ok:#5fd49a; --ok-soft:#123326; --bad:#ff8a80; --bad-soft:#3d1714;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 24px rgba(0,0,0,.25); color-scheme:dark}
@@ -386,9 +386,9 @@ html[dir=ltr] .ayah{text-align:right}
 @media (max-width:760px){.prgrid{grid-template-columns:repeat(3,1fr)}.prform{grid-template-columns:1fr}.prmini{gap:10px;width:100%;justify-content:space-between}}
 
 /* ---------- v3 layout: paths, home, section cards */
-.p1{--pc:#0f5a46}.p2{--pc:#1e7a4c}.p3{--pc:#a8651a}.p4{--pc:#8a3b7a}.p5{--pc:#b83a63}.p6{--pc:#0f6f8a}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .p1{--pc:#6fd0a6}:root:not([data-theme="light"]) .p2{--pc:#5fd49a}:root:not([data-theme="light"]) .p3{--pc:#f0b45c}:root:not([data-theme="light"]) .p4{--pc:#e59ad6}}
-:root[data-theme="dark"] .p1{--pc:#6fd0a6}:root[data-theme="dark"] .p2{--pc:#5fd49a}:root[data-theme="dark"] .p3{--pc:#f0b45c}:root[data-theme="dark"] .p4{--pc:#e59ad6}:root[data-theme="dark"] .p5{--pc:#f08fb0}:root[data-theme="dark"] .p6{--pc:#6fcfe8}@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .p5{--pc:#f08fb0}:root:not([data-theme="light"]) .p6{--pc:#6fcfe8}}
+.p1{--pc:#27378a}.p2{--pc:#1e7a4c}.p3{--pc:#a8651a}.p4{--pc:#8a3b7a}.p5{--pc:#b83a63}.p6{--pc:#0f6f8a}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .p1{--pc:#9aabff}:root:not([data-theme="light"]) .p2{--pc:#5fd49a}:root:not([data-theme="light"]) .p3{--pc:#f0b45c}:root:not([data-theme="light"]) .p4{--pc:#e59ad6}}
+:root[data-theme="dark"] .p1{--pc:#9aabff}:root[data-theme="dark"] .p2{--pc:#5fd49a}:root[data-theme="dark"] .p3{--pc:#f0b45c}:root[data-theme="dark"] .p4{--pc:#e59ad6}:root[data-theme="dark"] .p5{--pc:#f08fb0}:root[data-theme="dark"] .p6{--pc:#6fcfe8}@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .p5{--pc:#f08fb0}:root:not([data-theme="light"]) .p6{--pc:#6fcfe8}}
 .nav .sec{display:flex;align-items:center;gap:7px;font-weight:600;letter-spacing:0;padding:14px 10px 5px}
 .nav .sec .dot{width:8px;height:8px;border-radius:3px;background:var(--pc);transform:rotate(45deg);flex:none}
 .nav .sec.p1,.nav .sec.p2,.nav .sec.p3,.nav .sec.p4,.nav .sec.p5,.nav .sec.p6{color:var(--pc)}
@@ -592,16 +592,16 @@ html[dir=ltr] .qs-quote{border-radius:10px 0 0 10px}
 .mh-sel option{color:#151b33;background:#fff}
 @media (max-width:860px){.toprow{grid-template-columns:1fr}.mphome{padding:16px}.mh-head h2{font-size:1.6rem}}
 .adhbar{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;padding:12px 16px;border-inline-start:4px solid var(--adh)}
-.adhbar.m{--adh:#c98a1a;--adh-soft:#fdf1d8}.adhbar.e{--adh:#0f5a46;--adh-soft:#e2f0e8}
+.adhbar.m{--adh:#c98a1a;--adh-soft:#fdf1d8}.adhbar.e{--adh:#4b5bb8;--adh-soft:#e7eafa}
 .adhbar .adh-ic{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--adh-soft)}
 .adhbar .adh-ic svg{width:24px;height:24px;stroke:var(--adh);fill:none;stroke-width:1.8}
 .adhbar .adh-hb{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.adhbar .eyebrow{color:var(--adh)}
 .adhbar .btn{flex:none;pointer-events:none}
 .adh-bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden;flex:1;min-width:80px}.adh-bar i{display:block;height:100%;background:var(--ok);border-radius:inherit;transition:width .4s}
 .adh-bar.sm{height:5px;flex:none;margin:3px 0}
-.adh{--adh:#c98a1a;--adh-soft:#fdf1d8}.adh.e{--adh:#0f5a46;--adh-soft:#e2f0e8}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .adh,:root:not([data-theme="light"]) .adhbar.m{--adh-soft:#3a2b14}:root:not([data-theme="light"]) .adh.e,:root:not([data-theme="light"]) .adhbar.e{--adh:#6fd0a6;--adh-soft:#143428}}
-:root[data-theme="dark"] .adh,:root[data-theme="dark"] .adhbar.m{--adh-soft:#3a2b14}:root[data-theme="dark"] .adh.e,:root[data-theme="dark"] .adhbar.e{--adh:#6fd0a6;--adh-soft:#143428}
+.adh{--adh:#c98a1a;--adh-soft:#fdf1d8}.adh.e{--adh:#4b5bb8;--adh-soft:#e7eafa}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .adh,:root:not([data-theme="light"]) .adhbar.m{--adh-soft:#3a2b14}:root:not([data-theme="light"]) .adh.e,:root:not([data-theme="light"]) .adhbar.e{--adh:#9aabff;--adh-soft:#1f2850}}
+:root[data-theme="dark"] .adh,:root[data-theme="dark"] .adhbar.m{--adh-soft:#3a2b14}:root[data-theme="dark"] .adh.e,:root[data-theme="dark"] .adhbar.e{--adh:#9aabff;--adh-soft:#1f2850}
 .adh-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
 .adh-head .eyebrow{color:var(--adh)}
 .adh-head .lead .chip{white-space:nowrap}
@@ -609,9 +609,9 @@ html[dir=ltr] .qs-quote{border-radius:10px 0 0 10px}
 .adh-tab{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:12px;border-radius:var(--r);border:1.5px solid var(--line);background:var(--sheet);cursor:pointer;font-weight:600}
 .adh-tab svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8}
 .adh-tab.m[aria-selected=true]{border-color:#c98a1a;background:#fdf1d8;color:#7a4f06}
-.adh-tab.e[aria-selected=true]{border-color:#0f5a46;background:#e2f0e8;color:#0f5a46}
-:root[data-theme="dark"] .adh-tab.m[aria-selected=true]{background:#3a2b14;color:#f0b45c}:root[data-theme="dark"] .adh-tab.e[aria-selected=true]{background:#143428;color:#6fd0a6}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .adh-tab.m[aria-selected=true]{background:#3a2b14;color:#f0b45c}:root:not([data-theme="light"]) .adh-tab.e[aria-selected=true]{background:#143428;color:#6fd0a6}}
+.adh-tab.e[aria-selected=true]{border-color:#4b5bb8;background:#e7eafa;color:#27378a}
+:root[data-theme="dark"] .adh-tab.m[aria-selected=true]{background:#3a2b14;color:#f0b45c}:root[data-theme="dark"] .adh-tab.e[aria-selected=true]{background:#1f2850;color:#9aabff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .adh-tab.m[aria-selected=true]{background:#3a2b14;color:#f0b45c}:root:not([data-theme="light"]) .adh-tab.e[aria-selected=true]{background:#1f2850;color:#9aabff}}
 .adh-tab em{font-style:normal;font-size:.72rem;padding:1px 8px}
 .adh-prog{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 16px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 72px);z-index:5}
 .adh-prog #adhDoneTxt{font-weight:600;font-size:.92rem}
@@ -645,9 +645,9 @@ html[dir=ltr] .adh-txt,html[dir=ltr] .adh-pre{text-align:right}
 @media print{.adh-prog,.adh-act,.adh-tabs{display:none}}
 .wl-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;position:relative}
 .adh-chip{display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-weight:600;font-size:.88rem;padding:5px 12px 5px 8px;border-radius:99px;border:1.5px solid var(--adh);background:var(--adh-soft);color:var(--ink)}
-.adh-chip.m{--adh:#c98a1a;--adh-soft:#fdf1d8}.adh-chip.e{--adh:#0f5a46;--adh-soft:#e2f0e8}
-:root[data-theme="dark"] .adh-chip.m{--adh-soft:#3a2b14}:root[data-theme="dark"] .adh-chip.e{--adh:#6fd0a6;--adh-soft:#143428}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .adh-chip.m{--adh-soft:#3a2b14}:root:not([data-theme="light"]) .adh-chip.e{--adh:#6fd0a6;--adh-soft:#143428}}
+.adh-chip.m{--adh:#c98a1a;--adh-soft:#fdf1d8}.adh-chip.e{--adh:#4b5bb8;--adh-soft:#e7eafa}
+:root[data-theme="dark"] .adh-chip.m{--adh-soft:#3a2b14}:root[data-theme="dark"] .adh-chip.e{--adh:#9aabff;--adh-soft:#1f2850}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .adh-chip.m{--adh-soft:#3a2b14}:root:not([data-theme="light"]) .adh-chip.e{--adh:#9aabff;--adh-soft:#1f2850}}
 .adh-chip svg{width:18px;height:18px;fill:none;stroke:var(--adh);stroke-width:1.9}.adh-chip em{font-style:normal;font-size:.72rem;font-weight:600;color:var(--ok);background:var(--ok-soft);border-radius:99px;padding:0 8px}
 
 /* ---------- وصف الجنة وأنواعها في القرآن الكريم (#jannah) */
@@ -1456,7 +1456,7 @@ html[dir=ltr] .ruq-matn{border-radius:10px 0 0 10px}
 .tlq-sep{width:1px;height:22px;background:var(--line);margin:0 4px}
 .mlay .chip.l-p[aria-pressed="true"]{background:var(--accent);border-color:var(--accent)}
 .mlay .chip.l-q[aria-pressed="true"]{background:var(--saffron);border-color:var(--saffron);color:#201808}
-.mlay .chip.l-v[aria-pressed="true"]{background:#5f7a6e;border-color:#5f7a6e;color:#fff}
+.mlay .chip.l-v[aria-pressed="true"]{background:#5b6b86;border-color:#5b6b86;color:#fff}
 .tlq-eras{display:flex;gap:6px;flex-wrap:wrap}
 .tlq-eras .chip{cursor:pointer}
 .tlq-era{position:relative;margin-top:8px;padding-top:6px}
@@ -1469,7 +1469,7 @@ html[dir=ltr] .ruq-matn{border-radius:10px 0 0 10px}
 .tlq-col.p{grid-column:1}.tlq-col.q{grid-column:2}.tlq-col.v{grid-column:3}
 .tlq-card{background:var(--sheet);border:1px solid var(--line);border-inline-start:5px solid var(--accent);border-radius:var(--r);padding:10px 12px;display:flex;flex-direction:column;gap:6px;transition:box-shadow .2s}
 .tlq-card.q{border-inline-start-color:var(--saffron)}
-.tlq-card.v{border-inline-start-color:#5f7a6e}
+.tlq-card.v{border-inline-start-color:#5b6b86}
 .tlq-card.ij{background:repeating-linear-gradient(135deg,transparent 0 9px,color-mix(in srgb,var(--saffron) 9%,transparent) 9px 10px),var(--sheet)}
 .tlq-card.hl{box-shadow:0 0 0 3px var(--saffron)}
 .tlq-card>header{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
@@ -1601,8 +1601,8 @@ body{background-image:radial-gradient(900px 420px at 50% -120px,var(--glow),tran
 /* ================= موسوعة القرآن الكريم ٤ · تحديث بصري واضح: ورق دافئ، عمود تنقل ليلي بنقش ذهبي، لوحة ترحيب عميقة، وفئات بكتل ملوّنة */
 :root{--bg:#f7f2e8;--sheet:#fffdf8;--line:#e7dcc4;--accent:#1f2c78;--accent-soft:#ebe8fa}
 .path{--hb1:var(--pc);--hb2:color-mix(in srgb,var(--pc) 62%,#000)}
-:root[data-theme="dark"] .path{--hb1:color-mix(in srgb,var(--pc) 42%,#07140f);--hb2:color-mix(in srgb,var(--pc) 26%,#07140f)}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .path{--hb1:color-mix(in srgb,var(--pc) 42%,#07140f);--hb2:color-mix(in srgb,var(--pc) 26%,#07140f)}}
+:root[data-theme="dark"] .path{--hb1:color-mix(in srgb,var(--pc) 42%,#0b0f2a);--hb2:color-mix(in srgb,var(--pc) 26%,#0b0f2a)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .path{--hb1:color-mix(in srgb,var(--pc) 42%,#0b0f2a);--hb2:color-mix(in srgb,var(--pc) 26%,#0b0f2a)}}
 main h1,.welcome h1,.sec-head h2,.path-head h3{font-family:var(--f-brand)}
 /* عمود التنقل */
 .rail{background:radial-gradient(260px 200px at 100% 0,rgba(232,176,86,.22),transparent 70%),linear-gradient(180deg,#18205a,#0a0f33);border-left:0;color:#e9ecff;box-shadow:-6px 0 30px rgba(10,15,51,.25)}
@@ -1645,7 +1645,7 @@ main h1,.welcome h1,.sec-head h2,.path-head h3{font-family:var(--f-brand)}
 }
 /* ---------- الإصدار ٥: باحث الأقسام، ورحلات مقترحة، وفهرس جوال مختصر قابل للتوسيع */
 .sfind{display:flex;align-items:center;gap:8px;background:var(--sheet);border:1px solid var(--line);border-radius:999px;padding:0 14px;min-height:46px;margin:0 0 10px;flex:1 1 260px;max-width:460px}
-.sfind:focus-within{border-color:var(--pc,#0f5a46);box-shadow:0 0 0 3px var(--accent-soft)}
+.sfind:focus-within{border-color:var(--pc,#27378a);box-shadow:0 0 0 3px var(--accent-soft)}
 .sfind svg{width:20px;height:20px;flex:none;stroke:var(--muted);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .sfind input{flex:1;min-width:0;border:0;background:transparent;font:inherit;color:var(--ink);padding:10px 0;outline:0}
 .sf-n{white-space:nowrap}
@@ -1700,24 +1700,3 @@ body{overflow-x:clip;position:relative;max-width:100%;touch-action:manipulation}
 /* الإعجاز العلمي (#ijaz) */
 .ij-sci{margin:0;line-height:1.9}.ij-refs summary{cursor:pointer;font-weight:700;font-size:.9rem;color:var(--muted)}.ij-refs ul{margin:6px 0 0;padding-inline-start:1.2em;font-size:.85rem;line-height:1.7;overflow-wrap:anywhere}
 .rs-chip.ok{border-color:var(--ok);color:var(--ok)}button.rs-chip{background:none;cursor:pointer;font-family:inherit}button.rs-chip.on{background:var(--accent);color:var(--bg,#fff);border-color:var(--accent)}
-
-/* ================= مشكاة · هوية «زمرد وعاج» (اختارها المالك 2026-11-15): تحلّ محل النيلي والزعفران */
-:root{--bg:#f5f0e2;--sheet:#fffdf6;--ink:#13281f;--muted:#55655c;--line:#e3dac0;--accent:#0f5a46;--accent-ink:#ffffff;--accent-soft:#e2f0e8;--saffron:#a8731a;--saffron-soft:#f8ecd2;--mark:#f4dc8e;--mark-ink:#33290a;--ok:#1d7a4a;--ok-soft:#dff2e7;}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#07140f;--sheet:#0e211a;--ink:#e8efe9;--muted:#9db4a8;--line:#1c3a2f;--accent:#6fd0a6;--accent-ink:#06140e;--accent-soft:#143428;--saffron:#e2b95e;--saffron-soft:#33290f;--mark:#5f4a10;--mark-ink:#fff3d0;--ok:#6fe0a4;--ok-soft:#10321f;}}
-:root[data-theme="dark"]{--bg:#07140f;--sheet:#0e211a;--ink:#e8efe9;--muted:#9db4a8;--line:#1c3a2f;--accent:#6fd0a6;--accent-ink:#06140e;--accent-soft:#143428;--saffron:#e2b95e;--saffron-soft:#33290f;--mark:#5f4a10;--mark-ink:#fff3d0;--ok:#6fe0a4;--ok-soft:#10321f;}
-.mh-pat{background:repeating-linear-gradient(45deg,#e2b95e 0 1px,transparent 1px 22px),repeating-linear-gradient(-45deg,#e2b95e 0 1px,transparent 1px 22px)}
-.rail{background:radial-gradient(260px 200px at 100% 0,rgba(226,185,94.22),transparent 70%),linear-gradient(180deg,#0e4a3b,#04201a);box-shadow:-6px 0 30px #04201a55;color:#e8f3ec}
-.rail::before{background:#e2b95e}
-.rail .brand small,.rail .nav>.sec:first-child,.rail .foot{color:#a9c8ba}
-.rail .brand img{box-shadow:0 0 0 1px #e2b95e99,0 0 26px #e2b95e88}
-.rail .nav a{color:#e8f3ec}
-.rail .nav a[aria-current="page"]{background:linear-gradient(90deg,#e8c777,#d6a843);color:#2a1d00;box-shadow:0 4px 14px rgba(214,168,67,.4)}
-.welcome{background:radial-gradient(560px 280px at 85% -10%,rgba(226,185,94.38),transparent 70%),linear-gradient(135deg,#0f5a46,#04231b);box-shadow:0 18px 46px #04231b59}
-.welcome::before{background:#e2b95e}
-.welcome .lead,.welcome .muted{color:#a9c8ba}.welcome .eyebrow{color:#e2b95e}
-.mphome{background:radial-gradient(120% 140% at 100% 0%,#0f5a46 0%,#0e4a3b 55%,#04231b 100%);border-color:#e2b95e55}
-.mphome .mh-pri{background:#e2b95e;border-color:#e2b95e;color:#2a1d00}
-.adhbar.e,.adh.e{--adh:var(--accent);--adh-soft:var(--accent-soft)}
-.adh-tab.e[aria-selected=true]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
-.p1{--pc:var(--accent)}
-html[dir=ltr] .rail .brand b{font-size:1.2rem;line-height:1.25;overflow-wrap:normal}
