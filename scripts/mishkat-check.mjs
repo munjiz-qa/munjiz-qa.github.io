@@ -1,4 +1,4 @@
-// فحص «مشكاة» المنشور: يعمل مستقلاً دون أي اتصال بـ Claude، وصفحات الأدوار تعمل.
+// فحص «موسوعة القرآن الكريم» المنشور: يعمل مستقلاً دون أي اتصال بـ Claude، وصفحات الأدوار تعمل.
 import pw from 'playwright';
 const { chromium } = pw;
 const B = process.env.MISHKAT_URL || 'https://munjiz-qa.github.io/mishkat/';
