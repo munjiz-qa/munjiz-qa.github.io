@@ -110,7 +110,7 @@ function card(x,P,Pp){const v=x.snap?x.f():x.f(P),p=!x.snap&&Pp?x.f(Pp):null,t=t
     ${spark(x)}${x.snap?`<small class="mute">${L('الوضع الآن','As of now')}</small>`:''}</div>`}
 
 // ---------- shared pieces ----------
-function head(title,note){const P=range(per);return `<div class="bar"><h2>${esc(title)}</h2><select class="kpiP" aria-label="${esc(L('الفترة','Period'))}">${PER.map(([v,n])=>`<option value="${v}" ${v===per?'selected':''}>${esc(n)}</option>`).join('')}</select><span class="sp"></span><span class="mute sm">${per==='all'?'':`${P[0]} — ${P[1]}`}</span><button type="button" class="btn sm ghost kpiPrint">${L('طباعة','Print')}</button></div>${note?`<p class="mute sm">${note}</p>`:''}`}
+function head(title,note){const P=range(per);return `<div class="bar"><h2>${esc(title)}</h2><select class="kpiP" aria-label="${esc(L('الفترة','Period'))}">${PER.map(([v,n])=>`<option value="${v}" ${v===per?'selected':''}>${esc(n)}</option>`).join('')}</select><span class="sp"></span><span class="mute sm">${per==='all'?'':`${dmy(P[0])} — ${dmy(P[1])}`}</span><button type="button" class="btn sm ghost kpiPrint">${L('طباعة','Print')}</button></div>${note?`<p class="mute sm">${note}</p>`:''}`}
 const hbars=(rows,f=n=>fmt(n))=>{if(!rows.length)return `<p class="mute">${L('لا توجد بيانات في هذه الفترة.','No data in this period.')}</p>`;const m=Math.max(1,...rows.map(r=>r[1]));
   return `<ul class="hbars">${rows.map(([k,n])=>`<li><span>${esc(k)}</span><span class="hb"><i style="width:${n/m*100}%"></i></span><b class="num">${f(n)}</b></li>`).join('')}</ul>`};
 function cols(series,names,fmtv=fmt){const mx=Math.max(1,...series.flatMap(s=>s.v));const ms=months(12).map(P=>P[0].slice(2,7).replace('-','/'));

@@ -93,7 +93,20 @@ $('#gateForm').addEventListener('submit', async e => {
   } finally { btn.disabled = false; }
 });
 
+// منصات انتقلت إلى عنوان جديد بعد تعليق حساب GitHub القديم (نوفمبر 2026): تُتابَع على عنوانها الحالي بدل إنذار «لا يستجيب».
+// يتغيّر عنوان الموقع وروابطه فقط، ويبقى باقي السجل كما هو.
+const MOVED = {basira: 'https://baseeratactions.com/'};
+function relocate(reg) {
+  for (const p of reg.platforms || []) {
+    const neu = MOVED[p.id], old = p.site; if (!neu || !old || old === neu) continue;
+    const fix = u => u && u.startsWith(old) ? neu + u.slice(old.length) : u;
+    p.site = neu; p.admin = fix(p.admin); p.links = (p.links || []).map(l => ({...l, u: fix(l.u)}));
+    p.notes = [...(p.notes || []), 'انتقل الموقع إلى عنوانه الحالي ' + neu.replace(/^https:\/\/|\/$/g, '') + '.'];
+  }
+  return reg;
+}
 function start(reg) {
+  reg = relocate(reg);
   REG = reg; SS.set('qutb-reg', JSON.stringify(reg)); touch();
   $('#gate').hidden = true; $('#app').hidden = false;
   $('#setBtn').hidden = !isSuper(); $('#meName').textContent = ME ? `${ME.name || ME.u} · ${ME.role === 'super' ? 'مدير شامل' : 'مشاهدة'}` : '';
