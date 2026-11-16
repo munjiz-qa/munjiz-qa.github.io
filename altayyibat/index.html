@@ -19,7 +19,7 @@
 <style>
 /* Layout: sticky brand bar + scrollable section rail; each view is a single column of working panels, never a marketing page. */
 :root{
-  --bg:#F3F6F4; --surface:#FFFFFF; --sunk:#E8EEEA; --ink:#15302C; --muted:#56706A; --line:#D5DFDA;
+  --bg:#F3F6F4; --surface:#FFFFFF; --sunk:#E8EEEA; --ink:#15302C; --muted:#506A64; --line:#D5DFDA;
   --pine:#1D6455; --pine-ink:#FFFFFF; --pine-soft:#DCEDE7; --copper:#B95A25; --copper-soft:#F6E4D8;
   --ok:#2E7A4C; --ok-soft:#DFF0E5; --warn:#9A6512; --warn-soft:#F7EBD2; --bad:#B42F25; --bad-soft:#F8DEDA;
   --shadow:0 1px 2px rgba(21,48,44,.06),0 6px 18px rgba(21,48,44,.06);
@@ -66,6 +66,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .brand small{display:block;font-size:.72rem;color:var(--muted);line-height:1.2}
 .top .sp{flex:1}
 .sos-btn{background:var(--bad);color:#fff;border:0;border-radius:999px;padding:8px 14px;font-weight:600;cursor:pointer;white-space:nowrap}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .sos-btn{color:#2A0D0A}}:root[data-theme="dark"] .sos-btn{color:#2A0D0A}
 .theme-btn{background:var(--sunk);border:1px solid var(--line);border-radius:999px;width:38px;height:38px;cursor:pointer;display:grid;place-items:center}
 .rail{border-top:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
 .rail::-webkit-scrollbar{display:none}
@@ -212,7 +213,7 @@ footer .wrap{padding-block:22px calc(22px + env(safe-area-inset-bottom,0px));dis
 .lib .btn{padding:6px 14px;font-size:.9rem}
 
 .seal-anchor{display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:14px}
-.basmala-line{font-family:var(--f-display);font-weight:600;font-size:1.15rem;letter-spacing:.02em;color:var(--copper);text-align:center}
+.basmala-line{font-family:var(--f-display);font-weight:600;font-size:1.15rem;letter-spacing:.02em;color:color-mix(in srgb,var(--copper) 85%,var(--ink));text-align:center}
 .basmala{color:var(--copper);opacity:.85;font-family:var(--f-body);line-height:0}
 .basmala svg{display:block;width:84px;height:84px}
 .basmala text{fill:currentColor;font-weight:700}
