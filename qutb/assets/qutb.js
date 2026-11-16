@@ -267,10 +267,17 @@ function allAlerts() {
   if (RATE_HIT) a.push({lvl: 'warn', text: 'بلغت اللوحة حد القراءة المجاني من GitHub (60 طلباً في الساعة)، فبعض الأرقام لم تُقرأ الآن. أضف مفتاح GitHub من الإعدادات ليرتفع الحد إلى 5,000.'});
   return a.sort((x, y) => RANK[y.lvl] - RANK[x.lvl]);
 }
+// ملاحظات «للعلم» تُطوى تحت سطر واحد حين توجد إنذارات أو تنبيهات، لتبقى الأعطال في الصدارة. حالة الطيّ تبقى بين التحديثات.
+let INFO_OPEN = false;
 function renderAlerts() {
   const a = allAlerts(), done = Object.keys(RESULTS).length === REG.platforms.length;
-  $('#alerts').innerHTML = a.length ? a.map(x => `<li class="${x.lvl}"><span class="dot"></span><span>${x.u ? `<a href="${esc(x.u)}" target="_blank" rel="noopener">${esc(x.text)}</a>` : esc(x.text)}</span></li>`).join('')
-    : `<li class="${done ? 'ok' : ''}"><span class="dot"></span><span>${done ? 'كل المنصات تعمل، ولا شيء يحتاج تدخلك الآن.' : 'جارٍ فحص المنصات…'}</span></li>`;
+  const li = x => `<li class="${x.lvl}"><span class="dot"></span><span>${x.u ? `<a href="${esc(x.u)}" target="_blank" rel="noopener">${esc(x.text)}</a>` : esc(x.text)}</span></li>`;
+  const main = a.filter(x => x.lvl !== 'info'), info = a.filter(x => x.lvl === 'info');
+  const fold = main.length && info.length > 1;
+  $('#alerts').innerHTML = !a.length
+    ? `<li class="${done ? 'ok' : ''}"><span class="dot"></span><span>${done ? 'كل المنصات تعمل، ولا شيء يحتاج تدخلك الآن.' : 'جارٍ فحص المنصات…'}</span></li>`
+    : (fold ? main : a).map(li).join('') + (fold ? `<li class="more"><details${INFO_OPEN ? ' open' : ''}><summary>${plural(info.length, 'ملاحظة واحدة للعلم', 'ملاحظتان للعلم', 'ملاحظات للعلم', 'ملاحظة للعلم')}</summary><ul class="alerts">${info.map(li).join('')}</ul></details></li>` : '');
+  const d = $('#alerts details'); if (d) d.ontoggle = () => { INFO_OPEN = d.open; };
 }
 function renderSummary() {
   const live = REG.platforms.filter(p => !p.legacy), rs = live.map(p => RESULTS[p.id]).filter(Boolean);
