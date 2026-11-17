@@ -136,6 +136,20 @@ table.users .acts{display:flex;flex-wrap:wrap;gap:6px}
       <ul class="hide-list" id="hide-list"></ul>
     </section>
 
+    <section class="panel" id="wx-panel">
+      <h2>الطقس والمناخ</h2>
+      <p class="mute" style="font-size:.9rem">قسم <a href="../weather/" target="_blank" rel="noopener">الطقس والمناخ</a> يعمل ذاتياً من متصفح الزائر (Open-Meteo وGDACS وUSGS)، وأخبار المناخ يكتبها الطيار الآلي كل 3 ساعات ولا يُنشر منها إلا ما نقلته جهتان مستقلتان.</p>
+      <div class="kpis" id="wx-kpis"></div>
+      <p class="mute" id="wx-last" style="font-size:.88rem"></p>
+      <div class="row2">
+        <div class="field"><label for="wx-cc">الدولة الافتراضية للزائر الجديد (رمز من حرفين)</label><input id="wx-cc" dir="ltr" maxlength="2" placeholder="QA"></div>
+        <div class="field"><label for="wx-q">المدينة الافتراضية (بالإنجليزية للبحث)</label><input id="wx-q" dir="ltr" maxlength="60" placeholder="Doha"></div>
+      </div>
+      <label class="switch"><input type="checkbox" id="wx-off"> إخفاء «مناخ العالم» من الصفحة الرئيسية</label>
+      <p class="mute" style="font-size:.88rem">ضع علامة على أي خبر مناخي لإخفائه عن القرّاء:</p>
+      <ul class="hide-list" id="wx-hide"></ul>
+    </section>
+
     <section class="panel">
       <h2>كلمة المرور</h2>
       <div class="row2">

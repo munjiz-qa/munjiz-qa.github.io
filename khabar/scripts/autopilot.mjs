@@ -4,6 +4,7 @@
 //  2. يفحص الموقع المنشور ولوحاته وحداثة البيانات، ويكتب النتيجة في data/health.json، ويخرج بخطأ إن وُجد عطل حتى يصل التنبيه.
 // الاستخدام: node khabar/scripts/autopilot.mjs [--force] [--dry] [--no-health]
 import {readFileSync, writeFileSync, existsSync} from 'node:fs';
+import {execFileSync} from 'node:child_process';
 import {milwatch, cluster, outlet} from './milwatch.mjs';
 
 const ROOT = 'khabar/data/', ARGS = new Set(process.argv.slice(2));
@@ -159,7 +160,7 @@ function archive(b) {
 
 // ---------- الفحص ----------
 const SITE = 'https://munjiz-qa.github.io/';
-const PAGES = [['خبر: الصفحة الرئيسية', 'khabar/'], ['خبر: لوحة الإدارة', 'khabar/admin/'], ['خبر: حساب العميل', 'khabar/account/'],
+const PAGES = [['خبر: الصفحة الرئيسية', 'khabar/'], ['خبر: لوحة الإدارة', 'khabar/admin/'], ['خبر: حساب العميل', 'khabar/account/'], ['خبر: الطقس والمناخ', 'khabar/weather/'],
   ['خبر: الخلاصة المنشورة', 'khabar/data/brief.json'], ['قُطب: لوحة الإدارة الموحّدة', 'qutb/']];
 async function health(brief) {
   const checks = [];
@@ -172,6 +173,9 @@ async function health(brief) {
   const briefAge = (Date.now() - new Date(brief.published)) / 3600e3, headAge = (Date.now() - new Date(head.updated)) / 3600e3;
   // خلاصة نُشرت قبل نهاية مهلة موعدها (مثل الليل 23:51 والمتوقع ما زال المساء حتى 00:20) سليمة، لا عطل
   checks.push({name: 'الخلاصة في موعدها', ok: rank(brief.id) >= rank(exp.id), detail: `${brief.id}${brief.auto ? ' (آلية)' : ''}، المتوقع ${exp.id}${rank(brief.id) > rank(exp.id) ? ' (نُشرت قبل موعدها)' : ''}`});
+  const clim = readJSON('climate.json', {}), climAge = (Date.now() - new Date(clim.updated)) / 3600e3;
+  const climBad = [...(clim.ar || []), ...(clim.en || [])].filter(x => (x.sources || []).length < 2 || !x.sources.every(s => /^https:\/\//.test(s.url || ''))).length;
+  checks.push({name: 'أخبار المناخ حديثة وكل خبر من جهتين', ok: climAge < 7 && climBad === 0, detail: `آخر تحديث قبل ${isNaN(climAge) ? '—' : climAge.toFixed(1)} ساعة، ${(clim.ar || []).length + (clim.en || []).length} خبراً، ${climBad} دون جهتين`});
   checks.push({name: 'العناوين الآلية حديثة', ok: headAge < 7, detail: `آخر تحديث قبل ${headAge.toFixed(1)} ساعة`});
   const n = (brief.zones || []).reduce((s, z) => s + z.items.length, 0), unsourced = (brief.zones || []).flatMap(z => z.items).filter(i => !(i.src || []).every(s => brief.sources[s]?.url)).length;
   checks.push({name: 'كل خبر بمصدره', ok: n >= 8 && unsourced === 0, detail: `${n} خبراً، ${unsourced} دون مصدر`});
@@ -205,6 +209,12 @@ if (ARGS.has('--force') || !cur || rank(cur.id) < rank(exp.id)) {
 let milOut = {mil: false, wars: 0};
 try { milOut = await milwatch(exp, {force: ARGS.has('--force'), dry: ARGS.has('--dry')}); console.log('القسم العسكري:', JSON.stringify({mil: milOut.mil, wars: milOut.wars, clusters: milOut.clusters, note: milOut.note})); }
 catch (e) { console.error('تعذّر الرصد العسكري:', e.message); }
+
+// أخبار المناخ: تُحدَّث كل 3 ساعات من khabar.yml؛ إن أسقطت جدولة GitHub تشغيلاً يحدّثها الطيار هنا (مع كل خلاصة من الخلاصات الأربع)
+{
+  const c = readJSON('climate.json', {}), age = (Date.now() - new Date(c.updated)) / 3600e3;
+  if (!(age < 3.5) && !ARGS.has('--dry')) { try { execFileSync(process.execPath, ['khabar/scripts/climate.mjs'], {stdio: 'inherit', timeout: 8 * 60e3}); } catch (e) { console.error('climate', e.message); } }
+}
 
 if (!ARGS.has('--no-health')) {
   const h = await health(readJSON('brief.json', cur));

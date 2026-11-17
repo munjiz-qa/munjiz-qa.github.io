@@ -291,3 +291,5 @@ mark{background:var(--dawn-soft);color:inherit;border-radius:3px;padding:0 2px;b
 .mil-teaser .zone-head{border-top:0}
 /* على الجوال تُخفى أسماء الحروب فوق الخريطة لتجنب التراكب، وتظهر في الشرائح تحتها؛ ويبقى اسم الحرب المفتوحة */
 @media (max-width:640px){.ws-row,.wtl li{grid-template-columns:1fr;gap:4px}.cmap .pin text{display:none;font-size:30px;stroke-width:6px}.cmap .pin.focus text{display:block}}
+.climate-home .zone-head a.count{color:var(--sea-ink);text-decoration:none;font-weight:700}
+.climate-home .zone-head a.count:hover{text-decoration:underline}

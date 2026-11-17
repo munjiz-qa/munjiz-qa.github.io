@@ -1,0 +1,123 @@
+/* «خبر» الطقس والمناخ: لوحة اختيار المكان، ثم شريط الخطر، ثم الطقس الآن والساعات القادمة، ثم الأيام، ثم أخبار المناخ. */
+:root{--lv0:#1D7A70;--lv1:#C99A06;--lv2:#D9731A;--lv3:#C4392F;--lv1-soft:#FBF4D9;--lv2-soft:#FCEADB;--lv3-soft:#F9E1DE;--lv0-soft:#E3F1EE}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--lv0:#4FB8AA;--lv1:#E8C04A;--lv2:#F09A4E;--lv3:#EC6A5E;--lv1-soft:#2A2510;--lv2-soft:#2D1D10;--lv3-soft:#2E1514;--lv0-soft:#10282A}}
+:root[data-theme="dark"]{--lv0:#4FB8AA;--lv1:#E8C04A;--lv2:#F09A4E;--lv3:#EC6A5E;--lv1-soft:#2A2510;--lv2-soft:#2D1D10;--lv3-soft:#2E1514;--lv0-soft:#10282A}
+
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wx{gap:22px}
+.panel-wx{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:12px;min-width:0}
+.panel-wx h2{font-size:1.15rem}
+.picker .pick-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) auto;gap:10px;align-items:end}
+.field{display:grid;gap:4px;min-width:0}
+.field label{font-size:.82rem;font-weight:700;color:var(--mute)}
+.field select,.field input{width:100%;font:inherit;font-size:1rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 12px;min-height:44px}
+.field select:focus,.field input:focus{outline:2px solid var(--dawn);outline-offset:1px}
+.city-field{position:relative}
+.city-list{position:absolute;inset-inline:0;top:100%;margin:4px 0 0;padding:4px;list-style:none;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.14);z-index:15;max-height:300px;overflow:auto}
+.city-list li{padding:8px 10px;border-radius:8px;cursor:pointer;display:flex;justify-content:space-between;gap:10px}
+.city-list li small{color:var(--mute);font-size:.78rem}
+.city-list li[aria-selected="true"],.city-list li:hover{background:var(--sea-soft)}
+.btn.locate{min-height:44px;background:var(--sea);color:#fff;white-space:nowrap}
+.btn.locate[aria-busy="true"]{opacity:.7}
+.msg{font-size:.88rem;border-radius:8px;padding:8px 12px}
+.msg.err{background:var(--lv3-soft);color:var(--lv3)}
+.msg.ok{background:var(--sea-soft);color:var(--sea-ink)}
+
+.wx-place{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+.wx-place h2{font-size:clamp(1.4rem,4vw,1.9rem)}
+.wx-place .mute{font-size:.88rem}
+.wx-loading{color:var(--mute)}
+
+/* شريط الخطر */
+.danger{border-radius:14px;padding:16px;display:grid;gap:12px;border:1px solid var(--lvc);background:var(--lvs);border-inline-start:6px solid var(--lvc)}
+.danger[data-level="0"]{--lvc:var(--lv0);--lvs:var(--lv0-soft)}
+.danger[data-level="1"]{--lvc:var(--lv1);--lvs:var(--lv1-soft)}
+.danger[data-level="2"]{--lvc:var(--lv2);--lvs:var(--lv2-soft)}
+.danger[data-level="3"]{--lvc:var(--lv3);--lvs:var(--lv3-soft)}
+.danger-head{display:flex;gap:12px;align-items:center}
+.danger-head .badge{flex:none;width:46px;height:46px;border-radius:50%;background:var(--lvc);color:#fff;display:grid;place-items:center}
+.danger-head h2{font-size:1.25rem}
+.danger-head p{font-size:.9rem;color:var(--mute)}
+.scale{display:flex;gap:4px;flex-wrap:wrap;font-size:.74rem}
+.scale span{display:inline-flex;align-items:center;gap:4px;padding:1px 8px;border-radius:999px;background:var(--surface);border:1px solid var(--line)}
+.scale i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.hz-group{display:grid;gap:8px}
+.hz-group h3{font-size:.95rem;display:flex;gap:8px;align-items:center}
+.hz-group h3 .tag{font-family:var(--body);font-size:.72rem;font-weight:700;border-radius:6px;padding:1px 8px;background:var(--surface);border:1px solid var(--line);color:var(--mute)}
+.hz{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.hz li{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;gap:4px;border-inline-start:4px solid var(--c)}
+.hz li[data-l="0"]{--c:var(--lv0)}.hz li[data-l="1"]{--c:var(--lv1)}.hz li[data-l="2"]{--c:var(--lv2)}.hz li[data-l="3"]{--c:var(--lv3)}
+.hz .t{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.hz .t b{font-family:var(--display);font-size:1.02rem}
+.hz .lv{font-size:.72rem;font-weight:700;color:#fff;background:var(--c);border-radius:6px;padding:0 8px}
+.hz[data-dark] .lv,.hz li[data-l="1"] .lv{color:#1b1500}
+.hz p{font-size:.92rem}
+.hz .advice{font-size:.85rem;color:var(--mute)}
+.official-link{font-size:.86rem}
+.official-link a{color:var(--sea-ink);font-weight:700}
+
+/* الطقس الآن */
+.wx-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:14px}
+.now-main{display:flex;align-items:center;gap:14px}
+.now-main svg{width:76px;height:76px;flex:none}
+.now-temp{font-family:var(--mono);font-size:3.2rem;line-height:1;font-variant-numeric:tabular-nums}
+.now-temp sup{font-size:1.2rem;vertical-align:top;margin-inline-start:2px}
+.now-cond{font-family:var(--display);font-size:1.2rem}
+.now-feel{font-size:.88rem;color:var(--mute)}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0}
+.stats div{background:var(--bg);border-radius:10px;padding:8px 10px;display:grid;gap:0;min-width:0}
+.stats dt{font-size:.74rem;color:var(--mute)}
+.stats dd{margin:0;font-family:var(--mono);font-size:.98rem;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stats dd small{font-family:var(--body);font-size:.72rem;color:var(--mute);margin-inline-start:3px}
+.stats dd{white-space:normal}
+.wx-grid{align-items:start}
+.hours{align-content:start}
+
+/* الساعات */
+.hour-strip{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x proximity;scrollbar-width:thin}
+.hour{flex:none;width:64px;scroll-snap-align:start;background:var(--bg);border-radius:10px;padding:8px 4px;display:grid;justify-items:center;gap:2px;font-size:.78rem}
+.hour svg{width:30px;height:30px}
+.hour b{font-family:var(--mono);font-size:.98rem}
+.hour .pp{color:var(--nile);font-family:var(--mono);font-size:.72rem;min-height:1.2em}
+.hour.now-h{outline:2px solid var(--dawn)}
+
+/* الأيام */
+.day-list{list-style:none;margin:0;padding:0;display:grid}
+.day{display:grid;grid-template-columns:minmax(92px,1.1fr) 36px minmax(0,2.2fr) minmax(0,1.3fr);gap:10px;align-items:center;padding:8px 2px;border-top:1px solid var(--line)}
+.day:first-child{border-top:0}
+.day .d b{display:block;font-size:.95rem}
+.day .d small{color:var(--mute);font-size:.76rem}
+.day svg{width:34px;height:34px}
+.range{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.9rem;font-variant-numeric:tabular-nums}
+.range .bar{flex:1;height:6px;border-radius:99px;background:var(--line);position:relative;min-width:40px}
+.range .bar i{position:absolute;top:0;bottom:0;border-radius:99px;background:linear-gradient(90deg,var(--nile),var(--dawn))}
+[dir="rtl"] .range .bar i{background:linear-gradient(270deg,var(--nile),var(--dawn))}
+.day .x{font-size:.78rem;color:var(--mute);display:grid;gap:0;line-height:1.5}
+.day .x .wet{color:var(--nile)}
+.day[data-l="1"]{box-shadow:inset 3px 0 0 var(--lv1)}.day[data-l="2"]{box-shadow:inset 3px 0 0 var(--lv2)}.day[data-l="3"]{box-shadow:inset 3px 0 0 var(--lv3)}
+[dir="rtl"] .day[data-l="1"]{box-shadow:inset -3px 0 0 var(--lv1)}[dir="rtl"] .day[data-l="2"]{box-shadow:inset -3px 0 0 var(--lv2)}[dir="rtl"] .day[data-l="3"]{box-shadow:inset -3px 0 0 var(--lv3)}
+
+/* المناخ */
+.climate .item{--zc:var(--sea)}
+.climate-rule{font-size:.88rem}
+.verify{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.76rem}
+.verify .g{font-weight:700;border-radius:6px;padding:0 8px;background:var(--sea-soft);color:var(--sea-ink)}
+.verify .g.strong{background:var(--sea);color:#fff}
+.verify .m{border:1px solid var(--line);border-radius:6px;padding:0 6px;color:var(--mute)}
+.climate .src-list{list-style:none;margin:0;padding:0;display:grid;gap:4px;font-size:.84rem}
+.climate .src-list li{display:flex;flex-wrap:wrap;gap:2px 8px;color:var(--mute)}
+.climate .src-list a{color:var(--ink);text-decoration:none;border-bottom:1px dotted var(--mute)}
+.climate .src-list a::after{content:" ↗";font-size:.75em;color:var(--mute)}
+.climate .src-list .on{font-weight:700;color:var(--mute)}
+.climate .src-list .off{font-size:.7rem;font-weight:700;color:var(--sea-ink)}
+.wx-method li{line-height:1.7}
+
+@media (max-width:860px){.wx-grid{grid-template-columns:1fr}}
+@media (max-width:640px){
+  .picker .pick-row{grid-template-columns:1fr}
+  .btn.locate{justify-content:center}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .day{grid-template-columns:minmax(78px,1fr) 32px minmax(0,2fr);row-gap:2px}
+  .day .x{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:2px 12px;padding-inline-start:2px}
+  .now-temp{font-size:2.8rem}
+}

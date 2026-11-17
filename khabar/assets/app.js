@@ -38,7 +38,7 @@ const T={
  ledger:['الشفافية','Transparency'],listen:['استمع','Listen'],stop:['أوقف','Stop'],
  auto_breaking:['رصد آلي','Auto-detected'],checked_by:['دقّقه المدقق المستقل','Independently fact-checked'],
  nums_ok:['الأرقام مطابقة لمصادرها','Figures match their sources'],nums_review:['رقم قيد المراجعة','Figure under review'],
- trust:['ميزان الثقة','Trust meter'],
+ trust:['ميزان الثقة','Trust meter'],weather:['الطقس والمناخ','Weather'],climate:['مناخ العالم','World climate'],
  military:['القسم العسكري','Military'],wars:['الحروب الدائرة','Ongoing wars']
 };
 const t=k=>(T[k]||[k,k])[LANG==='en'?1:0];
@@ -58,7 +58,7 @@ const nSources=n=>nCount(n,['مصدر موثّق واحد','مصدران موث�
 const fmtRange=(a,b)=>{const A=fmtDate(a).split(' '),B=fmtDate(b);return a.slice(0,7)===b.slice(0,7)?`${A[0]}–${B}`:a.slice(0,4)===b.slice(0,4)?`${A[0]} ${A[1]} – ${B}`:`${fmtDate(a)} – ${B}`};
 function fmtTime(isoDT){const p=dohaParts(new Date(isoDT));const h=+p.hour,m=p.minute;if(LANG==='en')return `${String(h).padStart(2,'0')}:${m} Doha time`;const h12=h%12||12;return `${h12}:${m} ${h<12?'صباحاً':'مساءً'} بتوقيت الدوحة`}
 
-let BRIEF=null,HEAD=null,ADMIN={breaking:null,hidden:[]},ARCH=null,LEDGER=null,AUTOB=null;
+let BRIEF=null,HEAD=null,ADMIN={breaking:null,hidden:[]},ARCH=null,LEDGER=null,AUTOB=null,CLIM=null;
 let VIEW='today',QUERY='',FILTER={};
 const saved=()=>store.get('khabar-saved',{});
 
@@ -67,6 +67,8 @@ const getJSON=u=>fetch(u,{cache:'no-cache'}).then(r=>{if(!r.ok)throw new Error(u
 async function load(briefId){
   const bu=briefId?`data/archive/${briefId}.json`:'data/brief.json';
   const [b,h,a,ar,lg,ab]=await Promise.all([getJSON(bu),getJSON('data/headlines.json').catch(()=>null),getJSON('data/admin.json').catch(()=>null),getJSON('data/archive/index.json').catch(()=>null),getJSON('data/ledger.json').catch(()=>null),getJSON('data/breaking.json').catch(()=>null)]);
+  // أخبار المناخ (كل خبر من جهتين مستقلتين) تُعرض مع كل خلاصة، ولا يتعطل شيء إن لم تتوفر
+  CLIM=await getJSON('data/climate.json').catch(()=>null);
   // الخلاصة الآلية تحمل عناوين كل لغة من مصادرها، فلا يظهر في كل لغة إلا ما نُشر بها
   b.zones.forEach(z=>{z.all=z.all||z.items;z.items=z.all.filter(i=>i[LANG])});
   BRIEF=b;HEAD=h;if(a)ADMIN=Object.assign({breaking:null,hidden:[]},a);ARCH=ar;LEDGER=lg;AUTOB=ab;
@@ -83,8 +85,8 @@ function header(){
   $('#theme-btn').setAttribute('aria-label',dark?t('theme_light'):t('theme_dark'));
   document.title=LANG==='en'?'Khabar | Your daily brief from Doha to the world':'خبر | خلاصة يومك من الدوحة إلى العالم';
   const tabs=$('#tabs');tabs.textContent='';
-  [['today'],...ZONES.map(z=>[z,ZC[z]]),['military','#8A3A2E'],['wars','#C4392F'],['roadmap'],['ledger'],['saved'],['about']].forEach(([id,c])=>{
-    const a=el('a','tab');a.href='#'+id;if(c){const i=el('i');i.style.background=c==='var(--ink)'?'var(--deep-ink)':c;a.append(i)}a.append(t(id));
+  [['today'],...ZONES.map(z=>[z,ZC[z]]),['military','#8A3A2E'],['wars','#C4392F'],['weather'],['roadmap'],['ledger'],['saved'],['about']].forEach(([id,c])=>{
+    const a=el('a','tab');a.href=id==='weather'?'weather/':'#'+id;if(c){const i=el('i');i.style.background=c==='var(--ink)'?'var(--deep-ink)':c;a.append(i)}a.append(t(id));
     if(id===VIEW||(id==='today'&&VIEW.startsWith('b-'))||(id==='wars'&&VIEW.startsWith('war-')))a.setAttribute('aria-current','page');tabs.append(a)});
   const cur=tabs.querySelector('[aria-current]');if(cur)cur.scrollIntoView({block:'nearest',inline:'center'});
   // contact
@@ -368,6 +370,22 @@ function milTeaser(){
   if(MIL){const n=MIL.regions.reduce((x,r)=>x+r.items.length,0);s.append(el('p','basis',L(`${nItems(n)} عسكرية مؤكدة من جهتين على الأقل: أوروبا، ثم الشرق الأوسط، ثم العالم.`,`${nItems(n)} confirmed by at least two outlets: Europe, then the Middle East, then the world.`)))}
   return s}
 
+// «مناخ العالم» في الصفحة الرئيسية: أحدث ثلاثة أخبار مؤكدة من جهتين مستقلتين فأكثر، مع مصادرها، ورابط إلى قسم الطقس والمناخ
+function climateBlock(){
+  if(!CLIM||QUERY)return null;const hid=new Set(ADMIN.climate_hidden||[]);
+  if(ADMIN.climate_off)return null;
+  const list=(CLIM[LANG]||[]).filter(x=>!hid.has(x.id)&&(x.sources||[]).length>=2).slice(0,3);
+  const w=el('section','zone climate-home');const h=el('div','zone-head'),dot=el('span','dot');dot.style.background='var(--sea)';
+  const more=el('a','count',L('الطقس في مكانك وكل أخبار المناخ ←','Your weather and all climate news →'));more.href='weather/';h.append(dot,el('h2',null,t('climate')),more);w.append(h);
+  if(!list.length){w.append(el('p','empty',L('لا يوجد الآن خبر مناخي مؤكد من جهتين مستقلتين.','No climate story is confirmed by two independent outlets right now.')));return w}
+  const ul=el('ul','items');list.forEach(x=>{const li=el('li','item');li.style.setProperty('--zc','var(--sea)');
+    li.append(el('span','cat',x.outlets===2?L('مؤكد من جهتين مستقلتين','Confirmed by two independent outlets'):L(`مؤكد من ${x.outlets} جهات مستقلة`,`Confirmed by ${x.outlets} independent outlets`)),el('p',null,x.title));
+    const box=el('div','src');box.append(el('span','lbl',t('sources')+':'));x.sources.forEach(s=>{const a=el('a',null,`${s.name} · ${fmtDate(s.date)}`);a.href=s.url;a.target='_blank';a.rel='noopener';box.append(a)});
+    if(x.data){const a=el('a',null,`GDACS · ${x.data.date?fmtDate(x.data.date):''}`);a.href=x.data.url;a.target='_blank';a.rel='noopener';box.append(a)}
+    li.append(box);ul.append(li)});
+  w.append(ul);return w;
+}
+
 /* ---------- views ---------- */
 const main=$('#main');
 let listHost=null;
@@ -378,7 +396,7 @@ function viewToday(){
   main.append(edHead());
   const th=el('div','thread');th.append(el('b',null,t('thread')),el('p',null,BRIEF.thread[LANG]),srcLine(BRIEF.thread.src,t('basis')));main.append(th);
   {const fa=followAlert();if(fa)main.insertBefore(fa,main.firstChild)}
-  main.append(markets());{const mt=milTeaser();if(mt)main.append(mt)}main.append(searchBox());
+  main.append(markets());{const mt=milTeaser();if(mt)main.append(mt)}{const cb=climateBlock();if(cb)main.append(cb)}main.append(searchBox());
   listHost=el('div');listHost.style.cssText='display:grid;gap:28px';main.append(listHost);renderList();
   main.append(allSources());
 }
