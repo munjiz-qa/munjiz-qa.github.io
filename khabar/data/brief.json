@@ -1,25 +1,27 @@
 {
- "id": "2026-11-16-nt",
- "edition": "nt",
- "date": "2026-11-16",
- "published": "2026-11-16T23:50:00+03:00",
+ "id": "2026-11-17-am",
+ "edition": "am",
+ "date": "2026-11-17",
+ "published": "2026-11-17T05:50:00+03:00",
  "title": {
-  "ar": "خلاصة الليل",
-  "en": "Night Brief"
+  "ar": "خلاصة الصباح",
+  "en": "Morning Brief"
  },
  "thread": {
-  "ar": "ليل الاثنين 16 نوفمبر: تتراجع وول ستريت بقيادة «إنفيديا» ويتسع هبوط «ناسداك» فوق 2%، ويهبط برنت إلى 93 دولاراً مع حديث الفائض، فيما تعترض السعودية مسيّرتين فوق مكة والرياض ويستعد عراقجي لمحادثات مسقط. وفي الدوحة يطالب الخليفي من لندن بحماية الوسطاء ويرحّب الشورى بالشراكة الدفاعية مع تركيا، وفي القاهرة تُعلَن زيادة أجور الجامعات بـ25 مليار جنيه سنوياً ويواصل الجنيه تحسنه، بينما تنضم أوروبا للمرة الأولى إلى مفاوضات أوكرانيا.",
-  "en": "Monday night, 16 November: Wall Street retreats led by Nvidia as the Nasdaq's fall widens past 2%, and Brent drops to $93 on surplus talk, while Saudi Arabia intercepts two drones over Makkah and Riyadh and Araghchi readies for Muscat talks. In Doha, Al Khulaifi calls from London for protecting mediators and the Shura welcomes the defence partnership with Türkiye; in Cairo a EGP 25 billion-a-year university pay rise is announced and the pound firms further, as Europe joins Ukraine negotiations for the first time.",
+  "ar": "صباح الثلاثاء 17 نوفمبر: تخسر وول ستريت للجلسة الثالثة بقيادة «إنفيديا» ويمتد البيع إلى آسيا قبل نتائجها الليلة، ويسوّي برنت عند 92.44 دولاراً مع تعافي صادرات هرمز. وفي الخليج تعيد الرياض ترتيب قيادة القوات المشتركة ويصل عراقجي إلى مسقط بخطة لفتح المضيق خلال يومين، وفي الدوحة يفتتح مؤتمر «إنتربا» وتبني الهيئة العامة للضرائب كفاءاتها مع «ACCA»، بينما تفتتح القاهرة اجتماع المنتدى الاقتصادي العالمي بهدف 78 مليار دولار من الاستثمار الأجنبي والدولار ثابت عند 53.73 جنيه.",
+  "en": "Tuesday morning, 17 November: Wall Street loses for a third session led by Nvidia and selling spreads to Asia ahead of its results tonight, while Brent settles at $92.44 as Hormuz exports recover. In the Gulf, Riyadh reshuffles Joint Forces command and Araghchi arrives in Muscat with a plan to reopen the strait within two days; in Doha the INTERPA conference opens and the tax authority builds expertise with ACCA, while Cairo opens the WEF meeting with a $78 billion FDI target and the dollar steady at EGP 53.73.",
   "src": [
-   "yf-live16",
-   "ap-ws16",
-   "pen-coal16",
-   "hos-calls16",
-   "pen-khul16",
-   "qt-shura16",
-   "ah-uni16",
-   "yl-usd16",
-   "an-zel16"
+   "bnn-ws16",
+   "ral-asia17",
+   "nt-oil17",
+   "nat-sajf16",
+   "anw-arg17",
+   "oo-hormuz16",
+   "pen-interpa16",
+   "pen-gta16",
+   "c24-wef16",
+   "dw-fdi16",
+   "yl-usd17"
   ]
  },
  "markets": [
@@ -27,38 +29,38 @@
    "id": "brent",
    "ar": "خام برنت",
    "en": "Brent crude",
-   "value": "93.32",
+   "value": "92.44",
    "unit": {
     "ar": "دولار/برميل",
     "en": "$/bbl"
    },
-   "chg": "−2.6%",
+   "chg": "−3.55%",
    "dir": "down",
    "note": {
-    "ar": "تعاملات الاثنين 16 نوفمبر (10:15 صباحاً بتوقيت نيويورك)",
-    "en": "Monday 16 November trading (10:15 a.m. New York time)"
+    "ar": "تسوية الاثنين 16 نوفمبر (−3.40 دولارات)",
+    "en": "Monday 16 November settlement (−$3.40)"
    },
    "src": [
-    "ap-ws16"
+    "nt-oil17"
    ]
   },
   {
    "id": "wti",
    "ar": "الخام الأميركي",
    "en": "US crude (WTI)",
-   "value": "85.91",
+   "value": "85.72",
    "unit": {
     "ar": "دولار/برميل",
     "en": "$/bbl"
    },
-   "chg": "−2.99%",
+   "chg": "−3.2%",
    "dir": "down",
    "note": {
-    "ar": "عقد ديسمبر، تعاملات الاثنين 16 نوفمبر (نحو 1:18 ظهراً بتوقيت نيويورك)",
-    "en": "December contract, Monday 16 November trading (about 1:18 p.m. New York time)"
+    "ar": "تسوية الاثنين 16 نوفمبر (−2.84 دولار)",
+    "en": "Monday 16 November settlement (−$2.84)"
    },
    "src": [
-    "yf-live16"
+    "nt-oil17"
    ]
   },
   {
@@ -298,32 +300,33 @@
     "ar": "جنيه",
     "en": "EGP"
    },
-   "chg": "−0.20%",
-   "dir": "down",
+   "chg": "0.00%",
+   "dir": "flat",
    "note": {
-    "ar": "سعر البيع في البنك الأهلي بختام الاثنين 16 نوفمبر (الشراء 53.63) مقابل 53.84 عند الافتتاح",
-    "en": "NBE selling rate at Monday 16 November close (buy 53.63) vs 53.84 at the open"
+    "ar": "سعر البيع في البنك الأهلي صباح الثلاثاء 17 نوفمبر (الشراء 53.63)",
+    "en": "National Bank of Egypt sell rate, Tuesday 17 November morning (buy 53.63)"
    },
    "src": [
-    "yl-usd16"
+    "yl-usd17"
    ]
   },
   {
    "id": "goldeg",
    "ar": "ذهب عيار 21 في مصر",
    "en": "Gold 21k (Egypt)",
-   "value": "5,930",
+   "value": "5,910",
    "unit": {
     "ar": "جنيه/غرام",
     "en": "EGP/g"
    },
-   "chg": "",
+   "chg": "−0.34%",
    "dir": "down",
    "note": {
-    "ar": "عيار 21 للبيع بختام الاثنين 16 نوفمبر (الشراء 5,885)، والجنيه الذهب 47,440 جنيهاً",
-    "en": "21-karat selling price at Monday 16 November close (buy 5,885); gold pound EGP47,440"
+    "ar": "عيار 21 مستهل الثلاثاء 17 نوفمبر مقابل 5,930 بختام الاثنين، والجنيه الذهب 47,280",
+    "en": "21-carat at the start of Tuesday 17 November vs 5,930 at Monday's close; gold pound EGP 47,280"
    },
    "src": [
+    "m24-gold17",
     "m2030-gold16"
    ]
   },
@@ -426,19 +429,19 @@
    "id": "xau",
    "ar": "الذهب عالمياً (عقود آجلة)",
    "en": "Gold (futures)",
-   "value": "3,849.30",
+   "value": "3,852.62",
    "unit": {
     "ar": "دولار/أونصة",
     "en": "$/oz"
    },
-   "chg": "−0.95%",
+   "chg": "−0.1%",
    "dir": "down",
    "note": {
-    "ar": "العقود الآجلة، تعاملات الاثنين 16 نوفمبر (نحو 1:18 ظهراً بتوقيت نيويورك)",
-    "en": "Futures, Monday 16 November trading (about 1:18 p.m. New York time)"
+    "ar": "المعاملات الفورية صباح الثلاثاء 17 نوفمبر بتوقيت آسيا",
+    "en": "Spot, Tuesday 17 November morning in Asia"
    },
    "src": [
-    "yf-live16"
+    "ral-asia17"
    ]
   },
   {
@@ -464,57 +467,57 @@
    "id": "spx",
    "ar": "إس آند بي 500",
    "en": "S&P 500",
-   "value": "7,437.67",
+   "value": "7,416.59",
    "unit": {
     "ar": "نقطة",
     "en": "pts"
    },
-   "chg": "−1.64%",
+   "chg": "−1.9%",
    "dir": "down",
    "note": {
-    "ar": "تعاملات الاثنين 16 نوفمبر (نحو 1:18 ظهراً بتوقيت نيويورك، −124 نقطة)",
-    "en": "Monday 16 November trading (about 1:18 p.m. New York time, −124 pts)"
+    "ar": "إغلاق الاثنين 16 نوفمبر (−145.08 نقطة)، ثالث خسارة متتالية",
+    "en": "Monday 16 November close (−145.08 pts), third straight loss"
    },
    "src": [
-    "yf-live16"
+    "bnn-ws16"
    ]
   },
   {
    "id": "dji",
    "ar": "داو جونز الصناعي",
    "en": "Dow Jones Industrial Average",
-   "value": "51,801.59",
+   "value": "51,608.17",
    "unit": {
     "ar": "نقطة",
     "en": "pts"
    },
-   "chg": "−1.04%",
+   "chg": "−1.4%",
    "dir": "down",
    "note": {
-    "ar": "تعاملات الاثنين 16 نوفمبر (نحو 1:18 ظهراً بتوقيت نيويورك، −545.96 نقطة)",
-    "en": "Monday 16 November trading (about 1:18 p.m. New York time, −545.96 pts)"
+    "ar": "إغلاق الاثنين 16 نوفمبر (−739.38 نقطة)",
+    "en": "Monday 16 November close (−739.38 pts)"
    },
    "src": [
-    "yf-live16"
+    "bnn-ws16"
    ]
   },
   {
    "id": "ixic",
    "ar": "مؤشر ناسداك المركب",
    "en": "Nasdaq Composite",
-   "value": "24,575.75",
+   "value": "24,509.76",
    "unit": {
     "ar": "نقطة",
     "en": "pts"
    },
-   "chg": "−2.23%",
+   "chg": "−2.5%",
    "dir": "down",
    "note": {
-    "ar": "تعاملات الاثنين 16 نوفمبر (نحو 1:18 ظهراً بتوقيت نيويورك، −560.52 نقطة)",
-    "en": "Monday 16 November trading (about 1:18 p.m. New York time, −560.52 pts)"
+    "ar": "إغلاق الاثنين 16 نوفمبر (−626.52 نقطة)",
+    "en": "Monday 16 November close (−626.52 pts)"
    },
    "src": [
-    "yf-live16"
+    "bnn-ws16"
    ]
   },
   {
@@ -545,15 +548,14 @@
     "ar": "%",
     "en": "%"
    },
-   "chg": "−0.03",
+   "chg": "−0.02",
    "dir": "down",
    "note": {
-    "ar": "تعاملات الاثنين 16 نوفمبر بعد 5.15% في نهاية الجمعة",
-    "en": "Monday 16 November trading after 5.15% late Friday"
+    "ar": "نهاية الاثنين 16 نوفمبر مقابل 5.15% الجمعة وأدنى أوائل نوفمبر 4.80%",
+    "en": "End of Monday 16 November vs 5.15% on Friday and an early-November low of 4.80%"
    },
    "src": [
-    "yf-live16",
-    "ap-ws16"
+    "bnn-ws16"
    ]
   },
   {
@@ -1028,143 +1030,132 @@
     {
      "id": "q1",
      "cat": {
-      "ar": "الدبلوماسية",
-      "en": "Diplomacy"
+      "ar": "الأمن والتعليم الشرطي",
+      "en": "Security & police education"
      },
-     "ar": "أكد سعادة الدكتور محمد بن عبدالعزيز الخليفي وزير الدولة بوزارة الخارجية، في جلسة رفيعة ضمن «منتدى المرونة المستقبلية» في لندن، أن الوساطة «مسؤولية دولية ومصلحة وطنية» لقطر، مستعرضاً سجلها من تبادل السجناء بين الولايات المتحدة وفنزويلا إلى جهود غزة المشتركة مع مصر وتركيا والولايات المتحدة ولمّ شمل أطفال أوكرانيا. ودعا إلى حماية الوسطاء باحترام سيادة الدول الوسيطة وسلامة المفاوضين وسرية المحادثات، معتبراً أن الاعتداءات على قطر أظهرت الحاجة إلى ضمانات أقوى.",
-     "en": "Minister of State at the Ministry of Foreign Affairs H E Dr Mohammed bin Abdulaziz Al Khulaifi told a high-level session of the Future Resilience Forum in London that mediation is \"both an international responsibility and a national interest\" for Qatar, citing its record from the US-Venezuela prisoner exchange to joint Gaza efforts with Egypt, Turkey and the US and reuniting Ukrainian children with their families. He called for protecting mediators through respect for mediating states' sovereignty, the safety of negotiators and the confidentiality of talks, saying attacks on Qatar showed the need for stronger safeguards.",
+     "ar": "افتتحت قطر المؤتمر الخامس عشر للرابطة الدولية لأكاديميات الشرطة «إنتربا» برعاية معالي الشيخ خليفة بن حمد بن خليفة آل ثاني وزير الداخلية، وبحضور سعادة الشيخ عبدالعزيز بن فيصل بن محمد آل ثاني وزير الدولة للشؤون الداخلية. ويجمع المؤتمر الممتد ثلاثة أيام (16 إلى 18 نوفمبر) مؤسسات التعليم والتدريب الشرطي من حول العالم، وركّز يومه الأول على حوكمة المعرفة المؤسسية في ظل التحول الرقمي.",
+     "en": "Qatar opened the 15th conference of the International Association of Police Academies (INTERPA) under the patronage of Interior Minister H E Sheikh Khalifa bin Hamad bin Khalifa Al Thani, attended by Minister of State for Interior Affairs H E Sheikh Abdulaziz bin Faisal bin Mohammed Al Thani. The three-day conference (16 to 18 November) brings together police education and training institutions from around the world; its first day focused on governing institutional knowledge amid digital transformation.",
      "src": [
-      "pen-khul16"
+      "pen-interpa16"
      ]
     },
     {
      "id": "q2",
      "cat": {
-      "ar": "الشأن الحكومي",
-      "en": "Government"
+      "ar": "الاقتصاد والضرائب",
+      "en": "Economy & tax"
      },
-     "ar": "استقبل معالي الشيخ محمد بن عبدالرحمن بن جاسم آل ثاني رئيس مجلس الوزراء وزير الخارجية في الدوحة سعادة السيدة ماكا بوتشوريشفيلي نائبة رئيس الوزراء وزيرة خارجية جورجيا، وبحثا علاقات التعاون الثنائي وسبل تعزيزها وآخر التطورات الإقليمية.",
-     "en": "Prime Minister and Minister of Foreign Affairs H E Sheikh Mohammed bin Abdulrahman bin Jassim Al Thani received in Doha Georgia's Deputy Prime Minister and Minister of Foreign Affairs H E Maka Bochorishvili; they discussed bilateral cooperation, ways to strengthen it and the latest regional developments.",
+     "ar": "وقّعت الهيئة العامة للضرائب اتفاقية مع جمعية المحاسبين القانونيين المعتمدين البريطانية «ACCA» لاعتماد برنامج «أخصائي ضرائب» في قطر: تُعدّ الهيئة المحتوى التعليمي وتشرف على جودة التدريب لدى مزوديها المعتمدين، وتتولى الجمعية وضع التقييم النهائي ومعاييره واستضافته على منصتها. ويُتوقع فتح البرنامج للمهنيين في النصف الأول من 2027.",
+     "en": "The General Tax Authority signed an agreement with the UK-based Association of Chartered Certified Accountants (ACCA) to accredit a Tax Specialist programme in Qatar: the authority prepares the educational content and oversees training quality at its approved providers, while ACCA designs the final assessment, sets its standards and hosts it on its platform. The programme is expected to open to professionals in the first half of 2027.",
      "src": [
-      "qt-geo16"
+      "pen-gta16"
      ]
     },
     {
      "id": "q3",
      "cat": {
-      "ar": "الشأن الحكومي",
-      "en": "Government"
+      "ar": "بورصة قطر",
+      "en": "Qatar Stock Exchange"
      },
-     "ar": "تلقى معالي رئيس مجلس الوزراء وزير الخارجية اتصالاً هاتفياً من صاحب السمو الأمير فيصل بن فرحان وزير الخارجية السعودي، تناول التطورات الإقليمية الراهنة والجهود الرامية إلى خفض التصعيد وأمن المنطقة واستقرارها، بحسب وكالة الأنباء السعودية، ضمن سلسلة اتصالات سعودية مع الدوحة والقاهرة منذ مطلع نوفمبر.",
-     "en": "The Prime Minister and Minister of Foreign Affairs received a phone call from Saudi Foreign Minister Prince Faisal bin Farhan covering current regional developments, de-escalation efforts and regional security and stability, according to the Saudi Press Agency, part of a series of Saudi calls with Doha and Cairo since early November.",
+     "ar": "أنهى مؤشر بورصة قطر جلسة الاثنين 16 نوفمبر عند 10,107 نقاط مرتفعاً 2.6% بعد إغلاق الأحد عند 9,848 نقطة، في ارتداد قادته الأسهم القيادية مع تعافي الأسواق الخليجية من مخاوف الأمن الإقليمي.",
+     "en": "The QE Index ended Monday 16 November at 10,107 points, up 2.6% from Sunday's 9,848 close, in a rebound led by blue chips as Gulf markets recovered from regional security fears.",
      "src": [
-      "hos-calls16"
+      "br-gulf16"
      ]
     },
     {
      "id": "q4",
      "cat": {
-      "ar": "مجلس الشورى",
-      "en": "Shura Council"
+      "ar": "المجتمع",
+      "en": "Society"
      },
-     "ar": "أشاد مجلس الشورى، في جلسته برئاسة معالي السيد حسن بن عبدالله الغانم، بمشاركة حضرة صاحب السمو الشيخ تميم بن حمد آل ثاني أمير البلاد المفدى في افتتاح COP31 في أنطاليا، ورحّب بنتائج الاجتماع الثاني عشر للجنة الاستراتيجية العليا القطرية التركية التي اختُتمت باتفاقية دفاع مشترك واتفاقيات ومذكرات أخرى. وأحال المجلس إلى لجنة التعليم والثقافة والرياضة والإعلام رد الحكومة على مقترح بتعزيز الدور الاجتماعي والثقافي والقيمي للأندية الرياضية.",
-     "en": "The Shura Council, in a session chaired by Speaker H E Hassan bin Abdullah Al Ghanim, praised His Highness the Amir Sheikh Tamim bin Hamad Al Thani's attendance at the COP31 opening in Antalya and welcomed the outcomes of the 12th Qatar-Türkiye Supreme Strategic Committee, which concluded with a mutual defence agreement and other agreements and memoranda. It referred the government's response on a proposal to strengthen the social, cultural and values-based role of sports clubs to its Education, Culture, Sports and Information Committee.",
+     "ar": "في اليوم الدولي للتسامح، قدّم نايف النابت الزميل غير المقيم في مجلس الشرق الأوسط للشؤون الدولية، في حديث لوكالة الأنباء القطرية، قطر نموذجاً يحوّل التنوع «إلى مصدر قوة لا انقسام»، رابطاً ذلك برؤية قطر الوطنية 2030 وبجهود الوساطة التي تثبت أن الحوار يمنع تحوّل الخلافات السياسية إلى انقسامات دائمة، ومشيراً إلى دور مؤسسة قطر و«مناظرات قطر» في ترسيخ احترام الرأي الآخر.",
+     "en": "On the International Day for Tolerance, Nayef Al Nabet, non-resident fellow at the Middle East Council on Global Affairs, told QNA that Qatar turns diversity \"into a source of strength rather than division\", linking this to Qatar National Vision 2030 and to mediation efforts showing that dialogue keeps political differences from hardening into lasting divisions, and citing Qatar Foundation and QatarDebate in fostering respect for differing views.",
      "src": [
-      "qt-shura16"
+      "pen-tol16"
      ]
     },
     {
      "id": "q5",
      "cat": {
-      "ar": "الأمن والتدريب",
-      "en": "Security and training"
+      "ar": "العمل",
+      "en": "Labour"
      },
-     "ar": "استقبل سعادة الشيخ خليفة بن حمد بن خليفة آل ثاني وزير الداخلية قائد قوة الأمن الداخلي «لخويا» اللواء نيك كاولي قائد الأكاديمية العسكرية الملكية البريطانية «ساندهيرست»، وبحثا تعزيز التعاون في التعليم والتدريب والتطوير العسكري وتبادل الخبرات.",
-     "en": "Minister of Interior and Commander of the Internal Security Force (Lekhwiya) H E Sheikh Khalifa bin Hamad bin Khalifa Al Thani received Major General Nick Cowley, Commander of the Royal Military Academy Sandhurst; they discussed strengthening cooperation in military education, training and development and exchanging expertise.",
+     "ar": "التقى سعادة الدكتور علي بن سميخ المري وزير العمل سعادة السيد تييرنو عبدالله سو سفير غينيا لدى الدولة، وبحثا سبل تعزيز العلاقات الثنائية ولا سيما في قطاع العمل.",
+     "en": "Minister of Labour H E Dr Ali bin Samikh Al Marri met Guinea's Ambassador to Qatar H E Thierno Abdoulaye Sow; they discussed ways to strengthen bilateral ties, particularly in the labour sector.",
      "src": [
-      "qt-sand16"
+      "pen-lab16"
      ]
     },
     {
      "id": "q6",
      "cat": {
-      "ar": "الاقتصاد والمناطق الحرة",
-      "en": "Economy and free zones"
+      "ar": "الفلك",
+      "en": "Astronomy"
      },
-     "ar": "نالت «حديقة ابتكار الأعمال» في المنطقة الحرة برأس بوفنطاس شهادة «جي ساس» الذهبية للتشغيل من المنظمة الخليجية للبحث والتطوير، بعد تقييم كفاءة الطاقة والمياه وجودة البيئة الداخلية وإدارة النفايات. وقال المهندس عبدالله حمد البنعلي الرئيس التنفيذي للتطوير والعمليات في هيئة المناطق الحرة إن الشهادة «محطة مهمة» في تطوير بنية تحتية ذات قيمة مستدامة.",
-     "en": "The Business Innovation Park at the Ras Bufontas Free Zone received GSAS Operations Gold certification from the Gulf Organisation for Research and Development after an assessment of energy and water efficiency, indoor environmental quality and waste management. Eng Abdulla Hamad Al-Binali, the Free Zones Authority's Chief Development and Operations Officer, called it \"a significant milestone\" in delivering infrastructure with lasting value.",
+     "ar": "أعلنت دار التقويم القطري أن زخة شهب «الأسديات» تبلغ ذروتها فوق قطر من منتصف ليل الثلاثاء حتى فجر الأربعاء 18 نوفمبر بمعدل نحو 15 شهاباً في الساعة، ويمكن رصدها بالعين المجردة باتجاه الأفق الشمالي الشرقي، مع غياب القمر قبل منتصف الليل، والأفضل الابتعاد عن الأحياء السكنية والإضاءة.",
+     "en": "The Qatar Calendar House said the Leonid meteor shower peaks over Qatar from midnight Tuesday until dawn on Wednesday 18 November at about 15 meteors an hour, visible to the naked eye towards the north-eastern horizon; the Moon sets before midnight, and viewers are advised to seek dark sites away from residential lighting.",
      "src": [
-      "qt-qfz16"
+      "pen-leo16"
      ]
     },
     {
      "id": "q7",
      "cat": {
-      "ar": "الثقافة والتعليم",
-      "en": "Culture and education"
+      "ar": "الطقس",
+      "en": "Weather"
      },
-     "ar": "افتتحت مكتبة قطر الوطنية بالتعاون مع جامعة حمد بن خليفة «معرض ملهمون 2026: أفكار وفن وذكاء اصطناعي» بحضور سعادة الدكتور حمد بن عبدالعزيز الكواري وزير الدولة رئيس المكتبة، ويجمع الكتابة الإبداعية والفنون البصرية والذكاء الاصطناعي في أعمال الطلاب، مع وصف صوتي وطريقة برايل ولغة إشارة، ويستمر حتى 12 مارس 2027.",
-     "en": "Qatar National Library, with Hamad Bin Khalifa University, opened \"Mulhamoon Exhibition 2026: Ideas, Art, and AI\" in the presence of Minister of State and QNL President H E Dr Hamad bin Abdulaziz Al Kawari. It combines students' creative writing, visual arts and AI, offers audio description, Braille and sign language, and runs until 12 March 2027.",
+     "ar": "توقعت إدارة الأرصاد الجوية ليلاً بارداً نسبياً مع بعض السحب على الساحل، ورياحاً شمالية غربية إلى غربية بسرعة 5 إلى 15 عقدة على الساحل و8 إلى 18 عقدة في عرض البحر مع هبات تصل إلى 21 عقدة، وارتفاع الموج 1 إلى 3 أقدام على الساحل و2 إلى 5 أقدام في عرض البحر.",
+     "en": "The Department of Meteorology forecast a relatively cold night with some inshore cloud, north-westerly to westerly winds of 5 to 15 knots inshore and 8 to 18 knots offshore with gusts up to 21 knots, and seas of 1 to 3 feet inshore and 2 to 5 feet offshore.",
      "src": [
-      "pen-qnl16"
-     ]
-    },
-    {
-     "id": "q8",
-     "cat": {
-      "ar": "البورصة",
-      "en": "Stock market"
-     },
-     "ar": "يبقى إغلاق الاثنين مرجع الجلسة المقبلة: مؤشر بورصة قطر عند 10,107 نقاط بارتفاع 2.6%، في أقوى ارتداد بين أسواق الخليج بعد تراجع الأحد.",
-     "en": "Monday's close remains the reference for the next session: the QE Index at 10,107, up 2.6%, the strongest rebound among Gulf markets after Sunday's slide.",
-     "src": [
-      "br-gulf16"
+      "pen-wx16"
      ]
     }
    ],
    "analysis": {
-    "ar": "ليل الدوحة دبلوماسي بامتياز: من لندن يضع الخليفي الوساطة القطرية في إطار مبدئي ويطالب بحماية الوسطاء بعد الاعتداءات على قطر، وفي الدوحة يستقبل رئيس الوزراء وزيرة خارجية جورجيا ويتلقى اتصالاً سعودياً عن خفض التصعيد، بينما يصادق الشورى سياسياً على الشراكة الدفاعية مع تركيا. وفي الداخل تمضي المؤسسات في مسارها المعتاد من شهادات الاستدامة إلى معارض الذكاء الاصطناعي، وهي رسالة استقرار تتسق مع ارتداد البورصة.",
-    "en": "Doha's night is distinctly diplomatic: from London, Al Khulaifi frames Qatari mediation as principle and calls for protecting mediators after the attacks on Qatar; in Doha the Prime Minister receives Georgia's foreign minister and takes a Saudi call on de-escalation, while the Shura politically endorses the defence partnership with Türkiye. At home, institutions carry on, from sustainability certificates to AI exhibitions, a message of stability consistent with the bourse rebound.",
+    "ar": "صباح الدوحة مؤسسي هادئ: مؤتمر «إنتربا» يضع قطر في قلب شبكة التعليم الشرطي الدولية، واتفاقية الهيئة العامة للضرائب مع «ACCA» تبني كفاءات محلية لمرحلة الضريبة الدنيا العالمية، فيما يقدّم خطاب التسامح والوساطة الوجه القيمي للسياسة الخارجية. وفي السوق، يمنح إغلاق الاثنين فوق 10,000 نقطة الثقة لبدء الأسبوع، لكن هبوط النفط ووول ستريت ليلاً سيختبر هذا الارتداد في جلسة الثلاثاء.",
+    "en": "Doha's morning is institutional and calm: the INTERPA conference places Qatar at the heart of the international police-education network, the GTA's agreement with ACCA builds local expertise for the era of the global minimum tax, and the tolerance-and-mediation message presents the values side of foreign policy. In the market, Monday's close above 10,000 lends confidence to the week, but overnight falls in oil and on Wall Street will test that rebound on Tuesday.",
     "src": [
-     "pen-khul16",
-     "qt-geo16",
-     "hos-calls16",
-     "qt-shura16",
-     "qt-qfz16",
-     "pen-qnl16",
-     "br-gulf16"
+     "pen-interpa16",
+     "pen-gta16",
+     "pen-tol16",
+     "br-gulf16",
+     "nt-oil17",
+     "bnn-ws16"
     ]
    },
    "technical": {
-    "ar": "أغلق المؤشر عند 10,107 نقاط بعد افتتاح عند 9,925 وإغلاق الأحد عند 9,848، فاخترق المقاومة النفسية 10,000. صار هذا المستوى دعماً أول يليه 9,925، والمقاومة التالية 10,200. الثبات فوق 10,000 في جلستين يؤكد انتهاء التصحيح، والعودة دونه تعني أن الارتداد كان تغطية مراكز بيع.",
-    "en": "The index closed at 10,107 after opening at 9,925 and Sunday's 9,848 close, breaking the psychological 10,000 resistance. That level is now first support, followed by 9,925, with next resistance at 10,200. Holding above 10,000 for two sessions would confirm the correction is over; slipping back below it would mark the rebound as short covering.",
+    "ar": "أغلق المؤشر عند 10,107 نقاط بعد اختراق المقاومة النفسية 10,000، فصار هذا المستوى دعماً أول يليه 9,848 (إغلاق الأحد)، والمقاومة التالية 10,200. هبوط برنت 3.5% وتراجع «ناسداك» 2.5% ليلاً قد يدفعان إلى جني أرباح في الافتتاح؛ الثبات فوق 10,000 يؤكد الاختراق، وكسره يعيد المؤشر إلى نطاق 9,850 إلى 10,000.",
+    "en": "The index closed at 10,107 after breaking the psychological 10,000 resistance, making that level first support, followed by 9,848 (Sunday's close), with next resistance at 10,200. Brent's 3.5% drop and the Nasdaq's 2.5% slide overnight could prompt profit-taking at the open; holding above 10,000 confirms the breakout, while a break below it returns the index to the 9,850 to 10,000 range.",
     "src": [
      "br-gulf16",
-     "pen-qse16"
+     "nt-oil17",
+     "bnn-ws16"
     ]
    },
    "outlook": [
     {
-     "ar": "يُرجّح أن تبرز الدوحة ملف حماية الوسطاء في محافل دولية قادمة بعد طرحه في لندن.",
-     "en": "Doha is likely to push the protection of mediators at upcoming international forums after raising it in London.",
-     "src": [
-      "pen-khul16"
-     ]
-    },
-    {
-     "ar": "يُتوقع أن يتواصل التنسيق القطري السعودي في خفض التصعيد مع زيارة عراقجي إلى مسقط في 17 نوفمبر.",
-     "en": "Qatari-Saudi coordination on de-escalation is expected to continue as Araghchi visits Muscat on 17 November.",
-     "src": [
-      "hos-calls16"
-     ]
-    },
-    {
-     "ar": "يُرجّح أن يختبر المؤشر مستوى 10,000 نقطة في جلسة الثلاثاء مع تراجع النفط وحذر وول ستريت.",
-     "en": "The index is likely to test 10,000 on Tuesday as oil softens and Wall Street turns cautious.",
+     "ar": "يُرجّح أن تفتتح بورصة قطر الثلاثاء على تراجع محدود تحت ضغط هبوط النفط ووول ستريت، مع اختبار مستوى 10,000 نقطة.",
+     "en": "The Qatar bourse is likely to open Tuesday modestly lower under pressure from falling oil and Wall Street, testing the 10,000 level.",
      "src": [
       "br-gulf16",
-      "ap-ws16",
-      "yf-live16"
+      "nt-oil17",
+      "bnn-ws16"
+     ]
+    },
+    {
+     "ar": "يُتوقع أن يختتم مؤتمر «إنتربا» أعماله في 18 نوفمبر بتوصيات في تحديث التدريب الشرطي والتعاون الدولي.",
+     "en": "The INTERPA conference is expected to close on 18 November with recommendations on modernising police training and international cooperation.",
+     "src": [
+      "pen-interpa16"
+     ]
+    },
+    {
+     "ar": "يُتوقع أن تكون ليلة الثلاثاء إلى الأربعاء مناسبة لرصد «الأسديات» مع غياب القمر واستمرار الأجواء الباردة نسبياً.",
+     "en": "Tuesday night into Wednesday is expected to suit Leonid viewing, with no moonlight and relatively cool conditions continuing.",
+     "src": [
+      "pen-leo16",
+      "pen-wx16"
      ]
     }
    ]
@@ -1179,146 +1170,154 @@
     {
      "id": "g1",
      "cat": {
-      "ar": "الأمن",
-      "en": "Security"
+      "ar": "السعودية",
+      "en": "Saudi Arabia"
      },
-     "ar": "أعلن اللواء الركن تركي المالكي المتحدث الرسمي باسم تحالف دعم الشرعية في اليمن، في بيان نقلته وكالة الأنباء السعودية، اعتراض وتدمير طائرتين مسيّرتين أطلقهما الحوثيون، إحداهما فوق منطقة مكة المكرمة والأخرى فوق الرياض، بعد إعلان الأحد اعتراض عدة طائرات مسيّرة فوق مناطق من المملكة.",
-     "en": "Maj Gen Turki Al Maliki, spokesman of the Coalition to Restore Legitimacy in Yemen, said in a statement carried by the Saudi Press Agency that two Houthi one-way attack drones were intercepted and destroyed, one over the Makkah region and one over Riyadh, after Sunday's announcement of several drones downed over parts of the kingdom.",
+     "ar": "صدر أمر ملكي من خادم الحرمين الشريفين الملك سلمان، بناءً على توصية صاحب السمو الملكي الأمير خالد بن سلمان وزير الدفاع، بتكليف رئيس هيئة الأركان العامة الفريق أول ركن فياض بن حامد الرويلي بقيادة القوات المشتركة إلى جانب منصبه، خلفاً للفريق الركن فهد بن حمد السلمان الذي عُيّن مستشاراً لوزير الدفاع. ويأتي التغيير مع تقدم الحوثيين على الساحل الجنوبي لليمن إلى خور عميرة على نحو 100 كيلومتر غرب عدن، بعد يوم من اعتراض مسيّرتين فوق منطقتي مكة المكرمة والرياض.",
+     "en": "A royal order from the Custodian of the Two Holy Mosques King Salman, on the recommendation of Defence Minister HRH Prince Khalid bin Salman, assigned Chief of the General Staff Lt Gen Fayyad bin Hamed Al Ruwaili to command the Joint Forces in addition to his post, replacing Lt Gen Fahad bin Hamad Al Salman, who becomes an adviser to the Defence Minister. The change comes as the Houthis advance along Yemen's southern coast to Khor Omairah, about 100 km west of Aden, a day after two drones were intercepted over the Makkah and Riyadh regions.",
      "src": [
-      "pen-coal16"
+      "nat-sajf16"
      ]
     },
     {
      "id": "g2",
      "cat": {
-      "ar": "الدبلوماسية",
-      "en": "Diplomacy"
+      "ar": "عُمان",
+      "en": "Oman"
      },
-     "ar": "يصل وزير الخارجية الإيراني عباس عراقجي إلى مسقط في 17 نوفمبر للقاء نظيره العُماني بدر البوسعيدي، قادماً من إسلام آباد حيث شارك في الدورة الثلاثين لمجلس وزراء منظمة التعاون الاقتصادي. وادّعى عراقجي أن «كتلة إقليمية من عشر دول» تؤيد مقترح طهران لإعادة فتح مضيق هرمز خلال يومين إن قبلت واشنطن شروطها، وهو ادعاء لم يؤكده مصدر ثانٍ. وأجرى الأمير فيصل بن فرحان اتصالين بنظيريه القطري والمصري عن خفض التصعيد.",
-     "en": "Iranian Foreign Minister Abbas Araghchi arrives in Muscat on 17 November to meet his Omani counterpart Badr Al Busaidi, coming from Islamabad where he attended the 30th ECO Council of Ministers. Araghchi claimed a \"10-country regional bloc\" backs Tehran's proposal to reopen the Strait of Hormuz within two days if Washington accepts its conditions, a claim no second source has confirmed. Prince Faisal bin Farhan held calls with his Qatari and Egyptian counterparts on de-escalation.",
+     "ar": "وصل وزير الخارجية الإيراني عباس عراقجي إلى مسقط قادماً من إسلام آباد لإجراء محادثات مع نظيره العُماني معالي السيد بدر بن حمد البوسعيدي، في إطار مساعٍ لإحياء التفاهم الإيراني الأميركي الذي تحقق بوساطة باكستانية، والقائم على مذكرة إسلام آباد ذات النقاط الأربع عشرة الصادرة في يونيو، والتي تشمل أمن الملاحة في مضيق هرمز ورفع العقوبات ووقف الأعمال العدائية.",
+     "en": "Iranian Foreign Minister Abbas Araghchi arrived in Muscat from Islamabad for talks with his Omani counterpart H E Sayyid Badr bin Hamad Al Busaidi, part of efforts to revive the Iran-US understanding reached through Pakistani mediation and built on June's 14-point Islamabad memorandum covering maritime security in the Strait of Hormuz, sanctions relief and a halt to hostilities.",
      "src": [
-      "hos-calls16"
+      "anw-arg17"
      ]
     },
     {
      "id": "g3",
      "cat": {
-      "ar": "الطيران",
-      "en": "Aviation"
+      "ar": "إيران وهرمز",
+      "en": "Iran & Hormuz"
      },
-     "ar": "تواصل «الاتحاد للطيران» إلغاء كل رحلات الركاب والشحن من أبوظبي إلى الرياض والدمام حتى الخميس 19 نوفمبر، مع استمرار رحلات جدة، وألغت «العربية للطيران» رحلتين إلى أبها والرياض، بينما تعمل رحلات «طيران الإمارات» و«فلاي دبي» إلى جدة والمدينة المنورة.",
-     "en": "Etihad Airways continues to cancel all passenger and cargo flights from Abu Dhabi to Riyadh and Dammam through Thursday 19 November while Jeddah services operate; Air Arabia cancelled one flight each to Abha and Riyadh, and Emirates and flydubai services to Jeddah and Madinah are running.",
+     "ar": "قال عراقجي إن تكتلاً إقليمياً في اجتماع منظمة التعاون الاقتصادي بإسلام آباد أيّد خطة إيرانية لإعادة فتح مضيق هرمز خلال يومين، بدلاً من أسبوع اقترحته طهران سابقاً، مقابل الإفراج عن الأصول المجمدة ورفع العقوبات وإنهاء الحصار البحري الأميركي للموانئ الإيرانية، معرباً عن الأمل في أن تقود الخطة إلى «وقف شامل ونهائي لإطلاق النار».",
+     "en": "Araghchi said a regional bloc at the Economic Cooperation Organization meeting in Islamabad backed an Iranian plan to reopen the Strait of Hormuz within two days, rather than the week Tehran proposed earlier, in exchange for releasing frozen assets, sanctions relief and an end to the US naval blockade of Iranian ports, voicing hope it would lead to \"a definitive and comprehensive ceasefire\".",
      "src": [
-      "gn-fly16"
+      "oo-hormuz16"
      ]
     },
     {
      "id": "g4",
      "cat": {
-      "ar": "الاقتصاد",
-      "en": "Economy"
+      "ar": "عُمان والاقتصاد",
+      "en": "Oman & economy"
      },
-     "ar": "أعلنت دائرة التنمية الاقتصادية في أبوظبي إصلاحات تستهدف خفض زمن بدء النشاط التجاري 53% في المتوسط، وتقليص الخطوات 31% والمنصات 77%، في خمسة قطاعات ذات أولوية بمشاركة 16 جهة محلية واتحادية، أعلاها التعليم بنسبة 77% والرعاية الصحية 63%. وصدر 51.6% من الرخص الجديدة في 2025 دون موافقات إضافية، وقد ترتفع النسبة إلى 67%.",
-     "en": "The Abu Dhabi Department of Economic Development announced reforms targeting an average 53% cut in the time to become operational, with 31% fewer steps and 77% fewer platforms, across five priority sectors involving 16 local and federal entities; the largest cuts are education at 77% and healthcare at 63%. In 2025, 51.6% of new licences were issued without additional approvals, a share that could rise to 67%.",
+     "ar": "وقّعت سلطنة عُمان وأوزبكستان في منتدى الأعمال المشترك بمسقط اتفاقيات ووثائق مشروعات ضمن حزمة تعاون تقارب 5 مليارات دولار وتضم أكثر من 20 اتفاقية في توليد الكهرباء والتصنيع والتعدين والخدمات اللوجستية والزراعة والتقنيات الرقمية. وارتفع عدد الشركات العاملة في عُمان بمساهمة أوزبكية من 6 في 2020 إلى 57 بنهاية 2025، واتفق البلدان على تسريع اتفاقية تجارة تفضيلية.",
+     "en": "Oman and Uzbekistan signed agreements and project documents at their business forum in Muscat as part of a cooperation package of about $5 billion comprising more than 20 agreements in power generation, manufacturing, mining, logistics, agriculture and digital technologies. Companies in Oman with Uzbek participation rose from 6 in 2020 to 57 by the end of 2025, and the two countries agreed to fast-track a preferential trade agreement.",
      "src": [
-      "gn-added16"
+      "oo-uzb16"
      ]
     },
     {
      "id": "g5",
      "cat": {
-      "ar": "الطاقة النووية",
-      "en": "Nuclear energy"
+      "ar": "الكويت",
+      "en": "Kuwait"
      },
-     "ar": "نالت الإمارات للعام الرابع على التوالي «الاستنتاج الأوسع» من الوكالة الدولية للطاقة الذرية، أعلى مستوى ضمان في نظام الضمانات، ويؤكد بقاء كل المواد النووية المعلنة في الاستخدام السلمي، بحسب تقرير الوكالة لتنفيذ الضمانات لعام 2025. وقال حمد الكعبي مدير عام الهيئة الاتحادية للرقابة النووية إن النتيجة تعكس التزام الدولة بأعلى معايير الشفافية النووية.",
-     "en": "For a fourth consecutive year the UAE received the IAEA's Broader Conclusion, the highest level of assurance under its safeguards system, confirming that all declared nuclear material remains in peaceful use, according to the agency's 2025 Safeguards Implementation Report. FANR Director-General Hamad Al Kaabi said the result reflects the country's commitment to the highest standards of nuclear transparency.",
+     "ar": "استقبل حضرة صاحب السمو الشيخ مشعل الأحمد الجابر الصباح أمير البلاد سمو ولي العهد الشيخ صباح الخالد الحمد الصباح، وسمو رئيس مجلس الوزراء الشيخ أحمد العبدالله الأحمد الصباح، والنائب الأول لرئيس مجلس الوزراء وزير الداخلية الشيخ فهد اليوسف الصباح، ووزيري الدفاع والخارجية.",
+     "en": "Amir H H Sheikh Meshal Al-Ahmad Al-Jaber Al-Sabah received Crown Prince H H Sheikh Sabah Al-Khaled Al-Hamad Al-Sabah, Prime Minister H H Sheikh Ahmad Al-Abdullah Al-Ahmad Al-Sabah, First Deputy Prime Minister and Interior Minister Sheikh Fahad Al-Yousef Al-Sabah, and the defence and foreign ministers.",
      "src": [
-      "gn-iaea16"
+      "kt-amir17"
      ]
     },
     {
      "id": "g6",
      "cat": {
-      "ar": "مجلس التعاون",
-      "en": "GCC"
+      "ar": "الكويت والتقنية",
+      "en": "Kuwait & technology"
      },
-     "ar": "ترأست البحرين، في إطار رئاستها للدورة السادسة والأربعين لمجلس التعاون، الاجتماع الثامن عشر للجنة الخليجية الدائمة للأرصاد الجوية والمناخ عبر الاتصال المرئي، برئاسة خالد حسين ياسين مدير إدارة الأرصاد الجوية، وناقش الاجتماع استراتيجية لتعزيز التعاون ومشروع الإحصاءات المناخية الخليجية والذكاء الاصطناعي في التنبؤ بالطقس ومبادرة الشرق الأوسط الأخضر.",
-     "en": "Bahrain, under its presidency of the 46th GCC session, chaired by videoconference the 18th meeting of the GCC Permanent Committee for Meteorology and Climate, led by Meteorological Directorate head Khalid Hussein Yassin; it discussed a cooperation strategy, the GCC Climate Statistics Project, AI in weather forecasting and the Middle East Green Initiative.",
+     "ar": "أكد وزير الدولة لشؤون الاتصالات وتقنية المعلومات عمر العمر، في افتتاح المؤتمر الدولي الافتراضي السابع للابتكار وريادة الأعمال والذكاء الاصطناعي، أن الكويت تتحول إلى الاستثمار في التقنية والبيانات وتوظيف الذكاء الاصطناعي في الحكومة والاقتصاد ضمن رؤية 2035. ويجمع المؤتمر أكثر من 100 خبير من 20 دولة.",
+     "en": "Minister of State for Communications and Information Technology Omar Al-Omar told the opening of the seventh international virtual conference on innovation, entrepreneurship and AI that Kuwait is shifting towards investment in technology and data and the use of AI across government and the economy under Vision 2035. The conference gathers more than 100 experts from 20 countries.",
      "src": [
-      "nob-met16"
+      "kt-ai17"
      ]
     },
     {
      "id": "g7",
      "cat": {
-      "ar": "الطاقة",
-      "en": "Energy"
+      "ar": "الكويت والدفاع",
+      "en": "Kuwait & defence"
      },
-     "ar": "تراجع خام برنت 2.6% إلى 93.32 دولاراً للبرميل في تعاملات الاثنين بحسب أسوشيتد برس، وهبط عقد ديسمبر للخام الأميركي 2.99% إلى 85.91 دولاراً بعد الظهر بتوقيت نيويورك، مع تعافي التدفقات عبر هرمز وتوقع وكالة الطاقة الدولية فائضاً قدره 1.7 مليون برميل يومياً في الربع الرابع، رغم بلاغات الحرس الثوري عن انفجار ناقلات بالألغام.",
-     "en": "Brent fell 2.6% to $93.32 a barrel in Monday trading, according to AP, and December US crude dropped 2.99% to $85.91 in the New York afternoon, as flows through Hormuz recover and the IEA expects a fourth-quarter surplus of 1.7 million barrels a day, despite IRGC reports of tankers hit by mines.",
+     "ar": "عقدت الكويت وفرنسا الاجتماع التخطيطي الأول لتمرين «اللؤلؤة الغربية 2027» برئاسة العميد ركن راكان السكران نائب رئيس الأركان للعمليات والخطط، والأدميرال يانيك بوسو ممثل القوات الفرنسية في المحيط الهندي والمتمركزة في الإمارات، وبحث الجانبان أهداف التمرين ومهامه وآليات التنسيق.",
+     "en": "Kuwait and France held the first planning meeting for the Western Pearl 2027 exercise, led by Brig Gen Rakan Al-Sakran, Deputy Chief of Staff for Operations and Plans, and Rear Admiral Yannick Bossu, representing French forces in the Indian Ocean and those based in the UAE; they reviewed the exercise objectives, missions and coordination mechanisms.",
      "src": [
-      "ap-ws16",
-      "yf-live16",
-      "enx-oil16"
+      "kt-wp17"
      ]
     },
     {
      "id": "g8",
      "cat": {
-      "ar": "التقنية",
-      "en": "Technology"
+      "ar": "الإمارات",
+      "en": "UAE"
      },
-     "ar": "افتتح سمو الشيخ أحمد العبدالله الأحمد الصباح رئيس مجلس الوزراء الكويتي مركز «مايكروسوفت» للابتكار والتحول الرقمي المتخصص في الذكاء الاصطناعي والحوسبة السحابية والأمن السيبراني، ووصفه بأنه خطوة لتسريع التحول الرقمي، مع إطلاق مبادرة «مهارات الكويت» مع الجهاز المركزي لتكنولوجيا المعلومات.",
-     "en": "Kuwaiti Prime Minister Sheikh Ahmad Al-Abdullah Al-Ahmad Al-Sabah opened Microsoft's Innovation and Digital Transformation Center, focused on AI, cloud computing and cybersecurity, saying it would accelerate digital transformation, alongside the \"Kuwait Skills\" initiative with the Central Agency for Information Technology.",
+     "ar": "ينظم مجلس الأعمال الأميركي الإماراتي، بدعم من وزارة التجارة الأميركية، بعثة تجارية للبنية التحتية إلى الإمارات من 17 إلى 24 نوفمبر، تركز على استثمارات الموانئ والسكك الحديدية والطرق وخطوط الأنابيب التي توفر مسارات شحن بديلة في ظل الحرب مع إيران، وتلتقي «قطارات الاتحاد» و«موانئ دبي العالمية» و«غلفتينر» ووزارة التجارة الخارجية.",
+     "en": "The US-UAE Business Council, backed by the US Department of Commerce, is leading an infrastructure trade mission to the UAE from 17 to 24 November focused on ports, rail, roads and pipelines that create alternative shipping routes amid the Iran war, with meetings at Etihad Rail, DP World, Gulftainer and the Ministry of Foreign Trade.",
      "src": [
-      "kt-ms16"
+      "nat-usuae16"
+     ]
+    },
+    {
+     "id": "g9",
+     "cat": {
+      "ar": "الإمارات والوساطة",
+      "en": "UAE & mediation"
+     },
+     "ar": "قال الرئيس الأوكراني فولوديمير زيلينسكي لـ«سكاي نيوز عربية» إنه يأمل أن تستضيف الإمارات جولة أخرى من مفاوضات إنهاء الحرب مع روسيا، بعد محادثات ثلاثية في أبوظبي أفضت إلى اتفاق مبدئي على تبادل واسع للأسرى دون اختراق في وقف إطلاق النار، مقترحاً هدنة تشمل منشآت الطاقة والبحر الأسود.",
+     "en": "Ukrainian President Volodymyr Zelenskyy told Sky News Arabia he hopes the UAE will host another round of talks to end the war with Russia, after trilateral talks in Abu Dhabi produced an agreement in principle on a large prisoner exchange but no ceasefire breakthrough; he proposed a truce covering energy infrastructure and the Black Sea.",
+     "src": [
+      "nat-zel16"
      ]
     }
    ],
    "analysis": {
-    "ar": "يتقاطع في الخليج الليلة مساران: أمني يتمثل في مسيّرات حوثية فوق مكة والرياض وطيران معلق إلى المدن السعودية حتى الخميس، ودبلوماسي تقوده مسقط مع وصول عراقجي واتصالات سعودية بالدوحة والقاهرة. ويبقى ادعاء طهران عن «كتلة العشر» ورقة ضغط غير مؤكدة. أما اقتصادياً فتمضي أبوظبي والكويت في إصلاحات الأعمال والتحول الرقمي، والنفط يتراجع مع اتجاه السوق إلى تسعير الفائض لا المخاطر.",
-    "en": "Two tracks cross in the Gulf tonight: a security one, with Houthi drones over Makkah and Riyadh and flights to Saudi cities suspended until Thursday, and a diplomatic one led by Muscat as Araghchi arrives and Riyadh calls Doha and Cairo. Tehran's \"bloc of ten\" claim remains an unconfirmed pressure card. Economically, Abu Dhabi and Kuwait press on with business reform and digital transformation, while oil slides as the market prices surplus rather than risk.",
+    "ar": "يتحرك الخليج هذا الصباح على مسارين متوازيين: الرياض تعيد ترتيب قيادة القوات المشتركة مع اقتراب الحوثيين من عدن، ومسقط تستقبل عراقجي حاملاً خطة «اليومين» لفتح هرمز بشروط ثقيلة على واشنطن. وبين المسارين تراهن الإمارات وعُمان على الاقتصاد والوساطة، من بعثة البنية التحتية الأميركية إلى حزمة الخمسة مليارات مع أوزبكستان، فيما يمضي هبوط النفط بفعل تعافي الصادرات عبر المضيق.",
+    "en": "The Gulf moves on two parallel tracks this morning: Riyadh reshuffles Joint Forces command as the Houthis close in on Aden, and Muscat receives Araghchi carrying a \"two-day\" plan to reopen Hormuz on terms that weigh heavily on Washington. Between the two, the UAE and Oman bet on economics and mediation, from the US infrastructure mission to the $5 billion package with Uzbekistan, while oil keeps falling as exports through the strait recover.",
     "src": [
-     "pen-coal16",
-     "gn-fly16",
-     "hos-calls16",
-     "gn-added16",
-     "kt-ms16",
-     "ap-ws16",
-     "enx-oil16"
+     "nat-sajf16",
+     "anw-arg17",
+     "oo-hormuz16",
+     "nat-usuae16",
+     "oo-uzb16",
+     "nt-oil17"
     ]
    },
    "technical": {
-    "ar": "برنت عند 93.32 دولاراً بعد خسارة 2.6% في الجلسة، والخام الأميركي عند 85.91 دولاراً. الدعم الأول لبرنت 91 دولاراً ثم 88، والمقاومة 95 دولاراً. بقاء الأسعار دون 95 يرجّح استمرار الاتجاه الهابط القائم على توقع الفائض، وتجاوزه يعني عودة علاوة المخاطر.",
-    "en": "Brent sits at $93.32 after a 2.6% loss in the session, with US crude at $85.91. First support for Brent is $91, then $88, with resistance at $95. Staying below $95 favours a continued downtrend built on surplus expectations; breaking above it would signal a return of the risk premium.",
+    "ar": "سوّى برنت عند 92.44 دولاراً بخسارة 3.40 دولارات (3.55%)، والخام الأميركي عند 85.72 دولاراً (−3.2%)، بعد أن رفعت وكالة الطاقة توقع الفائض في الربع الرابع إلى 1.7 مليون برميل يومياً. كسر برنت دعم 93 دولاراً، فصار الدعم التالي 91 ثم 88، والمقاومة 95. الاتجاه هابط ما دام دون 95، وأي تعثر في محادثات مسقط قد يعيد علاوة المخاطر سريعاً.",
+    "en": "Brent settled at $92.44, down $3.40 (3.55%), and US crude at $85.72 (−3.2%), after the IEA lifted its Q4 surplus forecast to 1.7 million barrels a day. Brent broke $93 support, making $91 then $88 the next supports, with resistance at $95. The trend is down while below $95, and any stumble in the Muscat talks could quickly restore the risk premium.",
     "src": [
-     "ap-ws16",
-     "yf-live16",
-     "enx-oil16"
+     "nt-oil17",
+     "anw-arg17"
     ]
    },
    "outlook": [
     {
-     "ar": "يُتوقع أن تنتهي محادثات عراقجي في مسقط ببيان عُماني عن الملاحة في هرمز دون اختراق حاسم.",
-     "en": "Araghchi's Muscat talks are expected to end with an Omani statement on Hormuz navigation, without a decisive breakthrough.",
+     "ar": "يُرجّح أن تنتهي محادثات عراقجي في مسقط بتأكيد عُماني على مواصلة الوساطة دون إعلان قبول أميركي لخطة اليومين.",
+     "en": "Araghchi's Muscat talks are likely to end with Omani confirmation of continued mediation, without any announced US acceptance of the two-day plan.",
      "src": [
-      "hos-calls16"
+      "anw-arg17",
+      "oo-hormuz16"
      ]
     },
     {
-     "ar": "يُرجّح أن تمدد «الاتحاد» تعليق رحلات الرياض والدمام بعد 19 نوفمبر إن استمرت الهجمات الحوثية.",
-     "en": "Etihad is likely to extend its Riyadh and Dammam suspension beyond 19 November if Houthi attacks continue.",
+     "ar": "يُتوقع أن تكثّف القيادة الجديدة للقوات المشتركة دعم القوات الحكومية حول عدن مع اقتراب الحوثيين من خور عميرة.",
+     "en": "The new Joint Forces command is expected to step up support for government forces around Aden as the Houthis near Khor Omairah.",
      "src": [
-      "gn-fly16",
-      "pen-coal16"
+      "nat-sajf16"
      ]
     },
     {
-     "ar": "يُرجّح أن يبقى برنت دون 95 دولاراً ما لم تُؤكَّد حوادث جديدة في المضيق.",
-     "en": "Brent is likely to stay below $95 unless new incidents in the strait are confirmed.",
+     "ar": "يُتوقع أن تفتتح الأسواق الخليجية على تراجع تحت ضغط هبوط النفط إلى 92 دولاراً.",
+     "en": "Gulf markets are expected to open lower under pressure from oil's fall to $92.",
      "src": [
-      "ap-ws16",
-      "enx-oil16"
+      "nt-oil17",
+      "br-gulf16"
      ]
     }
    ]
@@ -1333,128 +1332,128 @@
     {
      "id": "e1",
      "cat": {
-      "ar": "التعليم العالي",
-      "en": "Higher education"
+      "ar": "الاستثمار",
+      "en": "Investment"
      },
-     "ar": "أعلن الدكتور أحمد كجوك وزير المالية مع الدكتور عبدالعزيز قنصوة وزير التعليم العالي زيادة دخول أعضاء هيئة التدريس ومعاونيهم بتكلفة 25 مليار جنيه سنوياً، تنفيذاً لتوجيهات رئاسية في «منتدى مصر 2026»، تُصرف على ثلاث دفعات في نوفمبر 2026 وأول يوليو المقبل ومطلع العام المالي 2028/2029. وتبلغ الزيادة الكلية 8,500 جنيه للمعيد و11,000 للمدرس و13,500 للأستاذ، منها 2,250 جنيهاً للأستاذ في دفعة نوفمبر.",
-     "en": "Finance Minister Dr Ahmed Kouchouk and Higher Education Minister Dr Abdelaziz Konsowa announced raises for university faculty and their assistants costing EGP 25 billion a year, implementing presidential directives from Egypt Forum 2026, paid in three instalments in November 2026, next 1 July and at the start of fiscal 2028/2029. The total increase is EGP 8,500 for a demonstrator, 11,000 for a lecturer and 13,500 for a professor, including EGP 2,250 for a professor in the November instalment.",
+     "ar": "ينطلق الثلاثاء رسمياً «الاجتماع المخصص للأعمال» للمنتدى الاقتصادي العالمي في القاهرة بمشاركة الرئيس عبدالفتاح السيسي ونحو 80 من رؤساء وكبار تنفيذيي الشركات العالمية، وهو الأول من نوعه لمنطقة أفريقيا والشرق الأوسط والرابع عالمياً. وفي جلسة تمهيدية بالمتحف المصري الكبير وصف وزير الخارجية بدر عبدالعاطي الاجتماع بأنه «منصة مهمة للتعريف بهذه الفرص» في الذكاء الاصطناعي والزراعة الذكية والبنوك والصناعات الثقيلة والطاقة.",
+     "en": "The World Economic Forum's dedicated business meeting opens officially in Cairo on Tuesday with President Abdel Fattah El-Sisi and about 80 heads and senior executives of global companies, the first of its kind for Africa and the Middle East and the fourth worldwide. At a preparatory session at the Grand Egyptian Museum, Foreign Minister Badr Abdelatty called it \"an important platform for presenting these opportunities\" in AI, smart agriculture, banking, heavy industry and energy.",
      "src": [
-      "ah-uni16"
+      "c24-wef16"
      ]
     },
     {
      "id": "e2",
      "cat": {
-      "ar": "الجنيه",
-      "en": "Pound"
+      "ar": "الاستثمار",
+      "en": "Investment"
      },
-     "ar": "أنهى الدولار تعاملات الاثنين متراجعاً نحو 11 قرشاً إلى 53.63 جنيه للشراء و53.73 للبيع في البنك الأهلي وبنك مصر والتجاري الدولي، من 53.74 و53.84 عند الافتتاح، وسجل أعلى سعر 53.86 جنيه للبيع في بنك قطر الوطني ومصرف أبوظبي الإسلامي، وبلغ في البنك المركزي نحو 53.6169 للشراء و53.7537 للبيع.",
-     "en": "The dollar ended Monday about 11 piasters lower at EGP 53.63 to buy and 53.73 to sell at the National Bank of Egypt, Banque Misr and CIB, from 53.74 and 53.84 at the open; the highest selling rate was EGP 53.86 at QNB and Abu Dhabi Islamic Bank, and the Central Bank's rate was about 53.6169 to buy and 53.7537 to sell.",
+     "ar": "أعلن وزير الاستثمار والتجارة الخارجية محمد فريد أن الوزارة تعدّ استراتيجية جديدة للترويج للاستثمار تُعلن خلال الأيام المقبلة لجذب استثمارات أعلى قيمة في القطاعات الداعمة للإنتاج والتصدير، مؤكداً أن «استعادة ثقة المستثمرين المحليين والأجانب تتطلب توفير بيئة استثمارية قائمة على وضوح الرؤية»، وداعياً المؤسسات المالية الدولية إلى مراجعة تقديرها لمخاطر الأسواق الناشئة.",
+     "en": "Investment and Foreign Trade Minister Mohamed Farid said the ministry is preparing a new investment promotion strategy, to be announced in the coming days, to attract higher-value investment in sectors that support production and exports, stressing that \"restoring the confidence of local and foreign investors requires an investment environment based on clarity of vision\" and urging international financial institutions to revisit how they assess emerging-market risk.",
      "src": [
-      "yl-usd16"
+      "c24-farid17"
      ]
     },
     {
      "id": "e3",
      "cat": {
-      "ar": "الذهب",
-      "en": "Gold"
+      "ar": "الحكومة والاقتصاد",
+      "en": "Government & economy"
      },
-     "ar": "تراجعت أسعار الذهب في مصر بختام تعاملات الاثنين: عيار 21 عند 5,885 جنيهاً للشراء و5,930 للبيع، وعيار 24 عند 6,777 جنيهاً للبيع، وعيار 18 عند 5,082، والجنيه الذهب 47,440 جنيهاً دون المصنعية والضريبة.",
-     "en": "Gold prices in Egypt fell at Monday's close: 21-karat at EGP 5,885 to buy and 5,930 to sell, 24-karat at EGP 6,777 to sell, 18-karat at 5,082 and the gold pound at EGP 47,440 before workmanship and tax.",
+     "ar": "ترأس رئيس الوزراء الدكتور مصطفى مدبولي اجتماع المجموعة الاقتصادية بحضور محافظ البنك المركزي، واعتُمدت استراتيجية ترويج الاستثمار الأجنبي المباشر المعدّة مع مجموعة البنك الدولي تمهيداً لخطة تنفيذية حتى 2030، تستهدف صافي تدفقات تراكمية بقيمة 78 مليار دولار من 2026/2027 حتى 2030 ورفع حصة الاستثمار الخاص إلى 67%. واستحوذت مصر على 22.2% من الاستثمار الأجنبي المتجه إلى أفريقيا في 2025.",
+     "en": "Prime Minister Dr Mostafa Madbouly chaired the economic group meeting with the Central Bank governor, which completed the FDI promotion strategy prepared with the World Bank Group ahead of an implementation plan to 2030, targeting cumulative net inflows of $78 billion from 2026/2027 to 2030 and a 67% private share of investment. Egypt took 22.2% of FDI flowing to Africa in 2025.",
      "src": [
-      "m2030-gold16"
+      "dw-fdi16"
      ]
     },
     {
      "id": "e4",
      "cat": {
-      "ar": "التجارة",
-      "en": "Trade"
+      "ar": "الجنيه",
+      "en": "The pound"
      },
-     "ar": "اتفق الدكتور مصطفى مدبولي رئيس مجلس الوزراء ووزير التجارة والصناعة الهندي بيوش غويال في العاصمة الإدارية الجديدة على هدف تجارة ثنائية قدره 12 مليار دولار ودراسة اتفاق تجارة تفضيلية، مقابل نحو 6.6 مليار دولار في 2025 بحسب مدبولي. وتبلغ الاستثمارات الهندية في مصر نحو 4.5 مليار دولار، معظمها في الكيماويات والبتروكيماويات.",
-     "en": "Prime Minister Dr Mostafa Madbouly and Indian Commerce and Industry Minister Piyush Goyal agreed in the New Administrative Capital on a US$12 billion bilateral trade target and to study a preferential trade agreement, against about $6.6 billion in 2025 according to Madbouly. Indian investment in Egypt stands at about $4.5 billion, mostly in chemicals and petrochemicals.",
+     "ar": "استقر الدولار في البنوك صباح الثلاثاء 17 نوفمبر عند 53.63 جنيه للشراء و53.73 جنيه للبيع في البنك الأهلي المصري وبنك مصر والبنك التجاري الدولي، وعند 53.62 للشراء و53.75 للبيع في البنك المركزي.",
+     "en": "The dollar held steady in banks on Tuesday morning, 17 November, at EGP 53.63 buy and 53.73 sell at National Bank of Egypt, Banque Misr and CIB, and at 53.62 buy and 53.75 sell at the Central Bank.",
      "src": [
-      "rio-ind16"
+      "yl-usd17"
      ]
     },
     {
      "id": "e5",
      "cat": {
-      "ar": "الطاقة",
-      "en": "Energy"
+      "ar": "الذهب",
+      "en": "Gold"
      },
-     "ar": "تدرس الحكومة مقترحاً من الجهاز القومي لتنظيم الاتصالات يمنح المستهلكين نقاطاً مقابل ترشيد الكهرباء تُستبدل بسلع أو خصومات نقدية على الفواتير، وفق ما عُرض في اجتماع رئيس الوزراء مع وزير الكهرباء المهندس محمود عصمت. وتستهدف مبادرة «شمس الصناعة» محطات شمسية بقدرة إجمالية 1,000 ميغاواط تخدم نحو 7,000 مصنع.",
-     "en": "The government is studying a proposal from the National Telecommunications Regulatory Authority to award consumers points for saving electricity, redeemable for goods or cash discounts on bills, as presented at the Prime Minister's meeting with Electricity Minister Eng Mahmoud Esmat. The \"Sun of Industry\" initiative targets solar plants with a combined 1,000 megawatts serving about 7,000 factories.",
+     "ar": "سجّل عيار 21 في مستهل الثلاثاء 5,910 جنيهات للغرام، وعيار 24 نحو 6,754 جنيهاً، وعيار 18 نحو 5,066 جنيهاً، والجنيه الذهب 47,280 جنيهاً، بعد أن افتتحت الأوقية عالمياً عند 3,885 دولاراً وهبطت إلى 3,832 دولاراً خلال التداول.",
+     "en": "At the start of Tuesday, 21-carat gold stood at EGP 5,910 a gram, 24-carat at about EGP 6,754, 18-carat at about EGP 5,066 and the gold pound at EGP 47,280, after the global ounce opened at $3,885 and dipped to $3,832 during trading.",
      "src": [
-      "eg-elec16"
+      "m24-gold17"
      ]
     },
     {
      "id": "e6",
      "cat": {
-      "ar": "الثروة المعدنية",
-      "en": "Mining"
+      "ar": "الصناعة والرياضة",
+      "en": "Industry & sport"
      },
-     "ar": "عُقد في مرسى علم، بتوجيهات من الرئيس عبدالفتاح السيسي، اجتماع لمتابعة تقنين أوضاع العاملين في التنقيب الأهلي عن الذهب «الدهّابة»، بمشاركة جهاز مستقبل مصر للتنمية المستدامة واتحاد القبائل العربية، لدمجهم في المنظومة الرسمية وحماية حقوقهم وصون ثروة الدولة من الذهب.",
-     "en": "A meeting in Marsa Alam, held under directives from President Abdel Fattah El-Sisi, followed up on regularising informal gold prospectors known as \"Dahaba\", with the Future of Egypt Authority for Sustainable Development and the Union of Arab Tribes, to bring them into the formal system, protect their rights and safeguard the state's gold resources.",
+     "ar": "تتضمن أجندة الثلاثاء افتتاح رئيس الوزراء المرحلة الثانية من مجمع صناعي في مدينة العاشر من رمضان، ومواجهة منتخب مصر ومالاوي في الجولة الرابعة من تصفيات كأس أمم أفريقيا 2027 الساعة 3:00 عصراً بتوقيت القاهرة في مالاوي، إلى جانب عروض الدورة السابعة والأربعين لمهرجان القاهرة السينمائي الدولي.",
+     "en": "Tuesday's agenda includes the Prime Minister opening phase two of an industrial complex in 10th of Ramadan City, and Egypt's match against Malawi in matchday 4 of 2027 AFCON qualifying at 3:00 p.m. Cairo time in Malawi, alongside screenings at the 47th Cairo International Film Festival.",
      "src": [
-      "dw-dahab16"
+      "elb-agenda17"
      ]
     },
     {
      "id": "e7",
      "cat": {
-      "ar": "الدبلوماسية",
-      "en": "Diplomacy"
+      "ar": "الملكية الفكرية",
+      "en": "Intellectual property"
      },
-     "ar": "تلقى الدكتور بدر عبدالعاطي وزير الخارجية اتصالاً من الأمير فيصل بن فرحان وزير الخارجية السعودي، تناول العلاقات الثنائية وتوسيع التعاون ودعم الجهود الدبلوماسية لخفض التصعيد في المنطقة.",
-     "en": "Foreign Minister Dr Badr Abdelatty received a call from Saudi Foreign Minister Prince Faisal bin Farhan on bilateral relations, expanding cooperation and supporting diplomatic efforts to de-escalate in the region.",
+     "ar": "شهد رئيس الوزراء فعاليات المؤتمر الدولي للمنظمة العالمية للملكية الفكرية «الويبو» في العاصمة الإدارية الجديدة.",
+     "en": "The Prime Minister attended the international conference of the World Intellectual Property Organization (WIPO) in the New Administrative Capital.",
      "src": [
-      "hos-calls16"
+      "dw-wipo16"
      ]
     }
    ],
    "analysis": {
-    "ar": "يوم مصري بعنوان الإنفاق الاجتماعي المنضبط: 25 مليار جنيه سنوياً لأجور الجامعات موزعة على ثلاث سنوات حتى لا تضغط الموازنة دفعة واحدة، ومقترح نقاط لترشيد الكهرباء يخفف فاتورة الوقود. ويساعد على ذلك جنيه يتحسن تدريجياً وذهب يتراجع، بينما يفتح هدف الـ12 مليار دولار مع الهند باباً لتنويع الشركاء، ويستكمل ملف «الدهّابة» مسار ضبط الثروة المعدنية.",
-    "en": "An Egyptian day themed on disciplined social spending: EGP 25 billion a year for university pay spread over three years so the budget is not hit at once, and a points scheme for saving power that would ease the fuel bill. A gradually firmer pound and softer gold help, while the $12 billion target with India opens room to diversify partners and the \"Dahaba\" file continues the effort to regulate mineral wealth.",
+    "ar": "القاهرة تدخل يوماً استثمارياً بامتياز: الحكومة اعتمدت هدف 78 مليار دولار من الاستثمار الأجنبي حتى 2030، ووزير الاستثمار يعد باستراتيجية ترويج خلال أيام، والسيسي يفتتح اجتماع المنتدى الاقتصادي العالمي مع نحو 80 رئيس شركة. الرسالة واحدة: الاستقرار النقدي، الظاهر في ثبات الدولار عند 53.73 جنيه، صار ورقة الجذب الأولى، والمطلوب الآن تحويل الاهتمام إلى صفقات معلنة.",
+    "en": "Cairo enters a distinctly investment-focused day: the government adopted a $78 billion FDI target to 2030, the investment minister promises a promotion strategy within days, and Sisi opens the WEF meeting with about 80 company heads. The message is single: monetary stability, visible in the dollar holding at EGP 53.73, has become the main attraction, and the task now is to turn interest into announced deals.",
     "src": [
-     "ah-uni16",
-     "eg-elec16",
-     "yl-usd16",
-     "m2030-gold16",
-     "rio-ind16",
-     "dw-dahab16"
+     "dw-fdi16",
+     "c24-farid17",
+     "c24-wef16",
+     "yl-usd17"
     ]
    },
    "technical": {
-    "ar": "الدولار عند 53.73 جنيه للبيع بعد كسر 53.84، والدعم التالي 53.50 ثم 53.30، والمقاومة 53.85. وعيار 21 عند 5,930 جنيهاً للبيع دون مستوى 5,950، والدعم 5,880 ثم 5,800. اتجاه الجنيه الإيجابي مع هبوط الذهب يرجّح استمرار ضعف أسعار الذهب المحلية ما لم ترتفع الأوقية عالمياً.",
-    "en": "The dollar is at EGP 53.73 to sell after breaking 53.84, with next support at 53.50 then 53.30 and resistance at 53.85. 21-karat gold at EGP 5,930 to sell is below 5,950, with support at 5,880 then 5,800. A firmer pound alongside softer gold favours continued weakness in local gold unless the ounce rises globally.",
+    "ar": "الدولار ثابت عند 53.63 للشراء و53.73 للبيع بعد تحسن الجنيه الاثنين؛ الدعم 53.50 والمقاومة 54.00 جنيه. وتراجع عيار 21 إلى 5,910 جنيهات من 5,930 بختام الاثنين مع هبوط الأوقية إلى 3,832 دولاراً؛ الدعم المحلي 5,880 جنيهاً والمقاومة 5,950. استمرار ارتفاع العوائد الأميركية يضغط على الذهب أكثر مما يضغط على الجنيه.",
+    "en": "The dollar is steady at 53.63 buy and 53.73 sell after Monday's firming of the pound; support is EGP 53.50 and resistance 54.00. 21-carat gold eased to EGP 5,910 from Monday's 5,930 close as the ounce dipped to $3,832; local support is EGP 5,880 and resistance 5,950. Persistently high US yields weigh on gold more than on the pound.",
     "src": [
-     "yl-usd16",
-     "m2030-gold16"
+     "yl-usd17",
+     "m24-gold17",
+     "m2030-gold16",
+     "bnn-ws16"
     ]
    },
    "outlook": [
     {
-     "ar": "يُتوقع أن تُصرف الدفعة الأولى من زيادة أعضاء هيئة التدريس مع رواتب نوفمبر.",
-     "en": "The first instalment of the faculty raise is expected to be paid with November salaries.",
+     "ar": "يُتوقع أن يشهد اجتماع المنتدى الاقتصادي العالمي في القاهرة إعلان شراكات أو تعهدات استثمارية في الطاقة والذكاء الاصطناعي.",
+     "en": "The WEF meeting in Cairo is expected to see announced partnerships or investment pledges in energy and AI.",
      "src": [
-      "ah-uni16"
+      "c24-wef16"
      ]
     },
     {
-     "ar": "يُرجّح أن يتداول الدولار بين 53.50 و53.85 جنيه الثلاثاء ما لم تتغير شهية المستثمرين الأجانب.",
-     "en": "The dollar is likely to trade between EGP 53.50 and 53.85 on Tuesday unless foreign investor appetite shifts.",
+     "ar": "يُرجّح أن يتداول الدولار بين 53.50 و53.85 جنيه خلال الثلاثاء.",
+     "en": "The dollar is likely to trade between EGP 53.50 and 53.85 on Tuesday.",
      "src": [
-      "yl-usd16"
+      "yl-usd17"
      ]
     },
     {
-     "ar": "يُتوقع تشكيل مجموعات عمل مصرية هندية لصياغة اتفاق التجارة التفضيلية.",
-     "en": "Egyptian-Indian working groups are expected to form to draft the preferential trade agreement.",
+     "ar": "يُتوقع إعلان استراتيجية ترويج الاستثمار الجديدة قبل نهاية الشهر.",
+     "en": "The new investment promotion strategy is expected to be announced before month-end.",
      "src": [
-      "rio-ind16"
+      "c24-farid17"
      ]
     }
    ]
@@ -1472,71 +1471,71 @@
       "ar": "الأسواق",
       "en": "Markets"
      },
-     "ar": "اتسعت خسائر وول ستريت بعد الظهر: «ستاندرد آند بورز 500» عند 7,437.67 نقطة بتراجع 1.64%، و«داو جونز» عند 51,801.59 بتراجع 1.04%، و«ناسداك» عند 24,575.75 بتراجع 2.23%، وهبط سهم «إنفيديا» 4.49% إلى 155.54 دولاراً قبل نتائجها الثلاثاء، وقفز مؤشر التقلب VIX إلى 22.18، بينما تراجع عائد السندات لعشر سنوات إلى 5.13%.",
-     "en": "Wall Street losses widened in the afternoon: the S&P 500 at 7,437.67, down 1.64%; the Dow at 51,801.59, down 1.04%; and the Nasdaq at 24,575.75, down 2.23%. Nvidia fell 4.49% to $155.54 ahead of Tuesday's results, the VIX jumped to 22.18, and the 10-year yield eased to 5.13%.",
+     "ar": "أغلقت وول ستريت الاثنين على خسارة ثالثة متتالية: «ستاندرد آند بورز 500» −1.9% (−145.08 نقطة) إلى 7,416.59، و«داو جونز» −1.4% (−739.38) إلى 51,608.17، و«ناسداك» −2.5% (−626.52) إلى 24,509.76. وقادت «إنفيديا» الهبوط بخسارة 4.1% لتفقد 735 مليار دولار من قيمتها منذ بدء أزمة رئيسها جنسن هوانغ، وتراجع عائد السندات لأجل عشر سنوات إلى 5.13% من 5.15%.",
+     "en": "Wall Street closed Monday with a third straight loss: the S&P 500 fell 1.9% (−145.08 points) to 7,416.59, the Dow 1.4% (−739.38) to 51,608.17 and the Nasdaq 2.5% (−626.52) to 24,509.76. Nvidia led the decline, down 4.1%, having lost $735 billion in market value since the scandal around Jensen Huang began, and the 10-year Treasury yield eased to 5.13% from 5.15%.",
      "src": [
-      "yf-live16",
-      "ap-ws16"
+      "bnn-ws16"
      ]
     },
     {
      "id": "w2",
      "cat": {
-      "ar": "البنوك المركزية",
-      "en": "Central banks"
+      "ar": "الطاقة",
+      "en": "Energy"
      },
-     "ar": "قال كيفن وارش رئيس الاحتياطي الفيدرالي في سان فرانسيسكو إن خبراء البنك يدرسون ثلاثة سيناريوهات للذكاء الاصطناعي، من طفرة في الإنتاجية إلى فقدان وظائف إلى خيبة أمل، مؤكداً أنها «توضيحية وليست توقعات»، وأن للتقنية «آثاراً مهمة على السياسة النقدية مستقبلاً»، دون التطرق إلى الفائدة في المدى القريب.",
-     "en": "Fed Chair Kevin Warsh said in San Francisco that Fed staff are modelling three AI scenarios, from a productivity boom to job losses to a letdown, stressing they are \"illustrative\" and \"not forecasts\", and that the technology has \"important implications for monetary policy down the road\", without addressing near-term rates.",
+     "ar": "هبط النفط أكثر من 3%: سوّى برنت عند 92.44 دولاراً (−3.40 دولارات) والخام الأميركي عند 85.72 دولاراً (−2.84 دولار)، مع تعافي صادرات الشرق الأوسط عبر هرمز وتوقع وكالة الطاقة الدولية فائضاً قدره 1.7 مليون برميل يومياً في الربع الرابع، وتراجع معالجة المصافي الصينية 2% عن سبتمبر و8.1% عن أكتوبر 2025.",
+     "en": "Oil fell more than 3%: Brent settled at $92.44 (−$3.40) and US crude at $85.72 (−$2.84), as Middle East exports through Hormuz recover and the International Energy Agency forecasts a Q4 surplus of 1.7 million barrels a day, while Chinese refinery throughput fell 2% from September and 8.1% from October 2025.",
      "src": [
-      "lpb-warsh16"
+      "nt-oil17"
      ]
     },
     {
      "id": "w3",
      "cat": {
-      "ar": "أوكرانيا",
-      "en": "Ukraine"
+      "ar": "آسيا",
+      "en": "Asia"
      },
-     "ar": "قال الرئيس الأوكراني فولوديمير زيلينسكي إن أوروبا انضمت للمرة الأولى «بالكامل» إلى عمل فرق التفاوض على تسوية الحرب، بمشاركة فرنسا وألمانيا وبريطانيا وإيطاليا وبولندا والمفوضية والمجلس الأوروبيين وممثل لحلف الناتو، مع انضمام المبعوثين الأميركيين ستيف ويتكوف وجاريد كوشنر عن بعد، واتُّفق على اجتماع لاحق في برلين ضمن إطار «تحالف الراغبين».",
-     "en": "Ukrainian President Volodymyr Zelensky said Europe joined the work of the negotiating teams on a settlement \"in full\" for the first time, with France, Germany, Britain, Italy, Poland, the European Commission and Council and a NATO representative, while US envoys Steve Witkoff and Jared Kushner joined remotely; a follow-up meeting in Berlin under the Coalition of the Willing was agreed.",
+     "ar": "امتد البيع إلى آسيا صباح الثلاثاء قبل نتائج «إنفيديا»: تراجع «نيكاي» 1.3% و«كوسبي» 2% بعد الافتتاح ومؤشر «إم إس سي آي» لآسيا والمحيط الهادئ خارج اليابان 0.63%، وانخفض الذهب الفوري 0.1% إلى 3,852.62 دولاراً للأوقية مع تداول الدولار قرب أعلى مستوياته منذ أبريل 2025.",
+     "en": "Selling spread to Asia on Tuesday morning ahead of Nvidia's results: the Nikkei fell 1.3%, the KOSPI 2% after the open and MSCI's Asia-Pacific index outside Japan 0.63%, while spot gold slipped 0.1% to $3,852.62 an ounce with the dollar near its highest since April 2025.",
      "src": [
-      "an-zel16"
+      "ral-asia17"
      ]
     },
     {
      "id": "w4",
      "cat": {
-      "ar": "المناخ",
-      "en": "Climate"
+      "ar": "التقنية",
+      "en": "Technology"
      },
-     "ar": "قال الأسترالي كريس بوين، الذي يقود مفاوضات COP31 في رئاسة مشتركة مع تركيا، إن مسودة الاتفاق المؤلفة من 18 صفحة «لن تبقى كما هي»، وهي تتضمن صيغتين للوقود الأحفوري وخلافات على مقترح تركي برفع حصة الكهرباء من الاستهلاك العالمي للطاقة إلى 35% بحلول 2035 وعلى تمويل التكيف، قبل الموعد الرسمي لاختتام المؤتمر الجمعة 20 نوفمبر.",
-     "en": "Australia's Chris Bowen, who leads COP31 negotiations under a split presidency with Türkiye, said the 18-page draft deal \"will not look exactly\" as it does now; it carries two fossil-fuel options and differences over a Turkish proposal to raise electricity's share of global energy use to 35% by 2035 and over adaptation finance, ahead of the official close on Friday 20 November.",
+     "ar": "أعلن مكتب الصناعة والأمن في وزارة التجارة الأميركية قاعدة تمنع الالتفاف على قيود تصدير التقنيات الحساسة عبر الحوسبة عن بُعد في مراكز بيانات بدول ثالثة، وتفرض ترخيصاً لتصدير تقنيات الذكاء الاصطناعي إلى إندونيسيا وماليزيا وسنغافورة والبرازيل وتايلاند لما تراه «خطراً غير مقبول للتحويل». وتصدر نتائج «إنفيديا» الثلاثاء بعد إغلاق السوق بحضور رئيستها التنفيذية المؤقتة كوليت كريس.",
+     "en": "The Commerce Department's Bureau of Industry and Security announced a rule to stop export controls on sensitive technology being circumvented through remote computing in third-country data centres, and to require licences for AI technology exports to Indonesia, Malaysia, Singapore, Brazil and Thailand, citing \"an unacceptable risk of diversion\". Nvidia reports on Tuesday after the close, with interim CEO Colette Kress addressing Wall Street.",
      "src": [
-      "kelo-cop16"
+      "nat-ai16",
+      "bnn-ws16"
      ]
     },
     {
      "id": "w5",
      "cat": {
-      "ar": "التقنية",
-      "en": "Technology"
+      "ar": "آسيا والمحيط الهادئ",
+      "en": "Asia-Pacific"
      },
-     "ar": "تستعد الإدارة الأميركية، بحسب وول ستريت جورنال، لتسمية «إنفيديا» و«أمازون» و«مايكروسوفت» و«أوبن إيه آي» و«أنثروبيك» وأكثر من عشرين شركة أخرى «أبطالاً وطنيين» في الذكاء الاصطناعي، مع تسريع تراخيص التصدير وتمويل اتحادي، ويُتوقع أن يعلنها وزير التجارة هوارد لوتنيك خلال الأسبوع المقبل.",
-     "en": "The US administration is preparing, according to The Wall Street Journal, to name Nvidia, Amazon, Microsoft, OpenAI, Anthropic and more than two dozen other firms AI \"national champions\", with expedited export licences and federal financing; Commerce Secretary Howard Lutnick is expected to announce them within the next week.",
+     "ar": "تختتم قمة آسيان التاسعة والأربعون في مانيلا الثلاثاء بقمم «آسيان+3» وشرق آسيا ومع اليابان والهند، وتسلّم الفلبين الرئاسة لسنغافورة لعام 2027، ويُنتظر وصول الرئيس ترامب نحو 5:30 مساءً بالتوقيت المحلي آخر القادة، ليلقي كلمة في عشاء القادة.",
+     "en": "The 49th ASEAN Summit closes in Manila on Tuesday with ASEAN Plus Three, East Asia, Japan and India summits, as the Philippines hands the 2027 chairmanship to Singapore; President Trump is expected around 5:30 p.m. local time as the last leader to arrive, to speak at the leaders' dinner.",
      "src": [
-      "fox-ai16"
+      "star-asean17"
      ]
     },
     {
      "id": "w6",
      "cat": {
-      "ar": "غزة",
-      "en": "Gaza"
+      "ar": "سوريا",
+      "en": "Syria"
      },
-     "ar": "شيّع مئات الفلسطينيين في بيت لاهيا ومخيم جباليا 70 شهيداً انتُشلت جثامينهم من تحت أنقاض 20 مبنى سكنياً، من أصل نحو 160 مفقوداً، بعد نحو 231 ساعة عمل للدفاع المدني بتمويل من اللجنة الدولية للصليب الأحمر، ولا يزال نحو 90 تحت الركام.",
-     "en": "Hundreds of Palestinians in Beit Lahia and Jabalia camp buried 70 people recovered from the rubble of 20 residential buildings, out of about 160 missing, after some 231 hours of civil defence work funded by the ICRC; about 90 remain under the debris.",
+     "ar": "أبلغ نائب المبعوث الأممي إلى سوريا كلاوديو كوردوني مجلس الأمن أن إسرائيل تواصل عملياتها العسكرية في جنوب غرب سوريا «بلا هوادة» قرب سد المنطرة ووادي الرقاد، من توغلات وحواجز واعتقالات وقصف وإضرار بالبنية الزراعية والمائية، فيما قال المندوب السوري إبراهيم علبي إن «السوريين والعالم كله سئموا اعتداءات إسرائيل».",
+     "en": "UN deputy special envoy for Syria Claudio Cordone told the Security Council that Israel is \"relentlessly\" conducting military operations in south-western Syria near Al Mantara Dam and Wadi Al Ruqqad, including incursions, checkpoints, detentions, shelling and damage to farm and water infrastructure, while Syria's envoy Ibrahim Olabi said \"Syrians and the entire world have had enough of Israel's attacks\".",
      "src": [
-      "kt-gaza16"
+      "nat-syr16"
      ]
     },
     {
@@ -1545,65 +1544,66 @@
       "ar": "أوروبا",
       "en": "Europe"
      },
-     "ar": "تغلق إستونيا كل المعابر الحدودية مع روسيا اعتباراً من 1 ديسمبر بعد اتهام الاستخبارات العسكرية الروسية بالوقوف وراء محاولة إحراق مصنع للمسيّرات، فيما قال وزراء خارجية الاتحاد الأوروبي إن الحديث مع موسكو عن هيكل الأمن الأوروبي سابق لأوانه قبل وقف إطلاق النار.",
-     "en": "Estonia will close all border crossings with Russia from 1 December after accusing Russian military intelligence of ordering an attempted arson attack on a drone maker, while EU foreign ministers said talks with Moscow on Europe's security architecture are premature before a ceasefire.",
+     "ar": "أيّد وزراء الدول الأعضاء السبع والعشرين في الاتحاد الأوروبي مقترح الممثلة العليا كايا كالاس للتوصل إلى اتفاق شراكة مع سوريا يوسّع التجارة والعلاقات السياسية، انطلاقاً من نص 2008 المجمّد، مؤكدة أن «سوريا المستقرة مصلحة أوروبية». وتزور المفوضة دوبرافكا شويتسا دمشق، ويُعقد منتدى تنسيق الشراكة مع سوريا في العاصمة السورية الثلاثاء.",
+     "en": "Ministers of all 27 EU member states backed High Representative Kaja Kallas's proposal for an association agreement with Syria to expand trade and political ties, starting from the shelved 2008 text, as she said a stable Syria is in Europe's interest. Commissioner Dubravka Suica travels to Damascus, and a Syria Partnership Coordination Forum meets there on Tuesday.",
      "src": [
-      "js-ee16"
+      "nat-eu16"
      ]
     },
     {
      "id": "w8",
      "cat": {
-      "ar": "التقنية",
-      "en": "Technology"
+      "ar": "الشرق الأوسط",
+      "en": "Middle East"
      },
-     "ar": "غرّمت إيطاليا شركة «ميتا» 887 مليون دولار لاستخدامها صور معارض مستخدمي أندرويد دون موافقة محددة.",
-     "en": "Italy fined Meta $887 million for using Android users' gallery photos without specific consent.",
+     "ar": "دخلت مجموعة حاملة الطائرات «تيودور روزفلت» منطقة القيادة المركزية الأميركية في 15 نوفمبر لتنضم إلى «جورج بوش الأب» و«جورج واشنطن»، مع أكثر من 20 قطعة بحرية تدعم الحصار على الموانئ الإيرانية، فيما قال نائب وزير الخارجية الإيراني كاظم غريب آبادي إن طهران «لن تنتظر أن تهاجم الولايات المتحدة أولاً».",
+     "en": "The USS Theodore Roosevelt strike group entered US Central Command on 15 November, joining the George H.W. Bush and George Washington, with more than 20 Navy vessels supporting the blockade of Iranian ports, while Iranian Deputy Foreign Minister Kazem Gharibabadi said Tehran \"will not wait for the US to attack first\".",
      "src": [
-      "js-ee16"
+      "gn-live16"
      ]
     }
    ],
    "analysis": {
-    "ar": "ليل الأسواق العالمية يحكمه سؤالان: هل تصمد «إنفيديا» في أول نتائج بعد رحيل مؤسسها، وهل يتحول الذكاء الاصطناعي من محرك نمو إلى مصدر قلق؟ وارش نفسه وضع خيبة الأمل ضمن سيناريوهات الفيدرالي، وواشنطن تهيئ قائمة «أبطال وطنيين» تمنح القطاع غطاء سياسياً. وفي الجيوسياسة يدخل الأوروبيون غرفة التفاوض الأوكرانية بينما تغلق إستونيا حدودها، وتبقى مسودة COP31 بعيدة عن التوافق قبل أربعة أيام من الختام.",
-    "en": "The global market night turns on two questions: will Nvidia hold up in its first results since its founder left, and is AI turning from a growth engine into a source of worry? Warsh himself put a letdown among the Fed's scenarios, as Washington prepares a \"national champions\" list giving the sector political cover. In geopolitics, Europeans enter the Ukrainian negotiating room while Estonia shuts its border, and the COP31 draft remains far from consensus four days before the close.",
+    "ar": "العالم يدخل الثلاثاء على إيقاع «إنفيديا»: خسارة ثالثة لوول ستريت، وامتداد البيع إلى آسيا، وقاعدة تصدير أميركية جديدة تضيّق منافذ الحوسبة عن بُعد، كلها قبل نتائج الليلة. وفي الجغرافيا السياسية يتزامن حشد ثلاث حاملات طائرات مع خطة إيران لفتح هرمز ومع انفتاح أوروبي على دمشق، بينما يهبط النفط لأن السوق تسعّر تعافي الصادرات أكثر مما تسعّر خطر الحرب.",
+    "en": "The world enters Tuesday to Nvidia's rhythm: a third loss on Wall Street, selling spreading to Asia and a new US export rule narrowing remote-computing loopholes, all before tonight's results. Geopolitically, a three-carrier build-up coincides with Iran's Hormuz plan and a European opening to Damascus, while oil falls because the market prices recovering exports more than war risk.",
     "src": [
-     "yf-live16",
-     "lpb-warsh16",
-     "fox-ai16",
-     "an-zel16",
-     "js-ee16",
-     "kelo-cop16"
+     "bnn-ws16",
+     "ral-asia17",
+     "nat-ai16",
+     "gn-live16",
+     "oo-hormuz16",
+     "nat-eu16",
+     "nt-oil17"
     ]
    },
    "technical": {
-    "ar": "«ستاندرد آند بورز 500» عند 7,437.67 نقطة بعد كسر 7,500، والدعم التالي 7,400 ثم 7,300، والمقاومة 7,560 (إغلاق الجمعة). و«ناسداك» عند 24,575.75 دون دعم 24,800، والدعم التالي 24,500. صعود VIX إلى 22.18 يشير إلى تحوّط قبل نتائج «إنفيديا»، والإغلاق دون 7,400 يفتح باب تصحيح أعمق.",
-    "en": "The S&P 500 at 7,437.67 has broken 7,500, with next support at 7,400 then 7,300 and resistance at 7,560 (Friday's close). The Nasdaq at 24,575.75 is below 24,800 support, with the next at 24,500. The VIX rising to 22.18 signals hedging ahead of Nvidia's results; a close below 7,400 would open the way to a deeper correction.",
+    "ar": "أغلق «ستاندرد آند بورز 500» عند 7,416.59 نقطة في ثالث خسارة متتالية، و«ناسداك» عند 24,509.76 بعد هبوط 2.5%. الدعم الأول للمؤشر الأوسع 7,350 ثم 7,200، والمقاومة 7,560 (إغلاق الجمعة تقريباً). نتائج «إنفيديا» هي المحفز: مفاجأة إيجابية قد تعيد اختبار 7,560، وخيبة أمل تفتح الطريق إلى 7,200، مع بقاء العائد فوق 5% عامل ضغط على التقييمات.",
+    "en": "The S&P 500 closed at 7,416.59 in a third straight loss and the Nasdaq at 24,509.76 after a 2.5% drop. First support for the broad index is 7,350, then 7,200, with resistance near 7,560 (roughly Friday's close). Nvidia's results are the catalyst: a positive surprise could retest 7,560, a disappointment opens the way to 7,200, and yields above 5% keep pressure on valuations.",
     "src": [
-     "yf-live16",
-     "krmg-ws13"
+     "bnn-ws16"
     ]
    },
    "outlook": [
     {
-     "ar": "يُتوقع أن تحدد نتائج «إنفيديا» الثلاثاء اتجاه أسهم التقنية قبل طرح «أنثروبيك» الخميس.",
-     "en": "Nvidia's results on Tuesday are expected to set the direction for tech stocks before Thursday's Anthropic listing.",
+     "ar": "يُتوقع أن تحدد نتائج «إنفيديا» بعد إغلاق الثلاثاء اتجاه أسهم التقنية للأسبوع، مع تقلبات حادة في العقود الآجلة.",
+     "en": "Nvidia's results after Tuesday's close are expected to set tech stocks' direction for the week, with sharp swings in futures.",
      "src": [
-      "yf-live16"
+      "bnn-ws16"
      ]
     },
     {
-     "ar": "يُرجّح أن يُعقد اجتماع برلين لـ«تحالف الراغبين» قبل نهاية الشهر لترجمة المشاركة الأوروبية إلى خطوات.",
-     "en": "The Coalition of the Willing meeting in Berlin is likely to be held before month-end to turn European participation into steps.",
+     "ar": "يُرجّح أن يبقى برنت بين 90 و95 دولاراً ما لم تحدث مفاجأة في محادثات مسقط أو في هرمز.",
+     "en": "Brent is likely to stay between $90 and $95 barring a surprise in the Muscat talks or in Hormuz.",
      "src": [
-      "an-zel16"
+      "nt-oil17",
+      "anw-arg17"
      ]
     },
     {
-     "ar": "يُرجّح أن يتجاوز COP31 موعده الرسمي الجمعة بسبب خلاف الوقود الأحفوري.",
-     "en": "COP31 is likely to overrun its official Friday deadline over the fossil-fuel dispute.",
+     "ar": "يُتوقع أن يصدر عن منتدى دمشق الثلاثاء إعلان أوروبي عن مسار للتفاوض على اتفاق الشراكة.",
+     "en": "Tuesday's Damascus forum is expected to produce a European statement on a path to negotiating the association agreement.",
      "src": [
-      "kelo-cop16"
+      "nat-eu16"
      ]
     }
    ]
@@ -1674,6 +1674,19 @@
   },
   {
    "date": "2026-11-17",
+   "zone": "egypt",
+   "ar": "اليوم الثاني والختامي للاجتماع المخصص للأعمال في مصر مع المنتدى الاقتصادي العالمي.",
+   "en": "Second and final day of the dedicated business meeting on Egypt with the World Economic Forum.",
+   "src": [
+    "veto-wef16"
+   ],
+   "scn": {
+    "ar": "إعلانات استثمارية في الطاقة المتجددة والخدمات اللوجستية.",
+    "en": "Investment announcements in renewables and logistics."
+   }
+  },
+  {
+   "date": "2026-11-17",
    "zone": "gulf",
    "ar": "استئناف «فلاي دبي» رحلاتها إلى الرياض وأبها.",
    "en": "flydubai resumes Riyadh and Abha services.",
@@ -1718,6 +1731,34 @@
     "ar": "بيان عُماني عن الملاحة في هرمز ومواصلة الوساطة دون اختراق حاسم.",
     "en": "An Omani statement on Hormuz navigation and continued mediation without a decisive breakthrough."
    }
+  },
+  {
+   "date": "2026-11-17",
+   "zone": "gulf",
+   "ar": "ختام زيارة الدولة للرئيس الأوزبكي شوكت ميرضيائيف إلى سلطنة عُمان.",
+   "en": "Close of Uzbek President Shavkat Mirziyoyev's state visit to Oman.",
+   "src": [
+    "tr-uzb16",
+    "zm-uzb16"
+   ],
+   "scn": {
+    "ar": "توقيع اتفاقات في المراكز اللوجستية والإنتاج والتصدير.",
+    "en": "Agreements on logistics centres, production and exports."
+   }
+  },
+  {
+   "date": "2026-11-17",
+   "zone": "gulf",
+   "ar": "بعثة تجارية أميركية للبنية التحتية إلى الإمارات بتنظيم مجلس الأعمال الأميركي الإماراتي حتى 24 نوفمبر.",
+   "en": "US infrastructure trade mission to the UAE led by the US-UAE Business Council, running to 24 November.",
+   "src": [
+    "nat-usuae16"
+   ],
+   "scn": {
+    "ar": "مذكرات تفاهم في الموانئ والسكك الحديدية ومسارات الشحن البديلة.",
+    "en": "Memoranda on ports, rail and alternative shipping routes."
+   },
+   "to": "2026-11-24"
   },
   {
    "date": "2026-11-17",
@@ -1803,29 +1844,15 @@
   },
   {
    "date": "2026-11-17",
-   "zone": "gulf",
-   "ar": "ختام زيارة الدولة للرئيس الأوزبكي شوكت ميرضيائيف إلى سلطنة عُمان.",
-   "en": "Close of Uzbek President Shavkat Mirziyoyev's state visit to Oman.",
+   "zone": "world",
+   "ar": "منتدى تنسيق الشراكة مع سوريا في دمشق وزيارة المفوضة الأوروبية دوبرافكا شويتسا.",
+   "en": "Syria Partnership Coordination Forum in Damascus and a visit by EU Commissioner Dubravka Suica.",
    "src": [
-    "tr-uzb16",
-    "zm-uzb16"
+    "nat-eu16"
    ],
    "scn": {
-    "ar": "توقيع اتفاقات في المراكز اللوجستية والإنتاج والتصدير.",
-    "en": "Agreements on logistics centres, production and exports."
-   }
-  },
-  {
-   "date": "2026-11-17",
-   "zone": "egypt",
-   "ar": "اليوم الثاني والختامي للاجتماع المخصص للأعمال في مصر مع المنتدى الاقتصادي العالمي.",
-   "en": "Second and final day of the dedicated business meeting on Egypt with the World Economic Forum.",
-   "src": [
-    "veto-wef16"
-   ],
-   "scn": {
-    "ar": "إعلانات استثمارية في الطاقة المتجددة والخدمات اللوجستية.",
-    "en": "Investment announcements in renewables and logistics."
+    "ar": "إعلان مسار لتوقيع اتفاق الشراكة الأوروبي السوري ثم تحديثه.",
+    "en": "A roadmap to sign and then modernise the EU-Syria association agreement."
    }
   },
   {
@@ -1841,6 +1868,16 @@
     "ar": "يُرجّح أن يركز على تبادل برامج التدريب والتعليم الشرطي.",
     "en": "Likely to focus on exchanging police training and education programmes."
    }
+  },
+  {
+   "date": "2026-11-18",
+   "zone": "qatar",
+   "ar": "ذروة زخة شهب «الأسديات» فوق قطر من منتصف الليل حتى الفجر بنحو 15 شهاباً في الساعة.",
+   "en": "Peak of the Leonid meteor shower over Qatar from midnight to dawn, about 15 meteors an hour.",
+   "src": [
+    "pen-leo16"
+   ],
+   "scn": null
   },
   {
    "date": "2026-11-18",
@@ -2015,6 +2052,19 @@
    "src": [
     "up-mkt16"
    ]
+  },
+  {
+   "date": "2026-11-19",
+   "zone": "world",
+   "ar": "مؤتمر الاستثمار الأوروبي الأردني، ويعرض الأردن مشروعات بقيمة 15 مليار دولار.",
+   "en": "EU-Jordan investment conference, where Jordan pitches $15 billion in projects.",
+   "src": [
+    "nat-eu16"
+   ],
+   "scn": {
+    "ar": "اهتمام من 60 إلى 70 شركة أوروبية بمشروعات الموانئ والسكك الحديدية.",
+    "en": "Interest from 60 to 70 European companies in ports and rail projects."
+   }
   },
   {
    "date": "2026-11-20",
@@ -2683,6 +2733,19 @@
   },
   {
    "date": "2027-01-01",
+   "zone": "qatar",
+   "ar": "بدء عضوية قطر الأولى في مجلس الاتحاد الدولي للاتصالات للفترة 2027–2030.",
+   "en": "Start of Qatar's first ITU Council term, 2027-2030.",
+   "src": [
+    "qt-itu16"
+   ],
+   "scn": {
+    "ar": "دور أكبر لقطر في سياسات الاتصال الرقمي عالمياً.",
+    "en": "A bigger role for Qatar in global digital connectivity policy."
+   }
+  },
+  {
+   "date": "2027-01-01",
    "zone": "world",
    "ar": "تنصيب لويس إيناسيو لولا دا سيلفا رئيساً للبرازيل لولاية رابعة.",
    "en": "Luiz Inácio Lula da Silva is inaugurated as Brazil's president for a fourth term.",
@@ -2703,19 +2766,6 @@
    "scn": {
     "ar": "التنفيذ يتطلب ترتيبات لم تُفصَّل بعد، والمذكرة الأصلية تسري حتى 2028.",
     "en": "Implementation requires arrangements not yet detailed; the original MoU runs until 2028."
-   }
-  },
-  {
-   "date": "2027-01-01",
-   "zone": "qatar",
-   "ar": "بدء عضوية قطر الأولى في مجلس الاتحاد الدولي للاتصالات للفترة 2027–2030.",
-   "en": "Start of Qatar's first ITU Council term, 2027-2030.",
-   "src": [
-    "qt-itu16"
-   ],
-   "scn": {
-    "ar": "دور أكبر لقطر في سياسات الاتصال الرقمي عالمياً.",
-    "en": "A bigger role for Qatar in global digital connectivity policy."
    }
   },
   {
@@ -3093,6 +3143,17 @@
   },
   {
    "date": null,
+   "zone": "egypt",
+   "ar": "إعلان استراتيجية جديدة للترويج للاستثمار خلال الأيام المقبلة، واجتماع الأسبوع المقبل لحسم مقترح تطوير نظام المناطق الحرة قبل عرضه على مجلس الوزراء.",
+   "en": "A new investment promotion strategy due in the coming days, and a meeting next week to finalise the free-zone proposal before it goes to the Cabinet.",
+   "src": [
+    "c24-farid17",
+    "dw-fdi16"
+   ],
+   "scn": null
+  },
+  {
+   "date": null,
    "zone": "gulf",
    "ar": "جولة المبعوث الصيني الخاص للشرق الأوسط تشاي جيون إلى إيران وعُمان والسعودية خلال نوفمبر.",
    "en": "China's special envoy to the Middle East Zhai Jun tours Iran, Oman and Saudi Arabia in November.",
@@ -3177,6 +3238,16 @@
    "en": "Signing of an MoU between the athletes' commissions of the Qatar and Oman Olympic Committees in December.",
    "src": [
     "qt-oly14"
+   ],
+   "scn": null
+  },
+  {
+   "date": null,
+   "zone": "qatar",
+   "ar": "فتح برنامج «أخصائي ضرائب» المعتمد من الهيئة العامة للضرائب و«ACCA» للمهنيين في النصف الأول من 2027.",
+   "en": "The GTA-ACCA Tax Specialist programme opens to professionals in the first half of 2027.",
+   "src": [
+    "pen-gta16"
    ],
    "scn": null
   },
@@ -3337,17 +3408,17 @@
    "date": "2026-11-16",
    "url": "https://www.anews.com.tr/world/2026/11/16/zelensky-says-europe-joins-ukraine-settlement-negotiations-for-1st-time"
   },
+  "anw-arg17": {
+   "ar": "إيه نيوز (الأناضول)",
+   "en": "A News (Anadolu)",
+   "date": "2026-11-17",
+   "url": "https://www.anews.com.tr/middle-east/2026/11/17/iranian-foreign-minister-arrives-in-oman-for-talks"
+  },
   "anw-cop11": {
    "ar": "إيه نيوز (الأناضول)",
    "en": "A News (Anadolu)",
    "date": "2026-11-11",
    "url": "https://www.anews.com.tr/turkey/2026/11/11/cop31-leaders-summit-set-to-open-in-turkiye-with-electrification-in-focus"
-  },
-  "ap-ws16": {
-   "ar": "أسوشيتد برس عبر نيوز 4 جاكس",
-   "en": "AP via News4JAX",
-   "date": "2026-11-16",
-   "url": "https://www.news4jax.com/business/2026/11/16/stocks-decline-in-asia-as-investor-concerns-over-nvidia-fallout-extend-into-another-week/"
   },
   "araby-icup": {
    "ar": "العربي الجديد",
@@ -3391,6 +3462,12 @@
    "date": "2026-11-12",
    "url": "https://www.banker.news/160354"
   },
+  "bnn-ws16": {
+   "ar": "بي إن إن بلومبرغ (أسوشيتد برس)",
+   "en": "BNN Bloomberg (AP)",
+   "date": "2026-11-16",
+   "url": "https://www.bnnbloomberg.ca/markets/nasdaq/2026/11/16/stocks-decline-on-tech-sell-off-as-concerns-over-the-nvidia-fallout-persist/"
+  },
   "bo-wef13": {
    "ar": "البورصة نيوز",
    "en": "Alborsa News",
@@ -3420,6 +3497,18 @@
    "en": "Cairo 24",
    "date": "2026-10-29",
    "url": "https://www.cairo24.com/2520131"
+  },
+  "c24-farid17": {
+   "ar": "القاهرة 24",
+   "en": "Cairo 24",
+   "date": "2026-11-17",
+   "url": "https://www.cairo24.com/2530706"
+  },
+  "c24-wef16": {
+   "ar": "القاهرة 24",
+   "en": "Cairo 24",
+   "date": "2026-11-16",
+   "url": "https://www.cairo24.com/2530664"
   },
   "cam-uk12": {
    "ar": "سيتي إيه إم",
@@ -3475,11 +3564,17 @@
    "date": "2026-10-31",
    "url": "https://www.dostor.org/5758566"
   },
-  "dw-dahab16": {
+  "dw-fdi16": {
    "ar": "بوابة الدولة",
-   "en": "Al-Dawla News",
+   "en": "Aldawla News",
    "date": "2026-11-16",
-   "url": "https://www.aldawlanews.com/1390119"
+   "url": "https://www.aldawlanews.com/1390080"
+  },
+  "dw-wipo16": {
+   "ar": "بوابة الدولة",
+   "en": "Aldawla News",
+   "date": "2026-11-16",
+   "url": "https://www.aldawlanews.com/1390090"
   },
   "eam-gas9": {
    "ar": "إنتربرايز",
@@ -3493,12 +3588,6 @@
    "date": "2026-11-13",
    "url": "https://www.elbalad.news/7179440"
   },
-  "eg-elec16": {
-   "ar": "إيجيبشن غازيت",
-   "en": "Egyptian Gazette",
-   "date": "2026-11-16",
-   "url": "https://egyptian-gazette.com/egypt/egypt-plans-incentives-to-encourage-electricity-saving/"
-  },
   "egyin-fuel14": {
    "ar": "إيجي إن",
    "en": "EgyIn",
@@ -3510,6 +3599,12 @@
    "en": "Sada Elbalad",
    "date": "2026-11-11",
    "url": "https://www.elbalad.news/7175526"
+  },
+  "elb-agenda17": {
+   "ar": "صدى البلد",
+   "en": "Elbalad News",
+   "date": "2026-11-17",
+   "url": "https://www.elbalad.news/7183117"
   },
   "elb-agenda8": {
    "ar": "صدى البلد",
@@ -3547,12 +3642,6 @@
    "date": "2026-11-11",
    "url": "https://enterpriseam.com/egypt/2026/11/11/remittances-hit-a-record-usd-38-2-bn-in-the-first-nine-months-of-2026/"
   },
-  "enx-oil16": {
-   "ar": "رويترز عبر يورونكست",
-   "en": "Reuters via Euronext",
-   "date": "2026-11-16",
-   "url": "https://live.euronext.com/en/financial-news/oil-falls-recovering-middle-east-exports-bolster-surplus-outlook"
-  },
   "ff-gold5": {
    "ar": "فايننس فيدز",
    "en": "FinanceFeeds",
@@ -3570,12 +3659,6 @@
    "en": "Free Malaysia Today (AFP)",
    "date": "2026-11-16",
    "url": "https://www.freemalaysiatoday.com/category/business/2026/11/16/china-retail-sales-growth-slows-in-october"
-  },
-  "fox-ai16": {
-   "ar": "فوكس نيوز",
-   "en": "Fox News",
-   "date": "2026-11-16",
-   "url": "https://foxnews.com/live-news/ai-news-nvidia-spy-scandal-jensen-huang-11-16-26"
   },
   "gn-10": {
    "ar": "غلف نيوز",
@@ -3601,12 +3684,6 @@
    "date": "2026-11-10",
    "url": "https://gulfnews.com/uae/middle-east-war-9-things-uae-residents-need-to-know-tonight-november-10-1.500742737"
   },
-  "gn-added16": {
-   "ar": "غلف نيوز",
-   "en": "Gulf News",
-   "date": "2026-11-16",
-   "url": "https://gulfnews.com/uae/abu-dhabi/starting-a-business-in-abu-dhabi-new-reforms-aim-to-cut-waiting-time-by-53-1.500749690"
-  },
   "gn-flights": {
    "ar": "غلف نيوز",
    "en": "Gulf News",
@@ -3619,23 +3696,17 @@
    "date": "2026-11-15",
    "url": "https://gulfnews.com/business/aviation/uae-flight-updates-fresh-cancellations-and-delays-as-airlines-revise-schedules-1.500747829"
   },
-  "gn-fly16": {
-   "ar": "غلف نيوز",
-   "en": "Gulf News",
-   "date": "2026-11-16",
-   "url": "https://gulfnews.com/world/gulf/saudi/uae-flights-status-update-saudi-cancellations-continue-latest-delays-and-airline-updates-for-november-16-1.500748863"
-  },
-  "gn-iaea16": {
-   "ar": "غلف نيوز",
-   "en": "Gulf News",
-   "date": "2026-11-16",
-   "url": "https://gulfnews.com/uae/uae-secures-iaeas-highest-nuclear-safeguards-assurance-for-fourth-year-1.500749055"
-  },
   "gn-live15": {
    "ar": "غلف نيوز",
    "en": "Gulf News",
    "date": "2026-11-15",
    "url": "https://gulfnews.com/world/mena/middle-east-conflict-saudi-arabia-intercepts-houthi-missiles-targeting-riyadh-as-bahrain-issues-threat-alert-1.500747797"
+  },
+  "gn-live16": {
+   "ar": "غلف نيوز",
+   "en": "Gulf News",
+   "date": "2026-11-16",
+   "url": "https://gulfnews.com/world/mena/middle-east-conflict-us-iran-tensions-escalate-as-third-aircraft-carrier-enters-region-1.500748608"
   },
   "gn-nov": {
    "ar": "جلف نيوز",
@@ -3727,29 +3798,29 @@
    "date": "2026-11-06",
    "url": "https://www.kitco.com/news/article/2026-11-06/gold-falls-us-payrolls-surge-165000-strengthening-december-fed-hike-case"
   },
-  "krmg-ws13": {
-   "ar": "أسوشيتد برس عبر KRMG",
-   "en": "AP via 96.5 KRMG",
-   "date": "2026-11-13",
-   "url": "https://krmg.com/2026/11/13/how-major-us-stock-indexes-fared-friday-11-13-2026/"
-  },
   "ksat-asia16": {
    "ar": "كيه سات (أسوشيتد برس)",
    "en": "KSAT (AP)",
    "date": "2026-11-16",
    "url": "https://www.ksat.com/business/2026/11/16/stocks-decline-in-asia-as-concerns-over-the-nvidia-fallout-persist/"
   },
+  "kt-ai17": {
+   "ar": "كويت تايمز",
+   "en": "Kuwait Times",
+   "date": "2026-11-17",
+   "url": "https://kuwaittimes.com/article/53780/kuwait/kuwait-targets-tech-ai-investment-to-drive-economic-diversification/"
+  },
+  "kt-amir17": {
+   "ar": "كويت تايمز",
+   "en": "Kuwait Times",
+   "date": "2026-11-17",
+   "url": "https://kuwaittimes.com/article/53787/kuwait/amir-receives-crown-prince-pm-ministers/"
+  },
   "kt-fuel": {
    "ar": "خليج تايمز",
    "en": "Khaleej Times",
    "date": "2026-10-31",
    "url": "https://www.khaleejtimes.com/business/energy/uae-petrol-diesel-prices-november-2026-announced"
-  },
-  "kt-gaza16": {
-   "ar": "كويت تايمز",
-   "en": "Kuwait Times",
-   "date": "2026-11-16",
-   "url": "https://kuwaittimes.com/article/53688/top-stories/gazans-bury-70-martyrs-recovered-from-under-rubble/"
   },
   "kt-gold13": {
    "ar": "كيتكو",
@@ -3763,29 +3834,23 @@
    "date": "2026-11-05",
    "url": "https://kuwaittimes.com/article/53066/world/mocis-new-unified-digital-portal-covers-99-of-services/"
   },
-  "kt-ms16": {
-   "ar": "كويت تايمز",
-   "en": "Kuwait Times",
-   "date": "2026-11-16",
-   "url": "https://kuwaittimes.com/article/53702/kuwait/pm-hails-microsoft-center-as-major-step-toward-kuwaits-digital-future/"
-  },
   "kt-rad15n": {
    "ar": "كويت تايمز",
    "en": "Kuwait Times",
    "date": "2026-11-15",
    "url": "https://kuwaittimes.com/article/53651/kuwait/gcc-emergency-center-launches-regional-radiological-emergency-training-school/"
   },
+  "kt-wp17": {
+   "ar": "كويت تايمز",
+   "en": "Kuwait Times",
+   "date": "2026-11-17",
+   "url": "https://kuwaittimes.com/article/53789/kuwait/kuwait-france-plan-western-pearl-2027-drill/"
+  },
   "l10-ukr11": {
    "ar": "لوكال 10 (أسوشيتد برس)",
    "en": "Local 10 (AP)",
    "date": "2026-11-11",
    "url": "https://www.local10.com/news/2026/11/11/russia-and-ukraine-agree-to-a-large-exchange-of-prisoners-of-war-officials-at-abu-dhabi-talks-say/"
-  },
-  "lpb-warsh16": {
-   "ar": "ذا برايفت بانكر",
-   "en": "The Private Banker",
-   "date": "2026-11-16",
-   "url": "https://leprivatebanker.com/2026/11/16/warsh-says-fed-staff-are-modeling-three-ai-scenarios-from-a-productivity-boom-to-job-losses-and-a-letdown/"
   },
   "lt-brazil": {
    "ar": "لاتين تايمز",
@@ -3798,6 +3863,12 @@
    "en": "Masr 2030",
    "date": "2026-11-16",
    "url": "https://www.msr2030.com/595885"
+  },
+  "m24-gold17": {
+   "ar": "أخبار مصر 24",
+   "en": "Masr24 News",
+   "date": "2026-11-17",
+   "url": "https://www.masr24.news/node/45982"
   },
   "m24-steel15": {
    "ar": "أخبار مصر 24",
@@ -3841,11 +3912,23 @@
    "date": "2026-11-03",
    "url": "https://www.almezan.news/261332"
   },
+  "nat-ai16": {
+   "ar": "ذا ناشونال",
+   "en": "The National",
+   "date": "2026-11-16",
+   "url": "https://www.thenationalnews.com/future/technology/2026/11/16/jensen-huang-cheating-affair-ai-export-nvidia/"
+  },
   "nat-bh15n": {
    "ar": "ذا ناشونال",
    "en": "The National",
    "date": "2026-11-15",
    "url": "https://www.thenationalnews.com/news/mena/2026/11/15/iran-attacks-bahrain-in-blatant-challenge-to-peace-push/"
+  },
+  "nat-eu16": {
+   "ar": "ذا ناشونال",
+   "en": "The National",
+   "date": "2026-11-16",
+   "url": "https://www.thenationalnews.com/news/mena/2026/11/16/stable-syria-in-europes-interest-eu-wins-backing-for-deal-with-damascus/"
   },
   "nat-expo": {
    "ar": "ذا ناشيونال",
@@ -3865,11 +3948,29 @@
    "date": "2026-10-31",
    "url": "https://thenationalnews.com/news/us/2026/10/31/us-iran-strikes-g20-rubio"
   },
+  "nat-sajf16": {
+   "ar": "ذا ناشونال",
+   "en": "The National",
+   "date": "2026-11-16",
+   "url": "https://www.thenationalnews.com/news/gulf/2026/11/16/saudi-arabia-replaces-joint-forces-commander-overseeing-fight-with-houthis/"
+  },
+  "nat-syr16": {
+   "ar": "ذا ناشونال",
+   "en": "The National",
+   "date": "2026-11-16",
+   "url": "https://www.thenationalnews.com/news/us/2026/11/16/israeli-military-syria-druze-sweida/"
+  },
   "nat-traffic": {
    "ar": "ذا ناشيونال",
    "en": "The National",
    "date": "2026-11-03",
    "url": "https://www.thenationalnews.com/news/uae/2026/11/03/uae-traffic-laws-2027-vehicle-registration-fees-e-scooter-rules/"
+  },
+  "nat-usuae16": {
+   "ar": "ذا ناشونال",
+   "en": "The National",
+   "date": "2026-11-16",
+   "url": "https://www.thenationalnews.com/business/2026/11/16/us-uae-business-council-to-hold-infrastructure-trade-mission-to-emirates/"
   },
   "nat-water": {
    "ar": "ذا ناشونال",
@@ -3889,6 +3990,12 @@
    "date": "2026-10-28",
    "url": "https://thenationalnews.com/news/uae/2026/10/28/president-sheikh-mohamed-establishes-zayed-the-founder-day-to-honour-sheikh-zayeds-enduring-legacy"
   },
+  "nat-zel16": {
+   "ar": "ذا ناشونال",
+   "en": "The National",
+   "date": "2026-11-16",
+   "url": "https://www.thenationalnews.com/news/us/2026/11/16/zelenskyy-hopes-uae-can-host-another-round-of-ukraine-peace-talks/"
+  },
   "nc-tri16": {
    "ar": "نيوزكورد",
    "en": "NewsCord",
@@ -3900,12 +4007,6 @@
    "en": "News of Bahrain",
    "date": "2026-11-05",
    "url": "https://www.newsofbahrain.com/en/article/mps-call-for-forced-sports-club-mergers"
-  },
-  "nob-met16": {
-   "ar": "أخبار البحرين",
-   "en": "News of Bahrain",
-   "date": "2026-11-16",
-   "url": "https://www.newsofbahrain.com/en/article/bahrain-leads-gcc-climate-talks"
   },
   "nob-rail8": {
    "ar": "نيوز أوف البحرين",
@@ -3919,11 +4020,23 @@
    "date": "2026-11-02",
    "url": "https://www.newsquawk.com/headlines/newsquawk-daily-asia-pac-opening-news---2nd-november-2026"
   },
+  "nt-oil17": {
+   "ar": "ذا نيشن تايلاند (رويترز)",
+   "en": "The Nation Thailand (Reuters)",
+   "date": "2026-11-17",
+   "url": "https://www.nationthailand.com/news/world/40073582"
+  },
   "oo-abalone": {
    "ar": "عُمان أوبزرفر",
    "en": "Oman Observer",
    "date": "2026-10-25",
    "url": "https://www.omanobserver.om/article/1198521/oman/environment/oman-bans-abalone-fishing-until-november-2027"
+  },
+  "oo-hormuz16": {
+   "ar": "عُمان أوبزرفر (فرانس برس)",
+   "en": "Oman Observer (AFP)",
+   "date": "2026-11-16",
+   "url": "https://www.omanobserver.om/article/1199783/world/asia/iran-fm-says-asian-states-back-two-day-hormuz-plan"
   },
   "oo-oqep15": {
    "ar": "عُمان أوبزرفر",
@@ -3949,6 +4062,12 @@
    "date": "2026-11-14",
    "url": "https://www.omanobserver.om/article/1199643/world/asia/trump-xi-putin-to-hold-historic-meetings-in-china"
   },
+  "oo-uzb16": {
+   "ar": "عُمان أوبزرفر",
+   "en": "Oman Observer",
+   "date": "2026-11-16",
+   "url": "https://www.omanobserver.om/article/1199798/business/economy/oman-uzbekistan-sign-5-billion-in-new-deals"
+  },
   "pen-cab11": {
    "ar": "ذا بينينسولا (قنا)",
    "en": "The Peninsula (QNA)",
@@ -3966,12 +4085,6 @@
    "en": "The Peninsula",
    "date": "2026-11-12",
    "url": "https://thepeninsulaqatar.com/article/12/11/2026/47th-cairo-international-film-festival-kicks-off-with-qatari-participation"
-  },
-  "pen-coal16": {
-   "ar": "ذا بنينسولا",
-   "en": "The Peninsula",
-   "date": "2026-11-16",
-   "url": "https://thepeninsulaqatar.com/article/16/11/2026/coalition-says-it-engaged-destroyed-two-drones-over-makkah-riyadh"
   },
   "pen-cop9": {
    "ar": "ذا بينينسولا (فرانس برس)",
@@ -4021,6 +4134,12 @@
    "date": "2026-11-11",
    "url": "https://thepeninsulaqatar.com/article/11/11/2026/al-ghafar-star-rises-heralding-approach-of-winter"
   },
+  "pen-gta16": {
+   "ar": "ذا بننسولا",
+   "en": "The Peninsula",
+   "date": "2026-11-16",
+   "url": "https://thepeninsulaqatar.com/article/16/11/2026/gta-signs-agreement-with-acca-to-launch-tax-specialist-program-in-qatar"
+  },
   "pen-infantino": {
    "ar": "ذا بننسولا",
    "en": "The Peninsula",
@@ -4033,17 +4152,29 @@
    "date": "2026-11-14",
    "url": "https://thepeninsulaqatar.com/article/14/11/2026/qatar-to-host-15th-interpa-conference"
   },
+  "pen-interpa16": {
+   "ar": "ذا بننسولا",
+   "en": "The Peninsula",
+   "date": "2026-11-16",
+   "url": "https://thepeninsulaqatar.com/article/16/11/2026/qatar-hosts-15th-interpa-conference-to-advance-police-education-and-training"
+  },
   "pen-itu": {
    "ar": "ذا بينينسولا",
    "en": "The Peninsula",
    "date": "2026-11-10",
    "url": "https://thepeninsulaqatar.com/article/10/11/2026/itu-conference-opens-in-doha-to-address-global-tech-challenges"
   },
-  "pen-khul16": {
-   "ar": "ذا بنينسولا",
+  "pen-lab16": {
+   "ar": "ذا بننسولا",
    "en": "The Peninsula",
    "date": "2026-11-16",
-   "url": "https://thepeninsulaqatar.com/article/16/11/2026/qatar-highlights-mediation-role-at-london-forum-calls-for-stronger-protection-of-peace-efforts"
+   "url": "https://thepeninsulaqatar.com/article/16/11/2026/minister-of-labour-meets-ambassador-of-guinea"
+  },
+  "pen-leo16": {
+   "ar": "ذا بننسولا",
+   "en": "The Peninsula",
+   "date": "2026-11-16",
+   "url": "https://thepeninsulaqatar.com/article/16/11/2026/leonid-meteor-shower-to-peak-over-qatar-on-wednesday"
   },
   "pen-misnad12": {
    "ar": "الشرق القطرية (ذا بننسولا)",
@@ -4093,12 +4224,6 @@
    "date": "2026-11-16",
    "url": "https://thepeninsulaqatar.com/article/16/11/2026/qnl-opens-mulhamoon-exhibition-2026-to-blend-student-storytelling-and-ai"
   },
-  "pen-qse16": {
-   "ar": "ذا بنينسولا",
-   "en": "The Peninsula",
-   "date": "2026-11-16",
-   "url": "https://thepeninsulaqatar.com/article/16/11/2026/qse-index-opens-higher-18"
-  },
   "pen-quran10": {
    "ar": "ذا بينينسولا",
    "en": "The Peninsula",
@@ -4123,6 +4248,12 @@
    "date": "2026-11-12",
    "url": "https://thepeninsulaqatar.com/article/12/11/2026/qatar-gears-up-to-host-t100-triathlon-world-tour-final-for-second-consecutive-year"
   },
+  "pen-tol16": {
+   "ar": "ذا بننسولا",
+   "en": "The Peninsula",
+   "date": "2026-11-16",
+   "url": "https://thepeninsulaqatar.com/article/16/11/2026/qatar-reaffirms-commitment-to-coexistence-openness-on-international-day-for-tolerance"
+  },
   "pen-tourism": {
    "ar": "ذا بنينسولا",
    "en": "The Peninsula",
@@ -4146,6 +4277,12 @@
    "en": "The Peninsula",
    "date": "2026-11-08",
    "url": "https://thepeninsulaqatar.com/article/08/11/2026/qatars-ambition-and-knowledge-ecosystem-give-wish-distinctive-global-platform-says-ceo"
+  },
+  "pen-wx16": {
+   "ar": "ذا بننسولا",
+   "en": "The Peninsula",
+   "date": "2026-11-16",
+   "url": "https://thepeninsulaqatar.com/article/16/11/2026/relatively-cold-weather-expected-tonight-5"
   },
   "qna-camp": {
    "ar": "وكالة الأنباء القطرية",
@@ -4177,12 +4314,6 @@
    "date": "2026-11-16",
    "url": "https://www.qatar-tribune.com/article/264629/latest-news/ashghal-president-inspects-doha-south-sewage-treatment-plant-project"
   },
-  "qt-geo16": {
-   "ar": "قطر تريبيون",
-   "en": "Qatar Tribune",
-   "date": "2026-11-16",
-   "url": "https://www.qatar-tribune.com/article/264636/latest-news/prime-minister-georgian-deputy-pm-discuss-bilateral-ties"
-  },
   "qt-hia9": {
    "ar": "قطر تريبيون",
    "en": "Qatar Tribune",
@@ -4213,35 +4344,23 @@
    "date": "2026-11-14",
    "url": "https://www.qatar-tribune.com/article/264242/latest-news/qatar-oman-olympic-committees-to-sign-athletes-cooperation-mou-next-month"
   },
-  "qt-qfz16": {
-   "ar": "قطر تريبيون",
-   "en": "Qatar Tribune",
-   "date": "2026-11-16",
-   "url": "https://www.qatar-tribune.com/article/264635/latest-news/qatar-free-zones-authoritys-business-innovation-park-achieves-gsas-operations-gold-certification"
-  },
   "qt-samla8": {
    "ar": "قطر تريبيون",
    "en": "Qatar Tribune",
    "date": "2026-11-08",
    "url": "https://www.qatar-tribune.com/article/263195/latest-news/social-and-sport-contribution-fund-backs-8th-samla-race-2026"
   },
-  "qt-sand16": {
-   "ar": "قطر تريبيون",
-   "en": "Qatar Tribune",
-   "date": "2026-11-16",
-   "url": "https://www.qatar-tribune.com/article/264628/latest-news/interior-minister-meets-uk-royal-military-academy-sandhurst-commander"
-  },
-  "qt-shura16": {
-   "ar": "قطر تريبيون",
-   "en": "Qatar Tribune",
-   "date": "2026-11-16",
-   "url": "https://www.qatar-tribune.com/article/264638/latest-news/shura-council-hails-amirs-participation-in-cop31-welcomes-qatar-turkiye-supreme-strategic-committee-meeting-outcomes"
-  },
   "qt-skeek15": {
    "ar": "قطر تريبيون",
    "en": "Qatar Tribune",
    "date": "2026-11-15",
    "url": "https://www.qatar-tribune.com/article/264448/latest-news/qatar-tourism-announces-launch-of-skeek-al-doha-a-cultural-walking-route-bringing-historic-doha-to-life"
+  },
+  "ral-asia17": {
+   "ar": "راليز (رويترز)",
+   "en": "Rallies (Reuters)",
+   "date": "2026-11-17",
+   "url": "https://rallies.ai/news/asia-shares-stumble-on-tech-weakness-ahead-of-nvidia-earnings-68c215414b6c4f76"
   },
   "raya-malawi": {
    "ar": "الراية",
@@ -4254,12 +4373,6 @@
    "en": "The Rio Times",
    "date": "2026-11-13",
    "url": "https://www.riotimesonline.com/gold-silver-precious-metals-friday-november-13-2026/"
-  },
-  "rio-ind16": {
-   "ar": "ذا ريو تايمز",
-   "en": "The Rio Times",
-   "date": "2026-11-16",
-   "url": "https://www.riotimesonline.com/egypt-india-12-billion-trade-target-2026"
   },
   "rte-rba": {
    "ar": "آر تي إي",
@@ -4296,6 +4409,12 @@
    "en": "Sweden Herald (TT)",
    "date": "2026-11-03",
    "url": "https://swedenherald.com/article/trump-says-us-will-end-38-billion-in-annual-aid-to-israel-at-years-end"
+  },
+  "star-asean17": {
+   "ar": "ذا ستار",
+   "en": "The Star",
+   "date": "2026-11-17",
+   "url": "https://www.thestar.com.my/news/nation/2026/11/17/trump-set-to-arrive-in-manila-as-49th-asean-summit-draws-to-a-close"
   },
   "tc-nvda13": {
    "ar": "تك كرنش",
@@ -4429,11 +4548,11 @@
    "date": "2026-11-16",
    "url": "https://www.youlyou.com/95794"
   },
-  "yl-usd16": {
+  "yl-usd17": {
    "ar": "يوليو",
    "en": "Youlyou",
-   "date": "2026-11-16",
-   "url": "https://www.youlyou.com/95927"
+   "date": "2026-11-17",
+   "url": "https://www.youlyou.com/96211"
   },
   "youm7-icup": {
    "ar": "اليوم السابع",
