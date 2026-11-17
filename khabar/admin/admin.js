@@ -7,7 +7,7 @@ const $=s=>document.querySelector(s);
 const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
 const DEFAULT_HASH='15aebe9681badc802f1853e9061c9e06b13ca2b971a2e744f7013569398b2034';
 const PATH='khabar/data/admin.json';
-let ADMIN=null,BRIEF=null,HEAD=null,LEDGER=null,HEALTH=null,USERS=null,ME=null;
+let ADMIN=null,BRIEF=null,HEAD=null,LEDGER=null,HEALTH=null,USERS=null,ME=null,MIL=null,WARS=null;
 const AUTH=window.KhabarAuth,USERS_PATH='khabar/data/users.json';
 async function hash(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('khabar:'+s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
 const getJSON=u=>fetch(u+'?t='+Date.now(),{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(r.status);return r.json()});
@@ -17,7 +17,7 @@ const S={get(k){try{return sessionStorage.getItem(k)}catch(e){return null}},set(
 const LS={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 
 async function boot(){
-  try{[ADMIN,BRIEF]=await Promise.all([getJSON('../data/admin.json'),getJSON('../data/brief.json')]);HEAD=await getJSON('../data/headlines.json').catch(()=>null);LEDGER=await getJSON('../data/ledger.json').catch(()=>null);HEALTH=await getJSON('../data/health.json').catch(()=>null);USERS=await AUTH.load('../').catch(()=>({v:1,iter:AUTH.ITER,users:[]}))}
+  try{[ADMIN,BRIEF]=await Promise.all([getJSON('../data/admin.json'),getJSON('../data/brief.json')]);HEAD=await getJSON('../data/headlines.json').catch(()=>null);LEDGER=await getJSON('../data/ledger.json').catch(()=>null);HEALTH=await getJSON('../data/health.json').catch(()=>null);MIL=await getJSON('../data/military.json').catch(()=>null);WARS=await getJSON('../data/wars.json').catch(()=>null);USERS=await AUTH.load('../').catch(()=>({v:1,iter:AUTH.ITER,users:[]}))}
   catch(e){$('#login-err').textContent='تعذّر تحميل بيانات التطبيق. أعد تحميل الصفحة.';$('#login-err').hidden=false;return}
   ADMIN.breaking=ADMIN.breaking||{};ADMIN.hidden=ADMIN.hidden||[];ADMIN.auth=ADMIN.auth||{user:'admin',hash:''};
   const su=S.get('khabar-admin-user'),rec=su&&USERS.users.find(x=>x.u===su&&x.role==='super'&&x.active!==false);
@@ -41,13 +41,16 @@ function open(){
   $('#login-form').hidden=true;$('#app').hidden=false;$('#logout').hidden=false;$('#who').textContent=(ME.name||ME.u)+' · مدير شامل';
   const n=BRIEF.zones.reduce((s,z)=>s+z.items.length,0);
   const k=$('#kpis');k.textContent='';
-  [[n,'خبر في الخلاصة الحالية'],[Object.keys(BRIEF.sources).length,'مصدراً موثّقاً'],[BRIEF.roadmap.length,'موعداً في خريطة الطريق'],[ADMIN.hidden.length,'خبراً مخفياً']].forEach(([v,l])=>{const d=el('div');d.append(el('b',null,String(v)),el('small',null,l));k.append(d)});
+  [[n,'خبر في الخلاصة الحالية'],[Object.keys(BRIEF.sources).length,'مصدراً موثّقاً'],[BRIEF.roadmap.length,'موعداً في خريطة الطريق'],[ADMIN.hidden.length,'خبراً مخفياً'],[MIL?MIL.regions.reduce((s,r)=>s+r.items.length,0):'—','خبراً عسكرياً بجهتين فأكثر'],[WARS?WARS.wars.length:'—','ملفات حروب يتابعها الموقع']].forEach(([v,l])=>{const d=el('div');d.append(el('b',null,String(v)),el('small',null,l));k.append(d)});
   const pub=el('p','mute');pub.style.fontSize='.88rem';pub.textContent=`الخلاصة الحالية: خلاصة ${({am:'الصباح',md:'الظهيرة',pm:'المساء',nt:'الليل'}[BRIEF.edition]||'المساء')} ليوم ${BRIEF.date}`+(HEAD&&HEAD.updated?` · آخر تحديث آلي للعناوين: ${new Date(HEAD.updated).toLocaleString('ar-QA',{timeZone:'Asia/Qatar',numberingSystem:'latn'})}`:'');k.after(pub);
   const b=ADMIN.breaking;$('#b-on').checked=!!b.on;$('#b-ar').value=b.text_ar||'';$('#b-en').value=b.text_en||'';$('#b-src').value=b.source||'';$('#b-url').value=b.url||'';
   if(b.until){const d=new Date(b.until);if(!isNaN(d)){const z=new Date(d-d.getTimezoneOffset()*6e4);$('#b-until').value=z.toISOString().slice(0,16)}}
   const ul=$('#hide-list');ul.textContent='';const hid=new Set(ADMIN.hidden);
   BRIEF.zones.forEach(z=>z.items.forEach(it=>{const li=el('li'),lb=el('label'),cb=el('input');if(!it.ar&&!it.en)return;cb.type='checkbox';cb.value=it.id;cb.checked=hid.has(it.id);cb.onchange=preview;
     const tx=el('span');tx.append(el('span','z',`${z.name.ar} · ${it.cat.ar}`),it.ar||it.en);lb.append(cb,tx);li.append(lb);ul.append(li)}));
+  // أخبار القسم العسكري تُخفى بالطريقة نفسها (المعرّفات تبدأ بـ me- أو ma-)
+  if(MIL)MIL.regions.forEach(r=>r.items.forEach(it=>{const li=el('li'),lb=el('label'),cb=el('input');if(!it.ar&&!it.en)return;cb.type='checkbox';cb.value=it.id;cb.checked=hid.has(it.id);cb.onchange=preview;
+    const tx=el('span');tx.append(el('span','z',`القسم العسكري · ${r.name.ar} · ${it.cat.ar}`),it.ar||it.en);lb.append(cb,tx);li.append(lb);ul.append(li)}));
   ['#b-on','#b-ar','#b-en','#b-src','#b-url','#b-until','#np1','#np2'].forEach(s=>$(s).addEventListener('input',preview));
   $('#tok').value=LS.get('khabar-token')||'';
   agentPanel();healthPanel();usersPanel();

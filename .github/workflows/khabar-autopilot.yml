@@ -37,6 +37,9 @@ jobs:
       - name: Verify the automatic brief
         if: steps.ap.outputs.wrote == 'true'
         run: python3 khabar/agent/verify.py --enforce
+      # القسم العسكري وملفات الحروب: يُحذف ما لا تؤكده جهتان مستقلتان، ويُحسب مؤشر التصعيد
+      - name: Verify the military desk and war files
+        run: python3 khabar/agent/military.py --enforce --quiet
       - name: Commit if changed
         run: |
           git config user.name "khabar-autopilot"
