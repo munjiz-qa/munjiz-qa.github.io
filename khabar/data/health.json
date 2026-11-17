@@ -1,11 +1,11 @@
 {
- "checked": "2026-11-17T13:55:36.119Z",
- "updated": "2026-11-17T13:55:36.119Z",
- "ok": false,
+ "checked": "2026-11-17T17:31:20.282Z",
+ "updated": "2026-11-17T17:31:20.282Z",
+ "ok": true,
  "brief": {
-  "id": "2026-11-17-md",
+  "id": "2026-11-17-pm",
   "auto": false,
-  "age_h": 5.1
+  "age_h": 2.6
  },
  "writer": "autopilot",
  "checks": [
@@ -14,50 +14,65 @@
    "url": "https://munjiz-qa.github.io/khabar/",
    "ok": true,
    "code": 200,
-   "ms": 183
+   "ms": 83
   },
   {
    "name": "خبر: لوحة الإدارة",
    "url": "https://munjiz-qa.github.io/khabar/admin/",
    "ok": true,
    "code": 200,
-   "ms": 83
+   "ms": 49
   },
   {
    "name": "خبر: حساب العميل",
    "url": "https://munjiz-qa.github.io/khabar/account/",
    "ok": true,
    "code": 200,
-   "ms": 28
+   "ms": 55
   },
   {
    "name": "خبر: الخلاصة المنشورة",
    "url": "https://munjiz-qa.github.io/khabar/data/brief.json",
    "ok": true,
    "code": 200,
-   "ms": 29
+   "ms": 80
   },
   {
    "name": "قُطب: لوحة الإدارة الموحّدة",
    "url": "https://munjiz-qa.github.io/qutb/",
    "ok": true,
    "code": 200,
-   "ms": 106
+   "ms": 48
   },
   {
    "name": "الخلاصة في موعدها",
    "ok": true,
-   "detail": "2026-11-17-md، المتوقع 2026-11-17-md"
+   "detail": "2026-11-17-pm، المتوقع 2026-11-17-pm"
   },
   {
    "name": "العناوين الآلية حديثة",
-   "ok": false,
-   "detail": "آخر تحديث قبل 18.2 ساعة"
+   "ok": true,
+   "detail": "آخر تحديث قبل 1.3 ساعة"
   },
   {
    "name": "كل خبر بمصدره",
    "ok": true,
-   "detail": "33 خبراً، 0 دون مصدر"
+   "detail": "29 خبراً، 0 دون مصدر"
+  },
+  {
+   "name": "القسم العسكري في موعده",
+   "ok": true,
+   "detail": "2026-11-17-pm، المتوقع 2026-11-17-pm"
+  },
+  {
+   "name": "كل خبر عسكري من جهتين مستقلتين",
+   "ok": true,
+   "detail": "14 خبراً، 0 دون جهتين"
+  },
+  {
+   "name": "ملفات الحروب حديثة",
+   "ok": true,
+   "detail": "5 ملفات، آخر رصد 2026-11-17T17:31:19.963Z"
   }
  ]
 }
