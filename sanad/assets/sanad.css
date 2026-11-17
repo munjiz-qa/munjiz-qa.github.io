@@ -38,6 +38,7 @@ p{margin:0}
 .nav{display:flex;gap:4px;margin-inline-start:auto;align-items:center}
 .nav a{text-decoration:none;color:var(--ink);padding:6px 10px;border-radius:8px;font-size:.95rem}
 .nav a:hover{background:var(--tint)}
+.nav a.btn-main{color:#2B1C02}.nav a.btn-main:hover{background:color-mix(in srgb,var(--amber) 85%,#000)}
 .nav .lang{font-weight:600;color:var(--deep)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;cursor:pointer;font:600 1rem var(--f-body);padding:12px 22px;border-radius:999px;text-decoration:none;transition:transform .15s,background .15s}
 .btn:active{transform:scale(.98)}

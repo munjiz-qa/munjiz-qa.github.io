@@ -211,7 +211,17 @@
       .then(function (r) { clearTimeout(t); if (!r.ok) throw new Error(r.status); return r.json(); });
   }
   function okRate(q, e) { return q > 3 && q < 4.5 && e > 10 && e < 500; }
+  // احتياطي يومي من ملف الموقع (data/fx.json يحدّثه مسار GitHub) أحدث من الرقم الثابت داخل الكود، ويُستعمل ما لم يتوفر سعر حي محفوظ
+  function loadSiteRates() {
+    if (cached && cached.r && cached.r.QAR && cached.r.EGP) return;
+    getJSON("data/fx.json?t=" + Math.floor(Date.now() / 36e5)).then(function (d) {
+      if (fx.live || !okRate(+d.QAR, +d.EGP)) throw 0;
+      rates = { USD: 1, QAR: +d.QAR, EGP: +d.EGP }; fx = { src: d.src || "احتياطي", date: d.date || FALLBACK_DATE, live: false };
+      renderAll();
+    }).catch(function () {});
+  }
   function loadRates() {
+    loadSiteRates();
     if (cached && Date.now() - cached.t < RATE_TTL) return;
     var today = dmy(new Date());
     getJSON("https://open.er-api.com/v6/latest/USD").then(function (d) {

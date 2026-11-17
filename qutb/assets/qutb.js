@@ -226,6 +226,25 @@ async function khabarStats(p, o, add) {
     if (br.auto) add('info', `${p.name}: الخلاصة الحالية آلية من الطيار الآلي، وستحل محلها الخلاصة التحريرية في موعدها التالي`, p.site);
     if (ls?.broken) add('warn', `${p.name}: ${plural(ls.broken, 'رابط مصدر معطّل', 'رابطا مصدر معطّلان', 'روابط مصادر معطّلة', 'رابط مصدر معطّلاً')} في الخلاصة`, p.site + '#ledger');
   } else o.rows.unshift(['الخلاصة الحالية', '<span class="skel">تعذّرت القراءة</span>']);
+  // القسم العسكري وملفات الحروب (منذ 17 نوفمبر 2026): كل خبر بجهتين مستقلتين، ومؤشر تصعيد لكل حرب
+  const [m, w] = await Promise.allSettled([raw(p.repo, base + 'military.json'), raw(p.repo, base + 'wars.json')]);
+  if (m.status === 'fulfilled') {
+    const mi = m.value, per = (mi.regions || []).map(r => `${r.name?.ar || r.id} ${(r.items || []).length}`).join(' · ');
+    o.rows.push(['القسم العسكري', `${({am: 'الصباح', md: 'الظهيرة', pm: 'المساء', nt: 'الليل'})[mi.edition] || ''}${mi.auto ? ' (رصد آلي)' : ''} · ${esc(per)} · ${ago(mi.published)}`]);
+    if (hoursSince(mi.published) > 8) add('warn', `${p.name}: القسم العسكري لم يتجدد منذ ${ago(mi.published).replace('قبل ', '')}`, p.site + '#military');
+  } else o.rows.push(['القسم العسكري', '<span class="skel">تعذّرت القراءة</span>']);
+  if (w.status === 'fulfilled') {
+    const L = {escalation: ['bad', 'تصعيد'], tense: ['warn', 'متوتر'], calm: ['ok', 'هادئ']};
+    o.rows.push(['الحروب الدائرة', (w.value.wars || []).map(x => `<a href="${esc(p.site)}#war-${esc(x.id)}" target="_blank" rel="noopener"><span class="pill ${(L[x.level] || L.calm)[0]}">${esc(x.name?.ar || x.id)}: ${(L[x.level] || L.calm)[1]}</span></a>`).join(' ')]);
+  }
+  // الأقسام الموضوعية (17 نوفمبر 2026): أخبار من جهتين مستقلتين، وأسعار ونتائج باتفاق مزوّدين
+  try {
+    const d = await raw(p.repo, base + 'desks.json'), n = Object.values(d.desks || {}).reduce((s, x) => s + (x.items || []).length, 0);
+    const empty = (d.meta || []).filter(m => !(d.desks[m.id]?.items || []).length).map(m => m.ar);
+    o.rows.push(['الأقسام الموضوعية', `<a href="${esc(p.site)}#desks" target="_blank" rel="noopener">${(d.meta || []).length} قسماً</a> · ${n} خبراً موثّقاً · ${Object.keys(d.rates?.fx || {}).length} عملة${d.rates?.gold ? ' · الذهب' : ''} · ${(d.sports?.matches || []).length} مباراة · ${ago(d.updated)}`]);
+    if (hoursSince(d.updated) > 8) add('warn', `${p.name}: الأقسام الموضوعية لم تتجدد منذ ${ago(d.updated).replace('قبل ', '')}`, p.site + '#desks');
+    if (empty.length > 6) add('info', `${p.name}: ${empty.length} أقسام بلا خبر مؤكد من جهتين الآن (${esc(empty.slice(0, 4).join('، '))}…)`, p.site + '#desks');
+  } catch (e) { o.rows.push(['الأقسام الموضوعية', '<span class="skel">تعذّرت القراءة</span>']); }
   if (k.status === 'fulfilled') {
     o.rows.push(['العاجل', k.value.on ? '<span class="pill bad">منشور الآن</span>' : 'لا عاجل']);
     if (k.value.on) add('info', `${p.name}: خبر عاجل منشور الآن`, p.site);
@@ -267,10 +286,17 @@ function allAlerts() {
   if (RATE_HIT) a.push({lvl: 'warn', text: 'بلغت اللوحة حد القراءة المجاني من GitHub (60 طلباً في الساعة)، فبعض الأرقام لم تُقرأ الآن. أضف مفتاح GitHub من الإعدادات ليرتفع الحد إلى 5,000.'});
   return a.sort((x, y) => RANK[y.lvl] - RANK[x.lvl]);
 }
+// ملاحظات «للعلم» تُطوى تحت سطر واحد حين توجد إنذارات أو تنبيهات، لتبقى الأعطال في الصدارة. حالة الطيّ تبقى بين التحديثات.
+let INFO_OPEN = false;
 function renderAlerts() {
   const a = allAlerts(), done = Object.keys(RESULTS).length === REG.platforms.length;
-  $('#alerts').innerHTML = a.length ? a.map(x => `<li class="${x.lvl}"><span class="dot"></span><span>${x.u ? `<a href="${esc(x.u)}" target="_blank" rel="noopener">${esc(x.text)}</a>` : esc(x.text)}</span></li>`).join('')
-    : `<li class="${done ? 'ok' : ''}"><span class="dot"></span><span>${done ? 'كل المنصات تعمل، ولا شيء يحتاج تدخلك الآن.' : 'جارٍ فحص المنصات…'}</span></li>`;
+  const li = x => `<li class="${x.lvl}"><span class="dot"></span><span>${x.u ? `<a href="${esc(x.u)}" target="_blank" rel="noopener">${esc(x.text)}</a>` : esc(x.text)}</span></li>`;
+  const main = a.filter(x => x.lvl !== 'info'), info = a.filter(x => x.lvl === 'info');
+  const fold = main.length && info.length > 1;
+  $('#alerts').innerHTML = !a.length
+    ? `<li class="${done ? 'ok' : ''}"><span class="dot"></span><span>${done ? 'كل المنصات تعمل، ولا شيء يحتاج تدخلك الآن.' : 'جارٍ فحص المنصات…'}</span></li>`
+    : (fold ? main : a).map(li).join('') + (fold ? `<li class="more"><details${INFO_OPEN ? ' open' : ''}><summary>${plural(info.length, 'ملاحظة واحدة للعلم', 'ملاحظتان للعلم', 'ملاحظات للعلم', 'ملاحظة للعلم')}</summary><ul class="alerts">${info.map(li).join('')}</ul></details></li>` : '');
+  const d = $('#alerts details'); if (d) d.ontoggle = () => { INFO_OPEN = d.open; };
 }
 function renderSummary() {
   const live = REG.platforms.filter(p => !p.legacy), rs = live.map(p => RESULTS[p.id]).filter(Boolean);

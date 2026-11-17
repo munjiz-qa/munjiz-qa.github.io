@@ -9,9 +9,10 @@ const get = async (p, tries = 3) => { for (let i = 0; i < tries; i++) { try { co
 (async () => {
   // 1) الملفات
   for (const p of ["", "account.html", "admin.html", "manifest.webmanifest", "sw.js", "app/icon-192.png", "acct/vendor/firebase-app.js", "acct/vendor/firebase-auth.js", "acct/vendor/firebase-firestore.js",
-    "files/BURAQ_BQ10_v3_BOM.xlsx", "files/BURAQ_car_conversion_plans.xlsx", "files/BURAQ_workshop_equipment.xlsx", "files/BURAQ_MADAD_Egypt.xlsx", "files/BURAQ_Business_Development.xlsx", "files/BURAQ_BQ10_v3.glb"]) {
-    const r = await get(p); check(r.s === 200 && r.b.length > 200, `${p || "index"}: ${r.s} (${r.b.length} bytes)`);
+    "data/fx.json", "files/BURAQ_BQ10_v3_BOM.xlsx", "files/BURAQ_car_conversion_plans.xlsx", "files/BURAQ_workshop_equipment.xlsx", "files/BURAQ_MADAD_Egypt.xlsx", "files/BURAQ_Business_Development.xlsx", "files/BURAQ_BQ10_v3.glb"]) {
+    const r = await get(p); check(r.s === 200 && r.b.length > (p.endsWith(".json") ? 20 : 200), `${p || "index"}: ${r.s} (${r.b.length} bytes)`);
   }
+  { const r = await get("data/fx.json"); let d = {}; try { d = JSON.parse(r.b.toString("utf8")); } catch (e) {} const ok = d.QAR > 3 && d.QAR < 4.5 && d.EGP > 10 && d.EGP < 500; check(ok, `سعر الصرف الاحتياطي سليم (QAR ${d.QAR} · EGP ${d.EGP} · ${d.date})`); const m = /(\d\d)\/(\d\d)\/(\d{4})/.exec(d.date || ""); const age = m ? (Date.now() - Date.UTC(+m[3], +m[2] - 1, +m[1])) / 864e5 : 999; if (age > 5) console.log(`::warning::سعر الصرف الاحتياطي قديم (${d.date}). تحقق من مسار أسعار صرف براق.`); }
   // كل ما تشير إليه الصفحات من سكربتات وأنماط محلية موجود
   for (const page of ["", "account.html", "admin.html"]) {
     const html = (await get(page)).b.toString("utf8");

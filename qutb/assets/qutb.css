@@ -151,3 +151,10 @@ svg{display:block}
 .disc li .nm a{font-weight:600}
 .disc li .pth{font-size:12px;color:var(--muted);direction:ltr;unicode-bidi:isolate}
 .disc li .run-btn{margin-inline-start:auto}
+
+/* ملاحظات «للعلم» المطويّة في «يحتاج انتباهك» */
+.alerts li.more{display:block;padding:0;background:none}
+.alerts li.more summary{cursor:pointer;padding:10px 12px;border-radius:10px;background:var(--info-soft);font-size:14px;font-weight:600;list-style-position:inside}
+.alerts li.more summary:focus-visible{outline:3px solid var(--info);outline-offset:2px}
+.alerts li.more details[open] summary{margin-bottom:8px}
+.alerts li.more .alerts{margin:0}
