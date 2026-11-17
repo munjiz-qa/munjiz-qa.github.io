@@ -1700,3 +1700,20 @@ body{overflow-x:clip;position:relative;max-width:100%;touch-action:manipulation}
 /* الإعجاز العلمي (#ijaz) */
 .ij-sci{margin:0;line-height:1.9}.ij-refs summary{cursor:pointer;font-weight:700;font-size:.9rem;color:var(--muted)}.ij-refs ul{margin:6px 0 0;padding-inline-start:1.2em;font-size:.85rem;line-height:1.7;overflow-wrap:anywhere}
 .rs-chip.ok{border-color:var(--ok);color:var(--ok)}button.rs-chip{background:none;cursor:pointer;font-family:inherit}button.rs-chip.on{background:var(--accent);color:var(--bg,#fff);border-color:var(--accent)}
+
+/* ---------- الرقية الشرعية: الأبواب المضافة */
+.ruq-sub{margin:20px 0 4px;font-size:1.06rem;color:var(--ok);border-inline-start:3px solid var(--ok);padding-inline-start:10px;line-height:1.7}
+.ruq-p{margin:0;line-height:1.95}
+.ruq-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.ruq-chip{font-size:.78rem;border:1px solid var(--line);border-radius:999px;padding:2px 10px;background:var(--sheet);color:var(--ok);text-decoration:none;line-height:1.7;max-width:100%}
+.ruq-card{border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:8px;align-content:start;min-width:0}
+.ruq-card.ruq-ok{border-inline-start:4px solid var(--ok)}.ruq-card.ruq-mid{border-inline-start:4px solid var(--saffron)}.ruq-card.ruq-bad{border-inline-start:4px solid var(--bad)}
+.ruq-chead{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}.ruq-chead h3{margin:0;font-size:1.02rem}
+.ruq-tag{font-style:normal;font-size:.78rem;font-weight:700;border-radius:999px;padding:2px 10px}
+.ruq-ok .ruq-tag{background:var(--ok-soft);color:var(--ok)}.ruq-mid .ruq-tag{background:var(--saffron-soft);color:var(--ink)}.ruq-bad .ruq-tag{background:var(--bad-soft);color:var(--bad)}
+.ruq-cmp{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));align-items:start}
+.ruq-col{border:1px solid var(--line);border-radius:14px;padding:14px;min-width:0}.ruq-col h3{margin:0 0 8px}
+.ruq-col.ruq-ok h3{color:var(--ok)}.ruq-col.ruq-bad h3{color:var(--bad)}
+.ruq-ul{margin:0;padding:0;list-style:none;display:grid;gap:0}
+.ruq-ul li{padding:10px 0;border-top:1px dashed var(--line)}.ruq-ul li:first-child{border-top:0}
+.ruq-ul b{display:block}.ruq-ul p{margin:3px 0 0;line-height:1.85}
