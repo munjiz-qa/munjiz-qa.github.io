@@ -226,6 +226,17 @@ async function khabarStats(p, o, add) {
     if (br.auto) add('info', `${p.name}: الخلاصة الحالية آلية من الطيار الآلي، وستحل محلها الخلاصة التحريرية في موعدها التالي`, p.site);
     if (ls?.broken) add('warn', `${p.name}: ${plural(ls.broken, 'رابط مصدر معطّل', 'رابطا مصدر معطّلان', 'روابط مصادر معطّلة', 'رابط مصدر معطّلاً')} في الخلاصة`, p.site + '#ledger');
   } else o.rows.unshift(['الخلاصة الحالية', '<span class="skel">تعذّرت القراءة</span>']);
+  // القسم العسكري وملفات الحروب (منذ 17 نوفمبر 2026): كل خبر بجهتين مستقلتين، ومؤشر تصعيد لكل حرب
+  const [m, w] = await Promise.allSettled([raw(p.repo, base + 'military.json'), raw(p.repo, base + 'wars.json')]);
+  if (m.status === 'fulfilled') {
+    const mi = m.value, per = (mi.regions || []).map(r => `${r.name?.ar || r.id} ${(r.items || []).length}`).join(' · ');
+    o.rows.push(['القسم العسكري', `${({am: 'الصباح', md: 'الظهيرة', pm: 'المساء', nt: 'الليل'})[mi.edition] || ''}${mi.auto ? ' (رصد آلي)' : ''} · ${esc(per)} · ${ago(mi.published)}`]);
+    if (hoursSince(mi.published) > 8) add('warn', `${p.name}: القسم العسكري لم يتجدد منذ ${ago(mi.published).replace('قبل ', '')}`, p.site + '#military');
+  } else o.rows.push(['القسم العسكري', '<span class="skel">تعذّرت القراءة</span>']);
+  if (w.status === 'fulfilled') {
+    const L = {escalation: ['bad', 'تصعيد'], tense: ['warn', 'متوتر'], calm: ['ok', 'هادئ']};
+    o.rows.push(['الحروب الدائرة', (w.value.wars || []).map(x => `<a href="${esc(p.site)}#war-${esc(x.id)}" target="_blank" rel="noopener"><span class="pill ${(L[x.level] || L.calm)[0]}">${esc(x.name?.ar || x.id)}: ${(L[x.level] || L.calm)[1]}</span></a>`).join(' ')]);
+  }
   if (k.status === 'fulfilled') {
     o.rows.push(['العاجل', k.value.on ? '<span class="pill bad">منشور الآن</span>' : 'لا عاجل']);
     if (k.value.on) add('info', `${p.name}: خبر عاجل منشور الآن`, p.site);
