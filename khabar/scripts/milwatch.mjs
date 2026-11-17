@@ -77,6 +77,8 @@ const WAR = {iran: /iran|irgc|tehran|hormuz|إيران|الإيراني|الحر
   ukraine: /ukrain|kyiv|kiev|kerch|crimea|أوكراني|كييف|القرم|كيرتش/i, sudan: /sudan|rsf|darfur|kordofan|السودان|الدعم السريع|دارفور|كردفان/i,
   levant: /gaza|leban|hezbollah|hamas|west bank|غزة|لبنان|حزب الله|حماس|الضفة/i};
 const ATTACK = /strike|attack|drone|missile|shell|killed|clash|bomb|raid|shot down|intercept|غارة|هجوم|قصف|مسيّرة|مسيرة|صاروخ|اشتباك|قتل|مقتل|اعتراض|أسقط/i;
+const NOT_INCIDENT = /threat|threaten|warn|deni|plot|could|may |would|تهديد|يهدد|تحذير|يحذر|تنفي|نفي|خطة/i;
+const isAttack = t => ATTACK.test(t) && !NOT_INCIDENT.test(t);
 const Q = {
   europe: {ar: '(أوكرانيا OR روسيا OR الناتو OR أوروبا) (عسكري OR الجيش OR هجوم OR صواريخ OR مسيرات) when:1d', en: '(Ukraine OR Russia OR NATO OR Europe) (military OR troops OR strike OR drones OR missiles OR defence) when:1d'},
   mideast: {ar: '(إيران OR إسرائيل OR غزة OR لبنان OR اليمن OR الحوثي OR سوريا OR العراق OR هرمز) (عسكري OR هجوم OR غارة OR قصف OR صواريخ OR مسيرات) when:1d', en: '(Iran OR Israel OR Gaza OR Lebanon OR Yemen OR Houthi OR Syria OR Iraq OR Hormuz) (military OR strike OR attack OR drones OR missiles OR navy) when:1d'},
@@ -147,7 +149,7 @@ export async function milwatch(exp, {force = false, dry = false} = {}) {
       const r = regions.find(x => x.id === region(c.items.map(h => h.title).join(' ')));
       if (r.items.filter(i => i[c.lang]).length >= (c.lang === 'ar' ? 6 : 5)) continue;
       const lead = c.items[0], w = warOf(c.items.map(h => h.title).join(' '));
-      r.items.push({id: `ma-${r.id}-${r.items.length + 1}`, cat: {ar: 'رصد آلي من جهتين فأكثر', en: 'Auto-watch, two or more outlets'}, ar: c.lang === 'ar' ? lead.title : '', en: c.lang === 'en' ? lead.title : '', src: srcIds(c), ...(w ? {war: w} : {}), ...(ATTACK.test(lead.title) ? {kind: 'attack'} : {})});
+      r.items.push({id: `ma-${r.id}-${r.items.length + 1}`, cat: {ar: 'رصد آلي من جهتين فأكثر', en: 'Auto-watch, two or more outlets'}, ar: c.lang === 'ar' ? lead.title : '', en: c.lang === 'en' ? lead.title : '', src: srcIds(c), ...(w ? {war: w} : {}), ...(isAttack(lead.title) ? {kind: 'attack'} : {})});
     }
     const n = regions.reduce((s, r) => s + r.items.length, 0);
     if (n >= 3) {
@@ -168,7 +170,7 @@ export async function milwatch(exp, {force = false, dry = false} = {}) {
       if (seen.has(key) || (w._added || 0) >= 3) continue;
       seen.add(key); w._added = (w._added || 0) + 1; added++;
       const ids = srcIds(c); for (const id of ids) wars.sources[id] = sources[id];
-      w.timeline = [{date: dohaDay(new Date(c.t)), kind: ATTACK.test(lead.title) ? 'attack' : 'report', auto: true, ar: c.lang === 'ar' ? lead.title : '', en: c.lang === 'en' ? lead.title : '', src: ids}, ...(w.timeline || [])];
+      w.timeline = [{date: dohaDay(new Date(c.t)), kind: isAttack(lead.title) ? 'attack' : 'report', auto: true, ar: c.lang === 'ar' ? lead.title : '', en: c.lang === 'en' ? lead.title : '', src: ids}, ...(w.timeline || [])];
     }
     wars.wars.forEach(w => delete w._added);
     wars.auto_checked = new Date().toISOString();
