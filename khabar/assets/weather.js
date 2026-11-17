@@ -22,7 +22,7 @@ const T={
  climate_rule:['لا يُنشر هنا خبر إلا إذا نقلته جهتان مستقلتان على الأقل، ولكل جهة عنوانها كما نشرته وتاريخه ورابطه الأصلي. يُحدَّث آلياً كل 3 ساعات ومع كل خلاصة من خلاصات اليوم الأربع.','A story appears here only if at least two independent outlets reported it, each shown with its own headline, date and original link. Updated automatically every 3 hours and with each of the day\'s four briefs.'],
  method_h:['مصادر هذا القسم وطريقة الحساب','Sources and method'],
  footer_note:['كل رقم في هذا القسم منسوب إلى مصدره برابط مباشر. التقدير الآلي للخطر اجتهاد مبني على التوقعات المذكورة، ولا يغني عن تعليمات الجهة الرسمية في بلدك.','Every figure in this section links to its source. The automatic hazard estimate is a judgement based on the cited forecasts and does not replace instructions from your official authority.'],
- today:['اليوم','Today'],qatar:['قطر','Qatar'],gulf:['الخليج','The Gulf'],egypt:['مصر','Egypt'],world:['العالم','The World'],roadmap:['خريطة الطريق','Roadmap'],ledger:['الشفافية','Transparency'],saved:['المحفوظ','Saved'],about:['عن خبر','About'],weather:['الطقس والمناخ','Weather'],
+ today:['اليوم','Today'],qatar:['قطر','Qatar'],gulf:['الخليج','The Gulf'],egypt:['مصر','Egypt'],world:['العالم','The World'],military:['القسم العسكري','Military'],wars:['الحروب الدائرة','Ongoing wars'],roadmap:['خريطة الطريق','Roadmap'],ledger:['الشفافية','Transparency'],saved:['المحفوظ','Saved'],about:['عن خبر','About'],weather:['الطقس والمناخ','Weather'],
  theme_dark:['الوضع الليلي','Dark mode'],theme_light:['الوضع النهاري','Light mode']
 };
 const t=k=>(T[k]||[k,k])[LANG==='en'?1:0];
@@ -172,9 +172,9 @@ function header(){
   const dark=document.documentElement.dataset.theme==='dark'||(!document.documentElement.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);
   $('#theme-btn').setAttribute('aria-label',dark?t('theme_light'):t('theme_dark'));
   document.title=LANG==='en'?'Weather & Climate | Khabar':'الطقس والمناخ | خبر';
-  const ZC={qatar:'var(--dawn)',gulf:'var(--sea)',egypt:'var(--nile)',world:'var(--deep-ink)'};
+  const ZC={qatar:'var(--dawn)',gulf:'var(--sea)',egypt:'var(--nile)',world:'var(--deep-ink)',military:'#8A3A2E',wars:'#C4392F'};
   const tabs=$('#tabs');tabs.textContent='';
-  ['today','qatar','gulf','egypt','world','weather','roadmap','ledger','saved','about'].forEach(id=>{
+  ['today','qatar','gulf','egypt','world','military','wars','weather','roadmap','ledger','saved','about'].forEach(id=>{
     const a=el('a','tab');a.href=id==='weather'?'./':'../#'+id;if(ZC[id]){const i=el('i');i.style.background=ZC[id];a.append(i)}
     if(id==='weather'){a.setAttribute('aria-current','page');a.insertAdjacentHTML('afterbegin','<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><circle cx="9" cy="9" r="4" fill="currentColor"/><path d="M7 20h10a4 4 0 0 0 0-8 5.5 5.5 0 0 0-10.3 1.5A3.3 3.3 0 0 0 7 20z" fill="none" stroke="currentColor" stroke-width="2"/></svg>')}
     a.append(t(id));tabs.append(a)});
