@@ -1717,3 +1717,9 @@ body{overflow-x:clip;position:relative;max-width:100%;touch-action:manipulation}
 .ruq-ul{margin:0;padding:0;list-style:none;display:grid;gap:0}
 .ruq-ul li{padding:10px 0;border-top:1px dashed var(--line)}.ruq-ul li:first-child{border-top:0}
 .ruq-ul b{display:block}.ruq-ul p{margin:3px 0 0;line-height:1.85}
+
+/* خطة عطاء أسبوعية */
+.gp-sum{display:grid;gap:10px}.gp-bar{height:10px;border-radius:99px;background:var(--line);overflow:hidden}.gp-bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .25s}
+.gp-pct{margin:0}.gp-day summary{display:flex;align-items:center;gap:10px;cursor:pointer}.gp-today{background:var(--accent);color:#fff;border-color:var(--accent)}
+.gp-act{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--line)}.gp-act:first-child{border-top:0}.gp-act input{margin-top:6px;width:20px;height:20px;flex:none;accent-color:var(--accent)}
+.gp-t{display:grid;gap:6px;min-width:0}.gp-refs{display:flex;flex-wrap:wrap;gap:6px}.gp-ref{padding:2px 10px;font-size:.85rem}
