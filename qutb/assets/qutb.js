@@ -237,6 +237,14 @@ async function khabarStats(p, o, add) {
     const L = {escalation: ['bad', 'تصعيد'], tense: ['warn', 'متوتر'], calm: ['ok', 'هادئ']};
     o.rows.push(['الحروب الدائرة', (w.value.wars || []).map(x => `<a href="${esc(p.site)}#war-${esc(x.id)}" target="_blank" rel="noopener"><span class="pill ${(L[x.level] || L.calm)[0]}">${esc(x.name?.ar || x.id)}: ${(L[x.level] || L.calm)[1]}</span></a>`).join(' ')]);
   }
+  // الأقسام الموضوعية (17 نوفمبر 2026): أخبار من جهتين مستقلتين، وأسعار ونتائج باتفاق مزوّدين
+  try {
+    const d = await raw(p.repo, base + 'desks.json'), n = Object.values(d.desks || {}).reduce((s, x) => s + (x.items || []).length, 0);
+    const empty = (d.meta || []).filter(m => !(d.desks[m.id]?.items || []).length).map(m => m.ar);
+    o.rows.push(['الأقسام الموضوعية', `<a href="${esc(p.site)}#desks" target="_blank" rel="noopener">${(d.meta || []).length} قسماً</a> · ${n} خبراً موثّقاً · ${Object.keys(d.rates?.fx || {}).length} عملة${d.rates?.gold ? ' · الذهب' : ''} · ${(d.sports?.matches || []).length} مباراة · ${ago(d.updated)}`]);
+    if (hoursSince(d.updated) > 8) add('warn', `${p.name}: الأقسام الموضوعية لم تتجدد منذ ${ago(d.updated).replace('قبل ', '')}`, p.site + '#desks');
+    if (empty.length > 6) add('info', `${p.name}: ${empty.length} أقسام بلا خبر مؤكد من جهتين الآن (${esc(empty.slice(0, 4).join('، '))}…)`, p.site + '#desks');
+  } catch (e) { o.rows.push(['الأقسام الموضوعية', '<span class="skel">تعذّرت القراءة</span>']); }
   if (k.status === 'fulfilled') {
     o.rows.push(['العاجل', k.value.on ? '<span class="pill bad">منشور الآن</span>' : 'لا عاجل']);
     if (k.value.on) add('info', `${p.name}: خبر عاجل منشور الآن`, p.site);

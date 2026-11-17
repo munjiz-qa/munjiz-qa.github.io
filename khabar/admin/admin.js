@@ -54,6 +54,8 @@ function open(){
   ['#b-on','#b-ar','#b-en','#b-src','#b-url','#b-until','#np1','#np2'].forEach(s=>$(s).addEventListener('input',preview));
   $('#tok').value=LS.get('khabar-token')||'';
   agentPanel();healthPanel();usersPanel();wxPanel();
+  // الأقسام والبلاغات والتصحيحات والرأي و«جاهز للتفعيل» (extra.js)
+  if(window.KAX)KAX.init({admin:()=>ADMIN,preview,save:async(path,obj,message)=>{const tok=$('#tok').value.trim();if(!tok)throw new Error('أدخل مفتاح النشر في قسم «نشر التعديلات» أولاً.');LS.set('khabar-token',tok);await putFile(tok,'khabar/'+path,obj,message)}});
   preview();
 }
 function wxPanel(){
@@ -104,6 +106,7 @@ async function collect(){
     if(!out.breaking.source)throw new Error('لا يُنشر عاجل دون اسم مصدره.');
     if(!/^https:\/\/\S+\.\S+/.test(out.breaking.url))throw new Error('أدخل رابط الخبر الأصلي، ويبدأ بـ https://');
   }
+  if(window.KAX)KAX.collect(out);
   out.updated=new Date().toISOString();return out;
 }
 async function preview(){try{$('#preview').textContent=JSON.stringify(await collect(),null,1)}catch(e){$('#preview').textContent=e.message}}

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>خبر</title><meta name="robots" content="noindex">
+<style>
+:root{--bg:#FFFFFF;--ink:#14212E;--mute:#566270;--line:#DFE3E0;--dawn:#E39A2D;--nile:#3A5FB0}
+@media (prefers-color-scheme:dark){:root{--bg:#121D28;--ink:#E9EEE9;--mute:#9AA7B2;--line:#233140;--nile:#86A5E8}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 'IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif}
+.w{border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.h{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#14212E;color:#F5F6F3}
+.h a{color:#F5F6F3;text-decoration:none;font-weight:700}.h small{color:#E39A2D}
+ul{list-style:none;margin:0;padding:0}li{padding:10px 14px;border-top:1px solid var(--line)}
+li p{margin:0 0 4px}li small{color:var(--mute);font-size:12px}li small a{color:var(--nile)}
+.f{padding:8px 14px;font-size:12px;color:var(--mute);border-top:1px solid var(--line)}
+</style></head><body><div class="w"><div class="h"><a href="../" target="_blank" rel="noopener" id="brand">خبر</a><small id="sub">موثّق من جهتين مستقلتين</small></div><ul id="l"></ul><div class="f" id="f"></div></div>
+<script>
+(function(){var q=new URLSearchParams(location.search),en=q.get('lang')==='en',desk=q.get('desk')||'brief',n=Math.min(10,+q.get('n')||5);
+document.documentElement.lang=en?'en':'ar';document.documentElement.dir=en?'ltr':'rtl';
+document.getElementById('brand').textContent=en?'Khabar':'خبر';document.getElementById('sub').textContent=en?'Confirmed by two independent outlets':'موثّق من جهتين مستقلتين';
+document.getElementById('f').textContent=en?'Every story links to its original sources.':'كل خبر بروابط مصادره الأصلية.';
+var L=document.getElementById('l');function add(t,src,link){var li=document.createElement('li'),p=document.createElement('p'),s=document.createElement('small');var a=document.createElement('a');a.href=link;a.target='_blank';a.rel='noopener';a.textContent=t;p.append(a);
+src.slice(0,3).forEach(function(x,i){if(i)s.append(' · ');var b=document.createElement('a');b.href=x[1];b.target='_blank';b.rel='noopener';b.textContent=x[0];s.append(b)});li.append(p,s);L.append(li)}
+var base=new URL('../',location.href).href;
+if(desk==='brief')fetch('../data/brief.json').then(function(r){return r.json()}).then(function(B){var k=en?'en':'ar';B.zones.forEach(function(z){z.items.filter(function(i){return i[k]}).slice(0,2).forEach(function(i){if(L.children.length>=n)return;add(i[k].split(/(?<=[.!؟])\s/)[0],(i.src||[]).map(function(s){var x=B.sources[s];return [x[k]||x.ar,x.url]}),base+'#i-'+i.id)})})});
+else fetch('../data/desks.json').then(function(r){return r.json()}).then(function(D){var it=((D.desks[desk]||{}).items||[]).filter(function(i){return i.lang===(en?'en':'ar')}).slice(0,n);it.forEach(function(i){add(i.title,i.sources.map(function(s){return [s.name,s.url]}),base+'#d-'+desk)})});
+})();
+</script></body></html>

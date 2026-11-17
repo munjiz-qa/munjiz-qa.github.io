@@ -39,7 +39,7 @@ const T={
  auto_breaking:['رصد آلي','Auto-detected'],checked_by:['دقّقه المدقق المستقل','Independently fact-checked'],
  nums_ok:['الأرقام مطابقة لمصادرها','Figures match their sources'],nums_review:['رقم قيد المراجعة','Figure under review'],
  trust:['ميزان الثقة','Trust meter'],weather:['الطقس والمناخ','Weather'],climate:['مناخ العالم','World climate'],
- military:['القسم العسكري','Military'],wars:['الحروب الدائرة','Ongoing wars']
+ military:['القسم العسكري','Military'],wars:['الحروب الدائرة','Ongoing wars'],desks:['الأقسام','Desks']
 };
 const t=k=>(T[k]||[k,k])[LANG==='en'?1:0];
 const ZC={qatar:'var(--dawn)',gulf:'var(--sea)',egypt:'var(--nile)',world:'var(--ink)'};
@@ -85,9 +85,10 @@ function header(){
   $('#theme-btn').setAttribute('aria-label',dark?t('theme_light'):t('theme_dark'));
   document.title=LANG==='en'?'Khabar | Your daily brief from Doha to the world':'خبر | خلاصة يومك من الدوحة إلى العالم';
   const tabs=$('#tabs');tabs.textContent='';
-  [['today'],...ZONES.map(z=>[z,ZC[z]]),['military','#8A3A2E'],['wars','#C4392F'],['weather'],['roadmap'],['ledger'],['saved'],['about']].forEach(([id,c])=>{
+  [['today'],...ZONES.map(z=>[z,ZC[z]]),['military','#8A3A2E'],['wars','#C4392F'],['desks','#7A3FB0'],['weather'],['roadmap'],['ledger'],['saved'],['about']].forEach(([id,c])=>{
     const a=el('a','tab');a.href=id==='weather'?'weather/':'#'+id;if(c){const i=el('i');i.style.background=c==='var(--ink)'?'var(--deep-ink)':c;a.append(i)}a.append(t(id));
-    if(id===VIEW||(id==='today'&&VIEW.startsWith('b-'))||(id==='wars'&&VIEW.startsWith('war-')))a.setAttribute('aria-current','page');tabs.append(a)});
+    if(id===VIEW||(id==='today'&&VIEW.startsWith('b-'))||(id==='wars'&&VIEW.startsWith('war-'))||(id==='desks'&&window.KD&&KD.has(VIEW)))a.setAttribute('aria-current','page');tabs.append(a)});
+  if(window.KD)KD.a11y();
   const cur=tabs.querySelector('[aria-current]');if(cur)cur.scrollIntoView({block:'nearest',inline:'center'});
   // contact
   const c=$('#contact');c.textContent='';
@@ -124,7 +125,7 @@ const ICON={
  stop:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>',
  copy:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3" fill="none" stroke="currentColor" stroke-width="2"/></svg>'
 };
-function shareText(it){const S=BRIEF.sources;return `${it[LANG]}\n\n${t('sources')}: ${it.src.map(id=>`${S[id][LANG]} (${fmtDate(S[id].date)}) ${S[id].url}`).join('\n')}\n\n${t('brand')}: ${CFG.SITE||location.href}`}
+function shareText(it){const S=BRIEF.sources;return `${it[LANG]}\n\n${t('sources')}: ${it.src.map(id=>`${S[id][LANG]} (${fmtDate(S[id].date)}) ${S[id].url}`).join('\n')}\n\n${t('brand')}: ${(CFG.SITE||location.href.split('#')[0])+'s/'+BRIEF.id+'-'+it.id+'.html'}`}
 function toast(m){const n=$('#toast');n.textContent=m;n.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>n.hidden=true,2200)}
 function copyText(s){const done=()=>toast(t('copied'));try{navigator.clipboard.writeText(s).then(done,()=>fallback(s,done))}catch(e){fallback(s,done)}}
 function fallback(s,done){const ta=el('textarea');ta.value=s;ta.style.position='fixed';ta.style.opacity='0';document.body.append(ta);ta.select();try{document.execCommand('copy')}catch(e){}ta.remove();done()}
@@ -138,7 +139,9 @@ function itemCard(it,zone){
   bs.onclick=()=>{const s=saved();if(s[it.id]){delete s[it.id];toast(t('unsaved'))}else{s[it.id]={it,zone,sources:Object.fromEntries(it.src.map(id=>[id,BRIEF.sources[id]])),brief:BRIEF.id};toast(t('saved_ok'))}store.set('khabar-saved',s);render()};
   const bw=el('a','act');bw.innerHTML=ICON.wa;bw.append(el('span',null,t('share')));bw.href='https://wa.me/?text='+encodeURIComponent(shareText(it));bw.target='_blank';bw.rel='noopener';
   const bc=el('button','act');bc.type='button';bc.innerHTML=ICON.copy;bc.setAttribute('aria-label',t('copy'));bc.onclick=()=>copyText(shareText(it));
-  acts.append(bs,bw,bc);f.append(acts);li.append(f);return li;
+  acts.append(bs,bw,bc);
+  if(window.KD)acts.append(KD.shareBtn({text:it[LANG],tag:it.cat[LANG],link:(CFG.SITE||location.href.split('#')[0])+'s/'+BRIEF.id+'-'+it.id+'.html',sources:it.src.map(id=>({name:BRIEF.sources[id][LANG],date:BRIEF.sources[id].date,url:BRIEF.sources[id].url}))}),KD.reportBtn(it.id,it[LANG]));
+  f.append(acts);li.append(f);return li;
 }
 function outletsLabel(n){if(LANG==='en')return n===1?'1 outlet':`${n} independent outlets`;return n===1?'جهة واحدة':n===2?'جهتان مستقلتان':`${n} جهات مستقلة`}
 function trust(it){
@@ -396,6 +399,7 @@ function viewToday(){
   main.append(edHead());
   const th=el('div','thread');th.append(el('b',null,t('thread')),el('p',null,BRIEF.thread[LANG]),srcLine(BRIEF.thread.src,t('basis')));main.append(th);
   {const fa=followAlert();if(fa)main.insertBefore(fa,main.firstChild)}
+  if(window.KD&&!QUERY)KD.home().forEach(b=>main.append(b));
   main.append(markets());{const mt=milTeaser();if(mt)main.append(mt)}{const cb=climateBlock();if(cb)main.append(cb)}main.append(searchBox());
   listHost=el('div');listHost.style.cssText='display:grid;gap:28px';main.append(listHost);renderList();
   main.append(allSources());
@@ -498,6 +502,7 @@ function render(){
   else if(VIEW==='military')viewMilitary();
   else if(VIEW==='wars')viewWars();
   else if(VIEW.startsWith('war-'))viewWar(VIEW.slice(4));
+  else if(window.KD&&KD.has(VIEW))KD.view(VIEW,main);
   else viewToday();
   if(render.keep)scrollTo(0,y);render.keep=true;
 }
@@ -508,13 +513,17 @@ async function route(){
     else if(!BRIEF||(prev.startsWith('b-'))){await load()}
   }catch(e){console.error(e);BRIEF=null}
   try{await loadMil()}catch(e){}
+  try{if(window.KD)await KD.load()}catch(e){}
   render.keep=false;render();if(prev!==VIEW)scrollTo(0,0);
+  if(window.KD){KD.hit(VIEW);KD.ld()}
 }
 // زر «العودة إلى الأعلى»: يظهر بعد تمرير شاشتين في الصفحات الطويلة، خصوصاً على الجوال
 {const up=el('button','to-top');up.type='button';up.hidden=true;up.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 5l-7 7m7-7l7 7M12 5v14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
  const lbl=()=>{const t=LANG==='en'?'Back to top':'العودة إلى الأعلى';up.setAttribute('aria-label',t);up.title=t};lbl();
  up.onclick=()=>{scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});const m=document.querySelector('main,#main');if(m){m.setAttribute('tabindex','-1');m.focus({preventScroll:true})}};
  let tk=0;addEventListener('scroll',()=>{if(tk)return;tk=requestAnimationFrame(()=>{tk=0;up.hidden=scrollY<innerHeight*2;lbl()})},{passive:true});document.body.append(up)}
+// واجهة مشتركة لملف الأقسام (assets/desks.js)
+window.KH={el,store,toast,copyText,fmtDate,fmtTime,nItems,CFG,SITE:CFG.SITE,main,dohaDay:x=>{const p=dohaParts(new Date(x));return `${p.year}-${p.month}-${p.day}`},render:()=>{render.keep=false;render()},get LANG(){return LANG},get BRIEF(){return BRIEF},get ADMIN(){return ADMIN}};
 addEventListener('hashchange',route);
 $('#lang-btn').onclick=()=>{LANG=LANG==='en'?'ar':'en';document.documentElement.lang=LANG;document.documentElement.dir=LANG==='en'?'ltr':'rtl';try{localStorage.setItem('khabar-lang',LANG)}catch(e){}FILTER={};if(BRIEF)BRIEF.zones.forEach(z=>{z.items=(z.all||z.items).filter(i=>i[LANG])});render()};
 $('#theme-btn').onclick=()=>{const r=document.documentElement;const dark=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=dark?'light':'dark';try{localStorage.setItem('khabar-theme',r.dataset.theme)}catch(e){}header()};

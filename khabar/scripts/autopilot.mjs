@@ -176,6 +176,9 @@ async function health(brief) {
   const clim = readJSON('climate.json', {}), climAge = (Date.now() - new Date(clim.updated)) / 3600e3;
   const climBad = [...(clim.ar || []), ...(clim.en || [])].filter(x => (x.sources || []).length < 2 || !x.sources.every(s => /^https:\/\//.test(s.url || ''))).length;
   checks.push({name: 'أخبار المناخ حديثة وكل خبر من جهتين', ok: climAge < 7 && climBad === 0, detail: `آخر تحديث قبل ${isNaN(climAge) ? '—' : climAge.toFixed(1)} ساعة، ${(clim.ar || []).length + (clim.en || []).length} خبراً، ${climBad} دون جهتين`});
+  const dk = readJSON('desks.json', {}), dkAge = (Date.now() - new Date(dk.updated)) / 3600e3;
+  const dkBad = Object.values(dk.desks || {}).flatMap(d => d.items).filter(i => new Set((i.sources || []).map(s => outlet(s.url))).size < 2).length;
+  checks.push({name: 'الأقسام الموضوعية حديثة وكل خبر من جهتين', ok: dkAge < 8 && dkBad === 0, detail: `آخر تحديث قبل ${isNaN(dkAge) ? '—' : dkAge.toFixed(1)} ساعة، ${Object.values(dk.desks || {}).reduce((s, d) => s + d.items.length, 0)} خبراً، ${dkBad} دون جهتين`});
   checks.push({name: 'العناوين الآلية حديثة', ok: headAge < 7, detail: `آخر تحديث قبل ${headAge.toFixed(1)} ساعة`});
   const n = (brief.zones || []).reduce((s, z) => s + z.items.length, 0), unsourced = (brief.zones || []).flatMap(z => z.items).filter(i => !(i.src || []).every(s => brief.sources[s]?.url)).length;
   checks.push({name: 'كل خبر بمصدره', ok: n >= 8 && unsourced === 0, detail: `${n} خبراً، ${unsourced} دون مصدر`});
@@ -214,6 +217,16 @@ catch (e) { console.error('تعذّر الرصد العسكري:', e.message); }
 {
   const c = readJSON('climate.json', {}), age = (Date.now() - new Date(c.updated)) / 3600e3;
   if (!(age < 3.5) && !ARGS.has('--dry')) { try { execFileSync(process.execPath, ['khabar/scripts/climate.mjs'], {stdio: 'inherit', timeout: 8 * 60e3}); } catch (e) { console.error('climate', e.message); } }
+}
+
+// الأقسام الموضوعية: تُحدَّث كل 3 ساعات من khabar.yml؛ إن أسقطت جدولة GitHub تشغيلاً يحدّثها الطيار هنا، ثم بوابة التحقق.
+// وبعد أي خلاصة جديدة يُعاد بناء فهرس البحث وتقرير الشفافية وخلاصات RSS.
+{
+  const d = readJSON('desks.json', {}), age = (Date.now() - new Date(d.updated)) / 3600e3;
+  if (!(age < 3.5) && !ARGS.has('--dry')) {
+    try { execFileSync(process.execPath, ['khabar/scripts/desks.mjs'], {stdio: 'inherit', timeout: 12 * 60e3}); execFileSync('python3', ['khabar/agent/desks.py', '--enforce', '--quiet'], {stdio: 'inherit'}); } catch (e) { console.error('desks', e.message); }
+  }
+  if (!ARGS.has('--dry')) { try { execFileSync(process.execPath, ['khabar/scripts/build.mjs'], {stdio: 'inherit', timeout: 3 * 60e3}); } catch (e) { console.error('build', e.message); } }
 }
 
 if (!ARGS.has('--no-health')) {
