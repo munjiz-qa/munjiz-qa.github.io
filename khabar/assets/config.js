@@ -5,5 +5,7 @@ window.KHABAR_CONFIG = {
   WHATSAPP: "97451600498",
   SITE: "https://munjiz-qa.github.io/khabar/",
   REPO: "munjiz-qa/munjiz-qa.github.io",
-  BRANCH: "main"
+  BRANCH: "main",
+  // خادم «خبر» على Cloudflare: البلاغات والاشتراكات والإحصاءات. على عنوان Cloudflare نفسه يكون الطلب من الأصل ذاته.
+  API: /workers\.dev$/.test(location.hostname) ? "" : "https://khabar.baseeratactions.workers.dev"
 };

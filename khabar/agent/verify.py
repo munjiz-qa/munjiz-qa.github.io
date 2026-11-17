@@ -121,6 +121,14 @@ def source_problems(s, today):
     return p
 
 
+TWO_SOURCES_FROM = '2026-11-17T21:00'
+
+
+def two_rule(brief):
+    """قاعدة المصدرين تسري على كل خلاصة نُشرت بعد إقرارها (الخلاصات الأقدم في الأرشيف تبقى كما نُشرت)."""
+    return str(brief.get('published', ''))[:16] >= TWO_SOURCES_FROM
+
+
 def verify(brief, offline=False):
     today = now_doha().date().isoformat()
     S = brief.get('sources', {})
@@ -144,6 +152,9 @@ def verify(brief, offline=False):
             reason = None
         if missing or bad:
             problems.append({'id': rid, 'kind': kind, 'missing': missing, 'invalid': {s: src_bad[s] for s in bad}})
+        # قاعدة دائمة منذ 17 نوفمبر 2026 (خلاصة الليل فما بعدها): كل خبر يؤكده مصدران من جهتين مستقلتين على الأقل
+        if not reason and kind == 'item' and two_rule(brief) and len({outlet(S[s]['url']) for s in good}) < 2:
+            reason = 'أقل من جهتين مستقلتين تؤكدان الخبر'
         if reason:
             dropped.append({'id': rid, 'kind': kind, 'zone': zone, 'reason': reason, 'text': text[:160]})
             continue
