@@ -31,8 +31,17 @@ def src_ok(sources, sid):
     s = sources.get(sid)
     return bool(s and str(s.get('url', '')).startswith('https://') and re.match(r'^\d{4}-\d{2}-\d{2}$', str(s.get('date', ''))) and (s.get('ar') or s.get('en')))
 
+# نسخ الوكالات المنشورة في مواقع أخرى تُحسب جهة واحدة هي الوكالة نفسها
+WIRES = [('ap', r'\(AP\)|أسوشيتد|^apnews\.com$'), ('afp', r'\(AFP\)|فرانس برس|^afp\.com$'), ('reuters', r'\(Reuters\)|رويترز|^reuters\.com$')]
+
+def party(s):
+    o = outlet(s['url'])
+    for name, rx in WIRES:
+        if any(re.search(rx, str(x)) for x in (s.get('en', ''), s.get('ar', ''), o)): return name
+    return o
+
 def outlets(sources, ids):
-    return {outlet(sources[i]['url']) for i in ids or [] if src_ok(sources, i)}
+    return {party(sources[i]) for i in ids or [] if src_ok(sources, i)}
 
 def two(sources, ids):
     return len(outlets(sources, ids)) >= 2
