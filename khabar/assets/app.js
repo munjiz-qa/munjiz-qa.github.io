@@ -261,12 +261,12 @@ function milCard(it,S,color){
 function conflictMap(wars,focus){
   const box=el('figure','cmap');
   if(!MAP){box.append(el('p','mute',L('جارٍ تحميل الخريطة…','Loading the map…')));getJSON('assets/conflict-map.json').then(m=>{MAP=m;render()}).catch(()=>{box.textContent=''});return box}
-  const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox',`0 0 ${MAP.w} ${MAP.h}`);svg.setAttribute('role','img');
+  const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox',`0 0 ${MAP.w} ${MAP.h}`);svg.setAttribute('role','group');
   svg.setAttribute('aria-label',L('خريطة النزاعات الدائرة، لكل نقطة ملف حربها','Map of ongoing conflicts; each marker opens its war file'));
   const land=document.createElementNS(ns,'path');land.setAttribute('d',MAP.d);land.setAttribute('class','land');svg.append(land);
   const P=(lo,la)=>[(lo-MAP.lon[0])/(MAP.lon[1]-MAP.lon[0])*MAP.w,(MAP.lat[1]-la)/(MAP.lat[1]-MAP.lat[0])*MAP.h];
   wars.forEach(w=>(w.pins||[]).forEach((pin,i)=>{const [x,y]=P(pin.lon,pin.lat),c=lvl(w.level).c;
-    const a=document.createElementNS(ns,'a');a.setAttribute('href','#war-'+w.id);a.setAttribute('class','pin'+(focus?(focus!==w.id?' dim':' focus'):''));
+    const a=document.createElementNS(ns,'a');a.setAttribute('href','#war-'+w.id);a.setAttribute('aria-label',`${w.name[LANG]} · ${pin[LANG]} · ${lvl(w.level).t}`);a.setAttribute('class','pin'+(focus?(focus!==w.id?' dim':' focus'):''));
     const tt=document.createElementNS(ns,'title');tt.textContent=`${w.name[LANG]} · ${pin[LANG]} · ${lvl(w.level).t}`;a.append(tt);
     const halo=document.createElementNS(ns,'circle');halo.setAttribute('cx',x);halo.setAttribute('cy',y);halo.setAttribute('r',i?9:15);halo.setAttribute('fill',c);halo.setAttribute('class','halo');
     const dot=document.createElementNS(ns,'circle');dot.setAttribute('cx',x);dot.setAttribute('cy',y);dot.setAttribute('r',i?4.5:7);dot.setAttribute('fill',c);dot.setAttribute('class','dot');

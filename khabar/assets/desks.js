@@ -179,7 +179,7 @@ function money(main){
     const tb=el('table','fx');const th=el('tr');[L('العملة','Currency'),L('مقابل الدولار','Per US dollar'),L('بالريال القطري','In Qatari riyal'),L('بالجنيه المصري','In Egyptian pound')].forEach(x=>th.append(el('th',null,x)));tb.append(th);
     Object.keys(CN).filter(c=>c!=='USD'&&r.fx[c]).forEach(c=>{const tr=el('tr'),v=r.fx[c].v,q=r.fx.QAR&&r.fx.QAR.v,e=r.fx.EGP&&r.fx.EGP.v;
       tr.append(el('td',null,`${ar()?CN[c][0]:CN[c][1]} (${c})`),el('td','num',nf(v,4)),el('td','num',q?nf(q/v,4):'—'),el('td','num',e?nf(e/v,3):'—'));tb.append(tr)});
-    const wrapT=el('div','fx-wrap');wrapT.append(tb);host.append(wrapT);
+    const wrapT=el('div','fx-wrap');wrapT.tabIndex=0;wrapT.setAttribute('role','region');wrapT.setAttribute('aria-label',L('جدول قابل للتمرير','Scrollable table'));wrapT.append(tb);host.append(wrapT);
     // الحاسبة
     const calc=el('div','calc');const amt=el('input');amt.type='number';amt.value='100';amt.min='0';amt.inputMode='decimal';amt.setAttribute('aria-label',L('المبلغ','Amount'));
     const mk=def=>{const s=el('select');s.setAttribute('aria-label',L('العملة','Currency'));['USD',...Object.keys(r.fx)].concat(r.gold?['XAU']:[]).forEach(c=>{const o=el('option',null,c==='XAU'?L('ذهب عيار 24 (غرام)','Gold 24K (gram)'):`${c} · ${ar()?CN[c][0]:CN[c][1]}`);o.value=c;if(c===def)o.selected=true;s.append(o)});return s};

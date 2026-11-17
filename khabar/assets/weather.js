@@ -413,7 +413,7 @@ function renderClimate(){
     const sl=el('ul','src-list');x.sources.forEach(s=>{const r=el('li');r.append(el('span','on',`${s.name} · ${fmtDate(s.date)}`));if(s.official)r.append(el('span','off',L('رسمي','official')));r.append(srcA(s.title,s.url));sl.append(r)});
     if(x.data){const r=el('li');r.append(el('span','on',`${L('بيانات','Data')}: GDACS · ${x.data.date?fmtDate(x.data.date):''}`),srcA(x.data.title,x.data.url));sl.append(r)}
     li.append(sl);ul.append(li)});
-  const up=el('p','basis mute');up.style.fontSize='.8rem';up.textContent=`${L('آخر تحديث','Updated')}: ${fmtDate(CLIMATE.updated.slice(0,10))} · ${new Date(CLIMATE.updated).toLocaleTimeString(LANG==='en'?'en-GB':'ar-QA',{timeZone:'Asia/Qatar',hour:'numeric',minute:'2-digit',numberingSystem:'latn'})} ${L('بتوقيت الدوحة','Doha time')}`;ul.append(up);
+  const up=el('p','basis mute');up.style.fontSize='.8rem';up.textContent=`${L('آخر تحديث','Updated')}: ${fmtDate(CLIMATE.updated.slice(0,10))} · ${new Date(CLIMATE.updated).toLocaleTimeString(LANG==='en'?'en-GB':'ar-QA',{timeZone:'Asia/Qatar',hour:'numeric',minute:'2-digit',numberingSystem:'latn'})} ${L('بتوقيت الدوحة','Doha time')}`;up.id='climate-updated';$('#climate-updated')?.remove();ul.after(up);
 }
 function renderMethod(){
   const ol=$('#method');ol.textContent='';

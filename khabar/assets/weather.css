@@ -121,3 +121,7 @@
   .day .x{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:2px 12px;padding-inline-start:2px}
   .now-temp{font-size:2.8rem}
 }
+
+/* زر «حدّد موقعي» في الوضع الليلي: نص داكن على لون البحر الفاتح لتباين يتجاوز 4.5 إلى 1 */
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn.locate{color:#0C141C}}
+:root[data-theme="dark"] .btn.locate{color:#0C141C}

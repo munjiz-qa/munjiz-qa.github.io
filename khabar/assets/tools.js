@@ -31,7 +31,7 @@ function method(main){
 }
 async function transparency(host){
   TRANS=TRANS||await getJSON('data/transparency.json').catch(()=>null);if(!TRANS){host.append(el('p','empty',L('يُنشر التقرير مع التحديث التالي.','Published with the next update.')));return}
-  const w=el('div','fx-wrap'),t=el('table','fx');const h=el('tr');[L('الشهر','Month'),L('الخلاصات','Briefs'),L('منها آلية','Automatic'),L('الأخبار','Stories'),L('المصادر','Sources'),L('الجهات المستقلة','Outlets'),L('التصحيحات','Corrections')].forEach(x=>h.append(el('th',null,x)));t.append(h);
+  const w=el('div','fx-wrap'),t=el('table','fx');w.tabIndex=0;w.setAttribute('role','region');w.setAttribute('aria-label',L('جدول قابل للتمرير','Scrollable table'));const h=el('tr');[L('الشهر','Month'),L('الخلاصات','Briefs'),L('منها آلية','Automatic'),L('الأخبار','Stories'),L('المصادر','Sources'),L('الجهات المستقلة','Outlets'),L('التصحيحات','Corrections')].forEach(x=>h.append(el('th',null,x)));t.append(h);
   TRANS.months.forEach(m=>{const r=el('tr');[K.fmtDate(m.month),m.briefs,m.auto,m.items,m.sources,m.outlets,m.corrections].forEach((x,i)=>r.append(el('td',i?'num':null,String(x))));t.append(r)});w.append(t);host.append(w);
 }
 
@@ -61,7 +61,7 @@ async function outlets(main){
   const D=KD.data;if(D)Object.values(D.desks).forEach(d=>d.items.forEach(i=>i.sources.forEach(s=>add(s.url,s.name,true))));
   const rows=Object.values(st).filter(r=>r.n>=3).sort((a,b)=>b.n-a.n).slice(0,120);
   const score=r=>{const t=tier(r.d)[0];const base={official:4,wire:4,check:4,press:3}[t];return Math.min(5,base+(r.co/r.n>=.5?1:0))};
-  const w=el('div','fx-wrap'),t=el('table','fx');const h=el('tr');[L('الجهة','Outlet'),L('النوع','Type'),L('مرات النقل','Citations'),L('أكدتها جهة أخرى','Corroborated'),L('التقييم','Rating')].forEach(x=>h.append(el('th',null,x)));t.append(h);
+  const w=el('div','fx-wrap'),t=el('table','fx');w.tabIndex=0;w.setAttribute('role','region');w.setAttribute('aria-label',L('جدول قابل للتمرير','Scrollable table'));const h=el('tr');[L('الجهة','Outlet'),L('النوع','Type'),L('مرات النقل','Citations'),L('أكدتها جهة أخرى','Corroborated'),L('التقييم','Rating')].forEach(x=>h.append(el('th',null,x)));t.append(h);
   rows.forEach(r=>{const tr=el('tr');const s=score(r);tr.append(el('td',null,`${[...r.names][0]||r.d} (${r.d})`),el('td',null,tier(r.d)[1]),el('td','num',String(r.n)),el('td','num',Math.round(r.co/r.n*100)+'%'),el('td','stars','★★★★★'.slice(0,s)+'☆☆☆☆☆'.slice(0,5-s)));t.append(tr)});
   w.append(t);main.append(w,el('p','basis',L('طريقة التقييم: الجهات الرسمية والوكالات ومنصات التحقق تبدأ من 4 والصحف من 3، وتزيد درجة إذا أكدت جهة مستقلة أخرى نصف ما نقلناه عنها فأكثر. قبل 17 نوفمبر 2026 لم تكن قاعدة الجهتين مفروضة على كل خبر، فنسبة التأكيد في الأرشيف القديم أقل بطبيعتها، ولذلك لا تُنقص درجة أي جهة بسببها. التقييم يقيس سجل الجهة في «خبر» لا قيمتها الصحفية عموماً، ويُحسب آلياً من الأرشيف.','Method: official bodies, wires and fact-checkers start at 4 and newspapers at 3; one point is added when another independent outlet corroborated half or more of what we cited from it, Before 17 November 2026 the two-source rule was not enforced on every story, so older corroboration rates are naturally lower and never lower a rating. It measures each outlet\'s record in Khabar, not its overall journalistic value, and is computed automatically from the archive.')));
 }
@@ -100,7 +100,7 @@ const norm=s=>String(s||'').toLowerCase().replace(/[إأآا]/g,'ا').replace(/�
 async function search(main){
   main.append(back(),head(L('الأرشيف','Archive'),L('البحث في كل الخلاصات','Search every brief'),L('ابحث في كل الأخبار الموثّقة منذ انطلاق «خبر»، بالكلمة والتاريخ والدائرة.','Search every verified story since Khabar launched, by word, date and region.')));
   const f=el('div','calc');const q=el('input');q.type='search';q.placeholder=L('اكتب كلمة أو اسماً…','Type a word or a name…');q.style.flex='1 1 220px';q.setAttribute('aria-label',L('البحث','Search'));
-  const z=el('select');[['',L('كل الدوائر','All regions')],...Object.entries(ZN).map(([k,v])=>[k,ar()?v[0]:v[1]])].forEach(([v,t])=>{const o=el('option',null,t);o.value=v;z.append(o)});
+  const z=el('select');z.setAttribute('aria-label',L('الدائرة','Region'));[['',L('كل الدوائر','All regions')],...Object.entries(ZN).map(([k,v])=>[k,ar()?v[0]:v[1]])].forEach(([v,t])=>{const o=el('option',null,t);o.value=v;z.append(o)});
   const fr=el('input');fr.type='date';fr.setAttribute('aria-label',L('من تاريخ','From'));const to=el('input');to.type='date';to.setAttribute('aria-label',L('إلى تاريخ','To'));
   f.append(q,z,fr,to);main.append(f);const out=el('div');main.append(out);out.append(el('p','mute',L('جارٍ تحميل الأرشيف…','Loading the archive…')));
   const S=await loadSearch();const lang=ar()?3:4;
