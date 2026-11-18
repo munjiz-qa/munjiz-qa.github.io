@@ -23,6 +23,16 @@ jobs:
         continue-on-error: true
         timeout-minutes: 15
       - run: python3 khabar/agent/desks.py --enforce --quiet
+      # الأوضاع في الدول: ستة محاور لكل دولة، لا يُنشر خبر إلا من جهتين مستقلتين، ومؤشر الاستقرار والخط الزمني ورصد التظاهرات
+      - run: node khabar/scripts/countries.mjs
+        continue-on-error: true
+        timeout-minutes: 15
+      - run: python3 khabar/agent/countries.py --enforce --quiet
+      # التوقعات: مؤشرات صندوق النقد والبنك الدولي، وأحداث موثّقة بجهتين، ونموذج معلن يحسب الاحتمالات ونطاق الثقة لكل دولة وجانب
+      - run: node khabar/scripts/forecast.mjs
+        continue-on-error: true
+        timeout-minutes: 10
+      - run: python3 khabar/agent/forecast.py --enforce --quiet
       # فهرس البحث، وتقرير الشفافية، وخلاصات RSS، وخرائط الموقع
       - run: node khabar/scripts/build.mjs
         continue-on-error: true
@@ -30,5 +40,5 @@ jobs:
         run: |
           git config user.name "khabar-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add khabar/data/headlines.json khabar/data/climate.json khabar/data/desks.json khabar/data/editorial.json khabar/data/search.json khabar/data/transparency.json khabar/feeds khabar/s khabar/sitemap.xml khabar/news-sitemap.xml
+          git add khabar/data/headlines.json khabar/data/climate.json khabar/data/desks.json khabar/data/editorial.json khabar/data/countries.json khabar/data/countries-editorial.json khabar/data/countries-check.json khabar/data/forecast.json khabar/data/forecast khabar/data/search.json khabar/data/transparency.json khabar/feeds khabar/s khabar/sitemap.xml khabar/news-sitemap.xml
           git diff --cached --quiet || (git commit -m "خبر: تحديث العناوين الآلية وأخبار المناخ والأقسام" && git pull --rebase -q && git push)

@@ -1,5 +1,5 @@
 'use strict';
-// «خبر»: يعرض خلاصة اليوم من data/brief.json، والعناوين الآلية من data/headlines.json، والعاجل والإخفاء من data/admin.json،
+// «عبدو نيوز»: يعرض خلاصة اليوم من data/brief.json، والعناوين الآلية من data/headlines.json، والعاجل والإخفاء من data/admin.json،
 // وميزان الثقة وسجل الشفافية من data/ledger.json، والعاجل الآلي من data/breaking.json.
 (function(){
 const CFG=window.KHABAR_CONFIG||{};
@@ -10,12 +10,12 @@ let LANG=document.documentElement.lang==='en'?'en':'ar';
 const L=(a,e)=>LANG==='en'?e:a;
 
 const T={
- brand:['خبر','Khabar'],loading:['جارٍ تحميل خلاصة اليوم…','Loading today\'s brief…'],
+ brand:['عبدو نيوز','Abdo News'],loading:['جارٍ تحميل خلاصة اليوم…','Loading today\'s brief…'],
  today:['اليوم','Today'],qatar:['قطر','Qatar'],gulf:['الخليج','The Gulf'],egypt:['مصر','Egypt'],world:['العالم','The World'],
- roadmap:['خريطة الطريق','Roadmap'],saved:['المحفوظ','Saved'],about:['عن خبر','About'],archive:['الأرشيف','Archive'],
- footer_note:['كل خبر في «خبر» منسوب إلى مصدره الأصلي برابط مباشر. التحليل والاستقراء اجتهاد تحريري مبني على المصادر المذكورة.','Every story in Khabar is attributed to its original source with a direct link. Analysis and outlook are editorial judgement based on the cited sources.'],
+ roadmap:['خريطة الطريق','Roadmap'],saved:['المحفوظ','Saved'],about:['من نحن','About us'],archive:['الأرشيف','Archive'],
+ footer_note:['كل خبر في «عبدو نيوز» منسوب إلى مصدره الأصلي برابط مباشر. التحليل والاستقراء اجتهاد تحريري مبني على المصادر المذكورة.','Every story in Abdo News is attributed to its original source with a direct link. Analysis and outlook are editorial judgement based on the cited sources.'],
  source:['المصدر','Source'],sources:['المصادر','Sources'],basis:['مبني على','Based on'],
- analysis:['تحليل خبر','Khabar analysis'],analysis_tag:['رأي تحريري','Editorial view'],
+ analysis:['تحليل عبدو نيوز','Abdo News analysis'],analysis_tag:['رأي تحريري','Editorial view'],
  technical:['قراءة فنية مبسّطة','Simple technical read'],
  outlook:['الاستقراء','Outlook'],outlook_tag:['توقّع وليس خبراً','Forecast, not news'],
  thread:['خيط اليوم','Today\'s thread'],markets:['أرقام اليوم','Today\'s numbers'],
@@ -39,7 +39,7 @@ const T={
  auto_breaking:['رصد آلي','Auto-detected'],checked_by:['دقّقه المدقق المستقل','Independently fact-checked'],
  nums_ok:['الأرقام مطابقة لمصادرها','Figures match their sources'],nums_review:['رقم قيد المراجعة','Figure under review'],
  trust:['ميزان الثقة','Trust meter'],weather:['الطقس والمناخ','Weather'],climate:['مناخ العالم','World climate'],
- military:['القسم العسكري','Military'],wars:['الحروب الدائرة','Ongoing wars'],desks:['الأقسام','Desks']
+ military:['القسم العسكري','Military'],wars:['الحروب الدائرة','Ongoing wars'],countries:['الأوضاع في الدول','Countries'],forecast:['التوقعات','Forecasts'],desks:['الأقسام','Desks']
 };
 const t=k=>(T[k]||[k,k])[LANG==='en'?1:0];
 const ZC={qatar:'var(--dawn)',gulf:'var(--sea)',egypt:'var(--nile)',world:'var(--ink)'};
@@ -83,11 +83,11 @@ function header(){
   $('#lang-btn').textContent=LANG==='en'?'ع':'EN';$('#lang-btn').setAttribute('aria-label',LANG==='en'?'العربية':'English');
   const dark=document.documentElement.dataset.theme==='dark'||(!document.documentElement.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);
   $('#theme-btn').setAttribute('aria-label',dark?t('theme_light'):t('theme_dark'));
-  document.title=LANG==='en'?'Khabar | Your daily brief from Doha to the world':'خبر | خلاصة يومك من الدوحة إلى العالم';
+  document.title=LANG==='en'?'Abdo News | Your daily brief from Doha to the world':'عبدو نيوز | خلاصة يومك من الدوحة إلى العالم';
   const tabs=$('#tabs');tabs.textContent='';
-  [['today'],...ZONES.map(z=>[z,ZC[z]]),['military','#8A3A2E'],['wars','#C4392F'],['desks','#7A3FB0'],['weather'],['roadmap'],['ledger'],['saved'],['about']].forEach(([id,c])=>{
-    const a=el('a','tab');a.href=id==='weather'?'weather/':'#'+id;if(c){const i=el('i');i.style.background=c==='var(--ink)'?'var(--deep-ink)':c;a.append(i)}a.append(t(id));
-    if(id===VIEW||(id==='today'&&VIEW.startsWith('b-'))||(id==='wars'&&VIEW.startsWith('war-'))||(id==='desks'&&window.KD&&KD.has(VIEW)))a.setAttribute('aria-current','page');tabs.append(a)});
+  [['today'],...ZONES.map(z=>[z,ZC[z]]),['military','#8A3A2E'],['wars','#C4392F'],['countries','#1F3A93'],['forecast','#D9A21A'],['desks','#7A3FB0'],['weather'],['roadmap'],['ledger'],['saved'],['about']].forEach(([id,c])=>{
+    const a=el('a','tab');a.href=id==='weather'?'weather/':id==='forecast'?'forecast/':'#'+id;if(c){const i=el('i');i.style.background=c==='var(--ink)'?'var(--deep-ink)':c;a.append(i)}a.append(t(id));
+    if(id===VIEW||(id==='today'&&VIEW.startsWith('b-'))||(id==='wars'&&VIEW.startsWith('war-'))||(id==='countries'&&window.KC&&KC.has(VIEW))||(id==='desks'&&window.KD&&KD.has(VIEW)))a.setAttribute('aria-current','page');tabs.append(a)});
   if(window.KD)KD.a11y();
   const cur=tabs.querySelector('[aria-current]');if(cur)cur.scrollIntoView({block:'nearest',inline:'center'});
   // contact
@@ -261,12 +261,12 @@ function milCard(it,S,color){
 function conflictMap(wars,focus){
   const box=el('figure','cmap');
   if(!MAP){box.append(el('p','mute',L('جارٍ تحميل الخريطة…','Loading the map…')));getJSON('assets/conflict-map.json').then(m=>{MAP=m;render()}).catch(()=>{box.textContent=''});return box}
-  const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox',`0 0 ${MAP.w} ${MAP.h}`);svg.setAttribute('role','img');
+  const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox',`0 0 ${MAP.w} ${MAP.h}`);svg.setAttribute('role','group');
   svg.setAttribute('aria-label',L('خريطة النزاعات الدائرة، لكل نقطة ملف حربها','Map of ongoing conflicts; each marker opens its war file'));
   const land=document.createElementNS(ns,'path');land.setAttribute('d',MAP.d);land.setAttribute('class','land');svg.append(land);
   const P=(lo,la)=>[(lo-MAP.lon[0])/(MAP.lon[1]-MAP.lon[0])*MAP.w,(MAP.lat[1]-la)/(MAP.lat[1]-MAP.lat[0])*MAP.h];
   wars.forEach(w=>(w.pins||[]).forEach((pin,i)=>{const [x,y]=P(pin.lon,pin.lat),c=lvl(w.level).c;
-    const a=document.createElementNS(ns,'a');a.setAttribute('href','#war-'+w.id);a.setAttribute('class','pin'+(focus?(focus!==w.id?' dim':' focus'):''));
+    const a=document.createElementNS(ns,'a');a.setAttribute('href','#war-'+w.id);a.setAttribute('aria-label',`${w.name[LANG]} · ${pin[LANG]} · ${lvl(w.level).t}`);a.setAttribute('class','pin'+(focus?(focus!==w.id?' dim':' focus'):''));
     const tt=document.createElementNS(ns,'title');tt.textContent=`${w.name[LANG]} · ${pin[LANG]} · ${lvl(w.level).t}`;a.append(tt);
     const halo=document.createElementNS(ns,'circle');halo.setAttribute('cx',x);halo.setAttribute('cy',y);halo.setAttribute('r',i?9:15);halo.setAttribute('fill',c);halo.setAttribute('class','halo');
     const dot=document.createElementNS(ns,'circle');dot.setAttribute('cx',x);dot.setAttribute('cy',y);dot.setAttribute('r',i?4.5:7);dot.setAttribute('fill',c);dot.setAttribute('class','dot');
@@ -280,7 +280,7 @@ function conflictMap(wars,focus){
 function followBtn(w){
   const f=follows(),on=!!f[w.id],b=el('button','follow');b.type='button';b.setAttribute('aria-pressed',String(on));
   b.textContent=on?L('تتابع هذه الحرب','Following'):L('تابع هذه الحرب','Follow this war');
-  b.onclick=()=>{const f=follows();if(f[w.id]){delete f[w.id];toast(L('أُلغيت المتابعة','Unfollowed'))}else{f[w.id]=warKey(w);toast(L('ستنبّهك «خبر» بكل تطور موثّق جديد في هذه الحرب','Khabar will alert you to each new verified development in this war'));
+  b.onclick=()=>{const f=follows();if(f[w.id]){delete f[w.id];toast(L('أُلغيت المتابعة','Unfollowed'))}else{f[w.id]=warKey(w);toast(L('ستنبّهك «عبدو نيوز» بكل تطور موثّق جديد في هذه الحرب','Abdo News will alert you to each new verified development in this war'));
       try{if('Notification' in window&&Notification.permission==='default')Notification.requestPermission()}catch(e){}}
     store.set('khabar-follow',f);render()};return b}
 // تنبيه المتابعة: يظهر أعلى الصفحة إذا جدّ تطور موثّق في حرب يتابعها القارئ منذ آخر زيارة
@@ -400,7 +400,7 @@ function viewToday(){
   const th=el('div','thread');th.append(el('b',null,t('thread')),el('p',null,BRIEF.thread[LANG]),srcLine(BRIEF.thread.src,t('basis')));main.append(th);
   {const fa=followAlert();if(fa)main.insertBefore(fa,main.firstChild)}
   if(window.KD&&!QUERY)KD.home().forEach(b=>main.append(b));
-  main.append(markets());{const mt=milTeaser();if(mt)main.append(mt)}{const cb=climateBlock();if(cb)main.append(cb)}main.append(searchBox());
+  main.append(markets());{const mt=milTeaser();if(mt)main.append(mt)}if(window.KC&&!QUERY)KC.home().forEach(b=>main.append(b));{const cb=climateBlock();if(cb)main.append(cb)}main.append(searchBox());
   listHost=el('div');listHost.style.cssText='display:grid;gap:28px';main.append(listHost);renderList();
   main.append(allSources());
 }
@@ -432,8 +432,8 @@ function viewRoadmap(){
     const ol=el('ol','road');list.forEach(r=>ol.append(card(r)));main.append(hd,ol)});
 }
 function viewLedger(){
-  const h=el('div','ed-head');h.append(el('span','eyebrow',L('كيف يعمل «خبر»','How Khabar works')),el('h1',null,L('سجل الشفافية','Transparency ledger')),
-    el('p','mute',L('يكتب «خبر» وكيل ذكاء مستقل، ولا يُنشر فيه شيء قبل أن يمر ببوابات تحقق برمجية ومدقق مستقل. هنا نعرض ما نشرناه، وما حذفناه ولماذا، وكم كلّف.','Khabar is written by an autonomous AI agent, and nothing is published before it passes programmatic verification gates and an independent fact-checker. Here we show what we published, what we dropped and why, and what it cost.')));main.append(h);
+  const h=el('div','ed-head');h.append(el('span','eyebrow',L('كيف يعمل «عبدو نيوز»','How Abdo News works')),el('h1',null,L('سجل الشفافية','Transparency ledger')),
+    el('p','mute',L('يكتب «عبدو نيوز» وكيل ذكاء مستقل، ولا يُنشر فيه شيء قبل أن يمر ببوابات تحقق برمجية ومدقق مستقل. هنا نعرض ما نشرناه، وما حذفناه ولماذا، وكم كلّف.','Abdo News is written by an autonomous AI agent, and nothing is published before it passes programmatic verification gates and an independent fact-checker. Here we show what we published, what we dropped and why, and what it cost.')));main.append(h);
   const steps=[[L('الكشّاف','Scout'),L('يجمع عناوين الساعات الأخيرة من عشرات المصادر كل 3 ساعات.','Gathers recent headlines from dozens of outlets every 3 hours.')],
     [L('أربعة مراسلين','Four reporters'),L('يعمل مراسل لكل دائرة بالتوازي: يبحث ويفتح المقالات الأصلية بنفسه، ويسلّم كل خبر مع اقتباس حرفي من مصدره.','One reporter per circle works in parallel: it searches, opens the original articles itself, and files each story with a verbatim quote from its source.')],
     [L('بوابة المصدر','Source gate'),L('برنامج لا يُقنَع: يرفض أي رابط لم يظهر فعلاً في البحث، وروابط التحويل، والمصادر القديمة، والاقتباس الذي لا يوجد في الصفحة.','Code that cannot be talked round: it rejects any link that never appeared in search, redirect links, stale sources, and quotes not found on the page.')],
@@ -468,8 +468,9 @@ function viewSaved(){
 function viewAbout(){
   const w=el('div','about');
   const h=el('div','ed-head');h.append(el('span','eyebrow',t('about')),el('h1',null,L('خلاصة يومك، من الدوحة إلى العالم','Your daily brief, from Doha to the world')));w.append(h);
+  const who=el('div','who');who.append(el('h2',null,L('من نحن','Who we are')),el('p',null,L('«عبدو نيوز» خلاصة إخبارية يومية مستقلة تصدر من الدوحة أربع مرات في اليوم، وكانت تُعرف سابقاً باسم «خبر». نقرأ عشرات المصادر نيابة عنك، ولا ننشر خبراً إلا إذا أكدته جهتان مستقلتان على الأقل، ونضع تحت كل خبر روابط مصادره الأصلية ودرجة تحققه. شعارنا فقاعة كلام فيها سطران وعلامة تحقق: الخبر كما قيل، بعد أن تحققنا منه.','Abdo News is an independent daily news brief published from Doha four times a day, formerly known as Khabar. We read dozens of sources for you and publish a story only when at least two independent outlets confirm it, with links to its original sources and its verification level under every story. Our mark is a speech bubble holding two lines and a check: the news as it was reported, after we verified it.')));w.append(who);
   const v=el('div','vision');
-  const a=el('div');a.append(el('h2',null,L('الرؤية','Vision')),el('p',null,L('أن يكون «خبر» المرجع اليومي الأوثق للقارئ في قطر: يفهم به ما يجري حوله في دقائق، ويثق في كل كلمة لأنه يعرف من أين جاءت.','For Khabar to be the most trusted daily reference for readers in Qatar: a way to understand what is happening around them in minutes, and to trust every word because they know where it came from.')));
+  const a=el('div');a.append(el('h2',null,L('الرؤية','Vision')),el('p',null,L('أن يكون «عبدو نيوز» المرجع اليومي الأوثق للقارئ في قطر: يفهم به ما يجري حوله في دقائق، ويثق في كل كلمة لأنه يعرف من أين جاءت.','For Abdo News to be the most trusted daily reference for readers in Qatar: a way to understand what is happening around them in minutes, and to trust every word because they know where it came from.')));
   const b=el('div');b.append(el('h2',null,L('الهدف','Goal')),el('p',null,L('أن نقرأ عشرات المصادر نيابة عنك، ونكتب لك خلاصة دقيقة كل 6 ساعات: قطر أولاً ثم الخليج ثم مصر ثم العالم، مع تحليل يشرح ما وراء الخبر، واستقراء لما قد يأتي، وخريطة للأحداث القادمة.','To read dozens of sources on your behalf and write you an accurate brief every 6 hours: Qatar first, then the Gulf, then Egypt, then the world, with analysis that explains what lies behind the news, an outlook on what may come, and a roadmap of upcoming events.')));
   v.append(a,b);w.append(v);
   w.append(el('h2',null,L('ركائزنا','Our pillars')));
@@ -480,7 +481,7 @@ function viewAbout(){
    [L('الاستقراء','Outlook'),L('نقرأ ما قد يترتب على أخبار اليوم، ونسمّيه توقّعاً لا خبراً، ونربطه بمصادره وبالمواعيد المقررة في خريطة الطريق.','We read what today\'s news may lead to, call it a forecast rather than news, and tie it to its sources and to scheduled dates on the roadmap.')]
   ].forEach(([h,p])=>{const d=el('div','pillar');d.append(el('h3',null,h),el('p',null,p));P.append(d)});w.append(P);
   w.append(el('h2',null,L('كيف نكتب','How we write')));
-  w.append(el('p',null,L('يكتب «خبر» وكيل ذكاء مستقل يعمل بإشراف تحريري: نقرأ المصادر الرسمية والصحف المعتمدة في قطر والخليج ومصر والعالم، ونجمع الخبر الواحد من مصادره المختلفة في فقرة واحدة بصياغتنا الخاصة، ونحيلك إلى المصدر الأصلي لقراءته كاملاً. ومسار التحقق كاملاً في صفحة «الشفافية». تُنشر أربع خلاصات يومياً كل 6 ساعات بتوقيت الدوحة: الصباح 06:00، والظهيرة 12:00، والمساء 18:00، والليل 00:00، وتُحدَّث العناوين الآلية كل 3 ساعات.','Khabar is written by an autonomous AI agent under editorial rules: we read official sources and established outlets in Qatar, the Gulf, Egypt and the world, combine each story from its different sources into one paragraph in our own words, and link you to the original to read it in full. The full verification trail is on the Transparency page. Four briefs are published daily, every 6 hours, Doha time: morning at 06:00, midday at 12:00, evening at 18:00 and night at 00:00; automatic headlines refresh every 3 hours.')));
+  w.append(el('p',null,L('يكتب «عبدو نيوز» وكيل ذكاء مستقل يعمل بإشراف تحريري: نقرأ المصادر الرسمية والصحف المعتمدة في قطر والخليج ومصر والعالم، ونجمع الخبر الواحد من مصادره المختلفة في فقرة واحدة بصياغتنا الخاصة، ونحيلك إلى المصدر الأصلي لقراءته كاملاً. ومسار التحقق كاملاً في صفحة «الشفافية». تُنشر أربع خلاصات يومياً كل 6 ساعات بتوقيت الدوحة: الصباح 06:00، والظهيرة 12:00، والمساء 18:00، والليل 00:00، وتُحدَّث العناوين الآلية كل 3 ساعات.','Abdo News is written by an autonomous AI agent under editorial rules: we read official sources and established outlets in Qatar, the Gulf, Egypt and the world, combine each story from its different sources into one paragraph in our own words, and link you to the original to read it in full. The full verification trail is on the Transparency page. Four briefs are published daily, every 6 hours, Doha time: morning at 06:00, midday at 12:00, evening at 18:00 and night at 00:00; automatic headlines refresh every 3 hours.')));
   if(ARCH&&ARCH.briefs&&ARCH.briefs.length){w.append(el('h2',null,t('archive')));const ul=el('ul','items');
     ARCH.briefs.slice().reverse().forEach(x=>{const li=el('li','item');const a=el('a',null,`${t('edition_'+(x.edition||'am'))} · ${fmtDate(x.date,true)}`);a.href='#b-'+x.id;li.append(a);ul.append(li)});w.append(ul)}
   w.append(el('h2',null,L('تواصل معنا','Contact us')));
@@ -502,6 +503,7 @@ function render(){
   else if(VIEW==='military')viewMilitary();
   else if(VIEW==='wars')viewWars();
   else if(VIEW.startsWith('war-'))viewWar(VIEW.slice(4));
+  else if(window.KC&&KC.has(VIEW))KC.view(VIEW,main);
   else if(window.KD&&KD.has(VIEW))KD.view(VIEW,main);
   else viewToday();
   if(render.keep)scrollTo(0,y);render.keep=true;
@@ -514,6 +516,7 @@ async function route(){
   }catch(e){console.error(e);BRIEF=null}
   try{await loadMil()}catch(e){}
   try{if(window.KD)await KD.load()}catch(e){}
+  try{if(window.KC)await KC.load()}catch(e){}
   render.keep=false;render();if(prev!==VIEW)scrollTo(0,0);
   if(window.KD){KD.hit(VIEW);KD.ld()}
 }

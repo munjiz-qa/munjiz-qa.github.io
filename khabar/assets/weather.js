@@ -1,5 +1,5 @@
 'use strict';
-// «خبر» الطقس والمناخ. يعمل كله من متصفح الزائر دون أي خادم أو مفتاح:
+// «عبدو نيوز» الطقس والمناخ. يعمل كله من متصفح الزائر دون أي خادم أو مفتاح:
 //  - الطقس والتوقعات: Open-Meteo (نماذج الأرصاد الوطنية)، وجودة الهواء والغبار: Open-Meteo Air Quality (كوبرنيكوس CAMS).
 //  - الخطر الرسمي: GDACS (الأمم المتحدة والمفوضية الأوروبية) للأعاصير والفيضانات والجفاف والبراكين والحرائق، وUSGS للزلازل،
 //    وهيئة الأرصاد الأميركية NWS داخل الولايات المتحدة، مع رابط الجهة الرسمية في كل بلد.
@@ -13,7 +13,7 @@ const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.
 let LANG=document.documentElement.lang==='en'?'en':'ar';
 const L=(a,e)=>LANG==='en'?e:a;
 const T={
- brand:['خبر','Khabar'],section:['الطقس والمناخ','Weather & Climate'],eyebrow:['الطقس والمناخ','Weather & climate'],
+ brand:['عبدو نيوز','Abdo News'],section:['الطقس والمناخ','Weather & Climate'],eyebrow:['الطقس والمناخ','Weather & climate'],
  h1:['طقس مكانك، ومناخ العالم','Your weather, the world\'s climate'],
  intro:['اختر الدولة والمدينة أو حدّد موقعك، فنعرض لك الطقس الآن والتوقعات لعشرة أيام وأي خطر محتمل بمصدره الرسمي، وإلى جانبها أخبار المناخ حول العالم مؤكدة من جهتين مستقلتين على الأقل.','Pick a country and city, or use your location, to see the weather now, a ten-day forecast and any potential hazard with its official source, alongside world climate news confirmed by at least two independent outlets.'],
  pick:['اختر مكانك','Choose your place'],country:['الدولة','Country'],city:['المدينة أو المنطقة','City or area'],locate:['حدّد موقعي','Use my location'],
@@ -22,7 +22,7 @@ const T={
  climate_rule:['لا يُنشر هنا خبر إلا إذا نقلته جهتان مستقلتان على الأقل، ولكل جهة عنوانها كما نشرته وتاريخه ورابطه الأصلي. يُحدَّث آلياً كل 3 ساعات ومع كل خلاصة من خلاصات اليوم الأربع.','A story appears here only if at least two independent outlets reported it, each shown with its own headline, date and original link. Updated automatically every 3 hours and with each of the day\'s four briefs.'],
  method_h:['مصادر هذا القسم وطريقة الحساب','Sources and method'],
  footer_note:['كل رقم في هذا القسم منسوب إلى مصدره برابط مباشر. التقدير الآلي للخطر اجتهاد مبني على التوقعات المذكورة، ولا يغني عن تعليمات الجهة الرسمية في بلدك.','Every figure in this section links to its source. The automatic hazard estimate is a judgement based on the cited forecasts and does not replace instructions from your official authority.'],
- today:['اليوم','Today'],qatar:['قطر','Qatar'],gulf:['الخليج','The Gulf'],egypt:['مصر','Egypt'],world:['العالم','The World'],military:['القسم العسكري','Military'],wars:['الحروب الدائرة','Ongoing wars'],roadmap:['خريطة الطريق','Roadmap'],ledger:['الشفافية','Transparency'],saved:['المحفوظ','Saved'],about:['عن خبر','About'],weather:['الطقس والمناخ','Weather'],
+ today:['اليوم','Today'],qatar:['قطر','Qatar'],gulf:['الخليج','The Gulf'],egypt:['مصر','Egypt'],world:['العالم','The World'],military:['القسم العسكري','Military'],wars:['الحروب الدائرة','Ongoing wars'],roadmap:['خريطة الطريق','Roadmap'],ledger:['الشفافية','Transparency'],saved:['المحفوظ','Saved'],about:['من نحن','About us'],weather:['الطقس والمناخ','Weather'],
  theme_dark:['الوضع الليلي','Dark mode'],theme_light:['الوضع النهاري','Light mode']
 };
 const t=k=>(T[k]||[k,k])[LANG==='en'?1:0];
@@ -171,7 +171,7 @@ function header(){
   $('#lang-btn').textContent=LANG==='en'?'ع':'EN';$('#lang-btn').setAttribute('aria-label',LANG==='en'?'العربية':'English');
   const dark=document.documentElement.dataset.theme==='dark'||(!document.documentElement.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);
   $('#theme-btn').setAttribute('aria-label',dark?t('theme_light'):t('theme_dark'));
-  document.title=LANG==='en'?'Weather & Climate | Khabar':'الطقس والمناخ | خبر';
+  document.title=LANG==='en'?'Weather & Climate | Abdo News':'الطقس والمناخ | عبدو نيوز';
   const ZC={qatar:'var(--dawn)',gulf:'var(--sea)',egypt:'var(--nile)',world:'var(--deep-ink)',military:'#8A3A2E',wars:'#C4392F'};
   const tabs=$('#tabs');tabs.textContent='';
   ['today','qatar','gulf','egypt','world','military','wars','weather','roadmap','ledger','saved','about'].forEach(id=>{
@@ -190,7 +190,7 @@ const COUNTRIES=Object.keys(CAPS);
 function fillCountries(){
   const s=$('#country'),cur=s.value||(PLACE&&PLACE.cc)||'QA';s.textContent='';
   const list=COUNTRIES.map(cc=>[cc,cName(cc)]).sort((a,b)=>a[1].localeCompare(b[1],LANG==='en'?'en':'ar'));
-  // الدول العربية أولاً لقرّاء «خبر»
+  // الدول العربية أولاً لقرّاء «عبدو نيوز»
   const top=['QA','SA','AE','KW','OM','BH','EG'];
   const g1=el('optgroup');g1.label=L('الخليج ومصر','Gulf & Egypt');top.forEach(cc=>{const o=el('option',null,cName(cc));o.value=cc;g1.append(o)});
   const g2=el('optgroup');g2.label=L('كل الدول','All countries');list.forEach(([cc,n])=>{const o=el('option',null,n);o.value=cc;g2.append(o)});
@@ -413,7 +413,7 @@ function renderClimate(){
     const sl=el('ul','src-list');x.sources.forEach(s=>{const r=el('li');r.append(el('span','on',`${s.name} · ${fmtDate(s.date)}`));if(s.official)r.append(el('span','off',L('رسمي','official')));r.append(srcA(s.title,s.url));sl.append(r)});
     if(x.data){const r=el('li');r.append(el('span','on',`${L('بيانات','Data')}: GDACS · ${x.data.date?fmtDate(x.data.date):''}`),srcA(x.data.title,x.data.url));sl.append(r)}
     li.append(sl);ul.append(li)});
-  const up=el('p','basis mute');up.style.fontSize='.8rem';up.textContent=`${L('آخر تحديث','Updated')}: ${fmtDate(CLIMATE.updated.slice(0,10))} · ${new Date(CLIMATE.updated).toLocaleTimeString(LANG==='en'?'en-GB':'ar-QA',{timeZone:'Asia/Qatar',hour:'numeric',minute:'2-digit',numberingSystem:'latn'})} ${L('بتوقيت الدوحة','Doha time')}`;ul.append(up);
+  const up=el('p','basis mute');up.style.fontSize='.8rem';up.textContent=`${L('آخر تحديث','Updated')}: ${fmtDate(CLIMATE.updated.slice(0,10))} · ${new Date(CLIMATE.updated).toLocaleTimeString(LANG==='en'?'en-GB':'ar-QA',{timeZone:'Asia/Qatar',hour:'numeric',minute:'2-digit',numberingSystem:'latn'})} ${L('بتوقيت الدوحة','Doha time')}`;up.id='climate-updated';$('#climate-updated')?.remove();ul.after(up);
 }
 function renderMethod(){
   const ol=$('#method');ol.textContent='';
@@ -426,7 +426,7 @@ function renderMethod(){
   li(L(`عتبات التقدير الآلي (أصفر / برتقالي / أحمر) للأيام الثلاثة القادمة: الحرارة المحسوسة ${TH.heat.join(' / ')}° أو العظمى 44 / 48 / 52°، الصغرى ${TH.cold.join(' / ')}°، هبّات الرياح ${TH.gust.join(' / ')} كم/س، الهطول اليومي ${TH.rain.join(' / ')} مم، الثلوج ${TH.snow.join(' / ')} سم، الأشعة فوق البنفسجية 8 / 11، الغبار ${TH.dust.join(' / ')} مكغ/م³، مؤشر جودة الهواء ${TH.aqi.join(' / ')}، والعواصف الرعدية (أصفر، وبرتقالي مع البَرَد)، والرؤية أقل من 1000 متر (أصفر) أو 200 متر (برتقالي).`,
     `Automatic estimate thresholds (yellow / orange / red) for the next three days: feels-like ${TH.heat.join(' / ')}° or high 44 / 48 / 52°, low ${TH.cold.join(' / ')}°, gusts ${TH.gust.join(' / ')} km/h, daily precipitation ${TH.rain.join(' / ')} mm, snow ${TH.snow.join(' / ')} cm, UV 8 / 11, dust ${TH.dust.join(' / ')} µg/m³, air quality index ${TH.aqi.join(' / ')}, thunderstorms (yellow, orange with hail), and visibility below 1000 m (yellow) or 200 m (orange).`));
   li(L('أخبار المناخ: عناوين الجهات الناشرة كما نشرتها، يُجمع الخبر الواحد من جهتين مستقلتين على الأقل، وتُطابق الأحداث مع بيانات GDACS حين تتوفر.','Climate news: the outlets\' own headlines; each story needs at least two independent outlets, and events are matched against GDACS data where available.'),[['data/climate.json','../data/climate.json']]);
-  li(L('أسماء المدن: خدمة البحث الجغرافي في Open-Meteo (GeoNames)، وتحديد الموقع من متصفحك ولا يُرسل إلى «خبر».','City names: Open-Meteo geocoding (GeoNames); your location comes from your browser and is never sent to Khabar.'),[['GeoNames','https://www.geonames.org/']]);
+  li(L('أسماء المدن: خدمة البحث الجغرافي في Open-Meteo (GeoNames)، وتحديد الموقع من متصفحك ولا يُرسل إلى «عبدو نيوز».','City names: Open-Meteo geocoding (GeoNames); your location comes from your browser and is never sent to Abdo News.'),[['GeoNames','https://www.geonames.org/']]);
 }
 
 /* ---------- التشغيل ---------- */

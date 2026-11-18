@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>خبر</title><meta name="robots" content="noindex">
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>عبدو نيوز</title><meta name="robots" content="noindex">
 <style>
 :root{--bg:#FFFFFF;--ink:#14212E;--mute:#566270;--line:#DFE3E0;--dawn:#E39A2D;--nile:#3A5FB0}
 @media (prefers-color-scheme:dark){:root{--bg:#121D28;--ink:#E9EEE9;--mute:#9AA7B2;--line:#233140;--nile:#86A5E8}}
@@ -10,11 +10,11 @@
 ul{list-style:none;margin:0;padding:0}li{padding:10px 14px;border-top:1px solid var(--line)}
 li p{margin:0 0 4px}li small{color:var(--mute);font-size:12px}li small a{color:var(--nile)}
 .f{padding:8px 14px;font-size:12px;color:var(--mute);border-top:1px solid var(--line)}
-</style></head><body><div class="w"><div class="h"><a href="../" target="_blank" rel="noopener" id="brand">خبر</a><small id="sub">موثّق من جهتين مستقلتين</small></div><ul id="l"></ul><div class="f" id="f"></div></div>
+</style></head><body><div class="w"><div class="h"><a href="../" target="_blank" rel="noopener" id="brand">عبدو نيوز</a><small id="sub">موثّق من جهتين مستقلتين</small></div><ul id="l"></ul><div class="f" id="f"></div></div>
 <script>
 (function(){var q=new URLSearchParams(location.search),en=q.get('lang')==='en',desk=q.get('desk')||'brief',n=Math.min(10,+q.get('n')||5);
 document.documentElement.lang=en?'en':'ar';document.documentElement.dir=en?'ltr':'rtl';
-document.getElementById('brand').textContent=en?'Khabar':'خبر';document.getElementById('sub').textContent=en?'Confirmed by two independent outlets':'موثّق من جهتين مستقلتين';
+document.getElementById('brand').textContent=en?'Abdo News':'عبدو نيوز';document.getElementById('sub').textContent=en?'Confirmed by two independent outlets':'موثّق من جهتين مستقلتين';
 document.getElementById('f').textContent=en?'Every story links to its original sources.':'كل خبر بروابط مصادره الأصلية.';
 var L=document.getElementById('l');function add(t,src,link){var li=document.createElement('li'),p=document.createElement('p'),s=document.createElement('small');var a=document.createElement('a');a.href=link;a.target='_blank';a.rel='noopener';a.textContent=t;p.append(a);
 src.slice(0,3).forEach(function(x,i){if(i)s.append(' · ');var b=document.createElement('a');b.href=x[1];b.target='_blank';b.rel='noopener';b.textContent=x[0];s.append(b)});li.append(p,s);L.append(li)}

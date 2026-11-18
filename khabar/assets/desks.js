@@ -1,4 +1,4 @@
-/* «خبر»: الأقسام الموضوعية والبيانات الحية وأدوات القارئ.
+/* «عبدو نيوز»: الأقسام الموضوعية والبيانات الحية وأدوات القارئ.
    البيانات: data/desks.json (يكتبه scripts/desks.mjs كل 3 ساعات) وdata/editorial.json (مدخلات المحرر الموثّقة).
    القاعدة: لا خبر إلا من جهتين مستقلتين، ولا رقم إلا إذا اتفق عليه مزوّدان مستقلان أو طريقتا حساب. ما لا يتأكد لا يُعرض. */
 (function(){
@@ -59,12 +59,13 @@ async function makeCard(o){
   try{await document.fonts.ready}catch(e){}
   const W=1080,H=1350,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');const rtl=ar();
   x.fillStyle='#14212E';x.fillRect(0,0,W,H);
-  // الشعار: نقطة الفجر وثلاث دوائر
-  const cx=rtl?W-110:110,cy=110;x.lineWidth=9;x.lineCap='round';
-  x.fillStyle='#E39A2D';x.beginPath();x.arc(cx,cy,13,0,7);x.fill();
-  [[25,'#1D7A70'],[39,'#3A5FB0'],[53,'#F5F6F3']].forEach(([r,col],i)=>{x.strokeStyle=col;x.beginPath();x.arc(cx,cy,r,-1.2+i*.5,4.2+i*.5);x.stroke()});
+  // الشعار: فقاعة الخبر المتحقَّق منه (سطران وعلامة تحقق ونقطة البث)
+  {const k=1.7,ox=(rtl?W-110:110)-32*k,oy=110-34*k;x.save();x.translate(ox,oy);x.scale(k,k);x.lineCap='round';x.lineJoin='round';
+  x.lineWidth=4.6;x.strokeStyle='#F5F6F3';x.stroke(new Path2D('M17 9.5h30a11 11 0 0 1 11 11v17a11 11 0 0 1-11 11h-1.5l1.5 9.5-12-9.5H17a11 11 0 0 1-11-11v-17a11 11 0 0 1 11-11z'));
+  x.strokeStyle='#86A5E8';x.stroke(new Path2D('M21 23h25'));x.strokeStyle='#4FB8AA';x.stroke(new Path2D('M33 34h13'));x.lineWidth=4.2;x.stroke(new Path2D('M17.5 33.5l3.6 3.6 6.4-7.4'));
+  x.fillStyle='#E39A2D';x.beginPath();x.arc(9,9.5,6.5,0,7);x.fill();x.restore()}
   x.fillStyle='#F5F6F3';x.direction=rtl?'rtl':'ltr';x.textAlign=rtl?'right':'left';
-  x.font='700 64px "Reem Kufi","IBM Plex Sans Arabic",sans-serif';x.fillText(rtl?'خبر':'Khabar',rtl?W-190:190,135);
+  x.font='700 64px "Reem Kufi","IBM Plex Sans Arabic",sans-serif';x.fillText(rtl?'عبدو نيوز':'Abdo News',rtl?W-190:190,135);
   if(o.tag){x.font='500 34px "IBM Plex Sans Arabic",sans-serif';x.fillStyle='#E39A2D';x.fillText(o.tag,rtl?W-80:80,250)}
   x.fillStyle='#F5F6F3';let size=58;let lines;do{x.font=`700 ${size}px "IBM Plex Sans Arabic",sans-serif`;lines=wrap(x,o.text,W-160);size-=4}while(lines.length>9&&size>34);
   let y=340;lines.slice(0,11).forEach(l=>{x.fillText(l,rtl?W-80:80,y);y+=size*1.55});
@@ -75,7 +76,7 @@ async function makeCard(o){
   x.font='500 26px "IBM Plex Mono",monospace';x.fillStyle='#8FA0AE';x.textAlign='center';x.direction='ltr';x.fillText((K.SITE||location.origin+location.pathname).replace(/^https?:\/\//,''),W/2,H-50);
   return new Promise(r=>c.toBlob(r,'image/png'));
 }
-function shareText(o){return `${o.text}\n\n${L('المصادر','Sources')}:\n${o.sources.map(s=>`${s.name} (${K.fmtDate(s.date)}) ${s.url}`).join('\n')}\n\n${L('خبر','Khabar')}: ${o.link||K.SITE||location.href}`}
+function shareText(o){return `${o.text}\n\n${L('المصادر','Sources')}:\n${o.sources.map(s=>`${s.name} (${K.fmtDate(s.date)}) ${s.url}`).join('\n')}\n\n${L('عبدو نيوز','Abdo News')}: ${o.link||K.SITE||location.href}`}
 function shareBtn(o){
   const b=el('button','act');b.type='button';b.innerHTML=WA;b.append(el('span',null,L('بطاقة واتساب','WhatsApp card')));
   b.onclick=async()=>{
@@ -106,17 +107,17 @@ function reportDialog(id,txt){
     const body={id,kind:sel.value,text:ta.value.trim(),email:em.value.trim(),page:location.href,lang:K.LANG,at:new Date().toISOString()};
     let ok=false;try{const r=await fetch((K.CFG.API||'')+'/api/report',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});ok=r.ok}catch(e){}
     if(ok)K.toast(L('وصل بلاغك إلى فريق التحرير. شكراً لك.','Your report reached the editors. Thank you.'));
-    else{location.href=`mailto:${K.CFG.EMAIL}?subject=${encodeURIComponent(L('بلاغ خطأ في خبر','Khabar error report')+' '+id)}&body=${encodeURIComponent(body.text+'\n\n'+body.page)}`}
+    else{location.href=`mailto:${K.CFG.EMAIL}?subject=${encodeURIComponent(L('بلاغ خطأ في عبدو نيوز','Abdo News error report')+' '+id)}&body=${encodeURIComponent(body.text+'\n\n'+body.page)}`}
   }d.remove()});
 }
 const lab=(t,c)=>{const l=el('label','kfield');l.append(el('span',null,t),c);return l};
 
 /* ---------- مركز الأقسام ---------- */
 function viewHub(main){
-  main.append(head(L('أقسام خبر','Khabar desks'),L('كل الأقسام','All desks'),L('كل خبر في هذه الأقسام نشرته جهتان مستقلتان على الأقل، ويُحدَّث كل 3 ساعات تلقائياً. الأرقام لا تظهر إلا إذا اتفق عليها مزوّدان مستقلان.','Every story here was published by at least two independent outlets and refreshes automatically every 3 hours. Numbers appear only when two independent providers agree.')));
+  main.append(head(L('أقسام عبدو نيوز','Abdo News desks'),L('كل الأقسام','All desks'),L('كل خبر في هذه الأقسام نشرته جهتان مستقلتان على الأقل، ويُحدَّث كل 3 ساعات تلقائياً. الأرقام لا تظهر إلا إذا اتفق عليها مزوّدان مستقلان.','Every story here was published by at least two independent outlets and refreshes automatically every 3 hours. Numbers appear only when two independent providers agree.')));
   if(!D){main.append(el('p','empty',L('تُنشر الأقسام مع التحديث التالي.','Desks publish with the next update.')));return}
   const o=off();
-  const extra=[['agenda',L('أجندة الأسبوع','The week ahead'),'#3A5FB0'],['explain',L('اشرح لي','Explain it'),'#1D7A70'],['search',L('البحث في الأرشيف','Search the archive'),'#14212E'],['listen',L('الملخص الصوتي','Audio brief'),'#E39A2D'],['quiz',L('اختبار الأسبوع','Weekly quiz'),'#7A3FB0'],['method',L('منهجيتنا','Our method'),'#1D7A70'],['corrections',L('سجل التصحيحات','Corrections'),'#C4392F'],['outlets',L('موثوقية المصادر','Source reliability'),'#566270'],['ask',L('اسأل خبر','Ask Khabar'),'#E39A2D'],['opinion',L('رأي وتحليل','Opinion'),'#566270'],['newsletter',L('النشرة اليومية','Daily newsletter'),'#1D7A70'],['partners',L('انشر خبر عندك','Share Khabar'),'#3A5FB0']];
+  const extra=[['agenda',L('أجندة الأسبوع','The week ahead'),'#3A5FB0'],['explain',L('اشرح لي','Explain it'),'#1D7A70'],['search',L('البحث في الأرشيف','Search the archive'),'#14212E'],['listen',L('الملخص الصوتي','Audio brief'),'#E39A2D'],['quiz',L('اختبار الأسبوع','Weekly quiz'),'#7A3FB0'],['method',L('منهجيتنا','Our method'),'#1D7A70'],['corrections',L('سجل التصحيحات','Corrections'),'#C4392F'],['outlets',L('موثوقية المصادر','Source reliability'),'#566270'],['ask',L('اسأل عبدو نيوز','Ask Abdo News'),'#E39A2D'],['opinion',L('رأي وتحليل','Opinion'),'#566270'],['newsletter',L('النشرة اليومية','Daily newsletter'),'#1D7A70'],['partners',L('انشر عبدو نيوز عندك','Share Abdo News'),'#3A5FB0']];
   GROUPS.forEach(([g,a,e])=>{
     const list=D.meta.filter(m=>m.group===g&&!o.has(m.id));if(!list.length&&g!=='trust')return;
     const s=el('section','zone');const h=el('div','zone-head');h.append(el('h2',null,ar()?a:e));s.append(h);
@@ -179,7 +180,7 @@ function money(main){
     const tb=el('table','fx');const th=el('tr');[L('العملة','Currency'),L('مقابل الدولار','Per US dollar'),L('بالريال القطري','In Qatari riyal'),L('بالجنيه المصري','In Egyptian pound')].forEach(x=>th.append(el('th',null,x)));tb.append(th);
     Object.keys(CN).filter(c=>c!=='USD'&&r.fx[c]).forEach(c=>{const tr=el('tr'),v=r.fx[c].v,q=r.fx.QAR&&r.fx.QAR.v,e=r.fx.EGP&&r.fx.EGP.v;
       tr.append(el('td',null,`${ar()?CN[c][0]:CN[c][1]} (${c})`),el('td','num',nf(v,4)),el('td','num',q?nf(q/v,4):'—'),el('td','num',e?nf(e/v,3):'—'));tb.append(tr)});
-    const wrapT=el('div','fx-wrap');wrapT.append(tb);host.append(wrapT);
+    const wrapT=el('div','fx-wrap');wrapT.tabIndex=0;wrapT.setAttribute('role','region');wrapT.setAttribute('aria-label',L('جدول قابل للتمرير','Scrollable table'));wrapT.append(tb);host.append(wrapT);
     // الحاسبة
     const calc=el('div','calc');const amt=el('input');amt.type='number';amt.value='100';amt.min='0';amt.inputMode='decimal';amt.setAttribute('aria-label',L('المبلغ','Amount'));
     const mk=def=>{const s=el('select');s.setAttribute('aria-label',L('العملة','Currency'));['USD',...Object.keys(r.fx)].concat(r.gold?['XAU']:[]).forEach(c=>{const o=el('option',null,c==='XAU'?L('ذهب عيار 24 (غرام)','Gold 24K (gram)'):`${c} · ${ar()?CN[c][0]:CN[c][1]}`);o.value=c;if(c===def)o.selected=true;s.append(o)});return s};
@@ -343,8 +344,8 @@ function hit(v){
 function ld(){
   const B=K.BRIEF;if(!B)return;let n=document.getElementById('ld-brief');if(!n){n=document.createElement('script');n.type='application/ld+json';n.id='ld-brief';document.head.append(n)}
   const items=B.zones.flatMap(z=>z.items).slice(0,10);
-  n.textContent=JSON.stringify({'@context':'https://schema.org','@type':'NewsArticle',headline:(B.title&&B.title[K.LANG])||'خبر',datePublished:B.published,dateModified:B.published,inLanguage:K.LANG,
-    author:{'@type':'Organization',name:'خبر',url:K.SITE},publisher:{'@type':'Organization',name:'خبر',logo:{'@type':'ImageObject',url:K.SITE+'assets/icon-512.png'}},image:[K.SITE+'assets/og.png'],mainEntityOfPage:K.SITE,
+  n.textContent=JSON.stringify({'@context':'https://schema.org','@type':'NewsArticle',headline:(B.title&&B.title[K.LANG])||'عبدو نيوز',datePublished:B.published,dateModified:B.published,inLanguage:K.LANG,
+    author:{'@type':'Organization',name:'عبدو نيوز',url:K.SITE},publisher:{'@type':'Organization',name:'عبدو نيوز',logo:{'@type':'ImageObject',url:K.SITE+'assets/icon-512.png'}},image:[K.SITE+'assets/og.png'],mainEntityOfPage:K.SITE,
     description:(B.thread&&B.thread[K.LANG]||'').slice(0,300),citation:items.flatMap(i=>(i.src||[]).map(s=>B.sources[s]&&B.sources[s].url)).filter(Boolean).slice(0,20)});
 }
 window.KD={load,hit,ld,
