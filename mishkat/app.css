@@ -1744,3 +1744,8 @@ body{overflow-x:clip;position:relative;max-width:100%;touch-action:manipulation}
 .rec-mk svg{width:16px;height:16px;fill:currentColor}
 .rec-mk.on{background:var(--accent);color:var(--accent-ink);border-color:transparent}
 @media (max-width:640px){.rc-cards{grid-template-columns:1fr}#recMk span{display:none}#recMk{padding:6px 8px}.rec-tb{gap:4px}}
+.rc-jrow{display:grid;grid-template-columns:2fr 1fr auto;gap:10px;align-items:end}
+.rc-jrow .field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.rc-jrow .field select,.rc-jrow .field input{width:100%;min-width:0;border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:9px;padding:8px 10px}
+.rec-ay input{width:4.6em;border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:8px;padding:4px 6px;font-size:.85rem}
+@media (max-width:640px){.rc-jrow{grid-template-columns:1fr 1fr}.rc-jrow .btn{grid-column:1/-1}}

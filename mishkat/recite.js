@@ -39,10 +39,12 @@
       <div class="rec-top"><div class="rec-ttl"><b id="recTitle"></b><span id="recSub" class="muted small"></span></div><span class="rec-tb"><button class="rec-mk" id="recMk" type="button" aria-pressed="false" aria-label="ضع علامة هنا"><svg><use href="#i-bookmark"/></svg><span>ضع علامة هنا</span></button><a class="rec-mk" href="#recite" id="recList"><span>القرّاء</span></a><button class="rec-x" id="recX" type="button" aria-label="إغلاق المشغّل">×</button></span></div>
       <input id="recSeek" class="rec-seek" type="range" min="0" max="1000" value="0" aria-label="موضع الآية الجارية" disabled>
       <div class="rec-ctl"><button class="rec-b" id="recPrev" type="button" aria-label="الآية السابقة">${I_PREV}</button><button class="rec-b rec-pp" id="recPP" type="button" aria-label="تشغيل">${I_PLAY}</button><button class="rec-b" id="recNext" type="button" aria-label="الآية التالية">${I_NEXT}</button>
+        <label class="rec-f rec-ay"><span>رقم الآية</span><input id="recAy" type="number" min="1" inputmode="numeric" aria-label="الانتقال إلى آية" placeholder="رقم الآية"></label>
         <label class="rec-f"><span>القارئ</span><select id="recR" aria-label="القارئ">${REC_LIST.map(r => `<option value="${r[0]}">${esc(nm(r))}</option>`).join('')}</select></label>
         <label class="rec-f"><span>السرعة</span><select id="recS" aria-label="سرعة التلاوة">${RATES.map(x => `<option value="${x}">${x === 1 ? 'عادية' : '×' + x}</option>`).join('')}</select></label>
         <label class="rec-f"><span>تكرار الآية</span><select id="recP" aria-label="تكرار كل آية">${REPS.map(x => `<option value="${x}">${x === 1 ? 'دون تكرار' : n(x) + ' مرات'}</option>`).join('')}</select></label></div></div>`);
     $('#recX').onclick = recStop;
+    $('#recAy').onchange = e => { if (!S.on) return; const su = Q.surahs[Q.ayat[S.i][0] - 1], a = +e.target.value; if (!(a >= 1 && a <= su.ayas)) { toast('رقم الآية غير صحيح لهذه السورة'); syncUI(); return; } jumpTo(su.first + a - 1); };
     $('#recMk').onclick = () => recMark(S.i);
     $('#recPP').onclick = () => S.playing ? pause() : resume();
     $('#recPrev').onclick = () => jump(-1);
@@ -57,6 +59,7 @@
     set('recR', p.r); set('recS', p.s); set('recP', p.p);
     const pp = $('#recPP'); if (pp) { pp.innerHTML = S.playing ? I_PAUSE : I_PLAY; pp.setAttribute('aria-label', S.playing ? 'إيقاف مؤقت' : 'تشغيل'); }
     const a = S.i >= 0 ? Q.ayat[S.i] : null;
+    const ay = $('#recAy'); if (ay && a && document.activeElement !== ay) { ay.value = a[1]; ay.max = Q.surahs[a[0] - 1].ayas; }
     const t = $('#recTitle'); if (t && a) t.textContent = S.bas ? 'البسملة · ' + Q.surahs[a[0] - 1].name : `${Q.surahs[a[0] - 1].name} · الآية ${n(a[1])}`;
     const sub = $('#recSub'); if (sub) sub.textContent = nm(REC_LIST.find(r => r[0] === p.r)) + (p.p > 1 && S.rep ? ` · المرة ${n(S.rep + 1)} من ${n(p.p)}` : '');
     const live = $('#recLive'); if (live && a) live.innerHTML = `<div class="rec-livet"><span class="muted small">الآية الجارية</span><div class="ayah">${ayahText(S.i) ? esc(ayahText(S.i)) : ''} <span class="num">﴿${n(a[1])}﴾</span></div><a class="chip" data-ayah="${S.i}">${esc(ref(S.i))} · التفسير</a> <a class="chip acc" href="#pa${S.i}">تابعها في المصحف</a></div>`;
@@ -101,6 +104,10 @@
   }
   function arrive() { ST.last = S.i; ST.prefs.recAt = S.i; clearTimeout(arrive.t); arrive.t = setTimeout(save, 1500); mark(S.i); syncUI(); warmNext(); }
   function finish() { S.playing = false; syncUI(); toast(S.scope === 'ayah' ? 'انتهت الآية' : 'انتهت التلاوة. تقبّل الله منك.'); }
+  function jumpTo(i) {
+    if (!S.on) return; S.rep = 0; S.bas = false; S.i = i; S.end = Math.max(S.end, endOf(i, S.scope));
+    load(false); if (!S.playing) { S.playing = true; S.au.play().catch(fail); } arrive();
+  }
   function jump(d) {
     if (!S.on) return; S.rep = 0; S.bas = false;
     S.i = Math.max(0, Math.min(6235, S.i + d)); S.end = Math.max(S.end, S.i);
@@ -186,6 +193,12 @@
     let kind = 'all', q = '';
     V(`<div class="stack rc-page"><div><div class="eyebrow">التلاوة المتصلة</div><h1>اختر قارئك، واستمع، وضع علامة حيث تتوقف</h1>
       <p class="lead">اختر القارئ من البطاقات واستمع إلى نموذج من تلاوته، ثم ابدأ من أي سورة وآية. وضع علامة عند موضع توقفك لتعود إليها في أي وقت.</p></div>
+      <section class="panel stack tight" id="rcJump"><h2>اذهب إلى آية</h2>
+        <div class="rc-jrow"><label class="field"><span>السورة</span><select id="jS">${Q.surahs.map(s => `<option value="${s.n}"${s.n === ca[0] ? ' selected' : ''}>${n(s.n)}. ${s.name}</option>`).join('')}</select></label>
+          <label class="field"><span>رقم الآية</span><input id="jA" type="number" min="1" max="${Q.surahs[ca[0] - 1].ayas}" inputmode="numeric" placeholder="رقم الآية"></label>
+          <button class="btn pri" id="jGo" type="button">اذهب</button></div>
+        <p class="muted small" style="margin:0"><span>عدد آيات السورة:</span> <b id="jN">${n(Q.surahs[ca[0] - 1].ayas)}</b></p>
+        <div id="jRes" aria-live="polite"></div></section>
       <section class="panel stack tight" id="rcMark"></section>
       <section class="panel stack"><h2>اختر القارئ</h2>
         <div class="rc-tools"><input id="rcQ" type="search" placeholder="ابحث عن قارئ" aria-label="ابحث عن قارئ"><div class="seg" id="rcK"><button type="button" data-k="all" aria-pressed="true">الكل</button>${KINDS.map(k => `<button type="button" data-k="${k}" aria-pressed="false">${k}</button>`).join('')}</div></div>
@@ -211,6 +224,16 @@
     };
     $('#rcQ').oninput = e => { q = e.target.value; draw(); };
     $('#rcK').onclick = e => { const b = e.target.closest('[data-k]'); if (!b) return; kind = b.dataset.k; $$('#rcK button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); draw(); };
+    const jIdx = () => { const su = Q.surahs[+$('#jS').value - 1], a = +$('#jA').value; return Number.isInteger(a) && a >= 1 && a <= su.ayas ? su.first + a - 1 : -1; };
+    $('#jS').onchange = () => { const su = Q.surahs[+$('#jS').value - 1]; $('#jA').max = su.ayas; $('#jA').value = ''; $('#jN').textContent = n(su.ayas); $('#jRes').innerHTML = ''; };
+    const jDo = () => {
+      const i = jIdx(), box = $('#jRes');
+      if (i < 0) { box.innerHTML = '<p class="muted" style="margin:0">رقم الآية غير صحيح لهذه السورة</p>'; return; }
+      box.innerHTML = `<div class="rc-mk"><svg class="rc-mki"><use href="#i-bookmark"/></svg><b>${esc(ref(i))}</b></div><div class="verse">${ayahHTML(i, null, false)}</div><div class="toolbar"><button class="btn pri" id="jPlay" type="button"><svg><use href="#i-play"/></svg>ابدأ التلاوة من هذه الآية</button><button class="btn" id="jMark" type="button"><svg><use href="#i-bookmark"/></svg>ضع علامة هنا</button><a class="btn" href="#pa${i}">اقرأها في الصفحة</a></div>`;
+      $('#jPlay').onclick = () => { const e = $('#rcE'); const sc = e && e.value !== 'ayah' ? e.value : 'surah'; go(i, sc); };
+      $('#jMark').onclick = () => { ST.mark = { i, at: Date.now() }; save(); markPanel(); syncMk(); toast('حُفظت علامة التوقف'); };
+    };
+    $('#jGo').onclick = jDo; $('#jA').addEventListener('keydown', e => { if (e.key === 'Enter') jDo(); });
     $('#rcS').onchange = () => { $('#rcA').value = 1; };
     $('#rcGo').onclick = () => { const s = +$('#rcS').value, su = Q.surahs[s - 1], a = Math.max(1, Math.min(su.ayas, +$('#rcA').value || 1)); $('#rcA').value = a; go(su.first + a - 1, $('#rcE').value); };
     $('#rcAll').onclick = () => go(0, 'quran');
