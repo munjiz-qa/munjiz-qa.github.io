@@ -36,13 +36,14 @@
   function ensureBar() {
     if ($('#recBar')) return;
     document.body.insertAdjacentHTML('beforeend', `<div id="recBar" class="recbar" role="region" aria-label="مشغّل التلاوة" hidden>
-      <div class="rec-top"><div class="rec-ttl"><b id="recTitle"></b><span id="recSub" class="muted small"></span></div><button class="rec-x" id="recX" type="button" aria-label="إغلاق المشغّل">×</button></div>
+      <div class="rec-top"><div class="rec-ttl"><b id="recTitle"></b><span id="recSub" class="muted small"></span></div><span class="rec-tb"><button class="rec-mk" id="recMk" type="button" aria-pressed="false" aria-label="ضع علامة هنا"><svg><use href="#i-bookmark"/></svg><span>ضع علامة هنا</span></button><a class="rec-mk" href="#recite" id="recList"><span>القرّاء</span></a><button class="rec-x" id="recX" type="button" aria-label="إغلاق المشغّل">×</button></span></div>
       <input id="recSeek" class="rec-seek" type="range" min="0" max="1000" value="0" aria-label="موضع الآية الجارية" disabled>
       <div class="rec-ctl"><button class="rec-b" id="recPrev" type="button" aria-label="الآية السابقة">${I_PREV}</button><button class="rec-b rec-pp" id="recPP" type="button" aria-label="تشغيل">${I_PLAY}</button><button class="rec-b" id="recNext" type="button" aria-label="الآية التالية">${I_NEXT}</button>
         <label class="rec-f"><span>القارئ</span><select id="recR" aria-label="القارئ">${REC_LIST.map(r => `<option value="${r[0]}">${esc(nm(r))}</option>`).join('')}</select></label>
         <label class="rec-f"><span>السرعة</span><select id="recS" aria-label="سرعة التلاوة">${RATES.map(x => `<option value="${x}">${x === 1 ? 'عادية' : '×' + x}</option>`).join('')}</select></label>
         <label class="rec-f"><span>تكرار الآية</span><select id="recP" aria-label="تكرار كل آية">${REPS.map(x => `<option value="${x}">${x === 1 ? 'دون تكرار' : n(x) + ' مرات'}</option>`).join('')}</select></label></div></div>`);
     $('#recX').onclick = recStop;
+    $('#recMk').onclick = () => recMark(S.i);
     $('#recPP').onclick = () => S.playing ? pause() : resume();
     $('#recPrev').onclick = () => jump(-1);
     $('#recNext').onclick = () => jump(1);
@@ -59,7 +60,7 @@
     const t = $('#recTitle'); if (t && a) t.textContent = S.bas ? 'البسملة · ' + Q.surahs[a[0] - 1].name : `${Q.surahs[a[0] - 1].name} · الآية ${n(a[1])}`;
     const sub = $('#recSub'); if (sub) sub.textContent = nm(REC_LIST.find(r => r[0] === p.r)) + (p.p > 1 && S.rep ? ` · المرة ${n(S.rep + 1)} من ${n(p.p)}` : '');
     const live = $('#recLive'); if (live && a) live.innerHTML = `<div class="rec-livet"><span class="muted small">الآية الجارية</span><div class="ayah">${ayahText(S.i) ? esc(ayahText(S.i)) : ''} <span class="num">﴿${n(a[1])}﴾</span></div><a class="chip" data-ayah="${S.i}">${esc(ref(S.i))} · التفسير</a> <a class="chip acc" href="#pa${S.i}">تابعها في المصحف</a></div>`;
-    document.body.classList.toggle('rec-open', S.on);
+    document.body.classList.toggle('rec-open', S.on); syncMk();
     if ('mediaSession' in navigator && a) {
       try { navigator.mediaSession.metadata = new MediaMetadata({ title: `${Q.surahs[a[0] - 1].name} · ${a[1]}`, artist: nm(REC_LIST.find(r => r[0] === p.r)), album: 'مشكاة' });
         navigator.mediaSession.playbackState = S.playing ? 'playing' : 'paused'; } catch (e) {}
@@ -138,31 +139,82 @@
   window.recStop = recStop;
   window.REC_LIST = REC_LIST;
 
-  /* ---------- صفحة «التلاوة المتصلة» ---------- */
+  /* ---------- علامة التوقف (تُحفظ في ST.mark وتشاركها صفحة «وردي» والمزامنة) ---------- */
+  window.recMark = function (i) {
+    if (!(i >= 0)) return;
+    if (ST.mark && ST.mark.i === i) { ST.mark = null; toast('أُزيلت علامة التوقف'); }
+    else { ST.mark = { i, at: Date.now() }; toast('حُفظت علامة التوقف'); }
+    save(); syncMk(); if ($('#rcMark')) markPanel();
+  };
+  function syncMk() { const b = $('#recMk'); if (!b) return; const on = !!(ST.mark && S.i >= 0 && ST.mark.i === S.i); b.setAttribute('aria-pressed', String(on)); b.classList.toggle('on', on); b.setAttribute('aria-label', on ? 'إزالة علامة التوقف' : 'ضع علامة هنا'); }
+
+  /* ---------- نموذج استماع للقارئ ---------- */
+  const PV = { au: null, r: null };
+  function pvStop() { if (PV.au) { PV.au.pause(); PV.au.removeAttribute('src'); } const o = PV.r; PV.r = null; if (o) $$('.rc-card[data-r]').forEach(c => { const b = c.querySelector('.rc-try'); if (b) { b.classList.remove('on'); b.lastChild.textContent = 'استمع نموذجاً'; } }); }
+  function pvPlay(r, btn) {
+    if (PV.r === r) return pvStop();
+    pvStop(); if (S.playing) pause();
+    if (!PV.au) { PV.au = new Audio(); PV.au.addEventListener('ended', pvStop); PV.au.addEventListener('error', () => { if (PV.r) { pvStop(); toast(navigator.onLine ? 'تعذّر تشغيل هذا الصوت الآن. جرّب قارئاً آخر.' : 'التلاوة تحتاج اتصالاً بالإنترنت. اتصل ثم اضغط تشغيل.'); } }); }
+    PV.r = r; btn.classList.add('on'); btn.lastChild.textContent = 'إيقاف النموذج';
+    PV.au.src = `${BASE}${r}/001002.mp3`; PV.au.playbackRate = 1; PV.au.play().catch(() => { if (PV.r) { pvStop(); toast('تعذّر تشغيل هذا الصوت الآن. جرّب قارئاً آخر.'); } });
+  }
+  const initial = r => esc((LANG === 'ar' ? r[1] : r[2]).replace(/^(الشيخ|Sheikh)\s+/, '').trim().charAt(0).toUpperCase());
+  const KINDS = ['مرتّل', 'مجوّد', 'معلّم'];
+  function cardsHTML(q, kind) {
+    const p = P(), t = (q || '').trim().toLowerCase();
+    const list = REC_LIST.filter(r => (kind === 'all' || r[3] === kind) && (!t || r[1].includes(t) || r[2].toLowerCase().includes(t)));
+    if (!list.length) return '<p class="muted" style="margin:0">لا يوجد قارئ بهذا الاسم.</p>';
+    return list.map(r => `<div class="rc-card${r[0] === p.r ? ' sel' : ''}" data-r="${r[0]}"><button class="rc-pick" type="button" aria-pressed="${r[0] === p.r}" data-pick="${r[0]}"><span class="rc-av" aria-hidden="true">${initial(r)}</span><span class="rc-nm"><b>${esc(nm(r))}</b><small>${r[3]}</small></span>${r[0] === p.r ? '<span class="rc-ok">القارئ المختار</span>' : ''}</button><button class="rc-try btn" type="button" data-try="${r[0]}"><svg><use href="#i-play"/></svg><span>استمع نموذجاً</span></button></div>`).join('');
+  }
+  function markPanel() {
+    const box = $('#rcMark'); if (!box) return;
+    const mk = ST.mark, at = Number.isInteger(ST.prefs.recAt) ? ST.prefs.recAt : null;
+    box.innerHTML = `<h2>علامة التوقف</h2>` + (mk
+      ? `<div class="rc-mk"><svg class="rc-mki"><use href="#i-bookmark"/></svg><div><small class="muted">موضع علامتك</small><br><b id="rcMkRef">${esc(ref(mk.i))}</b> <small class="muted"><bdi dir="ltr">${dayKey(mk.at).replace(/\d/g, d => n(+d))}</bdi></small></div></div><div class="verse">${ayahHTML(mk.i, null, false)}</div><div class="toolbar"><button class="btn pri" id="rcMkGo" type="button"><svg><use href="#i-play"/></svg>تابع التلاوة من العلامة</button><a class="btn" href="#pa${mk.i}">اقرأها في الصفحة</a><button class="btn" id="rcMkClr" type="button">أزل العلامة</button></div>`
+      : `<p class="muted" style="margin:0">لم تضع علامة بعد. أثناء التلاوة اضغط أيقونة العلامة في المشغّل لتحفظ موضع توقفك، وتعود إليه من هنا في أي وقت.</p>`)
+      + (at != null && (!mk || mk.i !== at) ? `<p class="rc-last" style="margin:8px 0 0"><span class="muted">آخر موضع استمعت إليه:</span> <b>${esc(ref(at))}</b> <button class="btn" id="rcResume" type="button">أكمل من آخر موضع</button></p>` : '');
+    const sc = () => { const e = $('#rcE'); return e && e.value !== 'ayah' ? e.value : 'surah'; };
+    if ($('#rcMkGo')) $('#rcMkGo').onclick = () => { recStart(ST.mark.i, sc()); toast('بدأت التلاوة من علامتك'); };
+    if ($('#rcMkClr')) $('#rcMkClr').onclick = () => { ST.mark = null; save(); markPanel(); syncMk(); toast('أُزيلت علامة التوقف'); };
+    if ($('#rcResume')) $('#rcResume').onclick = () => { recStart(at, sc()); toast('بدأت التلاوة من آخر موضع'); };
+  }
+
+  /* ---------- صفحة «التلاوة المتصلة»: صفحة كاملة لاختيار القارئ والاستماع ---------- */
   window.reciteView = function () {
-    const p = P(), at = Number.isInteger(ST.prefs.recAt) ? ST.prefs.recAt : null;
+    const p = P();
     const cur = S.on ? S.i : (ST.last != null ? ST.last : 0), ca = Q.ayat[cur];
-    V(`<div class="stack" style="max-width:980px"><div><div class="eyebrow">التلاوة المتصلة</div><h1>استمع إلى المصحف، وتابع الآية بعينك</h1>
-      <p class="lead">تُتلى الآيات آيةً بعد آية دون انقطاع، وتُظلَّل الآية الجارية في المصحف وفي السورة. اختر القارئ والسرعة، وكرّر كل آية ما شئت للحفظ. وتستمر التلاوة وأنت تتنقّل في التطبيق.</p></div>
-      <section class="panel stack"><div class="rec-grid">
+    let kind = 'all', q = '';
+    V(`<div class="stack rc-page"><div><div class="eyebrow">التلاوة المتصلة</div><h1>اختر قارئك، واستمع، وضع علامة حيث تتوقف</h1>
+      <p class="lead">اختر القارئ من البطاقات واستمع إلى نموذج من تلاوته، ثم ابدأ من أي سورة وآية. وضع علامة عند موضع توقفك لتعود إليها في أي وقت.</p></div>
+      <section class="panel stack tight" id="rcMark"></section>
+      <section class="panel stack"><h2>اختر القارئ</h2>
+        <div class="rc-tools"><input id="rcQ" type="search" placeholder="ابحث عن قارئ" aria-label="ابحث عن قارئ"><div class="seg" id="rcK"><button type="button" data-k="all" aria-pressed="true">الكل</button>${KINDS.map(k => `<button type="button" data-k="${k}" aria-pressed="false">${k}</button>`).join('')}</div></div>
+        <div class="rc-cards" id="rcCards">${cardsHTML('', 'all')}</div></section>
+      <section class="panel stack"><h2>ابدأ التلاوة</h2><div class="rec-grid">
         <label class="field"><span>السورة</span><select id="rcS">${Q.surahs.map(s => `<option value="${s.n}"${s.n === ca[0] ? ' selected' : ''}>${n(s.n)}. ${s.name}</option>`).join('')}</select></label>
         <label class="field"><span>من الآية</span><input id="rcA" type="number" min="1" inputmode="numeric" value="${ca[1]}"></label>
         <label class="field"><span>إلى</span><select id="rcE"><option value="surah">نهاية السورة</option><option value="juz">نهاية الجزء</option><option value="quran">نهاية المصحف</option><option value="ayah">هذه الآية فقط</option></select></label>
-        <label class="field"><span>القارئ</span><select id="rcR">${REC_LIST.map(r => `<option value="${r[0]}"${r[0] === p.r ? ' selected' : ''}>${esc(nm(r))} · ${r[3]}</option>`).join('')}</select></label>
         <label class="field"><span>السرعة</span><select id="rcV">${RATES.map(x => `<option value="${x}"${x === p.s ? ' selected' : ''}>${x === 1 ? 'عادية' : '×' + x}</option>`).join('')}</select></label>
         <label class="field"><span>تكرار كل آية</span><select id="rcP">${REPS.map(x => `<option value="${x}"${x === p.p ? ' selected' : ''}>${x === 1 ? 'دون تكرار' : n(x) + ' مرات'}</option>`).join('')}</select></label></div>
         <label class="chk"><input type="checkbox" id="rcB"${p.b ? ' checked' : ''}> أتلو البسملة عند بداية كل سورة (عدا التوبة)</label>
-        <div class="toolbar"><button class="btn pri" id="rcGo" type="button"><svg><use href="#i-play"/></svg>ابدأ التلاوة</button>${at != null ? `<button class="btn" id="rcResume" type="button">أكمل من حيث توقفت: ${esc(ref(at))}</button>` : ''}<button class="btn" id="rcAll" type="button">المصحف كاملاً من الفاتحة</button><a class="btn" href="#pa${cur}">افتح المصحف لمتابعتها</a></div>
+        <div class="toolbar"><button class="btn pri" id="rcGo" type="button"><svg><use href="#i-play"/></svg>ابدأ التلاوة</button><button class="btn" id="rcAll" type="button">المصحف كاملاً من الفاتحة</button><a class="btn" href="#pa${cur}">افتح المصحف لمتابعتها</a></div>
         <p class="muted small" id="rcMsg" style="margin:0" aria-live="polite"></p></section>
       <section class="panel" id="recLive"><p class="muted" style="margin:0">اضغط «ابدأ التلاوة» ليظهر نص الآية الجارية هنا، ويظهر المشغّل في أسفل الشاشة.</p></section>
-      <section class="panel stack tight"><h3>القرّاء</h3><div class="tablebox"><table class="wtable"><thead><tr><th>القارئ</th><th>الأداء</th><th>الرواية</th></tr></thead><tbody>${REC_LIST.map(r => `<tr><td>${esc(nm(r))}</td><td>${r[3]}</td><td>حفص عن عاصم</td></tr>`).join('')}</tbody></table></div>
-        <p class="muted small" style="margin:0">مصدر الصوت: موقع «آية بآية» (everyayah.com)، ويُبث إلى جهازك مباشرة عند الاستماع، فيحتاج اتصالاً بالإنترنت، ولا يُحفظ في التطبيق. حقوق التسجيلات لأصحابها ولدورهم الأصلية، ونوصي بسماع التلاوة من إصداراتها الرسمية أيضاً. إن تعذّر قارئ فاختر غيره من القائمة.</p></section></div>`);
-    const go = (i, scope) => { setP({ r: $('#rcR').value, s: +$('#rcV').value, p: +$('#rcP').value, b: $('#rcB').checked }); recStart(i, scope); $('#rcMsg').textContent = 'بدأت التلاوة. يمكنك التنقّل في التطبيق وهي مستمرة.'; };
+      <section class="panel stack tight"><p class="muted small" style="margin:0">مصدر الصوت: موقع «آية بآية» (everyayah.com)، ويُبث إلى جهازك مباشرة عند الاستماع، فيحتاج اتصالاً بالإنترنت، ولا يُحفظ في التطبيق. حقوق التسجيلات لأصحابها ولدورهم الأصلية، ونوصي بسماع التلاوة من إصداراتها الرسمية أيضاً. إن تعذّر قارئ فاختر غيره من القائمة.</p></section></div>`);
+    markPanel();
+    const go = (i, scope) => { setP({ s: +$('#rcV').value, p: +$('#rcP').value, b: $('#rcB').checked }); pvStop(); recStart(i, scope); $('#rcMsg').textContent = 'بدأت التلاوة. يمكنك التنقّل في التطبيق وهي مستمرة.'; };
+    const draw = () => { $('#rcCards').innerHTML = cardsHTML(q, kind); };
+    $('#rcCards').onclick = e => {
+      const pk = e.target.closest('[data-pick]'), tr = e.target.closest('[data-try]');
+      if (pk) { const r = pk.dataset.pick; pvStop(); setP({ r }); if (S.on) { S.rep = 0; load(false); } draw(); syncUI() }
+      else if (tr) pvPlay(tr.dataset.try, tr);
+    };
+    $('#rcQ').oninput = e => { q = e.target.value; draw(); };
+    $('#rcK').onclick = e => { const b = e.target.closest('[data-k]'); if (!b) return; kind = b.dataset.k; $$('#rcK button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); draw(); };
     $('#rcS').onchange = () => { $('#rcA').value = 1; };
     $('#rcGo').onclick = () => { const s = +$('#rcS').value, su = Q.surahs[s - 1], a = Math.max(1, Math.min(su.ayas, +$('#rcA').value || 1)); $('#rcA').value = a; go(su.first + a - 1, $('#rcE').value); };
-    if ($('#rcResume')) $('#rcResume').onclick = () => go(at, $('#rcE').value === 'ayah' ? 'surah' : $('#rcE').value);
     $('#rcAll').onclick = () => go(0, 'quran');
-    ['rcR', 'rcV', 'rcP', 'rcB'].forEach(id => $('#' + id).addEventListener('change', () => { setP({ r: $('#rcR').value, s: +$('#rcV').value, p: +$('#rcP').value, b: $('#rcB').checked }); syncUI(); }));
+    ['rcV', 'rcP', 'rcB'].forEach(id => $('#' + id).addEventListener('change', () => { setP({ s: +$('#rcV').value, p: +$('#rcP').value, b: $('#rcB').checked }); syncUI(); }));
     if (S.on) syncUI();
   };
 })();
