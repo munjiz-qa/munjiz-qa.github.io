@@ -248,6 +248,16 @@ async function khabarStats(p, o, add) {
     if (hoursSince(d.updated) > 8) add('warn', `${p.name}: الأقسام الموضوعية لم تتجدد منذ ${ago(d.updated).replace('قبل ', '')}`, p.site + '#desks');
     if (empty.length > 6) add('info', `${p.name}: ${empty.length} أقسام بلا خبر مؤكد من جهتين الآن (${esc(empty.slice(0, 4).join('، '))}…)`, p.site + '#desks');
   } catch (e) { o.rows.push(['الأقسام الموضوعية', '<span class="skel">تعذّرت القراءة</span>']); }
+  // تنزيلات التقارير (18 نوفمبر 2026): إحصاء عام بلا أي بيانات عن الزائر، من خادم «خبر» على Cloudflare (assets/report.js في الموقع)
+  try {
+    const api = /workers\.dev/.test(p.site || '') ? p.site.replace(/\/$/, '') : 'https://khabar.baseeratactions.workers.dev';
+    const r = await fetch(api + '/api/downloads', {cache: 'no-store'}); if (!r.ok) throw new Error('http' + r.status);
+    const s = await r.json(), FN = {docx: 'Word', pdf: 'PDF', xlsx: 'Excel', csv: 'CSV', png: 'صورة', html: 'صفحة ويب', print: 'طباعة', link: 'رابط'};
+    const SN = {today: 'اليوم', qatar: 'قطر', gulf: 'الخليج', egypt: 'مصر', world: 'العالم', roadmap: 'خريطة الطريق', military: 'العسكري', wars: 'الحروب', war: 'ملف حرب', desks: 'الأقسام', brief: 'الخلاصة والأرشيف', weather: 'الطقس', ledger: 'الشفافية', saved: 'المحفوظ', newsletter: 'النشرة', partners: 'الشراكة'};
+    const fm = Object.entries(s.formats || {}).sort((a, b) => b[1] - a[1]).map(([f, n]) => `${FN[f] || f} ${num(n)}`).join(' · ');
+    const top = Object.entries(s.sections || {}).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([v, n]) => `${SN[v] || (v.startsWith('d-') ? 'قسم ' + v.slice(2) : v)} ${num(n)}`).join('، ');
+    o.rows.push(['تنزيلات التقارير', s.total ? `${num(s.total)} في 30 يوماً · اليوم ${num(s.today)} · ${esc(fm)}${top ? ' · الأكثر تصديراً: ' + esc(top) : ''}` : 'لم يُنزَّل أي تقرير بعد']);
+  } catch (e) { o.rows.push(['تنزيلات التقارير', '<span class="skel">تعذّرت القراءة</span>']); }
   if (k.status === 'fulfilled') {
     o.rows.push(['العاجل', k.value.on ? '<span class="pill bad">منشور الآن</span>' : 'لا عاجل']);
     if (k.value.on) add('info', `${p.name}: خبر عاجل منشور الآن`, p.site);
