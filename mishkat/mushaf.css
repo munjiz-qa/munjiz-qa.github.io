@@ -19,6 +19,8 @@
 .mp-bar .seg button{padding:6px 12px;font-size:.88rem;height:34px}
 .mp-pg{display:inline-flex;align-items:center;gap:5px;font-size:.88rem;color:var(--muted)}
 .mp-pg input{width:4.4em;text-align:center}
+.mp-ay input{width:4.2em}.mp-of{font-size:.85rem;color:var(--muted);white-space:nowrap}.mp-of b{font-weight:600;color:var(--ink)}
+.mp-ay input::-webkit-outer-spin-button,.mp-ay input::-webkit-inner-spin-button{margin:0}
 .mp-size{display:inline-flex;align-items:center;gap:6px}
 .mp-size .btn{min-width:40px;justify-content:center;font-weight:600}
 .mp-sizel{font-size:.8rem;color:var(--muted);text-align:center;min-width:3.2em}.mp-sizel:empty{display:none}
@@ -86,8 +88,8 @@
 @media (max-width:640px){
   .mp-root{margin-inline:calc(-1 * max(18px,env(safe-area-inset-left,0px)) + 2px)}
   .mp-bar{border-radius:0;border-inline:0;padding:6px 8px;gap:6px;margin-bottom:8px}
-  .mp-row{flex-wrap:nowrap}
-  .mp-bar #mpSur{flex:1;max-width:none}
+  .mp-row{flex-wrap:wrap}
+  .mp-bar #mpSur{flex:1 1 7em;max-width:none;min-width:7em}
   .mp-bar #mpJuz{max-width:6.6em}
   .mp-ix span,.mp-pgl,.mp-info{display:none}
   .mp-more{display:inline-flex}
@@ -98,6 +100,9 @@
   .mp-page{border-radius:.15em}
   .mp-bar .btn,.mp-bar .seg button{padding:5px 9px;font-size:.85rem}
   .mp-bar select,.mp-bar input{font-size:.86rem;padding:5px 6px}
+  .mp-of,#mpPlay span{display:none}
+  .mp-pg input{width:3.8em}.mp-ay input{width:3.8em}
+  .mp-pg{position:relative}.mp-pg .mp-pgl{display:block;position:absolute;top:-6px;left:50%;transform:translateX(-50%);font-size:.58rem;line-height:1;background:var(--bg);padding:0 2px;pointer-events:none;color:var(--muted)}
 }
 @media print{.mp-bar,.mp-src{display:none}.mp-page{box-shadow:none;break-after:page;height:auto!important}}
 

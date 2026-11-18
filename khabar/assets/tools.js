@@ -1,5 +1,5 @@
-/* «خبر»: أدوات القارئ والثقة: منهجيتنا، التصحيحات، موثوقية المصادر، الأجندة، «اشرح لي»، البحث في الأرشيف،
-   الملخص الصوتي والمرئي، الاختبار الأسبوعي، والمساعد. كل ما يُعرض هنا مأخوذ من أخبار «خبر» المنشورة الموثّقة وحدها. */
+/* «عبدو نيوز»: أدوات القارئ والثقة: منهجيتنا، التصحيحات، موثوقية المصادر، الأجندة، «اشرح لي»، البحث في الأرشيف،
+   الملخص الصوتي والمرئي، الاختبار الأسبوعي، والمساعد. كل ما يُعرض هنا مأخوذ من أخبار «عبدو نيوز» المنشورة الموثّقة وحدها. */
 (function(){
 'use strict';
 const K=window.KH,KD=window.KD;if(!K||!KD)return;
@@ -18,7 +18,7 @@ const briefLabel=id=>{const ed={am:['الصباح','Morning'],md:['الظهير�
 function method(main){
   main.append(back(),head(L('الثقة','Trust'),L('منهجيتنا','Our method'),L('كيف نتحقق قبل أن ننشر، ولماذا نشترط جهتين مستقلتين.','How we verify before publishing, and why we require two independent outlets.')));
   const S=[
-    [L('قاعدة المصدرين','The two-source rule'),L('لا يُنشر خبر في «خبر» إلا إذا أكدته جهتان مستقلتان على الأقل، أي مؤسستان مختلفتان بنطاقين مختلفين. نسخ وكالة واحدة (رويترز أو أسوشيتد برس أو فرانس برس) في مواقع متعددة تُحسب جهة واحدة، ونكتب اسم الوكالة بين قوسين. ما لا يتأكد من جهتين لا يُنشر، مهما بدا مهماً.','No story is published unless at least two independent outlets, two different organisations on different domains, confirm it. Copies of one wire (Reuters, AP, AFP) on several sites count as one outlet, and we name the wire in brackets. Anything not confirmed by two outlets is not published, however important it seems.')],
+    [L('قاعدة المصدرين','The two-source rule'),L('لا يُنشر خبر في «عبدو نيوز» إلا إذا أكدته جهتان مستقلتان على الأقل، أي مؤسستان مختلفتان بنطاقين مختلفين. نسخ وكالة واحدة (رويترز أو أسوشيتد برس أو فرانس برس) في مواقع متعددة تُحسب جهة واحدة، ونكتب اسم الوكالة بين قوسين. ما لا يتأكد من جهتين لا يُنشر، مهما بدا مهماً.','No story is published unless at least two independent outlets, two different organisations on different domains, confirm it. Copies of one wire (Reuters, AP, AFP) on several sites count as one outlet, and we name the wire in brackets. Anything not confirmed by two outlets is not published, however important it seems.')],
     [L('أكثر من طريقة تحقق','More than one check'),L('نفضّل أن يجتمع للخبر أكثر من نوع من الأدلة: بيان رسمي، ووكالة أنباء، وصحيفة، وبيانات منشورة. وتُكتب تحت كل خبر روابط مصادره الأصلية ودرجة تحققه (عدد الجهات المستقلة).','We prefer several kinds of evidence for each story: an official statement, a news agency, a newspaper and published data. Every story carries its original source links and its verification level (the number of independent outlets).')],
     [L('الأرقام','Numbers'),L('كل رقم منسوب إلى مصدره. الأسعار الحية (العملات والذهب) لا تُعرض إلا إذا اتفق عليها مزوّدان مستقلان بفارق لا يزيد على 1.5٪، والنتائج الرياضية لا تُعرض إلا إذا تطابقت لدى مزوّدين، ومواقيت الصلاة تُحسب بطريقتين ويُعلن التطابق.','Every figure is attributed. Live prices (currencies, gold) show only when two independent providers agree within 1.5%, sports scores only when two providers match, and prayer times are computed two ways with the agreement shown.')],
     [L('الحكم على الشائعات','Rumour verdicts'),L('لا نحكم على ادعاء إلا إذا قالت جهتان مستقلتان حكماً صريحاً (كاذب، مضلل، صحيح) بلغة التحقق. نفي طرف من أطراف خبر ليس حكماً ولا يُعرض بوصفه تفنيداً.','We rate a claim only when two independent outlets give an explicit verdict (false, misleading, true) in fact-checking language. A party\'s denial is not a verdict and is never shown as a debunk.')],
@@ -31,7 +31,7 @@ function method(main){
 }
 async function transparency(host){
   TRANS=TRANS||await getJSON('data/transparency.json').catch(()=>null);if(!TRANS){host.append(el('p','empty',L('يُنشر التقرير مع التحديث التالي.','Published with the next update.')));return}
-  const w=el('div','fx-wrap'),t=el('table','fx');const h=el('tr');[L('الشهر','Month'),L('الخلاصات','Briefs'),L('منها آلية','Automatic'),L('الأخبار','Stories'),L('المصادر','Sources'),L('الجهات المستقلة','Outlets'),L('التصحيحات','Corrections')].forEach(x=>h.append(el('th',null,x)));t.append(h);
+  const w=el('div','fx-wrap'),t=el('table','fx');w.tabIndex=0;w.setAttribute('role','region');w.setAttribute('aria-label',L('جدول قابل للتمرير','Scrollable table'));const h=el('tr');[L('الشهر','Month'),L('الخلاصات','Briefs'),L('منها آلية','Automatic'),L('الأخبار','Stories'),L('المصادر','Sources'),L('الجهات المستقلة','Outlets'),L('التصحيحات','Corrections')].forEach(x=>h.append(el('th',null,x)));t.append(h);
   TRANS.months.forEach(m=>{const r=el('tr');[K.fmtDate(m.month),m.briefs,m.auto,m.items,m.sources,m.outlets,m.corrections].forEach((x,i)=>r.append(el('td',i?'num':null,String(x))));t.append(r)});w.append(t);host.append(w);
 }
 
@@ -61,9 +61,9 @@ async function outlets(main){
   const D=KD.data;if(D)Object.values(D.desks).forEach(d=>d.items.forEach(i=>i.sources.forEach(s=>add(s.url,s.name,true))));
   const rows=Object.values(st).filter(r=>r.n>=3).sort((a,b)=>b.n-a.n).slice(0,120);
   const score=r=>{const t=tier(r.d)[0];const base={official:4,wire:4,check:4,press:3}[t];return Math.min(5,base+(r.co/r.n>=.5?1:0))};
-  const w=el('div','fx-wrap'),t=el('table','fx');const h=el('tr');[L('الجهة','Outlet'),L('النوع','Type'),L('مرات النقل','Citations'),L('أكدتها جهة أخرى','Corroborated'),L('التقييم','Rating')].forEach(x=>h.append(el('th',null,x)));t.append(h);
+  const w=el('div','fx-wrap'),t=el('table','fx');w.tabIndex=0;w.setAttribute('role','region');w.setAttribute('aria-label',L('جدول قابل للتمرير','Scrollable table'));const h=el('tr');[L('الجهة','Outlet'),L('النوع','Type'),L('مرات النقل','Citations'),L('أكدتها جهة أخرى','Corroborated'),L('التقييم','Rating')].forEach(x=>h.append(el('th',null,x)));t.append(h);
   rows.forEach(r=>{const tr=el('tr');const s=score(r);tr.append(el('td',null,`${[...r.names][0]||r.d} (${r.d})`),el('td',null,tier(r.d)[1]),el('td','num',String(r.n)),el('td','num',Math.round(r.co/r.n*100)+'%'),el('td','stars','★★★★★'.slice(0,s)+'☆☆☆☆☆'.slice(0,5-s)));t.append(tr)});
-  w.append(t);main.append(w,el('p','basis',L('طريقة التقييم: الجهات الرسمية والوكالات ومنصات التحقق تبدأ من 4 والصحف من 3، وتزيد درجة إذا أكدت جهة مستقلة أخرى نصف ما نقلناه عنها فأكثر. قبل 17 نوفمبر 2026 لم تكن قاعدة الجهتين مفروضة على كل خبر، فنسبة التأكيد في الأرشيف القديم أقل بطبيعتها، ولذلك لا تُنقص درجة أي جهة بسببها. التقييم يقيس سجل الجهة في «خبر» لا قيمتها الصحفية عموماً، ويُحسب آلياً من الأرشيف.','Method: official bodies, wires and fact-checkers start at 4 and newspapers at 3; one point is added when another independent outlet corroborated half or more of what we cited from it, Before 17 November 2026 the two-source rule was not enforced on every story, so older corroboration rates are naturally lower and never lower a rating. It measures each outlet\'s record in Khabar, not its overall journalistic value, and is computed automatically from the archive.')));
+  w.append(t);main.append(w,el('p','basis',L('طريقة التقييم: الجهات الرسمية والوكالات ومنصات التحقق تبدأ من 4 والصحف من 3، وتزيد درجة إذا أكدت جهة مستقلة أخرى نصف ما نقلناه عنها فأكثر. قبل 17 نوفمبر 2026 لم تكن قاعدة الجهتين مفروضة على كل خبر، فنسبة التأكيد في الأرشيف القديم أقل بطبيعتها، ولذلك لا تُنقص درجة أي جهة بسببها. التقييم يقيس سجل الجهة في «عبدو نيوز» لا قيمتها الصحفية عموماً، ويُحسب آلياً من الأرشيف.','Method: official bodies, wires and fact-checkers start at 4 and newspapers at 3; one point is added when another independent outlet corroborated half or more of what we cited from it, Before 17 November 2026 the two-source rule was not enforced on every story, so older corroboration rates are naturally lower and never lower a rating. It measures each outlet\'s record in Abdo News, not its overall journalistic value, and is computed automatically from the archive.')));
 }
 
 /* ---------- أجندة الأسبوع ---------- */
@@ -78,7 +78,7 @@ function agenda(main){
     days[d].forEach(e=>{const li=el('li','item');if(e.zone)li.style.setProperty('--zc',{qatar:'var(--dawn)',gulf:'var(--sea)',egypt:'var(--nile)',world:'var(--ink)'}[e.zone]);
       li.append(el('span','cat',(e.zone?(ar()?ZN[e.zone][0]:ZN[e.zone][1]):'')+(e.to?L(' · حتى ',' · until ')+K.fmtDate(e.to):'')),el('p',null,e.text),srcBox(e.src));ul.append(li)});s.append(ul);main.append(s)});
   const ics=el('button','btn ghost',L('أضف الأجندة إلى تقويمك','Add to your calendar'));ics.type='button';ics.onclick=()=>{
-    const z=s=>s.replace(/-/g,'');const body=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Khabar//Agenda//AR',...ev.map((e,i)=>['BEGIN:VEVENT',`UID:khabar-${z(e.date)}-${i}@khabar`,`DTSTAMP:${new Date().toISOString().replace(/[-:]/g,'').slice(0,15)}Z`,`DTSTART;VALUE=DATE:${z(e.date)}`,`SUMMARY:${e.text.slice(0,140).replace(/[,;]/g,' ')}`,`DESCRIPTION:${e.src.map(s=>s[1]).join(' ')}`,'END:VEVENT'].join('\r\n')),'END:VCALENDAR'].join('\r\n');
+    const z=s=>s.replace(/-/g,'');const body=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Abdo News//Agenda//AR',...ev.map((e,i)=>['BEGIN:VEVENT',`UID:khabar-${z(e.date)}-${i}@khabar`,`DTSTAMP:${new Date().toISOString().replace(/[-:]/g,'').slice(0,15)}Z`,`DTSTART;VALUE=DATE:${z(e.date)}`,`SUMMARY:${e.text.slice(0,140).replace(/[,;]/g,' ')}`,`DESCRIPTION:${e.src.map(s=>s[1]).join(' ')}`,'END:VEVENT'].join('\r\n')),'END:VCALENDAR'].join('\r\n');
     const u=URL.createObjectURL(new Blob([body],{type:'text/calendar'})),a=document.createElement('a');a.href=u;a.download='khabar-agenda.ics';a.click();setTimeout(()=>URL.revokeObjectURL(u),3000)};
   main.append(ics);
 }
@@ -98,9 +98,9 @@ async function explain(main){
 /* ---------- البحث في الأرشيف ---------- */
 const norm=s=>String(s||'').toLowerCase().replace(/[إأآا]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').replace(/[ً-ْـ]/g,'');
 async function search(main){
-  main.append(back(),head(L('الأرشيف','Archive'),L('البحث في كل الخلاصات','Search every brief'),L('ابحث في كل الأخبار الموثّقة منذ انطلاق «خبر»، بالكلمة والتاريخ والدائرة.','Search every verified story since Khabar launched, by word, date and region.')));
+  main.append(back(),head(L('الأرشيف','Archive'),L('البحث في كل الخلاصات','Search every brief'),L('ابحث في كل الأخبار الموثّقة منذ انطلاق «عبدو نيوز»، بالكلمة والتاريخ والدائرة.','Search every verified story since Abdo News launched, by word, date and region.')));
   const f=el('div','calc');const q=el('input');q.type='search';q.placeholder=L('اكتب كلمة أو اسماً…','Type a word or a name…');q.style.flex='1 1 220px';q.setAttribute('aria-label',L('البحث','Search'));
-  const z=el('select');[['',L('كل الدوائر','All regions')],...Object.entries(ZN).map(([k,v])=>[k,ar()?v[0]:v[1]])].forEach(([v,t])=>{const o=el('option',null,t);o.value=v;z.append(o)});
+  const z=el('select');z.setAttribute('aria-label',L('الدائرة','Region'));[['',L('كل الدوائر','All regions')],...Object.entries(ZN).map(([k,v])=>[k,ar()?v[0]:v[1]])].forEach(([v,t])=>{const o=el('option',null,t);o.value=v;z.append(o)});
   const fr=el('input');fr.type='date';fr.setAttribute('aria-label',L('من تاريخ','From'));const to=el('input');to.type='date';to.setAttribute('aria-label',L('إلى تاريخ','To'));
   f.append(q,z,fr,to);main.append(f);const out=el('div');main.append(out);out.append(el('p','mute',L('جارٍ تحميل الأرشيف…','Loading the archive…')));
   const S=await loadSearch();const lang=ar()?3:4;
@@ -115,10 +115,10 @@ async function search(main){
 /* ---------- الملخص الصوتي والفيديو القصير ---------- */
 function script(){
   const B=K.BRIEF;if(!B)return [];const parts=[];const lng=K.LANG;
-  parts.push({h:L('خبر','Khabar'),t:(B.title&&B.title[lng])||L('خلاصة اليوم','Today\'s brief')});
+  parts.push({h:L('عبدو نيوز','Abdo News'),t:(B.title&&B.title[lng])||L('خلاصة اليوم','Today\'s brief')});
   if(B.thread)parts.push({h:L('خيط اليوم','The day\'s thread'),t:B.thread[lng]});
   B.zones.forEach(z=>{const i=z.items.find(x=>x[lng]);if(i){const src=(i.src||[]).map(s=>B.sources[s]).filter(Boolean);parts.push({h:z.name[lng],t:i[lng].split(/(?<=[.!؟?])\s/).slice(0,2).join(' '),src:src.slice(0,2).map(s=>s[lng]||s.ar).join(L('، ',', '))})}});
-  parts.push({h:L('خبر','Khabar'),t:L('هذه خلاصة «خبر». كل خبر بمصادره وروابطه الأصلية على الموقع.','That was Khabar. Every story with its sources and original links is on the site.')});
+  parts.push({h:L('عبدو نيوز','Abdo News'),t:L('هذه خلاصة «عبدو نيوز». كل خبر بمصادره وروابطه الأصلية على الموقع.','That was Abdo News. Every story with its sources and original links is on the site.')});
   return parts;
 }
 function listen(main){
@@ -138,7 +138,7 @@ function listen(main){
     do{x.font=`600 ${size}px "IBM Plex Sans Arabic",sans-serif`;lines=wrapL(p.t,W-112);size-=2}while(lines.length*size*1.6>H-480&&size>24);
     let y=260;lines.forEach(l=>{x.fillText(l,X,y);y+=size*1.6});
     if(p.src){x.font='500 26px "IBM Plex Sans Arabic",sans-serif';x.fillStyle='#9FB0BF';x.fillText(L('المصادر: ','Sources: ')+p.src,X,H-150)}
-    x.font='700 34px "Reem Kufi",sans-serif';x.fillStyle='#F5F6F3';x.fillText(L('خبر','Khabar'),X,H-80)};
+    x.font='700 34px "Reem Kufi",sans-serif';x.fillStyle='#F5F6F3';x.fillText(L('عبدو نيوز','Abdo News'),X,H-80)};
   draw(0,0);let idx=0,on=false,raf=0,t0=0;
   const voice=()=>{const vs=speechSynthesis.getVoices();return vs.find(v=>v.lang&&v.lang.toLowerCase().startsWith(ar()?'ar':'en'))};
   const say=i=>new Promise(res=>{if(!('speechSynthesis'in window)){setTimeout(res,P[i].t.split(/\s+/).length*400);return}const u=new SpeechSynthesisUtterance(P[i].h+'. '+P[i].t);u.lang=ar()?'ar-SA':'en-US';const v=voice();if(v)u.voice=v;u.rate=+rate.value;u.onend=res;u.onerror=res;speechSynthesis.speak(u)});
@@ -156,7 +156,7 @@ function listen(main){
 /* ---------- الاختبار الأسبوعي ---------- */
 function seeded(seed){return()=>{seed=(seed*1664525+1013904223)%4294967296;return seed/4294967296}}
 async function quiz(main){
-  main.append(back(),head(L('اختبار','Quiz'),L('اختبار الأسبوع','The weekly quiz'),L('خمسة أسئلة من أخبار الأيام السبعة الأخيرة في «خبر». الإجابة الصحيحة مأخوذة من الخبر المنشور، ومعها مصدره.','Five questions from the last seven days of Khabar stories. Each answer comes from the published story, with its source.')));
+  main.append(back(),head(L('اختبار','Quiz'),L('اختبار الأسبوع','The weekly quiz'),L('خمسة أسئلة من أخبار الأيام السبعة الأخيرة في «عبدو نيوز». الإجابة الصحيحة مأخوذة من الخبر المنشور، ومعها مصدره.','Five questions from the last seven days of Abdo News stories. Each answer comes from the published story, with its source.')));
   const S=await loadSearch();const since=new Date(Date.now()-7*864e5).toISOString().slice(0,10);const li=ar()?3:4;
   const pool=S.items.filter(i=>i[0].slice(0,10)>=since&&i[li]&&/\d/.test(i[li])).map(i=>{const m=[...i[li].matchAll(/(\d[\d,.]*)(\s?(٪|%|مليار|مليون|ألف|billion|million|percent|دولار|dollars?))?/g)].filter(x=>{const v=parseFloat(x[1].replace(/,/g,''));return v>=2&&!(v>=1900&&v<=2100)&&!/^\d{1,2}$/.test(x[1])||x[2]});return m.length?{i,m:m[0]}:null}).filter(Boolean);
   if(pool.length<5){main.append(el('p','empty',L('يُنشر الاختبار حين يكتمل أسبوع من الأخبار.','The quiz is published once a week of stories is available.')));return}
@@ -173,9 +173,9 @@ async function quiz(main){
     s.append(row);main.append(s)});main.append(res);
 }
 
-/* ---------- المساعد: يجيب من أخبار «خبر» الموثّقة وحدها ---------- */
+/* ---------- المساعد: يجيب من أخبار «عبدو نيوز» الموثّقة وحدها ---------- */
 async function ask(main){
-  main.append(back(),head(L('اسأل خبر','Ask Khabar'),L('المساعد','The assistant'),L('اسأل بالعربية أو الإنجليزية، فيجيبك المساعد بأقرب الأخبار الموثّقة المنشورة في «خبر» مع مصادرها. لا يجيب من خارج أخبارنا، ولا يخترع معلومة.','Ask in Arabic or English and the assistant answers with the closest verified stories published in Khabar, with their sources. It never answers from outside our stories or invents information.')));
+  main.append(back(),head(L('اسأل عبدو نيوز','Ask Abdo News'),L('المساعد','The assistant'),L('اسأل بالعربية أو الإنجليزية، فيجيبك المساعد بأقرب الأخبار الموثّقة المنشورة في «عبدو نيوز» مع مصادرها. لا يجيب من خارج أخبارنا، ولا يخترع معلومة.','Ask in Arabic or English and the assistant answers with the closest verified stories published in Abdo News, with their sources. It never answers from outside our stories or invents information.')));
   const f=el('form','calc');const q=el('input');q.type='search';q.style.flex='1 1 240px';q.placeholder=L('مثال: ما آخر تطورات مضيق هرمز؟','e.g. What is the latest on the Strait of Hormuz?');q.setAttribute('aria-label',L('سؤالك','Your question'));
   const go=el('button','btn',L('اسأل','Ask'));f.append(q,go);main.append(f);const out=el('div');main.append(out);
   const STOP=new Set(norm('ما ماذا من هل كيف متى اين لماذا هو هي في على عن الى إلى مع آخر اخر تطورات اخبار أخبار the what who when where why how is are of in on for to a an latest news about').split(' '));
@@ -187,14 +187,14 @@ async function ask(main){
     if(D)Object.entries(D.desks).forEach(([id,d])=>d.items.forEach(i=>{const sc=scoreT(i.title+' '+i.sources.map(s=>s.title).join(' '));if(sc)cands.push({sc:sc+.7,date:i.t,text:i.title,src:i.sources.map(s=>[s.name,s.url,s.date]),link:'#d-'+id,where:L('قسم ','Desk: ')+(KD.meta(id)||{})[K.LANG]})}));
     cands.sort((a,b)=>b.sc-a.sc||String(b.date).localeCompare(a.date));out.textContent='';
     const best=cands.filter(c=>c.sc>=Math.min(words.length,2)||c.sc>=words.length).slice(0,5);
-    if(!best.length){out.append(el('p','empty',L('لم أجد في أخبار «خبر» الموثّقة ما يجيب سؤالك. لا أجيب من خارجها.','I found nothing in Khabar\'s verified stories that answers this. I do not answer from outside them.')));return}
+    if(!best.length){out.append(el('p','empty',L('لم أجد في أخبار «عبدو نيوز» الموثّقة ما يجيب سؤالك. لا أجيب من خارجها.','I found nothing in Abdo News\' verified stories that answers this. I do not answer from outside them.')));return}
     out.append(el('p','basis',L(`أقرب ${best.length} أخبار موثّقة لسؤالك، الأحدث أولاً عند التساوي:`,`The ${best.length} closest verified stories, newest first on ties:`)));
     const ul=el('ul','items');best.forEach(c=>{const li=el('li','item');li.append(el('span','cat',c.where),el('p',null,c.text),srcBox(c.src));const a=a_(L('افتح في مكانه','Open in context'),c.link);a.className='more';li.append(a);ul.append(li)});out.append(ul)};
 }
 
 /* ---------- رأي وتحليل ---------- */
 async function opinion(main){
-  main.append(back(),head(L('رأي','Opinion'),L('رأي وتحليل','Opinion and analysis'),L('مقالات يكتبها كتّاب بأسمائهم، وتعبّر عن آراء كاتبيها لا عن «خبر». كل معلومة فيها منسوبة إلى مصدرها.','Signed articles that reflect their authors\' views, not Khabar\'s. Every fact in them is attributed to its source.')));
+  main.append(back(),head(L('رأي','Opinion'),L('رأي وتحليل','Opinion and analysis'),L('مقالات يكتبها كتّاب بأسمائهم، وتعبّر عن آراء كاتبيها لا عن «عبدو نيوز». كل معلومة فيها منسوبة إلى مصدرها.','Signed articles that reflect their authors\' views, not Abdo News\'. Every fact in them is attributed to its source.')));
   const O=await getJSON('data/opinion.json').catch(()=>({authors:[],articles:[]}));const list=(O.articles||[]).filter(a=>a.lang===K.LANG||!ar()||a.lang==='ar');
   if(!list.length){main.append(el('p','empty',L('لا مقالات رأي منشورة بعد. تُنشر المقالات من لوحة الإدارة بأسماء كتّابها وبموافقتهم.','No opinion pieces yet. They are published from the admin panel under their authors\' names, with consent.')));return}
   list.forEach(a=>{const au=(O.authors||[]).find(x=>x.id===a.author)||{name:a.author};const d=el('details','explain');const s=el('summary');s.append(el('b',null,a.title),el('small',null,`${au.name} · ${K.fmtDate(a.date)}`));d.append(s);

@@ -1,4 +1,4 @@
-// «خبر»: الطيار الآلي. يعمل من GitHub Actions كل ساعة دون أي تدخل بشري أو جلسة محرر.
+// «عبدو نيوز»: الطيار الآلي. يعمل من GitHub Actions كل ساعة دون أي تدخل بشري أو جلسة محرر.
 //  1. إذا فات موعد الخلاصة (كل 6 ساعات: 06:20 و12:20 و18:20 و00:20 بتوقيت الدوحة) ولم تُنشر، يكتب «خلاصة آلية» من عناوين المصادر نفسها:
 //     كل خبر هو عنوان الجهة الناشرة كما نشرته، مع اسمها وتاريخها ورابط مقالها الأصلي (تُفك روابط أخبار Google إلى الرابط الأصلي، وما لا يُفك يُحذف).
 //  2. يفحص الموقع المنشور ولوحاته وحداثة البيانات، ويكتب النتيجة في data/health.json، ويخرج بخطأ إن وُجد عطل حتى يصل التنبيه.
@@ -160,8 +160,8 @@ function archive(b) {
 
 // ---------- الفحص ----------
 const SITE = 'https://munjiz-qa.github.io/';
-const PAGES = [['خبر: الصفحة الرئيسية', 'khabar/'], ['خبر: لوحة الإدارة', 'khabar/admin/'], ['خبر: حساب العميل', 'khabar/account/'], ['خبر: الطقس والمناخ', 'khabar/weather/'],
-  ['خبر: الخلاصة المنشورة', 'khabar/data/brief.json'], ['قُطب: لوحة الإدارة الموحّدة', 'qutb/']];
+const PAGES = [['عبدو نيوز: الصفحة الرئيسية', 'khabar/'], ['عبدو نيوز: لوحة الإدارة', 'khabar/admin/'], ['عبدو نيوز: حساب العميل', 'khabar/account/'], ['عبدو نيوز: الطقس والمناخ', 'khabar/weather/'],
+  ['عبدو نيوز: الخلاصة المنشورة', 'khabar/data/brief.json'], ['قُطب: لوحة الإدارة الموحّدة', 'qutb/']];
 async function health(brief) {
   const checks = [];
   for (const [name, p] of PAGES) {
@@ -179,6 +179,12 @@ async function health(brief) {
   const dk = readJSON('desks.json', {}), dkAge = (Date.now() - new Date(dk.updated)) / 3600e3;
   const dkBad = Object.values(dk.desks || {}).flatMap(d => d.items).filter(i => new Set((i.sources || []).map(s => outlet(s.url))).size < 2).length;
   checks.push({name: 'الأقسام الموضوعية حديثة وكل خبر من جهتين', ok: dkAge < 8 && dkBad === 0, detail: `آخر تحديث قبل ${isNaN(dkAge) ? '—' : dkAge.toFixed(1)} ساعة، ${Object.values(dk.desks || {}).reduce((s, d) => s + d.items.length, 0)} خبراً، ${dkBad} دون جهتين`});
+  const cn = readJSON('countries.json', {}), cnAge = (Date.now() - new Date(cn.updated)) / 3600e3;
+  const cnBad = Object.values(cn.countries || {}).flatMap(c => c.items || []).filter(i => new Set((i.sources || []).map(s => outlet(s.url))).size < 2).length;
+  checks.push({name: 'الأوضاع في الدول حديثة وكل خبر من جهتين', ok: cnAge < 8 && cnBad === 0, detail: `آخر تحديث قبل ${isNaN(cnAge) ? '—' : cnAge.toFixed(1)} ساعة، ${Object.values(cn.countries || {}).reduce((s, c) => s + (c.items || []).length, 0)} خبراً، ${cnBad} دون جهتين`});
+  const fc = readJSON('forecast.json', {}), fcA = (Date.now() - new Date(fc.updated)) / 3600e3, fcN = Object.keys(fc.countries || {}).length;
+  const fcEv = readJSON('forecast/events.json', {events: []}).events || [], fcBad = fcEv.filter(e => new Set((e.sources || []).map(s => outlet(s.url))).size < 2).length;
+  checks.push({name: 'التوقعات محسوبة حديثاً وكل حدث من جهتين', ok: fcA < 8 && fcN >= 20 && fcBad === 0, detail: `آخر حساب قبل ${isNaN(fcA) ? '—' : fcA.toFixed(1)} ساعة، ${fcN} دولة، ${fcEv.length} حدثاً، ${fcBad} دون جهتين`});
   checks.push({name: 'العناوين الآلية حديثة', ok: headAge < 7, detail: `آخر تحديث قبل ${headAge.toFixed(1)} ساعة`});
   const n = (brief.zones || []).reduce((s, z) => s + z.items.length, 0), unsourced = (brief.zones || []).flatMap(z => z.items).filter(i => !(i.src || []).every(s => brief.sources[s]?.url)).length;
   checks.push({name: 'كل خبر بمصدره', ok: n >= 8 && unsourced === 0, detail: `${n} خبراً، ${unsourced} دون مصدر`});
@@ -226,6 +232,16 @@ catch (e) { console.error('تعذّر الرصد العسكري:', e.message); }
   if (!(age < 3.5) && !ARGS.has('--dry')) {
     try { execFileSync(process.execPath, ['khabar/scripts/desks.mjs'], {stdio: 'inherit', timeout: 12 * 60e3}); execFileSync('python3', ['khabar/agent/desks.py', '--enforce', '--quiet'], {stdio: 'inherit'}); } catch (e) { console.error('desks', e.message); }
   }
+  // الأوضاع في الدول: تُحدَّث كل 3 ساعات من khabar.yml، ويعيدها الطيار هنا إن تأخرت (مع خلاصات كل 6 ساعات)، ثم بوابة التحقق
+  const cn = readJSON('countries.json', {}), cnAge = (Date.now() - new Date(cn.updated)) / 3600e3;
+  if (!(cnAge < 3.5) && !ARGS.has('--dry')) {
+    try { execFileSync(process.execPath, ['khabar/scripts/countries.mjs'], {stdio: 'inherit', timeout: 12 * 60e3}); execFileSync('python3', ['khabar/agent/countries.py', '--enforce', '--quiet'], {stdio: 'inherit'}); } catch (e) { console.error('countries', e.message); }
+  }
+  // التوقعات: تُحسب كل 3 ساعات من khabar.yml، ويعيدها الطيار إن تأخرت 4 ساعات، ثم بوابة التحقق
+  const fcj = readJSON('forecast.json', {}), fcAge = (Date.now() - new Date(fcj.updated)) / 3600e3;
+  if (!(fcAge < 4) && !ARGS.has('--dry')) {
+    try { execFileSync(process.execPath, ['khabar/scripts/forecast.mjs'], {stdio: 'inherit', timeout: 10 * 60e3}); execFileSync('python3', ['khabar/agent/forecast.py', '--enforce', '--quiet'], {stdio: 'inherit'}); } catch (e) { console.error('forecast', e.message); }
+  }
   if (!ARGS.has('--dry')) { try { execFileSync(process.execPath, ['khabar/scripts/build.mjs'], {stdio: 'inherit', timeout: 3 * 60e3}); } catch (e) { console.error('build', e.message); } }
 }
 
@@ -238,5 +254,5 @@ if (!ARGS.has('--no-health')) {
   if (changed && !ARGS.has('--dry')) writeJSON('health.json', h);
   h.checks.forEach(c => console.log(c.ok ? '✓' : '✗', c.name, c.code || '', c.detail || ''));
   if (process.env.GITHUB_OUTPUT) writeFileSync(process.env.GITHUB_OUTPUT, `ok=${h.ok}\nwrote=${wrote}\nmil=${!!(milOut.mil || milOut.wars)}\n`, {flag: 'a'});
-  if (!h.ok) { console.error('::warning::يوجد عطل في تشغيل «خبر»؛ التفاصيل أعلاه.'); }
+  if (!h.ok) { console.error('::warning::يوجد عطل في تشغيل «عبدو نيوز»؛ التفاصيل أعلاه.'); }
 }

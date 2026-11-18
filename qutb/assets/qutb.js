@@ -96,7 +96,10 @@ $('#gateForm').addEventListener('submit', async e => {
 // منصات انتقلت إلى عنوان جديد بعد تعليق حساب GitHub القديم (نوفمبر 2026): تُتابَع على عنوانها الحالي بدل إنذار «لا يستجيب».
 // يتغيّر عنوان الموقع وروابطه فقط، ويبقى باقي السجل كما هو.
 const MOVED = {basira: 'https://baseeratactions.com/'};
+// منصات تغيّر اسمها أمام الجمهور (18 نوفمبر 2026: «خبر» صار «عبدو نيوز»). يتغيّر الاسم المعروض فقط، ويبقى المعرّف كما هو.
+const RENAMED = {khabar: 'عبدو نيوز'};
 function relocate(reg) {
+  for (const p of reg.platforms || []) if (RENAMED[p.id] && p.name !== RENAMED[p.id]) { p.formerName = p.name; p.name = RENAMED[p.id]; }
   for (const p of reg.platforms || []) {
     const neu = MOVED[p.id], old = p.site; if (!neu || !old || old === neu) continue;
     const fix = u => u && u.startsWith(old) ? neu + u.slice(old.length) : u;
@@ -245,6 +248,47 @@ async function khabarStats(p, o, add) {
     if (hoursSince(d.updated) > 8) add('warn', `${p.name}: الأقسام الموضوعية لم تتجدد منذ ${ago(d.updated).replace('قبل ', '')}`, p.site + '#desks');
     if (empty.length > 6) add('info', `${p.name}: ${empty.length} أقسام بلا خبر مؤكد من جهتين الآن (${esc(empty.slice(0, 4).join('، '))}…)`, p.site + '#desks');
   } catch (e) { o.rows.push(['الأقسام الموضوعية', '<span class="skel">تعذّرت القراءة</span>']); }
+  // تنزيلات التقارير (18 نوفمبر 2026): إحصاء عام بلا أي بيانات عن الزائر، من خادم «خبر» على Cloudflare (assets/report.js في الموقع)
+  try {
+    const api = /workers\.dev/.test(p.site || '') ? p.site.replace(/\/$/, '') : 'https://khabar.baseeratactions.workers.dev';
+    const r = await fetch(api + '/api/downloads', {cache: 'no-store'}); if (!r.ok) throw new Error('http' + r.status);
+    const s = await r.json(), FN = {docx: 'Word', pdf: 'PDF', xlsx: 'Excel', csv: 'CSV', png: 'صورة', html: 'صفحة ويب', print: 'طباعة', link: 'رابط'};
+    const SN = {today: 'اليوم', qatar: 'قطر', gulf: 'الخليج', egypt: 'مصر', world: 'العالم', roadmap: 'خريطة الطريق', military: 'العسكري', wars: 'الحروب', war: 'ملف حرب', desks: 'الأقسام', brief: 'الخلاصة والأرشيف', weather: 'الطقس', ledger: 'الشفافية', saved: 'المحفوظ', newsletter: 'النشرة', partners: 'الشراكة', countries: 'الأوضاع في الدول'};
+    const fm = Object.entries(s.formats || {}).sort((a, b) => b[1] - a[1]).map(([f, n]) => `${FN[f] || f} ${num(n)}`).join(' · ');
+    const top = Object.entries(s.sections || {}).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([v, n]) => `${SN[v] || (v.startsWith('d-') ? 'قسم ' + v.slice(2) : v)} ${num(n)}`).join('، ');
+    o.rows.push(['تنزيلات التقارير', s.total ? `${num(s.total)} في 30 يوماً · اليوم ${num(s.today)} · ${esc(fm)}${top ? ' · الأكثر تصديراً: ' + esc(top) : ''}` : 'لم يُنزَّل أي تقرير بعد']);
+  } catch (e) { o.rows.push(['تنزيلات التقارير', '<span class="skel">تعذّرت القراءة</span>']); }
+  // الاستماع (18 نوفمبر 2026): مرات تشغيل القارئ الصوتي حسب اللغة والقارئ (امرأة/رجل) والقسم، أعداد مجمّعة فقط (assets/listen.js)
+  try {
+    const api = /workers\.dev/.test(p.site || '') ? p.site.replace(/\/$/, '') : 'https://khabar.baseeratactions.workers.dev';
+    const r = await fetch(api + '/api/listens', {cache: 'no-store'}); if (!r.ok) throw new Error('http' + r.status);
+    const s = await r.json(), LN = {ar: 'العربية', en: 'الإنجليزية', fr: 'الفرنسية', es: 'الإسبانية', de: 'الألمانية', tr: 'التركية', ur: 'الأردية', fa: 'الفارسية', hi: 'الهندية', id: 'الإندونيسية', ru: 'الروسية', zh: 'الصينية', it: 'الإيطالية', pt: 'البرتغالية'};
+    const SN = {today: 'اليوم', qatar: 'قطر', gulf: 'الخليج', egypt: 'مصر', world: 'العالم', military: 'العسكري', wars: 'الحروب', war: 'ملف حرب', desks: 'الأقسام', brief: 'الخلاصة', weather: 'الطقس', forecast: 'التوقعات', countries: 'الأوضاع في الدول', newsletter: 'النشرة', partners: 'الشراكة', account: 'الحساب'};
+    const top = (o, N, k) => Object.entries(o || {}).sort((a, b) => b[1] - a[1]).slice(0, k || 3).map(([v, n]) => `${(N && N[v]) || v} ${num(n)}`).join('، ');
+    const fb = Object.values(s.fallbacks || {}).reduce((a, b) => a + b, 0);
+    o.rows.push(['الاستماع', s.total ? `${num(s.total)} مرة تشغيل في 30 يوماً · اليوم ${num(s.today)} · امرأة ${num(s.genders?.f || 0)} · رجل ${num(s.genders?.m || 0)} · اللغات: ${esc(top(s.langs, LN, 4))}${top(s.sections, SN) ? ' · الأكثر استماعاً: ' + esc(top(s.sections, SN)) : ''}${fb ? ' · بديل لعدم توفر الصوت: ' + num(fb) : ''}` : 'لم يُستعمل الاستماع بعد']);
+    if (s.total >= 20 && fb / s.total > 0.5) add('info', `${p.name}: أكثر من نصف مرات الاستماع على أجهزة بلا الصوت المطلوب؛ يُستحسن شرح تثبيت الأصوات للقراء`, p.site);
+  } catch (e) { o.rows.push(['الاستماع', '<span class="skel">تعذّرت القراءة</span>']); }
+  // الأوضاع في الدول (18 نوفمبر 2026): مؤشر استقرار يومي لكل دولة، وكل خبر من جهتين مستقلتين
+  try {
+    const c = await raw(p.repo, base + 'countries.json'), C = c.countries || {};
+    const L = {stable: ['ok', 'مستقر'], strained: ['warn', 'تحت الضغط'], unstable: ['bad', 'مضطرب'], nodata: ['', 'بيانات غير كافية']}, T = {up: '↑', down: '↓', flat: '→'};
+    o.rows.push(['الأوضاع في الدول', `<a href="${esc(p.site)}#countries" target="_blank" rel="noopener">${(c.meta || []).length} دولة</a> · ${Object.values(C).reduce((s, x) => s + (x.items || []).length, 0)} خبراً موثّقاً · ${ago(c.updated)}<br>` +
+      (c.meta || []).map(m => { const i = C[m.id]?.index || {}, l = L[i.level] || L.nodata; return `<a href="${esc(p.site)}#c-${esc(m.id)}" target="_blank" rel="noopener"><span class="pill ${l[0]}">${esc(m.ar)}: ${i.score ?? '—'} ${T[i.trend] || ''}</span></a>`; }).join(' ')]);
+    if (hoursSince(c.updated) > 8) add('warn', `${p.name}: الأوضاع في الدول لم تتجدد منذ ${ago(c.updated).replace('قبل ', '')}`, p.site + '#countries');
+    const worse = (c.meta || []).filter(m => C[m.id]?.index?.trend === 'down').map(m => m.ar);
+    if (worse.length) add('info', `${p.name}: تراجع مؤشر الاستقرار اليوم في ${esc(worse.join('، '))}`, p.site + '#countries');
+  } catch (e) { o.rows.push(['الأوضاع في الدول', '<span class="skel">تعذّرت القراءة</span>']); }
+  // التوقعات: استقراء المستقبل (18 نوفمبر 2026): احتمالات معلنة المنهجية لـ24 دولة، تُحسب آلياً كل 3 ساعات
+  try {
+    const f = await raw(p.repo, base + 'forecast.json'), C = f.countries || {};
+    const L = {improve: ['ok', 'تحسّن'], stable: ['ok', 'استقرار'], watch: ['warn', 'مراقبة'], deteriorate: ['bad', 'تدهور']};
+    const top = Object.entries(C).sort((a, b) => b[1].p_worse - a[1].p_worse).slice(0, 6);
+    const rec = f.record || {};
+    o.rows.push(['التوقعات', `<a href="${esc(p.site)}forecast/" target="_blank" rel="noopener">${Object.keys(C).length} دولة</a> · ${f.events_count || 0} حدثاً موثّقاً · ${ago(f.updated)} · سجل الدقة: ${rec.resolved ? 'براير ' + (rec.by?.['7']?.brier ?? '—') : 'يبدأ الحسم بعد أسبوع'}<br>` +
+      top.map(([id, c]) => { const l = L[c.outlook] || L.stable; return `<a href="${esc(p.site)}forecast/#c=${esc(id)}" target="_blank" rel="noopener"><span class="pill ${l[0]}">${esc(c.ar)}: ${l[1]} ${Math.round(c.p_worse * 100)}٪</span></a>`; }).join(' ')]);
+    if (hoursSince(f.updated) > 8) add('warn', `${p.name}: التوقعات لم تُحسب منذ ${ago(f.updated).replace('قبل ', '')}`, p.site + 'forecast/');
+  } catch (e) { o.rows.push(['التوقعات', '<span class="skel">تعذّرت القراءة</span>']); }
   if (k.status === 'fulfilled') {
     o.rows.push(['العاجل', k.value.on ? '<span class="pill bad">منشور الآن</span>' : 'لا عاجل']);
     if (k.value.on) add('info', `${p.name}: خبر عاجل منشور الآن`, p.site);

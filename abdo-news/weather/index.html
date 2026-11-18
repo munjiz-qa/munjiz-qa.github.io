@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<script>if(location.pathname.indexOf("/khabar/")===0||location.pathname==="/khabar")location.replace("/abdo-news/"+location.pathname.replace(/^\/khabar\/?/,"")+location.search+location.hash)</script>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>الطقس والمناخ | عبدو نيوز</title>
+<meta name="description" content="طقس مكانك الآن والتوقعات لعشرة أيام وتنبيهات الخطر المحتمل بمصادرها الرسمية، وأخبار المناخ حول العالم مؤكدة من مصدرين مستقلين على الأقل.">
+<meta name="theme-color" content="#14212E">
+<meta property="og:title" content="الطقس والمناخ | عبدو نيوز">
+<meta property="og:description" content="طقس مكانك وتوقعاته وتنبيهات الخطر، وأخبار المناخ حول العالم بمصادرها.">
+<meta property="og:image" content="https://munjiz-qa.github.io/abdo-news/assets/og.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://munjiz-qa.github.io/abdo-news/weather/">
+<meta property="og:site_name" content="عبدو نيوز">
+<link rel="canonical" href="https://munjiz-qa.github.io/abdo-news/weather/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://api.open-meteo.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&family=IBM+Plex+Mono:wght@500&family=Reem+Kufi:wght@500;700&display=swap">
+<link rel="stylesheet" href="../assets/khabar.css">
+<link rel="stylesheet" href="../assets/weather.css">
+<script>try{var t=localStorage.getItem('khabar-theme');if(t)document.documentElement.dataset.theme=t;var l=localStorage.getItem('khabar-lang');if(l==='en'){document.documentElement.lang='en';document.documentElement.dir='ltr'}}catch(e){}</script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="mark" viewBox="0 0 64 64"><path d="M17 9.5h30a11 11 0 0 1 11 11v17a11 11 0 0 1-11 11h-1.5l1.5 9.5-12-9.5H17a11 11 0 0 1-11-11v-17a11 11 0 0 1 11-11z" fill="none" stroke="currentColor" stroke-width="4.6" stroke-linejoin="round"/><path d="M21 23h25" stroke="#3A5FB0" stroke-width="4.6" stroke-linecap="round"/><path d="M33 34h13" stroke="#1D7A70" stroke-width="4.6" stroke-linecap="round"/><path d="M17.5 33.5l3.6 3.6 6.4-7.4" fill="none" stroke="#1D7A70" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="9.5" r="6.5" fill="#E39A2D"/></symbol>
+  </defs>
+</svg>
+
+<header class="top">
+  <div class="wrap top-row">
+    <a class="brand" href="../#today" aria-label="عبدو نيوز">
+      <svg class="brand-mark"><use href="#mark"/></svg>
+      <span class="brand-word" data-t="brand">عبدو نيوز</span>
+    </a>
+    <div class="top-meta">
+      <span id="today-date"></span>
+      <span class="mute" data-t="section">الطقس والمناخ</span>
+    </div>
+    <div class="top-actions">
+      <a class="icon-btn" href="../account/" aria-label="حسابي" title="حسابي"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+      <button id="lang-btn" class="icon-btn" type="button" aria-label="English">EN</button>
+      <button id="theme-btn" class="icon-btn" type="button" aria-label="الوضع الليلي">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z" fill="currentColor"/></svg>
+      </button>
+    </div>
+  </div>
+  <nav class="tabs" aria-label="الأقسام">
+    <div class="wrap tabs-row" id="tabs"></div>
+  </nav>
+</header>
+
+<main class="wrap wx" id="main" tabindex="-1">
+  <div class="ed-head">
+    <span class="eyebrow" data-t="eyebrow">الطقس والمناخ</span>
+    <h1 data-t="h1">طقس مكانك، ومناخ العالم</h1>
+    <p class="mute" data-t="intro">اختر الدولة والمدينة أو حدّد موقعك، فنعرض لك الطقس الآن والتوقعات لعشرة أيام وأي خطر محتمل بمصدره الرسمي، وإلى جانبها أخبار المناخ حول العالم مؤكدة من جهتين مستقلتين على الأقل.</p>
+  </div>
+
+  <section class="panel-wx picker" aria-labelledby="pick-h">
+    <h2 id="pick-h" class="sr" data-t="pick">اختر مكانك</h2>
+    <div class="pick-row">
+      <div class="field"><label for="country" data-t="country">الدولة</label><select id="country"></select></div>
+      <div class="field city-field">
+        <label for="city" data-t="city">المدينة أو المنطقة</label>
+        <input id="city" type="search" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="city-list">
+        <ul id="city-list" class="city-list" role="listbox" hidden></ul>
+      </div>
+      <button id="locate" class="btn locate" type="button"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="3.5" fill="currentColor"/><circle cx="12" cy="12" r="7.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span data-t="locate">حدّد موقعي</span></button>
+    </div>
+    <div class="chips" id="popular" role="group"></div>
+    <p class="msg" id="pick-msg" hidden></p>
+  </section>
+
+  <div id="wx-place" class="wx-place" aria-live="polite"></div>
+  <section id="danger" class="danger" hidden></section>
+  <div class="wx-grid">
+    <section id="now" class="panel-wx now" hidden></section>
+    <section id="hours" class="panel-wx hours" hidden></section>
+  </div>
+  <section id="days" class="panel-wx days" hidden></section>
+
+  <section id="climate" class="zone climate">
+    <div class="zone-head"><span class="dot" style="background:var(--sea)"></span><h2 data-t="climate_h">مناخ العالم</h2><span class="count" id="climate-count"></span></div>
+    <p class="mute climate-rule" data-t="climate_rule">لا يُنشر هنا خبر إلا إذا نقلته جهتان مستقلتان على الأقل، ولكل جهة عنوانها كما نشرته وتاريخه ورابطه الأصلي. يُحدَّث آلياً كل 3 ساعات ومع كل خلاصة من خلاصات اليوم الأربع.</p>
+    <ul class="items" id="climate-list"></ul>
+  </section>
+
+  <section class="sources-all wx-method">
+    <h3 data-t="method_h">مصادر هذا القسم وطريقة الحساب</h3>
+    <ol id="method"></ol>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-row">
+    <div class="foot-brand"><svg class="brand-mark sm"><use href="#mark"/></svg><span data-t="brand">عبدو نيوز</span></div>
+    <p class="mute" data-t="footer_note">كل رقم في هذا القسم منسوب إلى مصدره برابط مباشر. التقدير الآلي للخطر اجتهاد مبني على التوقعات المذكورة، ولا يغني عن تعليمات الجهة الرسمية في بلدك.</p>
+    <p class="contact" id="contact"></p>
+  </div>
+</footer>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<script src="../assets/config.js"></script>
+<script src="../assets/weather.js"></script>
+<script src="../assets/report.js" defer></script>
+<script src="../assets/listen.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>حسابي | بصيرة كولر من منجز</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#2A1466">
+<link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600;700&family=Almarai:wght@400;700&display=swap">
+<link rel="stylesheet" href="assets/bc.css?v=2">
+</head>
+<body>
+<header class="bar"></header>
+<main class="page"><div class="wrap" id="app"><div class="empty">جارٍ التحميل…</div></div></main>
+<footer class="foot"></footer>
+<script src="config.js?v=1"></script>
+<script src="assets/bc.js?v=2"></script>
+<script src="assets/local-backend.js?v=2"></script>
+<script src="assets/directory.js?v=2"></script>
+<script>
+(function () {
+  const { rpc, fmt, date, dateTime, num, KIND, esc, cleanName, toast, auth, normalize } = BC;
+  const app = document.getElementById('app');
+  const qs = new URLSearchParams(location.search);
+  const next = qs.get('next');
+  BC.chrome('account');
+
+  function authView(mode) {
+    app.innerHTML = '<div class="auth"><h1 style="font-size:30px;text-align:center">' + (mode === 'register' ? 'أنشئ حسابك المجاني' : 'مرحباً بعودتك') + '</h1>' +
+      '<p class="hint" style="text-align:center">الحساب يتيح لك إضافة الأسماء والبلاغات والتقييمات ومتابعة مساهماتك.</p>' +
+      '<div class="card"><div class="tabs"><button data-m="login" class="' + (mode !== 'register' ? 'on' : '') + '">تسجيل الدخول</button><button data-m="register" class="' + (mode === 'register' ? 'on' : '') + '">حساب جديد</button></div>' +
+      '<form id="f">' +
+      (mode === 'register' ? '<div class="field"><label for="nm">الاسم الكامل</label><input id="nm" required minlength="2" maxlength="80" autocomplete="name"></div>' : '') +
+      '<div class="field"><label for="em">البريد الإلكتروني</label><input id="em" type="email" required autocomplete="email" dir="ltr"></div>' +
+      (mode === 'register' ? '<div class="field"><label for="ph">رقم الجوال (اختياري)</label><input id="ph" type="tel" inputmode="tel" dir="ltr" placeholder="+974 5555 1234" autocomplete="tel"></div>' : '') +
+      '<div class="field"><label for="pw">كلمة المرور</label><input id="pw" type="password" required minlength="8" autocomplete="' + (mode === 'register' ? 'new-password' : 'current-password') + '" dir="ltr"><span class="hint">8 أحرف على الأقل.</span></div>' +
+      (mode === 'register' ? '<label style="display:flex;gap:8px;align-items:flex-start;font-weight:400"><input type="checkbox" id="ok" required style="width:20px;min-height:20px;margin-top:5px"> <span>أوافق على <a href="privacy.html" target="_blank">سياسة الخصوصية وشروط الاستخدام</a>، وأتعهد بألا أضيف إلا معلومات صحيحة.</span></label><br>' : '') +
+      '<button class="btn btn-main" type="submit" style="width:100%">' + (mode === 'register' ? 'إنشاء الحساب' : 'دخول') + '</button></form></div></div>';
+    app.querySelectorAll('[data-m]').forEach(b => b.onclick = () => authView(b.dataset.m));
+    app.querySelector('#f').onsubmit = async ev => {
+      ev.preventDefault();
+      const btn = ev.target.querySelector('button[type=submit]'); btn.disabled = true;
+      const v = id => (app.querySelector('#' + id) || {}).value || '';
+      try {
+        let r;
+        if (mode === 'register') {
+          const ph = v('ph').trim();
+          if (ph && !normalize(ph, '974')) throw new Error('صيغة رقم الجوال غير صحيحة. مثال: +974 5555 1234');
+          r = await rpc('bc_register', { p_name: cleanName(v('nm')), p_email: v('em').trim(), p_password: v('pw'), p_phone: ph ? normalize(ph, '974') : null });
+        } else r = await rpc('bc_login', { p_email: v('em').trim(), p_password: v('pw') });
+        auth.save(r);
+        toast(mode === 'register' ? 'أهلاً ' + r.user.name + '، أُنشئ حسابك بنجاح.' : 'أهلاً ' + r.user.name + '.');
+        if (next && next.startsWith('/')) { location.href = next; return; }
+        if (r.user.role === 'admin') { location.href = 'admin.html'; return; }
+        BC.chrome('account'); profile();
+      } catch (err) { toast(err.message, true); btn.disabled = false; }
+    };
+  }
+
+  async function profile() {
+    const u = await auth.refresh();
+    if (!u) return authView(qs.get('mode'));
+    BC.chrome('account');
+    let a = { names: [], reports: [], ratings: [] };
+    try { a = await rpc('bc_my_activity', { p_token: auth.token() }); } catch (e) { if (e.code === 'AUTH_REQUIRED') return authView(); }
+    const row = (e, what, at) => '<tr><td data-l="الرقم"><a class="ltr" href="./?n=' + encodeURIComponent(e) + '#search">' + esc(fmt(e)) + '</a></td><td data-l="المساهمة">' + what + '</td><td data-l="التاريخ"><span class="ltr">' + dateTime(at) + '</span></td></tr>';
+    const rows = [].concat(
+      a.names.map(x => ({ at: x.at, h: row(x.e164, 'اسم: ' + esc(x.name), x.at) })),
+      a.reports.map(x => ({ at: x.at, h: row(x.e164, 'بلاغ: ' + KIND[x.kind] + (x.status === 'confirmed' ? ' <span class="badge risk">مؤكد</span>' : x.status === 'dismissed' ? ' <span class="badge">مرفوض</span>' : ' <span class="badge sun">قيد المراجعة</span>'), x.at) })),
+      a.ratings.map(x => ({ at: x.at, h: row(x.e164, x.value > 0 ? 'تقييم: آمن 👍' : 'تقييم: مزعج 👎', x.at) }))
+    ).sort((p, q) => new Date(q.at) - new Date(p.at)).map(x => x.h).join('');
+    app.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:18px">' +
+      '<div><h1 style="font-size:30px;margin:0">أهلاً، ' + esc(u.name) + '</h1><p class="hint" style="margin:0"><span class="ltr">' + esc(u.email) + '</span>' + (u.phone ? ' · <span class="ltr">' + esc(fmt(u.phone)) + '</span>' : '') + ' · عضو منذ <span class="ltr">' + date(u.created_at) + '</span>' + (u.role === 'admin' ? ' · <span class="badge sun">مدير المنصة</span>' : '') + '</p></div>' +
+      '<div style="display:flex;gap:10px;flex-wrap:wrap">' + (u.role === 'admin' ? '<a class="btn btn-sun" href="admin.html">لوحة الإدارة</a>' : '') + '<a class="btn btn-main" href="./#search">ابحث عن رقم</a><button class="btn btn-line" id="out">تسجيل الخروج</button></div></div>' +
+      '<div class="stats"><div class="stat"><b>' + num(a.names.length) + '</b><span>اسم أضفته</span></div><div class="stat"><b>' + num(a.reports.length) + '</b><span>بلاغ أرسلته</span></div><div class="stat"><b>' + num(a.ratings.length) + '</b><span>تقييم</span></div><div class="stat"><b>' + num(a.reports.filter(r => r.status === 'confirmed').length) + '</b><span>بلاغ أكدته الإدارة</span></div></div>' +
+      '<h2 style="font-size:22px">مساهماتي</h2>' +
+      (rows ? '<div class="tbl-wrap"><table class="tbl stack"><thead><tr><th>الرقم</th><th>المساهمة</th><th>التاريخ</th></tr></thead><tbody>' + rows + '</tbody></table></div>'
+            : '<div class="card empty">لم تضف أي مساهمة بعد. <a href="./#search">ابحث عن رقم</a> وأضف اسماً أو بلاغاً.</div>') +
+      '<section class="card share" id="share" style="margin-top:22px"><h2 style="font-size:22px;margin-top:0">مشاركة جهات الاتصال <span class="badge">اختياري</span></h2><div id="shareBody"><div class="empty">جارٍ التحميل…</div></div></section>';
+    shareBox();
+    document.getElementById('out').onclick = async () => { await auth.logout(); toast('سُجّل خروجك.'); BC.chrome('account'); authView(); };
+  }
+
+  // ---------- مشاركة جهات الاتصال الاختيارية: موافقة صريحة، اختيار يدوي، معاينة قبل الإرسال، وسحب في أي وقت ----------
+  function parseVcf(text) {
+    const out = []; const blocks = text.replace(/\r\n[ \t]/g, '').split(/BEGIN:VCARD/i).slice(1);
+    for (const b of blocks) {
+      const fn = (b.match(/^FN[^:\n]*:(.*)$/im) || [])[1];
+      const nRaw = (b.match(/^N[^:\n]*:(.*)$/im) || [])[1];
+      const name = (fn || (nRaw ? nRaw.split(';').slice(0, 2).reverse().join(' ') : '')).replace(/\\,/g, ',').trim();
+      const tels = [...b.matchAll(/^(?:item\d+\.)?TEL[^:\n]*:(.*)$/gim)].map(m => m[1].trim());
+      tels.forEach(t => out.push({ name, phone: t }));
+    }
+    return out;
+  }
+  async function shareBox() {
+    const box = document.getElementById('shareBody'); if (!box) return;
+    let st = { consent_at: null, shared: 0 };
+    try { st = await rpc('bc_contacts_status', { p_token: auth.token() }); } catch (e) {}
+    const picker = 'contacts' in navigator && 'select' in navigator.contacts;
+    box.innerHTML =
+      '<p>يمكنك، إن رغبت، مشاركة أسماء وأرقام <b>تختارها بنفسك</b> من جهات اتصالك لمساعدة غيرك على معرفة المتصلين. هذه الميزة معطّلة افتراضياً ولا تعمل إلا بموافقتك.</p>' +
+      '<ul class="hint" style="line-height:1.9;padding-inline-start:18px">' +
+      '<li>نرسل فقط الاسم والرقم لجهات الاتصال التي تحددها وتراها في المعاينة، ولا نقرأ دفتر عناوينك كاملاً.</li>' +
+      '<li>لا يظهر أي اسم مصدره جهات الاتصال للعموم إلا إذا شاركه مستخدمان مستقلان على الأقل بالاسم نفسه.</li>' +
+      '<li>لا نشارك أرقام الجهات الموثّقة ولا الأرقام التي طلب أصحابها إخفاءها، ولا رقمك أنت.</li>' +
+      '<li>يمكنك سحب موافقتك في أي وقت، فنحذف فوراً كل ما شاركته.</li></ul>' +
+      (st.shared ? '<p><span class="badge sun">شاركت ' + num(st.shared) + ' جهة اتصال</span>' + (st.consent_at ? ' · منذ <span class="ltr">' + date(st.consent_at) + '</span>' : '') + '</p>' : '') +
+      '<label style="display:flex;gap:8px;align-items:flex-start;font-weight:400;margin:12px 0"><input type="checkbox" id="cOk" style="width:20px;min-height:20px;margin-top:5px"> <span>أوافق صراحةً على مشاركة جهات الاتصال التي أختارها، وفق <a href="privacy.html#contacts" target="_blank">سياسة الخصوصية</a>، وأعلم أنني أستطيع سحب الموافقة متى شئت.</span></label>' +
+      '<div style="display:flex;gap:10px;flex-wrap:wrap">' +
+      (picker ? '<button class="btn btn-main" id="cPick" disabled>اختيار من جهات الاتصال</button>' : '') +
+      '<label class="btn btn-line" id="cFileL" aria-disabled="true" style="opacity:.55;cursor:not-allowed">رفع ملف جهات اتصال (vCard)<input type="file" id="cFile" accept=".vcf,text/vcard,text/x-vcard" hidden disabled></label>' +
+      (st.shared || st.consent_at ? '<button class="btn btn-risk" id="cWd">سحب الموافقة وحذف ما شاركته</button>' : '') + '</div>' +
+      (picker ? '' : '<p class="hint">على الكمبيوتر أو آيفون: صدّر جهات الاتصال التي تريدها كملف ‎.vcf‎ ثم ارفعه هنا. على أندرويد مع متصفح Chrome يظهر زر الاختيار المباشر.</p>') +
+      '<div id="cPrev"></div>';
+    const ok = box.querySelector('#cOk'), pick = box.querySelector('#cPick'), file = box.querySelector('#cFile'), fl = box.querySelector('#cFileL');
+    ok.onchange = () => { if (pick) pick.disabled = !ok.checked; file.disabled = !ok.checked; fl.style.opacity = ok.checked ? 1 : .55; fl.style.cursor = ok.checked ? 'pointer' : 'not-allowed'; fl.setAttribute('aria-disabled', !ok.checked); };
+    if (pick) pick.onclick = async () => {
+      try { const sel = await navigator.contacts.select(['name', 'tel'], { multiple: true }); preview(sel.flatMap(c => (c.tel || []).map(t => ({ name: (c.name || [])[0] || '', phone: t })))); }
+      catch (e) { toast('لم يتم اختيار جهات اتصال.', true); }
+    };
+    file.onchange = async () => { const f = file.files[0]; if (!f) return; if (f.size > 2e6) { toast('حجم الملف كبير، اختر جهات أقل.', true); return; } preview(parseVcf(await f.text())); file.value = ''; };
+    const wd = box.querySelector('#cWd');
+    if (wd) wd.onclick = async () => {
+      wd.disabled = true;
+      try { const r = await rpc('bc_withdraw_contacts', { p_token: auth.token() }); toast('سُحبت موافقتك وحُذفت ' + num(r.removed) + ' جهة اتصال.'); shareBox(); }
+      catch (e) { toast(e.message, true); wd.disabled = false; }
+    };
+    function preview(list) {
+      const seen = new Set(), items = [];
+      list.forEach(x => { const e = normalize(x.phone, '974'); const n = cleanName(x.name); if (e && n.length >= 2 && !seen.has(e)) { seen.add(e); items.push({ e, n }); } });
+      const pv = box.querySelector('#cPrev');
+      if (!items.length) { pv.innerHTML = '<p class="hint">لم نجد أرقاماً صالحة بأسماء في ما اخترته.</p>'; return; }
+      const cut = items.slice(0, 500);
+      pv.innerHTML = '<h3 style="font-size:18px;margin-top:18px">راجع ما سيُشارك (' + num(cut.length) + ')</h3><p class="hint">ألغِ تحديد أي جهة لا تريد مشاركتها، مثل الأقارب والأصدقاء. ننصح بمشاركة المنشآت ومقدمي الخدمات فقط.</p>' +
+        '<div class="tbl-wrap" style="max-height:340px;overflow:auto"><table class="tbl"><tbody>' + cut.map((x, i) => '<tr><td style="width:36px"><input type="checkbox" data-i="' + i + '" checked style="width:20px;min-height:20px" aria-label="مشاركة ' + esc(x.n) + '"></td><td>' + esc(x.n) + '</td><td><span class="ltr">' + esc(fmt(x.e)) + '</span></td></tr>').join('') + '</tbody></table></div>' +
+        '<button class="btn btn-main" id="cSend" style="margin-top:12px">مشاركة المحدد</button>';
+      pv.querySelector('#cSend').onclick = async ev => {
+        if (!ok.checked) { toast('يلزم تأكيد الموافقة أولاً.', true); return; }
+        const chosen = [...pv.querySelectorAll('input[data-i]:checked')].map(c => cut[+c.dataset.i]);
+        if (!chosen.length) { toast('لم تحدد أي جهة اتصال.', true); return; }
+        ev.target.disabled = true;
+        try { const r = await rpc('bc_share_contacts', { p_token: auth.token(), p_items: chosen.map(x => ({ phone: x.e, name: x.n })), p_consent: true }); toast('شكراً لك. أُضيفت ' + num(r.added) + ' جهة، وتُجوهلت ' + num(r.skipped) + '.'); shareBox(); }
+        catch (e) { toast(e.message, true); ev.target.disabled = false; }
+      };
+    }
+  }
+
+  profile();
+})();
+</script>
+</body>
+</html>

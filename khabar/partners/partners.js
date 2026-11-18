@@ -8,16 +8,16 @@ const base=new URL('../',location.href).href;
 const copy=t=>navigator.clipboard.writeText(t).then(()=>toast('نُسخ.'),()=>{});
 let META=[];
 function code(){const l=$('#e-lang').value,d=$('#e-desk').value,n=$('#e-n').value;
-  const c=`<iframe src="${base}embed/?lang=${l}&desk=${d}&n=${n}" title="خبر" loading="lazy" style="width:100%;max-width:520px;height:${120+n*74}px;border:0;border-radius:14px"></iframe>`;
+  const c=`<iframe src="${base}embed/?lang=${l}&desk=${d}&n=${n}" title="عبدو نيوز" loading="lazy" style="width:100%;max-width:520px;height:${120+n*74}px;border:0;border-radius:14px"></iframe>`;
   $('#e-code').textContent=c;$('#e-prev').innerHTML=c}
 ['#e-lang','#e-desk','#e-n'].forEach(s=>$(s).onchange=code);$('#e-copy').onclick=()=>copy($('#e-code').textContent);
 let qr=null;
 function ref(){const r=$('#ref').value.trim().replace(/[^\w-]/g,'').slice(0,20);const u=base+(r?'?ref='+encodeURIComponent(r):'');const a=$('#ref-link');a.href=u;a.textContent=u;
-  $('#ref-wa').href='https://wa.me/?text='+encodeURIComponent('تابع «خبر»: خلاصة يومية موثّقة، كل خبر بمصدرين مستقلين على الأقل.\n'+u);
+  $('#ref-wa').href='https://wa.me/?text='+encodeURIComponent('تابع «عبدو نيوز»: خلاصة يومية موثّقة، كل خبر بمصدرين مستقلين على الأقل.\n'+u);
   const box=$('#qr');box.textContent='';if(window.QRCode){qr=new QRCode(box,{text:u,width:200,height:200,colorDark:'#14212E',colorLight:'#FFFFFF',correctLevel:QRCode.CorrectLevel.M})}else box.append(el('p','mute','تعذّر تحميل مولّد الرمز.'))}
 $('#ref').oninput=ref;$('#ref-copy').onclick=()=>copy($('#ref-link').href);
 $('#qr-dl').onclick=()=>{const c=$('#qr canvas'),i=$('#qr img');const src=c?c.toDataURL('image/png'):i&&i.src;if(!src)return;const a=document.createElement('a');a.href=src;a.download='khabar-qr.png';a.click()};
-const ACT=[['النشرة بالبريد أو واتساب','مزوّد إرسال ومفتاحه'],['الاشتراك المدفوع','مزوّد دفع والأسعار'],['الإعلانات','حساب إعلانات وسياسة تمييز الإعلان'],['النشر الآلي على X وتلغرام وواتساب','حسابات «خبر» ومفاتيحها'],['المساعدات الصوتية','حسابا مطوّر Google وAmazon'],['متاجر التطبيقات وأدلتها','حسابا Google Play وApple Developer'],['حملة الإطلاق','ميزانية وحسابات إعلانية'],['عضوية IFCN','مراجعة ملف الطلب وتقديمه من المالك'],['نطاق خاص','شراء نطاق وربطه']];
+const ACT=[['النشرة بالبريد أو واتساب','مزوّد إرسال ومفتاحه'],['الاشتراك المدفوع','مزوّد دفع والأسعار'],['الإعلانات','حساب إعلانات وسياسة تمييز الإعلان'],['النشر الآلي على X وتلغرام وواتساب','حسابات «عبدو نيوز» ومفاتيحها'],['المساعدات الصوتية','حسابا مطوّر Google وAmazon'],['متاجر التطبيقات وأدلتها','حسابا Google Play وApple Developer'],['حملة الإطلاق','ميزانية وحسابات إعلانية'],['عضوية IFCN','مراجعة ملف الطلب وتقديمه من المالك'],['نطاق خاص','شراء نطاق وربطه']];
 Promise.all([fetch('../data/desks.json').then(r=>r.json()).catch(()=>null),fetch('../data/admin.json').then(r=>r.json()).catch(()=>({}))]).then(([d,a])=>{
   META=d?d.meta:[];META.forEach(m=>{const o=el('option',null,m.ar);o.value=m.id;$('#e-desk').append(o)});code();
   const ul=$('#rss');[['brief','الخلاصة الرئيسية'],...META.map(m=>[m.id,m.ar])].forEach(([id,n])=>{const li=el('li');const a=el('a',null,n);a.href=base+'feeds/'+id+'.xml';const b=el('a',null,'English');b.href=base+'feeds/'+id+'-en.xml';li.append(a,' · ',b);ul.append(li)});

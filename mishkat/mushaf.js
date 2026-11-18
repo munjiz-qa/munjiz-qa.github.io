@@ -151,10 +151,28 @@ function mpSetCur(p) {
   if (!$('#mpRoot')) return;
   const D = MPV.data, a = mpFirstAyah(p), lb = mpLabels(p);
   MPV.cur = p; logReadPage(p); $('#mpPage').value = p; $('#mpInfo').textContent = `${lb.sur} · ${lb.juz}`;
-  $('#mpSur').value = Q.ayat[a][0]; $('#mpJuz').value = D.j[a];
+  const vis0 = MPV.tgt != null && D.pageOf[MPV.tgt] === p ? MPV.tgt : mpVisAyah(p, a);
+  $('#mpSur').value = Q.ayat[vis0][0]; $('#mpJuz').value = D.j[a];
   let k = 0; for (let x = 0; x < D.q.length && D.pageOf[D.q[x]] <= p; x++) k = x; $('#mpHizb').value = (k >> 2) + 1;
   if (location.hash !== '#p' + p) history.replaceState(null, '', '#p' + p);
-  mpTrack(mpVisAyah(p, a));
+  const vis = vis0; mpAyahSync(p, a, vis);
+  mpTrack(vis);
+}
+/* خانة رقم الآية: تعرض رقم أول آية ظاهرة في السورة المعروضة (أو الآية التي انتُقل إليها) وتُحدَّث مع التنقل */
+function mpAyahSync(p, a, vis) {
+  const inp = $('#mpAyah'); if (!inp) return;
+  const D = MPV.data, s = +$('#mpSur').value, su = Q.surahs[s - 1];
+  let t = a; if (Q.ayat[vis] && Q.ayat[vis][0] === s) t = vis;
+  if (MPV.tgt != null && D.pageOf[MPV.tgt] === p && Q.ayat[MPV.tgt][0] === s) t = MPV.tgt;
+  inp.max = su.ayas; $('#mpAyN').textContent = MP_AR(su.ayas);
+  if (document.activeElement !== inp) inp.value = Q.ayat[t][1];
+}
+/* الانتقال إلى آية برقمها داخل السورة المختارة: تُفتح صفحتها ويُظلَّل موضعها */
+function mpAyahGo() {
+  const inp = $('#mpAyah'), D = MPV.data; if (!D || !inp) return;
+  const su = Q.surahs[+$('#mpSur').value - 1], a = Number(inp.value);
+  if (!(Number.isInteger(a) && a >= 1 && a <= su.ayas)) { toast('رقم الآية غير صحيح لهذه السورة'); inp.blur(); inp.value = Q.ayat[MPV.tgt != null ? MPV.tgt : mpFirstAyah(MPV.cur)][1]; return; }
+  const i = su.first + a - 1; MPV.tgt = i; inp.blur(); mpGo(D.pageOf[i], i);
 }
 /* تذكّر موضع التوقف بدقة الآية: أول آية ظاهرة تحت الشريط، وتُحفظ بعد أن يستقر القارئ عليها (نحو ثانيتين ونصف) فلا يُمحى موضعه القديم بمجرد فتح المصحف من أوله */
 function mpVisAyah(p, dflt) {
@@ -229,6 +247,7 @@ async function mushafRead(p, opt = {}) {
       <select id="mpJuz" aria-label="الجزء">${jOpts}</select>
       <select id="mpHizb" class="mp-opt" aria-label="الحزب">${hOpts}</select>
       <label class="mp-pg"><span class="mp-pgl">صفحة</span><input id="mpPage" type="number" inputmode="numeric" min="1" max="604" value="${p}" aria-label="رقم الصفحة"></label>
+      <label class="mp-pg mp-ay"><span class="mp-pgl">الآية</span><input id="mpAyah" type="number" inputmode="numeric" min="1" max="286" enterkeyhint="go" aria-label="رقم الآية في السورة"></label><span class="mp-of"><span>من</span> <b id="mpAyN"></b></span>
       ${IS_PWA ? '<button class="btn" id="mpPlay" type="button" aria-label="استمع إلى التلاوة"><svg><use href="#i-play"/></svg><span>استمع</span></button>' : ''}
       <button class="btn" id="mpRBtn" type="button" aria-label="موضع توقفي"><svg><use href="#i-bookmark"/></svg><span>موضعي</span></button>
       <button class="btn mp-more" id="mpMore" aria-expanded="false" aria-controls="mpOpts" aria-label="خيارات العرض">خيارات</button>
@@ -262,10 +281,14 @@ async function mushafRead(p, opt = {}) {
   $('#mpFont').onchange = async e => { MPV.font = e.target.value; ST.prefs.mpFont = MPV.font; save(); const p0 = MPV.cur; root.dataset.font = MPV.font;
     try { await document.fonts.load(`20px "${({ hafs: 'KFGQPC Hafs', amiri: 'Amiri Quran', noto: 'Noto Naskh Mushaf' })[MPV.font]}"`, 'بسم'); } catch (er) {}
     mpMeasure(); mpRefill(); mpGo(p0, null, true); setTimeout(() => mpGo(p0, null, true), 200); };
-  $('#mpSur').onchange = e => { const s = +e.target.value; mpGo(D.hdr[s][0], Q.surahs[s - 1].first); };
-  $('#mpJuz').onchange = e => { const a = D.q[(+e.target.value - 1) * 8]; mpGo(D.pageOf[a], a); };
-  $('#mpHizb').onchange = e => { const a = D.q[(+e.target.value - 1) * 4]; mpGo(D.pageOf[a], a); };
-  $('#mpPage').onchange = e => mpGo(+e.target.value);
+  $('#mpSur').onchange = e => { const s = +e.target.value; MPV.tgt = Q.surahs[s - 1].first; mpGo(D.hdr[s][0], Q.surahs[s - 1].first); };
+  $('#mpAyah').onchange = mpAyahGo;
+  $('#mpAyah').onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); mpAyahGo(); } };
+  $('#mpAyah').onfocus = e => e.target.select();
+  ['wheel', 'touchmove'].forEach(ev => addEventListener(ev, () => { MPV.tgt = null; }, { passive: true }));
+  $('#mpJuz').onchange = e => { MPV.tgt = null; const a = D.q[(+e.target.value - 1) * 8]; mpGo(D.pageOf[a], a); };
+  $('#mpHizb').onchange = e => { MPV.tgt = null; const a = D.q[(+e.target.value - 1) * 4]; mpGo(D.pageOf[a], a); };
+  $('#mpPage').onchange = e => { MPV.tgt = null; mpGo(+e.target.value); };
   $('#mpPage').onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); mpGo(+e.target.value); } };
   $('#mpPrev').onclick = () => mpStep(-1); $('#mpNext').onclick = () => mpStep(1);
   $('#mpFull').onclick = () => { if (document.fullscreenElement) document.exitFullscreen?.(); else root.requestFullscreen?.().catch(() => toast('ملء الشاشة غير متاح في هذا المتصفح')); };
