@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>حسابي | بصيرة كولر من منجز</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#2A1466">
+<link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600;700&family=Almarai:wght@400;700&display=swap">
+<link rel="stylesheet" href="assets/bc.css?v=1">
+</head>
+<body>
+<header class="bar"></header>
+<main class="page"><div class="wrap" id="app"><div class="empty">جارٍ التحميل…</div></div></main>
+<footer class="foot"></footer>
+<script src="config.js?v=1"></script>
+<script src="assets/bc.js?v=1"></script>
+<script src="assets/local-backend.js?v=1"></script>
+<script>
+(function () {
+  const { rpc, fmt, date, dateTime, num, KIND, esc, cleanName, toast, auth, normalize } = BC;
+  const app = document.getElementById('app');
+  const qs = new URLSearchParams(location.search);
+  const next = qs.get('next');
+  BC.chrome('account');
+
+  function authView(mode) {
+    app.innerHTML = '<div class="auth"><h1 style="font-size:30px;text-align:center">' + (mode === 'register' ? 'أنشئ حسابك المجاني' : 'مرحباً بعودتك') + '</h1>' +
+      '<p class="hint" style="text-align:center">الحساب يتيح لك إضافة الأسماء والبلاغات والتقييمات ومتابعة مساهماتك.</p>' +
+      '<div class="card"><div class="tabs"><button data-m="login" class="' + (mode !== 'register' ? 'on' : '') + '">تسجيل الدخول</button><button data-m="register" class="' + (mode === 'register' ? 'on' : '') + '">حساب جديد</button></div>' +
+      '<form id="f">' +
+      (mode === 'register' ? '<div class="field"><label for="nm">الاسم الكامل</label><input id="nm" required minlength="2" maxlength="80" autocomplete="name"></div>' : '') +
+      '<div class="field"><label for="em">البريد الإلكتروني</label><input id="em" type="email" required autocomplete="email" dir="ltr"></div>' +
+      (mode === 'register' ? '<div class="field"><label for="ph">رقم الجوال (اختياري)</label><input id="ph" type="tel" inputmode="tel" dir="ltr" placeholder="+974 5555 1234" autocomplete="tel"></div>' : '') +
+      '<div class="field"><label for="pw">كلمة المرور</label><input id="pw" type="password" required minlength="8" autocomplete="' + (mode === 'register' ? 'new-password' : 'current-password') + '" dir="ltr"><span class="hint">8 أحرف على الأقل.</span></div>' +
+      (mode === 'register' ? '<label style="display:flex;gap:8px;align-items:flex-start;font-weight:400"><input type="checkbox" id="ok" required style="width:20px;min-height:20px;margin-top:5px"> <span>أوافق على <a href="privacy.html" target="_blank">سياسة الخصوصية وشروط الاستخدام</a>، وأتعهد بألا أضيف إلا معلومات صحيحة.</span></label><br>' : '') +
+      '<button class="btn btn-main" type="submit" style="width:100%">' + (mode === 'register' ? 'إنشاء الحساب' : 'دخول') + '</button></form></div></div>';
+    app.querySelectorAll('[data-m]').forEach(b => b.onclick = () => authView(b.dataset.m));
+    app.querySelector('#f').onsubmit = async ev => {
+      ev.preventDefault();
+      const btn = ev.target.querySelector('button[type=submit]'); btn.disabled = true;
+      const v = id => (app.querySelector('#' + id) || {}).value || '';
+      try {
+        let r;
+        if (mode === 'register') {
+          const ph = v('ph').trim();
+          if (ph && !normalize(ph, '974')) throw new Error('صيغة رقم الجوال غير صحيحة. مثال: +974 5555 1234');
+          r = await rpc('bc_register', { p_name: cleanName(v('nm')), p_email: v('em').trim(), p_password: v('pw'), p_phone: ph ? normalize(ph, '974') : null });
+        } else r = await rpc('bc_login', { p_email: v('em').trim(), p_password: v('pw') });
+        auth.save(r);
+        toast(mode === 'register' ? 'أهلاً ' + r.user.name + '، أُنشئ حسابك بنجاح.' : 'أهلاً ' + r.user.name + '.');
+        if (next && next.startsWith('/')) { location.href = next; return; }
+        if (r.user.role === 'admin') { location.href = 'admin.html'; return; }
+        BC.chrome('account'); profile();
+      } catch (err) { toast(err.message, true); btn.disabled = false; }
+    };
+  }
+
+  async function profile() {
+    const u = await auth.refresh();
+    if (!u) return authView(qs.get('mode'));
+    BC.chrome('account');
+    let a = { names: [], reports: [], ratings: [] };
+    try { a = await rpc('bc_my_activity', { p_token: auth.token() }); } catch (e) { if (e.code === 'AUTH_REQUIRED') return authView(); }
+    const row = (e, what, at) => '<tr><td data-l="الرقم"><a class="ltr" href="./?n=' + encodeURIComponent(e) + '#search">' + esc(fmt(e)) + '</a></td><td data-l="المساهمة">' + what + '</td><td data-l="التاريخ"><span class="ltr">' + dateTime(at) + '</span></td></tr>';
+    const rows = [].concat(
+      a.names.map(x => ({ at: x.at, h: row(x.e164, 'اسم: ' + esc(x.name), x.at) })),
+      a.reports.map(x => ({ at: x.at, h: row(x.e164, 'بلاغ: ' + KIND[x.kind] + (x.status === 'confirmed' ? ' <span class="badge risk">مؤكد</span>' : x.status === 'dismissed' ? ' <span class="badge">مرفوض</span>' : ' <span class="badge sun">قيد المراجعة</span>'), x.at) })),
+      a.ratings.map(x => ({ at: x.at, h: row(x.e164, x.value > 0 ? 'تقييم: آمن 👍' : 'تقييم: مزعج 👎', x.at) }))
+    ).sort((p, q) => new Date(q.at) - new Date(p.at)).map(x => x.h).join('');
+    app.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:18px">' +
+      '<div><h1 style="font-size:30px;margin:0">أهلاً، ' + esc(u.name) + '</h1><p class="hint" style="margin:0"><span class="ltr">' + esc(u.email) + '</span>' + (u.phone ? ' · <span class="ltr">' + esc(fmt(u.phone)) + '</span>' : '') + ' · عضو منذ <span class="ltr">' + date(u.created_at) + '</span>' + (u.role === 'admin' ? ' · <span class="badge sun">مدير المنصة</span>' : '') + '</p></div>' +
+      '<div style="display:flex;gap:10px;flex-wrap:wrap">' + (u.role === 'admin' ? '<a class="btn btn-sun" href="admin.html">لوحة الإدارة</a>' : '') + '<a class="btn btn-main" href="./#search">ابحث عن رقم</a><button class="btn btn-line" id="out">تسجيل الخروج</button></div></div>' +
+      '<div class="stats"><div class="stat"><b>' + num(a.names.length) + '</b><span>اسم أضفته</span></div><div class="stat"><b>' + num(a.reports.length) + '</b><span>بلاغ أرسلته</span></div><div class="stat"><b>' + num(a.ratings.length) + '</b><span>تقييم</span></div><div class="stat"><b>' + num(a.reports.filter(r => r.status === 'confirmed').length) + '</b><span>بلاغ أكدته الإدارة</span></div></div>' +
+      '<h2 style="font-size:22px">مساهماتي</h2>' +
+      (rows ? '<div class="tbl-wrap"><table class="tbl stack"><thead><tr><th>الرقم</th><th>المساهمة</th><th>التاريخ</th></tr></thead><tbody>' + rows + '</tbody></table></div>'
+            : '<div class="card empty">لم تضف أي مساهمة بعد. <a href="./#search">ابحث عن رقم</a> وأضف اسماً أو بلاغاً.</div>');
+    document.getElementById('out').onclick = async () => { await auth.logout(); toast('سُجّل خروجك.'); BC.chrome('account'); authView(); };
+  }
+
+  profile();
+})();
+</script>
+</body>
+</html>
