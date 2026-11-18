@@ -48,6 +48,9 @@ const DOCX = mkZip([["[Content_Types].xml", "<Types/>"], ["word/document.xml", "
     await shot("client-home"); ok(!(await overflow()), "لا تمرير أفقي (عميل)");
     await p.goto(BASE + "#scan"); await p.click("#demo"); await p.waitForSelector("text=نتيجة الفحص", { timeout: 10000 });
     const res = await p.textContent("#res"); ok(res.includes("كلمة مرور مكتوبة") && res.includes("IBAN") && res.includes("بطاقة شخصية") && res.includes("بريد"), "الفحص اكتشف البيانات الحساسة في ملف الاختبار"); ok(!res.includes("Test-Only-123"), "القيم الحساسة مقنّعة"); await shot("client-scan");
+    // جدول نتائج الفحص: على الجوال يُعرض كبطاقات (رؤوس الأعمدة مخفية وكل خلية تحمل عنوانها)، وعلى الكمبيوتر جدولاً عادياً
+    { const st = await p.evaluate(() => { const t = document.querySelector("#res table.stack"); return t ? { cells: t.querySelectorAll("td[data-l]").length, head: getComputedStyle(t.querySelector("thead")).display } : null; });
+      ok(!!st && st.cells >= 4 && (name === "mobile" ? st.head === "none" : st.head !== "none"), "جدول نتائج الفحص: بطاقات على الجوال وجدول على الكمبيوتر"); }
     await p.setInputFiles("#fi", { name: "عرض.docx", mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", buffer: DOCX });
     // انتظار عبر محدد العنصر بدل waitForFunction: الأخيرة تحتاج تقييم نص برمجي تمنعه سياسة أمان المحتوى في الصفحة فتفشل المراقبة أحياناً
     await p.locator("#res", { hasText: "#2" }).first().waitFor({ timeout: 15000 });
@@ -63,6 +66,12 @@ const DOCX = mkZip([["[Content_Types].xml", "<Types/>"], ["word/document.xml", "
     await p.setInputFiles("#fi", [{ name: "عملاء-يونيكود.csv", mimeType: "text/csv", buffer: Buffer.concat([Buffer.from([0xFF, 0xFE]), Buffer.from("الهوية," + ["285", "0123", "4567"].join("") + "\n", "utf16le")]) }, { name: "عملاء-ويندوز.csv", mimeType: "text/csv", buffer: Buffer.from("x+HH0+Ms3+HjySDH4ePR5tE6IFF4LTc3ODgK", "base64") }]);
     await p.locator("#res", { hasText: "#4" }).first().waitFor({ timeout: 15000 });
     { const t = await p.textContent("#res"); ok(t.includes("بطاقة شخصية") && t.includes("كلمة مرور مكتوبة"), "فحص ملفات CSV بترميز UTF-16 وWindows-1256"); }
+    // رمز JWT ورابط اتصال بقاعدة بيانات يتضمن بيانات الدخول (تُبنى أثناء الاختبار حتى لا تظهر في المستودع)
+    { const b = o => Buffer.from(JSON.stringify(o)).toString("base64url"); const jwt = b({ alg: "HS256", typ: "JWT" }) + "." + b({ sub: "user-12345", name: "test" }) + ".abcdefghijkl12345678";
+      const conn = ["post", "gres"].join("") + "://admin:" + "pw" + "Secret99@db.example.org/main";
+      await p.setInputFiles("#fi", { name: "إعدادات.txt", mimeType: "text/plain", buffer: Buffer.from("token=" + jwt + "\nDB=" + conn + "\n") });
+      await p.locator("#res", { hasText: "#5" }).first().waitFor({ timeout: 15000 });
+      const t = await p.textContent("#res"); ok(t.includes("JWT") && t.includes("بيانات دخول"), "كشف رمز JWT ورابط الاتصال ببيانات الدخول"); }
     await p.goto(BASE + "#reports"); await p.waitForSelector(".banner"); ok((await p.textContent(".banner")).includes("سليمة"), "سلسلة الأختام سليمة"); await shot("client-reports");
     for (const h of ["users", "audit", "settings", "health"]) { await p.goto(BASE + "#" + h); await p.waitForTimeout(300); ok(!(await p.isVisible("h1:has-text('" + ({ users: "الحسابات", audit: "سجل التدقيق", settings: "الإعدادات", health: "صحة المنصة" })[h] + "')")), "العميل محجوب عن #" + h); }
     await p.goto(BASE + "#device"); await p.waitForSelector(".chk"); const n1 = await p.textContent("#dv"); await p.waitForTimeout(2200); const n2 = await p.textContent("#dv"); ok(n1 !== n2, "مراقبة الجهاز تتحدث لحظياً"); await shot("device");

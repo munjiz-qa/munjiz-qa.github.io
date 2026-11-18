@@ -1,0 +1,83 @@
+/* «عبدو نيوز»: قسم «الأوضاع في الدول» */
+.cn-map{gap:8px}
+.cn-layers{display:flex;flex-wrap:wrap;gap:6px}
+.cn-layers .chip[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.cn-map .land{fill:var(--line);stroke:var(--surface);stroke-width:.5}
+.cn-shape path{stroke:var(--surface);stroke-width:.8;transition:opacity .2s,filter .2s;cursor:pointer}
+.cn-shape:hover path,.cn-shape:focus path{filter:brightness(1.12);stroke:var(--ink);stroke-width:1.2}
+.cn-shape:focus{outline:none}
+.cn-shape:focus-visible path{stroke:var(--dawn);stroke-width:2.5}
+.cn-shape.dim path{opacity:.35}
+.cn-shape.focus path{stroke:var(--ink);stroke-width:1.6}
+.cn-lbl{font-size:12px;font-weight:700;fill:var(--ink);paint-order:stroke;stroke:var(--surface);stroke-width:3px;pointer-events:none;font-family:var(--body)}
+.cn-pin circle{stroke:#fff;stroke-width:1.4}
+.cn-pin.sec circle{fill:#C4392F}
+.cn-pin.prot circle{fill:#E39A2D}
+.cn-dot{width:10px!important;height:10px!important;border-radius:50%!important;border:1.5px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.cn-dot.sec{background:#C4392F!important}.cn-dot.prot{background:#E39A2D!important}
+.cn-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr))}
+.cn-card .wc-head h2 a{color:inherit}
+.cn-star{font-size:.75rem;font-weight:700;color:var(--dawn-ink);background:var(--dawn-soft);border-radius:999px;padding:1px 10px}
+.cn-sum{font-size:.92rem;color:var(--mute);margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.cn-index{display:grid;gap:10px;background:var(--bg);border-radius:12px;padding:12px 14px;border-inline-start:4px solid var(--lc)}
+.cn-itop{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.cn-itop>div{display:grid;gap:4px;justify-items:start}
+.cn-itop small{font-size:.78rem;color:var(--mute)}
+.cn-score{font-family:var(--mono);font-size:2.4rem;line-height:1;font-variant-numeric:tabular-nums;min-width:2.2ch;text-align:center}
+.cn-trend{font-size:.8rem;font-weight:700;color:var(--mute)}
+.cn-trend.up{color:var(--up)}.cn-trend.down{color:var(--down)}
+.cn-spark{width:220px;max-width:100%;height:48px;margin-inline-start:auto}
+.cn-spark polyline{fill:none;stroke:var(--lc);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.cn-spark circle{fill:var(--lc)}
+.cn-dims{display:grid;gap:6px}
+.cn-dim{display:grid;grid-template-columns:minmax(90px,auto) 1fr 2.6ch;align-items:center;gap:10px;font-size:.85rem}
+.cn-dim b{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:end}
+.cn-bar{height:8px;border-radius:999px;background:var(--line);overflow:hidden;display:block}
+.cn-bar i{display:block;height:100%;border-radius:999px}
+.cn-how summary{cursor:pointer;font-size:.85rem;color:var(--sea-ink)}
+.cn-how p{font-size:.85rem;color:var(--mute);margin:.5em 0 0;line-height:1.7}
+.cn-top{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:12px;align-items:start}
+.cn-fc{display:grid;gap:4px;background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--lc);border-radius:12px;padding:12px 14px}
+.cn-fc b{font-family:var(--display);font-size:1.3rem;color:var(--lc)}
+.cn-fc a{font-size:.85rem;color:var(--sea-ink)}
+.cn-toc{display:flex;flex-wrap:wrap;gap:6px}
+.cn-toc a{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 12px;font-size:.85rem;text-decoration:none;color:var(--ink)}
+.cn-toc a:hover{border-color:var(--mute)}
+.cn-ed{display:grid;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+.cn-ed p{margin:0;line-height:1.85}
+.cn-points{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.cn-points li{display:grid;gap:4px;padding:10px 14px;border-inline-start:3px solid var(--line);background:var(--surface);border-radius:0 10px 10px 0}
+[dir="rtl"] .cn-points li{border-radius:10px 0 0 10px}
+.cn-points p{margin:0}
+.cn-facts{grid-template-columns:repeat(auto-fill,minmax(min(100%,180px),1fr))}
+.cn-facts .tick b{font-family:var(--body);font-size:1rem;line-height:1.5}
+.cn-ax{font-size:.75rem;font-weight:700;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:0 8px}
+.cn-prot{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.cn-prot li{background:var(--surface);border:1px solid var(--line);border-inline-start:4px solid #E39A2D;border-radius:12px;padding:12px 14px;display:grid;gap:6px}
+.cn-prot p{margin:0}
+.cn-prow{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.cn-size{font-size:.85rem;font-weight:700;color:var(--dawn-ink)}
+.cn-rel{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:10px}
+.cn-relc{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:6px;align-content:start}
+.cn-relc b{font-family:var(--display);color:var(--sea-ink)}
+.cn-relc p{margin:0;font-size:.95rem}
+.cn-cmp-pick{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
+.cn-cmp-pick label{display:grid;gap:4px;font-size:.85rem;color:var(--mute);flex:1 1 160px}
+.cn-cmp-pick select{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-height:42px}
+.cn-cmp-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.cn-cmp{width:100%;border-collapse:collapse;font-size:.92rem}
+.cn-cmp caption{text-align:start;padding:10px 14px;font-weight:700}
+.cn-cmp th,.cn-cmp td{padding:10px 14px;border-top:1px solid var(--line);text-align:start;vertical-align:middle}
+.cn-cmp thead th{background:var(--bg)}
+.cn-cmp tbody th{font-weight:500;color:var(--mute)}
+.cn-cmp td{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.cn-cell{display:inline-flex;flex-wrap:wrap;align-items:center;gap:8px;font-family:var(--body)}
+.cn-cell .cn-score{font-size:1.5rem}
+.cn-teaser .war-chip{padding-inline-end:12px}
+@media (max-width:720px){
+  .cn-top{grid-template-columns:minmax(0,1fr)}
+  .cn-spark{margin-inline-start:0;width:100%}
+  .cn-lbl{font-size:15px}
+  .cn-score{font-size:2rem}
+  .cn-dim{grid-template-columns:minmax(80px,auto) 1fr 2.6ch}
+}

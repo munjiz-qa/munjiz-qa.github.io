@@ -1,5 +1,5 @@
 'use strict';
-// لوحة إدارة «خبر»: الدخول بحساب المدير الشامل من data/users.json (أو حساب admin القديم في data/admin.json)،
+// لوحة إدارة «عبدو نيوز»: الدخول بحساب المدير الشامل من data/users.json (أو حساب admin القديم في data/admin.json)،
 // وتعديل العاجل والإخفاء وإدارة حسابات العملاء والمديرين، ثم النشر عبر GitHub.
 (function(){
 const CFG=window.KHABAR_CONFIG||{};
@@ -7,7 +7,7 @@ const $=s=>document.querySelector(s);
 const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
 const DEFAULT_HASH='15aebe9681badc802f1853e9061c9e06b13ca2b971a2e744f7013569398b2034';
 const PATH='khabar/data/admin.json';
-let ADMIN=null,BRIEF=null,HEAD=null,LEDGER=null,HEALTH=null,USERS=null,ME=null;
+let ADMIN=null,BRIEF=null,HEAD=null,LEDGER=null,HEALTH=null,USERS=null,ME=null,CLIM=null,MIL=null,WARS=null;
 const AUTH=window.KhabarAuth,USERS_PATH='khabar/data/users.json';
 async function hash(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('khabar:'+s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
 const getJSON=u=>fetch(u+'?t='+Date.now(),{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(r.status);return r.json()});
@@ -17,7 +17,7 @@ const S={get(k){try{return sessionStorage.getItem(k)}catch(e){return null}},set(
 const LS={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 
 async function boot(){
-  try{[ADMIN,BRIEF]=await Promise.all([getJSON('../data/admin.json'),getJSON('../data/brief.json')]);HEAD=await getJSON('../data/headlines.json').catch(()=>null);LEDGER=await getJSON('../data/ledger.json').catch(()=>null);HEALTH=await getJSON('../data/health.json').catch(()=>null);USERS=await AUTH.load('../').catch(()=>({v:1,iter:AUTH.ITER,users:[]}))}
+  try{[ADMIN,BRIEF]=await Promise.all([getJSON('../data/admin.json'),getJSON('../data/brief.json')]);HEAD=await getJSON('../data/headlines.json').catch(()=>null);LEDGER=await getJSON('../data/ledger.json').catch(()=>null);HEALTH=await getJSON('../data/health.json').catch(()=>null);CLIM=await getJSON('../data/climate.json').catch(()=>null);MIL=await getJSON('../data/military.json').catch(()=>null);WARS=await getJSON('../data/wars.json').catch(()=>null);USERS=await AUTH.load('../').catch(()=>({v:1,iter:AUTH.ITER,users:[]}))}
   catch(e){$('#login-err').textContent='تعذّر تحميل بيانات التطبيق. أعد تحميل الصفحة.';$('#login-err').hidden=false;return}
   ADMIN.breaking=ADMIN.breaking||{};ADMIN.hidden=ADMIN.hidden||[];ADMIN.auth=ADMIN.auth||{user:'admin',hash:''};
   const su=S.get('khabar-admin-user'),rec=su&&USERS.users.find(x=>x.u===su&&x.role==='super'&&x.active!==false);
@@ -41,17 +41,34 @@ function open(){
   $('#login-form').hidden=true;$('#app').hidden=false;$('#logout').hidden=false;$('#who').textContent=(ME.name||ME.u)+' · مدير شامل';
   const n=BRIEF.zones.reduce((s,z)=>s+z.items.length,0);
   const k=$('#kpis');k.textContent='';
-  [[n,'خبر في الخلاصة الحالية'],[Object.keys(BRIEF.sources).length,'مصدراً موثّقاً'],[BRIEF.roadmap.length,'موعداً في خريطة الطريق'],[ADMIN.hidden.length,'خبراً مخفياً']].forEach(([v,l])=>{const d=el('div');d.append(el('b',null,String(v)),el('small',null,l));k.append(d)});
+  [[n,'خبر في الخلاصة الحالية'],[Object.keys(BRIEF.sources).length,'مصدراً موثّقاً'],[BRIEF.roadmap.length,'موعداً في خريطة الطريق'],[ADMIN.hidden.length,'خبراً مخفياً'],[MIL?MIL.regions.reduce((s,r)=>s+r.items.length,0):'—','خبراً عسكرياً بجهتين فأكثر'],[WARS?WARS.wars.length:'—','ملفات حروب يتابعها الموقع']].forEach(([v,l])=>{const d=el('div');d.append(el('b',null,String(v)),el('small',null,l));k.append(d)});
   const pub=el('p','mute');pub.style.fontSize='.88rem';pub.textContent=`الخلاصة الحالية: خلاصة ${({am:'الصباح',md:'الظهيرة',pm:'المساء',nt:'الليل'}[BRIEF.edition]||'المساء')} ليوم ${BRIEF.date}`+(HEAD&&HEAD.updated?` · آخر تحديث آلي للعناوين: ${new Date(HEAD.updated).toLocaleString('ar-QA',{timeZone:'Asia/Qatar',numberingSystem:'latn'})}`:'');k.after(pub);
   const b=ADMIN.breaking;$('#b-on').checked=!!b.on;$('#b-ar').value=b.text_ar||'';$('#b-en').value=b.text_en||'';$('#b-src').value=b.source||'';$('#b-url').value=b.url||'';
   if(b.until){const d=new Date(b.until);if(!isNaN(d)){const z=new Date(d-d.getTimezoneOffset()*6e4);$('#b-until').value=z.toISOString().slice(0,16)}}
   const ul=$('#hide-list');ul.textContent='';const hid=new Set(ADMIN.hidden);
   BRIEF.zones.forEach(z=>z.items.forEach(it=>{const li=el('li'),lb=el('label'),cb=el('input');if(!it.ar&&!it.en)return;cb.type='checkbox';cb.value=it.id;cb.checked=hid.has(it.id);cb.onchange=preview;
     const tx=el('span');tx.append(el('span','z',`${z.name.ar} · ${it.cat.ar}`),it.ar||it.en);lb.append(cb,tx);li.append(lb);ul.append(li)}));
+  // أخبار القسم العسكري تُخفى بالطريقة نفسها (المعرّفات تبدأ بـ me- أو ma-)
+  if(MIL)MIL.regions.forEach(r=>r.items.forEach(it=>{const li=el('li'),lb=el('label'),cb=el('input');if(!it.ar&&!it.en)return;cb.type='checkbox';cb.value=it.id;cb.checked=hid.has(it.id);cb.onchange=preview;
+    const tx=el('span');tx.append(el('span','z',`القسم العسكري · ${r.name.ar} · ${it.cat.ar}`),it.ar||it.en);lb.append(cb,tx);li.append(lb);ul.append(li)}));
   ['#b-on','#b-ar','#b-en','#b-src','#b-url','#b-until','#np1','#np2'].forEach(s=>$(s).addEventListener('input',preview));
   $('#tok').value=LS.get('khabar-token')||'';
-  agentPanel();healthPanel();usersPanel();
+  agentPanel();healthPanel();usersPanel();wxPanel();
+  // الأقسام والبلاغات والتصحيحات والرأي و«جاهز للتفعيل» (extra.js)
+  if(window.KAX)KAX.init({admin:()=>ADMIN,preview,save:async(path,obj,message)=>{const tok=$('#tok').value.trim();if(!tok)throw new Error('أدخل مفتاح النشر في قسم «نشر التعديلات» أولاً.');LS.set('khabar-token',tok);await putFile(tok,'khabar/'+path,obj,message)}});
   preview();
+}
+function wxPanel(){
+  const k=$('#wx-kpis');k.textContent='';const C=CLIM||{},ar=(C.ar||[]).length,en=(C.en||[]).length,src=new Set([...(C.ar||[]),...(C.en||[])].flatMap(x=>x.sources.map(s=>s.url))).size;
+  const age=C.updated?(Date.now()-new Date(C.updated))/3600e3:NaN;
+  [[ar,'خبراً مناخياً بالعربية'],[en,'خبراً مناخياً بالإنجليزية'],[src,'رابطاً أصلياً موثّقاً'],[isNaN(age)?'—':age.toFixed(1),'ساعة منذ آخر تحديث']].forEach(([v,l])=>{const d=el('div');d.append(el('b',null,String(v)),el('small',null,l));k.append(d)});
+  $('#wx-last').textContent=C.updated?`آخر تحديث لأخبار المناخ: ${fmtD(C.updated)}${age>7?' · متأخر عن موعده، راجع تقرير التشغيل الذاتي':''}`:'لم تُكتب أخبار المناخ بعد؛ تظهر بعد أول تشغيل للطيار الآلي.';
+  const d=ADMIN.weather_default||{};$('#wx-cc').value=d.cc||'';$('#wx-q').value=d.q||'';$('#wx-off').checked=!!ADMIN.climate_off;
+  const ul=$('#wx-hide');ul.textContent='';const hid=new Set(ADMIN.climate_hidden||[]);
+  [...(C.ar||[]),...(C.en||[])].forEach(x=>{const li=el('li'),lb=el('label'),cb=el('input');cb.type='checkbox';cb.value=x.id;cb.checked=hid.has(x.id);cb.onchange=preview;
+    const tx=el('span');tx.append(el('span','z',`${x.id.startsWith('ar')?'عربي':'إنجليزي'} · ${x.outlets} جهات: ${x.sources.map(s=>s.name).join('، ')}`),x.title);lb.append(cb,tx);li.append(lb);ul.append(li)});
+  if(!ul.children.length)ul.append(el('li','mute','لا توجد أخبار مناخية منشورة الآن.'));
+  ['#wx-cc','#wx-q','#wx-off'].forEach(s=>$(s).addEventListener('input',preview));
 }
 function agentPanel(){
   const k=$('#agent-kpis');k.textContent='';const S=(LEDGER&&LEDGER.summary)||{},r=(LEDGER&&LEDGER.runs||[]).find(x=>x.mode==='brief');
@@ -75,6 +92,12 @@ async function collect(){
   const until=$('#b-until').value?new Date($('#b-until').value).toISOString():'';
   out.breaking={on:$('#b-on').checked,text_ar:$('#b-ar').value.trim(),text_en:$('#b-en').value.trim(),source:$('#b-src').value.trim(),url:$('#b-url').value.trim(),until};
   out.hidden=[...document.querySelectorAll('#hide-list input:checked')].map(x=>x.value);
+  // الطقس والمناخ: المكان الافتراضي، وإخفاء أخبار مناخية بعينها، وإظهار «مناخ العالم» في الرئيسية
+  const hidC=new Set(out.climate_hidden||[]);document.querySelectorAll('#wx-hide input').forEach(x=>{if(x.checked)hidC.add(x.value);else hidC.delete(x.value)});out.climate_hidden=[...hidC];
+  out.climate_off=$('#wx-off').checked;
+  const cc=$('#wx-cc').value.trim().toUpperCase(),q=$('#wx-q').value.trim();
+  if(cc&&!/^[A-Z]{2}$/.test(cc))throw new Error('رمز الدولة حرفان لاتينيان، مثل QA أو SA أو EG.');
+  if(cc||q)out.weather_default={cc:cc||'QA',q:q||'Doha'};else delete out.weather_default;
   const p1=$('#np1').value,p2=$('#np2').value;
   if((p1||p2)&&ME.legacy){if(p1.length<10)throw new Error('كلمة المرور الجديدة يجب أن تكون 10 أحرف على الأقل.');if(p1!==p2)throw new Error('كلمتا المرور غير متطابقتين.');out.auth.hash=await hash(p1)}
   if(!out.auth.hash)out.auth.hash=DEFAULT_HASH;
@@ -83,6 +106,7 @@ async function collect(){
     if(!out.breaking.source)throw new Error('لا يُنشر عاجل دون اسم مصدره.');
     if(!/^https:\/\/\S+\.\S+/.test(out.breaking.url))throw new Error('أدخل رابط الخبر الأصلي، ويبدأ بـ https://');
   }
+  if(window.KAX)KAX.collect(out);
   out.updated=new Date().toISOString();return out;
 }
 async function preview(){try{$('#preview').textContent=JSON.stringify(await collect(),null,1)}catch(e){$('#preview').textContent=e.message}}
@@ -95,11 +119,11 @@ $('#publish').onclick=async()=>{
   try{
     const cur=await fetch(api+'?ref='+(CFG.BRANCH||'main'),{headers:H});if(!cur.ok)throw new Error(cur.status===401?'المفتاح غير صالح أو منتهي.':cur.status===404?'المفتاح لا يملك صلاحية على المستودع.':'تعذّر الوصول إلى GitHub ('+cur.status+').');
     const sha=(await cur.json()).sha;
-    const put=await fetch(api,{method:'PUT',headers:H,body:JSON.stringify({message:'خبر: تحديث العاجل وإعدادات العرض من لوحة الإدارة',content:b64(JSON.stringify(data,null,1)+'\n'),sha,branch:CFG.BRANCH||'main'})});
+    const put=await fetch(api,{method:'PUT',headers:H,body:JSON.stringify({message:'عبدو نيوز: تحديث العاجل وإعدادات العرض من لوحة الإدارة',content:b64(JSON.stringify(data,null,1)+'\n'),sha,branch:CFG.BRANCH||'main'})});
     if(!put.ok)throw new Error(put.status===403?'المفتاح لا يملك صلاحية الكتابة (Contents: Read and write).':'رفض GitHub النشر ('+put.status+').');
     ADMIN=data;if(ME.legacy&&data.auth.hash)S.set('khabar-admin',data.auth.hash);
     const p1=$('#np1').value;if(p1&&!ME.legacy){if(p1.length<10)throw new Error('كلمة المرور الجديدة يجب أن تكون 10 أحرف على الأقل.');if(p1!==$('#np2').value)throw new Error('كلمتا المرور غير متطابقتين.');
-      const db=JSON.parse(JSON.stringify(USERS)),me=db.users.find(x=>x.u===ME.u);Object.assign(me,await AUTH.hashNew(p1));await putFile(tok,USERS_PATH,db,'خبر: تغيير كلمة مرور '+ME.u);USERS=db}
+      const db=JSON.parse(JSON.stringify(USERS)),me=db.users.find(x=>x.u===ME.u);Object.assign(me,await AUTH.hashNew(p1));await putFile(tok,USERS_PATH,db,'عبدو نيوز: تغيير كلمة مرور '+ME.u);USERS=db}
     $('#np1').value='';$('#np2').value='';
     msg('نُشرت التعديلات. تظهر في التطبيق خلال دقيقة إلى دقيقتين بعد تحديث GitHub Pages.',true);
   }catch(e){msg(e.message,false)}finally{btn.disabled=false}
@@ -140,7 +164,7 @@ function umsg(text,ok){const m=$('#users-msg');m.textContent=text;m.className='m
 async function saveUsers(change,what){
   const tok=$('#tok').value.trim();if(!tok){umsg('أدخل مفتاح النشر على GitHub في قسم «نشر التعديلات» أولاً.',false);return}
   LS.set('khabar-token',tok);const db=JSON.parse(JSON.stringify(USERS));
-  try{await change(db);db.updated=new Date().toISOString();umsg('جارٍ النشر…',true);await putFile(tok,USERS_PATH,db,'خبر: الحسابات · '+what);USERS=db;usersPanel();umsg('تم: '+what+'. يسري خلال دقيقة إلى دقيقتين.',true)}
+  try{await change(db);db.updated=new Date().toISOString();umsg('جارٍ النشر…',true);await putFile(tok,USERS_PATH,db,'عبدو نيوز: الحسابات · '+what);USERS=db;usersPanel();umsg('تم: '+what+'. يسري خلال دقيقة إلى دقيقتين.',true)}
   catch(e){umsg(e.message,false)}
 }
 $('#user-form').onsubmit=async e=>{

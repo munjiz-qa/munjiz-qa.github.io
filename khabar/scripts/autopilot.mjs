@@ -1,9 +1,11 @@
-// «خبر»: الطيار الآلي. يعمل من GitHub Actions كل ساعة دون أي تدخل بشري أو جلسة محرر.
+// «عبدو نيوز»: الطيار الآلي. يعمل من GitHub Actions كل ساعة دون أي تدخل بشري أو جلسة محرر.
 //  1. إذا فات موعد الخلاصة (كل 6 ساعات: 06:20 و12:20 و18:20 و00:20 بتوقيت الدوحة) ولم تُنشر، يكتب «خلاصة آلية» من عناوين المصادر نفسها:
 //     كل خبر هو عنوان الجهة الناشرة كما نشرته، مع اسمها وتاريخها ورابط مقالها الأصلي (تُفك روابط أخبار Google إلى الرابط الأصلي، وما لا يُفك يُحذف).
 //  2. يفحص الموقع المنشور ولوحاته وحداثة البيانات، ويكتب النتيجة في data/health.json، ويخرج بخطأ إن وُجد عطل حتى يصل التنبيه.
 // الاستخدام: node khabar/scripts/autopilot.mjs [--force] [--dry] [--no-health]
 import {readFileSync, writeFileSync, existsSync} from 'node:fs';
+import {execFileSync} from 'node:child_process';
+import {milwatch, cluster, outlet} from './milwatch.mjs';
 
 const ROOT = 'khabar/data/', ARGS = new Set(process.argv.slice(2));
 const UA = {'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36 khabar-autopilot'};
@@ -45,7 +47,8 @@ const DIRECT = {
   egypt: {ar: ['https://www.youm7.com/rss/SectionRss?SectionID=65', 'https://www.masrawy.com/rss/feed/25/'], en: ['https://www.aljazeera.com/xml/rss/all.xml']},
   world: {ar: ['https://feeds.bbci.co.uk/arabic/rss.xml', 'https://www.aljazeera.net/aljazeerarss/a7c186be-1baa-4bd4-9d80-a84db769f779/73d0e1b4-532f-45ef-b135-bfdff8b8cab9', 'https://www.skynewsarabia.com/web/rss'], en: ['https://feeds.bbci.co.uk/news/world/rss.xml', 'https://www.aljazeera.com/xml/rss/all.xml']}
 };
-const PER_ZONE = {ar: 6, en: 5}, MAX_AGE_H = 24;
+// نجمع عناوين أكثر ثم لا نُبقي إلا ما نشرته جهتان مستقلتان على الأقل (قاعدة المصدرين، 17 نوفمبر 2026)
+const PER_ZONE = {ar: 14, en: 12}, KEEP = {ar: 6, en: 5}, MAX_AGE_H = 24;
 const SKIP = /netflix|horror|celebrity|lifestyle|juniors|in video:|franchis|pizz|testimonial|horoscope|recipe|gymnast|coupon|promo code|lottery|برج|حظك|وصفة|سعر الذهب اليوم .* عيار|مواعيد مباريات اليوم/i;
 const ent = s => s.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(+n)).replace(/&amp;/g, '&');
 const text = s => ent(s || '').replace(/<[^>]*>/g, '').replace(/[\u0000-\u001f<>]/g, ' ').replace(/\s+/g, ' ').trim();
@@ -94,7 +97,7 @@ async function collect(zone, lang, since) {
     const loc = lang === 'ar' ? 'hl=ar&gl=QA&ceid=QA:ar' : 'hl=en-QA&gl=QA&ceid=QA:en';
     const items = (await rss(`https://news.google.com/rss/search?q=${encodeURIComponent(q[lang])}&${loc}`)).sort((a, b) => b.d - a.d);
     for (const it of items) {
-      if (out.length >= PER_ZONE[lang]) break;
+      if (out.length >= PER_ZONE[lang] - 4) break; // نترك مكاناً لخلاصات الناشرين المباشرة لتنوع الجهات
       let title = it.title; if (it.source && title.endsWith(' - ' + it.source)) title = title.slice(0, -(it.source.length + 3));
       if (!q.must[lang].test(title) || SKIP.test(title) || it.d < since) continue;
       STATS.google++;
@@ -120,10 +123,9 @@ async function autoBrief(exp, prev) {
     const items = [];
     for (const lang of ['ar', 'en']) {
       const got = await collect(z, lang, since);
-      got.forEach((h, i) => {
-        const sid = `auto-${z}-${lang}${i + 1}`;
-        sources[sid] = {ar: h.source, en: h.source, date: h.date, url: h.url};
-        items.push({id: `${z[0]}${lang === 'ar' ? 'a' : 'e'}${i + 1}`, cat: {ar: 'عنوان موثّق', en: 'Sourced headline'}, ar: lang === 'ar' ? h.title : '', en: lang === 'en' ? h.title : '', src: [sid]});
+      cluster(got.map(h => ({...h, outlet: outlet(h.url)}))).slice(0, KEEP[lang]).forEach((c, i) => {
+        const src = c.items.slice(0, 3).map((h, j) => { const sid = `auto-${z}-${lang}${i + 1}-${j + 1}`; sources[sid] = {ar: h.source, en: h.source, date: h.date, url: h.url}; return sid; });
+        items.push({id: `${z[0]}${lang === 'ar' ? 'a' : 'e'}${i + 1}`, cat: {ar: 'عنوان أكدته جهتان فأكثر', en: 'Headline confirmed by two or more outlets'}, ar: lang === 'ar' ? c.items[0].title : '', en: lang === 'en' ? c.items[0].title : '', src});
       });
     }
     total += items.length;
@@ -158,8 +160,8 @@ function archive(b) {
 
 // ---------- الفحص ----------
 const SITE = 'https://munjiz-qa.github.io/';
-const PAGES = [['خبر: الصفحة الرئيسية', 'khabar/'], ['خبر: لوحة الإدارة', 'khabar/admin/'], ['خبر: حساب العميل', 'khabar/account/'],
-  ['خبر: الخلاصة المنشورة', 'khabar/data/brief.json'], ['قُطب: لوحة الإدارة الموحّدة', 'qutb/']];
+const PAGES = [['عبدو نيوز: الصفحة الرئيسية', 'khabar/'], ['عبدو نيوز: لوحة الإدارة', 'khabar/admin/'], ['عبدو نيوز: حساب العميل', 'khabar/account/'], ['عبدو نيوز: الطقس والمناخ', 'khabar/weather/'],
+  ['عبدو نيوز: الخلاصة المنشورة', 'khabar/data/brief.json'], ['قُطب: لوحة الإدارة الموحّدة', 'qutb/']];
 async function health(brief) {
   const checks = [];
   for (const [name, p] of PAGES) {
@@ -169,10 +171,28 @@ async function health(brief) {
   }
   const head = readJSON('headlines.json', {}), exp = expected();
   const briefAge = (Date.now() - new Date(brief.published)) / 3600e3, headAge = (Date.now() - new Date(head.updated)) / 3600e3;
-  checks.push({name: 'الخلاصة في موعدها', ok: brief.id === exp.id, detail: `${brief.id}${brief.auto ? ' (آلية)' : ''}، المتوقع ${exp.id}`});
+  // خلاصة نُشرت قبل نهاية مهلة موعدها (مثل الليل 23:51 والمتوقع ما زال المساء حتى 00:20) سليمة، لا عطل
+  checks.push({name: 'الخلاصة في موعدها', ok: rank(brief.id) >= rank(exp.id), detail: `${brief.id}${brief.auto ? ' (آلية)' : ''}، المتوقع ${exp.id}${rank(brief.id) > rank(exp.id) ? ' (نُشرت قبل موعدها)' : ''}`});
+  const clim = readJSON('climate.json', {}), climAge = (Date.now() - new Date(clim.updated)) / 3600e3;
+  const climBad = [...(clim.ar || []), ...(clim.en || [])].filter(x => (x.sources || []).length < 2 || !x.sources.every(s => /^https:\/\//.test(s.url || ''))).length;
+  checks.push({name: 'أخبار المناخ حديثة وكل خبر من جهتين', ok: climAge < 7 && climBad === 0, detail: `آخر تحديث قبل ${isNaN(climAge) ? '—' : climAge.toFixed(1)} ساعة، ${(clim.ar || []).length + (clim.en || []).length} خبراً، ${climBad} دون جهتين`});
+  const dk = readJSON('desks.json', {}), dkAge = (Date.now() - new Date(dk.updated)) / 3600e3;
+  const dkBad = Object.values(dk.desks || {}).flatMap(d => d.items).filter(i => new Set((i.sources || []).map(s => outlet(s.url))).size < 2).length;
+  checks.push({name: 'الأقسام الموضوعية حديثة وكل خبر من جهتين', ok: dkAge < 8 && dkBad === 0, detail: `آخر تحديث قبل ${isNaN(dkAge) ? '—' : dkAge.toFixed(1)} ساعة، ${Object.values(dk.desks || {}).reduce((s, d) => s + d.items.length, 0)} خبراً، ${dkBad} دون جهتين`});
+  const cn = readJSON('countries.json', {}), cnAge = (Date.now() - new Date(cn.updated)) / 3600e3;
+  const cnBad = Object.values(cn.countries || {}).flatMap(c => c.items || []).filter(i => new Set((i.sources || []).map(s => outlet(s.url))).size < 2).length;
+  checks.push({name: 'الأوضاع في الدول حديثة وكل خبر من جهتين', ok: cnAge < 8 && cnBad === 0, detail: `آخر تحديث قبل ${isNaN(cnAge) ? '—' : cnAge.toFixed(1)} ساعة، ${Object.values(cn.countries || {}).reduce((s, c) => s + (c.items || []).length, 0)} خبراً، ${cnBad} دون جهتين`});
+  const fc = readJSON('forecast.json', {}), fcA = (Date.now() - new Date(fc.updated)) / 3600e3, fcN = Object.keys(fc.countries || {}).length;
+  const fcEv = readJSON('forecast/events.json', {events: []}).events || [], fcBad = fcEv.filter(e => new Set((e.sources || []).map(s => outlet(s.url))).size < 2).length;
+  checks.push({name: 'التوقعات محسوبة حديثاً وكل حدث من جهتين', ok: fcA < 8 && fcN >= 20 && fcBad === 0, detail: `آخر حساب قبل ${isNaN(fcA) ? '—' : fcA.toFixed(1)} ساعة، ${fcN} دولة، ${fcEv.length} حدثاً، ${fcBad} دون جهتين`});
   checks.push({name: 'العناوين الآلية حديثة', ok: headAge < 7, detail: `آخر تحديث قبل ${headAge.toFixed(1)} ساعة`});
   const n = (brief.zones || []).reduce((s, z) => s + z.items.length, 0), unsourced = (brief.zones || []).flatMap(z => z.items).filter(i => !(i.src || []).every(s => brief.sources[s]?.url)).length;
   checks.push({name: 'كل خبر بمصدره', ok: n >= 8 && unsourced === 0, detail: `${n} خبراً، ${unsourced} دون مصدر`});
+  const mil = readJSON('military.json', null), wars = readJSON('wars.json', null);
+  checks.push({name: 'القسم العسكري في موعده', ok: !!mil && rank(mil.id) >= rank(exp.id), detail: `${mil?.id || '—'}${mil?.auto ? ' (رصد آلي)' : ''}، المتوقع ${exp.id}`});
+  const mi = (mil?.regions || []).flatMap(r => r.items || []), weak = mi.filter(i => new Set((i.src || []).map(s => outlet(mil.sources?.[s]?.url || ''))).size < 2).length;
+  checks.push({name: 'كل خبر عسكري من جهتين مستقلتين', ok: mi.length > 0 && weak === 0, detail: `${mi.length} خبراً، ${weak} دون جهتين`});
+  checks.push({name: 'ملفات الحروب حديثة', ok: !!wars && (Date.now() - new Date(wars.auto_checked || wars.updated)) / 3600e3 < 8, detail: wars ? `${wars.wars.length} ملفات، آخر رصد ${wars.auto_checked || wars.updated}` : 'غير موجود'});
   const at = new Date().toISOString();
   return {checked: at, updated: at, ok: checks.every(c => c.ok), brief: {id: brief.id, auto: !!brief.auto, age_h: +briefAge.toFixed(1)},
     writer: process.env.ANTHROPIC_API_KEY ? 'agent' : 'autopilot', checks};
@@ -194,6 +214,37 @@ if (ARGS.has('--force') || !cur || rank(cur.id) < rank(exp.id)) {
   }
 } else console.log(`الخلاصة ${cur.id} في موعدها؛ لا حاجة لخلاصة آلية.`);
 
+// القسم العسكري وملفات الحروب: رصد آلي إن فات موعد القسم التحريري، وتطورات موثّقة كل 3 ساعات
+let milOut = {mil: false, wars: 0};
+try { milOut = await milwatch(exp, {force: ARGS.has('--force'), dry: ARGS.has('--dry')}); console.log('القسم العسكري:', JSON.stringify({mil: milOut.mil, wars: milOut.wars, clusters: milOut.clusters, note: milOut.note})); }
+catch (e) { console.error('تعذّر الرصد العسكري:', e.message); }
+
+// أخبار المناخ: تُحدَّث كل 3 ساعات من khabar.yml؛ إن أسقطت جدولة GitHub تشغيلاً يحدّثها الطيار هنا (مع كل خلاصة من الخلاصات الأربع)
+{
+  const c = readJSON('climate.json', {}), age = (Date.now() - new Date(c.updated)) / 3600e3;
+  if (!(age < 3.5) && !ARGS.has('--dry')) { try { execFileSync(process.execPath, ['khabar/scripts/climate.mjs'], {stdio: 'inherit', timeout: 8 * 60e3}); } catch (e) { console.error('climate', e.message); } }
+}
+
+// الأقسام الموضوعية: تُحدَّث كل 3 ساعات من khabar.yml؛ إن أسقطت جدولة GitHub تشغيلاً يحدّثها الطيار هنا، ثم بوابة التحقق.
+// وبعد أي خلاصة جديدة يُعاد بناء فهرس البحث وتقرير الشفافية وخلاصات RSS.
+{
+  const d = readJSON('desks.json', {}), age = (Date.now() - new Date(d.updated)) / 3600e3;
+  if (!(age < 3.5) && !ARGS.has('--dry')) {
+    try { execFileSync(process.execPath, ['khabar/scripts/desks.mjs'], {stdio: 'inherit', timeout: 12 * 60e3}); execFileSync('python3', ['khabar/agent/desks.py', '--enforce', '--quiet'], {stdio: 'inherit'}); } catch (e) { console.error('desks', e.message); }
+  }
+  // الأوضاع في الدول: تُحدَّث كل 3 ساعات من khabar.yml، ويعيدها الطيار هنا إن تأخرت (مع خلاصات كل 6 ساعات)، ثم بوابة التحقق
+  const cn = readJSON('countries.json', {}), cnAge = (Date.now() - new Date(cn.updated)) / 3600e3;
+  if (!(cnAge < 3.5) && !ARGS.has('--dry')) {
+    try { execFileSync(process.execPath, ['khabar/scripts/countries.mjs'], {stdio: 'inherit', timeout: 12 * 60e3}); execFileSync('python3', ['khabar/agent/countries.py', '--enforce', '--quiet'], {stdio: 'inherit'}); } catch (e) { console.error('countries', e.message); }
+  }
+  // التوقعات: تُحسب كل 3 ساعات من khabar.yml، ويعيدها الطيار إن تأخرت 4 ساعات، ثم بوابة التحقق
+  const fcj = readJSON('forecast.json', {}), fcAge = (Date.now() - new Date(fcj.updated)) / 3600e3;
+  if (!(fcAge < 4) && !ARGS.has('--dry')) {
+    try { execFileSync(process.execPath, ['khabar/scripts/forecast.mjs'], {stdio: 'inherit', timeout: 10 * 60e3}); execFileSync('python3', ['khabar/agent/forecast.py', '--enforce', '--quiet'], {stdio: 'inherit'}); } catch (e) { console.error('forecast', e.message); }
+  }
+  if (!ARGS.has('--dry')) { try { execFileSync(process.execPath, ['khabar/scripts/build.mjs'], {stdio: 'inherit', timeout: 3 * 60e3}); } catch (e) { console.error('build', e.message); } }
+}
+
 if (!ARGS.has('--no-health')) {
   const h = await health(readJSON('brief.json', cur));
   const old = readJSON('health.json', {});
@@ -202,6 +253,6 @@ if (!ARGS.has('--no-health')) {
     || JSON.stringify(old.checks?.map(c => c.ok)) !== JSON.stringify(h.checks.map(c => c.ok));
   if (changed && !ARGS.has('--dry')) writeJSON('health.json', h);
   h.checks.forEach(c => console.log(c.ok ? '✓' : '✗', c.name, c.code || '', c.detail || ''));
-  if (process.env.GITHUB_OUTPUT) writeFileSync(process.env.GITHUB_OUTPUT, `ok=${h.ok}\nwrote=${wrote}\n`, {flag: 'a'});
-  if (!h.ok) { console.error('::warning::يوجد عطل في تشغيل «خبر»؛ التفاصيل أعلاه.'); }
+  if (process.env.GITHUB_OUTPUT) writeFileSync(process.env.GITHUB_OUTPUT, `ok=${h.ok}\nwrote=${wrote}\nmil=${!!(milOut.mil || milOut.wars)}\n`, {flag: 'a'});
+  if (!h.ok) { console.error('::warning::يوجد عطل في تشغيل «عبدو نيوز»؛ التفاصيل أعلاه.'); }
 }

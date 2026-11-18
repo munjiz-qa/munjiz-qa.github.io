@@ -39,6 +39,7 @@ body.no-scroll{overflow:hidden}
 .hero-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
 .hero-cta a{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:600;font-size:.95rem;padding:11px 18px;border-radius:12px;border:1.5px solid var(--ink);color:var(--ink);background:var(--surface);min-height:46px}
 .hero-cta a.pri{background:var(--copper);border-color:var(--copper);color:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .hero-cta a.pri{color:var(--bg)}}:root[data-theme="dark"] .hero-cta a.pri{color:var(--bg)}
 .hero-cta a:hover{transform:translateY(-1px)}
 .hero-cta svg{width:18px;height:18px;flex-shrink:0}
 @media (max-width:560px){.hero-cta a{flex:1 1 calc(50% - 10px);justify-content:center;padding:11px 10px;font-size:.9rem}.hero-cta a.pri{flex-basis:100%}}
@@ -94,3 +95,4 @@ body.no-scroll{overflow:hidden}
 /* 02/11/2026 · إتاحة: نص لقارئ الشاشة فقط، وتمييز المناطق القابلة للتمرير عند التركيز بلوحة المفاتيح */
 .sr-only{position:fixed!important;top:0;inset-inline-start:0;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 [data-scrollfocus]:focus-visible{outline:2px solid var(--copper);outline-offset:2px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .drawer .d-acts a.pri{color:var(--bg)}}:root[data-theme="dark"] .drawer .d-acts a.pri{color:var(--bg)}

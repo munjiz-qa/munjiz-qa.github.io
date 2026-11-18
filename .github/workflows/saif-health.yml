@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 20
       - name: اختبار نواة المنصة (الدخول والصلاحيات والفحص والأختام)
@@ -40,17 +40,21 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 20
       - name: تجهيز متصفح الاختبار
-        run: npm i --no-save --no-package-lock playwright@1.48.2 && npx playwright install --with-deps chromium
+        # يُعاد التجهيز حتى 3 مرات: انقطاع مستودعات حزم النظام لحظياً على جهاز التشغيل كان يُسقط المراقبة ويرسل تنبيهاً كاذباً (رمز الخروج 100)
+        run: |
+          npm i --no-save --no-package-lock playwright@1.48.2
+          for i in 1 2 3; do npx playwright install --with-deps chromium && exit 0; echo "فشلت المحاولة $i، إعادة بعد 20 ثانية"; sleep 20; done
+          exit 1
       - name: اختبار الموقع المنشور بكل الأدوار على الكمبيوتر والجوال
         run: node scripts/saif-e2e.mjs https://munjiz-qa.github.io/saif/ shots
       - name: حفظ لقطات الشاشة
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: saif-shots
           path: shots

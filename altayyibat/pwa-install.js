@@ -16,6 +16,7 @@
   const ua = navigator.userAgent, ios = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1), android = /Android/.test(ua);
   const iosOther = ios && /CriOS|FxiOS|EdgiOS|GSA\//.test(ua), safariMac = !ios && /Macintosh/.test(ua) && /Safari/.test(ua) && !/Chrome|Chromium|Edg|Firefox/.test(ua), firefox = /Firefox/.test(ua) && !ios;
   let evt = null, man = {}, name = document.title.split(/[|·—-]/)[0].trim(), icon = '', color = '';
+  if (en && name === 'الطيبات') name = 'Al-Tayyibat';
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
   const T = en ? {
     install: 'Install', app: 'Install app', on: n => `Install ${n} on your phone`, sub: 'One tap · works offline', hide: 'Hide', close: 'Close',
@@ -128,6 +129,7 @@
     const ml = document.querySelector('link[rel=manifest]');
     if (ml) { try { man = await (await fetch(ml.href)).json(); } catch (e) {} }
     name = man.short_name || man.name || name;
+    if (en && name === 'الطيبات') name = 'Al-Tayyibat';
     const ic = (man.icons || []).filter(i => i.src && !/maskable/.test(i.purpose || '')).sort((a, b) => (parseInt(b.sizes) || 0) - (parseInt(a.sizes) || 0));
     const i192 = ic.find(i => parseInt(i.sizes) <= 256) || ic[0];
     icon = i192 ? new URL(i192.src, ml ? ml.href : base).href : (document.querySelector('link[rel=apple-touch-icon],link[rel~=icon]')?.href || '');

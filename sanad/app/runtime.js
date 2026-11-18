@@ -14,6 +14,7 @@ async function req(method, url, data) {
   return j;
 }
 const mePromise = req('GET', 'api/me').catch(() => ({ role: 'visitor', user: null, ai: {} }));
+mePromise.then(m => { window.__sanadMe = m; });
 window.sanadMe = mePromise;
 
 /* ---------- live updates ---------- */

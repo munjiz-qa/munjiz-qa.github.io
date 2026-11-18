@@ -33,6 +33,14 @@ async function mpData() {
   MPV.data = { ...d, A, G0, TA: Int16Array.from(TA), pageOf, lineOfA, deferred, hdr, pageQ };
   return MPV.data;
 }
+/* وضع الحفظ في المصحف: تُحجب الكلمات، ويكشف الضغطُ آيتها (وتبقى الكلمة الأولى ظاهرة في المستوى الثاني). الآيات المكشوفة تُحفظ في قاعدة style فلا تضيع عند إعادة رسم الصفحات */
+const mpHzRev = new Set();
+function mpHzApply() {
+  const root = $('#mpRoot'); if (!root) return; const lv = +ST.prefs.mpHz || 0; root.dataset.hz = String(lv);
+  let st = $('#mpHzStyle'); if (!st) { st = document.createElement('style'); st.id = 'mpHzStyle'; document.head.appendChild(st); }
+  st.textContent = mpHzRev.size ? [...mpHzRev].map(i => `#mpRoot .w[data-a="${i}"]`).join(',') + '{filter:none!important;opacity:1!important}' : '';
+  $$('#mpHz button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.h === lv)));
+}
 function mpWord(i, t) { const m = MPV.data.m[i]; return Q.ayat[i][2] + (m ? m[t] : t); }
 function mpSurahsOn(p) { const D = MPV.data, s = new Set(); for (const L of D.p[p - 1]) { if (L[0] === 'h') s.add(L[1]); else if (typeof L[0] === 'number') { s.add(Q.ayat[D.TA[L[0]]][0]); s.add(Q.ayat[D.TA[L[1] - 1]][0]); } } return [...s]; }
 function mpFirstAyah(p) { const D = MPV.data; for (const L of D.p[p - 1]) if (typeof L[0] === 'number') return D.TA[L[0]]; return 0; }
@@ -45,7 +53,7 @@ function mpLine(L) {
   if (L[2]) h += mpNum(D.TA[L[0] - 1]);
   for (let x = L[0]; x < L[1]; x++) {
     const i = D.TA[x], t = x - D.G0[i];
-    h += `<span class="w" data-word="${mpWord(i, t)}" data-a="${i}">${D.A[i][t]}</span> `;
+    h += `<span class="w" data-word="${mpWord(i, t)}" data-a="${i}" data-t="${t}">${D.A[i][t]}</span> `;
     if (t === D.A[i].length - 1 && !D.deferred.has(i)) h += mpNum(i);
   }
   return `<div class="mp-l mp-t">${h}</div> `;
@@ -142,11 +150,59 @@ function mpObserve() {
 function mpSetCur(p) {
   if (!$('#mpRoot')) return;
   const D = MPV.data, a = mpFirstAyah(p), lb = mpLabels(p);
-  MPV.cur = p; $('#mpPage').value = p; $('#mpInfo').textContent = `${lb.sur} · ${lb.juz}`;
-  $('#mpSur').value = Q.ayat[a][0]; $('#mpJuz').value = D.j[a];
+  MPV.cur = p; logReadPage(p); $('#mpPage').value = p; $('#mpInfo').textContent = `${lb.sur} · ${lb.juz}`;
+  const vis0 = MPV.tgt != null && D.pageOf[MPV.tgt] === p ? MPV.tgt : mpVisAyah(p, a);
+  $('#mpSur').value = Q.ayat[vis0][0]; $('#mpJuz').value = D.j[a];
   let k = 0; for (let x = 0; x < D.q.length && D.pageOf[D.q[x]] <= p; x++) k = x; $('#mpHizb').value = (k >> 2) + 1;
   if (location.hash !== '#p' + p) history.replaceState(null, '', '#p' + p);
-  if (ST.last !== a) { ST.last = a; clearTimeout(mpSetCur.t); mpSetCur.t = setTimeout(save, 900); }
+  const vis = vis0; mpAyahSync(p, a, vis);
+  mpTrack(vis);
+}
+/* خانة رقم الآية: تعرض رقم أول آية ظاهرة في السورة المعروضة (أو الآية التي انتُقل إليها) وتُحدَّث مع التنقل */
+function mpAyahSync(p, a, vis) {
+  const inp = $('#mpAyah'); if (!inp) return;
+  const D = MPV.data, s = +$('#mpSur').value, su = Q.surahs[s - 1];
+  let t = a; if (Q.ayat[vis] && Q.ayat[vis][0] === s) t = vis;
+  if (MPV.tgt != null && D.pageOf[MPV.tgt] === p && Q.ayat[MPV.tgt][0] === s) t = MPV.tgt;
+  inp.max = su.ayas; $('#mpAyN').textContent = MP_AR(su.ayas);
+  if (document.activeElement !== inp) inp.value = Q.ayat[t][1];
+}
+/* الانتقال إلى آية برقمها داخل السورة المختارة: تُفتح صفحتها ويُظلَّل موضعها */
+function mpAyahGo() {
+  const inp = $('#mpAyah'), D = MPV.data; if (!D || !inp) return;
+  const su = Q.surahs[+$('#mpSur').value - 1], a = Number(inp.value);
+  if (!(Number.isInteger(a) && a >= 1 && a <= su.ayas)) { toast('رقم الآية غير صحيح لهذه السورة'); inp.blur(); inp.value = Q.ayat[MPV.tgt != null ? MPV.tgt : mpFirstAyah(MPV.cur)][1]; return; }
+  const i = su.first + a - 1; MPV.tgt = i; inp.blur(); mpGo(D.pageOf[i], i);
+}
+/* تذكّر موضع التوقف بدقة الآية: أول آية ظاهرة تحت الشريط، وتُحفظ بعد أن يستقر القارئ عليها (نحو ثانيتين ونصف) فلا يُمحى موضعه القديم بمجرد فتح المصحف من أوله */
+function mpVisAyah(p, dflt) {
+  if (MPV.mode === 'flip') return dflt;
+  const lim = $('#mpBar').getBoundingClientRect().bottom + 4;
+  for (const w of document.querySelectorAll('#mpg' + p + ' .w')) { const r = w.getBoundingClientRect(); if (r.bottom > lim + 6 && r.top < innerHeight) return +w.dataset.a; }
+  return dflt;
+}
+function mpTrack(a) {
+  MPV.pend = a; clearTimeout(MPV.pt);
+  MPV.pt = setTimeout(() => { if (ST.last !== MPV.pend) { ST.last = MPV.pend; ST.lastAt = Date.now(); save(); } }, window.MISHKAT_DWELL != null ? Math.min(window.MISHKAT_DWELL, 2500) : 2500);
+}
+function mpFlush() { if (MPV.pt && MPV.pend != null && ST.last !== MPV.pend && $('#mpRoot')) { clearTimeout(MPV.pt); ST.last = MPV.pend; ST.lastAt = Date.now(); save(); } }
+addEventListener('pagehide', mpFlush); document.addEventListener('visibilitychange', () => { if (document.hidden) mpFlush(); });
+function mpStopStyle() {
+  let st = $('#mpStopStyle'); if (!st) { st = document.createElement('style'); st.id = 'mpStopStyle'; document.head.appendChild(st); }
+  st.textContent = MPV.resume != null && !MPV.resumeHide ? `#mpRoot .mp-n[data-ayah="${MPV.resume}"]{background:var(--rule);color:var(--paper)!important;box-shadow:0 0 0 .14em var(--rule);border-radius:50%}` : '';
+}
+function mpResumeBar(p, opt) {
+  const old = $('#mpResume'); if (old) old.remove();
+  const r = MPV.resume; if (r == null || r < 0 || r >= Q.ayat.length) return;
+  const rp = MPV.data.pageOf[r], here = p === rp;
+  const when = ST.lastAt ? (() => { const m = Math.round((Date.now() - ST.lastAt) / 60000); return m < 2 ? 'قبل لحظات' : m < 60 ? `قبل ${MP_AR(m)} دقيقة` : m < 1440 ? `قبل ${MP_AR(Math.round(m / 60))} ساعة` : `قبل ${MP_AR(Math.round(m / 1440))} يوماً`; })() : '';
+  const el = document.createElement('div'); el.id = 'mpResume'; el.className = 'mp-resume'; el.setAttribute('role', 'status');
+  el.innerHTML = `<span class="mp-rt"><small>${here ? 'تكمل من حيث توقفت' : 'آخر موضع توقفت عنده'}${when ? ' · ' + when : ''}</small><b>${esc(ref(r))} · صفحة ${MP_AR(rp)}</b></span>${here ? '' : '<button class="btn pri" id="mpRGo" type="button">أكمل من هنا</button>'}<button class="btn" id="mpRX" type="button" aria-label="إخفاء التذكير">✕</button>`;
+  $('#mpBar').append(el);
+  const hide = () => { MPV.resumeHide = true; mpStopStyle(); el.remove(); };
+  $('#mpRX').onclick = hide; if (here) setTimeout(() => el.isConnected && el.classList.add('mp-rfade'), 5000), setTimeout(() => el.isConnected && el.remove(), 6200);
+  const g = $('#mpRGo'); if (g) g.onclick = () => { mpGo(rp, r); el.remove(); };
+  MPV.resumeHide = false; mpStopStyle();
 }
 function mpGo(p, ayah, instant) {
   p = Math.max(1, Math.min(604, (+p || 1) | 0)); const el = $('#mpg' + p); if (!el) return;
@@ -191,10 +247,14 @@ async function mushafRead(p, opt = {}) {
       <select id="mpJuz" aria-label="الجزء">${jOpts}</select>
       <select id="mpHizb" class="mp-opt" aria-label="الحزب">${hOpts}</select>
       <label class="mp-pg"><span class="mp-pgl">صفحة</span><input id="mpPage" type="number" inputmode="numeric" min="1" max="604" value="${p}" aria-label="رقم الصفحة"></label>
+      <label class="mp-pg mp-ay"><span class="mp-pgl">الآية</span><input id="mpAyah" type="number" inputmode="numeric" min="1" max="286" enterkeyhint="go" aria-label="رقم الآية في السورة"></label><span class="mp-of"><span>من</span> <b id="mpAyN"></b></span>
+      ${IS_PWA ? '<button class="btn" id="mpPlay" type="button" aria-label="استمع إلى التلاوة"><svg><use href="#i-play"/></svg><span>استمع</span></button>' : ''}
+      <button class="btn" id="mpRBtn" type="button" aria-label="موضع توقفي"><svg><use href="#i-bookmark"/></svg><span>موضعي</span></button>
       <button class="btn mp-more" id="mpMore" aria-expanded="false" aria-controls="mpOpts" aria-label="خيارات العرض">خيارات</button>
     </div>
     <div class="mp-row mp-opts" id="mpOpts">
       <div class="seg" id="mpMode" role="group" aria-label="طريقة العرض"><button data-m="scroll" aria-pressed="false">قراءة متصلة</button><button data-m="flip" aria-pressed="false">تقليب الصفحات</button></div>
+      <div class="seg" id="mpHz" role="group" aria-label="وضع الحفظ"><button data-h="0" aria-pressed="false">عرض كامل</button><button data-h="1" aria-pressed="false">إخفاء الآيات للحفظ</button><button data-h="2" aria-pressed="false">أول كلمة فقط</button></div>
       <div class="seg" id="mpLay" role="group" aria-label="هيئة النص"><button data-l="0" aria-pressed="false">قراءة مريحة</button><button data-l="1" aria-pressed="false">سطور المصحف</button></div>
       <label class="mp-fsel"><span>الخط</span><select id="mpFont" aria-label="نوع الخط">${MP_FONTS.map(f => `<option value="${f.k}">${f.n}</option>`).join('')}</select></label>
       <div class="mp-size" id="mpSize" role="group" aria-label="حجم الخط"><button class="btn" data-d="-1" aria-label="تصغير الخط">أ−</button><input type="range" id="mpZoom" min="${MP_ZMIN}" max="${MP_ZMAX}" step="${MP_ZSTEP}" aria-label="حجم الخط"><span id="mpSizeLbl" class="mp-sizel" aria-live="polite"></span><button class="btn" data-d="1" aria-label="تكبير الخط">أ+</button></div>
@@ -209,6 +269,10 @@ async function mushafRead(p, opt = {}) {
   const root = $('#mpRoot');
   $('#mpMore').onclick = () => { const on = !root.classList.contains('mp-showopts'); root.classList.toggle('mp-showopts', on); $('#mpMore').setAttribute('aria-expanded', on); };
   $('#mpMode').onclick = e => { const b = e.target.closest('button'); if (b && b.dataset.m !== MPV.mode) mpSetMode(b.dataset.m); };
+  $('#mpHz').onclick = e => { const b = e.target.closest('button'); if (!b) return; ST.prefs.mpHz = +b.dataset.h; mpHzRev.clear(); save(); mpHzApply(); if (ST.prefs.mpHz) toast('وضع الحفظ: اضغط أي كلمة لإظهار آيتها أو إخفائها'); };
+  root.addEventListener('click', e => { if (!(ST.prefs.mpHz > 0)) return; const w = e.target.closest('.w'); if (!w) return; e.stopPropagation(); e.preventDefault(); const i = +w.dataset.a; if (mpHzRev.has(i)) mpHzRev.delete(i); else mpHzRev.add(i); mpHzApply(); }, true);
+  const pl = $('#mpPlay'); if (pl) pl.onclick = () => { if (window.recState && recState.on) mpGo(D.pageOf[recState.i], recState.i); else recitePlay(mpFirstAyah(MPV.cur), 'quran'); };
+  mpHzApply();
   $('#mpLay').onclick = e => { const b = e.target.closest('button'); if (!b) return; const v = b.dataset.l === '1'; if (v === MPV.lines) return; MPV.lines = v; ST.prefs.mpLines = v; save(); const p0 = MPV.cur; mpMeasure(); mpRefill(); mpGo(p0, null, true); };
   const setZoom = z => { z = Math.max(MP_ZMIN, Math.min(MP_ZMAX, Math.round(z / MP_ZSTEP) * MP_ZSTEP)); if (z === MPV.zoom) return; MPV.zoom = z; ST.prefs.mpZoom = z; save(); const p0 = MPV.cur; mpMeasure(); mpRefill(); mpGo(p0, null, true); setTimeout(() => mpGo(p0, null, true), 200); };
   $('#mpSize').onclick = e => { const b = e.target.closest('button'); if (b) setZoom(MPV.zoom + MP_ZSTEP * +b.dataset.d); };
@@ -217,18 +281,27 @@ async function mushafRead(p, opt = {}) {
   $('#mpFont').onchange = async e => { MPV.font = e.target.value; ST.prefs.mpFont = MPV.font; save(); const p0 = MPV.cur; root.dataset.font = MPV.font;
     try { await document.fonts.load(`20px "${({ hafs: 'KFGQPC Hafs', amiri: 'Amiri Quran', noto: 'Noto Naskh Mushaf' })[MPV.font]}"`, 'بسم'); } catch (er) {}
     mpMeasure(); mpRefill(); mpGo(p0, null, true); setTimeout(() => mpGo(p0, null, true), 200); };
-  $('#mpSur').onchange = e => { const s = +e.target.value; mpGo(D.hdr[s][0], Q.surahs[s - 1].first); };
-  $('#mpJuz').onchange = e => { const a = D.q[(+e.target.value - 1) * 8]; mpGo(D.pageOf[a], a); };
-  $('#mpHizb').onchange = e => { const a = D.q[(+e.target.value - 1) * 4]; mpGo(D.pageOf[a], a); };
-  $('#mpPage').onchange = e => mpGo(+e.target.value);
+  $('#mpSur').onchange = e => { const s = +e.target.value; MPV.tgt = Q.surahs[s - 1].first; mpGo(D.hdr[s][0], Q.surahs[s - 1].first); };
+  $('#mpAyah').onchange = mpAyahGo;
+  $('#mpAyah').onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); mpAyahGo(); } };
+  $('#mpAyah').onfocus = e => e.target.select();
+  ['wheel', 'touchmove'].forEach(ev => addEventListener(ev, () => { MPV.tgt = null; }, { passive: true }));
+  $('#mpJuz').onchange = e => { MPV.tgt = null; const a = D.q[(+e.target.value - 1) * 8]; mpGo(D.pageOf[a], a); };
+  $('#mpHizb').onchange = e => { MPV.tgt = null; const a = D.q[(+e.target.value - 1) * 4]; mpGo(D.pageOf[a], a); };
+  $('#mpPage').onchange = e => { MPV.tgt = null; mpGo(+e.target.value); };
   $('#mpPage').onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); mpGo(+e.target.value); } };
   $('#mpPrev').onclick = () => mpStep(-1); $('#mpNext').onclick = () => mpStep(1);
   $('#mpFull').onclick = () => { if (document.fullscreenElement) document.exitFullscreen?.(); else root.requestFullscreen?.().catch(() => toast('ملء الشاشة غير متاح في هذا المتصفح')); };
   root.classList.add(MPV.mode === 'flip' ? 'mp-flip' : 'mp-scroll');
   $$('#mpMode button').forEach(b => b.setAttribute('aria-pressed', b.dataset.m === MPV.mode)); $('#mpSize').hidden = MPV.mode === 'flip';
+  MPV.resume = ST.last != null ? ST.last : null;
   mpMeasure(); mpObserve();
   mpGo(p, opt.surah ? Q.surahs[opt.surah - 1].first : opt.ayah, true);
+  mpResumeBar(p, opt);
+  const rb = $('#mpRBtn'); if (rb) rb.onclick = () => { if (MPV.resume != null) { MPV.resumeHide = false; mpGo(D.pageOf[MPV.resume], MPV.resume); mpResumeBar(D.pageOf[MPV.resume], {}); } else toast('لا يوجد موضع توقف محفوظ بعد، ابدأ القراءة وسيُحفظ تلقائياً'); };
 }
+let mpScrT;
+addEventListener('scroll', () => { if (!$('#mpRoot') || MPV.jumping) return; clearTimeout(mpScrT); mpScrT = setTimeout(() => { if (!MPV.jumping && MPV.data) mpSetCur(MPV.cur); }, 220); }, { passive: true });
 addEventListener('resize', () => { if (!$('#mpRoot')) return; clearTimeout(mpMeasure.t); mpMeasure.t = setTimeout(() => { const p = MPV.cur; mpMeasure(); mpGo(p, null, true); }, 180); });
 document.addEventListener('fullscreenchange', () => { if ($('#mpRoot')) setTimeout(() => { const p = MPV.cur; mpMeasure(); mpGo(p, null, true); }, 150); });
 document.addEventListener('keydown', e => {

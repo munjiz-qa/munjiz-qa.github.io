@@ -1,0 +1,525 @@
+{
+ "note": "قائمة دول قسم التوقعات. id = ISO3، imf = رمز صندوق النقد الدولي، wb = رمز البنك الدولي (ISO3)، ck = معرّف الدولة في data/countries.json (قسم الأوضاع في الدول) إن وُجد، names = كلمات تمييز الدولة في العناوين.",
+ "countries": [
+  {
+   "id": "QAT",
+   "iso2": "QA",
+   "imf": "QAT",
+   "wb": "QAT",
+   "ar": "قطر",
+   "en": "Qatar",
+   "region": "gulf",
+   "ck": "qatar",
+   "names": {
+    "ar": [
+     "قطر",
+     "الدوحة"
+    ],
+    "en": [
+     "Qatar",
+     "Doha"
+    ]
+   }
+  },
+  {
+   "id": "SAU",
+   "iso2": "SA",
+   "imf": "SAU",
+   "wb": "SAU",
+   "ar": "السعودية",
+   "en": "Saudi Arabia",
+   "region": "gulf",
+   "ck": null,
+   "names": {
+    "ar": [
+     "السعودية",
+     "الرياض"
+    ],
+    "en": [
+     "Saudi",
+     "Riyadh"
+    ]
+   }
+  },
+  {
+   "id": "ARE",
+   "iso2": "AE",
+   "imf": "ARE",
+   "wb": "ARE",
+   "ar": "الإمارات",
+   "en": "United Arab Emirates",
+   "region": "gulf",
+   "ck": null,
+   "names": {
+    "ar": [
+     "الإمارات",
+     "أبوظبي",
+     "دبي"
+    ],
+    "en": [
+     "UAE",
+     "Emirati",
+     "Abu Dhabi",
+     "Dubai"
+    ]
+   }
+  },
+  {
+   "id": "KWT",
+   "iso2": "KW",
+   "imf": "KWT",
+   "wb": "KWT",
+   "ar": "الكويت",
+   "en": "Kuwait",
+   "region": "gulf",
+   "ck": null,
+   "names": {
+    "ar": [
+     "الكويت"
+    ],
+    "en": [
+     "Kuwait"
+    ]
+   }
+  },
+  {
+   "id": "BHR",
+   "iso2": "BH",
+   "imf": "BHR",
+   "wb": "BHR",
+   "ar": "البحرين",
+   "en": "Bahrain",
+   "region": "gulf",
+   "ck": null,
+   "names": {
+    "ar": [
+     "البحرين",
+     "المنامة"
+    ],
+    "en": [
+     "Bahrain",
+     "Manama"
+    ]
+   }
+  },
+  {
+   "id": "OMN",
+   "iso2": "OM",
+   "imf": "OMN",
+   "wb": "OMN",
+   "ar": "عُمان",
+   "en": "Oman",
+   "region": "gulf",
+   "ck": null,
+   "names": {
+    "ar": [
+     "عُمان",
+     "سلطنة عمان",
+     "مسقط",
+     "العماني",
+     "العمانية"
+    ],
+    "en": [
+     "Oman",
+     "Muscat"
+    ]
+   }
+  },
+  {
+   "id": "EGY",
+   "iso2": "EG",
+   "imf": "EGY",
+   "wb": "EGY",
+   "ar": "مصر",
+   "en": "Egypt",
+   "region": "mena",
+   "ck": null,
+   "names": {
+    "ar": [
+     "مصر",
+     "القاهرة"
+    ],
+    "en": [
+     "Egypt",
+     "Cairo"
+    ]
+   }
+  },
+  {
+   "id": "LBY",
+   "iso2": "LY",
+   "imf": "LBY",
+   "wb": "LBY",
+   "ar": "ليبيا",
+   "en": "Libya",
+   "region": "mena",
+   "ck": "libya",
+   "names": {
+    "ar": [
+     "ليبيا",
+     "طرابلس",
+     "بنغازي"
+    ],
+    "en": [
+     "Libya",
+     "Tripoli",
+     "Benghazi"
+    ]
+   }
+  },
+  {
+   "id": "ISR",
+   "iso2": "IL",
+   "imf": "ISR",
+   "wb": "ISR",
+   "ar": "إسرائيل",
+   "en": "Israel",
+   "region": "mena",
+   "ck": "israel",
+   "names": {
+    "ar": [
+     "إسرائيل",
+     "الإسرائيلي",
+     "تل أبيب"
+    ],
+    "en": [
+     "Israel",
+     "Israeli"
+    ]
+   }
+  },
+  {
+   "id": "PSE",
+   "iso2": "PS",
+   "imf": "WBG",
+   "wb": "PSE",
+   "ar": "فلسطين",
+   "en": "Palestine",
+   "region": "mena",
+   "ck": null,
+   "names": {
+    "ar": [
+     "فلسطين",
+     "غزة",
+     "الضفة"
+    ],
+    "en": [
+     "Palestinian",
+     "Gaza",
+     "West Bank"
+    ]
+   }
+  },
+  {
+   "id": "SDN",
+   "iso2": "SD",
+   "imf": "SDN",
+   "wb": "SDN",
+   "ar": "السودان",
+   "en": "Sudan",
+   "region": "mena",
+   "ck": "sudan",
+   "names": {
+    "ar": [
+     "السودان",
+     "الخرطوم"
+    ],
+    "en": [
+     "Sudan",
+     "Khartoum"
+    ]
+   }
+  },
+  {
+   "id": "YEM",
+   "iso2": "YE",
+   "imf": "YEM",
+   "wb": "YEM",
+   "ar": "اليمن",
+   "en": "Yemen",
+   "region": "mena",
+   "ck": "yemen",
+   "names": {
+    "ar": [
+     "اليمن",
+     "الحوثي",
+     "صنعاء"
+    ],
+    "en": [
+     "Yemen",
+     "Houthi",
+     "Sanaa"
+    ]
+   }
+  },
+  {
+   "id": "SYR",
+   "iso2": "SY",
+   "imf": "SYR",
+   "wb": "SYR",
+   "ar": "سوريا",
+   "en": "Syria",
+   "region": "mena",
+   "ck": "syria",
+   "names": {
+    "ar": [
+     "سوريا",
+     "السوري",
+     "دمشق"
+    ],
+    "en": [
+     "Syria",
+     "Syrian",
+     "Damascus"
+    ]
+   }
+  },
+  {
+   "id": "LBN",
+   "iso2": "LB",
+   "imf": "LBN",
+   "wb": "LBN",
+   "ar": "لبنان",
+   "en": "Lebanon",
+   "region": "mena",
+   "ck": "lebanon",
+   "names": {
+    "ar": [
+     "لبنان",
+     "بيروت"
+    ],
+    "en": [
+     "Lebanon",
+     "Beirut"
+    ]
+   }
+  },
+  {
+   "id": "IRQ",
+   "iso2": "IQ",
+   "imf": "IRQ",
+   "wb": "IRQ",
+   "ar": "العراق",
+   "en": "Iraq",
+   "region": "mena",
+   "ck": null,
+   "names": {
+    "ar": [
+     "العراق",
+     "بغداد"
+    ],
+    "en": [
+     "Iraq",
+     "Baghdad"
+    ]
+   }
+  },
+  {
+   "id": "JOR",
+   "iso2": "JO",
+   "imf": "JOR",
+   "wb": "JOR",
+   "ar": "الأردن",
+   "en": "Jordan",
+   "region": "mena",
+   "ck": null,
+   "names": {
+    "ar": [
+     "الأردن",
+     "الأردني",
+     "الأردنية"
+    ],
+    "en": [
+     "Jordan",
+     "Amman"
+    ]
+   }
+  },
+  {
+   "id": "IRN",
+   "iso2": "IR",
+   "imf": "IRN",
+   "wb": "IRN",
+   "ar": "إيران",
+   "en": "Iran",
+   "region": "mena",
+   "ck": "iran",
+   "names": {
+    "ar": [
+     "إيران",
+     "الإيراني",
+     "طهران"
+    ],
+    "en": [
+     "Iran",
+     "Iranian",
+     "Tehran"
+    ]
+   }
+  },
+  {
+   "id": "TUR",
+   "iso2": "TR",
+   "imf": "TUR",
+   "wb": "TUR",
+   "ar": "تركيا",
+   "en": "Türkiye",
+   "region": "mena",
+   "ck": null,
+   "names": {
+    "ar": [
+     "تركيا",
+     "التركي",
+     "أنقرة"
+    ],
+    "en": [
+     "Turkey",
+     "Türkiye",
+     "Turkish",
+     "Ankara"
+    ]
+   }
+  },
+  {
+   "id": "GBR",
+   "iso2": "GB",
+   "imf": "GBR",
+   "wb": "GBR",
+   "ar": "بريطانيا",
+   "en": "United Kingdom",
+   "region": "europe",
+   "ck": "uk",
+   "names": {
+    "ar": [
+     "بريطانيا",
+     "المملكة المتحدة",
+     "لندن"
+    ],
+    "en": [
+     "UK",
+     "Britain",
+     "British",
+     "London",
+     "Starmer"
+    ]
+   }
+  },
+  {
+   "id": "FRA",
+   "iso2": "FR",
+   "imf": "FRA",
+   "wb": "FRA",
+   "ar": "فرنسا",
+   "en": "France",
+   "region": "europe",
+   "ck": "france",
+   "names": {
+    "ar": [
+     "فرنسا",
+     "الفرنسي",
+     "باريس"
+    ],
+    "en": [
+     "France",
+     "French",
+     "Paris"
+    ]
+   }
+  },
+  {
+   "id": "UKR",
+   "iso2": "UA",
+   "imf": "UKR",
+   "wb": "UKR",
+   "ar": "أوكرانيا",
+   "en": "Ukraine",
+   "region": "europe",
+   "ck": "ukraine",
+   "names": {
+    "ar": [
+     "أوكرانيا",
+     "كييف"
+    ],
+    "en": [
+     "Ukraine",
+     "Ukrainian",
+     "Kyiv"
+    ]
+   }
+  },
+  {
+   "id": "RUS",
+   "iso2": "RU",
+   "imf": "RUS",
+   "wb": "RUS",
+   "ar": "روسيا",
+   "en": "Russia",
+   "region": "europe",
+   "ck": null,
+   "names": {
+    "ar": [
+     "روسيا",
+     "الروسي",
+     "موسكو",
+     "الكرملين"
+    ],
+    "en": [
+     "Russia",
+     "Russian",
+     "Moscow",
+     "Kremlin"
+    ]
+   }
+  },
+  {
+   "id": "USA",
+   "iso2": "US",
+   "imf": "USA",
+   "wb": "USA",
+   "ar": "الولايات المتحدة",
+   "en": "United States",
+   "region": "world",
+   "ck": "usa",
+   "names": {
+    "ar": [
+     "الولايات المتحدة",
+     "أمريكا",
+     "أميركا",
+     "واشنطن"
+    ],
+    "en": [
+     "US",
+     "U.S.",
+     "United States",
+     "America",
+     "American",
+     "Washington",
+     "Pentagon",
+     "White House"
+    ]
+   }
+  },
+  {
+   "id": "CHN",
+   "iso2": "CN",
+   "imf": "CHN",
+   "wb": "CHN",
+   "ar": "الصين",
+   "en": "China",
+   "region": "world",
+   "ck": null,
+   "names": {
+    "ar": [
+     "الصين",
+     "الصيني",
+     "بكين"
+    ],
+    "en": [
+     "China",
+     "Chinese",
+     "Beijing"
+    ]
+   }
+  }
+ ]
+}

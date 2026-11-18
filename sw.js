@@ -1,7 +1,7 @@
 // منجز: عامل الخدمة لتطبيق الكمبيوتر والجوال.
 // يخدم صفحات منجز وحدها (الجذر و/en/ و/assets/ و/data/)، ولا يلمس التطبيقات الأخرى في المجلدات الفرعية.
 // الشبكة أولاً دائماً، والنسخة المحفوظة تُستخدم فقط عند انقطاع الإنترنت، فلا تظهر نسخة قديمة أبداً وأنت متصل.
-const CACHE = 'munjiz-v20261106';
+const CACHE = 'munjiz-v20261112';
 const CORE = ['./', 'index.html', 'portal.html', 'crm.html', 'about.html', 'legal.html', 'privacy.html', 'contract.html', 'desktop.html',
   'en/index.html', 'en/portal.html', 'en/about.html', 'en/legal.html', 'en/privacy.html', 'en/desktop.html',
   'manifest.webmanifest', 'crm.webmanifest', 'assets/icon-192.png', 'assets/icon-512.png', 'assets/stamp.svg', 'assets/seal.svg', 'pwa-install.js'];
