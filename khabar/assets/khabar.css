@@ -36,7 +36,7 @@ p{margin:0}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--deep-ink)}
 .brand-mark{width:34px;height:34px;color:var(--deep-ink);flex:none}
 .brand-mark.sm{width:24px;height:24px;color:var(--ink)}
-.brand-word{font-family:var(--display);font-weight:700;font-size:1.65rem;line-height:1}
+.brand-word{font-family:var(--display);font-weight:700;font-size:1.65rem;line-height:1;white-space:nowrap}
 .top-meta{display:flex;flex-direction:column;line-height:1.35;font-size:.82rem;margin-inline-start:auto;text-align:end}
 .top .mute{color:var(--deep-ink);opacity:.65}
 .top-actions{display:flex;gap:6px}
@@ -175,7 +175,8 @@ mark{background:var(--dawn-soft);color:inherit;border-radius:3px;padding:0 2px;b
 @media (max-width:860px){.ticks{grid-template-columns:repeat(2,1fr)}.ticks .tick:last-child{grid-column:1/-1}}
 @media (max-width:640px){
   .top-meta{display:none}
-  .brand-word{font-size:1.5rem}
+  .brand-word{font-size:1.3rem}
+  .brand{gap:7px}.brand-mark{width:30px;height:30px}
   .top-actions{margin-inline-start:auto}
   .pillars,.vision{grid-template-columns:1fr}
   .road li{grid-template-columns:1fr;gap:6px}
@@ -409,3 +410,4 @@ main.wrap>*{min-width:0}
 .item .acts{flex-wrap:wrap;row-gap:6px}
 .zone{grid-template-columns:minmax(0,1fr)}
 .fx-wrap:focus-visible{outline:3px solid var(--dawn,#E39A2D);outline-offset:2px}
+@media (max-width:400px){.brand-word{font-size:1.12rem}.brand-mark{width:26px;height:26px}.top-actions{gap:3px}.top-actions .icon-btn{min-width:32px;width:32px;height:32px;padding:0}}
