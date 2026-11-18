@@ -411,3 +411,7 @@ main.wrap>*{min-width:0}
 .zone{grid-template-columns:minmax(0,1fr)}
 .fx-wrap:focus-visible{outline:3px solid var(--dawn,#E39A2D);outline-offset:2px}
 @media (max-width:400px){.brand-word{font-size:1.12rem}.brand-mark{width:26px;height:26px}.top-actions{gap:3px}.top-actions .icon-btn{min-width:32px;width:32px;height:32px;padding:0}}
+
+/* شارة المستوى (تصعيد/متوتر/هادئ) ليلاً: نص أفتح من لونها ليتجاوز التباين 4.5 إلى 1 */
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .lvl{color:color-mix(in srgb,var(--lc) 65%,#fff)}}
+:root[data-theme="dark"] .lvl{color:color-mix(in srgb,var(--lc) 65%,#fff)}

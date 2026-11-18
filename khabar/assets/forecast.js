@@ -54,6 +54,8 @@ const country = id => F.countries[id] ? {id, ...F.countries[id]} : null;
 const visible = () => Object.keys(F.countries).filter(id => !(ADMIN.forecast_hidden || []).includes(id));
 
 /* ---------- الحساب ---------- */
+// لون نص البلاطة حسب سطوع خلفيتها: داكن على الألوان الفاتحة (مثل ذهبي «تحت المراقبة») ليبقى التباين فوق 4.5 إلى 1
+function inkOn(hex) { const c = String(hex).replace('#', ''); if (c.length !== 6) return false; const v = [0, 2, 4].map(i => { const x = parseInt(c.slice(i, i + 2), 16) / 255; return x <= .03928 ? x / 12.92 : ((x + .055) / 1.055) ** 2.4; }); return .2126 * v[0] + .7152 * v[1] + .0722 * v[2] > .2; }
 function compute(id, o = {}) {
   const c = country(id), opts = {h: o.h ?? ST.h, sc: o.s ?? ST.s, weight: o.w ?? ST.w, wars: WARS, events: EV};
   const a = o.a ?? ST.a;
@@ -295,7 +297,7 @@ function renderBoard() {
   const tiles = $('#tiles'); tiles.textContent = '';
   for (const {id, f} of rows) {
     const p = TILE[id]; if (!p) continue;
-    const b = el('button', 'fc-tile'); b.type = 'button'; b.setAttribute('role', 'listitem'); b.style.gridColumn = String(p[0]); b.style.gridRow = String(p[1]); b.style.setProperty('--oc', f.color);
+    const b = el('button', 'fc-tile'); b.type = 'button'; b.setAttribute('role', 'listitem'); b.style.gridColumn = String(p[0]); b.style.gridRow = String(p[1]); b.style.setProperty('--oc', f.color); if (inkOn(f.color)) b.style.color = '#14212E';
     if (id === ST.c) b.setAttribute('aria-current', 'true');
     b.append(el('span', 'fc-tile-n', N(F.countries[id])), el('b', 'num', pc(f.p_worse)));
     b.setAttribute('aria-label', `${N(F.countries[id])}: ${N(OUT[f.outlook])}، ${pc(f.p_worse)}`);
