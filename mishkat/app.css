@@ -1700,3 +1700,52 @@ body{overflow-x:clip;position:relative;max-width:100%;touch-action:manipulation}
 /* الإعجاز العلمي (#ijaz) */
 .ij-sci{margin:0;line-height:1.9}.ij-refs summary{cursor:pointer;font-weight:700;font-size:.9rem;color:var(--muted)}.ij-refs ul{margin:6px 0 0;padding-inline-start:1.2em;font-size:.85rem;line-height:1.7;overflow-wrap:anywhere}
 .rs-chip.ok{border-color:var(--ok);color:var(--ok)}button.rs-chip{background:none;cursor:pointer;font-family:inherit}button.rs-chip.on{background:var(--accent);color:var(--bg,#fff);border-color:var(--accent)}
+
+/* ---------- الرقية الشرعية: الأبواب المضافة */
+.ruq-sub{margin:20px 0 4px;font-size:1.06rem;color:var(--ok);border-inline-start:3px solid var(--ok);padding-inline-start:10px;line-height:1.7}
+.ruq-p{margin:0;line-height:1.95}
+.ruq-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.ruq-chip{font-size:.78rem;border:1px solid var(--line);border-radius:999px;padding:2px 10px;background:var(--sheet);color:var(--ok);text-decoration:none;line-height:1.7;max-width:100%}
+.ruq-card{border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:8px;align-content:start;min-width:0}
+.ruq-card.ruq-ok{border-inline-start:4px solid var(--ok)}.ruq-card.ruq-mid{border-inline-start:4px solid var(--saffron)}.ruq-card.ruq-bad{border-inline-start:4px solid var(--bad)}
+.ruq-chead{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}.ruq-chead h3{margin:0;font-size:1.02rem}
+.ruq-tag{font-style:normal;font-size:.78rem;font-weight:700;border-radius:999px;padding:2px 10px}
+.ruq-ok .ruq-tag{background:var(--ok-soft);color:var(--ok)}.ruq-mid .ruq-tag{background:var(--saffron-soft);color:var(--ink)}.ruq-bad .ruq-tag{background:var(--bad-soft);color:var(--bad)}
+.ruq-cmp{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));align-items:start}
+.ruq-col{border:1px solid var(--line);border-radius:14px;padding:14px;min-width:0}.ruq-col h3{margin:0 0 8px}
+.ruq-col.ruq-ok h3{color:var(--ok)}.ruq-col.ruq-bad h3{color:var(--bad)}
+.ruq-ul{margin:0;padding:0;list-style:none;display:grid;gap:0}
+.ruq-ul li{padding:10px 0;border-top:1px dashed var(--line)}.ruq-ul li:first-child{border-top:0}
+.ruq-ul b{display:block}.ruq-ul p{margin:3px 0 0;line-height:1.85}
+
+/* خطة عطاء أسبوعية */
+.gp-sum{display:grid;gap:10px}.gp-bar{height:10px;border-radius:99px;background:var(--line);overflow:hidden}.gp-bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .25s}
+.gp-pct{margin:0}.gp-day summary{display:flex;align-items:center;gap:10px;cursor:pointer}.gp-today{background:var(--accent);color:#fff;border-color:var(--accent)}
+.gp-act{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--line)}.gp-act:first-child{border-top:0}.gp-act input{margin-top:6px;width:20px;height:20px;flex:none;accent-color:var(--accent)}
+.gp-t{display:grid;gap:6px;min-width:0}.gp-refs{display:flex;flex-wrap:wrap;gap:6px}.gp-ref{padding:2px 10px;font-size:.85rem}
+/* التلاوة: صفحة كاملة لاختيار القارئ + علامة التوقف */
+.rc-page{max-width:none;width:100%}
+.rc-page h2{margin:0;font-size:1.15rem}
+.rc-tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.rc-tools input{flex:1 1 220px;min-width:0;border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:10px;padding:9px 12px}
+.rc-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.rc-card{display:flex;flex-direction:column;gap:8px;border:1.5px solid var(--line);background:var(--sheet);border-radius:14px;padding:10px}
+.rc-card.sel{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 25%,transparent)}
+.rc-pick{display:flex;align-items:center;gap:10px;text-align:start;border:0;background:none;color:var(--ink);cursor:pointer;padding:2px;font:inherit;flex-wrap:wrap}
+.rc-av{width:44px;height:44px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:inline-flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:700;flex:none}
+.rc-nm{display:flex;flex-direction:column;min-width:0;flex:1;line-height:1.4}.rc-nm small{color:var(--muted)}
+.rc-ok{font-size:.75rem;background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent);padding:2px 8px;border-radius:99px}
+.rc-try{align-self:flex-start}
+.rc-try.on{background:var(--accent);color:var(--accent-ink)}
+.rc-mk{display:flex;align-items:center;gap:10px}
+.rc-mki{width:28px;height:28px;fill:var(--saffron,var(--accent));flex:none}
+.rec-tb{display:flex;align-items:center;gap:6px}
+.rec-mk{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:99px;padding:4px 10px;font-size:.8rem;cursor:pointer;text-decoration:none}
+.rec-mk svg{width:16px;height:16px;fill:currentColor}
+.rec-mk.on{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+@media (max-width:640px){.rc-cards{grid-template-columns:1fr}#recMk span{display:none}#recMk{padding:6px 8px}.rec-tb{gap:4px}}
+.rc-jrow{display:grid;grid-template-columns:2fr 1fr auto;gap:10px;align-items:end}
+.rc-jrow .field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.rc-jrow .field select,.rc-jrow .field input{width:100%;min-width:0;border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:9px;padding:8px 10px}
+.rec-ay input{width:4.6em;border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:8px;padding:4px 6px;font-size:.85rem}
+@media (max-width:640px){.rc-jrow{grid-template-columns:1fr 1fr}.rc-jrow .btn{grid-column:1/-1}}

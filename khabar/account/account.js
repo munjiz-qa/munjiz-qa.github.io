@@ -1,5 +1,5 @@
 'use strict';
-// «خبر»: صفحة حساب العميل. الدخول بحساب من data/users.json، ثم خلاصة شخصية للدوائر التي يتابعها العميل ومحفوظاته.
+// «عبدو نيوز»: صفحة حساب العميل. الدخول بحساب من data/users.json، ثم خلاصة شخصية للدوائر التي يتابعها العميل ومحفوظاته.
 (function(){
 const CFG=window.KHABAR_CONFIG||{},AUTH=window.KhabarAuth;
 const $=s=>document.querySelector(s);

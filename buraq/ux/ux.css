@@ -39,6 +39,7 @@ body.no-scroll{overflow:hidden}
 .hero-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
 .hero-cta a{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:600;font-size:.95rem;padding:11px 18px;border-radius:12px;border:1.5px solid var(--ink);color:var(--ink);background:var(--surface);min-height:46px}
 .hero-cta a.pri{background:var(--copper);border-color:var(--copper);color:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .hero-cta a.pri{color:var(--bg)}}:root[data-theme="dark"] .hero-cta a.pri{color:var(--bg)}
 .hero-cta a:hover{transform:translateY(-1px)}
 .hero-cta svg{width:18px;height:18px;flex-shrink:0}
 @media (max-width:560px){.hero-cta a{flex:1 1 calc(50% - 10px);justify-content:center;padding:11px 10px;font-size:.9rem}.hero-cta a.pri{flex-basis:100%}}

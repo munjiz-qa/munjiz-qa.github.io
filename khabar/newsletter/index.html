@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<script>if(location.pathname.indexOf("/khabar/")===0||location.pathname==="/khabar")location.replace("/abdo-news/"+location.pathname.replace(/^\/khabar\/?/,"")+location.search+location.hash)</script>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>النشرة اليومية | عبدو نيوز</title>
+<meta name="description" content="اشترك في نشرة «عبدو نيوز» اليومية الموثّقة بالبريد أو واتساب، واقرأ عدد اليوم.">
+<meta name="theme-color" content="#14212E">
+<meta property="og:title" content="النشرة اليومية | عبدو نيوز">
+<meta property="og:description" content="اشترك في نشرة «عبدو نيوز» اليومية الموثّقة بالبريد أو واتساب، واقرأ عدد اليوم.">
+<meta property="og:image" content="https://munjiz-qa.github.io/abdo-news/assets/og.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://munjiz-qa.github.io/abdo-news/newsletter/">
+<meta property="og:site_name" content="عبدو نيوز">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://munjiz-qa.github.io/abdo-news/newsletter/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&family=IBM+Plex+Mono:wght@500&family=Reem+Kufi:wght@500;700&display=swap">
+<link rel="stylesheet" href="../assets/khabar.css">
+<script>try{var t=localStorage.getItem('khabar-theme');if(t)document.documentElement.dataset.theme=t;var l=localStorage.getItem('khabar-lang');if(l==='en'){document.documentElement.lang='en';document.documentElement.dir='ltr'}}catch(e){}</script>
+</head>
+<body>
+<header class="top"><div class="wrap top-row">
+  <a class="brand" href="../" aria-label="عبدو نيوز"><svg class="brand-mark" viewBox="0 0 64 64"><path d="M17 9.5h30a11 11 0 0 1 11 11v17a11 11 0 0 1-11 11h-1.5l1.5 9.5-12-9.5H17a11 11 0 0 1-11-11v-17a11 11 0 0 1 11-11z" fill="none" stroke="currentColor" stroke-width="4.6" stroke-linejoin="round"/><path d="M21 23h25" stroke="#3A5FB0" stroke-width="4.6" stroke-linecap="round"/><path d="M33 34h13" stroke="#1D7A70" stroke-width="4.6" stroke-linecap="round"/><path d="M17.5 33.5l3.6 3.6 6.4-7.4" fill="none" stroke="#1D7A70" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="9.5" r="6.5" fill="#E39A2D"/></svg><span class="brand-word">عبدو نيوز</span></a>
+  <div class="top-actions"><a class="icon-btn" href="../#desks" title="كل الأقسام" aria-label="كل الأقسام">☰</a></div>
+</div></header>
+<main class="wrap" id="main">
+
+<div class="ed-head"><span class="eyebrow">النشرة</span><h1>نشرة «عبدو نيوز» اليومية</h1><p class="mute">أهم أخبار اليوم الموثّقة من جهتين مستقلتين، في رسالة واحدة قصيرة، مع روابط مصادرها.</p></div>
+<section class="zone"><h2>اشترك</h2>
+<form id="sub" class="calc" novalidate>
+ <label class="kfield" style="flex:1 1 240px"><span>البريد الإلكتروني</span><input id="em" type="email" dir="ltr" placeholder="name@example.com" autocomplete="email"></label>
+ <label class="kfield" style="flex:1 1 200px"><span>أو رقم واتساب دولي</span><input id="wa" type="tel" dir="ltr" placeholder="+974 5xxx xxxx" autocomplete="tel"></label>
+ <label class="kfield"><span>الموعد</span><select id="ed"><option value="am">الصباح</option><option value="pm">المساء</option><option value="both">الصباح والمساء</option></select></label>
+ <label class="kfield"><span>اللغة</span><select id="lg"><option value="ar">العربية</option><option value="en">English</option></select></label>
+ <button class="btn" type="submit">اشترك</button>
+</form>
+<p class="basis" id="sub-note">نحفظ بريدك أو رقمك لإرسال النشرة فقط، ويمكنك إلغاء الاشتراك في أي وقت من هذه الصفحة.</p>
+<p class="msg" id="sub-msg" hidden></p>
+</section>
+<section class="zone"><div class="zone-head"><h2>عدد اليوم</h2><span class="count" id="issue-date"></span></div>
+<div class="kdlg-acts"><button class="btn ghost" id="copy-mail" type="button">انسخ العدد للبريد</button><a class="btn ghost" id="share-wa" target="_blank" rel="noopener">أرسله على واتساب</a><button class="btn ghost" id="unsub" type="button">ألغِ اشتراكي</button></div>
+<article id="issue" class="issue"></article></section>
+</main>
+<footer class="foot"><div class="wrap foot-row"><p class="mute">كل خبر في «عبدو نيوز» منسوب إلى مصدره الأصلي برابط مباشر، ولا يُنشر إلا ما أكدته جهتان مستقلتان.</p><p class="contact"><span>munijizqa@gmail.com</span><span>+974 5160 0498</span></p></div></footer>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<script src="../assets/config.js"></script>
+<script src="newsletter.js"></script>
+<script src="../assets/report.js" defer></script>
+<script src="../assets/listen.js" defer></script>
+</body>
+</html>
