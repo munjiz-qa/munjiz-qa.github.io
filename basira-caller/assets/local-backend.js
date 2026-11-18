@@ -19,9 +19,15 @@
     db.reports.filter(r => r.e164 === e && live(r) && r.kind !== 'other').reduce((a, r) => a + (r.status === 'confirmed' ? 30 : 18), 0) +
     db.ratings.filter(r => r.e164 === e).reduce((a, r) => a + (r.value === -1 ? 12 : -15), 0)));
   const count = (arr, f) => { const m = {}; arr.forEach(x => { const k = f(x); m[k] = (m[k] || 0) + 1; }); return m; };
+  // أسماء جهات الاتصال المشتركة لا تظهر إلا إذا اتفق عليها مستخدمان مستقلان؛ الأسماء اليدوية تظهر دائماً
+  function publicNames(e) {
+    const rows = db.names.filter(x => x.e164 === e), out = {};
+    rows.forEach(x => { const k = x.name; if (rows.some(y => y.name === k && y.origin !== 'contacts') || new Set(rows.filter(y => y.name === k && y.origin === 'contacts').map(y => y.user_id)).size >= 2) out[k] = (out[k] || 0) + 1; });
+    return out;
+  }
   function touch(e) {
     const n = db.numbers[e]; if (!n) return;
-    const names = count(db.names.filter(x => x.e164 === e), x => x.name);
+    const names = publicNames(e);
     const top = Object.entries(names).sort((a, b) => b[1] - a[1])[0];
     if (!n.verified && top) n.display_name = top[0];
     const rs = db.reports.filter(r => r.e164 === e && live(r) && r.kind !== 'other');
@@ -34,7 +40,7 @@
     return { e164: e, name: n.display_name, category: n.category, verified: n.verified, lookups: n.lookups, spam_score: score(e), updated_at: n.updated_at,
       reports: rs.length, safe_votes: db.ratings.filter(r => r.e164 === e && r.value === 1).length, spam_votes: db.ratings.filter(r => r.e164 === e && r.value === -1).length,
       kinds: count(rs, r => r.kind), comments: rs.filter(r => r.comment).sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 5).map(r => ({ kind: r.kind, comment: r.comment, at: r.created_at })),
-      alt_names: Object.entries(count(db.names.filter(x => x.e164 === e), x => x.name)).sort((a, b) => b[1] - a[1]).slice(0, 4).map(x => x[0]) };
+      alt_names: Object.entries(publicNames(e)).sort((a, b) => b[1] - a[1]).slice(0, 4).map(x => x[0]) };
   }
   const protectedNum = e => db.numbers[e] && db.numbers[e].hidden;
   const stats = () => ({ numbers: Object.values(db.numbers).filter(n => !n.hidden).length, reports: db.reports.filter(live).length, users: db.users.length, lookups: Object.values(db.numbers).reduce((a, n) => a + n.lookups, 0) });
@@ -81,6 +87,26 @@
     },
     bc_request(a) { const e = norm(a.p_number); if (!e) fail('BAD_NUMBER'); if (String(a.p_contact || '').trim().length < 5) fail('BAD_CONTACT'); const r = { id: db.seq++, e164: e, kind: a.p_kind, contact: a.p_contact.trim(), details: a.p_details || null, status: 'open', created_at: now() }; db.requests.push(r); save(); return { id: r.id, e164: e }; },
     bc_stats: stats,
+    bc_share_contacts(a) {
+      const u = need(a.p_token); if (a.p_consent !== true) fail('CONSENT_REQUIRED');
+      const items = Array.isArray(a.p_items) ? a.p_items : []; if (items.length > 500) fail('TOO_MANY');
+      let added = 0, skipped = 0; u.contacts_consent_at = u.contacts_consent_at || now();
+      items.forEach(it => {
+        const e = norm(it.phone); const nm = String(it.name || '').replace(/\s+/g, ' ').trim(); const n = e && db.numbers[e];
+        if (!e || nm.length < 2 || nm.length > 60 || e === u.phone || (n && (n.hidden || n.verified)) || (BC.directory && BC.directory.listed(e)) || db.names.some(x => x.e164 === e && x.user_id === u.id)) { skipped++; return; }
+        ensure(e); db.names.push({ e164: e, name: nm, user_id: u.id, origin: 'contacts', created_at: now() }); touch(e); added++;
+      });
+      db.audit.push({ action: 'مشاركة جهات اتصال', target: String(added), actor: u.full_name, created_at: now() }); save();
+      return { added, skipped, total: db.names.filter(x => x.user_id === u.id && x.origin === 'contacts').length };
+    },
+    bc_withdraw_contacts(a) {
+      const u = need(a.p_token); const mine = db.names.filter(x => x.user_id === u.id && x.origin === 'contacts');
+      db.names = db.names.filter(x => !(x.user_id === u.id && x.origin === 'contacts'));
+      new Set(mine.map(x => x.e164)).forEach(e => { const n = db.numbers[e]; if (n && !n.verified) { n.display_name = null; touch(e); } });
+      u.contacts_consent_at = null; db.audit.push({ action: 'سحب موافقة جهات الاتصال', target: String(mine.length), actor: u.full_name, created_at: now() }); save();
+      return { removed: mine.length };
+    },
+    bc_contacts_status(a) { const u = need(a.p_token); return { consent_at: u.contacts_consent_at || null, shared: db.names.filter(x => x.user_id === u.id && x.origin === 'contacts').length }; },
     bc_admin_overview(a) {
       need(a.p_token, true); const nums = Object.values(db.numbers);
       return { stats: Object.assign(stats(), { open_reports: db.reports.filter(r => r.status === 'open').length, open_requests: db.requests.filter(r => r.status === 'open').length, spam_numbers: nums.filter(n => score(n.e164) >= 40).length, new_users_7d: db.users.filter(u => Date.now() - new Date(u.created_at) < 7 * 864e5).length }),

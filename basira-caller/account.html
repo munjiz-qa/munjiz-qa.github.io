@@ -9,15 +9,16 @@
 <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600;700&family=Almarai:wght@400;700&display=swap">
-<link rel="stylesheet" href="assets/bc.css?v=1">
+<link rel="stylesheet" href="assets/bc.css?v=2">
 </head>
 <body>
 <header class="bar"></header>
 <main class="page"><div class="wrap" id="app"><div class="empty">جارٍ التحميل…</div></div></main>
 <footer class="foot"></footer>
 <script src="config.js?v=1"></script>
-<script src="assets/bc.js?v=1"></script>
-<script src="assets/local-backend.js?v=1"></script>
+<script src="assets/bc.js?v=2"></script>
+<script src="assets/local-backend.js?v=2"></script>
+<script src="assets/directory.js?v=2"></script>
 <script>
 (function () {
   const { rpc, fmt, date, dateTime, num, KIND, esc, cleanName, toast, auth, normalize } = BC;
@@ -76,8 +77,75 @@
       '<div class="stats"><div class="stat"><b>' + num(a.names.length) + '</b><span>اسم أضفته</span></div><div class="stat"><b>' + num(a.reports.length) + '</b><span>بلاغ أرسلته</span></div><div class="stat"><b>' + num(a.ratings.length) + '</b><span>تقييم</span></div><div class="stat"><b>' + num(a.reports.filter(r => r.status === 'confirmed').length) + '</b><span>بلاغ أكدته الإدارة</span></div></div>' +
       '<h2 style="font-size:22px">مساهماتي</h2>' +
       (rows ? '<div class="tbl-wrap"><table class="tbl stack"><thead><tr><th>الرقم</th><th>المساهمة</th><th>التاريخ</th></tr></thead><tbody>' + rows + '</tbody></table></div>'
-            : '<div class="card empty">لم تضف أي مساهمة بعد. <a href="./#search">ابحث عن رقم</a> وأضف اسماً أو بلاغاً.</div>');
+            : '<div class="card empty">لم تضف أي مساهمة بعد. <a href="./#search">ابحث عن رقم</a> وأضف اسماً أو بلاغاً.</div>') +
+      '<section class="card share" id="share" style="margin-top:22px"><h2 style="font-size:22px;margin-top:0">مشاركة جهات الاتصال <span class="badge">اختياري</span></h2><div id="shareBody"><div class="empty">جارٍ التحميل…</div></div></section>';
+    shareBox();
     document.getElementById('out').onclick = async () => { await auth.logout(); toast('سُجّل خروجك.'); BC.chrome('account'); authView(); };
+  }
+
+  // ---------- مشاركة جهات الاتصال الاختيارية: موافقة صريحة، اختيار يدوي، معاينة قبل الإرسال، وسحب في أي وقت ----------
+  function parseVcf(text) {
+    const out = []; const blocks = text.replace(/\r\n[ \t]/g, '').split(/BEGIN:VCARD/i).slice(1);
+    for (const b of blocks) {
+      const fn = (b.match(/^FN[^:\n]*:(.*)$/im) || [])[1];
+      const nRaw = (b.match(/^N[^:\n]*:(.*)$/im) || [])[1];
+      const name = (fn || (nRaw ? nRaw.split(';').slice(0, 2).reverse().join(' ') : '')).replace(/\\,/g, ',').trim();
+      const tels = [...b.matchAll(/^(?:item\d+\.)?TEL[^:\n]*:(.*)$/gim)].map(m => m[1].trim());
+      tels.forEach(t => out.push({ name, phone: t }));
+    }
+    return out;
+  }
+  async function shareBox() {
+    const box = document.getElementById('shareBody'); if (!box) return;
+    let st = { consent_at: null, shared: 0 };
+    try { st = await rpc('bc_contacts_status', { p_token: auth.token() }); } catch (e) {}
+    const picker = 'contacts' in navigator && 'select' in navigator.contacts;
+    box.innerHTML =
+      '<p>يمكنك، إن رغبت، مشاركة أسماء وأرقام <b>تختارها بنفسك</b> من جهات اتصالك لمساعدة غيرك على معرفة المتصلين. هذه الميزة معطّلة افتراضياً ولا تعمل إلا بموافقتك.</p>' +
+      '<ul class="hint" style="line-height:1.9;padding-inline-start:18px">' +
+      '<li>نرسل فقط الاسم والرقم لجهات الاتصال التي تحددها وتراها في المعاينة، ولا نقرأ دفتر عناوينك كاملاً.</li>' +
+      '<li>لا يظهر أي اسم مصدره جهات الاتصال للعموم إلا إذا شاركه مستخدمان مستقلان على الأقل بالاسم نفسه.</li>' +
+      '<li>لا نشارك أرقام الجهات الموثّقة ولا الأرقام التي طلب أصحابها إخفاءها، ولا رقمك أنت.</li>' +
+      '<li>يمكنك سحب موافقتك في أي وقت، فنحذف فوراً كل ما شاركته.</li></ul>' +
+      (st.shared ? '<p><span class="badge sun">شاركت ' + num(st.shared) + ' جهة اتصال</span>' + (st.consent_at ? ' · منذ <span class="ltr">' + date(st.consent_at) + '</span>' : '') + '</p>' : '') +
+      '<label style="display:flex;gap:8px;align-items:flex-start;font-weight:400;margin:12px 0"><input type="checkbox" id="cOk" style="width:20px;min-height:20px;margin-top:5px"> <span>أوافق صراحةً على مشاركة جهات الاتصال التي أختارها، وفق <a href="privacy.html#contacts" target="_blank">سياسة الخصوصية</a>، وأعلم أنني أستطيع سحب الموافقة متى شئت.</span></label>' +
+      '<div style="display:flex;gap:10px;flex-wrap:wrap">' +
+      (picker ? '<button class="btn btn-main" id="cPick" disabled>اختيار من جهات الاتصال</button>' : '') +
+      '<label class="btn btn-line" id="cFileL" aria-disabled="true" style="opacity:.55;cursor:not-allowed">رفع ملف جهات اتصال (vCard)<input type="file" id="cFile" accept=".vcf,text/vcard,text/x-vcard" hidden disabled></label>' +
+      (st.shared || st.consent_at ? '<button class="btn btn-risk" id="cWd">سحب الموافقة وحذف ما شاركته</button>' : '') + '</div>' +
+      (picker ? '' : '<p class="hint">على الكمبيوتر أو آيفون: صدّر جهات الاتصال التي تريدها كملف ‎.vcf‎ ثم ارفعه هنا. على أندرويد مع متصفح Chrome يظهر زر الاختيار المباشر.</p>') +
+      '<div id="cPrev"></div>';
+    const ok = box.querySelector('#cOk'), pick = box.querySelector('#cPick'), file = box.querySelector('#cFile'), fl = box.querySelector('#cFileL');
+    ok.onchange = () => { if (pick) pick.disabled = !ok.checked; file.disabled = !ok.checked; fl.style.opacity = ok.checked ? 1 : .55; fl.style.cursor = ok.checked ? 'pointer' : 'not-allowed'; fl.setAttribute('aria-disabled', !ok.checked); };
+    if (pick) pick.onclick = async () => {
+      try { const sel = await navigator.contacts.select(['name', 'tel'], { multiple: true }); preview(sel.flatMap(c => (c.tel || []).map(t => ({ name: (c.name || [])[0] || '', phone: t })))); }
+      catch (e) { toast('لم يتم اختيار جهات اتصال.', true); }
+    };
+    file.onchange = async () => { const f = file.files[0]; if (!f) return; if (f.size > 2e6) { toast('حجم الملف كبير، اختر جهات أقل.', true); return; } preview(parseVcf(await f.text())); file.value = ''; };
+    const wd = box.querySelector('#cWd');
+    if (wd) wd.onclick = async () => {
+      wd.disabled = true;
+      try { const r = await rpc('bc_withdraw_contacts', { p_token: auth.token() }); toast('سُحبت موافقتك وحُذفت ' + num(r.removed) + ' جهة اتصال.'); shareBox(); }
+      catch (e) { toast(e.message, true); wd.disabled = false; }
+    };
+    function preview(list) {
+      const seen = new Set(), items = [];
+      list.forEach(x => { const e = normalize(x.phone, '974'); const n = cleanName(x.name); if (e && n.length >= 2 && !seen.has(e)) { seen.add(e); items.push({ e, n }); } });
+      const pv = box.querySelector('#cPrev');
+      if (!items.length) { pv.innerHTML = '<p class="hint">لم نجد أرقاماً صالحة بأسماء في ما اخترته.</p>'; return; }
+      const cut = items.slice(0, 500);
+      pv.innerHTML = '<h3 style="font-size:18px;margin-top:18px">راجع ما سيُشارك (' + num(cut.length) + ')</h3><p class="hint">ألغِ تحديد أي جهة لا تريد مشاركتها، مثل الأقارب والأصدقاء. ننصح بمشاركة المنشآت ومقدمي الخدمات فقط.</p>' +
+        '<div class="tbl-wrap" style="max-height:340px;overflow:auto"><table class="tbl"><tbody>' + cut.map((x, i) => '<tr><td style="width:36px"><input type="checkbox" data-i="' + i + '" checked style="width:20px;min-height:20px" aria-label="مشاركة ' + esc(x.n) + '"></td><td>' + esc(x.n) + '</td><td><span class="ltr">' + esc(fmt(x.e)) + '</span></td></tr>').join('') + '</tbody></table></div>' +
+        '<button class="btn btn-main" id="cSend" style="margin-top:12px">مشاركة المحدد</button>';
+      pv.querySelector('#cSend').onclick = async ev => {
+        if (!ok.checked) { toast('يلزم تأكيد الموافقة أولاً.', true); return; }
+        const chosen = [...pv.querySelectorAll('input[data-i]:checked')].map(c => cut[+c.dataset.i]);
+        if (!chosen.length) { toast('لم تحدد أي جهة اتصال.', true); return; }
+        ev.target.disabled = true;
+        try { const r = await rpc('bc_share_contacts', { p_token: auth.token(), p_items: chosen.map(x => ({ phone: x.e, name: x.n })), p_consent: true }); toast('شكراً لك. أُضيفت ' + num(r.added) + ' جهة، وتُجوهلت ' + num(r.skipped) + '.'); shareBox(); }
+        catch (e) { toast(e.message, true); ev.target.disabled = false; }
+      };
+    }
   }
 
   profile();

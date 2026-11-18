@@ -8,39 +8,44 @@
 
   cc.innerHTML = BC.CC.map(c => '<option value="' + c[0] + '"' + (c[0] === '974' ? ' selected' : '') + '>' + c[2] + ' +' + c[0] + '</option>').join('');
 
-  rpc('bc_stats').then(s => { $('#f-n').textContent = num(s.numbers); $('#f-r').textContent = num(s.reports); $('#f-l').textContent = num(s.lookups); }).catch(() => {});
+  Promise.all([rpc('bc_stats'), BC.directory.ready]).then(([s]) => { $('#f-n').textContent = num(Math.max(s.numbers, BC.directory.count())); $('#f-r').textContent = num(s.reports); $('#f-l').textContent = num(s.lookups); }).catch(() => {});
 
   async function lookup(raw, count) {
     const e = normalize(raw, cc.value);
     if (!e) { toast('صيغة الرقم غير صحيحة. مثال: 5555 1234 أو ‎+974 5555 1234', true); return; }
     out.hidden = false; out.innerHTML = '<div class="rcard"><div class="empty">جارٍ البحث عن <span class="ltr">' + esc(fmt(e)) + '</span>…</div></div>';
     try {
-      current = await rpc('bc_lookup', { p_number: e, p_count: count !== false });
+      const r = await Promise.all([rpc('bc_lookup', { p_number: e, p_count: count !== false }), BC.directory.ready]);
+      current = r[0];
       render(current);
       history.replaceState(null, '', '?n=' + encodeURIComponent(e) + '#search');
     } catch (err) { out.innerHTML = '<div class="rcard"><div class="empty">' + esc(err.message) + '</div></div>'; }
   }
 
   function render(c) {
+    c = current = BC.directory.merge(c);
     const lv = level(c.spam_score || 0), co = country(c.e164);
     const unknown = !c.name;
-    const title = c.name ? esc(c.name) : (c.spam_score >= 30 ? 'رقم مُبلَّغ عنه' : 'رقم غير معروف');
+    const title = c.name ? esc(c.name) : (c.official_reports >= 5 ? 'رقم مُبلَّغ عنه رسمياً' : c.spam_score >= 30 ? 'رقم مُبلَّغ عنه' : 'رقم غير معروف');
     const initial = c.name ? esc(c.name.trim().charAt(0)) : (c.spam_score >= 30 ? '!' : '؟');
     const kinds = Object.entries(c.kinds || {}).sort((a, b) => b[1] - a[1]).map(([k, v]) => '<span class="badge warn">' + KIND[k] + ' · ' + v + '</span>').join(' ');
     const comments = (c.comments || []).map(m => '<li>' + esc(m.comment) + '<small>' + KIND[m.kind] + ' · <span class="ltr">' + date(m.at) + '</span></small></li>').join('');
     out.innerHTML = '<div class="rcard">' +
       '<div class="rhead ' + lv.cls + '"><div class="avatar">' + initial + '</div><div style="flex:1;min-width:0">' +
-        '<h2>' + title + (c.verified ? ' <span class="badge sun" title="رقم موثّق من الإدارة">✓ موثّق</span>' : '') + '</h2>' +
+        '<h2>' + title + (c.verified ? ' <span class="badge sun" title="' + (c.source ? 'رقم منشور رسمياً من مصدر معلن' : 'رقم موثّق من الإدارة') + '">✓ موثّق</span>' : '') + '</h2>' +
         '<div class="n"><span class="ltr">' + esc(fmt(c.e164)) + '</span>' + (co ? ' · ' + co.flag + ' ' + co.name : '') + '</div></div>' +
         '<span class="badge ' + lv.cls + '">' + lv.label + '</span></div>' +
       '<div class="rbody"><div>' +
         '<div class="kv"><span>مؤشر الإزعاج</span><b class="ltr">' + (c.spam_score || 0) + ' / 100</b></div>' +
         '<div class="meter" aria-hidden="true"><i style="width:' + Math.max(4, c.spam_score || 0) + '%"></i></div>' +
-        '<div class="kv"><span>التصنيف</span><b>' + (unknown && !c.reports ? 'غير مصنّف' : (CAT[c.category] || 'شخصي')) + '</b></div>' +
+        '<div class="kv"><span>التصنيف</span><b>' + (unknown && !c.reports && !c.official_reports ? 'غير مصنّف' : (CAT[c.category] || 'شخصي')) + '</b></div>' +
         '<div class="kv"><span>بلاغات المجتمع</span><b>' + num(c.reports) + '</b></div>' +
         '<div class="kv"><span>تقييمات: آمن / مزعج</span><b>' + num(c.safe_votes) + ' / ' + num(c.spam_votes) + '</b></div>' +
         '<div class="kv"><span>عمليات البحث</span><b>' + num(c.lookups) + '</b></div>' +
         (c.updated_at ? '<div class="kv"><span>آخر تحديث</span><b class="ltr">' + dateTime(c.updated_at) + '</b></div>' : '') +
+        (c.official_reports >= 5 ? '<div class="kv"><span>بلاغات رسمية</span><b>' + num(c.official_reports) + ' شكوى' + (c.official_subject ? ' · ' + esc(c.official_subject) : '') + '</b></div>' +
+          (c.official_last ? '<div class="kv"><span>آخر شكوى رسمية</span><b class="ltr">' + date(c.official_last) + '</b></div>' : '') : '') +
+        (c.source && c.source.url ? '<p class="hint src">المصدر: <a href="' + esc(c.source.url) + '" target="_blank" rel="noopener">' + esc(c.source.name) + '</a></p>' : '') +
         (kinds ? '<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px">' + kinds + '</div>' : '') +
       '</div><div>' +
         '<h3>ماذا قال المجتمع</h3>' + (comments ? '<ul class="comments">' + comments + '</ul>' : '<p class="hint">لا توجد تعليقات بعد. كن أول من يساهم بمعلومة مفيدة عن هذا الرقم.</p>') +
