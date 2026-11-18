@@ -78,3 +78,13 @@
 - الواجهة `assets/countries.js` و`assets/countries.css` و`assets/countries-map.json` (حدود الدول من Natural Earth): خريطة بأربع طبقات (الحالة، نقاط التوتر، الجذب والاستقرار، التوقع من `data/forecast.json` بمفاتيح ISO3 إن وُجد)، و«تابع دولة» (`localStorage khabar-follow-c`) مع تنبيه وإشعار إن تراجع الوضع، ومقارنة دولتين `#cmp-uk-libya`.
 - الإدارة: `countries_off` (إخفاء دولة) و`countries_hidden` (إخفاء خبر) في `admin.json`. قُطب: صف «الأوضاع في الدول» في بطاقة المنصة.
 - لإضافة دولة: كائن جديد في `COUNTRIES` داخل `scripts/countries.mjs` (المعرّف، الاسم، العلم، اللون، `iso3`، ما يدل على الدولة `c`، الخلاصات، المدن)، ومسارها في `assets/countries-map.json`، وملفها في `data/countries-editorial.json`.
+
+## التوقعات: استقراء المستقبل (`forecast/`، منذ 18 نوفمبر 2026)
+
+تقديرات احتمالية **لا أخبار**، بمنهجية معلنة كاملة في الصفحة، لـ24 دولة في ستة جوانب (سياسي، عسكري، أمني، اقتصادي، احتجاجات، علاقات خارجية).
+- `assets/forecast-model.js`: النموذج الحسابي الوحيد، يستعمله المحرك وصفحة الزائر معاً، فما يراه الزائر هو الحساب نفسه. أي تعديل على الأوزان يرفع `VERSION` ويُعلَن.
+- `scripts/forecast.mjs` (كل 3 ساعات من `khabar.yml`، ويعيده الطيار إن تأخر 4 ساعات): يجلب أسبوعياً مؤشرات صندوق النقد الدولي (DataMapper) والبنك الدولي (WDI والحوكمة WGI) إلى `data/forecast/indicators.json`، ويطابق النمو والتضخم والبطالة بين المؤسستين (درجة أ/أ−/ب)، ويجمع الأحداث الموثّقة بجهتين من `desks.json` و`military.json` و`wars.json` و`countries.json` وأخبار Google بالتدوير، ويصنّفها بقاموس معلن، ويكتب `data/forecast.json` (للخريطة وقُطب) و`data/forecast/events.json` و`data/forecast/history.json` (سجل الدقة ومؤشر براير).
+- `agent/forecast.py --enforce`: يحذف أي حدث دون جهتين مستقلتين وأي مدخل دون مصدر، ويتحقق من اتساق الاحتمالات، ويكتب `data/forecast/check.json`.
+- قائمة الدول في `data/forecast/countries.json` (ISO3، رمز صندوق النقد، معرّف قسم الأوضاع `ck`، كلمات التمييز). لإضافة دولة: أضف سطراً هنا وموقعها في `TILE` بـ`assets/forecast.js`.
+- `data/forecast.json` → `countries[ISO3]`: `outlook` (improve|stable|watch|deteriorate)، `p_worse`، `p_better`، `ci`، `color`، `link`، `aspects`. تقرؤه خريطة «الأوضاع في الدول» لطبقة «التوقع».
+- الإدارة: `forecast_hidden` (دول مخفية)، `forecast_default`، `forecast_note` في `admin.json`، من لوحة «التوقعات» في الإدارة.

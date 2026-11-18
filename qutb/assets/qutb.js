@@ -268,6 +268,16 @@ async function khabarStats(p, o, add) {
     const worse = (c.meta || []).filter(m => C[m.id]?.index?.trend === 'down').map(m => m.ar);
     if (worse.length) add('info', `${p.name}: تراجع مؤشر الاستقرار اليوم في ${esc(worse.join('، '))}`, p.site + '#countries');
   } catch (e) { o.rows.push(['الأوضاع في الدول', '<span class="skel">تعذّرت القراءة</span>']); }
+  // التوقعات: استقراء المستقبل (18 نوفمبر 2026): احتمالات معلنة المنهجية لـ24 دولة، تُحسب آلياً كل 3 ساعات
+  try {
+    const f = await raw(p.repo, base + 'forecast.json'), C = f.countries || {};
+    const L = {improve: ['ok', 'تحسّن'], stable: ['ok', 'استقرار'], watch: ['warn', 'مراقبة'], deteriorate: ['bad', 'تدهور']};
+    const top = Object.entries(C).sort((a, b) => b[1].p_worse - a[1].p_worse).slice(0, 6);
+    const rec = f.record || {};
+    o.rows.push(['التوقعات', `<a href="${esc(p.site)}forecast/" target="_blank" rel="noopener">${Object.keys(C).length} دولة</a> · ${f.events_count || 0} حدثاً موثّقاً · ${ago(f.updated)} · سجل الدقة: ${rec.resolved ? 'براير ' + (rec.by?.['7']?.brier ?? '—') : 'يبدأ الحسم بعد أسبوع'}<br>` +
+      top.map(([id, c]) => { const l = L[c.outlook] || L.stable; return `<a href="${esc(p.site)}forecast/#c=${esc(id)}" target="_blank" rel="noopener"><span class="pill ${l[0]}">${esc(c.ar)}: ${l[1]} ${Math.round(c.p_worse * 100)}٪</span></a>`; }).join(' ')]);
+    if (hoursSince(f.updated) > 8) add('warn', `${p.name}: التوقعات لم تُحسب منذ ${ago(f.updated).replace('قبل ', '')}`, p.site + 'forecast/');
+  } catch (e) { o.rows.push(['التوقعات', '<span class="skel">تعذّرت القراءة</span>']); }
   if (k.status === 'fulfilled') {
     o.rows.push(['العاجل', k.value.on ? '<span class="pill bad">منشور الآن</span>' : 'لا عاجل']);
     if (k.value.on) add('info', `${p.name}: خبر عاجل منشور الآن`, p.site);

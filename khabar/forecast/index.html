@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>التوقعات: استقراء المستقبل | عبدو نيوز</title>
+<meta name="description" content="تقديرات احتمالية معلنة المنهجية لمستقبل أهم الدول سياسياً وعسكرياً وأمنياً واقتصادياً، باحتمالات ونطاق ثقة، ومتغيرات يختارها القارئ: الدولة والجانب والمدى والسيناريو.">
+<meta name="theme-color" content="#14212E">
+<meta property="og:title" content="التوقعات: استقراء المستقبل | عبدو نيوز">
+<meta property="og:description" content="إلى أين تتجه الدول؟ تقديرات احتمالية بمنهجية معلنة ومدخلات موثّقة، وليست أخباراً مؤكدة.">
+<meta property="og:image" content="https://munjiz-qa.github.io/khabar/assets/og.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://munjiz-qa.github.io/khabar/forecast/">
+<meta property="og:site_name" content="عبدو نيوز">
+<link rel="canonical" href="https://munjiz-qa.github.io/khabar/forecast/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://api.open-meteo.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&family=IBM+Plex+Mono:wght@500&family=Reem+Kufi:wght@500;700&display=swap">
+<link rel="stylesheet" href="../assets/khabar.css">
+<link rel="stylesheet" href="../assets/forecast.css">
+<script>try{var t=localStorage.getItem('khabar-theme');if(t)document.documentElement.dataset.theme=t;var l=localStorage.getItem('khabar-lang');if(l==='en'){document.documentElement.lang='en';document.documentElement.dir='ltr'}}catch(e){}</script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="mark" viewBox="0 0 64 64"><path d="M17 9.5h30a11 11 0 0 1 11 11v17a11 11 0 0 1-11 11h-1.5l1.5 9.5-12-9.5H17a11 11 0 0 1-11-11v-17a11 11 0 0 1 11-11z" fill="none" stroke="currentColor" stroke-width="4.6" stroke-linejoin="round"/><path d="M21 23h25" stroke="#3A5FB0" stroke-width="4.6" stroke-linecap="round"/><path d="M33 34h13" stroke="#1D7A70" stroke-width="4.6" stroke-linecap="round"/><path d="M17.5 33.5l3.6 3.6 6.4-7.4" fill="none" stroke="#1D7A70" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="9.5" r="6.5" fill="#E39A2D"/></symbol>
+  </defs>
+</svg>
+
+<header class="top">
+  <div class="wrap top-row">
+    <a class="brand" href="../#today" aria-label="عبدو نيوز">
+      <svg class="brand-mark"><use href="#mark"/></svg>
+      <span class="brand-word" data-t="brand">عبدو نيوز</span>
+    </a>
+    <div class="top-meta">
+      <span id="today-date"></span>
+      <span class="mute" data-t="section">التوقعات</span>
+    </div>
+    <div class="top-actions">
+      <a class="icon-btn" href="../account/" aria-label="حسابي" title="حسابي"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+      <button id="lang-btn" class="icon-btn" type="button" aria-label="English">EN</button>
+      <button id="theme-btn" class="icon-btn" type="button" aria-label="الوضع الليلي">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z" fill="currentColor"/></svg>
+      </button>
+    </div>
+  </div>
+  <nav class="tabs" aria-label="الأقسام">
+    <div class="wrap tabs-row" id="tabs"></div>
+  </nav>
+</header>
+
+<main class="wrap fc" id="main" tabindex="-1">
+  <div class="ed-head">
+    <span class="eyebrow" data-t="eyebrow">التوقعات: استقراء المستقبل</span>
+    <h1 data-t="h1">إلى أين تتجه الدول؟</h1>
+    <p class="mute" data-t="intro">نقرأ الوضع السابق والحالي لأهم الدول من مؤشرات مؤسسية وأحداث موثّقة، ونستخرج منها احتمالات للتحسن والاستقرار والتدهور مع نطاق ثقة. اختر الدولة والجانب والمدى والسيناريو، فيتغير التوقع والتقرير أمامك.</p>
+  </div>
+  <p class="fc-warn" role="note"><b data-t="warn_b">تقديرات لا أخبار.</b> <span data-t="warn">كل ما في هذا القسم احتمالات محسوبة آلياً بمنهجية معلنة أسفل الصفحة، وليس خبراً مؤكداً ولا توصية. كل مدخل منسوب إلى مصدره برابطه الأصلي، وكل حدث مؤكد من جهتين مستقلتين.</span></p>
+
+  <section class="fc-panel fc-controls" aria-labelledby="ctl-h">
+    <h2 id="ctl-h" class="sr" data-t="ctl">متغيرات التوقع</h2>
+    <div class="fc-row">
+      <div class="field"><label for="f-country" data-t="country">الدولة</label><select id="f-country"></select></div>
+      <div class="field"><label for="f-scen" data-t="scenario">السيناريو</label><select id="f-scen"></select></div>
+    </div>
+    <div class="fc-group"><span class="fc-lab" id="lab-aspect" data-t="aspect">الجانب</span><div class="chips" id="f-aspect" role="group" aria-labelledby="lab-aspect"></div></div>
+    <div class="fc-group"><span class="fc-lab" id="lab-h" data-t="horizon">المدى الزمني</span><div class="seg" id="f-h" role="group" aria-labelledby="lab-h"></div></div>
+    <div class="fc-group fc-slider"><label class="fc-lab" for="f-w"><span data-t="weight">وزن أحداث الأيام السبعة الأخيرة</span> <b id="f-w-v" class="num"></b></label><input id="f-w" type="range" min="0" max="2" step="0.25" value="1"><span class="mute fc-hint" data-t="weight_hint">صفر: المؤشرات البنيوية وحدها. اثنان: ضعف أثر الأحداث الأخيرة.</span></div>
+    <p class="mute fc-scen-note" id="f-scen-note"></p>
+    <div class="fc-acts"><button class="btn" id="b-share" type="button" data-t="share">انسخ رابط هذا التوقع</button><button class="btn ghost" id="b-copy" type="button" data-t="copy">انسخ التقرير</button><button class="btn ghost" id="b-print" type="button" data-t="print">اطبع أو احفظ PDF</button></div>
+  </section>
+
+  <section id="result" class="fc-result" aria-live="polite"></section>
+  <section id="aspects" class="fc-aspects" aria-labelledby="asp-h"><h2 id="asp-h" class="fc-h" data-t="aspects_h">الجوانب الستة</h2><div class="fc-grid" id="asp-grid"></div></section>
+  <section id="report" class="fc-panel fc-report" aria-labelledby="rep-h"><h2 id="rep-h" class="fc-h" data-t="report_h">التقرير</h2><div id="rep-body"></div></section>
+  <section id="drivers" class="fc-panel" aria-labelledby="drv-h"><h2 id="drv-h" class="fc-h" data-t="drivers_h">لماذا هذا التقدير؟</h2><div id="drv-body"></div></section>
+  <section id="economy" class="fc-panel" aria-labelledby="eco-h"><h2 id="eco-h" class="fc-h" data-t="eco_h">الاقتصاد بالأرقام</h2><div id="eco-body"></div></section>
+  <section id="evidence" class="fc-panel" aria-labelledby="ev-h"><h2 id="ev-h" class="fc-h" data-t="ev_h">الأحداث الموثّقة التي دخلت الحساب</h2><div id="ev-body"></div></section>
+
+  <section id="board" class="zone" aria-labelledby="board-h">
+    <div class="zone-head"><span class="dot" style="background:var(--dawn)"></span><h2 id="board-h" data-t="board_h">لوحة الدول</h2><span class="count" id="board-sub"></span></div>
+    <div class="fc-legend" id="legend"></div>
+    <div class="fc-tiles" id="tiles" role="list"></div>
+    <div class="fc-rank-wrap"><table class="fc-rank" id="rank"></table></div>
+  </section>
+
+  <section id="record" class="fc-panel" aria-labelledby="rec-h"><h2 id="rec-h" class="fc-h" data-t="rec_h">سجل دقة التوقعات</h2><div id="rec-body"></div></section>
+
+  <section id="method" class="sources-all fc-method" aria-labelledby="met-h">
+    <h2 id="met-h" class="fc-h" data-t="method_h">المنهجية المعلنة</h2>
+    <div id="met-body"></div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-row">
+    <div class="foot-brand"><svg class="brand-mark sm"><use href="#mark"/></svg><span data-t="brand">عبدو نيوز</span></div>
+    <p class="mute" data-t="footer_note">التوقعات في هذا القسم تقديرات احتمالية لا أخبار، تُحسب آلياً كل 3 ساعات بمنهجية معلنة، ويُنشر سجل دقتها كما هو.</p>
+    <p class="contact" id="contact"></p>
+  </div>
+</footer>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<script src="../assets/config.js"></script>
+<script type="module" src="../assets/forecast.js"></script>
+<script src="../assets/report.js" defer></script>
+</body>
+</html>

@@ -182,6 +182,9 @@ async function health(brief) {
   const cn = readJSON('countries.json', {}), cnAge = (Date.now() - new Date(cn.updated)) / 3600e3;
   const cnBad = Object.values(cn.countries || {}).flatMap(c => c.items || []).filter(i => new Set((i.sources || []).map(s => outlet(s.url))).size < 2).length;
   checks.push({name: 'الأوضاع في الدول حديثة وكل خبر من جهتين', ok: cnAge < 8 && cnBad === 0, detail: `آخر تحديث قبل ${isNaN(cnAge) ? '—' : cnAge.toFixed(1)} ساعة، ${Object.values(cn.countries || {}).reduce((s, c) => s + (c.items || []).length, 0)} خبراً، ${cnBad} دون جهتين`});
+  const fc = readJSON('forecast.json', {}), fcA = (Date.now() - new Date(fc.updated)) / 3600e3, fcN = Object.keys(fc.countries || {}).length;
+  const fcEv = readJSON('forecast/events.json', {events: []}).events || [], fcBad = fcEv.filter(e => new Set((e.sources || []).map(s => outlet(s.url))).size < 2).length;
+  checks.push({name: 'التوقعات محسوبة حديثاً وكل حدث من جهتين', ok: fcA < 8 && fcN >= 20 && fcBad === 0, detail: `آخر حساب قبل ${isNaN(fcA) ? '—' : fcA.toFixed(1)} ساعة، ${fcN} دولة، ${fcEv.length} حدثاً، ${fcBad} دون جهتين`});
   checks.push({name: 'العناوين الآلية حديثة', ok: headAge < 7, detail: `آخر تحديث قبل ${headAge.toFixed(1)} ساعة`});
   const n = (brief.zones || []).reduce((s, z) => s + z.items.length, 0), unsourced = (brief.zones || []).flatMap(z => z.items).filter(i => !(i.src || []).every(s => brief.sources[s]?.url)).length;
   checks.push({name: 'كل خبر بمصدره', ok: n >= 8 && unsourced === 0, detail: `${n} خبراً، ${unsourced} دون مصدر`});
@@ -233,6 +236,11 @@ catch (e) { console.error('تعذّر الرصد العسكري:', e.message); }
   const cn = readJSON('countries.json', {}), cnAge = (Date.now() - new Date(cn.updated)) / 3600e3;
   if (!(cnAge < 3.5) && !ARGS.has('--dry')) {
     try { execFileSync(process.execPath, ['khabar/scripts/countries.mjs'], {stdio: 'inherit', timeout: 12 * 60e3}); execFileSync('python3', ['khabar/agent/countries.py', '--enforce', '--quiet'], {stdio: 'inherit'}); } catch (e) { console.error('countries', e.message); }
+  }
+  // التوقعات: تُحسب كل 3 ساعات من khabar.yml، ويعيدها الطيار إن تأخرت 4 ساعات، ثم بوابة التحقق
+  const fcj = readJSON('forecast.json', {}), fcAge = (Date.now() - new Date(fcj.updated)) / 3600e3;
+  if (!(fcAge < 4) && !ARGS.has('--dry')) {
+    try { execFileSync(process.execPath, ['khabar/scripts/forecast.mjs'], {stdio: 'inherit', timeout: 10 * 60e3}); execFileSync('python3', ['khabar/agent/forecast.py', '--enforce', '--quiet'], {stdio: 'inherit'}); } catch (e) { console.error('forecast', e.message); }
   }
   if (!ARGS.has('--dry')) { try { execFileSync(process.execPath, ['khabar/scripts/build.mjs'], {stdio: 'inherit', timeout: 3 * 60e3}); } catch (e) { console.error('build', e.message); } }
 }

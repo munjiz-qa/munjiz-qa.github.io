@@ -63,10 +63,10 @@ if (desks) for (const m of desks.meta) for (const lang of ['ar', 'en']) {
 }
 
 // ---------- خرائط الموقع ----------
-const urls = ['', 'weather/', '#desks', '#military', '#wars', '#method', ...(desks ? desks.meta.map(m => '#d-' + m.id) : [])];
+const urls = ['', 'weather/', 'forecast/', '#desks', '#military', '#wars', '#method', ...(desks ? desks.meta.map(m => '#d-' + m.id) : [])];
 writeFileSync(K + 'sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${['', 'weather/', 'newsletter/', 'embed/', 'partners/'].map(u => `<url><loc>${SITE}${u}</loc><changefreq>hourly</changefreq></url>`).join('\n')}
+${['', 'weather/', 'forecast/', 'newsletter/', 'embed/', 'partners/'].map(u => `<url><loc>${SITE}${u}</loc><changefreq>hourly</changefreq></url>`).join('\n')}
 </urlset>
 `);
 // Google News: خلاصات اليومين الأخيرين

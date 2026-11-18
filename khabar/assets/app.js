@@ -39,7 +39,7 @@ const T={
  auto_breaking:['رصد آلي','Auto-detected'],checked_by:['دقّقه المدقق المستقل','Independently fact-checked'],
  nums_ok:['الأرقام مطابقة لمصادرها','Figures match their sources'],nums_review:['رقم قيد المراجعة','Figure under review'],
  trust:['ميزان الثقة','Trust meter'],weather:['الطقس والمناخ','Weather'],climate:['مناخ العالم','World climate'],
- military:['القسم العسكري','Military'],wars:['الحروب الدائرة','Ongoing wars'],countries:['الأوضاع في الدول','Countries'],desks:['الأقسام','Desks']
+ military:['القسم العسكري','Military'],wars:['الحروب الدائرة','Ongoing wars'],countries:['الأوضاع في الدول','Countries'],forecast:['التوقعات','Forecasts'],desks:['الأقسام','Desks']
 };
 const t=k=>(T[k]||[k,k])[LANG==='en'?1:0];
 const ZC={qatar:'var(--dawn)',gulf:'var(--sea)',egypt:'var(--nile)',world:'var(--ink)'};
@@ -85,8 +85,8 @@ function header(){
   $('#theme-btn').setAttribute('aria-label',dark?t('theme_light'):t('theme_dark'));
   document.title=LANG==='en'?'Abdo News | Your daily brief from Doha to the world':'عبدو نيوز | خلاصة يومك من الدوحة إلى العالم';
   const tabs=$('#tabs');tabs.textContent='';
-  [['today'],...ZONES.map(z=>[z,ZC[z]]),['military','#8A3A2E'],['wars','#C4392F'],['countries','#1F3A93'],['desks','#7A3FB0'],['weather'],['roadmap'],['ledger'],['saved'],['about']].forEach(([id,c])=>{
-    const a=el('a','tab');a.href=id==='weather'?'weather/':'#'+id;if(c){const i=el('i');i.style.background=c==='var(--ink)'?'var(--deep-ink)':c;a.append(i)}a.append(t(id));
+  [['today'],...ZONES.map(z=>[z,ZC[z]]),['military','#8A3A2E'],['wars','#C4392F'],['countries','#1F3A93'],['forecast','#D9A21A'],['desks','#7A3FB0'],['weather'],['roadmap'],['ledger'],['saved'],['about']].forEach(([id,c])=>{
+    const a=el('a','tab');a.href=id==='weather'?'weather/':id==='forecast'?'forecast/':'#'+id;if(c){const i=el('i');i.style.background=c==='var(--ink)'?'var(--deep-ink)':c;a.append(i)}a.append(t(id));
     if(id===VIEW||(id==='today'&&VIEW.startsWith('b-'))||(id==='wars'&&VIEW.startsWith('war-'))||(id==='countries'&&window.KC&&KC.has(VIEW))||(id==='desks'&&window.KD&&KD.has(VIEW)))a.setAttribute('aria-current','page');tabs.append(a)});
   if(window.KD)KD.a11y();
   const cur=tabs.querySelector('[aria-current]');if(cur)cur.scrollIntoView({block:'nearest',inline:'center'});
