@@ -6,7 +6,7 @@ on:
     - cron: '17 5,17 * * *'
   push:
     branches: [main]
-    paths: ['basira-caller/**', 'scripts/basira-caller-e2e.cjs', '.github/workflows/basira-caller-health.yml']
+    paths: ['basira-caller/**', 'scripts/basira-caller-e2e.cjs', 'scripts/basira-caller-data-e2e.cjs', '.github/workflows/basira-caller-health.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -39,6 +39,11 @@ jobs:
         run: |
           if [ -z "$BC_ADMIN_EMAIL" ] && grep -q "url: ''" basira-caller/config.js; then export BC_ADMIN_EMAIL=admin@basira.local BC_ADMIN_PASS=Basira-2026; fi
           node scripts/basira-caller-e2e.cjs shots-live
+      - name: اختبار الدليل الرسمي وبلاغات FTC ومشاركة جهات الاتصال على الموقع المنشور
+        env: { BC_URL: 'https://munjiz-qa.github.io/basira-caller' }
+        run: |
+          grep -q "url: ''" basira-caller/config.js && export BC_LOCAL=1
+          node scripts/basira-caller-data-e2e.cjs shots-live/data
       - if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with: { name: basira-caller-shots, path: shots-live, retention-days: 7 }
