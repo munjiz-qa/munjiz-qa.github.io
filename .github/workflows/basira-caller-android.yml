@@ -1,0 +1,110 @@
+# تطبيق «بصيرة كولر من منجز» لأندرويد: يُبنى ويُختبر على محاكي هاتف (مكالمة واردة حقيقية)،
+# ثم يُنشر في https://github.com/munjiz-qa/munjiz-qa.github.io/releases/tag/basira-caller
+# للتوقيع بمفتاح متجر Google Play أضف أسرار المستودع: BASIRA_UPLOAD_KEYSTORE (p12 بترميز base64) و BASIRA_UPLOAD_PASS.
+name: Basira Caller Android
+on:
+  push:
+    branches: [main]
+    paths: ['basira-caller/android/**', 'basira-caller/config.js', '.github/workflows/basira-caller-android.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: basira-caller-android
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: basira-caller/android } }
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4
+        with: { distribution: temurin, java-version: 17 }
+      - uses: gradle/actions/setup-gradle@ac638b010cf58a27ee6c972d7336334ccaf61c96 # v4
+        with: { gradle-version: '8.9' }
+      - name: Server settings from config.js
+        run: |
+          URL=$(node -e "global.window={};require('../config.js');console.log(window.BC_CONFIG.url)")
+          KEY=$(node -e "global.window={};require('../config.js');console.log(window.BC_CONFIG.key)")
+          sed -i "s|__BC_URL__|$URL|; s|__BC_KEY__|$KEY|" app/src/main/java/qa/munjiz/basiracaller/Config.java
+          grep -c "__BC_" app/src/main/java/qa/munjiz/basiracaller/Config.java && exit 1 || true
+      - name: Signing key
+        env:
+          UPLOAD_KEYSTORE: ${{ secrets.BASIRA_UPLOAD_KEYSTORE }}
+          UPLOAD_PASS: ${{ secrets.BASIRA_UPLOAD_PASS }}
+        run: |
+          if [ -n "$UPLOAD_KEYSTORE" ]; then
+            echo "$UPLOAD_KEYSTORE" | base64 -d > "$RUNNER_TEMP/key.p12"
+            echo "BC_KEYSTORE=$RUNNER_TEMP/key.p12" >> $GITHUB_ENV; echo "BC_KEY_PASS=$UPLOAD_PASS" >> $GITHUB_ENV; echo "BC_KEY_ALIAS=basira-upload" >> $GITHUB_ENV
+          fi
+      - name: Build APK and AAB
+        run: gradle --no-daemon -Pvc=${{ github.run_number }} assembleRelease bundleRelease
+      - run: |
+          mkdir -p out
+          cp app/build/outputs/apk/release/app-release.apk out/BasiraCaller.apk
+          cp app/build/outputs/bundle/release/app-release.aab out/BasiraCaller.aab
+          ls -la out
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with: { name: android, path: basira-caller/android/out }
+
+  emulator-test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with: { name: android, path: out }
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
+      - name: Install, enable caller ID and receive a real incoming call
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2
+        with:
+          api-level: 33
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: |
+            adb install -r out/BasiraCaller.apk
+            adb shell pm grant qa.munjiz.basiracaller android.permission.POST_NOTIFICATIONS
+            adb shell cmd role add-role-holder android.app.role.CALL_SCREENING qa.munjiz.basiracaller
+            adb shell am start -n qa.munjiz.basiracaller/.MainActivity
+            sleep 25
+            adb exec-out screencap -p > out/android-app.png
+            adb shell cmd role get-role-holders android.app.role.CALL_SCREENING | tee out/android-role.txt
+            adb emu gsm call 50000001
+            sleep 12
+            adb exec-out screencap -p > out/android-incoming.png
+            adb shell cmd statusbar expand-notifications; sleep 3
+            adb exec-out screencap -p > out/android-notification.png
+            adb emu gsm cancel 50000001 || true
+            adb shell dumpsys notification --noredact | grep -A3 "qa.munjiz.basiracaller" | grep -iE "android.title|android.text" | head -6 | tee out/android-notification.txt
+            adb logcat -d | grep -iE "FATAL|AndroidRuntime" | tail -40 > out/android-log.txt || true
+            cat out/android-log.txt
+            adb shell pidof qa.munjiz.basiracaller
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with: { name: android-test, path: out/android-* }
+
+  publish:
+    needs: [build, emulator-test]
+    if: always() && needs.build.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with: { path: dl }
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          find dl -type f | sort
+          gh release view basira-caller >/dev/null 2>&1 || gh release create basira-caller --title "بصيرة كولر من منجز" --notes "تطبيق بصيرة كولر لأندرويد." --latest=false
+          gh release upload basira-caller $(find dl -type f -size +0 \( -name 'BasiraCaller*' -o -name 'android-*.png' -o -name 'android-*.txt' \)) --clobber
+          gh release edit basira-caller --notes "بصيرة كولر من منجز: اعرف من يتصل بك قبل أن ترد.
+
+          - BasiraCaller.apk: للتثبيت المباشر على أندرويد 10 فأحدث
+          - BasiraCaller.aab: لرفعه إلى متجر Google Play
+          - الموقع: https://munjiz-qa.github.io/basira-caller/
+
+          آخر تحديث: $(date -u +'%Y-%m-%d %H:%M') UTC · الإصدار 1.0.${{ github.run_number }} · اختبار المحاكي: ${{ needs.emulator-test.result }}"

@@ -62,6 +62,7 @@ $('fSvc2')&&($('fSvc2').textContent=all.filter(s=>s.kind==='gov').length);
 $('fCon')&&($('fCon').textContent=all.filter(s=>s.kind==='consult').length);
 const NUMS={gov:all.filter(s=>s.kind==='gov').length,ent:DATA.G.length,con:all.filter(s=>s.kind==='consult').length,cat:cats.length,pmin:fmt(Math.min(...DATA.PLANS.map(p=>p.m)))};
 document.querySelectorAll('[data-n]').forEach(el=>el.textContent=NUMS[el.dataset.n]);
+document.querySelectorAll('[data-w]').forEach(el=>{const [k,few,many]=el.dataset.w.split(':'),n=+NUMS[k];if(n)el.textContent=n>=3&&n<=10?few:many});
 let ent='all',full=false;const cart=new Map();
 function toast(t){const el=$('toast');el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,1800)}
 const priceHTML=s=>`<span class="price num">${s.from?`<small>${T.from}</small> `:''}${fmt(s.p)} <small>${T.cur}${s.unit&&!EN?' '+esc(s.unit):''}</small></span>`;

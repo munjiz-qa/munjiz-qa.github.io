@@ -70,6 +70,30 @@ function startStatic() { // يحاكي GitHub Pages: ملفات ثابتة فق�
   ok('visitor iPhone: no overflow', !(await overflow(I)));
   await I.screenshot({ path: `${shots}/02-visitor-iphone.png` });
 
+  // ---------- 1b. visitor → new client → booking (one flow, phone) ----------
+  await home(V);
+  ok('visitor: booking call-to-action + WhatsApp contact on home', await V.isVisible('.book-cta [data-act="gobook"]') && await V.locator('a[href^="https://wa.me/974"]').count() > 0 && await V.locator('a[href^="tel:+974"]').count() > 0);
+  const NC = await newCtx({ ...devices['Pixel 7'], locale: 'ar-QA' }); const N = await page(NC);
+  await home(N); await N.evaluate(() => document.querySelector('.sn-install .x, .pwi-x')?.click());
+  await N.click('.svc >> nth=1 >> [data-act="gobook"]'); await N.waitForSelector('#f-reg', { state: 'visible', timeout: 6000 }).catch(() => {});
+  ok('visitor: «احجز هذه الخدمة» opens the new-account form', await N.isVisible('#f-reg') && (await N.textContent('#msg')).includes('إعداد سند لنشاطك'), await N.textContent('body').then(t => t.slice(0, 200)));
+  const nphone = '5' + String(Date.now()).slice(-7);
+  await N.fill('#r-name', 'زائر جديد للاختبار'); await N.fill('#r-phone', nphone); await N.fill('#r-pass', 'Visitor@2026');
+  await N.click('#r-pass + .eye'); ok('login: show-password toggle works', await N.getAttribute('#r-pass', 'type') === 'text');
+  await N.click('#f-reg button[type=submit]'); await N.waitForSelector('#bkform', { timeout: 10000 }).catch(() => {});
+  ok('new client: lands on booking with the chosen service', await N.isVisible('#bkform') && await N.inputValue('#bk-svc') === 'إعداد سند لنشاطك', await N.textContent('.main').then(t => t.slice(0, 200)));
+  await N.screenshot({ path: `${shots}/02b-new-client-booking-phone.png` });
+  ok('new client phone: no overflow', !(await overflow(N)));
+  await logout(N);
+  await N.goto(B + '/login.html#register'); await N.waitForSelector('#f-login', { state: 'attached' });
+  await N.waitForTimeout(500);
+  ok('login: «حساب جديد» link opens the registration tab', await N.isVisible('#f-reg'));
+  if (!LIVE) {
+    let last; for (let i = 0; i < 6; i++) last = await api(N, 'POST', 'api/login', { login: 'locktest@sanad.local', password: 'wrong-pass-' + i });
+    ok('login: locked after 5 wrong attempts', last.status === 429, JSON.stringify(last));
+  }
+  await NC.close();
+
   // ---------- 2. client (Android phone) ----------
   const CC = await newCtx({ ...devices['Pixel 7'], locale: 'ar-QA' }); const C = await page(CC);
   await C.goto(B + '/login.html'); await C.waitForSelector('#f-login');
@@ -150,7 +174,12 @@ function startStatic() { // يحاكي GitHub Pages: ملفات ثابتة فق�
   ok('staff admin: admin role option hidden', await Sp.locator('#opt-admin').evaluate(o => o.hidden));
   if (MODE === 'web') { await home(Sp); await logout(Sp); await login(A, ADMIN); }
   await A.goto(B + '/admin.html'); await A.waitForSelector('#users tr');
-  A.once('dialog', d => d.accept()); await A.click('[data-name="مشرف الحجوزات"]'); await A.waitForTimeout(500);
+  const staffId = (await api(A, 'GET', 'api/admin/users')).users.find(x => x.email === 'staff@sanad.local').id;
+  ok('console: password reset button shown for staff', await A.isVisible(`[data-reset="${staffId}"]`));
+  const rs = await api(A, 'POST', `api/admin/users/${staffId}/password`, { password: 'Staff@Reset2026' });
+  const rsOwner = await api(A, 'POST', 'api/admin/users/u-owner/password', { password: 'Hacked@2026' });
+  ok('super admin: resets staff password, super admin protected', rs.status === 200 && rsOwner.status >= 400, JSON.stringify([rs, rsOwner]));
+  A.once('dialog', d => d.accept()); await A.click('[data-del][data-name="مشرف الحجوزات"]'); await A.waitForTimeout(500);
   ok('super admin: deletes staff admin', !(await A.textContent('#users')).includes('staff@sanad.local'));
   // password change
   await A.fill('#pw-cur', ADMIN.pass); await A.fill('#pw-new', 'Sanad@Admin2026!'); await A.click('#f-pw button[type=submit]'); await A.waitForTimeout(900);

@@ -127,7 +127,9 @@
   async function start() {
     const ml = document.querySelector('link[rel=manifest]');
     if (ml) { try { man = await (await fetch(ml.href)).json(); } catch (e) {} }
-    name = man.short_name || man.name || name;
+    // an English page keeps its own English name when the shared manifest names the app in Arabic
+    const mn = man.short_name || man.name;
+    if (mn && !(en && /[\u0600-\u06FF]/.test(mn))) name = mn;
     const ic = (man.icons || []).filter(i => i.src && !/maskable/.test(i.purpose || '')).sort((a, b) => (parseInt(b.sizes) || 0) - (parseInt(a.sizes) || 0));
     const i192 = ic.find(i => parseInt(i.sizes) <= 256) || ic[0];
     icon = i192 ? new URL(i192.src, ml ? ml.href : base).href : (document.querySelector('link[rel=apple-touch-icon],link[rel~=icon]')?.href || '');

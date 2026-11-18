@@ -1,0 +1,30 @@
+name: مراقبة موقع براق
+# يتحقق من أن موقع براق المنشور يعمل دون Claude: الصفحات والملفات والمخطط والأسئلة الشائعة وصفحتا العميل والمدير، على الكمبيوتر والجوال.
+# لا ينشئ حسابات ولا يكتب في Firebase. عند الفشل يصل إشعار GitHub لصاحب المستودع.
+on:
+  schedule:
+    - cron: '17 */6 * * *'
+  push:
+    branches: [main]
+    paths: ['buraq/**', 'scripts/buraq-live-check.cjs', '.github/workflows/buraq-health.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 20
+      - name: تجهيز متصفح الاختبار
+        run: npm i --no-save --no-package-lock playwright@1.48.2 && npx playwright install --with-deps chromium
+      - name: انتظار النشر عند التحديث
+        if: github.event_name == 'push'
+        run: sleep 120
+      - name: فحص موقع براق المنشور
+        env:
+          BURAQ_URL: https://munjiz-qa.github.io/buraq/
+        run: node scripts/buraq-live-check.cjs

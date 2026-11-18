@@ -166,7 +166,7 @@ $('goNew').onclick=()=>pane('new');
 // service contract: this account's company details plus the services in the request basket (or the open transactions)
 $('dContract').onclick=()=>{const c=ME.client||{},open=ME.transactions.filter(t=>!/منجزة|ملغاة/.test(t.status));
   const items=cart.size?[...cart].map(([k,q])=>({c:k,n:SVC[k].n,q,p:SVC[k].p})):open.map(t=>({c:t.code,n:t.service,q:1,p:+t.fee||0}));
-  try{localStorage.setItem('munjiz_contract',JSON.stringify({at:Date.now(),client:{name:c.name,cr:c.cr,estCard:c.estCard,address:c.address,phone:c.phone,email:c.email,qid:c.qid},items}))}catch(e){}
+  try{localStorage.setItem('munjiz_contract',JSON.stringify({at:Date.now(),client:{name:c.name,cr:c.cr,estCard:c.estCard,address:c.address,phone:c.phone,email:c.email,qid:c.qid,contactName:((/المسؤول: *([^\n]+)/.exec(c.notes||'')||[])[1]||'').trim(),contactPhone:c.phone,contactEmail:c.email},items}))}catch(e){}
   window.open((EN?'../':'')+'contract.html?by=client'+(EN?'&lang=en':''),'_blank')};
 
 // files: Drive files come through the server (only for this account); plain links open directly

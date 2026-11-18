@@ -1,0 +1,26 @@
+plugins { id 'com.android.application' }
+def vc = (project.findProperty('vc') ?: '1') as int
+android {
+    namespace 'qa.munjiz.basiracaller'
+    compileSdk 34
+    defaultConfig {
+        applicationId 'qa.munjiz.basiracaller'
+        minSdk 29
+        targetSdk 34
+        versionCode vc
+        versionName "1.0.${vc}"
+    }
+    signingConfigs {
+        release {
+            storeFile file(System.getenv('BC_KEYSTORE') ?: '../direct-install.p12')
+            storePassword System.getenv('BC_KEY_PASS') ?: 'basira-direct'
+            keyAlias System.getenv('BC_KEY_ALIAS') ?: 'basira'
+            keyPassword System.getenv('BC_KEY_PASS') ?: 'basira-direct'
+            storeType 'pkcs12'
+        }
+    }
+    buildTypes {
+        release { minifyEnabled false; signingConfig signingConfigs.release }
+    }
+    compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+}

@@ -1,0 +1,49 @@
+name: مراقبة بصيرة كولر
+# يختبر الموقع المنشور بكل الأدوار (زائر، ومستخدم مسجّل، ومدير) على الكمبيوتر والجوال، مرتين يومياً وبعد كل تحديث.
+# بيانات المدير تُقرأ من أسرار المستودع BASIRA_ADMIN_EMAIL و BASIRA_ADMIN_PASS (وإن غابت يُختبر حساب الوضع المحلي الافتراضي).
+on:
+  schedule:
+    - cron: '17 5,17 * * *'
+  push:
+    branches: [main]
+    paths: ['basira-caller/**', 'scripts/basira-caller-e2e.cjs', 'scripts/basira-caller-data-e2e.cjs', '.github/workflows/basira-caller-health.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with: { node-version: 20 }
+      - run: npm i --no-save --no-package-lock playwright@1.48.2 && npx playwright install --with-deps chromium
+      - name: انتظار النشر عند التحديث
+        if: github.event_name == 'push'
+        run: sleep 100
+      - name: التحقق من أن الملفات المنشورة مطابقة للمستودع
+        run: |
+          base=https://munjiz-qa.github.io/basira-caller
+          for f in index.html account.html admin.html privacy.html config.js assets/bc.js assets/home.js assets/admin.js assets/local-backend.js assets/bc.css; do
+            code=$(curl -s -o /tmp/f -w '%{http_code}' --retry 3 --retry-delay 10 "$base/$f?t=$(date +%s)")
+            same=$(cmp -s /tmp/f "basira-caller/$f" && echo مطابق || echo مختلف)
+            echo "$code $same $f"
+            [ "$code" = "200" ] || { echo "::error::الملف $f غير متاح ($code)"; exit 1; }
+          done
+      - name: اختبار الموقع المنشور بكل الأدوار على الكمبيوتر والجوال
+        env:
+          BC_URL: https://munjiz-qa.github.io/basira-caller
+          BC_ADMIN_EMAIL: ${{ secrets.BASIRA_ADMIN_EMAIL }}
+          BC_ADMIN_PASS: ${{ secrets.BASIRA_ADMIN_PASS }}
+        run: |
+          if [ -z "$BC_ADMIN_EMAIL" ] && grep -q "url: ''" basira-caller/config.js; then export BC_ADMIN_EMAIL=admin@basira.local BC_ADMIN_PASS=Basira-2026; fi
+          node scripts/basira-caller-e2e.cjs shots-live
+      - name: اختبار الدليل الرسمي وبلاغات FTC ومشاركة جهات الاتصال على الموقع المنشور
+        env: { BC_URL: 'https://munjiz-qa.github.io/basira-caller' }
+        run: |
+          grep -q "url: ''" basira-caller/config.js && export BC_LOCAL=1
+          node scripts/basira-caller-data-e2e.cjs shots-live/data
+      - if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with: { name: basira-caller-shots, path: shots-live, retention-days: 7 }
