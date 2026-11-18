@@ -32,7 +32,10 @@ public class CallerService extends CallScreeningService {
             CallResponse.Builder b = new CallResponse.Builder();
             if (block) b.setDisallowCall(true).setRejectCall(true).setSkipCallLog(false).setSkipNotification(false);
             respondToCall(details, b.build());
-            if (r != null && (!r.unknown || r.score > 0)) notifyCaller(r, block);
+            if (e164 != null) {
+                if (r == null) { r = new Lookup.Result(); r.e164 = e164; }
+                notifyCaller(r, block);
+            }
         }).start();
     }
 
@@ -43,9 +46,10 @@ public class CallerService extends CallScreeningService {
             ch.setDescription("يعرض اسم المتصل ومؤشر الخطر لحظة الرنين");
             nm.createNotificationChannel(ch);
         }
-        String title = (r.name != null ? r.name : "رقم مُبلَّغ عنه") + (r.verified ? " ✓" : "");
+        String title = (r.name != null ? r.name : (r.score >= 30 ? "رقم مُبلَّغ عنه" : "رقم غير معروف")) + (r.verified ? " ✓" : "");
         String text = Lookup.format(r.e164) + " · " + Lookup.label(r) + " · مؤشر " + r.score
-                + (r.reports > 0 ? " · " + r.reports + " بلاغ" : "");
+                + (r.reports > 0 ? " · " + r.reports + " بلاغ" : "")
+                + (r.name == null && r.score == 0 ? "\nلا توجد معلومات عنه بعد. اضغط لإضافة اسمه أو الإبلاغ عنه." : "");
         if (blocked) title = "رُفضت مكالمة احتيال: " + title;
         Intent open = new Intent(Intent.ACTION_VIEW, Uri.parse(Config.SITE + "?n=" + Uri.encode(r.e164) + "#search"));
         PendingIntent pi = PendingIntent.getActivity(this, r.e164.hashCode(), open, PendingIntent.FLAG_IMMUTABLE);
