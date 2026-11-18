@@ -198,8 +198,9 @@ ok(/الآيات القرآنية/.test(doc) && /أقوال المفسرين/.te
 }
 { // التلاوة المتصلة، والقبلة وتقويم الشهر، واختبار الحفظ: الصفحات تعمل وبياناتها صحيحة
   await p.evaluate(() => location.hash = 'recite'); await p.waitForSelector('#rcGo', { timeout: 30000 }).catch(() => {});
-  const r = await p.evaluate(() => ({ go: !!document.querySelector('#rcGo'), rs: document.querySelectorAll('#rcR option').length }));
-  ok(r.go && r.rs >= 10, `التلاوة المتصلة: ${r.rs} قارئاً`);
+  const r = await p.evaluate(() => ({ go: !!document.querySelector('#rcGo'), rs: document.querySelectorAll('#rcCards .rc-card').length, jump: !!document.querySelector('#rcJump #jS') }));
+  ok(r.go && r.rs >= 10, `التلاوة المتصلة: ${r.rs} قارئاً (بطاقات)`);
+  ok(r.jump, 'التلاوة المتصلة: قسم «اذهب إلى آية» ظاهر');
   await p.evaluate(() => location.hash = 'prayer'); await p.waitForSelector('#prMon table', { timeout: 30000 }).catch(() => {});
   const m = await p.evaluate(() => { const d = new Date(); return { rows: document.querySelectorAll('#prMon tbody tr').length, days: new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate(), q: typeof qibla === 'function' ? Math.round(qibla(30.0444, 31.2357)) : 0, dial: !!document.querySelector('#qDial') }; });
   ok(m.rows === m.days && m.dial && Math.abs(m.q - 136) <= 2, `مواقيت الشهر كاملاً (${m.rows} يوماً) وبوصلة القبلة (القاهرة ${m.q}°)`);
