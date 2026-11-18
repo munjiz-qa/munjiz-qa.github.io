@@ -6,7 +6,7 @@
 // الاستخدام: node khabar/scripts/build.mjs
 import {readFileSync, writeFileSync, mkdirSync, readdirSync, unlinkSync} from 'node:fs';
 
-const K = 'khabar/', DATA = K + 'data/', SITE = 'https://munjiz-qa.github.io/khabar/';
+const K = 'khabar/', DATA = K + 'data/', SITE = 'https://munjiz-qa.github.io/abdo-news/';
 const rj = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch (e) { return d; } };
 const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const outletOf = u => { try { const p = new URL(u).hostname.replace(/^(www|amp|m|en|english|arabic)\./, '').split('.'); return p.length > 2 && ['co', 'com', 'org', 'net', 'gov'].includes(p[p.length - 2]) ? p.slice(-3).join('.') : p.slice(-2).join('.'); } catch (e) { return ''; } };

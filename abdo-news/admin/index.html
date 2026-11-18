@@ -1,7 +1,186 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>لوحة إدارة عبدو نيوز</title><link rel="canonical" href="https://munjiz-qa.github.io/khabar/admin/">
-<meta property="og:title" content="لوحة إدارة عبدو نيوز"><meta property="og:site_name" content="عبدو نيوز"><meta property="og:image" content="https://munjiz-qa.github.io/khabar/assets/og.png">
-<meta name="twitter:card" content="summary_large_image"><link rel="icon" href="../khabar/assets/icon.svg" type="image/svg+xml">
-<script>location.replace('../../khabar/admin/'+location.search+location.hash)</script>
-<meta http-equiv="refresh" content="0;url=../../khabar/admin/"></head>
-<body style="font-family:sans-serif;background:#14212E;color:#F5F6F3;display:grid;place-items:center;min-height:100vh;margin:0"><a style="color:#E39A2D" href="../../khabar/admin/">عبدو نيوز ←</a></body></html>
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<script>if(location.pathname.indexOf("/khabar/")===0||location.pathname==="/khabar")location.replace("/abdo-news/"+location.pathname.replace(/^\/khabar\/?/,"")+location.search+location.hash)</script>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>لوحة إدارة عبدو نيوز</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#14212E">
+<link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&family=IBM+Plex+Mono:wght@500&family=Reem+Kufi:wght@500;700&display=swap">
+<link rel="stylesheet" href="../assets/khabar.css">
+<script>try{var t=localStorage.getItem('khabar-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<style>
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:14px}
+.panel h2{font-size:1.25rem}
+.field{display:grid;gap:4px}
+.field label{font-size:.88rem;font-weight:700}
+.field small{color:var(--mute);font-size:.8rem}
+.field input,.field textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 12px;width:100%}
+.field textarea{min-height:76px;resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.switch{display:flex;align-items:center;gap:10px;font-weight:700}
+.switch input{width:20px;height:20px;accent-color:var(--urgent)}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.kpis div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.kpis b{display:block;font-family:var(--mono);font-size:1.3rem}
+.kpis small{color:var(--mute);font-size:.8rem}
+.hide-list{list-style:none;margin:0;padding:0;display:grid;gap:6px;max-height:420px;overflow:auto}
+.hide-list label{display:grid;grid-template-columns:22px 1fr;gap:8px;align-items:start;padding:8px 10px;border:1px solid var(--line);border-radius:10px;font-size:.92rem;cursor:pointer}
+.hide-list input{margin-top:6px;accent-color:var(--urgent)}
+.hide-list .z{font-size:.75rem;font-weight:700;color:var(--mute);display:block}
+.msg{padding:10px 14px;border-radius:10px;font-size:.92rem}
+.msg.ok{background:var(--sea-soft);color:var(--ink)}
+.msg.err{background:var(--dawn-soft);color:var(--ink);border:1px solid var(--urgent)}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.danger{background:var(--urgent);color:#fff}
+.login{max-width:420px;margin:40px auto}
+pre.json{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;font-size:.78rem;overflow:auto;max-height:260px;direction:ltr;text-align:left}
+.checks{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.checks li{display:flex;gap:8px;align-items:center;font-size:.9rem}
+.checks .dot{width:9px;height:9px;border-radius:50%;flex:none;background:var(--sea)}
+.checks .bad .dot{background:var(--urgent)}
+.tbl-wrap{overflow-x:auto}
+table.users{width:100%;border-collapse:collapse;font-size:.9rem}
+table.users th,table.users td{text-align:right;padding:8px;border-bottom:1px solid var(--line);vertical-align:middle}
+table.users .ltr{direction:ltr;text-align:right;font-family:var(--mono)}
+table.users .acts{display:flex;flex-wrap:wrap;gap:6px}
+.btn.sm{padding:5px 10px;font-size:.8rem}
+.field select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 12px;width:100%}
+@media (max-width:640px){table.users thead{display:none}table.users tr{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line);padding:6px 0}table.users td{border:0;padding:4px 6px}table.users .acts{grid-column:1/-1}}
+@media (max-width:640px){.row2{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap top-row">
+    <a class="brand" href="../">
+      <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><path d="M17 9.5h30a11 11 0 0 1 11 11v17a11 11 0 0 1-11 11h-1.5l1.5 9.5-12-9.5H17a11 11 0 0 1-11-11v-17a11 11 0 0 1 11-11z" fill="none" stroke="currentColor" stroke-width="4.6" stroke-linejoin="round"/><path d="M21 23h25" stroke="#3A5FB0" stroke-width="4.6" stroke-linecap="round"/><path d="M33 34h13" stroke="#1D7A70" stroke-width="4.6" stroke-linecap="round"/><path d="M17.5 33.5l3.6 3.6 6.4-7.4" fill="none" stroke="#1D7A70" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="9.5" r="6.5" fill="#E39A2D"/></svg>
+      <span class="brand-word">عبدو نيوز</span>
+    </a>
+    <div class="top-meta"><span>لوحة الإدارة</span><span class="mute" id="who"></span></div>
+    <div class="top-actions"><button class="icon-btn" id="logout" type="button" hidden>خروج</button></div>
+  </div>
+</header>
+
+<main class="wrap" id="main">
+  <form class="panel login" id="login-form">
+    <h1 style="font-size:1.5rem">دخول مدير «عبدو نيوز»</h1>
+    <div class="field"><label for="u">اسم المستخدم</label><input id="u" autocomplete="username" required></div>
+    <div class="field"><label for="p">كلمة المرور</label><input id="p" type="password" autocomplete="current-password" required></div>
+    <p class="msg err" id="login-err" hidden></p>
+    <button class="btn" type="submit">دخول</button>
+  </form>
+
+  <div id="app" hidden style="display:grid;gap:22px">
+    <section class="panel">
+      <h2>نظرة عامة</h2>
+      <div class="kpis" id="kpis"></div>
+      <div class="btns"><a class="btn ghost" href="../" target="_blank" rel="noopener">فتح التطبيق</a><a class="btn ghost" href="../account/" target="_blank" rel="noopener">صفحة حساب العميل</a><a class="btn ghost" href="../#roadmap" target="_blank" rel="noopener">خريطة الطريق</a></div>
+    </section>
+
+    <section class="panel">
+      <h2>التشغيل الذاتي</h2>
+      <p class="mute" style="font-size:.9rem">يعمل «عبدو نيوز» وحده على GitHub دون أي جلسة أو تدخل: العناوين كل 3 ساعات، والطيار الآلي كل ساعة يفحص الموقع واللوحات، وإذا فات موعد الخلاصة (كل 6 ساعات: 06:20 و12:20 و18:20 و00:20 بتوقيت الدوحة) كتب خلاصة آلية من عناوين المصادر نفسها بروابطها الأصلية. وعند أي عطل يُفتح بلاغ في المستودع فيصلك التنبيه بالبريد.</p>
+      <div id="health"></div>
+    </section>
+
+    <section class="panel">
+      <h2>الحسابات والصلاحيات</h2>
+      <p class="mute" style="font-size:.9rem">المدير الشامل يملك كل الصلاحيات: العاجل، والإخفاء، والوكيل، والحسابات، وكلمات المرور. والعميل يدخل إلى صفحة «حسابي» فيتابع دوائره وخلاصته ومحفوظاته. كلمات المرور تُحفظ مشتقة ولا تُحفظ نصاً.</p>
+      <div class="tbl-wrap"><table class="users"><thead><tr><th>الاسم</th><th>اسم المستخدم</th><th>الدور</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody id="users-body"></tbody></table></div>
+      <form id="user-form" class="row2" autocomplete="off">
+        <div class="field"><label for="nn">الاسم</label><input id="nn" name="nn" maxlength="60" placeholder="مثال: شركة الريان"></div>
+        <div class="field"><label for="nu">اسم المستخدم</label><input id="nu" name="nu" dir="ltr" required maxlength="32" placeholder="client.name"></div>
+        <div class="field"><label for="npw">كلمة المرور (10 أحرف على الأقل)</label><input id="npw" name="npw" type="password" dir="ltr" required minlength="10" autocomplete="new-password"></div>
+        <div class="field"><label for="nr">الدور</label><select id="nr" name="nr"><option value="client">عميل</option><option value="super">مدير شامل</option></select></div>
+        <div class="btns"><button class="btn" type="submit">إضافة الحساب ونشره</button></div>
+      </form>
+      <p class="msg" id="users-msg" hidden></p>
+      <small class="mute">الإضافة والتعديل تستخدم مفتاح النشر في قسم «نشر التعديلات».</small>
+    </section>
+
+    <section class="panel">
+      <h2>الخبر العاجل</h2>
+      <p class="mute" style="font-size:.9rem">يظهر شريطاً أحمر أعلى التطبيق. لا يُقبل عاجل دون اسم المصدر ورابطه.</p>
+      <label class="switch"><input type="checkbox" id="b-on"> تفعيل الشريط العاجل</label>
+      <div class="field"><label for="b-ar">نص العاجل بالعربية</label><textarea id="b-ar" maxlength="220"></textarea></div>
+      <div class="field"><label for="b-en">نص العاجل بالإنجليزية (اختياري)</label><textarea id="b-en" maxlength="220" dir="ltr"></textarea></div>
+      <div class="row2">
+        <div class="field"><label for="b-src">اسم المصدر</label><input id="b-src" maxlength="80"></div>
+        <div class="field"><label for="b-url">رابط الخبر الأصلي</label><input id="b-url" type="url" dir="ltr" placeholder="https://"></div>
+      </div>
+      <div class="field"><label for="b-until">يختفي تلقائياً بعد (بتوقيت جهازك)</label><input id="b-until" type="datetime-local"><small>اتركه فارغاً ليبقى حتى تلغيه.</small></div>
+    </section>
+
+    <section class="panel">
+      <h2>الوكيل الذكي المستقل</h2>
+      <p class="mute" style="font-size:.9rem">يكتب الوكيل خلاصتي الصباح والمساء ويرصد العاجل بنفسه، ولا يُنشر شيء قبل بوابة المصادر والمدقق المستقل. سجلّه الكامل في صفحة <a href="../#ledger">الشفافية</a>.</p>
+      <div class="kpis" id="agent-kpis"></div>
+      <p class="mute" id="agent-last" style="font-size:.88rem"></p>
+      <div class="btns">
+        <button class="btn" type="button" data-run="brief">اكتب خلاصة الآن</button>
+        <button class="btn ghost" type="button" data-run="breaking">ارصد العاجل الآن</button>
+        <button class="btn ghost" type="button" data-run="verify">افحص الخلاصة الحالية</button>
+      </div>
+      <p class="msg" id="run-msg" hidden></p>
+      <small class="mute">التشغيل يستخدم مفتاح النشر أدناه، ويحتاج صلاحية Actions: Read and write إضافة إلى Contents. الكتابة الذاتية تعمل بعد إضافة مفتاح Claude API باسم ANTHROPIC_API_KEY في أسرار المستودع.</small>
+    </section>
+
+    <section class="panel">
+      <h2>إخفاء خبر من الخلاصة الحالية</h2>
+      <p class="mute" style="font-size:.9rem">ضع علامة على أي خبر لإخفائه عن القرّاء دون حذفه من الأرشيف.</p>
+      <ul class="hide-list" id="hide-list"></ul>
+    </section>
+
+    <section class="panel" id="wx-panel">
+      <h2>الطقس والمناخ</h2>
+      <p class="mute" style="font-size:.9rem">قسم <a href="../weather/" target="_blank" rel="noopener">الطقس والمناخ</a> يعمل ذاتياً من متصفح الزائر (Open-Meteo وGDACS وUSGS)، وأخبار المناخ يكتبها الطيار الآلي كل 3 ساعات ولا يُنشر منها إلا ما نقلته جهتان مستقلتان.</p>
+      <div class="kpis" id="wx-kpis"></div>
+      <p class="mute" id="wx-last" style="font-size:.88rem"></p>
+      <div class="row2">
+        <div class="field"><label for="wx-cc">الدولة الافتراضية للزائر الجديد (رمز من حرفين)</label><input id="wx-cc" dir="ltr" maxlength="2" placeholder="QA"></div>
+        <div class="field"><label for="wx-q">المدينة الافتراضية (بالإنجليزية للبحث)</label><input id="wx-q" dir="ltr" maxlength="60" placeholder="Doha"></div>
+      </div>
+      <label class="switch"><input type="checkbox" id="wx-off"> إخفاء «مناخ العالم» من الصفحة الرئيسية</label>
+      <p class="mute" style="font-size:.88rem">ضع علامة على أي خبر مناخي لإخفائه عن القرّاء:</p>
+      <ul class="hide-list" id="wx-hide"></ul>
+    </section>
+
+    <section class="panel">
+      <h2>كلمة المرور</h2>
+      <div class="row2">
+        <div class="field"><label for="np1">كلمة المرور الجديدة (10 أحرف على الأقل)</label><input id="np1" type="password" autocomplete="new-password"></div>
+        <div class="field"><label for="np2">تأكيد كلمة المرور</label><input id="np2" type="password" autocomplete="new-password"></div>
+      </div>
+      <small class="mute">تغيّر كلمة مرور حسابك أنت، وتُحفظ مشفّرة وتسري بعد الضغط على «نشر التعديلات».</small>
+    </section>
+
+    <section class="panel">
+      <h2>نشر التعديلات</h2>
+      <div class="field">
+        <label for="tok">مفتاح النشر على GitHub</label>
+        <input id="tok" type="password" dir="ltr" autocomplete="off" placeholder="github_pat_…">
+        <small>مفتاح دقيق الصلاحيات (Fine-grained token) على مستودع munjiz-qa/munjiz-qa.github.io بصلاحية Contents: Read and write. يُحفظ على هذا الجهاز فقط.</small>
+      </div>
+      <p class="msg" id="pub-msg" hidden></p>
+      <div class="btns">
+        <button class="btn" id="publish" type="button">نشر التعديلات</button>
+        <button class="btn ghost" id="copy-json" type="button">نسخ ملف الإعدادات</button>
+      </div>
+      <details><summary class="mute" style="cursor:pointer">معاينة ملف الإعدادات</summary><pre class="json" id="preview"></pre></details>
+    </section>
+  </div>
+</main>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<script src="../assets/config.js"></script>
+<script src="../assets/auth.js"></script>
+<script src="admin.js"></script>
+<script src="extra.js"></script>
+<script src="forecast-admin.js"></script>
+</body>
+</html>
