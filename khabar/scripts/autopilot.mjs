@@ -179,6 +179,9 @@ async function health(brief) {
   const dk = readJSON('desks.json', {}), dkAge = (Date.now() - new Date(dk.updated)) / 3600e3;
   const dkBad = Object.values(dk.desks || {}).flatMap(d => d.items).filter(i => new Set((i.sources || []).map(s => outlet(s.url))).size < 2).length;
   checks.push({name: 'الأقسام الموضوعية حديثة وكل خبر من جهتين', ok: dkAge < 8 && dkBad === 0, detail: `آخر تحديث قبل ${isNaN(dkAge) ? '—' : dkAge.toFixed(1)} ساعة، ${Object.values(dk.desks || {}).reduce((s, d) => s + d.items.length, 0)} خبراً، ${dkBad} دون جهتين`});
+  const cn = readJSON('countries.json', {}), cnAge = (Date.now() - new Date(cn.updated)) / 3600e3;
+  const cnBad = Object.values(cn.countries || {}).flatMap(c => c.items || []).filter(i => new Set((i.sources || []).map(s => outlet(s.url))).size < 2).length;
+  checks.push({name: 'الأوضاع في الدول حديثة وكل خبر من جهتين', ok: cnAge < 8 && cnBad === 0, detail: `آخر تحديث قبل ${isNaN(cnAge) ? '—' : cnAge.toFixed(1)} ساعة، ${Object.values(cn.countries || {}).reduce((s, c) => s + (c.items || []).length, 0)} خبراً، ${cnBad} دون جهتين`});
   checks.push({name: 'العناوين الآلية حديثة', ok: headAge < 7, detail: `آخر تحديث قبل ${headAge.toFixed(1)} ساعة`});
   const n = (brief.zones || []).reduce((s, z) => s + z.items.length, 0), unsourced = (brief.zones || []).flatMap(z => z.items).filter(i => !(i.src || []).every(s => brief.sources[s]?.url)).length;
   checks.push({name: 'كل خبر بمصدره', ok: n >= 8 && unsourced === 0, detail: `${n} خبراً، ${unsourced} دون مصدر`});
@@ -225,6 +228,11 @@ catch (e) { console.error('تعذّر الرصد العسكري:', e.message); }
   const d = readJSON('desks.json', {}), age = (Date.now() - new Date(d.updated)) / 3600e3;
   if (!(age < 3.5) && !ARGS.has('--dry')) {
     try { execFileSync(process.execPath, ['khabar/scripts/desks.mjs'], {stdio: 'inherit', timeout: 12 * 60e3}); execFileSync('python3', ['khabar/agent/desks.py', '--enforce', '--quiet'], {stdio: 'inherit'}); } catch (e) { console.error('desks', e.message); }
+  }
+  // الأوضاع في الدول: تُحدَّث كل 3 ساعات من khabar.yml، ويعيدها الطيار هنا إن تأخرت (مع خلاصات كل 6 ساعات)، ثم بوابة التحقق
+  const cn = readJSON('countries.json', {}), cnAge = (Date.now() - new Date(cn.updated)) / 3600e3;
+  if (!(cnAge < 3.5) && !ARGS.has('--dry')) {
+    try { execFileSync(process.execPath, ['khabar/scripts/countries.mjs'], {stdio: 'inherit', timeout: 12 * 60e3}); execFileSync('python3', ['khabar/agent/countries.py', '--enforce', '--quiet'], {stdio: 'inherit'}); } catch (e) { console.error('countries', e.message); }
   }
   if (!ARGS.has('--dry')) { try { execFileSync(process.execPath, ['khabar/scripts/build.mjs'], {stdio: 'inherit', timeout: 3 * 60e3}); } catch (e) { console.error('build', e.message); } }
 }

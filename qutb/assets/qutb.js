@@ -253,11 +253,21 @@ async function khabarStats(p, o, add) {
     const api = /workers\.dev/.test(p.site || '') ? p.site.replace(/\/$/, '') : 'https://khabar.baseeratactions.workers.dev';
     const r = await fetch(api + '/api/downloads', {cache: 'no-store'}); if (!r.ok) throw new Error('http' + r.status);
     const s = await r.json(), FN = {docx: 'Word', pdf: 'PDF', xlsx: 'Excel', csv: 'CSV', png: 'صورة', html: 'صفحة ويب', print: 'طباعة', link: 'رابط'};
-    const SN = {today: 'اليوم', qatar: 'قطر', gulf: 'الخليج', egypt: 'مصر', world: 'العالم', roadmap: 'خريطة الطريق', military: 'العسكري', wars: 'الحروب', war: 'ملف حرب', desks: 'الأقسام', brief: 'الخلاصة والأرشيف', weather: 'الطقس', ledger: 'الشفافية', saved: 'المحفوظ', newsletter: 'النشرة', partners: 'الشراكة'};
+    const SN = {today: 'اليوم', qatar: 'قطر', gulf: 'الخليج', egypt: 'مصر', world: 'العالم', roadmap: 'خريطة الطريق', military: 'العسكري', wars: 'الحروب', war: 'ملف حرب', desks: 'الأقسام', brief: 'الخلاصة والأرشيف', weather: 'الطقس', ledger: 'الشفافية', saved: 'المحفوظ', newsletter: 'النشرة', partners: 'الشراكة', countries: 'الأوضاع في الدول'};
     const fm = Object.entries(s.formats || {}).sort((a, b) => b[1] - a[1]).map(([f, n]) => `${FN[f] || f} ${num(n)}`).join(' · ');
     const top = Object.entries(s.sections || {}).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([v, n]) => `${SN[v] || (v.startsWith('d-') ? 'قسم ' + v.slice(2) : v)} ${num(n)}`).join('، ');
     o.rows.push(['تنزيلات التقارير', s.total ? `${num(s.total)} في 30 يوماً · اليوم ${num(s.today)} · ${esc(fm)}${top ? ' · الأكثر تصديراً: ' + esc(top) : ''}` : 'لم يُنزَّل أي تقرير بعد']);
   } catch (e) { o.rows.push(['تنزيلات التقارير', '<span class="skel">تعذّرت القراءة</span>']); }
+  // الأوضاع في الدول (18 نوفمبر 2026): مؤشر استقرار يومي لكل دولة، وكل خبر من جهتين مستقلتين
+  try {
+    const c = await raw(p.repo, base + 'countries.json'), C = c.countries || {};
+    const L = {stable: ['ok', 'مستقر'], strained: ['warn', 'تحت الضغط'], unstable: ['bad', 'مضطرب'], nodata: ['', 'بيانات غير كافية']}, T = {up: '↑', down: '↓', flat: '→'};
+    o.rows.push(['الأوضاع في الدول', `<a href="${esc(p.site)}#countries" target="_blank" rel="noopener">${(c.meta || []).length} دولة</a> · ${Object.values(C).reduce((s, x) => s + (x.items || []).length, 0)} خبراً موثّقاً · ${ago(c.updated)}<br>` +
+      (c.meta || []).map(m => { const i = C[m.id]?.index || {}, l = L[i.level] || L.nodata; return `<a href="${esc(p.site)}#c-${esc(m.id)}" target="_blank" rel="noopener"><span class="pill ${l[0]}">${esc(m.ar)}: ${i.score ?? '—'} ${T[i.trend] || ''}</span></a>`; }).join(' ')]);
+    if (hoursSince(c.updated) > 8) add('warn', `${p.name}: الأوضاع في الدول لم تتجدد منذ ${ago(c.updated).replace('قبل ', '')}`, p.site + '#countries');
+    const worse = (c.meta || []).filter(m => C[m.id]?.index?.trend === 'down').map(m => m.ar);
+    if (worse.length) add('info', `${p.name}: تراجع مؤشر الاستقرار اليوم في ${esc(worse.join('، '))}`, p.site + '#countries');
+  } catch (e) { o.rows.push(['الأوضاع في الدول', '<span class="skel">تعذّرت القراءة</span>']); }
   if (k.status === 'fulfilled') {
     o.rows.push(['العاجل', k.value.on ? '<span class="pill bad">منشور الآن</span>' : 'لا عاجل']);
     if (k.value.on) add('info', `${p.name}: خبر عاجل منشور الآن`, p.site);

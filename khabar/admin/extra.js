@@ -8,7 +8,7 @@ const CFG=window.KHABAR_CONFIG||{};
 const getJSON=u=>fetch(u,{cache:'no-cache'}).then(r=>{if(!r.ok)throw new Error(u);return r.json()});
 const LS={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
 const fmt=iso=>{try{return new Date(iso).toLocaleString('ar-QA',{timeZone:'Asia/Qatar',numberingSystem:'latn',dateStyle:'medium',timeStyle:'short'})}catch(e){return iso}};
-let H=null,DESKS=null,CORR=null,OPN=null;
+let H=null,DESKS=null,CORR=null,OPN=null,CTRY=null;
 const say=(id,t,ok)=>{const m=$(id);m.textContent=t;m.className='msg '+(ok?'ok':'err');m.hidden=false};
 const ACT=[
   ['newsletter','إرسال النشرة اليومية بالبريد أو واتساب','مزوّد إرسال (مثل Resend أو Brevo للبريد، وWhatsApp Business API للواتساب)، ومفتاحه في أسرار الخادم، ونطاق مرسل موثّق.'],
@@ -25,10 +25,11 @@ const ACT=[
 
 async function init(ctx){
   H=ctx;
+  CTRY=await getJSON('../data/countries.json').catch(()=>null);
   [DESKS,CORR,OPN]=await Promise.all([getJSON('../data/desks.json').catch(()=>null),getJSON('../data/corrections.json').catch(()=>({items:[]})),getJSON('../data/opinion.json').catch(()=>({authors:[],articles:[]}))]);
   const anchor=[...document.querySelectorAll('.panel h2')].find(h=>h.textContent.includes('كلمة المرور'));const before=anchor?anchor.parentElement:null;const host=before?before.parentElement:$('#app');
   const add=p=>before?host.insertBefore(p,before):host.append(p);
-  add(desksPanel());add(inboxPanel());add(corrPanel());add(opinionPanel());add(activatePanel());
+  add(desksPanel());add(countriesPanel());add(inboxPanel());add(corrPanel());add(opinionPanel());add(activatePanel());
 }
 const panel=(title,intro)=>{const s=el('section','panel');s.append(el('h2',null,title));if(intro){const p=el('p','mute',intro);p.style.fontSize='.9rem';s.append(p)}return s};
 const kpis=list=>{const k=el('div','kpis');list.forEach(([v,l])=>{const d=el('div');d.append(el('b',null,String(v)),el('small',null,l));k.append(d)});return k};
@@ -50,7 +51,30 @@ function desksPanel(){
 function collect(out){
   const off=[...document.querySelectorAll('[data-desk]')].filter(c=>!c.checked).map(c=>c.dataset.desk);if(document.querySelector('[data-desk]'))out.desks_off=off;
   const box=document.querySelectorAll('#desk-hide input');if(box.length){const h=new Set(out.desks_hidden||[]);box.forEach(x=>{if(x.checked)h.add(x.value);else h.delete(x.value)});out.desks_hidden=[...h]}
+  if(document.querySelector('[data-country]'))out.countries_off=[...document.querySelectorAll('[data-country]')].filter(c=>!c.checked).map(c=>c.dataset.country);
+  const cbox=document.querySelectorAll('#country-hide input');if(cbox.length){const h=new Set(out.countries_hidden||[]);cbox.forEach(x=>{if(x.checked)h.add(x.value);else h.delete(x.value)});out.countries_hidden=[...h]}
   const act=document.querySelectorAll('[data-act]');if(act.length){out.activate=out.activate||{};act.forEach(c=>{out.activate[c.dataset.act]=c.checked});}
+}
+
+/* ---------- الأوضاع في الدول ---------- */
+function countriesPanel(){
+  const A=H.admin();const s=panel('الأوضاع في الدول','صفحة لكل دولة بستة محاور، تُحدَّث آلياً كل 3 ساعات، ولا يُنشر فيها خبر إلا من جهتين مستقلتين. يمكنك إخفاء دولة من القرّاء أو إخفاء خبر بعينه. لإضافة دولة جديدة: أضفها إلى COUNTRIES في scripts/countries.mjs وملفها التحريري في data/countries-editorial.json.');
+  if(!CTRY){s.append(el('p','mute','لم يُكتب القسم بعد؛ يظهر بعد أول تشغيل للمحرك الآلي.'));return s}
+  const C=CTRY.countries,n=Object.values(C).reduce((a,c)=>a+c.items.length,0),age=(Date.now()-new Date(CTRY.updated))/3600e3;
+  const unstable=Object.values(C).filter(c=>c.index&&c.index.level==='unstable').length;
+  s.append(kpis([[CTRY.meta.length,'دولة'],[n,'خبراً موثّقاً الآن'],[Object.values(C).reduce((a,c)=>a+(c.protests||[]).length,0),'تظاهرة موثّقة'],[unstable,'دولة مضطربة'],[age.toFixed(1),'ساعة منذ آخر تحديث']]));
+  const tb=el('table','cn-admin');tb.style.cssText='width:100%;border-collapse:collapse;font-size:.88rem';const hr=el('tr');['الدولة','المؤشر','المستوى','الاتجاه','الأخبار'].forEach(h=>{const th=el('th',null,h);th.style.cssText='text-align:start;padding:6px;border-bottom:1px solid var(--line,#ddd)';hr.append(th)});tb.append(hr);
+  const LVL={stable:'مستقر',strained:'تحت الضغط',unstable:'مضطرب',nodata:'بيانات غير كافية'},TR={up:'↑ يتحسن',down:'↓ يتراجع',flat:'→ ثابت'};
+  CTRY.meta.forEach(m=>{const c=C[m.id]||{items:[],index:{}};const tr=el('tr');[`${m.flag} ${m.ar}`,c.index.score==null?'—':String(c.index.score),LVL[c.index.level]||'',TR[c.index.trend]||'',String(c.items.length)].forEach(v=>{const td=el('td',null,v);td.style.cssText='padding:6px;border-bottom:1px solid var(--line,#eee)';tr.append(td)});tb.append(tr)});
+  const wrap=el('div');wrap.style.overflowX='auto';wrap.append(tb);s.append(wrap);
+  const off=new Set(A.countries_off||[]);const g=el('div','desk-toggles');
+  CTRY.meta.forEach(m=>{const l=el('label','switch');const c=el('input');c.type='checkbox';c.dataset.country=m.id;c.checked=!off.has(m.id);c.onchange=()=>H.preview();l.append(c,`${m.ar} (${(C[m.id]||{items:[]}).items.length})`);g.append(l)});
+  s.append(el('b',null,'الدول الظاهرة للقرّاء:'),g);
+  const ul=el('ul','hide-list');ul.id='country-hide';const hid=new Set(A.countries_hidden||[]);
+  CTRY.meta.forEach(m=>(C[m.id]||{items:[]}).items.forEach(i=>{const li=el('li'),lb=el('label'),cb=el('input');cb.type='checkbox';cb.value=i.id;cb.checked=hid.has(i.id);cb.onchange=()=>H.preview();
+    const tx=el('span');tx.append(el('span','z',`${m.ar} · ${i.outlets} جهات: ${i.sources.map(x=>x.name).join('، ')}`),i.title);lb.append(cb,tx);li.append(lb);ul.append(li)}));
+  s.append(el('b',null,'إخفاء خبر بعينه:'),ul);
+  const a=el('a',null,'افتح القسم كما يراه القرّاء');a.href='../#countries';a.target='_blank';a.rel='noopener';s.append(a);return s;
 }
 
 /* ---------- صندوق البلاغات والمشتركين والإحصاءات ---------- */
