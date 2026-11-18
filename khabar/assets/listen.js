@@ -166,6 +166,7 @@ const I={play:'<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true
   gear:'<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="7" r="2.3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="10" cy="17" r="2.3" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
   here:'<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="3.2" fill="currentColor"/></svg>'};
 const STYLE=`
+button.listen{display:none!important} /* زر الاستماع القديم البسيط تحت عنوان الخلاصة: حلّ محله هذا المشغّل */
 .ls-on{background:rgba(227,154,45,.24)!important;outline:2px solid var(--dawn,#E39A2D);outline-offset:3px;border-radius:6px;-webkit-box-decoration-break:clone;box-decoration-break:clone;transition:background .25s}
 tr.ls-on td{background:rgba(227,154,45,.24)}
 .ls-inline{display:inline-flex;align-items:center;gap:6px;margin-top:10px;margin-inline-end:8px;border:1px solid var(--dawn,#E39A2D);color:var(--dawn-ink,#9A5B00);background:var(--dawn-soft,#FBF0DE);border-radius:999px;padding:6px 14px;font:600 .88rem var(--body,"IBM Plex Sans Arabic",sans-serif);cursor:pointer;width:max-content;max-width:100%;justify-self:start;align-self:start}
