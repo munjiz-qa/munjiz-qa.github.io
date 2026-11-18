@@ -258,6 +258,17 @@ async function khabarStats(p, o, add) {
     const top = Object.entries(s.sections || {}).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([v, n]) => `${SN[v] || (v.startsWith('d-') ? 'قسم ' + v.slice(2) : v)} ${num(n)}`).join('، ');
     o.rows.push(['تنزيلات التقارير', s.total ? `${num(s.total)} في 30 يوماً · اليوم ${num(s.today)} · ${esc(fm)}${top ? ' · الأكثر تصديراً: ' + esc(top) : ''}` : 'لم يُنزَّل أي تقرير بعد']);
   } catch (e) { o.rows.push(['تنزيلات التقارير', '<span class="skel">تعذّرت القراءة</span>']); }
+  // الاستماع (18 نوفمبر 2026): مرات تشغيل القارئ الصوتي حسب اللغة والقارئ (امرأة/رجل) والقسم، أعداد مجمّعة فقط (assets/listen.js)
+  try {
+    const api = /workers\.dev/.test(p.site || '') ? p.site.replace(/\/$/, '') : 'https://khabar.baseeratactions.workers.dev';
+    const r = await fetch(api + '/api/listens', {cache: 'no-store'}); if (!r.ok) throw new Error('http' + r.status);
+    const s = await r.json(), LN = {ar: 'العربية', en: 'الإنجليزية', fr: 'الفرنسية', es: 'الإسبانية', de: 'الألمانية', tr: 'التركية', ur: 'الأردية', fa: 'الفارسية', hi: 'الهندية', id: 'الإندونيسية', ru: 'الروسية', zh: 'الصينية', it: 'الإيطالية', pt: 'البرتغالية'};
+    const SN = {today: 'اليوم', qatar: 'قطر', gulf: 'الخليج', egypt: 'مصر', world: 'العالم', military: 'العسكري', wars: 'الحروب', war: 'ملف حرب', desks: 'الأقسام', brief: 'الخلاصة', weather: 'الطقس', forecast: 'التوقعات', countries: 'الأوضاع في الدول', newsletter: 'النشرة', partners: 'الشراكة', account: 'الحساب'};
+    const top = (o, N, k) => Object.entries(o || {}).sort((a, b) => b[1] - a[1]).slice(0, k || 3).map(([v, n]) => `${(N && N[v]) || v} ${num(n)}`).join('، ');
+    const fb = Object.values(s.fallbacks || {}).reduce((a, b) => a + b, 0);
+    o.rows.push(['الاستماع', s.total ? `${num(s.total)} مرة تشغيل في 30 يوماً · اليوم ${num(s.today)} · امرأة ${num(s.genders?.f || 0)} · رجل ${num(s.genders?.m || 0)} · اللغات: ${esc(top(s.langs, LN, 4))}${top(s.sections, SN) ? ' · الأكثر استماعاً: ' + esc(top(s.sections, SN)) : ''}${fb ? ' · بديل لعدم توفر الصوت: ' + num(fb) : ''}` : 'لم يُستعمل الاستماع بعد']);
+    if (s.total >= 20 && fb / s.total > 0.5) add('info', `${p.name}: أكثر من نصف مرات الاستماع على أجهزة بلا الصوت المطلوب؛ يُستحسن شرح تثبيت الأصوات للقراء`, p.site);
+  } catch (e) { o.rows.push(['الاستماع', '<span class="skel">تعذّرت القراءة</span>']); }
   // الأوضاع في الدول (18 نوفمبر 2026): مؤشر استقرار يومي لكل دولة، وكل خبر من جهتين مستقلتين
   try {
     const c = await raw(p.repo, base + 'countries.json'), C = c.countries || {};
