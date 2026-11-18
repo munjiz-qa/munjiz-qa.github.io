@@ -2,8 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
+<script>if(location.pathname.indexOf("/khabar/")===0||location.pathname==="/khabar")location.replace("/abdo-news/"+location.pathname.replace(/^\/khabar\/?/,"")+location.search+location.hash)</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>لوحة إدارة خبر</title>
+<title>لوحة إدارة عبدو نيوز</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#14212E">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
@@ -58,8 +59,8 @@ table.users .acts{display:flex;flex-wrap:wrap;gap:6px}
 <header class="top">
   <div class="wrap top-row">
     <a class="brand" href="../">
-      <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="6.5" fill="#E39A2D"/><path d="M32 19.5 A12.5 12.5 0 1 1 19.7 29.8" fill="none" stroke="#1D7A70" stroke-width="4.6" stroke-linecap="round"/><path d="M51.5 32 A19.5 19.5 0 1 1 41.75 15.1" fill="none" stroke="#3A5FB0" stroke-width="4.6" stroke-linecap="round"/><path d="M32 58.5 A26.5 26.5 0 1 1 58.1 27.4" fill="none" stroke="currentColor" stroke-width="4.6" stroke-linecap="round"/></svg>
-      <span class="brand-word">خبر</span>
+      <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><path d="M17 9.5h30a11 11 0 0 1 11 11v17a11 11 0 0 1-11 11h-1.5l1.5 9.5-12-9.5H17a11 11 0 0 1-11-11v-17a11 11 0 0 1 11-11z" fill="none" stroke="currentColor" stroke-width="4.6" stroke-linejoin="round"/><path d="M21 23h25" stroke="#3A5FB0" stroke-width="4.6" stroke-linecap="round"/><path d="M33 34h13" stroke="#1D7A70" stroke-width="4.6" stroke-linecap="round"/><path d="M17.5 33.5l3.6 3.6 6.4-7.4" fill="none" stroke="#1D7A70" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="9.5" r="6.5" fill="#E39A2D"/></svg>
+      <span class="brand-word">عبدو نيوز</span>
     </a>
     <div class="top-meta"><span>لوحة الإدارة</span><span class="mute" id="who"></span></div>
     <div class="top-actions"><button class="icon-btn" id="logout" type="button" hidden>خروج</button></div>
@@ -68,7 +69,7 @@ table.users .acts{display:flex;flex-wrap:wrap;gap:6px}
 
 <main class="wrap" id="main">
   <form class="panel login" id="login-form">
-    <h1 style="font-size:1.5rem">دخول مدير «خبر»</h1>
+    <h1 style="font-size:1.5rem">دخول مدير «عبدو نيوز»</h1>
     <div class="field"><label for="u">اسم المستخدم</label><input id="u" autocomplete="username" required></div>
     <div class="field"><label for="p">كلمة المرور</label><input id="p" type="password" autocomplete="current-password" required></div>
     <p class="msg err" id="login-err" hidden></p>
@@ -84,7 +85,7 @@ table.users .acts{display:flex;flex-wrap:wrap;gap:6px}
 
     <section class="panel">
       <h2>التشغيل الذاتي</h2>
-      <p class="mute" style="font-size:.9rem">يعمل «خبر» وحده على GitHub دون أي جلسة أو تدخل: العناوين كل 3 ساعات، والطيار الآلي كل ساعة يفحص الموقع واللوحات، وإذا فات موعد الخلاصة (6:20 صباحاً ومساءً بتوقيت الدوحة) كتب خلاصة آلية من عناوين المصادر نفسها بروابطها الأصلية. وعند أي عطل يُفتح بلاغ في المستودع فيصلك التنبيه بالبريد.</p>
+      <p class="mute" style="font-size:.9rem">يعمل «عبدو نيوز» وحده على GitHub دون أي جلسة أو تدخل: العناوين كل 3 ساعات، والطيار الآلي كل ساعة يفحص الموقع واللوحات، وإذا فات موعد الخلاصة (كل 6 ساعات: 06:20 و12:20 و18:20 و00:20 بتوقيت الدوحة) كتب خلاصة آلية من عناوين المصادر نفسها بروابطها الأصلية. وعند أي عطل يُفتح بلاغ في المستودع فيصلك التنبيه بالبريد.</p>
       <div id="health"></div>
     </section>
 
@@ -136,6 +137,20 @@ table.users .acts{display:flex;flex-wrap:wrap;gap:6px}
       <ul class="hide-list" id="hide-list"></ul>
     </section>
 
+    <section class="panel" id="wx-panel">
+      <h2>الطقس والمناخ</h2>
+      <p class="mute" style="font-size:.9rem">قسم <a href="../weather/" target="_blank" rel="noopener">الطقس والمناخ</a> يعمل ذاتياً من متصفح الزائر (Open-Meteo وGDACS وUSGS)، وأخبار المناخ يكتبها الطيار الآلي كل 3 ساعات ولا يُنشر منها إلا ما نقلته جهتان مستقلتان.</p>
+      <div class="kpis" id="wx-kpis"></div>
+      <p class="mute" id="wx-last" style="font-size:.88rem"></p>
+      <div class="row2">
+        <div class="field"><label for="wx-cc">الدولة الافتراضية للزائر الجديد (رمز من حرفين)</label><input id="wx-cc" dir="ltr" maxlength="2" placeholder="QA"></div>
+        <div class="field"><label for="wx-q">المدينة الافتراضية (بالإنجليزية للبحث)</label><input id="wx-q" dir="ltr" maxlength="60" placeholder="Doha"></div>
+      </div>
+      <label class="switch"><input type="checkbox" id="wx-off"> إخفاء «مناخ العالم» من الصفحة الرئيسية</label>
+      <p class="mute" style="font-size:.88rem">ضع علامة على أي خبر مناخي لإخفائه عن القرّاء:</p>
+      <ul class="hide-list" id="wx-hide"></ul>
+    </section>
+
     <section class="panel">
       <h2>كلمة المرور</h2>
       <div class="row2">
@@ -165,5 +180,7 @@ table.users .acts{display:flex;flex-wrap:wrap;gap:6px}
 <script src="../assets/config.js"></script>
 <script src="../assets/auth.js"></script>
 <script src="admin.js"></script>
+<script src="extra.js"></script>
+<script src="forecast-admin.js"></script>
 </body>
 </html>

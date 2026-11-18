@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""«خبر»: الوكيل المحرر المستقل.
+"""«عبدو نيوز»: الوكيل المحرر المستقل.
 
 يكتب خلاصة الصباح والمساء ويرصد العاجل بنفسه، دون تدخل بشري، على Claude API.
 
@@ -116,9 +116,9 @@ SUBMIT_ZONE = {
     },
 }
 
-REPORTER_SYSTEM = """أنت مراسل في «خبر»، خلاصة أخبار يومية للقارئ في قطر. تكتب دائرة واحدة من دوائر الخلاصة.
+REPORTER_SYSTEM = """أنت مراسل في «عبدو نيوز»، خلاصة أخبار يومية للقارئ في قطر. تكتب دائرة واحدة من دوائر الخلاصة.
 
-قاعدة «خبر» التي لا استثناء لها: لا خبر ولا عنوان ولا رقم ولا معلومة دون مصدر موثّق ورابطه الأصلي. ما لم تقرأه بنفسك في مقال فتحته لا يُكتب.
+قاعدة «عبدو نيوز» التي لا استثناء لها: لا خبر ولا عنوان ولا رقم ولا معلومة دون مصدر موثّق ورابطه الأصلي. ما لم تقرأه بنفسك في مقال فتحته لا يُكتب.
 
 طريقة العمل:
 - ابحث بالعربية والإنجليزية عن أخبار آخر 12 إلى 24 ساعة، وافتح المقالات نفسها بأداة web_fetch قبل أن تكتب عنها. نتيجة البحث وحدها لا تكفي لرقم أو تفصيل.
@@ -133,7 +133,7 @@ REPORTER_SYSTEM = """أنت مراسل في «خبر»، خلاصة أخبار �
 
 حين تنتهي، استدعِ أداة submit_zone مرة واحدة بالنتيجة كاملة."""
 
-CHECK_SYSTEM = """أنت مدقق حقائق مستقل في «خبر». لكل خبر تُعطى نصه واقتباسات حرفية من مصادره.
+CHECK_SYSTEM = """أنت مدقق حقائق مستقل في «عبدو نيوز». لكل خبر تُعطى نصه واقتباسات حرفية من مصادره.
 احكم: supported إن كانت الاقتباسات تسند كل ادعاء ورقم في النص، partial إن أسندت جوهره وفيه تفصيل ثانوي غير مسنود، unsupported إن كان الجوهر أو أي رقم غير مسنود أو مخالف.
 اكتب السبب بالعربية في جملة قصيرة. لا تستعمل معرفتك الخاصة، احكم بالاقتباسات وحدها."""
 
@@ -291,7 +291,7 @@ def write_thread(brief):
               'properties': {'ar': {'type': 'string'}, 'en': {'type': 'string'}, 'ids': {'type': 'array', 'items': {'type': 'string'}}}}
     resp = client.beta.messages.create(
         model=MODEL, max_tokens=16000,
-        system='أنت رئيس تحرير «خبر». اكتب «خيط اليوم»: فقرة واحدة من 3 إلى 5 جمل تربط أهم ما في الخلاصة من قطر إلى العالم، مبنية على الأخبار المعطاة وحدها دون أي معلومة أو رقم من خارجها، مع ترجمتها الإنجليزية، وأرقام الأخبار التي استندت إليها (مثل q1).',
+        system='أنت رئيس تحرير «عبدو نيوز». اكتب «خيط اليوم»: فقرة واحدة من 3 إلى 5 جمل تربط أهم ما في الخلاصة من قطر إلى العالم، مبنية على الأخبار المعطاة وحدها دون أي معلومة أو رقم من خارجها، مع ترجمتها الإنجليزية، وأرقام الأخبار التي استندت إليها (مثل q1).',
         messages=[{'role': 'user', 'content': '\n'.join(lines)}],
         output_config={'format': {'type': 'json_schema', 'schema': schema}, 'effort': 'medium'}, **FALLBACK,
     )
@@ -377,7 +377,7 @@ def assemble(ctx, results, kept, dropped):
     edition = ctx['edition']
     brief = {'id': f"{today.isoformat()}-{edition}", 'edition': edition, 'date': today.isoformat(),
              'published': now.isoformat(timespec='seconds'),
-             'title': {'ar': ctx['edition_ar'], 'en': 'Morning Brief' if edition == 'am' else 'Evening Brief'},
+             'title': {'ar': ctx['edition_ar'], 'en': ED_EN[edition] + ' Brief'},
              'thread': {'ar': '', 'en': '', 'src': []}, 'markets': markets, 'zones': zones,
              'roadmap': sorted(roadmap, key=lambda x: x.get('date') or x.get('month') or '9999'), 'sources': sources,
              'agent': {'model': MODEL, 'checker': CHECK_MODEL}}
@@ -404,11 +404,16 @@ def publish(brief, run):
     log(f"نُشرت {brief['id']}: {n} خبراً، {len(brief['sources'])} مصدراً.")
 
 
+ED_AR = {'am': 'الصباح', 'md': 'الظهيرة', 'pm': 'المساء', 'nt': 'الليل'}
+ED_EN = {'am': 'Morning', 'md': 'Midday', 'pm': 'Evening', 'nt': 'Night'}
+
+
 def run_brief():
     t0 = time.time()
     now = V.now_doha()
-    edition = 'am' if now.hour < 12 else 'pm'
-    ctx = {'now': now, 'edition': edition, 'edition_ar': 'خلاصة الصباح' if edition == 'am' else 'خلاصة المساء',
+    # أربع خلاصات يومياً كل 6 ساعات: الصباح والظهيرة والمساء والليل
+    edition = 'am' if 3 <= now.hour < 9 else 'md' if 9 <= now.hour < 15 else 'pm' if 15 <= now.hour < 21 else 'nt'
+    ctx = {'now': now, 'edition': edition, 'edition_ar': 'خلاصة ' + ED_AR[edition],
            'headlines': json.loads((DATA / 'headlines.json').read_text(encoding='utf-8')),
            'prev': json.loads((DATA / 'brief.json').read_text(encoding='utf-8'))}
     if ctx['prev'].get('id') == f"{now.date().isoformat()}-{edition}" and not os.environ.get('KHABAR_FORCE'):
@@ -481,7 +486,7 @@ def run_breaking():
     listing = '\n'.join(f"{i}. {h['title']} — {h['source']}" for i, h in enumerate(heads))
     resp = client.messages.create(
         model=CHECK_MODEL, max_tokens=4000,
-        system=('أنت راصد العاجل في «خبر» (قطر والخليج ومصر والعالم). من العناوين التالية، هل يوجد حدث واحد عاجل فعلاً '
+        system=('أنت راصد العاجل في «عبدو نيوز» (قطر والخليج ومصر والعالم). من العناوين التالية، هل يوجد حدث واحد عاجل فعلاً '
                 '(قرار سيادي، كارثة، تطور أمني كبير، إعلان اقتصادي مفصلي) تتناقله 3 جهات مختلفة على الأقل؟ '
                 'لا تعدّ الأخبار العادية أو الرياضية أو التحليلات عاجلاً. أعد أرقام عناوينه. العاجل الحالي: ' + (cur.get('text_ar') or 'لا يوجد')
                 + '. إن كان الحدث هو نفسه العاجل الحالي فأجب found=false.'),

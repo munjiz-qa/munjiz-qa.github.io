@@ -45,6 +45,9 @@ input[dir=ltr]{text-align:left}
 .btn:hover{border-color:var(--copper)}
 .btn.pri{background:var(--copper);border-color:var(--copper);color:#fff}
 .btn.pri:hover{filter:brightness(1.07)}
+/* الوضع الداكن: النحاس فاتح فيُكتب عليه بلون الخلفية الداكنة لتباين مطابق للمعيار */
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn.pri,:root:not([data-theme="light"]) #toast.bad{color:var(--bg)}}
+:root[data-theme="dark"] .btn.pri,:root[data-theme="dark"] #toast.bad{color:var(--bg)}
 .btn.sm{min-height:36px;padding:5px 12px;font-size:.85rem}
 .btn.bad{color:var(--bad)}
 .btn[disabled]{opacity:.55;cursor:wait}
@@ -104,3 +107,8 @@ footer.ft .wrap{display:flex;gap:8px 20px;flex-wrap:wrap}
 .pw{position:relative}.pw button{position:absolute;inset-inline-end:6px;top:50%;transform:translateY(-50%);min-height:32px;padding:2px 8px;font-size:.8rem}
 .loading{color:var(--muted);padding:30px;text-align:center}
 .pw input{padding-inline-end:72px}
+/* 05/11/2026 · الرسائل غير المقروءة */
+.badge.msg-new{background:var(--copper);color:var(--surface);animation:bqPulse 2s ease-in-out 3}
+tr.unread td{background:var(--copper-soft)}
+@keyframes bqPulse{50%{box-shadow:0 0 0 5px var(--copper-soft)}}
+@media (prefers-reduced-motion:reduce){.badge.msg-new{animation:none}}

@@ -1,6 +1,6 @@
 // براق · مؤشرات الأداء في لوحة الإدارة: مسار التحويل، زمن الرد، قيمة العروض، الاتجاه، والطلبات التي تحتاج متابعة.
 // تُحسب كلها من الطلبات التي يقرؤها المدير أصلاً، دون أي قراءة إضافية من Firebase.
-import { esc, money, TYPES, fmtDate } from "./ui.js";
+import { esc, money, TYPES, STATUS, fmtDate } from "./ui.js";
 
 const toD = (v) => (v ? (v.toDate ? v.toDate() : new Date(v)) : null);
 const H = 36e5, DAY = 864e5;
@@ -45,6 +45,13 @@ function trend(REQS, now) {
   return { svg, last7, prev7 };
 }
 
+// سجل النشاط: آخر تغييرات الحالة في كل الطلبات (من history المحفوظ أصلاً، دون أي قراءة إضافية)
+export function activity(REQS, n = 10) {
+  const out = [];
+  for (const r of REQS) for (const h of r.history || []) { const t = toD(h.at); if (t) out.push({ r, h, t }); }
+  return out.sort((a, b) => b.t - a.t).slice(0, n);
+}
+
 export function insightsHtml(REQS, now = Date.now()) {
   const live = REQS.filter((r) => r.status !== "cancelled");
   const q = REQS.filter(quotedEver), w = REQS.filter(wonEver), done = REQS.filter((r) => r.status === "done");
@@ -74,6 +81,8 @@ export function insightsHtml(REQS, now = Date.now()) {
    <div class="card ins-c"><h3>حسب نوع الطلب</h3>${bars(cnt((r) => TYPES[r.type] || r.type), live.length)}</div>
    <div class="card ins-c"><h3>حسب المدينة</h3>${bars(cnt((r) => (r.city || "").trim()), live.length)}</div>
   </div>
+  <h3 class="ins-fu-t">آخر النشاط</h3>
+  <ul class="ins-act" id="insAct">${activity(REQS).map(({ r, h, t }) => `<li><span class="d">${fmtDate(t, true)}</span><span><b>${esc(STATUS[h.s]?.[0] || h.s)}</b> · ${esc(r.name || "—")} · <bdi dir="ltr">${esc(r.no)}</bdi> <span class="by">${h.by === "customer" ? "بواسطة العميل" : h.by ? "بواسطة " + esc(h.by) : ""}</span></span><button class="btn sm" data-open="${r.id}">فتح</button></li>`).join("") || `<li class="mute">لا نشاط بعد.</li>`}</ul>
   <h3 class="ins-fu-t">يحتاج متابعة <span class="n">${fu.length}</span></h3>
   <div class="list" id="insFu">${fu.length ? fu.slice(0, 8).map(({ r, why, lvl }) => {
     const wa = (r.phone || "").replace(/[^\d]/g, "");
@@ -96,4 +105,5 @@ export const INS_CSS = `.ins{margin:8px 0 26px}.ins h2{margin:0 0 12px}
 .ins-bars .v{font-weight:600}.ins-bars small{color:var(--muted);font-weight:400}
 .ins-fu-t{margin:22px 0 10px}.ins-fu-t .n{display:inline-block;min-width:24px;padding:0 7px;border-radius:12px;background:var(--copper-soft);color:var(--ink);font-size:.8rem;text-align:center}
 #insFu .item.fu{border-inline-start:4px solid var(--warn)}#insFu .item.fu.l2{border-inline-start-color:var(--bad)}
-@media (max-width:640px){.ins-funnel .arr{display:none}.ins-step{flex-basis:calc(50% - 4px)}}`;
+.ins-act{list-style:none;margin:0 0 6px;padding:0;display:grid;gap:6px}.ins-act li{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:.9rem}.ins-act .d{color:var(--muted);font-size:.8rem;white-space:nowrap}.ins-act bdi{white-space:nowrap}.ins-act .by{color:var(--muted);font-size:.82rem}
+@media (max-width:640px){.ins-act li{grid-template-columns:1fr auto}.ins-act .d{grid-column:1/-1}.ins-funnel .arr{display:none}.ins-step{flex-basis:calc(50% - 4px)}}`;

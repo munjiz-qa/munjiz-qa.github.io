@@ -211,32 +211,32 @@
       .then(function (r) { clearTimeout(t); if (!r.ok) throw new Error(r.status); return r.json(); });
   }
   function okRate(q, e) { return q > 3 && q < 4.5 && e > 10 && e < 500; }
+  // احتياطي يومي من ملف الموقع (data/fx.json يحدّثه مسار GitHub) أحدث من الرقم الثابت داخل الكود، ويُستعمل ما لم يتوفر سعر حي محفوظ
+  function loadSiteRates() {
+    if (cached && cached.r && cached.r.QAR && cached.r.EGP) return;
+    getJSON("data/fx.json?t=" + Math.floor(Date.now() / 36e5)).then(function (d) {
+      if (fx.live || !okRate(+d.QAR, +d.EGP)) throw 0;
+      rates = { USD: 1, QAR: +d.QAR, EGP: +d.EGP }; fx = { src: d.src || "احتياطي", date: d.date || FALLBACK_DATE, live: false };
+      renderAll();
+    }).catch(function () {});
+  }
   function loadRates() {
+    loadSiteRates();
     if (cached && Date.now() - cached.t < RATE_TTL) return;
     var today = dmy(new Date());
     getJSON("https://open.er-api.com/v6/latest/USD").then(function (d) {
       if (d.result !== "success" || !okRate(d.rates.QAR, d.rates.EGP)) throw 0;
       return { QAR: d.rates.QAR, EGP: d.rates.EGP, src: "ExchangeRate-API", date: d.time_last_update_unix ? dmy(new Date(d.time_last_update_unix * 1000)) : today };
-    }).catch(function () {
-      return getJSON("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json").then(function (d) {
-        if (!okRate(d.usd.qar, d.usd.egp)) throw 0;
-        return { QAR: d.usd.qar, EGP: d.usd.egp, src: "Currency-API", date: d.date ? d.date.split("-").reverse().join("/") : today };
-      });
     }).then(function (r) {
       rates = { USD: 1, QAR: +r.QAR, EGP: +r.EGP }; fx = { src: r.src, date: r.date, live: true };
       lsSet("bq.fx", JSON.stringify({ r: { QAR: r.QAR, EGP: r.EGP }, src: r.src, date: r.date, t: Date.now() }));
       renderAll();
     }).catch(function () { /* يبقى السعر الاحتياطي أو آخر سعر محفوظ */ });
   }
-  function loadCountry() {
-    if (ccCache && Date.now() - ccCache.t < CC_TTL) return;
-    getJSON("https://api.country.is/", 5000).then(function (d) { return d.country; })
-      .catch(function () { return getJSON("https://ipapi.co/json/", 5000).then(function (d) { return d.country_code || d.country; }); })
-      .then(function (cc) {
-        if (!/^[A-Z]{2}$/i.test(cc || "")) return;
-        country = cc.toUpperCase(); lsSet("bq.cc", JSON.stringify({ cc: country, t: Date.now() }));
-        if (!manual && ccToCur(country) !== cur) setCurrency(ccToCur(country), false); else updateUI();
-      }).catch(function () {});
+  /* دولة الزائر تُعرف من إعدادات متصفحه (المنطقة الزمنية واللغة) في guessCountry،
+     فلا يُرسل عنوانه إلى أي جهة خارجية. */
+  function saveCountry() {
+    lsSet("bq.cc", JSON.stringify({ cc: country, t: Date.now() }));
   }
 
   // ---------- التشغيل ----------
@@ -254,7 +254,7 @@
       document.querySelectorAll("[data-usd-hint]").forEach(hint);
       busy = false;
     }).observe(document.body, { childList: true, subtree: true, characterData: true });
-    loadRates(); loadCountry();
+    loadRates(); saveCountry();
   }
 
   window.BQCUR = {

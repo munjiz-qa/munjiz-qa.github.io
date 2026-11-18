@@ -1,7 +1,7 @@
 /* يتيح فتح مرقب دون اتصال بعد أول زيارة، ويحدّث الملفات تلقائياً */
-const CACHE = "marqab-202610290725", CORE = ["./", "index.html", "manifest.webmanifest", "assets/icon.svg", "assets/icon-192.png"];
+const CACHE = "marqab-202611061000", CORE = ["./", "index.html", "manifest.webmanifest", "assets/icon.svg", "assets/icon-192.png", "pwa-install.js"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
-self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
+self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith("marqab-") && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener("fetch", e => {
   const r = e.request, u = new URL(r.url);
   if (r.method !== "GET" || u.hostname.endsWith("script.google.com") || u.hostname.endsWith("googleusercontent.com")) return;

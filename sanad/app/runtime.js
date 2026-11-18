@@ -14,6 +14,7 @@ async function req(method, url, data) {
   return j;
 }
 const mePromise = req('GET', 'api/me').catch(() => ({ role: 'visitor', user: null, ai: {} }));
+mePromise.then(m => { window.__sanadMe = m; });
 window.sanadMe = mePromise;
 
 /* ---------- live updates ---------- */
@@ -194,7 +195,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 let deferred = null;
 const dismissed = () => { try { return localStorage.getItem('sanad:install-dismissed') === '1'; } catch { return false; } };
 function offer(html, onGo) {
-  if (dismissed() || document.querySelector('.sn-install')) return;
+  if (window.__pwaInstall || dismissed() || document.querySelector('.sn-install')) return;
   const d = document.createElement('div'); d.className = 'sn-install'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', 'تثبيت التطبيق');
   d.innerHTML = `<div class="sp">${html}</div>${onGo ? '<button class="go" type="button">ثبّت</button>' : ''}<button class="x" type="button" aria-label="إغلاق">لاحقاً</button>`;
   document.body.appendChild(d);
