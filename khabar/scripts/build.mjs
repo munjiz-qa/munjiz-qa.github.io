@@ -1,4 +1,4 @@
-// «خبر»: ملفات مشتقة تُبنى آلياً بعد كل تحديث (لا تحتاج جلسة محرر):
+// «عبدو نيوز»: ملفات مشتقة تُبنى آلياً بعد كل تحديث (لا تحتاج جلسة محرر):
 //  - data/search.json: فهرس بحث مضغوط لكل الخلاصات المؤرشفة (البحث والاختبار الأسبوعي والمساعد).
 //  - data/transparency.json: تقرير الشفافية الشهري (عدد الخلاصات والأخبار والمصادر والجهات والتصحيحات).
 //  - feeds/*.xml: خلاصات RSS للخلاصة الرئيسية ولكل قسم بالعربية والإنجليزية.
@@ -54,12 +54,12 @@ if (brief) for (const lang of ['ar', 'en']) {
     const src = (i.src || []).map(s => brief.sources[s]).filter(Boolean);
     return {title: cut(i[lang], 140), link: SITE + '#i-' + i.id, guid: brief.id + '/' + i.id, date: brief.published, desc: i[lang] + '\n\n' + (lang === 'ar' ? 'المصادر: ' : 'Sources: ') + src.map(s => `${s[lang] || s.ar} ${s.url}`).join(' · ')};
   }));
-  writeFileSync(`${K}feeds/brief${lang === 'en' ? '-en' : ''}.xml`, rss(lang === 'ar' ? 'خبر: الخلاصة اليومية الموثّقة' : 'Khabar: the verified daily brief', SITE, lang === 'ar' ? 'كل خبر بمصدره ورابطه الأصلي' : 'Every story with its source and original link', lang, items));
+  writeFileSync(`${K}feeds/brief${lang === 'en' ? '-en' : ''}.xml`, rss(lang === 'ar' ? 'عبدو نيوز: الخلاصة اليومية الموثّقة' : 'Abdo News: the verified daily brief', SITE, lang === 'ar' ? 'كل خبر بمصدره ورابطه الأصلي' : 'Every story with its source and original link', lang, items));
 }
 if (desks) for (const m of desks.meta) for (const lang of ['ar', 'en']) {
   const items = (desks.desks[m.id]?.items || []).filter(i => i.lang === lang).map(i => ({title: i.title, link: SITE + '#d-' + m.id, guid: i.id, date: i.t,
     desc: (lang === 'ar' ? 'مؤكد من جهتين مستقلتين على الأقل. المصادر: ' : 'Confirmed by at least two independent outlets. Sources: ') + i.sources.map(s => `${s.name} ${s.url}`).join(' · ')}));
-  writeFileSync(`${K}feeds/${m.id}${lang === 'en' ? '-en' : ''}.xml`, rss(`${lang === 'ar' ? 'خبر' : 'Khabar'}: ${m[lang]}`, SITE + '#d-' + m.id, m[lang], lang, items));
+  writeFileSync(`${K}feeds/${m.id}${lang === 'en' ? '-en' : ''}.xml`, rss(`${lang === 'ar' ? 'عبدو نيوز' : 'Abdo News'}: ${m[lang]}`, SITE + '#d-' + m.id, m[lang], lang, items));
 }
 
 // ---------- خرائط الموقع ----------
@@ -73,19 +73,19 @@ ${['', 'weather/', 'newsletter/', 'embed/', 'partners/'].map(u => `<url><loc>${S
 const recent = briefs.filter(b => Date.now() - new Date(b.published) < 2 * 864e5);
 writeFileSync(K + 'news-sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
-${recent.map(b => `<url><loc>${SITE}#b-${b.id}</loc><news:news><news:publication><news:name>خبر</news:name><news:language>ar</news:language></news:publication><news:publication_date>${b.published}</news:publication_date><news:title>${esc(b.title?.ar || 'خلاصة خبر')}</news:title></news:news></url>`).join('\n')}
+${recent.map(b => `<url><loc>${SITE}#b-${b.id}</loc><news:news><news:publication><news:name>عبدو نيوز</news:name><news:language>ar</news:language></news:publication><news:publication_date>${b.published}</news:publication_date><news:title>${esc(b.title?.ar || 'خلاصة عبدو نيوز')}</news:title></news:news></url>`).join('\n')}
 </urlset>
 `);
 // ---------- صفحات المشاركة: معاينة غنية لكل خبر على X وفيسبوك ولينكدإن وواتساب ----------
 // صفحة صغيرة لكل خبر بعنوانه ومصادره في وسوم Open Graph، تحوّل القارئ إلى الخبر في التطبيق. تبقى 4 أيام.
 mkdirSync(K + 's', {recursive: true});
 const share = (file, title, desc, to, date) => writeFileSync(K + 's/' + file, `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${esc(cut(title, 90))} | خبر</title><meta name="description" content="${esc(cut(desc, 200))}">
-<meta property="og:type" content="article"><meta property="og:site_name" content="خبر"><meta property="og:title" content="${esc(cut(title, 110))}"><meta property="og:description" content="${esc(cut(desc, 200))}">
+<title>${esc(cut(title, 90))} | عبدو نيوز</title><meta name="description" content="${esc(cut(desc, 200))}">
+<meta property="og:type" content="article"><meta property="og:site_name" content="عبدو نيوز"><meta property="og:title" content="${esc(cut(title, 110))}"><meta property="og:description" content="${esc(cut(desc, 200))}">
 <meta property="og:image" content="${SITE}assets/og.png"><meta property="og:url" content="${SITE}s/${file}"><meta property="article:published_time" content="${esc(date)}">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${esc(cut(title, 110))}"><meta name="twitter:description" content="${esc(cut(desc, 200))}"><meta name="twitter:image" content="${SITE}assets/og.png">
 <link rel="canonical" href="${SITE}${to}"><meta http-equiv="refresh" content="0;url=../${to}"></head>
-<body style="font-family:Tahoma,sans-serif;padding:24px"><p>${esc(title)}</p><p><a href="../${to}">اقرأ الخبر بمصادره في «خبر»</a></p></body></html>
+<body style="font-family:Tahoma,sans-serif;padding:24px"><p>${esc(title)}</p><p><a href="../${to}">اقرأ الخبر بمصادره في «عبدو نيوز»</a></p></body></html>
 `);
 const keep = new Set();
 if (brief) for (const z of brief.zones) for (const i of z.items) {

@@ -1,4 +1,4 @@
-// «خبر»: الطيار الآلي. يعمل من GitHub Actions كل ساعة دون أي تدخل بشري أو جلسة محرر.
+// «عبدو نيوز»: الطيار الآلي. يعمل من GitHub Actions كل ساعة دون أي تدخل بشري أو جلسة محرر.
 //  1. إذا فات موعد الخلاصة (كل 6 ساعات: 06:20 و12:20 و18:20 و00:20 بتوقيت الدوحة) ولم تُنشر، يكتب «خلاصة آلية» من عناوين المصادر نفسها:
 //     كل خبر هو عنوان الجهة الناشرة كما نشرته، مع اسمها وتاريخها ورابط مقالها الأصلي (تُفك روابط أخبار Google إلى الرابط الأصلي، وما لا يُفك يُحذف).
 //  2. يفحص الموقع المنشور ولوحاته وحداثة البيانات، ويكتب النتيجة في data/health.json، ويخرج بخطأ إن وُجد عطل حتى يصل التنبيه.
@@ -160,8 +160,8 @@ function archive(b) {
 
 // ---------- الفحص ----------
 const SITE = 'https://munjiz-qa.github.io/';
-const PAGES = [['خبر: الصفحة الرئيسية', 'khabar/'], ['خبر: لوحة الإدارة', 'khabar/admin/'], ['خبر: حساب العميل', 'khabar/account/'], ['خبر: الطقس والمناخ', 'khabar/weather/'],
-  ['خبر: الخلاصة المنشورة', 'khabar/data/brief.json'], ['قُطب: لوحة الإدارة الموحّدة', 'qutb/']];
+const PAGES = [['عبدو نيوز: الصفحة الرئيسية', 'khabar/'], ['عبدو نيوز: لوحة الإدارة', 'khabar/admin/'], ['عبدو نيوز: حساب العميل', 'khabar/account/'], ['عبدو نيوز: الطقس والمناخ', 'khabar/weather/'],
+  ['عبدو نيوز: الخلاصة المنشورة', 'khabar/data/brief.json'], ['قُطب: لوحة الإدارة الموحّدة', 'qutb/']];
 async function health(brief) {
   const checks = [];
   for (const [name, p] of PAGES) {
@@ -238,5 +238,5 @@ if (!ARGS.has('--no-health')) {
   if (changed && !ARGS.has('--dry')) writeJSON('health.json', h);
   h.checks.forEach(c => console.log(c.ok ? '✓' : '✗', c.name, c.code || '', c.detail || ''));
   if (process.env.GITHUB_OUTPUT) writeFileSync(process.env.GITHUB_OUTPUT, `ok=${h.ok}\nwrote=${wrote}\nmil=${!!(milOut.mil || milOut.wars)}\n`, {flag: 'a'});
-  if (!h.ok) { console.error('::warning::يوجد عطل في تشغيل «خبر»؛ التفاصيل أعلاه.'); }
+  if (!h.ok) { console.error('::warning::يوجد عطل في تشغيل «عبدو نيوز»؛ التفاصيل أعلاه.'); }
 }

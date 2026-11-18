@@ -1,4 +1,4 @@
-// «خبر»: يجلب أحدث العناوين لكل دائرة (قطر، الخليج، مصر، العالم) من أخبار Google (RSS)، ويحفظ العنوان والمصدر والرابط والتاريخ فقط في khabar/data/headlines.json.
+// «عبدو نيوز»: يجلب أحدث العناوين لكل دائرة (قطر، الخليج، مصر، العالم) من أخبار Google (RSS)، ويحفظ العنوان والمصدر والرابط والتاريخ فقط في khabar/data/headlines.json.
 // يعمل من GitHub Actions كل 3 ساعات. لا يُحفظ أي عنوان دون مصدر ورابط.
 import {writeFileSync,readFileSync} from 'node:fs';
 const OUT='khabar/data/headlines.json';

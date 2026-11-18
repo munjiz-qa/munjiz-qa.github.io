@@ -96,7 +96,10 @@ $('#gateForm').addEventListener('submit', async e => {
 // منصات انتقلت إلى عنوان جديد بعد تعليق حساب GitHub القديم (نوفمبر 2026): تُتابَع على عنوانها الحالي بدل إنذار «لا يستجيب».
 // يتغيّر عنوان الموقع وروابطه فقط، ويبقى باقي السجل كما هو.
 const MOVED = {basira: 'https://baseeratactions.com/'};
+// منصات تغيّر اسمها أمام الجمهور (18 نوفمبر 2026: «خبر» صار «عبدو نيوز»). يتغيّر الاسم المعروض فقط، ويبقى المعرّف كما هو.
+const RENAMED = {khabar: 'عبدو نيوز'};
 function relocate(reg) {
+  for (const p of reg.platforms || []) if (RENAMED[p.id] && p.name !== RENAMED[p.id]) { p.formerName = p.name; p.name = RENAMED[p.id]; }
   for (const p of reg.platforms || []) {
     const neu = MOVED[p.id], old = p.site; if (!neu || !old || old === neu) continue;
     const fix = u => u && u.startsWith(old) ? neu + u.slice(old.length) : u;

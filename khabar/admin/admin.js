@@ -1,5 +1,5 @@
 'use strict';
-// لوحة إدارة «خبر»: الدخول بحساب المدير الشامل من data/users.json (أو حساب admin القديم في data/admin.json)،
+// لوحة إدارة «عبدو نيوز»: الدخول بحساب المدير الشامل من data/users.json (أو حساب admin القديم في data/admin.json)،
 // وتعديل العاجل والإخفاء وإدارة حسابات العملاء والمديرين، ثم النشر عبر GitHub.
 (function(){
 const CFG=window.KHABAR_CONFIG||{};
@@ -119,11 +119,11 @@ $('#publish').onclick=async()=>{
   try{
     const cur=await fetch(api+'?ref='+(CFG.BRANCH||'main'),{headers:H});if(!cur.ok)throw new Error(cur.status===401?'المفتاح غير صالح أو منتهي.':cur.status===404?'المفتاح لا يملك صلاحية على المستودع.':'تعذّر الوصول إلى GitHub ('+cur.status+').');
     const sha=(await cur.json()).sha;
-    const put=await fetch(api,{method:'PUT',headers:H,body:JSON.stringify({message:'خبر: تحديث العاجل وإعدادات العرض من لوحة الإدارة',content:b64(JSON.stringify(data,null,1)+'\n'),sha,branch:CFG.BRANCH||'main'})});
+    const put=await fetch(api,{method:'PUT',headers:H,body:JSON.stringify({message:'عبدو نيوز: تحديث العاجل وإعدادات العرض من لوحة الإدارة',content:b64(JSON.stringify(data,null,1)+'\n'),sha,branch:CFG.BRANCH||'main'})});
     if(!put.ok)throw new Error(put.status===403?'المفتاح لا يملك صلاحية الكتابة (Contents: Read and write).':'رفض GitHub النشر ('+put.status+').');
     ADMIN=data;if(ME.legacy&&data.auth.hash)S.set('khabar-admin',data.auth.hash);
     const p1=$('#np1').value;if(p1&&!ME.legacy){if(p1.length<10)throw new Error('كلمة المرور الجديدة يجب أن تكون 10 أحرف على الأقل.');if(p1!==$('#np2').value)throw new Error('كلمتا المرور غير متطابقتين.');
-      const db=JSON.parse(JSON.stringify(USERS)),me=db.users.find(x=>x.u===ME.u);Object.assign(me,await AUTH.hashNew(p1));await putFile(tok,USERS_PATH,db,'خبر: تغيير كلمة مرور '+ME.u);USERS=db}
+      const db=JSON.parse(JSON.stringify(USERS)),me=db.users.find(x=>x.u===ME.u);Object.assign(me,await AUTH.hashNew(p1));await putFile(tok,USERS_PATH,db,'عبدو نيوز: تغيير كلمة مرور '+ME.u);USERS=db}
     $('#np1').value='';$('#np2').value='';
     msg('نُشرت التعديلات. تظهر في التطبيق خلال دقيقة إلى دقيقتين بعد تحديث GitHub Pages.',true);
   }catch(e){msg(e.message,false)}finally{btn.disabled=false}
@@ -164,7 +164,7 @@ function umsg(text,ok){const m=$('#users-msg');m.textContent=text;m.className='m
 async function saveUsers(change,what){
   const tok=$('#tok').value.trim();if(!tok){umsg('أدخل مفتاح النشر على GitHub في قسم «نشر التعديلات» أولاً.',false);return}
   LS.set('khabar-token',tok);const db=JSON.parse(JSON.stringify(USERS));
-  try{await change(db);db.updated=new Date().toISOString();umsg('جارٍ النشر…',true);await putFile(tok,USERS_PATH,db,'خبر: الحسابات · '+what);USERS=db;usersPanel();umsg('تم: '+what+'. يسري خلال دقيقة إلى دقيقتين.',true)}
+  try{await change(db);db.updated=new Date().toISOString();umsg('جارٍ النشر…',true);await putFile(tok,USERS_PATH,db,'عبدو نيوز: الحسابات · '+what);USERS=db;usersPanel();umsg('تم: '+what+'. يسري خلال دقيقة إلى دقيقتين.',true)}
   catch(e){umsg(e.message,false)}
 }
 $('#user-form').onsubmit=async e=>{

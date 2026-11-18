@@ -1,5 +1,5 @@
 'use strict';
-// لوحة إدارة «خبر»: الأقسام الموضوعية، والبلاغات والمشتركون وإحصاءات القراء، والتصحيحات، ومقالات الرأي، وما هو «جاهز للتفعيل».
+// لوحة إدارة «عبدو نيوز»: الأقسام الموضوعية، والبلاغات والمشتركون وإحصاءات القراء، والتصحيحات، ومقالات الرأي، وما هو «جاهز للتفعيل».
 // يعمل في نسختي GitHub وCloudflare: admin.js يمرّر دالة الحفظ المناسبة (GitHub أو /api/save) عبر KAX.init.
 (function(){
 const $=s=>document.querySelector(s);
@@ -14,9 +14,9 @@ const ACT=[
   ['newsletter','إرسال النشرة اليومية بالبريد أو واتساب','مزوّد إرسال (مثل Resend أو Brevo للبريد، وWhatsApp Business API للواتساب)، ومفتاحه في أسرار الخادم، ونطاق مرسل موثّق.'],
   ['payments','الاشتراك المدفوع','مزوّد دفع (مثل Stripe أو بوابة قطرية/مصرية)، والأسعار والمزايا، وسياسة الاسترداد.'],
   ['ads','الإعلانات','حساب إعلانات (مثل Google AdSense) أو معلنون مباشرون، وسياسة تمييز الإعلان عن الخبر.'],
-  ['social_x','النشر الآلي على X','حساب «خبر» على X ومفتاح API بصلاحية النشر.'],
+  ['social_x','النشر الآلي على X','حساب «عبدو نيوز» على X ومفتاح API بصلاحية النشر.'],
   ['social_telegram','قناة وبوت تلغرام','قناة تلغرام، وبوت من BotFather ومفتاحه.'],
-  ['social_whatsapp','قناة واتساب الرسمية','قناة واتساب باسم «خبر» (النشر فيها يدوي، أو WhatsApp Business API للآلي).'],
+  ['social_whatsapp','قناة واتساب الرسمية','قناة واتساب باسم «عبدو نيوز» (النشر فيها يدوي، أو WhatsApp Business API للآلي).'],
   ['voice','المساعدات الصوتية','حساب مطوّر Google (Actions) وAmazon (Alexa Flash Briefing)، وخلاصة RSS الصوتية جاهزة.'],
   ['stores','متاجر التطبيقات وأدلتها','حساب Google Play (رسوم مرة واحدة) وApple Developer (سنوي)، وتغليف PWA جاهز.'],
   ['campaign','حملة الإطلاق','ميزانية الحملة، والجمهور (قطر ومصر)، والحسابات الإعلانية.'],
@@ -55,8 +55,8 @@ function collect(out){
 
 /* ---------- صندوق البلاغات والمشتركين والإحصاءات ---------- */
 function inboxPanel(){
-  const s=panel('بلاغات القرّاء والمشتركون والإحصاءات','بلاغات «بلّغ عن خطأ»، والمشتركون في النشرة، وأكثر الأقسام زيارة في آخر 30 يوماً، ورموز الإحالة. تُحفظ على خادم «خبر» في Cloudflare، ولا يُحفظ عنوان أي زائر.');
-  const f=el('div','field');f.append(el('label',null,'مفتاح خادم «خبر» (يبدأ بـ khb_)'));const k=el('input');k.type='password';k.dir='ltr';k.placeholder='khb_…';k.value=LS.get('khabar-cf-key')||LS.get('khabar-token')&&/^khb_/.test(LS.get('khabar-token'))&&LS.get('khabar-token')||'';f.append(k);s.append(f);
+  const s=panel('بلاغات القرّاء والمشتركون والإحصاءات','بلاغات «بلّغ عن خطأ»، والمشتركون في النشرة، وأكثر الأقسام زيارة في آخر 30 يوماً، ورموز الإحالة. تُحفظ على خادم «عبدو نيوز» في Cloudflare، ولا يُحفظ عنوان أي زائر.');
+  const f=el('div','field');f.append(el('label',null,'مفتاح خادم «عبدو نيوز» (يبدأ بـ khb_)'));const k=el('input');k.type='password';k.dir='ltr';k.placeholder='khb_…';k.value=LS.get('khabar-cf-key')||LS.get('khabar-token')&&/^khb_/.test(LS.get('khabar-token'))&&LS.get('khabar-token')||'';f.append(k);s.append(f);
   const btns=el('div','btns');const load=el('button','btn','حمّل الصندوق');load.type='button';const exp=el('button','btn ghost','نزّل قائمة المشتركين (CSV)');exp.type='button';btns.append(load,exp);s.append(btns);
   const m=el('p','msg');m.id='inbox-msg';m.hidden=true;s.append(m);const out=el('div');s.append(out);
   const call=async(body)=>{LS.set('khabar-cf-key',k.value.trim());const r=await fetch((CFG.API||'..')+'/api/inbox',{method:'POST',headers:{Authorization:'Bearer '+k.value.trim(),'content-type':'application/json'},body:JSON.stringify(body||{})});
@@ -87,7 +87,7 @@ function corrPanel(){
   b.onclick=async()=>{const v=id=>$('#'+id).value.trim();if(!v('c-before')||!v('c-after')||!v('c-reason')){say('#corr-msg','اكتب الصيغتين وسبب التصحيح.',false);return}
     const src=v('c-src').split(/\s+/).filter(u=>/^https:\/\//.test(u)).map(u=>({name:(()=>{try{return new URL(u).hostname.replace(/^www\./,'')}catch(e){return u}})(),url:u,date:new Date().toISOString().slice(0,10)}));
     const db=JSON.parse(JSON.stringify(CORR||{items:[]}));db.items.unshift({date:new Date().toISOString().slice(0,10),brief:v('c-brief')||null,before:v('c-before'),after:v('c-after'),reason:v('c-reason'),sources:src});db.updated=new Date().toISOString();
-    try{say('#corr-msg','جارٍ النشر…',true);await H.save('data/corrections.json',db,'خبر: تصحيح منشور');CORR=db;say('#corr-msg','نُشر التصحيح في سجل التصحيحات.',true);['c-before','c-after','c-reason','c-src','c-brief'].forEach(i=>$('#'+i).value='')}catch(e){say('#corr-msg',e.message,false)}};
+    try{say('#corr-msg','جارٍ النشر…',true);await H.save('data/corrections.json',db,'عبدو نيوز: تصحيح منشور');CORR=db;say('#corr-msg','نُشر التصحيح في سجل التصحيحات.',true);['c-before','c-after','c-reason','c-src','c-brief'].forEach(i=>$('#'+i).value='')}catch(e){say('#corr-msg',e.message,false)}};
   return s;
 }
 
@@ -103,7 +103,7 @@ function opinionPanel(){
   s.append(list,el('b',null,'مقال جديد:'),fa,fld('o-name','اسم الكاتب الجديد (إن اخترت كاتباً جديداً)'),fld('o-bio','صفته ونبذة قصيرة'),fld('o-title','عنوان المقال'),fld('o-body','نص المقال',8),fld('o-src','روابط مصادر المعلومات الواردة (رابط في كل سطر)',3,'https://…'));
   const consent=el('label','switch');const cc=el('input');cc.type='checkbox';cc.id='o-consent';consent.append(cc,'لديّ موافقة الكاتب المكتوبة على النشر باسمه');s.append(consent);
   const b=el('button','btn','انشر المقال');b.type='button';const m=el('p','msg');m.id='op-msg';m.hidden=true;s.append(b,m);
-  const save=async msg=>{OPN.updated=new Date().toISOString();await H.save('data/opinion.json',OPN,'خبر: '+msg)};
+  const save=async msg=>{OPN.updated=new Date().toISOString();await H.save('data/opinion.json',OPN,'عبدو نيوز: '+msg)};
   b.onclick=async()=>{const v=id=>$('#'+id).value.trim();if(!$('#o-consent').checked){say('#op-msg','لا يُنشر مقال باسم كاتب دون موافقته المكتوبة.',false);return}
     if(!v('o-title')||v('o-body').length<200){say('#op-msg','اكتب العنوان ونصاً لا يقل عن 200 حرف.',false);return}
     let au=authSel.value;if(au==='__new'){if(!v('o-name')){say('#op-msg','اكتب اسم الكاتب.',false);return}au='a'+Date.now().toString(36);OPN.authors=OPN.authors||[];OPN.authors.push({id:au,name:v('o-name'),bio:v('o-bio')})}
