@@ -2,7 +2,7 @@
  "id": "super-ice-2026",
  "code": "ت ٢",
  "created": "2026-11-19",
- "updated": "2026-11-19T04:59:59Z",
+ "updated": "2026-11-19T05:30:01Z",
  "rule": "two-independent-outlets",
  "title": {
   "ar": "ت ٢: صاروخ الكروز «سوبر آيس» من «رافائيل»",
@@ -308,6 +308,182 @@
   "note": {
    "ar": "عمود «آيس بريكر» للمقارنة فقط ومصادره في القسم الثالث؛ «غير معلن» تعني أن الشركة والمصادر المفتوحة لم تنشر رقماً، ولم يُقدَّر شيء.",
    "en": "The ICE BREAKER column is for comparison only, sourced in section three; 'Not disclosed' means neither the company nor open sources published a figure, and nothing was estimated."
+  }
+ },
+ "estimates": {
+  "title": {
+   "ar": "تقدير تحليلي افتراضي، غير مؤكد",
+   "en": "Hypothetical analytical estimate, unconfirmed"
+  },
+  "disclaimer": {
+   "ar": "هذا القسم تقدير افتراضي أعدّه «عبدو نيوز» بطلب صاحب التقرير، وليس معلومات معلنة أو مؤكدة. القيم نطاقات تقريبية مستنتجة من مقارنة علنية مع «آيس بريكر» ومع صواريخ كروز غربية تحمل رأساً حربياً من الفئة نفسها (نحو 450 كغ): JASSM الأمريكي، و«ستورم شادو» الأوروبي، و«توروس» الألماني السويدي. وقد تختلف المواصفات الحقيقية عنها اختلافاً كبيراً.",
+   "en": "This section is a hypothetical estimate prepared by Abdo News at the requester's request; it is not announced or confirmed information. Values are approximate ranges inferred from public comparison with ICE BREAKER and with Western cruise missiles carrying a warhead of the same class (about 450 kg): the US JASSM, the European Storm Shadow and the German-Swedish Taurus. Actual specifications may differ substantially."
+  },
+  "rows": [
+   {
+    "ar": "القطر",
+    "en": "Diameter",
+    "est": {
+     "ar": "نحو 0.45 إلى 0.60 م (مقطع مضلّع غير دائري على الأرجح)",
+     "en": "About 0.45 to 0.60 m (likely a faceted, non-circular cross-section)"
+    },
+    "basis": {
+     "ar": "الرأس المتوافق مع MK83 قطره نحو 0.35 م فيحتاج جسماً أعرض منه؛ وقطر JASSM نحو 0.55 م و«ستورم شادو» نحو 0.48 م، وصور الصاروخ تُظهر جسماً مضلّعاً.",
+     "en": "An MK83-compatible warhead is about 0.35 m wide and needs a wider body; JASSM is about 0.55 m and Storm Shadow about 0.48 m, and imagery shows a faceted body."
+    },
+    "src": [
+     "wk-mk83",
+     "csis-jassm",
+     "wk-ss",
+     "avi"
+    ]
+   },
+   {
+    "ar": "الطول",
+    "en": "Length",
+    "est": {
+     "ar": "نحو 4.5 إلى 5.5 م",
+     "en": "About 4.5 to 5.5 m"
+    },
+    "basis": {
+     "ar": "«آيس بريكر» نحو 4 م برأس 113 كغ؛ والصواريخ ذات الرأس 450 كغ بين 4.3 م (JASSM) و5.1 م («ستورم شادو» و«توروس»).",
+     "en": "ICE BREAKER is about 4 m with a 113 kg warhead; missiles with a 450 kg warhead range from 4.3 m (JASSM) to 5.1 m (Storm Shadow, Taurus)."
+    },
+    "src": [
+     "nn22",
+     "csis-jassm",
+     "wk-ss",
+     "saab-taurus"
+    ]
+   },
+   {
+    "ar": "الوزن الكلي عند الإطلاق",
+    "en": "Launch weight",
+    "est": {
+     "ar": "نحو 1,000 إلى 1,500 كغ",
+     "en": "About 1,000 to 1,500 kg"
+    },
+    "basis": {
+     "ar": "يشكّل الرأس الحربي 34 إلى 44% من الوزن في الصواريخ المماثلة (JASSM نحو 1,020 كغ، و«ستورم شادو» 1,300 كغ، و«توروس» 1,400 كغ)، ونحو 28% في «آيس بريكر» (113 من 400 كغ)؛ وتطبيق هذه النسب على رأس 454 كغ يعطي هذا النطاق.",
+     "en": "The warhead is 34 to 44% of launch weight in comparable missiles (JASSM about 1,020 kg, Storm Shadow 1,300 kg, Taurus 1,400 kg) and about 28% in ICE BREAKER (113 of 400 kg); applying these ratios to a 454 kg warhead gives this range."
+    },
+    "src": [
+     "csis-jassm",
+     "wk-ss",
+     "saab-taurus",
+     "nn22"
+    ]
+   },
+   {
+    "ar": "نوع المحرك",
+    "en": "Engine type",
+    "est": {
+     "ar": "محرك نفّاث صغير واحد (توربيني نفّاث أو مروحي) للطيران الانسيابي",
+     "en": "One small jet engine (turbojet or turbofan) for cruise"
+    },
+    "basis": {
+     "ar": "الصواريخ المماثلة كلها تعمل بمحرك توربيني صغير، والسرعة الموصوفة دون صوتية عالية، ورُصد في الصور مدخل هواء بطني واحد.",
+     "en": "All comparable missiles use a small turbine engine, the stated speed is high subsonic, and imagery shows a single ventral air intake."
+    },
+    "src": [
+     "avi",
+     "aft-jassm",
+     "wk-ss",
+     "wk-taurus"
+    ]
+   },
+   {
+    "ar": "عدد مراحل الدفع",
+    "en": "Propulsion stages",
+    "est": {
+     "ar": "مرحلة واحدة عند الإطلاق الجوي؛ ومرحلتان على الأرجح عند الإطلاق البري أو البحري (معزّز صاروخي يسقط بعد الإقلاع ثم المحرك النفّاث)",
+     "en": "One stage when air-launched; likely two when launched from land or sea (a rocket booster that drops after launch, then the jet engine)"
+    },
+    "basis": {
+     "ar": "الإطلاق الجوي يمنح السرعة الأولية فيكفي المحرك النفّاث، أما الإطلاق من السطح فيحتاج معزّزاً كما في «توماهوك» (معزّز ثم محرك مروحي).",
+     "en": "Air launch provides initial speed so the jet engine suffices; surface launch needs a booster, as with Tomahawk (booster, then turbofan)."
+    },
+    "src": [
+     "csis-tlam",
+     "esut"
+    ]
+   },
+   {
+    "ar": "السرعة",
+    "en": "Speed",
+    "est": {
+     "ar": "نحو 0.8 إلى 0.95 ماخ",
+     "en": "About Mach 0.8 to 0.95"
+    },
+    "basis": {
+     "ar": "وُصفت السرعة بأنها دون صوتية عالية وأعلى من «آيس بريكر» (0.8 إلى 0.9 ماخ)، والصواريخ المماثلة تطير بنحو 0.95 ماخ.",
+     "en": "Speed is described as high subsonic and above ICE BREAKER's (Mach 0.8 to 0.9); comparable missiles fly at about Mach 0.95."
+    },
+    "src": [
+     "jp",
+     "avi",
+     "wk-ss",
+     "wk-taurus"
+    ]
+   },
+   {
+    "ar": "المدى",
+    "en": "Range",
+    "est": {
+     "ar": "نحو 500 إلى 1,000 كم",
+     "en": "About 500 to 1,000 km"
+    },
+    "basis": {
+     "ar": "المصادر تقول إنه أطول من 300 كم، وتصفه الشركة بأنه «فائق المدى»؛ والصواريخ المماثلة بين 370 كم (JASSM) و500 إلى 550 كم («توروس» و«ستورم شادو») ونحو 1,000 كم (JASSM-ER بمحرك مروحي).",
+     "en": "Outlets say it exceeds 300 km and the company calls it 'ultra-long-range'; comparable missiles range from 370 km (JASSM) to 500-550 km (Taurus, Storm Shadow) and about 1,000 km (turbofan JASSM-ER)."
+    },
+    "src": [
+     "jp",
+     "avi",
+     "csis-jassm",
+     "wk-ss",
+     "saab-taurus"
+    ]
+   },
+   {
+    "ar": "دقة الإصابة",
+    "en": "Accuracy",
+    "est": {
+     "ar": "خطأ دائري محتمل (CEP) في حدود 3 م أو أقل",
+     "en": "Circular error probable (CEP) of about 3 m or less"
+    },
+    "basis": {
+     "ar": "الباحث الكهروبصري بمطابقة الصور يماثل باحثات الصواريخ الغربية المماثلة، ودقة JASSM المعلنة رسمياً 3 م.",
+     "en": "The EO image-matching seeker is comparable to Western counterparts; JASSM's officially stated accuracy is 3 m CEP."
+    },
+    "src": [
+     "csis-jassm",
+     "usaf-jassm",
+     "nn"
+    ]
+   },
+   {
+    "ar": "أنواع الرؤوس الحربية وأوزانها",
+    "en": "Warhead types and weights",
+    "est": {
+     "ar": "رأس انفجاري تشظّي من فئة 454 كغ هو الأرجح، بحشوة متفجرة نحو 110 إلى 200 كغ؛ مع احتمال نسخة خارقة للتحصينات",
+     "en": "Most likely a 454 kg-class blast-fragmentation warhead with about 110 to 200 kg of explosive; a bunker-penetrating version is possible"
+    },
+    "basis": {
+     "ar": "التوافق مع MK83 يعني فئة القنبلة العامة الغرض (حشوتها 202 كغ)؛ والصواريخ المماثلة تحمل رؤوساً خارقة أو مزدوجة (JASSM بحشوة نحو 109 كغ، و«ستورم شادو» و«توروس» برؤوس اختراق مرحلية).",
+     "en": "MK83 compatibility points to the general-purpose bomb class (202 kg filler); comparable missiles carry penetrating or dual-mode warheads (JASSM with about 109 kg of explosive; Storm Shadow and Taurus with multi-stage penetrators)."
+    },
+    "src": [
+     "wk-mk83",
+     "usaf-jassm",
+     "wk-ss",
+     "wk-taurus"
+    ]
+   }
+  ],
+  "method": {
+   "ar": "منهج التقدير: (1) الانطلاق من الرقم المؤكد الوحيد، وهو رأس حربي 454 كغ متوافق مع MK83؛ (2) مقارنته بصواريخ كروز علنية المواصفات تحمل رأساً من الفئة نفسها؛ (3) الاستعانة بخصائص «آيس بريكر» المعلنة وما رصدته الصور؛ (4) عرض نطاق لا رقم واحد. ولم يُعثر على تقديرات منشورة لمحللين عن «سوبر آيس» تحديداً حتى تاريخ التقرير.",
+   "en": "Method: (1) start from the only confirmed figure, a 454 kg MK83-compatible warhead; (2) compare it with cruise missiles of the same warhead class whose specifications are public; (3) use ICE BREAKER's published characteristics and what imagery shows; (4) give a range, not a single figure. No published analyst estimates specific to SUPER ICE were found as of the report date."
   }
  },
  "sections": [
@@ -695,11 +871,67 @@
    "date": "2022-07-14",
    "url": "https://overtdefense.com/2022/07/14/rafael-to-showcase-the-new-5th-generation-ice-breaker-missile-at-the-farnborough-international-airshow",
    "title": "Rafael to showcase the new 5th generation 'Ice Breaker' missile at the Farnborough International Airshow"
+  },
+  "csis-jassm": {
+   "ar": "مشروع التهديد الصاروخي (CSIS)",
+   "en": "CSIS Missile Threat",
+   "date": "",
+   "url": "https://missilethreat.csis.org/missile/jassm/",
+   "title": "JASSM / JASSM ER"
+  },
+  "aft-jassm": {
+   "ar": "إير فورس تكنولوجي",
+   "en": "Airforce Technology",
+   "date": "",
+   "url": "https://www.airforce-technology.com/projects/agm-158-jassm-standoff-missile/",
+   "title": "AGM-158 JASSM standoff missile"
+  },
+  "usaf-jassm": {
+   "ar": "سلاح الجو الأمريكي (صحيفة وقائع)",
+   "en": "US Air Force (fact sheet)",
+   "date": "",
+   "url": "https://www.dyess.af.mil/Fact-Sheets/Display/Article/267602/agm-158-joint-air-to-surface-standoff-missile-jassm",
+   "title": "AGM-158 Joint Air to Surface Standoff Missile (JASSM)"
+  },
+  "wk-ss": {
+   "ar": "ويكيبيديا",
+   "en": "Wikipedia",
+   "date": "",
+   "url": "https://en.wikipedia.org/wiki/Storm_Shadow",
+   "title": "Storm Shadow"
+  },
+  "saab-taurus": {
+   "ar": "ساب (صفحة المنتج)",
+   "en": "Saab (product page)",
+   "date": "",
+   "url": "https://www.saab.com/products/taurus-kepd-350",
+   "title": "Taurus KEPD 350"
+  },
+  "wk-taurus": {
+   "ar": "ويكيبيديا",
+   "en": "Wikipedia",
+   "date": "",
+   "url": "https://en.wikipedia.org/wiki/Taurus_KEPD_350",
+   "title": "Taurus KEPD 350"
+  },
+  "wk-mk83": {
+   "ar": "ويكيبيديا",
+   "en": "Wikipedia",
+   "date": "",
+   "url": "https://en.wikipedia.org/wiki/Mark_83_bomb",
+   "title": "Mark 83 bomb"
+  },
+  "csis-tlam": {
+   "ar": "مشروع التهديد الصاروخي (CSIS)",
+   "en": "CSIS Missile Threat",
+   "date": "",
+   "url": "https://missilethreat.csis.org/missile/tomahawk/",
+   "title": "Tomahawk"
   }
  },
  "stats": {
   "items": 15,
-  "sources": 11,
+  "sources": 19,
   "outlets": 9
  }
 }
