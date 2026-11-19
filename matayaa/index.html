@@ -13,14 +13,14 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
   --ok:#2F7D4F; --ok-bg:#E3F2E8; --warn:#9A6A10; --warn-bg:#FBF0D9; --bad:#A3362B; --bad-bg:#F8E3E0; --info:#3A4F8A; --info-bg:#E6EAF6;
   --display:"Amiri","Noto Naskh Arabic","Times New Roman",serif;
   --body:"Tajawal","Segoe UI","Noto Sans Arabic",Tahoma,sans-serif;
-  --r:14px;
+  --r:14px; --map-bg:#F3EADB;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#16141F; --surface:#211E2D; --fg:#F2EBDD; --muted:#ADA4B5; --line:#373245; --chip:#2B2739; --sand-2:#2B2739;
-  --gold-ink:#E0B26A; --ok:#7FD3A0; --ok-bg:#1E3328; --warn:#E9C072; --warn-bg:#3A3020; --bad:#F09A8E; --bad-bg:#3D2422; --info:#A9B8EC; --info-bg:#262C45;
+  --gold-ink:#E0B26A; --ok:#7FD3A0; --ok-bg:#1E3328; --warn:#E9C072; --warn-bg:#3A3020; --bad:#F09A8E; --bad-bg:#3D2422; --info:#A9B8EC; --info-bg:#262C45; --map-bg:#262236;
   color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#16141F; --surface:#211E2D; --fg:#F2EBDD; --muted:#ADA4B5; --line:#373245; --chip:#2B2739; --sand-2:#2B2739;
+  --map-bg:#262236; --bg:#16141F; --surface:#211E2D; --fg:#F2EBDD; --muted:#ADA4B5; --line:#373245; --chip:#2B2739; --sand-2:#2B2739;
   --gold-ink:#E0B26A; --ok:#7FD3A0; --ok-bg:#1E3328; --warn:#E9C072; --warn-bg:#3A3020; --bad:#F09A8E; --bad-bg:#3D2422; --info:#A9B8EC; --info-bg:#262C45;
   color-scheme:dark}
 *{box-sizing:border-box}
@@ -225,6 +225,47 @@ footer .legal{grid-column:1/-1;border-top:1px solid #3a3550;padding-top:16px;fon
 .right{margin-inline-start:auto}
 .mt{margin-top:16px}.mt2{margin-top:26px}
 .muted{color:var(--muted)}
+/* v2 */
+.map-layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:900px){.map-layout{grid-template-columns:1fr}}
+.map-box{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px}
+.site-map{width:100%;height:auto;display:block}
+.zone{cursor:pointer}.zone rect{transition:filter .15s}.zone:hover rect{filter:brightness(1.05) saturate(1.2)}
+.zone:focus{outline:none}.zone:focus-visible rect{stroke:#C8913A;stroke-width:6}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;padding:10px 6px 2px;font-size:.85rem;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:16px;height:12px;border-radius:4px;border:2px solid;display:inline-block}
+.legend i.trail{border:none;border-top:4px dotted var(--gold);height:0;width:22px;border-radius:0}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.seg button{border:none;background:none;font:inherit;padding:9px 16px;cursor:pointer;color:var(--fg);font-weight:700}
+.seg button[aria-pressed="true"]{background:var(--night);color:var(--sand)}
+.stations{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.station{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px;align-items:center}
+.st-no{width:44px;height:44px;border-radius:50%;background:var(--gold);color:var(--night);display:grid;place-items:center;font-weight:800;font-size:1.1rem}
+.st-body p{color:var(--muted);margin-top:4px}
+@media (max-width:600px){.station{grid-template-columns:auto minmax(0,1fr)}.st-play{grid-column:1/-1}}
+.stars{color:var(--gold);letter-spacing:2px;white-space:nowrap}.stars .off{color:var(--line)}
+.rate{display:flex;gap:4px;flex-direction:row-reverse;justify-content:flex-end}
+.rate button{font-size:1.9rem;line-height:1;background:none;border:none;cursor:pointer;color:var(--line);padding:2px}
+.rate button.on{color:var(--gold)}
+.sres{display:flex;flex-direction:column;gap:6px;max-height:55vh;overflow:auto}
+.sres-row{display:flex;gap:10px;align-items:center;text-align:start;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit;color:var(--fg);cursor:pointer}
+.sres-row:hover{border-color:var(--gold)}
+.en-sub{font-family:var(--body);font-size:.95rem;color:#e1c58f}
+.en{direction:ltr;text-align:left}
+.en .crumbs{direction:rtl;text-align:left}
+.dock{display:none}
+@media (max-width:760px){
+  .dock{display:grid;grid-template-columns:repeat(4,1fr);position:fixed;inset:auto 0 0 0;z-index:55;background:var(--night);border-top:1px solid #3a3550;padding:6px max(10px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-left,0px));gap:6px}
+  .dock a,.dock button{color:#e8dcc6;text-decoration:none;text-align:center;font:inherit;font-size:.88rem;font-weight:700;padding:9px 4px;border-radius:10px;background:none;border:none}
+  .dock .dock-main{background:var(--gold);color:var(--night)}
+  body{padding-bottom:64px}
+  .toast{bottom:calc(80px + env(safe-area-inset-bottom,0px))}
+}
+.visit{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.visit div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.visit b{display:block;margin-bottom:2px}
+.visit span{color:var(--muted);font-size:.93rem}
 </style>
 
 <header class="bar">
@@ -234,18 +275,19 @@ footer .legal{grid-column:1/-1;border-top:1px solid #3a3550;padding-top:16px;fon
       <span><b>مطايا</b><small>الشحانية · قطر</small></span>
     </a>
     <nav class="nav" id="nav" aria-label="القائمة الرئيسية">
-      <a href="#zones">المرافق</a>
+      <a href="#map">الخريطة</a>
       <a href="#experiences">التجارب</a>
-      <a href="#zoo">حديقة الحيوان</a>
-      <a href="#dining">المطاعم</a>
-      <a href="#markets">الأسواق</a>
+      <a href="#packages">الباقات</a>
       <a href="#events">الفعاليات</a>
-      <a href="#academy">الأكاديمية</a>
+      <a href="#tour">المتحف</a>
+      <a href="#weddings">المناسبات</a>
       <a href="#membership">العضويات</a>
+      <a href="#sponsor">ناقتي</a>
       <a href="#shop">المتجر</a>
-      <a href="#contact">تواصل معنا</a>
+      <a href="#en" lang="en">English</a>
     </nav>
     <div class="bar-actions">
+      <button class="icon-btn" id="searchBtn" type="button" aria-label="بحث"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button>
       <a class="icon-btn" href="#cart" aria-label="سلة المتجر">سلة <span class="cart-count" id="cartCount">0</span></a>
       <a class="icon-btn" href="#account" id="acctBtn">حسابي</a>
       <button class="icon-btn" id="themeBtn" type="button" aria-label="تبديل المظهر الفاتح والداكن"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg></button>
@@ -270,12 +312,22 @@ footer .legal{grid-column:1/-1;border-top:1px solid #3a3550;padding-top:16px;fon
       <a href="#packages">باقات الزيارة</a>
       <a href="#events">الفعاليات</a>
       <a href="#dining">حجز طاولة</a>
+      <a href="#weddings">الأعراس والمناسبات</a>
       <a href="#tickets">تذاكري</a>
     </div>
     <div>
       <h4>المنصة</h4>
+      <a href="#map">الخريطة التفاعلية</a>
+      <a href="#tour">المتحف والجولة الصوتية</a>
+      <a href="#zoo">حديقة الحيوان</a>
+      <a href="#markets">الأسواق</a>
+      <a href="#meera">ميرة مطايا</a>
+      <a href="#academy">الأكاديمية</a>
       <a href="#membership">العضويات</a>
+      <a href="#sponsor">ناقتي والرعاية</a>
+      <a href="#reviews">آراء الزوار</a>
       <a href="#shop">متجر مطايا</a>
+      <a href="#en" lang="en">English</a>
       <a href="#contact">تواصل معنا</a>
       <a href="#admin">لوحة الإدارة</a>
     </div>
@@ -285,6 +337,7 @@ footer .legal{grid-column:1/-1;border-top:1px solid #3a3550;padding-top:16px;fon
     </div>
   </div>
 </footer>
+<nav class="dock" aria-label="اختصارات الجوال"><a href="#map">الخريطة</a><a href="#packages" class="dock-main">احجز</a><a href="#tickets">تذاكري</a><button type="button" id="dockSearch">بحث</button></nav>
 <div class="toast" id="toast" hidden><div id="toastMsg"></div></div>
 <div class="modal" id="modal" hidden><div class="panel" id="modalBody"></div></div>
 
@@ -342,6 +395,8 @@ const Remote={
  member:(tier,pay)=>rpc("mty_member",{p_token:tok.u,p_tier:tier,p_pay:pay}),
  order:p=>rpc("mty_order",{p:{...p,token:tok.u}}),
  message:p=>rpc("mty_message",{p}),
+ reviews:()=>rpc("mty_reviews"),
+ addReview:p=>rpc("mty_review_add",{p}),
  adminLogin:(u,pw)=>rpc("mty_admin_login",{p_user:u,p_pass:pw}),
  admin:(action,p)=>rpc("mty_admin",{p_token:tok.a,p_action:action,p:p||{}})
 };
@@ -362,11 +417,14 @@ const Local={
  async member(tier,pay){const u=sessUser();if(!u)fail("login_required");const t=TIERS.find(x=>x.id===tier);const until=new Date();until.setFullYear(until.getFullYear()+1);return Store.add("memberships",{id:uid("MBR"),userId:u.id,name:u.name,phone:u.phone,tierId:t.id,tierName:t.name,price:t.price,since:isoDate(new Date()),until:isoDate(until),status:pay==="card"?"confirmed":"pending",pay,createdAt:Date.now()})},
  async order(p){const ph=normPhone(p.phone);if(!ph)fail("bad_phone");const lines=p.lines.map(l=>{const pr=PRODUCTS.find(x=>x.id===l.id);return {id:l.id,name:pr.name,price:pr.price,qty:l.qty}});const sub=lines.reduce((a,l)=>a+l.price*l.qty,0);if(!sub)fail("empty_cart");return Store.add("orders",{id:uid("ORD"),userId:sessUser()?.id||null,name:p.name,phone:ph,address:p.address,pay:p.pay,lines,total:sub+(sub<200?20:0),status:"pending",createdAt:Date.now()})},
  async message(p){const ph=normPhone(p.phone);if(!ph)fail("bad_phone");return Store.add("messages",{id:uid(p.type==="event"?"EVT":"MSG"),type:p.type,name:p.name,phone:ph,email:p.email||"",subject:p.subject,body:p.body,status:"new",createdAt:Date.now()})},
+ async reviews(){return Store.list("reviews").filter(r=>r.status==="approved")},
+ async addReview(p){const r=Math.round(Number(p.rating));if(!(r>=1&&r<=5))fail("bad_count");if((p.name||"").trim().length<2)fail("bad_name");return Store.add("reviews",{id:uid("REV"),rating:r,about:String(p.about).slice(0,80),name:p.name.trim().slice(0,40),text:String(p.text).trim().slice(0,600),status:"pending",createdAt:Date.now()})},
  async adminLogin(u,pw){const a=Store.read("admin");if(u.trim()!==a.user||await sha("matayaa|"+pw)!==a.hash)fail("bad_login");return {token:"local-admin"}},
  async admin(action,p){if(tok.a!=="local-admin")fail("admin_required");p=p||{};
-  if(action==="data")return {bookings:Store.list("bookings"),messages:Store.list("messages"),orders:Store.list("orders"),memberships:Store.list("memberships"),today:isoDate(new Date())};
+  if(action==="data")return {bookings:Store.list("bookings"),messages:Store.list("messages"),orders:Store.list("orders"),memberships:Store.list("memberships"),reviews:Store.list("reviews"),today:isoDate(new Date())};
   if(action==="booking_status")Store.update("bookings",p.id,{status:p.status});
   if(action==="message_done")Store.update("messages",p.id,{status:"done"});
+  if(action==="review_status")Store.update("reviews",p.id,{status:p.status});
   if(action==="order_status")Store.update("orders",p.id,{status:p.status});
   if(action==="member_status")Store.update("memberships",p.id,{status:p.status});
   if(action==="item_save"){const o=Store.read("catalogOverrides",{});o[p.id]={price:p.price,cap:p.cap};Store.write("catalogOverrides",o)}
@@ -552,6 +610,8 @@ route("home",()=>{
   <div class="grid">
    ${[["zoo","paw","حديقة الحيوان الصغيرة","البيئة القطرية ومزرعة الأليف وبيت الطيور."],["experiences","horse","ميدان التجارب","ركوب الخيل والجمال والمهور وعربات الحمير."],["dining","food","شارع المطاعم التراثية","خمسة مطاعم بهوية قطرية وخليجية."],["markets","market","الأسواق","سوق المطايا الشعبي وستة أسواق عامة."],["meera","cart","ميرة مطايا","سوبرماركت كبير لأهل الشحانية وزوارها."],["academy","cap","أكاديمية مطايا","تدريب وشهادات في الرعاية والفروسية والحرف."],["events","star","الفعاليات والمناسبات","مجلس القصيد، السوق الليلي، كأس مطايا، والأعراس."],["membership","card","العضويات","رفيق، القافلة، وشيخ القافلة."]].map(x=>`<a class="card" href="#${x[0]}"><div class="ic">${ic(x[1])}</div><h3>${x[2]}</h3><p>${x[3]}</p></a>`).join("")}
   </div></div></section>
+  <section class="block"><div class="wrap"><div class="split"><div><span class="eyebrow">الخريطة التفاعلية</span><h2>تجوّل في مطايا قبل أن تصل</h2><p class="muted mt">ثلاث عشرة منطقة على «درب القوافل». اختر منطقة لتعرف ما فيها وما يمكنك حجزه.</p><div class="row mt"><a class="btn btn-gold" href="#map">افتح الخريطة</a><a class="btn btn-ghost" href="#tour">الجولة الصوتية</a></div></div><a href="#map" aria-label="افتح الخريطة التفاعلية" class="map-box" style="display:block">${mapSVG(0,true)}</a></div></div></section>
+  <section class="block band-sand"><div class="wrap"><div class="sec-head"><div><span class="eyebrow">قبل الزيارة</span><h2>خطط زيارتك</h2></div><a class="btn btn-ghost btn-sm" href="#reviews">آراء الزوار</a></div><div class="visit"><div><b>الموسم والمواعيد</b><span>من أكتوبر إلى أبريل، يومياً من <span class="num">8:00</span> صباحاً إلى <span class="num">11:00</span> مساءً.</span></div><div><b>الموقع</b><span>الشحانية، بالقرب من مضمار سباق الهجن، على بعد نحو ساعة من الدوحة.</span></div><div><b>المواقف</b><span>نحو <span class="num">1,500</span> سيارة و<span class="num">40</span> حافلة، وعربات كهربائية على «درب القوافل».</span></div><div><b>للعائلات</b><span>مصلى، ومرافق للأمهات والأطفال، وممرات ومرافق لذوي الإعاقة.</span></div><div><b>الأسعار</b><span>سعر الطفل من 3 إلى 12 سنة نصف السعر، ودون 3 سنوات مجاناً حيث تسمح التجربة.</span></div><div><b>اللغات</b><span>التطبيق بالعربية مع <a href="#en" lang="en">English guide</a>، والجولة الصوتية بست لغات في الموقع.</span></div></div></div></section>
   <section class="block"><div class="wrap"><div class="sec-head"><div><span class="eyebrow">الحجز</span><h2>تذكرتك في ثلاث خطوات</h2></div></div><ol class="steps"><li><h3>اختر التجربة</h3><p class="muted">تجربة أو باقة أو فعالية أو طاولة.</p></li><li><h3>حدد الموعد</h3><p class="muted">يظهر عدد الأماكن المتبقية لكل موعد، حفاظاً على راحة الحيوانات.</p></li><li><h3>استلم تذكرتك</h3><p class="muted">تذكرة برمز QR تُمسح عند البوابة وعند كل تجربة.</p></li></ol></div></section>`;
 });
 
@@ -576,9 +636,9 @@ route("meera",()=>pageHead("ميرة مطايا","«الميرة» في لهجة
  <div class="panel mt2"><div class="row"><div><h3>ساعات العمل المقترحة</h3><p class="muted">يومياً من <span class="num">7:00</span> صباحاً إلى <span class="num">11:00</span> مساءً. افتتاح ميرة مطايا ضمن المرحلة الثالثة.</p></div><a class="btn btn-gold right" href="#shop">تسوّق منتجات مطايا أونلاين</a></div></div></div></section>`);
 
 route("events",()=>{const ev=catalog().filter(x=>x.cat==="event");return pageHead("الفعاليات والمناسبات","أمسيات أسبوعية ومناسبات كبرى على مدار موسم المطايا، وساحة متكاملة للأعراس والمناسبات وفعاليات الشركات.")+`<section class="block"><div class="wrap"><div class="grid">${ev.map(it=>{const nd=firstAvailableDate(it);return itemCard(it).replace('<div class="meta">',`<div class="meta"><span class="tag">الموعد القادم: ${fmtDate(nd,true)}</span>`)}).join("")}</div>
- <div class="sec-head mt2"><div><span class="eyebrow">ساحة المناسبات</span><h2>أعراس البادية وفعاليات الشركات</h2><p>باقات متكاملة للأعراس والملكات في بيوت شَعر فاخرة مع الضيافة والفرق الشعبية والتصوير، وقاعة متعددة الأغراض تتسع لنحو 800 ضيف، وساحة مفتوحة لنحو 3,000 ضيف.</p></div></div>
+ <div class="sec-head mt2"><div><span class="eyebrow">ساحة المناسبات</span><h2>أعراس البادية وفعاليات الشركات</h2><p>باقات متكاملة للأعراس والملكات في بيوت شَعر فاخرة مع الضيافة والفرق الشعبية والتصوير، وقاعة متعددة الأغراض تتسع لنحو 800 ضيف، وساحة مفتوحة لنحو 3,000 ضيف.</p></div><a class="btn btn-ghost btn-sm" href="#weddings">تفاصيل الباقات</a></div>
  <div class="panel"><h3>اطلب عرض سعر لمناسبتك</h3><form id="eventForm" class="form-grid mt" novalidate>
-  <div class="field"><label for="evType">نوع المناسبة</label><select id="evType"><option>عرس أو ملكة</option><option>فعالية شركة</option><option>مؤتمر صغير</option><option>برنامج بناء الفرق «تحدي القافلة»</option><option>عيد ميلاد أو تخرج</option><option>استقبال وفد رسمي</option></select></div>
+  <div class="field"><label for="evType">نوع المناسبة</label><select id="evType"><option>عرس البادية</option><option>الملكة والخطوبة</option><option>فعاليات الشركات</option><option>«تحدي القافلة»</option><option>المناسبات الخاصة</option><option>استقبال وفد رسمي</option></select></div>
   <div class="field"><label for="evDate">التاريخ المفضل</label><input id="evDate" type="date"></div>
   <div class="field"><label for="evGuests">عدد الضيوف التقريبي</label><input id="evGuests" type="number" min="10" max="3000" value="100"></div>
   <div class="field"><label for="evName">الاسم أو الجهة</label><input id="evName" autocomplete="name"></div>
@@ -586,7 +646,7 @@ route("events",()=>{const ev=catalog().filter(x=>x.cat==="event");return pageHea
   <div class="field"><label for="evEmail">البريد الإلكتروني (اختياري)</label><input id="evEmail" type="email"></div>
   <div class="field full"><label for="evNotes">تفاصيل إضافية</label><textarea id="evNotes"></textarea></div>
   <div class="full row"><button class="btn btn-gold" type="submit">إرسال الطلب</button><span class="err" id="evErr"></span></div></form></div></div></section>`});
-after.events=()=>{const f=document.getElementById("eventForm");f.evDate.min=isoDate(new Date());f.addEventListener("submit",async e=>{e.preventDefault();const ph=normPhone(f.evPhone.value);const err=document.getElementById("evErr");if(!f.evName.value.trim())return err.textContent="اكتب الاسم أو اسم الجهة.";if(!ph)return err.textContent="اكتب رقم جوال قطري من 8 أرقام.";if(!f.evDate.value)return err.textContent="اختر التاريخ المفضل.";const btn=f.querySelector("[type=submit]");busy(btn,true);let m;try{m=await API.message({type:"event",name:f.evName.value.trim(),phone:ph,email:f.evEmail.value.trim(),subject:f.evType.value+" · "+fmtDate(f.evDate.value)+" · "+f.evGuests.value+" ضيف",body:f.evNotes.value.trim()})}catch(x){busy(btn,false);return err.textContent=errMsg(x)}busy(btn,false);f.reset();err.textContent="";modal(`<h3>استلمنا طلبك</h3><p class="mt">رقم الطلب <span class="code num">${m.id}</span>. يتواصل معك فريق المناسبات خلال يومي عمل.</p><div class="row mt"><button class="btn btn-gold" data-close>تم</button></div>`)})};
+after.events=()=>{const f=document.getElementById("eventForm");f.evDate.min=isoDate(new Date());const wt=Store.session.get("wedType");if(wt){Store.session.set("wedType",null);f.evType.value=wt;setTimeout(()=>f.scrollIntoView({behavior:"smooth"}),50)}f.addEventListener("submit",async e=>{e.preventDefault();const ph=normPhone(f.evPhone.value);const err=document.getElementById("evErr");if(!f.evName.value.trim())return err.textContent="اكتب الاسم أو اسم الجهة.";if(!ph)return err.textContent="اكتب رقم جوال قطري من 8 أرقام.";if(!f.evDate.value)return err.textContent="اختر التاريخ المفضل.";const btn=f.querySelector("[type=submit]");busy(btn,true);let m;try{m=await API.message({type:"event",name:f.evName.value.trim(),phone:ph,email:f.evEmail.value.trim(),subject:f.evType.value+" · "+fmtDate(f.evDate.value)+" · "+f.evGuests.value+" ضيف",body:f.evNotes.value.trim()})}catch(x){busy(btn,false);return err.textContent=errMsg(x)}busy(btn,false);f.reset();err.textContent="";modal(`<h3>استلمنا طلبك</h3><p class="mt">رقم الطلب <span class="code num">${m.id}</span>. يتواصل معك فريق المناسبات خلال يومي عمل.</p><div class="row mt"><button class="btn btn-gold" data-close>تم</button></div>`)})};
 
 route("academy",()=>pageHead("أكاديمية مطايا للتدريب والشهادات","أكاديمية تؤهل جيلاً جديداً من أبناء المنطقة، وتمنح شهادات بالشراكة مع جهة تعليمية معتمدة.")+`<section class="block"><div class="wrap"><div class="tbl-wrap"><table><thead><tr><th>المسار</th><th>الفئة</th><th>المدة</th><th>المخرج</th></tr></thead><tbody>${[["رعاية الإبل والخيل وتدريبها","الشباب والعاملون","3 أشهر","شهادة مهنية"],["الإرشاد السياحي والرواية","الشباب والمتقاعدون","6 أسابيع","رخصة مرشد بعد اعتماد الجهة المختصة"],["الحرف التراثية (السدو، الخوص، الجلود)","الأسر المنتجة","8 أسابيع","شهادة وحق بيع في السوق"],["الفروسية","المبتدئون والأطفال والعائلات","مستمر","مستويات وشارات"],["الصقارة وتعليم البادية","الهواة والطلاب","4 أسابيع","شهادة حضور"],["الضيافة وسلامة الغذاء","موظفو المطاعم","أسبوعان","شهادة سلامة غذاء"]].map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div><div class="sec-head mt2"><div><h2>سجّل في دورة</h2><p>يُحجز المقعد في أقرب دفعة، ويتواصل معك منسق الأكاديمية لاستكمال الملف.</p></div></div><div class="grid">${catalog().filter(x=>x.cat==="academy").map(itemCard).join("")}</div></div></section>`);
 
@@ -604,6 +664,149 @@ route("cart",()=>{const lines=S.cart.map(l=>({...l,p:PRODUCTS.find(p=>p.id===l.i
  <aside class="panel summary"><h3>ملخص الطلب</h3><div class="mt"><div class="sum-row"><span>المنتجات</span><span class="num">${money(sub)}</span></div><div class="sum-row"><span>التوصيل داخل قطر</span><span class="num">${ship?money(ship):"مجاني"}</span></div><div class="sum-row"><b>الإجمالي</b><b class="num sum-total">${money(sub+ship)}</b></div></div><p class="hint mt">التوصيل مجاني للطلبات من 200 ر.ق فأكثر.</p></aside></div></section>`});
 after.cart=()=>{document.querySelectorAll("[data-q]").forEach(b=>b.addEventListener("click",()=>{let c=S.cart.map(x=>({...x}));const l=c.find(x=>x.id===b.dataset.q);l.qty+=Number(b.dataset.d);c=c.filter(x=>x.qty>0);setCart(c);render(true)}));const f=document.getElementById("orderForm");if(!f)return;f.addEventListener("submit",async e=>{e.preventDefault();const err=document.getElementById("oErr");const ph=normPhone(f.oPhone.value);if(!f.oName.value.trim())return err.textContent="اكتب الاسم.";if(!ph)return err.textContent="اكتب رقم جوال قطري من 8 أرقام.";if(f.oAddr.value.trim().length<4)return err.textContent="اكتب عنوان التوصيل.";const btn=f.querySelector("[type=submit]");busy(btn,true);let o;try{o=await API.order({name:f.oName.value.trim(),phone:ph,address:f.oAddr.value.trim(),pay:f.oPay.value,lines:S.cart.map(l=>({id:l.id,qty:l.qty}))})}catch(x){busy(btn,false);return err.textContent=errMsg(x)}setCart([]);modal(`<h3>تم استلام طلبك</h3><p class="mt">رقم الطلب <span class="code num">${o.id}</span> بقيمة <span class="num">${money(o.total)}</span>. سنتواصل معك على <span class="num">${ph}</span> لتأكيد موعد التوصيل.</p><div class="row mt"><button class="btn btn-gold" data-close>تم</button></div>`);go("shop")})};
 
+/* ============ v2: map, tour, sponsorship, weddings, reviews, search, English ============ */
+const EN={
+ "horse-ride":["Horse riding","Guided ride in a safe arena, or a beginner lesson."],
+ "pony-ride":["Pony rides","Gentle ponies for little ones, fully accompanied."],
+ "camel-ride":["Camel riding","A short arena ride or a desert trek with a herder."],
+ "donkey-cart":["Donkey cart","A wooden heritage cart along the Caravan Trail."],
+ "horse-carriage":["Sunset horse carriage","A family carriage ride around the site at sunset."],
+ "groom-day":["Groom for a day","Children learn to clean, feed and saddle a horse."],
+ "camel-milking":["Camel milking","Milk with the herder and taste it fresh."],
+ "falcon-show":["Falcon show","Flight display and an introduction to falconry."],
+ "family-race":["Family challenges","Puzzles and simple obstacle races with small horses."],
+ "photo-animals":["Photos with the animals","Professional photos with camels and horses in heritage dress."],
+ "zoo-entry":["Zoo entry","Qatari habitat corner, petting farm, aviary and learning trail."],
+ "zoo-feeding":["Feeding yard","Feed the animals with approved feed, guided."],
+ "pkg-short":["Short visit","Souq, zoo and a meal on the heritage restaurant street."],
+ "pkg-family":["Family day","Zoo, horse and camel rides, donkey cart, museum and lunch."],
+ "pkg-intl":["International guest day","Audio tour, museum, camel milking, sunset and dinner, with transfer from Doha."],
+ "pkg-night":["A night in the desert","Stay in a Bedouin tent, stargazing, poetry majlis and sunset."],
+ "pkg-school":["School trip","Museum, learning zoo and a desert-skills workshop."],
+ "ev-majlis":["Poetry majlis evening","A weekly evening of Nabati and classical poetry."],
+ "ev-nightmarket":["Night market","Thursday and Friday evenings in season, lantern-lit with traditional chants."],
+ "ev-stars":["Stargazing","Telescopes and a guide on how desert travellers navigated by the stars."],
+ "ev-national":["National Day programme","A special programme every 18 December."],
+ "ev-cup":["Matayaa Al Shahaniya Cup","Annual February championship: camel racing, endurance and beauty contests."],
+ "ac-care":["Camel and horse care","Professional certificate, 3 months."],
+ "ac-guide":["Tour guiding and storytelling","6 weeks, guide licence after accreditation."],
+ "ac-craft":["Heritage crafts","Sadu weaving, palm-frond and leather work, 8 weeks."],
+ "ac-riding":["Horsemanship","Ongoing levels and badges."],
+ "ac-falconry":["Falconry and desert skills","4 weeks, attendance certificate."],
+ "ac-food":["Hospitality and food safety","2 weeks, food-safety certificate."],
+ "rs-badia":["Badia Kitchen","Wood-fired desert dishes: madhbi, mandi, saj bread."],
+ "rs-fareej":["Fareej Table","An old Qatari house with family rooms."],
+ "rs-qafila":["Caravan Grill","Open charcoal grill."],
+ "rs-milk":["Milk Café","Camel-milk drinks, ice cream and sweets."],
+ "rs-qahwa":["Qahwa Majlis","Arabic coffee, karak and luqaimat."]
+};
+const ZONE_INFO={
+ 1:{d:"قوس تراثي يعلوه نجم سهيل، ومركز زوار يضم الاستقبال والتذاكر وشاشة تفاعلية لخريطة المشروع ونقطة استلام أجهزة الجولة الصوتية، ومعرض «مطايا» الدائم ومعرض مؤقت يتجدد كل موسم، ومجسم ثلاثي الأبعاد للمشروع، ومصلى ومرافق للأمهات والأطفال وذوي الإعاقة.",l:[["#tour","الجولة الصوتية"],["#packages","باقات الزيارة"]],c:"s"},
+ 2:{d:"سوق مسقوف بطراز عمراني قطري من الطين وخشب الدنجل والمشربيات، تتفرع منه أسواق المستلزمات والحرف والأسر المنتجة والخضار والسوق الليلي وساحة مزاد الإبل.",l:[["#markets","الأسواق"]],c:"s"},
+ 3:{d:"سوبرماركت كبير بمساحة بيع نحو 6,000 م²، بمدخل ومواقف مستقلين، وركن دائم لمنتجات مطايا.",l:[["#meera","ميرة مطايا"],["#shop","المتجر"]],c:"s"},
+ 4:{d:"شارع مظلل بخمسة مطاعم تراثية وساحة طعام شعبية.",l:[["#dining","احجز طاولة"]],c:"s"},
+ 5:{d:"فريج من بيوت الشَّعر: بيت الشَّعر الحي، مجلس القصيد، راوٍ يحكي السوالف، وركن التصوير التراثي.",l:[["#events","أمسيات القصيد"]],c:"c"},
+ 6:{d:"متحف إسلامي علمي بأربعة أجنحة، وأكاديمية مطايا للتدريب والشهادات.",l:[["#tour","المتحف والجولة"],["#academy","الأكاديمية"]],c:"c"},
+ 7:{d:"حديقة تعليمية عائلية: ركن البيئة القطرية، مزرعة الأليف، بيت الطيور، ساحة الإطعام، ومسار المعرفة.",l:[["#zoo","حديقة الحيوان"]],c:"c"},
+ 8:{d:"ميدان مفتوح ومسقوف جزئياً لتجارب آمنة مع الخيل والجمال والمهور والحمير بإشراف مدربين معتمدين.",l:[["#experiences","التجارب"]],c:"c"},
+ 9:{d:"عزب نموذجية للحلب والرعي، إسطبلات، مركز بيطري ومختبر للسلالات، وبرنامج «ناقتي» للتبني الرمزي.",l:[["#sponsor","برنامج ناقتي"]],c:"c"},
+ 10:{d:"مضمار تراثي بطول 4 كيلومترات للهجن والخيل بمدرجات لنحو 3,000 متفرج، يستضيف كأس مطايا الشحانية في فبراير.",l:[["#events","كأس مطايا"]],c:"q"},
+ 11:{d:"مخيم من 40 بيت شَعر فاخراً بمرافق حديثة، وبرنامج «ليلة في البادية»، وتجربة الغروب، ومرصد النجوم.",l:[["#packages","ليلة في البادية"]],c:"q"},
+ 12:{d:"باقات أعراس البادية والملكات، وقاعة متعددة الأغراض لنحو 800 ضيف، وساحة مفتوحة لنحو 3,000 ضيف.",l:[["#weddings","الأعراس والمناسبات"]],c:"q"},
+ 13:{d:"مساحات خضراء بأشجار السدر والغاف والسمر، ومسارات للمشي وركوب الإبل، ومظلات للجلسات العائلية.",l:[["#experiences","ركوب الجمال"]],c:"q"}
+};
+// [x, y, w, h] on a 1000 x 640 plan; services near the gate (bottom right), culture in the middle, quiet zones on the far side.
+const ZONE_GEO={1:[800,500,170,110],2:[640,500,150,110],3:[860,380,110,105],4:[690,390,160,95],5:[520,380,160,105],6:[520,250,150,115],7:[680,250,170,125],8:[360,250,150,125],9:[360,400,150,110],10:[40,40,300,220],11:[360,60,210,165],12:[590,80,170,145],13:[40,290,300,320]};
+const ZCOL={s:["#E9D3AA","#7A4A26"],c:["#D9C3E6","#3E3360"],q:["#CFE3C8","#2F5D3A"]};
+function mapSVG(sel,stat){
+ return `<svg class="site-map" viewBox="0 0 1000 640" role="group" aria-label="مخطط مطايا التفاعلي">
+  <rect x="0" y="0" width="1000" height="640" rx="22" fill="var(--map-bg)"/>
+  <path d="M985 600 C 900 470, 760 470, 700 360 S 520 220, 430 230 S 250 260, 190 300" fill="none" stroke="var(--gold)" stroke-width="10" stroke-dasharray="2 18" stroke-linecap="round" opacity=".9"/>
+  ${Object.entries(ZONE_GEO).map(([n,[x,y,w,h]])=>{const z=ZONES[n-1];const col=ZCOL[ZONE_INFO[n].c];const on=String(sel)===n;return `<g class="zone${on?" on":""}" data-zone="${n}" ${stat?"":`tabindex="0" role="button" aria-label="${n}. ${esc(z[1])}" aria-pressed="${on}"`}>
+   <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="16" fill="${col[0]}" stroke="${on?"#C8913A":col[1]}" stroke-width="${on?6:2}"/>
+   <circle cx="${x+28}" cy="${y+28}" r="18" fill="${col[1]}"/><text x="${x+28}" y="${y+34}" text-anchor="middle" font-size="18" font-weight="800" fill="#fff" font-family="Tajawal,sans-serif">${n}</text>
+   <text x="${x+w-14}" y="${y+h-16}" text-anchor="start" direction="rtl" font-size="${w>200?22:16}" font-weight="700" fill="${col[1]}" font-family="Tajawal,sans-serif">${ZSHORT[n]}</text></g>`}).join("")}
+  <text x="980" y="632" text-anchor="start" direction="rtl" font-size="15" fill="var(--muted)" font-family="Tajawal,sans-serif">المدخل والطريق الرئيسي ◂</text>
+ </svg>`}
+const ZSHORT={1:"البوابة",2:"السوق",3:"الميرة",4:"المطاعم",5:"بيوت الشَّعر",6:"المتحف",7:"حديقة الحيوان",8:"ميدان التجارب",9:"العزب",10:"المضمار",11:"المخيم",12:"المناسبات",13:"المراعي"};
+let mapSel=1;
+function zonePanel(n){const z=ZONES[n-1],i=ZONE_INFO[n];return `<span class="eyebrow">المنطقة <span class="num">${n}</span> · ${{s:"دائرة الخدمات اليومية",c:"دائرة الثقافة والحيوانات",q:"دائرة الإقامة والسباقات والبر"}[i.c]}</span><h3>${esc(z[1])}</h3><div class="row mt"><span class="tag"><span class="num">${nf.format(z[2])}</span> م²</span><span class="tag">المرحلة ${esc(z[4])}</span></div><p class="mt">${i.d}</p><div class="row mt">${i.l.map(x=>`<a class="btn btn-gold btn-sm" href="${x[0]}">${x[1]}</a>`).join("")}</div>`}
+route("map",()=>pageHead("خريطة مطايا التفاعلية","ثلاث دوائر يربطها «درب القوافل»: الخدمات اليومية قرب البوابة، والثقافة والحيوانات في الوسط، والإقامة والسباقات والبر في الطرف الأهدأ. اختر أي منطقة لتعرف ما فيها.","الخريطة")+
+ `<section class="block"><div class="wrap"><div class="map-layout"><div class="map-box">${mapSVG(mapSel)}<div class="legend"><span><i style="background:${ZCOL.s[0]};border-color:${ZCOL.s[1]}"></i>الخدمات اليومية</span><span><i style="background:${ZCOL.c[0]};border-color:${ZCOL.c[1]}"></i>الثقافة والحيوانات</span><span><i style="background:${ZCOL.q[0]};border-color:${ZCOL.q[1]}"></i>الإقامة والسباقات والبر</span><span><i class="trail"></i>درب القوافل</span></div></div><aside class="panel" id="zonePanel" aria-live="polite">${zonePanel(mapSel)}</aside></div>
+ <div class="mt2"><label for="zoneSel">أو اختر من القائمة</label><select id="zoneSel">${ZONES.map(z=>`<option value="${z[0]}" ${z[0]===mapSel?"selected":""}>${z[0]}. ${esc(z[1])}</option>`).join("")}</select></div>
+ <p class="hint mt">مخطط مبدئي على أرض افتراضية مساحتها 500,000 م². يُعتمد المخطط النهائي بعد تخصيص الأرض والدراسة العمرانية. <a href="#zones">جدول المساحات والمراحل</a></p></div></section>`);
+after.map=()=>{const pick=n=>{mapSel=Number(n);document.querySelector(".map-box").firstElementChild.outerHTML=mapSVG(mapSel);document.getElementById("zonePanel").innerHTML=zonePanel(mapSel);document.getElementById("zoneSel").value=mapSel;bind()};
+ const bind=()=>document.querySelectorAll(".zone").forEach(g=>{g.onclick=()=>pick(g.dataset.zone);g.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();pick(g.dataset.zone)}}});
+ bind();document.getElementById("zoneSel").onchange=e=>{pick(e.target.value);if(innerWidth<900)document.getElementById("zonePanel").scrollIntoView({behavior:"smooth",block:"nearest"})}};
+
+/* ---- museum + audio tour ---- */
+const STATIONS=[
+ {t:"البوابة ونجم سهيل",te:"The gate and Canopus",a:"أهلاً بك في مطايا الشحانية. البوابة قوس تراثي يعلوه نجم سهيل، النجم الذي ارتقبه أهل البادية لأنه يبشّر بانكسار الحر. ومن هنا يبدأ درب القوافل الذي يربط مرافق مطايا كلها.",e:"Welcome to Matayaa Al Shahaniya. The gate is a heritage arch crowned by Canopus, the star desert people watched for as the sign that summer heat would break. The Caravan Trail starts here and links every part of Matayaa."},
+ {t:"معرض مطايا",te:"The Matayaa gallery",a:"«مطايا» جمع مطيّة، وهي الناقة التي تُركب وتُحمل عليها الأثقال. في هذا المعرض قصة الشحانية مع الإبل، من رحلات الأجداد إلى سباقات الهجن اليوم.",e:"Matayaa is the plural of matiyya, a camel that is ridden and carries loads. This gallery tells the story of Al Shahaniya and its camels, from the journeys of our ancestors to today's camel races."},
+ {t:"الإبل في القرآن",te:"Camels in the Quran",a:"يبدأ متحف «أفلا ينظرون» من قوله تعالى: ﴿أَفَلَا يَنظُرُونَ إِلَى الْإِبِلِ كَيْفَ خُلِقَتْ﴾، دعوةً إلى التفكر في خلقها. وفي سورة النحل: ﴿وَتَحْمِلُ أَثْقَالَكُمْ إِلَىٰ بَلَدٍ لَّمْ تَكُونُوا بَالِغِيهِ إِلَّا بِشِقِّ الْأَنفُسِ﴾.",e:"The museum takes its name from the verse: Do they not look at the camels, how they are created? It is an invitation to reflect on their creation. Surat An-Nahl also describes them carrying people's loads to lands they could not otherwise reach."},
+ {t:"الإبل في السيرة والتاريخ",te:"Camels in Islamic history",a:"في هذا الجناح «القصواء» ناقة النبي صلى الله عليه وسلم في الهجرة، وقوافل الحج والتجارة، ومكانة الإبل في الزكاة والديات والهدي.",e:"This wing covers Al-Qaswa, the Prophet's camel on the Hijra, the pilgrimage and trade caravans, and the place of camels in zakat and other rulings."},
+ {t:"الإبل في العلم",te:"The science of the camel",a:"كيف تتحمل الناقة الحر والعطش؟ يشرح هذا الجناح بعرض تفاعلي تركيب السنام الذي يخزن الدهون، وتكيّف الدم والعين، والقيمة الغذائية لحليب الإبل.",e:"How does a camel endure heat and thirst? An interactive display explains the hump that stores fat, how the blood and eyes adapt, and the nutritional value of camel milk."},
+ {t:"الإبل وقطر",te:"Camels and Qatar",a:"للإبل مكانة في حياة أهل قطر: في التنقل والرزق، ثم في سباقات الهجن ومسابقات المزاين التي تشتهر بها الشحانية اليوم.",e:"Camels have shaped life in Qatar, first for travel and livelihood, and today through the camel racing and beauty contests that Al Shahaniya is known for."},
+ {t:"فريج بيوت الشَّعر",te:"The Bedouin tent quarter",a:"في الفريج ترى أسلوب العيش القديم: القهوة والضيافة، والسدو، والطبخ على الحطب، والرحى والمدقة، وفي المساء مجلس القصيد.",e:"In the tent quarter you see the old way of life: coffee and hospitality, Sadu weaving, wood-fire cooking, the hand mill, and in the evening the poetry majlis."},
+ {t:"مرصد النجوم",te:"The observatory",a:"اهتدى أهل البادية في ليلهم بسهيل والثريا والجدي. في المرصد تلسكوبات ومرشد يحكي كيف قرأ الأجداد السماء.",e:"Desert travellers found their way at night by Canopus, the Pleiades and the Pole Star. The observatory has telescopes and a guide who explains how our ancestors read the sky."}
+];
+let tourLang="ar";
+route("tour",()=>pageHead("متحف «أفلا ينظرون» والجولة الصوتية","متحف إسلامي علمي يستمد اسمه من قوله تعالى: ﴿أَفَلَا يَنظُرُونَ إِلَى الْإِبِلِ كَيْفَ خُلِقَتْ﴾ [الغاشية: 17]. والجولة الصوتية ترافقك على «درب القوافل» بمحطات مرقمة.","المتحف والجولة")+
+ `<section class="block"><div class="wrap"><div class="grid">${[["book","الإبل في القرآن","مواضع ذكرها وأسماؤها، وناقة صالح عليه السلام، وأسباب الدعوة إلى التفكر في خلقها."],["museum","الإبل في السيرة والتاريخ","القصواء، الهجرة، قوافل الحج والتجارة، الزكاة والديات والهدي."],["leaf","الإبل في العلم","تكيّفها مع الحر والعطش، تركيب السنام والدم والعين، والقيمة الغذائية للحليب."],["camel","الإبل وقطر","دورها في حياة أهل البلد، وتاريخ الهجن والمزاين."]].map(x=>`<div class="card"><div class="ic">${ic(x[0])}</div><h3>${x[1]}</h3><p>${x[2]}</p></div>`).join("")}</div>
+ <div class="sec-head mt2"><div><span class="eyebrow">الجولة الصوتية</span><h2>استمع وأنت تمشي</h2><p>اضغط «استمع» عند كل محطة. النص ظاهر أيضاً لمن يفضّل القراءة. في الموقع تتوفر أجهزة بست لغات من مركز الزوار، ويُعتمد المحتوى الشرعي والعلمي من لجنة علمية قبل العرض.</p></div>
+ <div class="seg" role="group" aria-label="لغة الجولة"><button type="button" data-tl="ar" aria-pressed="${tourLang==="ar"}">العربية</button><button type="button" data-tl="en" aria-pressed="${tourLang==="en"}">English</button></div></div>
+ <ol class="stations">${STATIONS.map((s,i)=>`<li class="panel station"><div class="st-no num">${i+1}</div><div class="st-body" ${tourLang==="en"?'dir="ltr" lang="en"':""}><h3>${tourLang==="en"?s.te:s.t}</h3><p>${tourLang==="en"?s.e:s.a}</p></div><button class="btn btn-night btn-sm st-play" type="button" data-st="${i}" aria-label="${tourLang==="en"?"Listen":"استمع"}: ${esc(s.t)}">${tourLang==="en"?"▶ Listen":"▶ استمع"}</button></li>`).join("")}</ol>
+ <p class="hint mt" id="ttsNote"></p></div></section>`);
+after.tour=()=>{document.querySelectorAll("[data-tl]").forEach(b=>b.onclick=()=>{tourLang=b.dataset.tl;try{speechSynthesis.cancel()}catch(e){}render(true)});
+ const can="speechSynthesis" in window;if(!can)document.getElementById("ttsNote").textContent="الاستماع غير متاح في هذا المتصفح، والنص ظاهر في كل محطة.";
+ let playing=null;document.querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>{if(!can)return;const i=Number(b.dataset.st);speechSynthesis.cancel();document.querySelectorAll("[data-st]").forEach(x=>x.textContent=tourLang==="en"?"▶ Listen":"▶ استمع");if(playing===i){playing=null;return}const s=STATIONS[i];const u=new SpeechSynthesisUtterance(tourLang==="en"?s.e:s.a);u.lang=tourLang==="en"?"en-GB":"ar-SA";u.rate=.95;const v=speechSynthesis.getVoices().find(x=>x.lang&&x.lang.toLowerCase().startsWith(tourLang));if(v)u.voice=v;else if(tourLang==="ar")document.getElementById("ttsNote").textContent="إن لم تسمع الصوت فجهازك لا يملك صوتاً عربياً مثبتاً، والنص ظاهر في كل محطة.";u.onend=()=>{playing=null;b.textContent=tourLang==="en"?"▶ Listen":"▶ استمع"};playing=i;b.textContent=tourLang==="en"?"■ Stop":"■ إيقاف";speechSynthesis.speak(u)})};
+
+/* ---- naqati adoption + sponsorship ---- */
+const ADOPT=[{id:"ad-hiwar",name:"رفيق الحوار",price:1500,who:"للأفراد والأسر",perks:["تبنٍّ رمزي لحوار (صغير ناقة) أو مُهر","شهادة باسم المتبنّي","صور وتحديثات كل شهرين"]},{id:"ad-naqa",name:"ناقتي",price:3000,who:"للأسر",feat:true,perks:["تبنٍّ رمزي لناقة باسم الأسرة","زيارتان سنوياً للعزبة مع حلب الناقة","صور وتحديثات شهرية","شهادة مؤطرة"]},{id:"ad-corp",name:"ناقة الشركة",price:12000,who:"للشركات",perks:["تبنٍّ رمزي لثلاث نوق باسم الشركة","لوحة باسم الشركة في العزبة","زيارة فريق سنوية مع برنامج «تحدي القافلة»"]}];
+const SPONSORS=[["الشريك المؤسس",5000000,"تسمية مكوّن رئيس، حضور في كل الفعاليات، مقعد في المجلس الاستشاري"],["راعي كأس مطايا",2000000,"اسم البطولة والجوائز والبث والحملة الإعلامية"],["راعي الموسم",1500000,"الاسم مع «موسم المطايا» وحملة إعلامية مشتركة"],["راعي حديقة الحيوان",750000,"تسمية الحديقة وبرنامج زيارات مدرسية مجانية"],["راعي الفعالية",300000,"المزاد أو المهرجان أو ليالي الشعر"],["راعي المعرفة",150000,"رحلات مدرسية مجانية أو ورشة باسمه"],["صديق مطايا",25000,"للأفراد والشركات الصغيرة، الاسم على جدار الداعمين"]];
+route("sponsor",()=>pageHead("برنامج «ناقتي» والرعاية","اشتراك سنوي للأسر والشركات لرعاية ناقة أو مُهر رعايةً رمزية، يُنفق عائده على الرعاية البيطرية. وباقات رعاية لمن يريد أن يكون اسمه جزءاً من مطايا.","ناقتي والرعاية")+
+ `<section class="block"><div class="wrap"><div class="sec-head"><div><span class="eyebrow">التبنّي الرمزي</span><h2>اختر رفيقك في العزبة</h2></div></div><div class="grid">${ADOPT.map(a=>`<div class="card tier ${a.feat?"feat":""}"><h3>${a.name}</h3><p>${a.who}</p><ul>${a.perks.map(p=>`<li>${p}</li>`).join("")}</ul><div class="foot"><span class="price"><span class="num">${money(a.price)}</span> <small>سنوياً</small></span><button class="btn btn-gold btn-sm" type="button" data-adopt="${a.name}">اطلب التبنّي</button></div></div>`).join("")}</div>
+ <div class="sec-head mt2"><div><span class="eyebrow">الرعاية</span><h2>باقات الرعاية السنوية</h2><p>المبالغ افتراضية بالريال القطري سنوياً، وتُعتمد بعد دراسة الجدوى.</p></div></div>
+ <div class="tbl-wrap"><table><thead><tr><th>الباقة</th><th>المبلغ السنوي</th><th>أبرز المزايا</th><th></th></tr></thead><tbody>${SPONSORS.map(s=>`<tr><td><b>${s[0]}</b></td><td class="num">${money(s[1])}</td><td>${s[2]}</td><td><button class="btn btn-ghost btn-sm" type="button" data-adopt="رعاية: ${s[0]}">اطلب</button></td></tr>`).join("")}</tbody></table></div>
+ <div class="panel mt2" id="spForm"><h3>أرسل طلبك</h3><form id="sponsorForm" class="form-grid mt" novalidate><div class="field"><label for="spType">الطلب</label><select id="spType">${ADOPT.map(a=>`<option>${a.name}</option>`).join("")}${SPONSORS.map(s=>`<option>رعاية: ${s[0]}</option>`).join("")}</select></div><div class="field"><label for="spName">الاسم أو الجهة</label><input id="spName" autocomplete="name"></div><div class="field"><label for="spPhone">رقم الجوال</label><input id="spPhone" inputmode="tel" placeholder="5555 1234"></div><div class="field"><label for="spEmail">البريد الإلكتروني (اختياري)</label><input id="spEmail" type="email"></div><div class="field full"><label for="spNotes">ملاحظات (اختياري)</label><textarea id="spNotes" placeholder="مثال: الاسم المطلوب على الشهادة"></textarea></div><div class="full row"><button class="btn btn-gold" type="submit">إرسال الطلب</button><span class="err" id="spErr"></span></div></form></div></div></section>`);
+after.sponsor=()=>{document.querySelectorAll("[data-adopt]").forEach(b=>b.onclick=()=>{document.getElementById("spType").value=b.dataset.adopt;document.getElementById("spForm").scrollIntoView({behavior:"smooth"});setTimeout(()=>document.getElementById("spName").focus(),400)});
+ const f=document.getElementById("sponsorForm");f.addEventListener("submit",async e=>{e.preventDefault();const err=document.getElementById("spErr");const ph=normPhone(f.spPhone.value);if(f.spName.value.trim().length<2)return err.textContent="اكتب الاسم أو اسم الجهة.";if(!ph)return err.textContent="اكتب رقم جوال قطري من 8 أرقام.";const btn=f.querySelector("[type=submit]");busy(btn,true);let m;try{m=await API.message({type:"sponsor",name:f.spName.value.trim(),phone:ph,email:f.spEmail.value.trim(),subject:"ناقتي والرعاية · "+f.spType.value,body:f.spNotes.value.trim()})}catch(x){busy(btn,false);return err.textContent=errMsg(x)}busy(btn,false);f.reset();err.textContent="";modal(`<h3>استلمنا طلبك</h3><p class="mt">رقم الطلب <span class="code num">${m.id}</span>. يتواصل معك فريق الشراكات خلال يومي عمل.</p><div class="row mt"><button class="btn btn-gold" data-close>تم</button></div>`)})};
+
+/* ---- weddings ---- */
+const WEDDINGS=[["ring","عرس البادية","بيت شَعر فاخر، ضيافة كاملة بالقهوة والتمر والعشاء، فرقة شعبية، تصوير تراثي، وتنسيق كامل لليلة.","من 150 إلى 1,500 ضيف"],["star","الملكة والخطوبة","جلسة عائلية في الفريج أو المخيم مع الضيافة والتصوير وتنسيق الزهور بالهوية التراثية.","من 30 إلى 300 ضيف"],["museum","فعاليات الشركات","قاعة متعددة الأغراض لنحو 800 ضيف، ومؤتمرات صغيرة، واحتفالات نهاية العام، واستقبال الوفود الرسمية.","حتى 800 ضيف داخلياً"],["camel","«تحدي القافلة»","برنامج بناء فرق: سباقات تتابع مع الهجن، ألغاز الصحراء، وإعداد القهوة على الحطب، ثم عشاء في المخيم.","من 20 إلى 200 مشارك"],["sun","المناسبات الخاصة","أعياد الميلاد والتخرج بأجواء البادية، مع تجارب الحيوانات للأطفال.","من 20 إلى 300 ضيف"]];
+route("weddings",()=>pageHead("الأعراس والمناسبات","ساحة متكاملة للأعراس والملكات وفعاليات الشركات: بيوت شَعر فاخرة، قاعة متعددة الأغراض لنحو 800 ضيف، وساحة مفتوحة لنحو 3,000 ضيف.","الأعراس والمناسبات")+`<section class="block"><div class="wrap"><div class="grid">${WEDDINGS.map(w=>`<div class="card"><div class="ic">${ic(w[0])}</div><h3>${w[1]}</h3><p>${w[2]}</p><div class="foot"><span class="tag">${w[3]}</span><a class="btn btn-gold btn-sm" href="#events" data-wed="${w[1]}">اطلب عرض سعر</a></div></div>`).join("")}</div><p class="hint mt">الأسعار حسب عدد الضيوف والخدمات، ويصلك عرض السعر خلال يومي عمل.</p></div></section>`);
+after.weddings=()=>document.querySelectorAll("[data-wed]").forEach(a=>a.onclick=()=>{Store.session.set("wedType",a.dataset.wed)});
+
+/* ---- reviews ---- */
+const stars=n=>`<span class="stars" aria-label="${n} من 5">${"★".repeat(n)}<span class="off">${"★".repeat(5-n)}</span></span>`;
+route("reviews",async()=>{let list=[];try{list=await API.reviews()}catch(e){}const avg=list.length?list.reduce((a,r)=>a+r.rating,0)/list.length:0;
+ return pageHead("آراء الزوار","تُنشر التقييمات بعد مراجعة فريق مطايا، حفاظاً على لغة لائقة ومحتوى صادق.","آراء الزوار")+`<section class="block"><div class="wrap split"><div>${list.length?`<div class="panel row"><b class="num" style="font-size:2rem">${avg.toFixed(1)}</b>${stars(Math.round(avg))}<span class="muted">من <span class="num">${list.length}</span> تقييم</span></div><div class="grid mt" style="grid-template-columns:1fr">${list.map(r=>`<div class="card"><div class="row">${stars(r.rating)}<span class="tag">${esc(r.about)}</span><span class="hint right">${fmtDateTime(r.createdAt).split("،")[0]}</span></div><p style="color:var(--fg)">${esc(r.text)}</p><span class="hint">${esc(r.name)}</span></div>`).join("")}</div>`:`<div class="panel empty"><h3>لا توجد تقييمات منشورة بعد</h3><p class="mt">كن أول من يشارك تجربته في مطايا.</p></div>`}</div>
+ <aside class="panel"><h3>شاركنا تجربتك</h3><form id="revForm" class="mt" novalidate><div class="field"><label>تقييمك</label><div class="rate" role="radiogroup" aria-label="التقييم">${[1,2,3,4,5].map(n=>`<button type="button" role="radio" aria-checked="false" data-rate="${n}" aria-label="${n} من 5">★</button>`).join("")}</div></div><div class="field mt"><label for="rvAbout">عن ماذا؟</label><select id="rvAbout"><option>الزيارة عموماً</option>${catalog().filter(x=>x.cat!=="academy").map(x=>`<option>${esc(x.name)}</option>`).join("")}</select></div><div class="field mt"><label for="rvName">الاسم كما يظهر</label><input id="rvName" maxlength="40"></div><div class="field mt"><label for="rvText">رأيك</label><textarea id="rvText" maxlength="600"></textarea></div><div class="row mt"><button class="btn btn-gold" type="submit">إرسال التقييم</button><span class="err" id="rvErr"></span></div></form></aside></div></section>`});
+after.reviews=()=>{let rate=0;const bs=document.querySelectorAll("[data-rate]");bs.forEach(b=>b.onclick=()=>{rate=Number(b.dataset.rate);bs.forEach(x=>{const on=Number(x.dataset.rate)<=rate;x.classList.toggle("on",on);x.setAttribute("aria-checked",String(Number(x.dataset.rate)===rate))})});
+ const f=document.getElementById("revForm");f.addEventListener("submit",async e=>{e.preventDefault();const err=document.getElementById("rvErr");if(!rate)return err.textContent="اختر عدد النجوم.";if(f.rvName.value.trim().length<2)return err.textContent="اكتب الاسم.";if(f.rvText.value.trim().length<10)return err.textContent="اكتب رأيك في سطر على الأقل.";const btn=f.querySelector("[type=submit]");busy(btn,true);try{await API.addReview({rating:rate,about:f.rvAbout.value,name:f.rvName.value.trim(),text:f.rvText.value.trim()})}catch(x){busy(btn,false);return err.textContent=errMsg(x)}modal(`<h3>شكراً لك</h3><p class="mt">وصل تقييمك، ويُنشر بعد المراجعة.</p><div class="row mt"><button class="btn btn-gold" data-close>تم</button></div>`);render(true)})};
+
+/* ---- search ---- */
+const PAGES=[["map","خريطة مطايا التفاعلية","مخطط مرافق مناطق دوائر درب القوافل"],["zones","المرافق والمساحات","جدول مناطق مراحل مساحة"],["experiences","التجارب مع الحيوانات","ركوب خيل جمال مهور حمير صقور"],["packages","باقات الزيارة","يوم العائلة ليلة البادية رحلة مدرسية"],["zoo","حديقة الحيوان","غزلان مها طيور إطعام أطفال"],["dining","المطاعم التراثية","مطعم طاولة غداء عشاء قهوة"],["markets","الأسواق","سوق ليلي حرف مزاد"],["meera","ميرة مطايا","سوبرماركت بقالة مؤونة"],["tour","المتحف والجولة الصوتية","أفلا ينظرون قرآن علم استماع"],["events","الفعاليات","مجلس القصيد نجوم كأس اليوم الوطني"],["weddings","الأعراس والمناسبات","عرس ملكة شركات قاعة"],["academy","الأكاديمية","دورات شهادات تدريب"],["membership","العضويات","اشتراك خصم رفيق القافلة"],["sponsor","ناقتي والرعاية","تبني ناقة مهر رعاية شركات"],["shop","المتجر","حليب تمر عسل صابون هدايا"],["reviews","آراء الزوار","تقييم نجوم"],["tickets","تذاكري","تذكرة حجز إلغاء"],["contact","تواصل معنا","استفسار رسالة"],["en","English guide","english visit book"]];
+function norm(s){return String(s).toLowerCase().replace(/[ًٌٍَُِّْـ]/g,"").replace(/[أإآ]/g,"ا").replace(/ة/g,"ه").replace(/ى/g,"ي")}
+function doSearch(q){q=norm(q.trim());if(q.length<2)return [];const terms=q.split(/\s+/);const hit=s=>terms.every(t=>norm(s).includes(t));const out=[];
+ catalog().forEach(it=>{if(hit(it.name+" "+it.desc+" "+(EN[it.id]||[]).join(" ")+" "+CAT_LABEL[it.cat]))out.push({k:CAT_LABEL[it.cat],t:it.name,book:it.id})});
+ PAGES.forEach(p=>{if(hit(p[1]+" "+p[2]))out.push({k:"صفحة",t:p[1],href:"#"+p[0]})});
+ ZONES.forEach(z=>{if(hit(z[1]+" "+ZONE_INFO[z[0]].d))out.push({k:"منطقة "+z[0],t:z[1],zone:z[0]})});
+ PRODUCTS.forEach(p=>{if(hit(p.name+" "+p.desc+" "+p.cat))out.push({k:"المتجر",t:p.name,href:"#shop"})});
+ return out.slice(0,14)}
+function openSearch(){modal(`<div class="row"><h3>ابحث في مطايا</h3><button class="btn btn-ghost btn-sm right" data-close type="button">إغلاق</button></div><input id="sq" class="mt" type="search" placeholder="مثال: ركوب الجمال، عرس، حليب" autocomplete="off" aria-label="كلمة البحث"><div id="sres" class="sres mt" aria-live="polite"><p class="hint">اكتب حرفين على الأقل.</p></div>`);
+ const i=document.getElementById("sq");i.focus();i.oninput=()=>{const r=doSearch(i.value);document.getElementById("sres").innerHTML=r.length?r.map((x,n)=>`<button type="button" class="sres-row" data-r="${n}"><span class="tag">${esc(x.k)}</span><span>${esc(x.t)}</span></button>`).join(""):(i.value.trim().length<2?'<p class="hint">اكتب حرفين على الأقل.</p>':'<p class="hint">لا توجد نتائج. جرّب كلمة أخرى.</p>');document.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{const x=r[Number(b.dataset.r)];closeModal();if(x.book)startBooking(x.book);else if(x.zone){mapSel=x.zone;go("map")}else go(x.href.slice(1))})}}
+
+/* ---- English guide ---- */
+route("en",()=>{const pick=["pkg-family","pkg-intl","pkg-night","camel-ride","horse-ride","horse-carriage","camel-milking","falcon-show","zoo-entry","ev-stars","ev-majlis","ev-cup"].map(item);
+ return `<div lang="en" dir="ltr" class="en"><div class="page-head"><div class="wrap"><div class="crumbs"><a href="#home">العربية</a> / English</div><h1>Matayaa Al Shahaniya</h1><p>Carrying our heritage to the world. A heritage and family destination in Al Shahaniya, Qatar, built around camels, horses and Bedouin life. Opening phase one in November 2028.</p></div></div>
+ <section class="block"><div class="wrap"><div class="grid">${[["camel","Animal experiences","Camel and horse rides, pony rides, donkey carts, camel milking and falcon shows, supervised by certified trainers."],["museum","“Do they not look?” museum","An Islamic and science museum about the camel, with an audio tour in six languages on site."],["paw","Small zoo","Qatari wildlife, a petting farm, an aviary and a feeding yard for children."],["food","Heritage restaurants","Five Qatari and Gulf restaurants on a shaded street, plus a family food court."],["tent","Desert nights","Stay in a Bedouin tent, watch the sunset from a camel and explore the night sky."],["track","Matayaa Cup","An annual camel racing and beauty championship every February."]].map(x=>`<div class="card"><div class="ic">${ic(x[0])}</div><h3>${x[1]}</h3><p>${x[2]}</p></div>`).join("")}</div>
+ <div class="sec-head mt2"><div><h2>Book your visit</h2><p>Prices are indicative and in Qatari riyals (QAR) per person. Children aged 3 to 12 pay half price. The booking form is in Arabic; enter your name and an 8-digit Qatari mobile number.</p></div></div>
+ <div class="grid">${pick.map(it=>`<div class="card"><div class="ic">${ic(it.icon)}</div><h3>${EN[it.id][0]}</h3><p>${EN[it.id][1]}</p><div class="foot"><span class="price">${it.price?`<span class="num">QAR ${nf.format(it.price)}</span>`:"Free entry"}</span><button class="btn btn-gold btn-sm" type="button" data-book="${it.id}">Book</button></div></div>`).join("")}</div>
+ <div class="panel mt2"><h3>Plan your visit</h3><p class="mt muted">Season: October to April. Daily 8:00 AM to 11:00 PM in season. Location: Al Shahaniya, near the camel racetrack, about one hour from Doha. Contact details will be announced at launch.</p><div class="row mt"><a class="btn btn-ghost" href="#map">Site map (Arabic)</a><a class="btn btn-ghost" href="#tour">Audio tour in English</a></div></div></div></section></div>`});
+
+after.en=()=>{document.querySelectorAll('.en a[href="#tour"]').forEach(a=>a.addEventListener("click",()=>{tourLang="en"}))};
+
 /* ============ booking ============ */
 function eventDates(it,from,days){const out=[];const d=new Date(from);for(let i=0;i<days;i++){const s=isoDate(d);const md=s.slice(5);if(it.dates?it.dates.includes(md):it.weekday?it.weekday.includes(d.getDay()):true)out.push(s);d.setDate(d.getDate()+1)}return out}
 function allowedDates(it){const t=new Date();if(it.dates)return eventDates(it,t,460);return eventDates(it,t,it.cat==="academy"?120:90)}
@@ -618,7 +821,7 @@ route("book",()=>{
   const it=item(b.itemId);const u=currentUser();const dates=allowedDates(it);
   const isDine=it.cat==="dine",isAc=it.cat==="academy";
   const lblA=isDine?"عدد الأشخاص":isAc?"عدد المتدربين":"البالغون";
-  return pageHead("حجز: "+esc(it.name),esc(it.desc),"الحجز")+`<section class="block"><div class="wrap split"><form class="panel" id="bookForm" novalidate>
+  return pageHead("حجز: "+esc(it.name),esc(it.desc)+(EN[it.id]?`<br><span lang="en" dir="ltr" class="en-sub">${EN[it.id][0]}</span>`:""),"الحجز")+`<section class="block"><div class="wrap split"><form class="panel" id="bookForm" novalidate>
    <h3>1. الموعد</h3>
    <div class="form-grid mt"><div class="field"><label for="bDate">${isAc?"تاريخ بدء الدفعة":"التاريخ"}</label>${it.cat==="event"||it.dates?`<select id="bDate">${dates.slice(0,40).map(d=>`<option value="${d}" ${d===b.date?"selected":""}>${fmtDate(d,true)}</option>`).join("")}</select>`:`<input id="bDate" type="date" min="${dates[0]}" max="${dates[dates.length-1]}" value="${b.date}">`}<span class="hint" id="bDateTxt">${fmtDate(b.date,true)}</span></div></div>
    <label class="mt">الوقت</label><div class="slots" id="slots"></div>
@@ -655,7 +858,7 @@ after.book=()=>{
 };
 
 function ticketHTML(t){const st={confirmed:["مؤكد","st-confirmed"],pending:["بانتظار الدفع عند الوصول","st-pending"],cancelled:["ملغى","st-cancelled"],checked:["تم الدخول","st-checked"]}[t.status]||["",""];
- return `<div class="ticket"><div class="ticket-top"><div><small style="color:#d6c8ae">${CAT_LABEL[t.cat]||"تذكرة"}</small><br><b>${esc(t.itemName)}</b></div><svg viewBox="0 0 240 240" width="44" height="44" aria-hidden="true"><g fill="none" stroke="#C8913A" stroke-width="12" stroke-linecap="round"><path d="M44 196 V118 Q44 52 120 40 Q196 52 196 118 V196"/><path d="M30 196 H210"/></g><path fill="#C8913A" d="M120 72 l6 18 l18 6 l-18 6 l-6 18 l-6 -18 l-18 -6 l18 -6 z"/></svg></div>
+ return `<div class="ticket"><div class="ticket-top"><div><small style="color:#d6c8ae">${CAT_LABEL[t.cat]||"تذكرة"}</small><br><b>${esc(t.itemName)}</b>${EN[t.itemId]?`<br><small lang="en" dir="ltr" style="color:#d6c8ae">${EN[t.itemId][0]}</small>`:""}</div><svg viewBox="0 0 240 240" width="44" height="44" aria-hidden="true"><g fill="none" stroke="#C8913A" stroke-width="12" stroke-linecap="round"><path d="M44 196 V118 Q44 52 120 40 Q196 52 196 118 V196"/><path d="M30 196 H210"/></g><path fill="#C8913A" d="M120 72 l6 18 l18 6 l-18 6 l-6 18 l-6 -18 l-18 -6 l18 -6 z"/></svg></div>
  <div class="ticket-body"><dl><dt>الاسم</dt><dd>${esc(t.name)}</dd><dt>التاريخ</dt><dd>${fmtDate(t.date,true)}</dd><dt>الوقت</dt><dd class="num">${fmtTime(t.time)}</dd><dt>العدد</dt><dd><span class="num">${t.adults+t.children}</span>${t.children?` (منهم <span class="num">${t.children}</span> أطفال)`:""}</dd><dt>المبلغ</dt><dd class="num">${t.total?money(t.total):"مجاني"}</dd><dt>الحالة</dt><dd><span class="pill ${st[1]}">${st[0]}</span></dd></dl><div class="qr" data-qr="${t.id}" aria-label="رمز QR للتذكرة"></div></div>
  <div class="ticket-cut"></div><div class="ticket-foot"><span>رقم التذكرة <span class="code num">${t.id}</span></span><span>اعرض الرمز عند البوابة</span></div></div>`}
 function drawQRs(){document.querySelectorAll("[data-qr]").forEach(el=>{try{const q=qrcode(0,"M");q.addData("MATAYAA:"+el.dataset.qr);q.make();el.innerHTML=q.createSvgTag({cellSize:4,margin:0,scalable:true});const sv=el.querySelector("svg");sv.setAttribute("width","136");sv.setAttribute("height","136");sv.setAttribute("role","img");sv.setAttribute("aria-label","رمز QR "+el.dataset.qr)}catch(e){el.innerHTML=`<span class="code num" style="font-size:.8rem;color:#1E1B2E">${esc(el.dataset.qr)}</span>`}})}
@@ -702,7 +905,7 @@ let adminTab="overview";
 route("admin",async()=>{
  if(isAdmin()){try{S.adm=await API.admin("data")}catch(e){tok.a=null;S.adm=null}}
  if(!isAdmin())return pageHead("لوحة الإدارة","دخول مخصص لفريق تشغيل مطايا.","الإدارة")+`<section class="block"><div class="wrap"><div class="panel" style="max-width:440px;margin-inline:auto"><h3>تسجيل دخول المدير</h3><form id="admForm" class="mt" novalidate><div class="field"><label for="aUser">اسم المستخدم</label><input id="aUser" autocomplete="username" dir="ltr"></div><div class="field mt"><label for="aPass">كلمة المرور</label><input id="aPass" type="password" autocomplete="current-password" dir="ltr"></div><div class="row mt"><button class="btn btn-night" type="submit">دخول</button><span class="err" id="aErr"></span></div></form></div></div></section>`;
- const tabs=[["overview","نظرة عامة"],["bookings","الحجوزات"],["verify","التحقق من التذاكر"],["messages","الرسائل والطلبات"],["orders","طلبات المتجر"],["members","العضويات"],["catalog","الأسعار والسعة"],["settings","الإعدادات"]];
+ const tabs=[["overview","نظرة عامة"],["bookings","الحجوزات"],["verify","التحقق من التذاكر"],["messages","الرسائل والطلبات"],["reviews","التقييمات"],["orders","طلبات المتجر"],["members","العضويات"],["catalog","الأسعار والسعة"],["settings","الإعدادات"]];
  const msgsNew=S.adm.messages.filter(m=>m.status==="new").length;
  return `<div class="page-head"><div class="wrap"><div class="row"><div><div class="crumbs">لوحة الإدارة</div><h1>تشغيل مطايا</h1></div><button class="btn btn-ghost btn-sm right" id="admOut" type="button" style="color:var(--sand);border-color:#5a5374">خروج المدير</button></div></div></div><section class="block" style="padding-top:20px"><div class="wrap"><div class="tabs" role="tablist">${tabs.map(t=>`<button role="tab" type="button" data-tab="${t[0]}" aria-selected="${adminTab===t[0]}">${t[1]}${t[0]==="messages"&&msgsNew?` <span class="cart-count">${msgsNew}</span>`:""}</button>`).join("")}</div><div id="admBody">${adminBody()}</div></div></section>`;
 });
@@ -718,16 +921,18 @@ function adminBody(){
   <div class="panel"><h3>الأعلى إيراداً</h3><div class="bars mt">${top.map(([k,v])=>`<div class="bar-row"><span>${esc(k)}</span><div class="bar-track"><div class="bar-fill" style="width:${v/maxI*100}%;background:var(--wabar)"></div></div><span class="num">${nf.format(v)}</span></div>`).join("")||'<p class="muted">لا توجد بيانات بعد.</p>'}</div></div></div>
   <h3 class="mt2">حجوزات اليوم (${fmtDate(today,true)})</h3><div class="mt">${bookingsTable(todayB)}</div>`}
  if(adminTab==="bookings"){let l=B;if(bf.q){const q=bf.q.toLowerCase();l=l.filter(b=>(b.id+b.name+b.phone+b.itemName).toLowerCase().includes(q))}if(bf.status)l=l.filter(b=>b.status===bf.status);if(bf.cat)l=l.filter(b=>b.cat===bf.cat);if(bf.date)l=l.filter(b=>b.date===bf.date);l=[...l].sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
-  return `<div class="toolbar"><div class="field"><label for="fq">بحث</label><input id="fq" value="${esc(bf.q)}" placeholder="الاسم، الجوال، رقم التذكرة"></div><div class="field"><label for="fs">الحالة</label><select id="fs"><option value="">الكل</option>${["confirmed","pending","checked","cancelled"].map(s=>`<option value="${s}" ${bf.status===s?"selected":""}>${{confirmed:"مؤكد",pending:"دفع عند الوصول",checked:"تم الدخول",cancelled:"ملغى"}[s]}</option>`).join("")}</select></div><div class="field"><label for="fc">النوع</label><select id="fc"><option value="">الكل</option>${["exp","zoo","pkg","event","academy","dine"].map(c=>`<option value="${c}" ${bf.cat===c?"selected":""}>${CAT_LABEL[c]}</option>`).join("")}</select></div><div class="field"><label for="fd">التاريخ</label><input id="fd" type="date" value="${bf.date}"></div><button class="btn btn-ghost btn-sm" id="fclear" type="button">مسح الفلاتر</button></div><p class="hint">${l.length} حجز</p><div class="mt">${bookingsTable(l,true)}</div>`}
+  return `<div class="toolbar"><div class="field"><label for="fq">بحث</label><input id="fq" value="${esc(bf.q)}" placeholder="الاسم، الجوال، رقم التذكرة"></div><div class="field"><label for="fs">الحالة</label><select id="fs"><option value="">الكل</option>${["confirmed","pending","checked","cancelled"].map(s=>`<option value="${s}" ${bf.status===s?"selected":""}>${{confirmed:"مؤكد",pending:"دفع عند الوصول",checked:"تم الدخول",cancelled:"ملغى"}[s]}</option>`).join("")}</select></div><div class="field"><label for="fc">النوع</label><select id="fc"><option value="">الكل</option>${["exp","zoo","pkg","event","academy","dine"].map(c=>`<option value="${c}" ${bf.cat===c?"selected":""}>${CAT_LABEL[c]}</option>`).join("")}</select></div><div class="field"><label for="fd">التاريخ</label><input id="fd" type="date" value="${bf.date}"></div><button class="btn btn-ghost btn-sm" id="fclear" type="button">مسح الفلاتر</button><button class="btn btn-night btn-sm" id="csvBtn" type="button">تصدير CSV</button></div><p class="hint">${l.length} حجز</p><div class="mt">${bookingsTable(l,true)}</div>`}
  if(adminTab==="verify")return `<div class="split"><div class="panel"><h3>التحقق من تذكرة</h3><p class="hint">اكتب رقم التذكرة أو الصق محتوى رمز QR الممسوح (MATAYAA:MTY-XXXXXX).</p><form id="vForm" class="row mt" novalidate><input id="vCode" dir="ltr" placeholder="MTY-XXXXXX" style="flex:1;min-width:180px"><button class="btn btn-night" type="submit">تحقق</button></form><div class="row mt"><button class="btn btn-ghost btn-sm" type="button" id="vCam">مسح بالكاميرا</button><span class="hint" id="vCamMsg"></span></div><video id="vVideo" playsinline muted hidden style="width:100%;border-radius:12px;margin-top:10px"></video></div><div id="vOut"></div></div>`;
  if(adminTab==="messages")return M.length?`<div class="tbl-wrap"><table><thead><tr><th>المرجع</th><th>النوع</th><th>المرسل</th><th>الموضوع والرسالة</th><th>الوقت</th><th>الحالة</th><th></th></tr></thead><tbody>${M.map(m=>`<tr><td class="code num">${m.id}${m.sample?' <span class="pill st-sample">مثال</span>':""}</td><td>${m.type==="event"?"طلب مناسبة":"تواصل"}</td><td>${esc(m.name)}<div class="sub num">${esc(m.phone)}</div>${m.email?`<div class="sub">${esc(m.email)}</div>`:""}</td><td><b>${esc(m.subject)}</b><div class="sub">${esc(m.body)}</div></td><td class="sub">${fmtDateTime(m.createdAt)}</td><td>${m.status==="new"?'<span class="pill st-pending">جديدة</span>':'<span class="pill st-confirmed">تمت المتابعة</span>'}</td><td>${m.status==="new"?`<button class="btn btn-ghost btn-sm" data-msg="${m.id}" type="button">تمت المتابعة</button>`:""}</td></tr>`).join("")}</tbody></table></div>`:`<div class="panel empty">لا توجد رسائل.</div>`;
  if(adminTab==="orders")return O.length?`<div class="tbl-wrap"><table><thead><tr><th>رقم الطلب</th><th>العميل</th><th>المنتجات</th><th>الإجمالي</th><th>الدفع</th><th>الحالة</th></tr></thead><tbody>${O.map(o=>`<tr><td class="code num">${o.id}<div class="sub">${fmtDateTime(o.createdAt)}</div></td><td>${esc(o.name)}<div class="sub num">${esc(o.phone)}</div><div class="sub">${esc(o.address)}</div></td><td>${o.lines.map(l=>`${esc(l.name)} × <span class="num">${l.qty}</span>`).join("<br>")}</td><td class="num">${money(o.total)}</td><td>${o.pay==="cod"?"عند الاستلام":"بطاقة"}</td><td><select data-ord="${o.id}" aria-label="حالة الطلب">${["pending","shipped","delivered","cancelled"].map(s=>`<option value="${s}" ${o.status===s?"selected":""}>${{pending:"قيد التجهيز",shipped:"خرج للتوصيل",delivered:"تم التسليم",cancelled:"ملغى"}[s]}</option>`).join("")}</select></td></tr>`).join("")}</tbody></table></div>`:`<div class="panel empty">لا توجد طلبات متجر بعد.</div>`;
  if(adminTab==="members")return MB.length?`<div class="tbl-wrap"><table><thead><tr><th>رقم العضوية</th><th>العضو</th><th>الفئة</th><th>المدة</th><th>المبلغ</th><th>الحالة</th><th></th></tr></thead><tbody>${MB.map(m=>`<tr><td class="code num">${m.id}</td><td>${esc(m.name)}<div class="sub num">${esc(m.phone)}</div></td><td>${esc(m.tierName)}</td><td>${fmtDate(m.since)} – ${fmtDate(m.until)}</td><td class="num">${money(m.price)}</td><td>${m.status==="confirmed"?'<span class="pill st-confirmed">مفعّلة</span>':m.status==="cancelled"?'<span class="pill st-cancelled">ملغاة</span>':'<span class="pill st-pending">بانتظار الدفع</span>'}</td><td class="row">${m.status==="pending"?`<button class="btn btn-ghost btn-sm" data-mb="${m.id}" data-s="confirmed" type="button">تفعيل</button>`:""}${m.status!=="cancelled"?`<button class="btn btn-bad btn-sm" data-mb="${m.id}" data-s="cancelled" type="button">إلغاء</button>`:""}</td></tr>`).join("")}</tbody></table></div>`:`<div class="panel empty">لا توجد عضويات بعد.</div>`;
  if(adminTab==="catalog")return `<p class="hint">عدّل السعر والسعة القصوى لكل موعد، أو أغلق تاريخاً معيناً لتجربة (صيانة، طقس، راحة الحيوان). تُطبَّق التعديلات فوراً على صفحات الحجز.</p><div class="tbl-wrap mt"><table><thead><tr><th>العنصر</th><th>النوع</th><th>السعر (ر.ق)</th><th>السعة لكل موعد</th><th></th></tr></thead><tbody>${catalog().map(it=>`<tr><td>${esc(it.name)}</td><td class="sub">${CAT_LABEL[it.cat]}</td><td><input type="number" min="0" step="5" value="${it.price}" data-price="${it.id}" style="max-width:110px" aria-label="سعر ${esc(it.name)}"></td><td><input type="number" min="1" value="${it.cap}" data-cap="${it.id}" style="max-width:110px" aria-label="سعة ${esc(it.name)}"></td><td><button class="btn btn-ghost btn-sm" data-save="${it.id}" type="button">حفظ</button></td></tr>`).join("")}</tbody></table></div>
   <div class="panel mt2"><h3>إغلاق تاريخ لتجربة</h3><div class="toolbar mt"><div class="field"><label for="blkItem">العنصر</label><select id="blkItem">${catalog().map(it=>`<option value="${it.id}">${esc(it.name)}</option>`).join("")}</select></div><div class="field"><label for="blkDate">التاريخ</label><input id="blkDate" type="date"></div><button class="btn btn-night btn-sm" id="blkAdd" type="button">إغلاق التاريخ</button></div><div>${S.blocked.map(k=>{const [id,d]=k.split("|");return `<span class="tag" style="display:inline-flex;gap:6px;margin:3px">${esc(item(id)?.name||id)} · ${fmtDate(d)} <button type="button" data-unblk="${k}" style="border:none;background:none;cursor:pointer;color:var(--bad)" aria-label="إعادة فتح">×</button></span>`}).join("")||'<span class="hint">لا توجد تواريخ مغلقة.</span>'}</div></div>`;
+ if(adminTab==="reviews"){const RV=S.adm.reviews||[];return RV.length?`<div class="tbl-wrap"><table><thead><tr><th>التقييم</th><th>الزائر</th><th>عن</th><th>النص</th><th>الحالة</th><th>إجراء</th></tr></thead><tbody>${RV.map(r=>`<tr><td>${stars(r.rating)}</td><td>${esc(r.name)}<div class="sub">${fmtDateTime(r.createdAt)}</div></td><td>${esc(r.about)}</td><td>${esc(r.text)}</td><td>${r.status==="approved"?'<span class="pill st-confirmed">منشور</span>':r.status==="hidden"?'<span class="pill st-cancelled">مخفي</span>':'<span class="pill st-pending">بانتظار المراجعة</span>'}</td><td class="row">${r.status!=="approved"?`<button class="btn btn-ghost btn-sm" type="button" data-rv="${r.id}" data-s="approved">نشر</button>`:""}${r.status!=="hidden"?`<button class="btn btn-bad btn-sm" type="button" data-rv="${r.id}" data-s="hidden">إخفاء</button>`:""}</td></tr>`).join("")}</tbody></table></div>`:`<div class="panel empty">لا توجد تقييمات بعد.</div>`}
  if(adminTab==="settings")return `<div class="split"><div class="panel"><h3>تغيير كلمة مرور المدير</h3><form id="pwForm" class="mt" novalidate><div class="field"><label for="pwOld">كلمة المرور الحالية</label><input id="pwOld" type="password" dir="ltr"></div><div class="field mt"><label for="pwNew">كلمة المرور الجديدة (8 أحرف على الأقل)</label><input id="pwNew" type="password" dir="ltr"></div><div class="row mt"><button class="btn btn-night" type="submit">حفظ</button><span class="err" id="pwErr"></span></div></form></div><div class="panel"><h3>البيانات</h3><p class="hint mt">حذف سجلات الأمثلة الموسومة «مثال» من الحجوزات والرسائل.</p><button class="btn btn-bad btn-sm mt" id="clrSamples" type="button">حذف سجلات الأمثلة</button><p class="hint mt2">التخزين الحالي: ${LIVE?"قاعدة البيانات المركزية لمطايا.":"نسخة المعاينة، تُحفظ البيانات في هذا المتصفح فقط."}</p></div></div>`;
  return "";
 }
+function exportCSV(){const rows=[["رقم التذكرة","الاسم","الجوال","الحجز","النوع","التاريخ","الوقت","البالغون","الأطفال","المبلغ","الحالة","الدفع"]].concat(S.adm.bookings.map(b=>[b.id,b.name,b.phone,b.itemName,CAT_LABEL[b.cat],b.date,b.time,b.adults,b.children,b.total,b.status,b.pay]));const csv="\ufeff"+rows.map(r=>r.map(c=>'"'+String(c??"").replace(/"/g,'""')+'"').join(",")).join("\r\n");try{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));a.download="matayaa-bookings-"+isoDate(new Date())+".csv";document.body.appendChild(a);a.click();a.remove();toast("جُهّز ملف الحجوزات.")}catch(e){toast("التصدير غير متاح في هذا العرض.")}}
 function bookingsTable(l,actions){if(!l.length)return `<div class="panel empty">لا توجد حجوزات مطابقة.</div>`;return `<div class="tbl-wrap"><table><thead><tr><th>التذكرة</th><th>العميل</th><th>الحجز</th><th>الموعد</th><th>العدد</th><th>المبلغ</th><th>الحالة</th>${actions?"<th>إجراء</th>":""}</tr></thead><tbody>${l.map(b=>`<tr><td class="code num">${b.id}${b.sample?' <span class="pill st-sample">مثال</span>':""}</td><td>${esc(b.name)}<div class="sub num">${esc(b.phone)}</div></td><td>${esc(b.itemName)}<div class="sub">${CAT_LABEL[b.cat]}</div>${b.notes?`<div class="sub">ملاحظة: ${esc(b.notes)}</div>`:""}</td><td>${fmtDate(b.date)}<div class="sub num">${fmtTime(b.time)}</div></td><td class="num">${b.adults+b.children}</td><td class="num">${b.total?money(b.total):"—"}</td><td>${stPill(b.status)}</td>${actions?`<td><select data-bst="${b.id}" aria-label="تغيير الحالة">${["confirmed","pending","checked","cancelled"].map(s=>`<option value="${s}" ${b.status===s?"selected":""}>${{confirmed:"مؤكد",pending:"دفع عند الوصول",checked:"تم الدخول",cancelled:"ملغى"}[s]}</option>`).join("")}</select></td>`:""}</tr>`).join("")}</tbody></table></div>`}
 function verify(raw){const code=String(raw||"").trim().toUpperCase().replace(/^MATAYAA:/,"");const out=document.getElementById("vOut");const t=S.adm.bookings.find(b=>b.id===code);const mb=S.adm.memberships.find(m=>m.id===code);
  if(mb){out.innerHTML=`<div class="panel"><div class="notice ${mb.status==="confirmed"&&mb.until>=S.adm.today?"ok":""}">عضوية «${esc(mb.tierName)}» باسم ${esc(mb.name)}، ${mb.status==="cancelled"?"ملغاة":mb.status==="pending"?"بانتظار الدفع":"سارية"} حتى ${fmtDate(mb.until)}.</div></div>`;return}
@@ -745,6 +950,8 @@ after.admin=()=>{
   document.querySelectorAll("[data-bst]").forEach(s=>s.onchange=()=>act("booking_status",{id:s.dataset.bst,status:s.value},"حُدّثت حالة الحجز."));
   const fq=document.getElementById("fq");if(fq){fq.oninput=()=>{bf.q=fq.value;const pos=fq.selectionStart;rerender();const n=document.getElementById("fq");n.focus();n.setSelectionRange(pos,pos)};["fs","fc","fd"].forEach(id=>document.getElementById(id).onchange=e=>{bf[{fs:"status",fc:"cat",fd:"date"}[id]]=e.target.value;rerender()});document.getElementById("fclear").onclick=()=>{bf={q:"",status:"",cat:"",date:""};rerender()}}
   const vf=document.getElementById("vForm");if(vf){vf.onsubmit=async e=>{e.preventDefault();try{S.adm=await API.admin("data")}catch(x){}verify(vf.vCode.value)};document.getElementById("vCam").onclick=startScan}
+  document.querySelectorAll("[data-rv]").forEach(b=>b.onclick=()=>act("review_status",{id:b.dataset.rv,status:b.dataset.s},b.dataset.s==="approved"?"نُشر التقييم.":"أُخفي التقييم."));
+  const cx=document.getElementById("csvBtn");if(cx)cx.onclick=exportCSV;
   document.querySelectorAll("[data-msg]").forEach(b=>b.onclick=()=>act("message_done",{id:b.dataset.msg},"تمت المتابعة."));
   document.querySelectorAll("[data-ord]").forEach(s=>s.onchange=()=>act("order_status",{id:s.dataset.ord,status:s.value},"حُدّثت حالة الطلب."));
   document.querySelectorAll("[data-mb]").forEach(b=>b.onclick=()=>act("member_status",{id:b.dataset.mb,status:b.dataset.s},"حُدّثت العضوية."));
@@ -758,6 +965,7 @@ after.admin=()=>{
 async function startScan(){const msg=document.getElementById("vCamMsg");const v=document.getElementById("vVideo");if(!("BarcodeDetector" in window)){msg.textContent="المسح بالكاميرا غير متاح في هذا المتصفح. اكتب الرقم يدوياً.";return}try{const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}});v.srcObject=st;v.hidden=false;await v.play();const det=new BarcodeDetector({formats:["qr_code"]});msg.textContent="وجّه الكاميرا إلى رمز التذكرة.";const tick=async()=>{if(v.hidden)return;try{const r=await det.detect(v);if(r[0]){st.getTracks().forEach(t=>t.stop());v.hidden=true;msg.textContent="";verify(r[0].rawValue);return}}catch(e){}requestAnimationFrame(tick)};tick()}catch(e){msg.textContent="تعذر فتح الكاميرا. اكتب الرقم يدوياً."}}
 
 /* ============ boot ============ */
+document.getElementById("searchBtn").onclick=openSearch;document.getElementById("dockSearch").onclick=openSearch;
 document.getElementById("menuBtn").onclick=e=>{const n=document.getElementById("nav");n.classList.toggle("open");e.currentTarget.setAttribute("aria-expanded",n.classList.contains("open"))};
 document.getElementById("themeBtn").onclick=()=>{const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;r.dataset.theme=dark?"light":"dark";try{localStorage.setItem("matayaa.theme",r.dataset.theme)}catch(e){}};
 try{const th=localStorage.getItem("matayaa.theme");if(th)document.documentElement.dataset.theme=th}catch(e){}
