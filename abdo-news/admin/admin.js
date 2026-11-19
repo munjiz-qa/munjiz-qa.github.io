@@ -6,7 +6,7 @@ const CFG=window.KHABAR_CONFIG||{};
 const $=s=>document.querySelector(s);
 const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
 const PATH='khabar/data/admin.json';
-let ADMIN=null,BRIEF=null,HEAD=null,LEDGER=null,HEALTH=null,USERS=null,ME=null,CLIM=null,MIL=null,WARS=null;
+let ADMIN=null,BRIEF=null,HEAD=null,LEDGER=null,HEALTH=null,USERS=null,ME=null,CLIM=null,MIL=null,WARS=null,MARSAD=null;
 const AUTH=window.KhabarAuth,USERS_PATH='khabar/data/users.json';
 const getJSON=u=>fetch(u+'?t='+Date.now(),{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(r.status);return r.json()});
 function toast(m){const n=$('#toast');n.textContent=m;n.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>n.hidden=true,2400)}
@@ -15,9 +15,9 @@ const S={get(k){try{return sessionStorage.getItem(k)}catch(e){return null}},set(
 const LS={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 
 async function boot(){
-  try{[ADMIN,BRIEF]=await Promise.all([getJSON('../data/admin.json'),getJSON('../data/brief.json')]);HEAD=await getJSON('../data/headlines.json').catch(()=>null);LEDGER=await getJSON('../data/ledger.json').catch(()=>null);HEALTH=await getJSON('../data/health.json').catch(()=>null);CLIM=await getJSON('../data/climate.json').catch(()=>null);MIL=await getJSON('../data/military.json').catch(()=>null);WARS=await getJSON('../data/wars.json').catch(()=>null);USERS=await AUTH.load('../').catch(()=>({v:1,iter:AUTH.ITER,users:[]}))}
+  try{[ADMIN,BRIEF]=await Promise.all([getJSON('../data/admin.json'),getJSON('../data/brief.json')]);HEAD=await getJSON('../data/headlines.json').catch(()=>null);LEDGER=await getJSON('../data/ledger.json').catch(()=>null);HEALTH=await getJSON('../data/health.json').catch(()=>null);CLIM=await getJSON('../data/climate.json').catch(()=>null);MIL=await getJSON('../data/military.json').catch(()=>null);WARS=await getJSON('../data/wars.json').catch(()=>null);MARSAD=await getJSON('../data/marsad.json').catch(()=>null);USERS=await AUTH.load('../').catch(()=>({v:1,iter:AUTH.ITER,users:[]}))}
   catch(e){$('#login-err').textContent='تعذّر تحميل بيانات التطبيق. أعد تحميل الصفحة.';$('#login-err').hidden=false;return}
-  ADMIN.breaking=ADMIN.breaking||{};ADMIN.hidden=ADMIN.hidden||[];delete ADMIN.auth;
+  ADMIN.breaking=ADMIN.breaking||{};ADMIN.hidden=ADMIN.hidden||[];ADMIN.marsad_hidden=ADMIN.marsad_hidden||[];delete ADMIN.auth;
   const su=S.get('khabar-admin-user'),rec=su&&USERS.users.find(x=>x.u===su&&x.role==='super'&&x.active!==false);
   if(rec){ME={u:rec.u,name:rec.name,legacy:false};open()}
 }
@@ -48,10 +48,21 @@ function open(){
     const tx=el('span');tx.append(el('span','z',`القسم العسكري · ${r.name.ar} · ${it.cat.ar}`),it.ar||it.en);lb.append(cb,tx);li.append(lb);ul.append(li)}));
   ['#b-on','#b-ar','#b-en','#b-src','#b-url','#b-until','#np1','#np2'].forEach(s=>$(s).addEventListener('input',preview));
   $('#tok').value=S.get('khabar-token')||'';
-  agentPanel();healthPanel();usersPanel();wxPanel();
+  agentPanel();healthPanel();usersPanel();wxPanel();marsadPanel();
   // الأقسام والبلاغات والتصحيحات والرأي و«جاهز للتفعيل» (extra.js)
   if(window.KAX)KAX.init({admin:()=>ADMIN,preview,save:async(path,obj,message)=>{const tok=$('#tok').value.trim();if(!tok)throw new Error('أدخل مفتاح النشر في قسم «نشر التعديلات» أولاً.');S.set('khabar-token',tok);await putFile(tok,'khabar/'+path,obj,message)}});
   preview();
+}
+function marsadPanel(){
+  const k=$('#marsad-kpis'),ul=$('#marsad-list');k.textContent='';ul.textContent='';
+  if(!MARSAD){$('#marsad-last').textContent='لم يُبنَ المرصد بعد.';return}
+  const I=MARSAD.indicators,R=MARSAD.record||{},stale=I.filter(i=>i.stale).length;
+  [[I.length,'مؤشراً في المرصد'],[Object.keys(MARSAD.sources||{}).length,'مصدراً موثّقاً'],[I.filter(i=>i.est&&i.est.tier!=='c').length,'تقديراً معلناً'],[R.scored?`${R.hits}/${R.scored}`:'—','تقديراً أصاب نطاقه']]
+    .forEach(([v,l])=>{const d=el('div');d.append(el('b',null,String(v)),el('small',null,l));k.append(d)});
+  $('#marsad-last').textContent=`آخر بناء: ${fmtD(MARSAD.updated)}`+(stale?` · ${stale===1?'مؤشر واحد لم تتجدد قراءته':stale===2?'مؤشران لم تتجدد قراءتهما':stale<=10?stale+' مؤشرات لم تتجدد قراءتها':stale+' مؤشراً لم تتجدد قراءتها'}`:' · كل القراءات حديثة');
+  const hid=new Set(ADMIN.marsad_hidden),Z={qatar:'قطر',gulf:'الخليج',egypt:'مصر',world:'العالم'};
+  I.forEach(i=>{const li=el('li'),lb=el('label'),cb=el('input');cb.type='checkbox';cb.value=i.id;cb.checked=hid.has(i.id);cb.onchange=preview;
+    const tx=el('span');tx.append(el('span','z',`${Z[i.zone]} · آخر قراءة ${i.now.d}${i.stale?' · قديمة':''}`),i.ar);lb.append(cb,tx);li.append(lb);ul.append(li)});
 }
 function wxPanel(){
   const k=$('#wx-kpis');k.textContent='';const C=CLIM||{},ar=(C.ar||[]).length,en=(C.en||[]).length,src=new Set([...(C.ar||[]),...(C.en||[])].flatMap(x=>x.sources.map(s=>s.url))).size;
@@ -90,6 +101,7 @@ async function collect(){
   // الطقس والمناخ: المكان الافتراضي، وإخفاء أخبار مناخية بعينها، وإظهار «مناخ العالم» في الرئيسية
   const hidC=new Set(out.climate_hidden||[]);document.querySelectorAll('#wx-hide input').forEach(x=>{if(x.checked)hidC.add(x.value);else hidC.delete(x.value)});out.climate_hidden=[...hidC];
   out.climate_off=$('#wx-off').checked;
+  out.marsad_hidden=[...document.querySelectorAll('#marsad-list input:checked')].map(x=>x.value);
   const cc=$('#wx-cc').value.trim().toUpperCase(),q=$('#wx-q').value.trim();
   if(cc&&!/^[A-Z]{2}$/.test(cc))throw new Error('رمز الدولة حرفان لاتينيان، مثل QA أو SA أو EG.');
   if(cc||q)out.weather_default={cc:cc||'QA',q:q||'Doha'};else delete out.weather_default;

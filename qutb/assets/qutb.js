@@ -218,7 +218,7 @@ async function evalPlatform(p) {
 
 async function khabarStats(p, o, add) {
   const base = p.path ? p.path + '/data/' : 'data/';
-  const [b, l, k] = await Promise.allSettled([raw(p.repo, base + 'brief.json'), raw(p.repo, base + 'ledger.json'), raw(p.repo, base + 'breaking.json')]);
+  const [b, l, k, mr] = await Promise.allSettled([raw(p.repo, base + 'brief.json'), raw(p.repo, base + 'ledger.json'), raw(p.repo, base + 'breaking.json'), raw(p.repo, base + 'marsad.json')]);
   if (b.status === 'fulfilled') {
     const br = b.value, items = (br.zones || []).reduce((n, z) => n + (z.items || []).length, 0), srcs = Object.keys(br.sources || {}).length;
     const ls = l.value?.summary;
@@ -229,6 +229,12 @@ async function khabarStats(p, o, add) {
     if (br.auto) add('info', `${p.name}: الخلاصة الحالية آلية من الطيار الآلي، وستحل محلها الخلاصة التحريرية في موعدها التالي`, p.site);
     if (ls?.broken) add('warn', `${p.name}: ${plural(ls.broken, 'رابط مصدر معطّل', 'رابطا مصدر معطّلان', 'روابط مصادر معطّلة', 'رابط مصدر معطّلاً')} في الخلاصة`, p.site + '#ledger');
   } else o.rows.unshift(['الخلاصة الحالية', '<span class="skel">تعذّرت القراءة</span>']);
+  if (mr.status === 'fulfilled') {
+    const ind = mr.value.indicators || [], stale = ind.filter(i => i.stale), rec = mr.value.record || {};
+    o.rows.push(['مرصد المقارنات', `${num(ind.length)} مؤشراً · ${ind.filter(i => i.est && i.est.tier !== 'c').length} تقدير · ${rec.scored ? `أصاب ${rec.hits}/${rec.scored}` : 'لا محاسبة بعد'} · ${ago(mr.value.updated)}`]);
+    if (stale.length) add('warn', `${p.name}: ${stale.length} من مؤشرات المرصد لم تتجدد قراءتها (${stale.map(i => i.ar).join('، ')})`, p.site + '#marsad');
+    if (hoursSince(mr.value.updated) > 30) add('warn', `${p.name}: المرصد لم يُبنَ منذ ${ago(mr.value.updated).replace('قبل ', '')}`, p.site + '#marsad');
+  } else o.rows.push(['مرصد المقارنات', '<span class="skel">تعذّرت القراءة</span>']);
   // القسم العسكري وملفات الحروب (منذ 17 نوفمبر 2026): كل خبر بجهتين مستقلتين، ومؤشر تصعيد لكل حرب
   const [m, w] = await Promise.allSettled([raw(p.repo, base + 'military.json'), raw(p.repo, base + 'wars.json')]);
   if (m.status === 'fulfilled') {
