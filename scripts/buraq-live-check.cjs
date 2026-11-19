@@ -29,7 +29,14 @@ const get = async (p, tries = 3) => { for (let i = 0; i < tries; i++) { try { co
     const errs = [];
     const mk = async () => { const p = await ctx.newPage(); p.on("pageerror", (e) => errs.push(e.message)); return p; };
     const idx = await mk();
+    // حارس الأداء: مكتبات Firebase (نحو 700KB) لا تُطلب قبل اكتمال الصفحة الرئيسية، ثم تُحمَّل بعدها فعلاً
+    let loaded = false; const early = [], late = [];
+    idx.on("request", (rq) => { if (/vendor\/firebase-/.test(rq.url())) (loaded ? late : early).push(rq.url()); });
+    idx.once("load", () => { loaded = true; });
     await idx.goto(BASE + (process.env.BURAQ_EMU ? "?emu" : ""), { waitUntil: "load", timeout: 45000 });
+    await idx.waitForTimeout(6000);
+    check(early.length === 0, `${name}: لا طلبات Firebase قبل اكتمال الرئيسية ${early.length ? early.map((u) => u.split("/").pop()).join(" ") : ""}`);
+    check(late.length >= 3, `${name}: ربط الحسابات يُحمَّل بعد اكتمال الصفحة (${late.length} ملفات)`);
     check((await idx.title()).includes("براق"), `${name}: عنوان الصفحة الرئيسية`);
     check((await idx.content()).includes("+974 5160 0498") && (await idx.content()).includes("munijizqa@gmail.com"), `${name}: بيانات التواصل الموحدة`);
     await idx.waitForSelector("#cvBrand option:nth-child(5)", { state: "attached", timeout: 20000 }).catch(() => {});
