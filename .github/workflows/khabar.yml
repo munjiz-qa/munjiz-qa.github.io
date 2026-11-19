@@ -1,13 +1,33 @@
 name: Khabar headlines
 on:
   schedule:
+    # جدولة GitHub تُسقط كثيراً من التشغيلات وقت الضغط (لم يعمل فعلياً إلا كل 6 إلى 9 ساعات)،
+    # فتُضاف مواعيد احتياطية كل ساعة، وتتخطاها بوابة «حداثة» إن كانت العناوين محدّثة قبل أقل من ساعتين ونصف.
     - cron: '20 */3 * * *'
+    - cron: '50 * * * *'
   workflow_dispatch:
 permissions:
   contents: write
 concurrency: khabar
 jobs:
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      run: ${{ steps.g.outputs.run }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          sparse-checkout: khabar/data/headlines.json
+          sparse-checkout-cone-mode: false
+      - id: g
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "${{ github.event.schedule }}" = "20 */3 * * *" ]; then echo "run=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          age=$(python3 -c "import json,datetime as d;u=json.load(open('khabar/data/headlines.json'))['updated'];print(int((d.datetime.now(d.timezone.utc)-d.datetime.fromisoformat(u.replace('Z','+00:00'))).total_seconds()//60))" 2>/dev/null || echo 9999)
+          echo "عمر العناوين: ${age} دقيقة"
+          if [ "$age" -ge 150 ]; then echo "run=true" >> "$GITHUB_OUTPUT"; else echo "run=false" >> "$GITHUB_OUTPUT"; fi
   fetch:
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
