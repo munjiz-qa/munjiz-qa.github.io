@@ -15,6 +15,8 @@ css.textContent = `
 .bq-acct small{flex-basis:100%;color:var(--muted);font-size:.78rem}
 .bq-ann{background:var(--copper);color:#fff;text-align:center;font-size:.92rem;font-weight:600;padding:8px 16px}
 .bq-ann a{color:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .bq-ann,:root:not([data-theme="light"]) .bq-ann a{color:var(--bg)}}
+:root[data-theme="dark"] .bq-ann,:root[data-theme="dark"] .bq-ann a{color:var(--bg)}
 #prices table{border-collapse:collapse;width:100%;font-size:.92rem}
 #prices th,#prices td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:right}
 #prices th{font-size:.8rem;color:var(--muted);font-weight:600;background:var(--bg)}

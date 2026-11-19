@@ -139,3 +139,8 @@ li[data-pol="-1"] .fc-pol{color:var(--fc-w)} li[data-pol="1"] .fc-pol{color:var(
   .top,.fc-controls,.foot,#board,.fc-acts,#toast{display:none!important}
   .fc-panel,.fc-card{break-inside:avoid;border-color:#ccc}
 }
+
+/* ألوان النص المأخوذة من لون المؤشر: أغمق قليلاً نهاراً وأفتح ليلاً، ليتحقق تباين WCAG AA مع بقاء اللون نفسه */
+.fc-big b,.fc-asp b{color:color-mix(in srgb,var(--oc) 80%,#000)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .fc-big b,:root:not([data-theme="light"]) .fc-asp b{color:color-mix(in srgb,var(--oc) 70%,#fff)}}
+:root[data-theme="dark"] .fc-big b,:root[data-theme="dark"] .fc-asp b{color:color-mix(in srgb,var(--oc) 70%,#fff)}
