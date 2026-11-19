@@ -29,7 +29,7 @@ async function init(ctx){
   [DESKS,CORR,OPN]=await Promise.all([getJSON('../data/desks.json').catch(()=>null),getJSON('../data/corrections.json').catch(()=>({items:[]})),getJSON('../data/opinion.json').catch(()=>({authors:[],articles:[]}))]);
   const anchor=[...document.querySelectorAll('.panel h2')].find(h=>h.textContent.includes('كلمة المرور'));const before=anchor?anchor.parentElement:null;const host=before?before.parentElement:$('#app');
   const add=p=>before?host.insertBefore(p,before):host.append(p);
-  add(desksPanel());add(countriesPanel());add(inboxPanel());add(corrPanel());add(opinionPanel());add(activatePanel());
+  add(desksPanel());add(countriesPanel());add(specialPanel());add(inboxPanel());add(corrPanel());add(opinionPanel());add(activatePanel());
 }
 const panel=(title,intro)=>{const s=el('section','panel');s.append(el('h2',null,title));if(intro){const p=el('p','mute',intro);p.style.fontSize='.9rem';s.append(p)}return s};
 const kpis=list=>{const k=el('div','kpis');list.forEach(([v,l])=>{const d=el('div');d.append(el('b',null,String(v)),el('small',null,l));k.append(d)});return k};
@@ -77,6 +77,17 @@ function countriesPanel(){
   const a=el('a',null,'افتح القسم كما يراه القرّاء');a.href='../#countries';a.target='_blank';a.rel='noopener';s.append(a);return s;
 }
 
+/* ---------- التقارير الخاصة ---------- */
+function specialPanel(){
+  const s=panel('التقارير الخاصة','قسم special/: يكتب القارئ مواصفات التقرير فيجهّزه الموقع في متصفحه من الأخبار الموثّقة وحدها (جهتان مستقلتان على الأقل لكل بند)، مع التنزيل والاستماع. والتقارير المحرَّرة تُنشر من data/special/ (ملف لكل تقرير وفهرس index.json)، وكل معلومة فيها من جهتين مستقلتين بروابطها. طلبات القرّاء لتقارير محرَّرة تصل إلى صندوق البلاغات أدناه بنوع «طلب تقرير خاص»، وإحصاء الاستخدام فيه.');
+  const ul=el('ul','hide-list');s.append(ul);const site=(CFG.SITE||'../')+'special/';
+  const a0=el('a','btn ghost','افتح قسم التقارير الخاصة');a0.href=site;a0.target='_blank';a0.rel='noopener';s.append(a0);
+  fetch('../data/special/index.json',{cache:'no-cache'}).then(r=>r.json()).then(ix=>{(ix.reports||[]).forEach(r=>{const li=el('li');const d=el('div');d.style.cssText='display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:6px 10px;border:1px solid var(--line);border-radius:10px';
+    const a=el('a',null,r.title.ar);a.href=site+'?r='+encodeURIComponent(r.id);a.target='_blank';a.rel='noopener';d.append(a,el('small',null,`${r.updated.slice(0,10)} · ${r.stats.items} بنداً · ${r.stats.outlets} جهة · ${r.stats.sources} رابطاً`));li.append(d);ul.append(li)});
+    if(!(ix.reports||[]).length)ul.append(el('li','mute','لا تقارير محرَّرة منشورة بعد.'))}).catch(()=>ul.append(el('li','mute','تعذّرت قراءة فهرس التقارير.')));
+  return s;
+}
+
 /* ---------- صندوق البلاغات والمشتركين والإحصاءات ---------- */
 function inboxPanel(){
   const s=panel('بلاغات القرّاء والمشتركون والإحصاءات','بلاغات «بلّغ عن خطأ»، والمشتركون في النشرة، وأكثر الأقسام زيارة في آخر 30 يوماً، ورموز الإحالة. تُحفظ على خادم «عبدو نيوز» في Cloudflare، ولا يُحفظ عنوان أي زائر.');
@@ -86,7 +97,7 @@ function inboxPanel(){
   const call=async(body)=>{LS.set('khabar-cf-key',k.value.trim());const r=await fetch((CFG.API||'..')+'/api/inbox',{method:'POST',headers:{Authorization:'Bearer '+k.value.trim(),'content-type':'application/json'},body:JSON.stringify(body||{})});
     const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(r.status===401?'المفتاح غير صحيح.':r.status===404?'خادم Cloudflare لم يُحدَّث بعد بهذه الميزة.':(j.error||'تعذّر الاتصال ('+r.status+').'));return j};
   const draw=j=>{out.textContent='';
-    const subs=j.subs.reduce((a,x)=>a+x.n,0),open=j.reports.filter(r=>r.status==='new').length;const views={},dlf={},dls={},lsn={};let dlt=0;j.hits.forEach(h=>{if(h.view.startsWith('dl-')){dlf[h.view.slice(3)]=(dlf[h.view.slice(3)]||0)+h.n;dlt+=h.n}else if(h.view.startsWith('dls-'))dls[h.view.slice(4)]=(dls[h.view.slice(4)]||0)+h.n;else if(/^ls[gsf]?-/.test(h.view)){const m=h.view.match(/^(ls[gsf]?)-(.*)$/);(lsn[m[1]]=lsn[m[1]]||{})[m[2]]=(lsn[m[1]][m[2]]||0)+h.n}else if(!h.view.startsWith('ref-'))views[h.view]=(views[h.view]||0)+h.n});
+    const subs=j.subs.reduce((a,x)=>a+x.n,0),open=j.reports.filter(r=>r.status==='new').length;const views={},dlf={},dls={},lsn={},srn={};let dlt=0;j.hits.forEach(h=>{if(h.view.startsWith('dl-')){dlf[h.view.slice(3)]=(dlf[h.view.slice(3)]||0)+h.n;dlt+=h.n}else if(h.view.startsWith('dls-'))dls[h.view.slice(4)]=(dls[h.view.slice(4)]||0)+h.n;else if(/^sr[a-z]-/.test(h.view)){const m=h.view.match(/^(sr[a-z])-(.*)$/);(srn[m[1]]=srn[m[1]]||{})[m[2]]=(srn[m[1]][m[2]]||0)+h.n}else if(/^ls[gsf]?-/.test(h.view)){const m=h.view.match(/^(ls[gsf]?)-(.*)$/);(lsn[m[1]]=lsn[m[1]]||{})[m[2]]=(lsn[m[1]][m[2]]||0)+h.n}else if(!h.view.startsWith('ref-'))views[h.view]=(views[h.view]||0)+h.n});
     out.append(kpis([[open,'بلاغاً جديداً'],[j.reports.length,'بلاغاً في المجموع'],[subs,'مشتركاً في النشرة'],[Object.values(views).reduce((a,b)=>a+b,0),'زيارة في 30 يوماً']]));
     const top=Object.entries(views).sort((a,b)=>b[1]-a[1]).slice(0,12);if(top.length){out.append(el('b',null,'الأكثر زيارة:'));const ol=el('ol');top.forEach(([v,n])=>ol.append(el('li',null,`${v} · ${n}`)));out.append(ol)}
     // تنزيلات التقارير (assets/report.js): حسب الصيغة وحسب القسم
@@ -100,10 +111,18 @@ function inboxPanel(){
      out.append(el('b',null,`الاستماع في 30 يوماً: ${lt} مرة تشغيل`));
      if(lt){out.append(el('div','mute','حسب اللغة:'),li(lsn.ls,LN),el('div','mute','حسب القارئ:'),li(lsn.lsg,GN),el('div','mute','أكثر الأقسام استماعاً:'),li(lsn.lss,SN));if(sum(lsn.lsf))out.append(el('div','mute','مرات البديل (لا يتوفر الصوت المطلوب على جهاز القارئ):'),li(lsn.lsf,FB))}
      else out.append(el('p','mute','لم يُستعمل الاستماع بعد.'))}
+    // التقارير الخاصة (special/): زيارات القسم، والتقارير المولّدة حسب الشكل والمنطقة، وفتح التقارير المحرَّرة، والتنزيل والاستماع والطباعة، وطلبات القرّاء
+    {const S=o=>Object.values(o||{}).reduce((a,b)=>a+b,0),FM={full:'مفصّل',brief:'ملخص تنفيذي',timeline:'تسلسل زمني'},RG={all:'كل العالم',qatar:'قطر',gulf:'الخليج',egypt:'مصر',mideast:'الشرق الأوسط',europe:'أوروبا',asia:'آسيا',africa:'أفريقيا',americas:'الأمريكتان',country:'دولة بعينها'},KD={gen:'مولَّد',cur:'محرَّر'};
+     const li=(o,N)=>{const ol=el('ol');Object.entries(o||{}).sort((a,b)=>b[1]-a[1]).slice(0,10).forEach(([k,n])=>ol.append(el('li',null,`${N&&N[k]||k} · ${n}`)));return ol};
+     const g=S(srn.srg),req=j.reports.filter(r=>r.kind==='special');
+     out.append(el('b',null,`التقارير الخاصة في 30 يوماً: الزيارات ${views.special||0} · تقارير مولَّدة ${g} · فتح تقارير محرَّرة ${S(srn.sro)} · تنزيلات ${S(srn.srd)} · استماع ${S(srn.srs)} · طباعة ${S(srn.srp)} · طلبات تقارير محرَّرة ${req.length}`));
+     if(g||S(srn.sro)){out.append(el('div','mute','حسب الشكل:'),li(srn.srg,FM),el('div','mute','حسب المنطقة:'),li(srn.srx,RG),el('div','mute','لغة التقرير:'),li(srn.srl,{ar:'العربية',en:'الإنجليزية'}),el('div','mute','التقارير المحرَّرة الأكثر فتحاً:'),li(srn.sro));
+       if(S(srn.srn))out.append(el('p','mute',`طلبات لم تجد مادة موثّقة مطابقة: ${S(srn.srn)} (تستحق تقريراً محرَّراً).`))}
+     else out.append(el('p','mute','لم يُستعمل قسم التقارير الخاصة بعد.'))}
     if(j.refs.length){out.append(el('b',null,'الإحالات:'));const ol=el('ol');j.refs.forEach(r=>ol.append(el('li',null,`${r.code} · ${r.n} اشتراكاً`)));out.append(ol)}
     out.append(el('b',null,'البلاغات:'));const ul=el('ul','hide-list');
     j.reports.forEach(r=>{const li=el('li');const d=el('div');d.style.cssText='display:grid;gap:4px;padding:8px 10px;border:1px solid var(--line);border-radius:10px';
-      d.append(el('span','z',`${fmt(r.at)} · ${r.kind} · ${r.item} · ${r.status==='new'?'جديد':r.status==='done'?'صُحّح':'رُفض'}`),el('span',null,r.body));if(r.email)d.append(el('small',null,r.email));
+      d.append(el('span','z',`${fmt(r.at)} · ${r.kind==='special'?'طلب تقرير خاص':r.kind} · ${r.item} · ${r.status==='new'?'جديد':r.status==='done'?'صُحّح':'رُفض'}`),el('span',null,r.body));if(r.email)d.append(el('small',null,r.email));
       const a=el('a',null,'الصفحة');a.href=r.page;a.target='_blank';a.rel='noopener';d.append(a);
       const row=el('div','btns');[['done','صُحّح'],['rejected','لا خطأ']].forEach(([st,t])=>{const b=el('button','btn ghost',t);b.type='button';b.onclick=async()=>{try{draw(await call({report:r.id,status:st}))}catch(e){say('#inbox-msg',e.message,false)}};row.append(b)});d.append(row);li.append(d);ul.append(li)});
     if(!j.reports.length)ul.append(el('li','mute','لا بلاغات.'));out.append(ul)};
