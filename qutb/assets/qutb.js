@@ -275,6 +275,19 @@ async function khabarStats(p, o, add) {
     o.rows.push(['الاستماع', s.total ? `${num(s.total)} مرة تشغيل في 30 يوماً · اليوم ${num(s.today)} · امرأة ${num(s.genders?.f || 0)} · رجل ${num(s.genders?.m || 0)} · اللغات: ${esc(top(s.langs, LN, 4))}${top(s.sections, SN) ? ' · الأكثر استماعاً: ' + esc(top(s.sections, SN)) : ''}${fb ? ' · بديل لعدم توفر الصوت: ' + num(fb) : ''}` : 'لم يُستعمل الاستماع بعد']);
     if (s.total >= 20 && fb / s.total > 0.5) add('info', `${p.name}: أكثر من نصف مرات الاستماع على أجهزة بلا الصوت المطلوب؛ يُستحسن شرح تثبيت الأصوات للقراء`, p.site);
   } catch (e) { o.rows.push(['الاستماع', '<span class="skel">تعذّرت القراءة</span>']); }
+  // التقارير الخاصة (19 نوفمبر 2026): تقارير يطلبها القارئ ويجهّزها الموقع من الأخبار الموثّقة، وتقارير محرَّرة في data/special/. الإحصاء أعداد مجمّعة فقط
+  try {
+    const ix = await raw(p.repo, base + 'special/index.json'), R = ix.reports || [];
+    let use = '';
+    try {
+      const api = /workers\.dev/.test(p.site || '') ? p.site.replace(/\/$/, '') : 'https://khabar.baseeratactions.workers.dev';
+      const r = await fetch(api + '/api/special', {cache: 'no-store'}); if (!r.ok) throw new Error('http' + r.status);
+      const s = await r.json();
+      use = ` · في 30 يوماً: الزيارات ${num(s.views || 0)} · تقارير مولَّدة ${num(s.generated || 0)} · فتح تقارير محرَّرة ${num(s.opened || 0)} · تنزيلات ${num(s.downloads || 0)} · استماع ${num(s.listens || 0)} · طلبات ${num(s.requests || 0)}${s.empty ? ' · بلا نتيجة ' + num(s.empty) : ''}`;
+      if ((s.empty || 0) >= 5) add('info', `${p.name}: ${num(s.empty)} طلبات تقارير خاصة لم تجد مادة موثّقة؛ تستحق تقارير محرَّرة`, p.site + 'admin/');
+    } catch (e) { use = ' · الإحصاء يظهر هنا بعد تحديث خادم Cloudflare، ومتاح الآن في صندوق الإدارة'; }
+    o.rows.push(['التقارير الخاصة', `<a href="${esc(p.site)}special/" target="_blank" rel="noopener">تقارير محرَّرة: ${R.length}</a>${R.length ? ' · آخرها: ' + esc(R.slice().sort((a, b) => String(b.updated).localeCompare(String(a.updated)))[0].title.ar) : ''}${use}`]);
+  } catch (e) { o.rows.push(['التقارير الخاصة', '<span class="skel">تعذّرت القراءة</span>']); }
   // الأوضاع في الدول (18 نوفمبر 2026): مؤشر استقرار يومي لكل دولة، وكل خبر من جهتين مستقلتين
   try {
     const c = await raw(p.repo, base + 'countries.json'), C = c.countries || {};

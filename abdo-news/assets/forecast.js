@@ -20,7 +20,7 @@ const T = {
   aspects_h: ['الجوانب الستة', 'The six aspects'], report_h: ['التقرير', 'Report'], drivers_h: ['لماذا هذا التقدير؟', 'Why this estimate?'], eco_h: ['الاقتصاد بالأرقام', 'The economy in numbers'],
   ev_h: ['الأحداث الموثّقة التي دخلت الحساب', 'Verified events in the calculation'], board_h: ['لوحة الدول', 'Country board'], rec_h: ['سجل دقة التوقعات', 'Forecast track record'], method_h: ['المنهجية المعلنة', 'Published method'],
   footer_note: ['التوقعات في هذا القسم تقديرات احتمالية لا أخبار، تُحسب آلياً كل 3 ساعات بمنهجية معلنة، ويُنشر سجل دقتها كما هو.', 'Forecasts here are probabilistic estimates, not news. They are computed automatically every 3 hours with a published method, and their track record is published as it is.'],
-  today: ['اليوم', 'Today'], qatar: ['قطر', 'Qatar'], gulf: ['الخليج', 'The Gulf'], egypt: ['مصر', 'Egypt'], world: ['العالم', 'The World'], military: ['القسم العسكري', 'Military'], wars: ['الحروب الدائرة', 'Ongoing wars'],
+  special: ['تقارير خاصة', 'Special reports'], today: ['اليوم', 'Today'], qatar: ['قطر', 'Qatar'], gulf: ['الخليج', 'The Gulf'], egypt: ['مصر', 'Egypt'], world: ['العالم', 'The World'], military: ['القسم العسكري', 'Military'], wars: ['الحروب الدائرة', 'Ongoing wars'],
   roadmap: ['خريطة الطريق', 'Roadmap'], ledger: ['الشفافية', 'Transparency'], saved: ['المحفوظ', 'Saved'], about: ['عن عبدو نيوز', 'About'], weather: ['الطقس والمناخ', 'Weather'], forecast: ['التوقعات', 'Forecasts'], desks: ['الأقسام', 'Desks'], countries: ['الأوضاع في الدول', 'Countries'],
   theme_dark: ['الوضع الليلي', 'Dark mode'], theme_light: ['الوضع النهاري', 'Light mode'], all: ['كل الجوانب', 'All aspects']
 };
@@ -71,10 +71,10 @@ function header() {
   const dark = document.documentElement.dataset.theme === 'dark' || (!document.documentElement.dataset.theme && matchMedia('(prefers-color-scheme: dark)').matches);
   $('#theme-btn').setAttribute('aria-label', dark ? t('theme_light') : t('theme_dark'));
   document.title = LANG === 'en' ? 'Forecasts: reading the future | Abdo News' : 'التوقعات: استقراء المستقبل | عبدو نيوز';
-  const ZC = {qatar: 'var(--dawn)', gulf: 'var(--sea)', egypt: 'var(--nile)', world: 'var(--deep-ink)', military: '#8A3A2E', wars: '#C4392F', countries: '#1F3A93', desks: '#7A3FB0'};
+  const ZC = {qatar: 'var(--dawn)', gulf: 'var(--sea)', egypt: 'var(--nile)', world: 'var(--deep-ink)', military: '#8A3A2E', wars: '#C4392F', countries: '#1F3A93', desks: '#7A3FB0', special: '#0F6E8C'};
   const tabs = $('#tabs'); tabs.textContent = '';
-  ['today', 'qatar', 'gulf', 'egypt', 'world', 'military', 'wars', 'countries', 'forecast', 'desks', 'weather', 'roadmap', 'ledger', 'saved', 'about'].forEach(id => {
-    const a = el('a', 'tab'); a.href = id === 'forecast' ? './' : id === 'weather' ? '../weather/' : '../#' + id;
+  ['today', 'qatar', 'gulf', 'egypt', 'world', 'military', 'wars', 'countries', 'forecast', 'desks', 'special', 'weather', 'roadmap', 'ledger', 'saved', 'about'].forEach(id => {
+    const a = el('a', 'tab'); a.href = id === 'forecast' ? './' : id === 'weather' ? '../weather/' : id === 'special' ? '../special/' : '../#' + id;
     if (ZC[id]) { const i = el('i'); i.style.background = ZC[id]; a.append(i); }
     if (id === 'forecast') { a.setAttribute('aria-current', 'page'); a.insertAdjacentHTML('afterbegin', '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M3 17l5-5 4 3 8-9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 6h5v5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 2.5"/></svg>'); }
     a.append(t(id)); tabs.append(a);
