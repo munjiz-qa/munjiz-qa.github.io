@@ -34,7 +34,7 @@ const get = async (p, tries = 3) => { for (let i = 0; i < tries; i++) { try { co
     idx.on("request", (rq) => { if (/vendor\/firebase-/.test(rq.url())) (loaded ? late : early).push(rq.url()); });
     idx.once("load", () => { loaded = true; });
     await idx.goto(BASE + (process.env.BURAQ_EMU ? "?emu" : ""), { waitUntil: "load", timeout: 45000 });
-    await idx.waitForTimeout(6000);
+    for (let i = 0; i < 40 && late.length < 3; i++) await idx.waitForTimeout(500); // على جهاز بطيء قد يتأخر الخمول، فننتظر حتى 20 ثانية
     check(early.length === 0, `${name}: لا طلبات Firebase قبل اكتمال الرئيسية ${early.length ? early.map((u) => u.split("/").pop()).join(" ") : ""}`);
     check(late.length >= 3, `${name}: ربط الحسابات يُحمَّل بعد اكتمال الصفحة (${late.length} ملفات)`);
     check((await idx.title()).includes("براق"), `${name}: عنوان الصفحة الرئيسية`);
