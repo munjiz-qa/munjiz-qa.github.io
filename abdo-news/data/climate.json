@@ -1,10 +1,10 @@
 {
- "updated": "2026-11-20T10:34:54.895Z",
+ "updated": "2026-11-20T11:53:25.067Z",
  "rule": "two_independent_outlets",
  "window_h": 48,
  "feeds": {
   "un:en": 2,
-  "reliefweb:en": 1,
+  "reliefweb:en": 0,
   "guardian:en": 8,
   "bbc:en": 6,
   "aljazeera:en": 0,
@@ -14,20 +14,20 @@
   "yale:en": 2,
   "cbs:en": 0,
   "sciam:en": 1,
-  "france24:en": 0,
+  "france24:en": 2,
   "dw:en": 6,
-  "google:en": 199,
+  "google:en": 135,
   "un:ar": 1,
   "bbc:ar": 0,
-  "aljazeera:ar": 0,
+  "aljazeera:ar": 1,
   "dw:ar": 0,
   "france24:ar": 1,
-  "aawsat:ar": 2,
+  "aawsat:ar": 3,
   "annahar:ar": "error",
   "alquds:ar": 0,
   "youm7:ar": 0,
   "skynews:ar": 0,
-  "google:ar": 52
+  "google:ar": 54
  },
  "ar": [
   {
@@ -87,10 +87,38 @@
  ],
  "en": [
   {
-   "id": "en-2026111903-6lcmjf",
-   "title": "Cyclone Akvan Changes Direction: Heavy Rain Alert for Six Andhra Pradesh Districts",
-   "date": "2026-11-19T03:02:25.000Z",
-   "outlets": 4,
+   "id": "en-2026111918-tw2yh1",
+   "title": "COP31 draft drops fossil fuel language as talks near deadline",
+   "date": "2026-11-19T18:43:14.000Z",
+   "outlets": 2,
+   "grade": "strong",
+   "methods": [
+    "outlets",
+    "official"
+   ],
+   "sources": [
+    {
+     "name": "UN News",
+     "title": "COP31: Ambition goes missing as fossil fuel language drops from draft deal",
+     "url": "https://news.un.org/feed/view/en/story/2026/11/1168839",
+     "date": "2026-11-19",
+     "official": true
+    },
+    {
+     "name": "Reuters",
+     "title": "COP31 draft drops fossil fuel language as talks near deadline",
+     "url": "https://www.reuters.com/sustainability/cop/cop31-negotiators-publish-revised-deal-text-with-no-mention-fossil-fuels-2026-11-19/",
+     "date": "2026-11-19",
+     "official": false
+    }
+   ],
+   "data": null
+  },
+  {
+   "id": "en-2026111903-zdb7r7",
+   "title": "Severe Cyclone Akvan likely to cross Andhra Pradesh, Odisha coasts by noon; three trains rescheduled",
+   "date": "2026-11-19T03:47:00.000Z",
+   "outlets": 3,
    "grade": "strong",
    "methods": [
     "outlets",
@@ -98,30 +126,23 @@
    ],
    "sources": [
     {
-     "name": "Sakshi Post",
-     "title": "Cyclone Akvan Changes Direction: Heavy Rain Alert for Six Andhra Pradesh Districts",
-     "url": "https://m.sakshipost.com/amp/news/andhrapradesh/cyclone-akvan-changes-direction-heavy-rain-alert-six-andhra-pradesh-districts",
+     "name": "DD News",
+     "title": "Severe Cyclone Akvan likely to cross Andhra Pradesh, Odisha coasts by noon; three trains rescheduled",
+     "url": "https://ddnews.gov.in/en/severe-cyclone-akvan-likely-to-cross-andhra-pradesh-odisha-coasts-by-noon-three-trains-rescheduled/",
      "date": "2026-11-19",
      "official": false
     },
     {
      "name": "Odisha TV",
-     "title": "Cyclone Akvan landfall: Schools, colleges closed in 11 Odisha districts; red warning issued",
-     "url": "https://odishatv.in/odisha/cyclone-akvan-landfall-schools-colleges-closed-in-11-odisha-districts-red-warning-issued-12822225",
+     "title": "Cyclone Akvan landfall likely near Gopalpur, IMD issues red warning for 5 Odisha districts",
+     "url": "https://odishatv.in/odisha/cyclone-akvan-landfall-likely-near-gopalpur-imd-issues-red-warning-for-5-odisha-districts-12822149",
      "date": "2026-11-19",
      "official": false
     },
     {
-     "name": "Dainik Jagran MP CG",
-     "title": "Cyclone Akvan: IMD Issues Red Warning for North Andhra Pradesh and South Odisha Ahead of November 20 Landfall",
-     "url": "https://english.dainikjagranmpcg.com/national/cyclone-akvan-landfall-november-20-imd-red-warning/article-45100",
-     "date": "2026-11-19",
-     "official": false
-    },
-    {
-     "name": "Pragativadi",
-     "title": "Red Warning for Six Odisha Districts Amid Cyclone Threat",
-     "url": "https://pragativadi.com/red-warning-for-six-odisha-districts-amid-cyclone-threat/",
+     "name": "The Hindu",
+     "title": "Cyclone Akvan now likely to cross coast near Gopalpur in Odisha; north Andhra stays on alert",
+     "url": "https://www.thehindu.com/news/national/andhra-pradesh/cyclone-akvan-now-likely-to-cross-coast-near-gopalpur-in-odisha-north-andhra-stays-on-alert/article71718699.ece",
      "date": "2026-11-19",
      "official": false
     }
@@ -138,8 +159,8 @@
    "id": "en-2026112002-wcfev0",
    "title": "Nations still seeking deeper fossil fuel cuts as annual UN climate change summit enters final day",
    "date": "2026-11-20T02:00:00.000Z",
-   "outlets": 3,
-   "grade": "strong",
+   "outlets": 2,
+   "grade": "confirmed",
    "methods": [
     "outlets"
    ],
@@ -152,16 +173,9 @@
      "official": false
     },
     {
-     "name": "GTP Headlines",
-     "title": "EU Urges COP31 to Deliver Deeper Emission Cuts in Final Deal",
-     "url": "https://news.gtp.gr/2026/11/19/eu-urges-cop31-to-deliver-deeper-emission-cuts-in-final-deal/",
-     "date": "2026-11-20",
-     "official": false
-    },
-    {
-     "name": "The Washington Post",
+     "name": "AP News",
      "title": "Nations seek deeper fossil fuel cuts, as annual UN climate summit enters final day",
-     "url": "https://www.washingtonpost.com/world/2026/11/19/climate-change-warming-turkey/3890fb0a-e486-11f1-a99e-b3e3805c6b8b_story.html",
+     "url": "https://apnews.com/article/climate-change-warming-turkey-a683c5c87a7ee64caf4e9257948b6e40",
      "date": "2026-11-20",
      "official": false
     }
@@ -169,9 +183,9 @@
    "data": null
   },
   {
-   "id": "en-2026112008-o2i2x2",
-   "title": "Family reburies remains of hurricane-displaced relatives",
-   "date": "2026-11-20T08:22:00.000Z",
+   "id": "en-2026112001-o1n3pr",
+   "title": "Meta rethinks 2030 climate goals as AI data centres drive emissions up",
+   "date": "2026-11-20T01:36:38.000Z",
    "outlets": 2,
    "grade": "confirmed",
    "methods": [
@@ -179,16 +193,43 @@
    ],
    "sources": [
     {
-     "name": "Alaska's News Source",
-     "title": "Family reburies remains of hurricane-displaced relatives",
-     "url": "https://www.alaskasnewssource.com/video/2026/11/20/family-reburies-remains-hurricane-displaced-relatives/",
+     "name": "Al Jazeera",
+     "title": "Meta rethinks 2030 climate goals as AI data centres drive emissions up",
+     "url": "https://www.aljazeera.com/news/2026/11/20/meta-rethinks-2030-climate-goals-as-ai-data-centres-drive-emissions-up",
      "date": "2026-11-20",
      "official": false
     },
     {
-     "name": "FOX5 Vegas",
-     "title": "Family reburies relatives more than 2 years after hurricane washed out cemetery",
-     "url": "https://www.fox5vegas.com/2026/11/20/family-reburies-relatives-more-than-2-years-after-hurricane-washed-out-cemetery/?outputType=amp",
+     "name": "Axios",
+     "title": "Meta rethinks climate goal as AI emissions soar 45%",
+     "url": "https://www.axios.com/2026/11/19/meta-ai-emissions-rise",
+     "date": "2026-11-20",
+     "official": false
+    }
+   ],
+   "data": null
+  },
+  {
+   "id": "en-2026111815-w0i6r",
+   "title": "'Coalition of the Willing' meets in Berlin: Europe remains committed to Ukraine",
+   "date": "2026-11-18T15:03:00.000Z",
+   "outlets": 2,
+   "grade": "confirmed",
+   "methods": [
+    "outlets"
+   ],
+   "sources": [
+    {
+     "name": "DW",
+     "title": "'Coalition of the Willing' meets in Berlin: Europe remains committed to Ukraine",
+     "url": "https://www.dw.com/en/coalition-of-the-willing-meets-in-berlin-europe-remains-committed-to-ukraine/a-79974996?maca=en-rss-en-all-1573-rdf",
+     "date": "2026-11-18",
+     "official": false
+    },
+    {
+     "name": "France 24",
+     "title": "'Coalition of the Willing': Ukraine's allies meet in Berlin after Trump-Putin-Xi talks",
+     "url": "https://www.france24.com/en/video/20261120-coalition-of-the-willing-ukraine-s-allies-meet-in-berlin-after-trump-putin-xi-talks",
      "date": "2026-11-20",
      "official": false
     }
@@ -197,7 +238,7 @@
   }
  ],
  "dropped": {
-  "ar": 33,
-  "en": 0
+  "ar": 34,
+  "en": 125
  }
 }
