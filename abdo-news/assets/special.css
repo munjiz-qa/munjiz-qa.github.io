@@ -61,6 +61,7 @@
 .sr-item{--zc:var(--sr)}
 .sr-item .cat{color:var(--sr)}
 .sr-num{display:inline-grid;place-items:center;min-width:22px;height:22px;border-radius:50%;background:var(--sr);color:#fff;font-size:.72rem;margin-inline-end:4px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .sr-num{color:#06141A}}
 :root[data-theme="dark"] .sr-num{color:#06141A}
 .sr-grade[data-n="2"]{color:var(--sea-ink)}
 .sr-note{font-size:.78rem}
