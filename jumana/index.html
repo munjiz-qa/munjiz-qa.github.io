@@ -263,6 +263,9 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer nav a{color:var(--mut
 #cmpsel select{flex:1 1 200px}#cmpout{display:grid;gap:12px}
 .tchcode{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--goldsoft);border-radius:10px;padding:10px 14px}.tchcode b{font-size:1.5rem;letter-spacing:.08em}.sheetq{display:grid;gap:12px;margin:0;padding-inline-start:22px}.sheeto{margin:0;padding-inline-start:22px;columns:2 160px}.sheeto li.key{font-weight:700;color:var(--ok)}
 @media print{body.printing *{visibility:hidden!important}body.printing #tchsheet,body.printing #tchsheet *{visibility:visible!important}body.printing #tchsheet{position:absolute;inset:0 0 auto 0;border:0;box-shadow:none}}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}.galf{margin:0;padding:10px;gap:8px}.galimg{border:0;padding:0;background:var(--surface2);border-radius:10px;overflow:hidden;cursor:zoom-in;aspect-ratio:1;display:block;width:100%}.galimg img{width:100%;height:100%;object-fit:contain;display:block}.galf figcaption{display:grid;gap:4px}.credit{font-size:.78rem;color:var(--muted)}.galbig{width:100%;max-height:60vh;object-fit:contain;background:var(--surface2);border-radius:10px}
+.t3box{padding:10px;gap:10px}#t3wrap{position:relative;min-height:300px}.t3c{width:100%;display:block;border-radius:10px;background:linear-gradient(#cfe0ef,#f3ead6);touch-action:none;cursor:grab}.t3lab{position:absolute;top:10px;inset-inline-start:10px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:.85rem}#t3stops .chip{padding:6px 12px}
+#v-en{text-align:left}#v-en h2,#v-en h3{font-family:inherit}.enlink{text-decoration:none;color:var(--ink);gap:4px}.enlink span{color:var(--muted);font-size:.9rem}.enlist{columns:2 300px;margin:0;padding-left:22px}.enlist li{break-inside:avoid;margin:3px 0}
 .flash{outline:3px solid var(--gold);outline-offset:2px}.bkpts{margin:0;padding-inline-start:20px}.bklinks{gap:6px}.say.on{background:var(--faience);color:#fff;border-color:var(--faience)}
 #hname{display:grid;gap:12px}.hncart{display:flex;align-items:center;justify-content:center;gap:10px;min-height:110px;flex-wrap:wrap}.hnc{font-family:var(--f-glyph);font-size:2.6rem;color:var(--ink);border:3px solid var(--lapis);border-radius:60px;padding:8px 26px;direction:ltr;unicode-bidi:isolate;box-shadow:inset 0 0 0 4px var(--goldsoft);overflow-wrap:anywhere;max-width:100%}.hndet{font-size:2.6rem;color:var(--gold)}.gl{font-family:var(--f-glyph)}.hnmap{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;margin-top:8px}.hnmap .gl{font-size:1.4rem;color:var(--lapis)}.hnprev{max-width:100%;border-radius:10px;border:1px solid var(--line)}
 #daily{display:grid;gap:10px}.dyh{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.dyo{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
@@ -306,6 +309,9 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer nav a{color:var(--mut
       <a href="#books">الكتب وخلاصاتها</a>
       <a href="#story">يوم في حياة</a>
       <a href="#compare">قارن العصور والمعارك</a>
+      <a href="#gallery">معرض الصور</a>
+      <a href="#tour3d">جولة ثلاثية الأبعاد</a>
+      <a href="#en" lang="en" dir="ltr">English</a>
       <a href="#egyptology">علم المصريات</a>
       <a href="#topics">موضوعات</a>
       <a href="#glyphs">الهيروغليفية</a>
@@ -548,6 +554,23 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer nav a{color:var(--mut
   <div><div class="eyebrow">للمدارس والمعلمين</div><h2>وضع المعلم</h2>
   <p class="lede">أنشئ اختباراً موحداً لفصلك برمز يدخله الطلاب، واطبع ورقة عمل بمفتاح الإجابات، دون حاجة إلى حسابات للطلاب.</p></div>
   <div id="tchbody"></div>
+</section>
+<section class="view" id="v-gallery" hidden>
+  <div><div class="eyebrow">صور مرخصة مع الإسناد</div><h2>معرض الصور</h2>
+  <p class="lede">عشرون قطعة مصرية من مقتنيات متحف المتروبوليتان للفنون في نيويورك، صورها في الملكية العامة (CC0) ضمن برنامج الوصول المفتوح. تحت كل صورة رقم القطعة ورابط صفحتها في المتحف. اضغط على الصورة لتكبيرها وقراءة شرحها.</p></div>
+  <div id="galbody"></div>
+</section>
+<section class="view" id="v-tour3d" hidden>
+  <div><div class="eyebrow">جولة ثلاثية الأبعاد</div><h2>داخل الهرم الأكبر</h2>
+  <p class="lede">نموذج تقريبي بالأبعاد الحقيقية لممرات هرم خوفو وحجراته. اسحب للتدوير، واستعمل عجلة الفأرة أو إصبعين للتقريب، واختر محطة لتنتقل إليها مع شرحها.</p></div>
+  <div class="tools" id="t3stops"></div>
+  <div class="box t3box"><div id="t3wrap"></div><div id="t3info"></div></div>
+  <p class="meta">النموذج مخطط تعليمي تقريبي، والأبعاد مأخوذة من القياسات المنشورة، ومنها: Lehner, M., The Complete Pyramids (1997)، وإعلان مشروع ScanPyramids (2023).</p>
+</section>
+<section class="view" id="v-en" hidden lang="en" dir="ltr">
+  <div><div class="eyebrow">English</div><h2>Jumana of Ancient Egypt: English guide</h2>
+  <p class="lede">An interactive platform on the history, sciences, language and papyri of ancient Egypt.</p></div>
+  <div id="enbody"></div>
 </section>
 <section class="view" id="v-egyptology" hidden>
   <div><div class="eyebrow">العلم الذي يدرس مصر القديمة</div><h2>علم المصريات</h2>
@@ -2533,6 +2556,90 @@ document.addEventListener("click",ev=>{const id=ev.target.id;
 document.addEventListener("change",ev=>{if(ev.target.id==="tchkey"){TCH.key=ev.target.checked;store.set("teacher",TCH);renderTeacher()}else if(ev.target.id==="tchn"||ev.target.id==="tchcls"){TCH.n=+$("#tchn").value;TCH.cls=$("#tchcls").value.trim().slice(0,40);store.set("teacher",TCH)}});
 BADGES.push({id:"story",g:0x13000,n:"راوي الأيام"});
 
+/* ---------------- معرض الصور المرخصة (v16) ---------------- */
+const GAL=[
+ ["544067","مشط شعر مزين بصفوف من الحيوانات البرية","نحو 3200–3100 ق.م","ما قبل الأسرات","30.8.224","من العاج، وصفوف الحيوانات عليه من أقدم أمثلة التنظيم في سجلات أفقية، وهو أسلوب لازم الفن المصري بعد ذلك."],
+ ["543866","طبق قرابين تحتضن فيه ذراعا «الكا» علامة العنخ","نحو 3100–2900 ق.م","الأسرة الأولى","19.2.16","الذراعان المرفوعتان رمز «الكا» أي القوة الحيوية، والعنخ رمز الحياة، فهو دعاء مجسَّم بدوام الحياة."],
+ ["544077","شبل أسد","نحو 3100–2900 ق.م","الأسرة الأولى","66.99.2","تمثال صغير من بدايات العصر العتيق، يبين مهارة النحاتين الأوائل في تصوير الحيوان."],
+ ["543896","جزء من وجه الملك خفرع","نحو 2520–2494 ق.م","الأسرة الرابعة","26.7.1392","من الألباستر المصري (الكالسيت)، لصاحب الهرم الثاني بالجيزة."],
+ ["543937","مصطبة بر نب","نحو 2381–2323 ق.م","الأسرة الخامسة","13.183.3","مقبرة موظف من سقارة، نُقلت كاملة إلى نيويورك عام 1913، ويستطيع الزائر دخولها ومشاهدة نقوش القرابين."],
+ ["544210","تمثال حاملة القرابين","نحو 1981–1975 ق.م","الأسرة الثانية عشرة","20.3.7","من مقبرة الموظف مكت رع في طيبة، تحمل سلة على رأسها وبطة في يدها، رمزاً لضيعة تمد الميت بالطعام."],
+ ["544184","وجه سنوسرت الثالث","نحو 1878–1840 ق.م","الأسرة الثانية عشرة","26.7.1394","من الكوارتزيت، ويمثل أسلوب الدولة الوسطى الواقعي في ملامح الملك المتعبة."],
+ ["544442","أبو الهول بوجه حتشبسوت","نحو 1473–1458 ق.م","الأسرة الثامنة عشرة","31.3.166","من معبدها في الدير البحري، ويجمع جسد الأسد ووجه الملكة ولحيتها الملكية المستعارة."],
+ ["545146","جعران القلب لحات نفر","نحو 1491–1473 ق.م","الأسرة الثامنة عشرة","36.3.2","يوضع على صدر المومياء، وعليه نص من كتاب الموتى يدعو القلب ألا يشهد على صاحبه عند وزنه."],
+ ["544514","جزء من وجه ملكة","نحو 1386–1330 ق.م","الأسرة الثامنة عشرة","26.7.1396","من اليشب الأصفر، ويُرجَّح أنه للملكة تي أو إحدى ملكات عصرها."],
+ ["544068","غزال","نحو 1386–1347 ق.م","الأسرة الثامنة عشرة","26.7.1292","تمثال صغير دقيق من العاج يعكس ولع فناني عصر أمنحتب الثالث بالطبيعة."],
+ ["544066","مقبض يصور أسداً يقهر عدواً","نحو 1290–1224 ق.م","الأسرة التاسعة عشرة","1989.281.92","موضوع ملكي متكرر يرمز إلى انتصار النظام (ماعت) على الفوضى."],
+ ["554676","ورقة من بردية أمنحتب (كتاب الموتى)","نحو 1427–1386 ق.م","الأسرة الثامنة عشرة","30.8.70a","صفحة من نسخة لكتاب الموتى، تشهد على انتشار هذه النصوص في الدولة الحديثة. انظر موسوعة البرديات في المنصة."],
+ ["544874","تمثال صغير لآمون","نحو 945–721 ق.م","الأسرة الثانية والعشرون","26.7.1412","من الذهب، ويصور آمون بتاجه ذي الريشتين العاليتين."],
+ ["553673","بردية من كتاب الموتى بالفصلين 100 و129","664–30 ق.م","العصر المتأخر والبطلمي","24.2.18","مثال على استمرار نسخ كتاب الموتى أكثر من ألف عام."],
+ ["548300","تمثال إمحوتب جالساً","332–30 ق.م","العصر البطلمي","26.7.852a, b","إمحوتب مهندس هرم زوسر، وقد عُظِّم بعد قرون بوصفه حكيماً وراعياً للطب، فصارت تماثيله تُهدى في المعابد."],
+ ["547699","رأس يُنسب إلى أرسينوي الثانية","278–270 ق.م","العصر البطلمي","38.10","ملكة بطلمية مُثِّلت على الطراز المصري، ويُرى فيها مزج الهويتين المصرية واليونانية."],
+ ["544118","تمثال قط أُعدَّ لحفظ قط محنط","332–30 ق.م","العصر البطلمي","56.16.1","القط رمز المعبودة باستت، وكانت القطط المحنطة تُهدى قرباناً في معابدها."],
+ ["547802","معبد دندور","اكتمل نحو 10م","العصر الروماني","68.154","أهدته مصر إلى الولايات المتحدة عام 1965 تقديراً لمساهمتها في حملة إنقاذ آثار النوبة، وأقيم في المتحف عام 1978."],
+ ["547257","قناع مومياء لامرأة","60–70م","العصر الروماني","19.2.6","يجمع تقاليد التحنيط المصرية مع ملامح الزينة الرومانية."]
+];
+function renderGallery(){const B=$("#galbody");if(!B)return;
+  B.innerHTML=`<div class="gal">${GAL.map((g,i)=>`<figure class="box galf"><button class="galimg" data-gal="${i}" aria-label="تكبير: ${g[1]}"><img src="img/met-${g[0]}.jpg" alt="${g[1]}" loading="lazy" decoding="async" width="300" height="300"></button><figcaption><b>${g[1]}</b><span class="meta">${g[2]} · ${g[3]}</span><span class="credit">متحف المتروبوليتان للفنون، نيويورك، رقم <span dir="ltr">${g[4]}</span>. ملكية عامة (CC0). ${XL("https://www.metmuseum.org/art/collection/search/"+g[0],"صفحة القطعة")}</span></figcaption></figure>`).join("")}</div>`}
+function openGal(i){const g=GAL[(i+GAL.length)%GAL.length];modal(`<div class="modal-h"><div><div class="eyebrow">معرض الصور</div><h2>${g[1]}</h2><div class="meta">${g[2]} · ${g[3]}</div></div><button class="x" data-close aria-label="إغلاق">✕</button></div><img class="galbig" src="img/met-${g[0]}.jpg" alt="${g[1]}"><p>${g[5]}</p><p class="credit">الإسناد: متحف المتروبوليتان للفنون، نيويورك، رقم القطعة <span dir="ltr">${g[4]}</span>. الصورة في الملكية العامة (CC0) ضمن برنامج الوصول المفتوح للمتحف. ${XL("https://www.metmuseum.org/art/collection/search/"+g[0],"صفحة القطعة في المتحف")}</p><div class="tools"><button class="chip" data-gal="${(i+GAL.length-1)%GAL.length}">→ السابقة</button><button class="chip" data-gal="${(i+1)%GAL.length}">التالية ←</button></div>`)}
+document.addEventListener("click",ev=>{const b=ev.target.closest("[data-gal]");if(b)openGal(+b.dataset.gal)});
+/* ---------------- جولة ثلاثية الأبعاد داخل الهرم الأكبر (v16) ---------------- */
+const T3STOPS=[
+ {id:"all",t:"الهرم كاملاً",p:[0,60,0],d:330,a:.7,e:.35,x:"بُني لخوفو نحو 2560 ق.م. طول ضلع قاعدته الأصلي نحو 230.3 متراً، وارتفاعه الأصلي نحو 146.6 متراً، وظل أعلى بناء صنعه الإنسان قرابة أربعة آلاف عام."},
+ {id:"ent",t:"المدخل الأصلي",p:[0,17,101],d:70,a:.25,e:.15,x:"في الواجهة الشمالية على ارتفاع نحو 17 متراً، وفوقه كتل ضخمة مائلة على هيئة الجمالون لتوزيع الثقل. ويدخل الزوار اليوم غالباً من «فتحة المأمون» الأدنى منه."},
+ {id:"desc",t:"الممر الهابط",p:[0,-5,50],d:110,a:1.2,e:.1,x:"ينحدر جنوباً بزاوية تقارب 26 درجة، ويخترق الصخر الطبيعي مسافة تزيد على مئة متر حتى الحجرة السفلية."},
+ {id:"sub",t:"الحجرة السفلية",p:[0,-30,0],d:60,a:.9,e:.2,x:"منحوتة في الصخر على عمق نحو 30 متراً تحت مستوى القاعدة، ولم تكتمل. ويرى كثير من الباحثين أن التصميم تغيّر أثناء البناء فانتقل الدفن إلى أعلى."},
+ {id:"asc",t:"الممر الصاعد",p:[0,9,50],d:70,a:1.1,e:.2,x:"يتفرع من الممر الهابط صاعداً جنوباً بالزاوية نفسها تقريباً، وسُدّ بعد الدفن بسدادات من الجرانيت ما زالت في موضعها."},
+ {id:"queen",t:"حجرة الملكة",p:[0,21,0],d:55,a:.8,e:.25,x:"تقع على محور الهرم، وسقفها جمالوني. وتسميتها تسمية حديثة، إذ يرجح أنها لم تكن لدفن ملكة. وفيها فتحتان ضيقتان استكشفتهما روبوتات في 1993 و2002 و2011."},
+ {id:"gal",t:"البهو العظيم",p:[0,30,14],d:60,a:1.3,e:.25,x:"ممر صاعد طوله نحو 47 متراً وارتفاعه نحو 8.6 أمتار، بسقف متدرج من الكتل المتراكبة. ويُعد من روائع العمارة الحجرية."},
+ {id:"king",t:"حجرة الملك",p:[0,46,-9],d:45,a:.6,e:.3,x:"مبنية كلها من الجرانيت الوردي المجلوب من أسوان، ومقاسها نحو 10.5 × 5.2 أمتار وارتفاعها نحو 5.8 أمتار، وفيها التابوت الجرانيتي الخالي."},
+ {id:"relief",t:"حجرات تخفيف الضغط",p:[0,56,-9],d:55,a:.4,e:.3,x:"خمس حجرات منخفضة فوق حجرة الملك، تخفف ثقل الحجارة عن سقفها. وفي أعلاها كتابات عمال البناء التي تذكر اسم خوفو."},
+ {id:"void",t:"الممر الشمالي المكتشف 2023",p:[0,22,98],d:55,a:.35,e:.2,x:"أعلن مشروع «مسح الأهرام» في 2 مارس 2023 عن ممر خلف كتل الجمالون فوق المدخل، طوله نحو 9 أمتار، كشفته تقنيات الميونات وصُوِّر بمنظار. ووُضع هنا في موضع تقريبي."}
+];
+let T3=null;
+function load3(){return new Promise((res,rej)=>{if(window.THREE)return res();const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";s.onload=res;s.onerror=rej;document.head.appendChild(s)})}
+async function renderTour3d(){const W=$("#t3wrap");if(!W)return;$("#t3stops").innerHTML=T3STOPS.map(s=>`<button class="chip${T3&&T3.stop===s.id?" on":""}" data-t3="${s.id}">${s.t}</button>`).join("");
+  if(T3){T3.resize();return}
+  try{await load3()}catch(e){W.innerHTML=`<div class="empty">تعذّر تحميل محرك العرض ثلاثي الأبعاد. تحقق من الاتصال بالإنترنت ثم أعد المحاولة.</div>`;return}
+  const THREE=window.THREE,cv=document.createElement("canvas");cv.className="t3c";W.innerHTML="";W.appendChild(cv);const lab=document.createElement("div");lab.className="t3lab";W.appendChild(lab);
+  let R;try{R=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true})}catch(e){W.innerHTML=`<div class="empty">متصفحك لا يدعم العرض ثلاثي الأبعاد (WebGL).</div>`;return}
+  R.setPixelRatio(Math.min(2,devicePixelRatio||1));const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(45,1,1,3000);
+  S.add(new THREE.AmbientLight(0xffffff,.65));const dl=new THREE.DirectionalLight(0xffffff,.7);dl.position.set(200,300,150);S.add(dl);
+  const H=146.6,B=115.15;const pg=new THREE.ConeGeometry(B*Math.SQRT2,H,4,1,true);pg.rotateY(Math.PI/4);pg.translate(0,H/2,0);
+  S.add(new THREE.Mesh(pg,new THREE.MeshLambertMaterial({color:0xd9b77a,transparent:true,opacity:.16,side:THREE.DoubleSide,depthWrite:false})));
+  S.add(new THREE.LineSegments(new THREE.EdgesGeometry(pg),new THREE.LineBasicMaterial({color:0xa97a1e})));
+  const ground=new THREE.Mesh(new THREE.PlaneGeometry(420,420),new THREE.MeshLambertMaterial({color:0xe8dcc0,transparent:true,opacity:.5,side:THREE.DoubleSide,depthWrite:false}));ground.rotation.x=-Math.PI/2;S.add(ground);
+  const box=(w,h,d,x,y,z,c,o=1)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),new THREE.MeshLambertMaterial({color:c,transparent:o<1,opacity:o}));m.position.set(x,y,z);S.add(m);return m};
+  const tube=(a,b,w,h,c)=>{const A=new THREE.Vector3(...a),Bv=new THREE.Vector3(...b),L=A.distanceTo(Bv);const m=box(w,h,L,0,0,0,c);m.position.copy(A.clone().add(Bv).multiplyScalar(.5));m.lookAt(Bv);return m};
+  const sl=Math.tan(26.5*Math.PI/180);
+  const E=[0,17,101.8],D1=[0,-30,101.8-47/sl],SUBc=[0,-30,-3];tube(E,D1,1.05,1.2,0x1d3c78);tube(D1,[0,-30,SUBc[2]+7],1,1,0x1d3c78);box(8.3,3.5,14,0,-28.3,SUBc[2],0x5c6b85);
+  const BR=[0,0,101.8-17/sl],A2=[0,17.5,BR[2]-17.5/sl];tube(BR,A2,1.05,1.2,0x0b7f80);const G2=[0,17.5+21,A2[2]-21/sl];tube(A2,G2,2.1,8.6,0xc8962e);
+  tube([0,21,A2[2]],[0,21,2.6],1.05,1.2,0x0b7f80);box(5.2,4.7,5.8,0,23.4,0,0x1f8a70);
+  box(10.5,5.8,5.2,0,46,-9,0xb5543a);tube([0,43.5,G2[2]],[0,43.5,-6.4],1.05,1.1,0xb5543a);for(let i=0;i<5;i++)box(10.5,1,5.2,0,51+i*3.2,-9,0x8c6a3f,.75);
+  tube([0,46,-6.4],[0,72,B*(1-72/H)],.3,.3,0x7d8796);tube([0,46,-11.6],[0,80,-B*(1-80/H)],.3,.3,0x7d8796);
+  box(2,2,9,0,22.5,95.5,0xe3b95c,.9);
+  const tgt=new THREE.Vector3(0,60,0);let dist=330,az=.7,el=.35,goal=null;
+  const place=()=>{C.position.set(tgt.x+dist*Math.cos(el)*Math.sin(az),tgt.y+dist*Math.sin(el),tgt.z+dist*Math.cos(el)*Math.cos(az));C.lookAt(tgt)};
+  const resize=()=>{const w=W.clientWidth,h=Math.max(300,Math.min(560,w*.75));R.setSize(w,h,false);cv.style.height=h+"px";C.aspect=w/h;C.updateProjectionMatrix()};
+  let drag=null,pinch=null;cv.addEventListener("pointerdown",e=>{drag={x:e.clientX,y:e.clientY};cv.setPointerCapture(e.pointerId);goal=null});
+  cv.addEventListener("pointermove",e=>{if(!drag||pinch)return;az-=(e.clientX-drag.x)*.008;el=Math.max(-.3,Math.min(1.45,el+(e.clientY-drag.y)*.006));drag={x:e.clientX,y:e.clientY}});
+  cv.addEventListener("pointerup",()=>drag=null);cv.addEventListener("wheel",e=>{e.preventDefault();dist=Math.max(25,Math.min(600,dist*(1+Math.sign(e.deltaY)*.1)));goal=null},{passive:false});
+  cv.addEventListener("touchmove",e=>{if(e.touches.length===2){e.preventDefault();const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);if(pinch)dist=Math.max(25,Math.min(600,dist*pinch/d));pinch=d}},{passive:false});cv.addEventListener("touchend",()=>pinch=null);
+  const go=id=>{const s=T3STOPS.find(x=>x.id===id);if(!s)return;goal={t:new THREE.Vector3(...s.p),d:s.d,a:s.a,e:s.e};T3.stop=id;$("#t3info").innerHTML=`<h3 style="margin:0">${s.t}</h3><p style="margin:0">${s.x}</p>`;document.querySelectorAll("#t3stops .chip").forEach(c=>c.classList.toggle("on",c.dataset.t3===id));lab.textContent=s.t};
+  let raf;const tick=()=>{if(!document.body.contains(cv))return;if($("#v-tour3d").hidden){raf=requestAnimationFrame(tick);return}if(goal){tgt.lerp(goal.t,.08);dist+=(goal.d-dist)*.08;az+=(goal.a-az)*.08;el+=(goal.e-el)*.08}place();R.render(S,C);raf=requestAnimationFrame(tick)};
+  T3={go,resize,stop:"all"};resize();addEventListener("resize",()=>T3&&T3.resize());go("all");tick()}
+document.addEventListener("click",ev=>{const b=ev.target.closest("[data-t3]");if(b&&T3)T3.go(b.dataset.t3)});
+/* ---------------- English guide (v16) ---------------- */
+const PAP_EN=["Wadi al-Jarf Papyri (Diary of Merer)","Abusir Papyri (Neferirkare temple archive)","Heqanakht Letters","Papyrus Prisse (Instruction of Ptahhotep)","Tale of the Shipwrecked Sailor","Papyrus Berlin 3022 (Tale of Sinuhe)","The Eloquent Peasant","Papyrus Berlin 3024 (Dialogue of a Man and His Ba)","Moscow Mathematical Papyrus","Kahun Gynaecological Papyrus","Papyrus Westcar","Edwin Smith Surgical Papyrus","Rhind Mathematical Papyrus","Ebers Medical Papyrus","Hearst Medical Papyrus","London Medical Papyrus","Papyrus Harris 500","Papyrus of Hunefer (Book of the Dead)","Papyrus of Ani (Book of the Dead)","Berlin Medical Papyrus","Chester Beatty Papyrus III (Dream Book)","Papyrus Sallier III (Kadesh Poem)","Papyrus Sallier I","Papyrus Anastasi I (Satirical Letter)","Turin King List (Royal Canon)","Papyrus Leiden I 344 (Admonitions of Ipuwer)","Papyrus Leiden I 350 (Hymns to Amun)","Papyrus d'Orbiney (Tale of Two Brothers)","Turin Strike Papyrus","Turin Judicial Papyrus (Harem Conspiracy)","Great Harris Papyrus (Papyrus Harris I)","Turin Papyrus Map","Papyrus Lansing","Chester Beatty Papyrus I","Wilbour Papyrus","Abbott Papyrus","Amherst–Leopold II Papyrus","Report of Wenamun","Greenfield Papyrus (Nestanebetisheru)","Instruction of Amenemope","Brooklyn Snakebite Papyrus","Elephantine Aramaic Papyri","Papyrus Bremner-Rhind","Papyrus Insinger (Demotic wisdom)"];
+const EN_SECT=[["#explore","Learning axes","The whole platform organised into learning paths."],["#unique","What made Egypt unique","Ten distinctive traits of the civilisation."],["#chrono","Timelines","Eras, kings, sciences and Egyptology on parallel timelines."],["#kings","Kings","Searchable catalogue of pharaohs with reign dates."],["#map","Map","Interactive map of sites, cities and museums."],["#sciences","Sciences","Seventeen branches: medicine, surgery, engineering, astronomy, mathematics, chemistry and more."],["#religion","Religion","Deities, beliefs, and the prophets associated with Egypt."],["#tawhid","Oneness of God","How Egyptian thought approached divine unity, with evidence and debate."],["#papyri","Papyri encyclopedia","44 numbered papyri (P-01 to P-44) with Arabic summaries and key passages."],["#books","Books and summaries","39 numbered books, from Herodotus and al-Baghdadi to modern scholarship."],["#story","A day in the life","Interactive stories of a scribe, a tomb builder and a farmer."],["#compare","Compare eras and battles","Ten eras and eleven battles on one timeline."],["#gallery","Image gallery","Public-domain photographs from The Metropolitan Museum of Art."],["#tour3d","3D tour","Explore the passages and chambers of the Great Pyramid."],["#glyphs","Learn hieroglyphs","Ten lessons, a sign dictionary, an editor and your name in a cartouche."],["#quiz","Quizzes","Daily challenge, levels, badges and class codes."],["#teacher","Teacher mode","Shared class quizzes and printable worksheets with answer keys."],["#search","Search and Ask the Priest","Search everything, or ask a question answered only from the platform."]];
+function renderEn(){const B=$("#enbody");if(!B)return;
+  B.innerHTML=`<div class="box"><p style="margin:0">Jumana of Ancient Egypt is an Arabic-first learning platform on ancient Egyptian civilisation. This English guide introduces its sections. Most detailed content is currently in Arabic; full English translations of the core sections are being added progressively.</p></div>
+  <h3>Sections</h3><div class="grid">${EN_SECT.map(s=>`<a class="box enlink" href="${s[0]}"><b>${s[1]}</b><span>${s[2]}</span></a>`).join("")}</div>
+  <h3>Eras of ancient Egypt</h3><div class="tbl"><table><thead><tr><th>Era</th><th>Dates (BC, approx.)</th><th>Dynasties</th></tr></thead><tbody>${ERAS.map(e=>`<tr><td>${e.en}</td><td class="num">${e.from}–${e.to}</td><td>${e.id==="pre"?"—":e.id==="ptol"?"Ptolemaic":e.dyn.replace(/[^0-9–]/g,"")}</td></tr>`).join("")}</tbody></table></div>
+  <h3>Numbered papyri</h3><ol class="enlist">${PAP.map((p,i)=>`<li><a href="#papyri" data-ppjump="${p.n}"><b class="num">P-${String(i+1).padStart(2,"0")}</b> ${PAP_EN[i]||""}</a> <span class="meta">${/[A-Za-z]/.test(p.inv)?p.inv:""}</span></li>`).join("")}</ol>
+  <h3>Books</h3><ol class="enlist">${BOOKS.filter(b=>b.o).map(b=>`<li><a href="#books" data-bkjump="${b.n}"><i>${b.o}</i></a></li>`).join("")}</ol>
+  <p class="meta">Images: The Metropolitan Museum of Art, Open Access (CC0). Sources for each item are listed in the Arabic sections.</p>`}
+
 let PIDX=null;
 function askPriest(){const q=($("#aq").value||"").trim(),O=$("#aout");if(q.length<3){O.innerHTML="";return}
   const stop=new Set(["ما","من","هل","كيف","لماذا","متى","اين","أين","هو","هي","في","عن","على","الى","إلى","مع","التي","الذي","ماذا","كان","كانت","و","او","أو","ذلك","هذا","هذه","لي","عند","قدماء","المصريين","المصريون","مصر"]);
@@ -2867,8 +2974,8 @@ document.addEventListener("click",ev=>{
 });
 
 /* ---------------- router ---------------- */
-const VIEWS=["home","explore","unique","tawhid","library","papyri","books","story","compare","teacher","egyptology","chrono","sciences","religion","world","origins","timeline","kings","map","gods","topics","glyphs","quiz","search","about","admin"];
-const R={home:renderHome,unique:renderUnique,tawhid:renderTawhid,library:renderLibrary,papyri:()=>{renderPapyri();renderHall()},books:renderBooks,story:renderStory,compare:renderCompare,teacher:renderTeacher,egyptology:renderEgyptology,explore:renderAxes,chrono:renderChrono,sciences:renderSciences,religion:renderReligion,world:renderWorld,search:renderSearch,about:renderAbout,origins:()=>{renderOrigins();renderStations()},timeline:renderTimeline,kings:renderKings,map:renderMap,gods:renderGods,topics:renderTopics,glyphs:()=>{renderGlyphs();renderLearn();renderHEditor();renderHDict();renderName()},quiz:()=>{renderQuiz();renderProfile();renderBoard();renderDaily()},admin:renderAdmin};
+const VIEWS=["home","explore","unique","tawhid","library","papyri","books","story","compare","teacher","gallery","tour3d","en","egyptology","chrono","sciences","religion","world","origins","timeline","kings","map","gods","topics","glyphs","quiz","search","about","admin"];
+const R={home:renderHome,unique:renderUnique,tawhid:renderTawhid,library:renderLibrary,papyri:()=>{renderPapyri();renderHall()},books:renderBooks,story:renderStory,compare:renderCompare,teacher:renderTeacher,gallery:renderGallery,tour3d:renderTour3d,en:renderEn,egyptology:renderEgyptology,explore:renderAxes,chrono:renderChrono,sciences:renderSciences,religion:renderReligion,world:renderWorld,search:renderSearch,about:renderAbout,origins:()=>{renderOrigins();renderStations()},timeline:renderTimeline,kings:renderKings,map:renderMap,gods:renderGods,topics:renderTopics,glyphs:()=>{renderGlyphs();renderLearn();renderHEditor();renderHDict();renderName()},quiz:()=>{renderQuiz();renderProfile();renderBoard();renderDaily()},admin:renderAdmin};
 function current(){const h=location.hash.slice(1);return VIEWS.includes(h)?h:"home"}
 function route(){
   const v=current();closeModal();VIEWS.forEach(n=>{document.getElementById("v-"+n).hidden=n!==v});
