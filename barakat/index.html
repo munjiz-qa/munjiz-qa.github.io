@@ -221,6 +221,7 @@ input[type=checkbox]{width:20px!important;height:20px;accent-color:var(--acc)}
   .tbl.cards td::before{content:none!important}
   .tbl{overflow:visible;border:1px solid #ccc}
 }
+body.busy{cursor:progress}body.busy .btn,body.busy button{pointer-events:none;opacity:.65}
 </style>
 </head>
 <body>
@@ -261,6 +262,58 @@ const store={
 };
 let db=null;
 const save=()=>store.set(KEY,JSON.stringify(db));
+/* ---------- cloud: قاعدة بيانات بركات السحابية (Supabase) ----------
+   على الموقع المنشور (https) تُنفَّذ كل عملية في خادم بركات وتُحفظ في قاعدة البيانات، ويرى العميل بياناته وحده.
+   نسخة الكمبيوتر والتجربة المحلية (أو ?local=1) تبقى على هذا الجهاز كما كانت. */
+const CLOUD_CFG={url:'',key:''};
+const CLOUD=(()=>{try{return !!CLOUD_CFG.url&&(location.protocol==='https:'||/[?&]cloud=1(&|$)/.test(location.search))&&!/[?&]local=1(&|$)/.test(location.search)}catch(e){return false}})();
+const AKEY='barakat_auth';
+let auth=null;try{auth=JSON.parse(store.get(AKEY)||'null')}catch(e){auth=null}
+function setAuth(s){auth=s&&s.access_token?{access_token:s.access_token,refresh_token:s.refresh_token,expires_at:s.expires_at||Math.floor(Date.now()/1000)+(+s.expires_in||3600)}:null;if(auth)store.set(AKEY,JSON.stringify(auth));else store.del(AKEY)}
+let refreshing=null;
+async function token(){if(!auth)return null;if(auth.expires_at*1000-60000>Date.now())return auth.access_token;
+  refreshing=refreshing||fetch(CLOUD_CFG.url+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{apikey:CLOUD_CFG.key,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:auth.refresh_token})})
+    .then(async r=>{if(!r.ok)throw 0;setAuth(await r.json())}).catch(()=>setAuth(null)).finally(()=>{refreshing=null});
+  await refreshing;return auth?auth.access_token:null}
+function emptyDb(){return {v:1,seq:0,users:[],tx:[],reqs:[],cash:[],dist:[],policies:[],claims:[],msgs:[],fundOut:[],notes:[],log:[],funds:{zakat:0,sadaqa:0,waqf:0,qard:0,takaful:0,takafulFee:0},
+  settings:{murabahaRate:5,ijaraRate:5.5,musharakaRate:5,mudaribShare:30,goldPrice:245,qardMax:20000,minDown:20,takafulFee:20}}}
+function applyState(s){if(!s||!s.db)return;db=s.db;db.online=true;normDb();if(s.me)store.set(SKEY,s.me);else store.del(SKEY)}
+async function cloud(op,name,data,btn){const t=await token();let r,j;
+  try{r=await fetch(CLOUD_CFG.url+'/functions/v1/barakat-api',{method:'POST',headers:{'Content-Type':'application/json',apikey:CLOUD_CFG.key,...(t?{Authorization:'Bearer '+t}:{})},body:JSON.stringify({op,name,data:data||{},btn:btn||null})});j=await r.json()}
+  catch(e){throw new Error('تعذّر الاتصال بخادم بركات. تحقق من الإنترنت ثم أعد المحاولة.')}
+  if('session' in j)setAuth(j.session);if(j.state)applyState(j.state);
+  if(!r.ok||j.error)throw new Error(j.error||'تعذّر تنفيذ العملية، أعد المحاولة.');return j}
+function runFx(fx){(fx||[]).forEach(([k,v])=>{if(k==='toast')toast(v);else if(k==='dialog')dialog(v);else if(k==='close')closeDlg();else if(k==='go')go(v);else if(k==='render')render()})}
+let busy=0;
+async function cloudRun(op,name,data,btn){if(busy)return;busy=1;document.body.classList.add('busy');
+  try{const j=await cloud(op,name,data,btn);runFx(j.fx)}finally{busy=0;document.body.classList.remove('busy')}}
+function markSeen(){if(CLOUD)cloud('sys','seen').catch(()=>{});else save()}
+async function cloudRefresh(){if(busy||document.hidden||!db)return;const before=JSON.stringify(db);try{await cloud('sys','state')}catch(e){return}
+  const a=document.activeElement,d=$('#dlg');if(JSON.stringify(db)===before||(d&&d.open)||(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)))return;render()}
+async function cloudInit(){
+  ['move','transfer','cash','fin','settle','give','claim','contact','decide','dist','fundout','settings','reply','cashreject','claimreject']
+    .forEach(n=>{FORMS[n]=(f,btn)=>cloudRun('form',n,f,btn)});
+  ['doTransfer','accept','decline','pay','tkjoin','tkpay','notesClear','cashok','cashno','ustat','doDist','claimok','claimno','msgclose']
+    .forEach(n=>{ACTS[n]=b=>cloudRun('act',n,{...b.dataset})});
+  FORMS.login=f=>cloudRun('sys','login',{id:f.id,pw:f.pw});
+  FORMS.register=f=>cloudRun('sys','register',f);
+  FORMS.pw=f=>cloudRun('sys','pw',f);
+  FORMS.zakatpay=f=>cloudRun('form','zakatpay',{...f,due:$('#zk').dataset.due});
+  ACTS.resetpw=b=>cloudRun('sys','resetpw',{id:b.dataset.id});
+  ACTS.tkcancel=b=>{const id=b.dataset.id;if(ACTS.tkcancel.armed!==id){ACTS.tkcancel.armed=id;toast('اضغط «إلغاء» مرة أخرى للتأكيد');setTimeout(()=>ACTS.tkcancel.armed=null,5000);return}
+    ACTS.tkcancel.armed=null;return cloudRun('act','tkcancel',{id,ok:'1'})};
+  ACTS.reset=()=>{if(!confirmReset())return;return cloudRun('sys','reset')};
+  ACTS.logout=async()=>{try{await cloud('sys','logout')}catch(e){}setAuth(null);store.del(SKEY);try{await cloud('sys','state')}catch(e){}toast('تم تسجيل الخروج');go('#/')};
+  const bk=ACTS.backup;ACTS.backup=()=>{bk();cloud('sys','markBackup').catch(()=>{})};
+  ACTS.restoreOk=()=>{const x=ACTS.restore.pending;if(!x)return closeDlg();ACTS.restore.pending=null;return cloudRun('sys','restore',x)};
+  const fn=$('#footNote');if(fn)fn.textContent='© بركات · متصل بقاعدة بيانات سحابية آمنة، وحسابك متاح من أي جهاز';
+  const v=$('#view');if(v&&!db)v.innerHTML='<div class="card empty">جارٍ تحميل بركات…</div>';
+  try{await cloud('sys','state')}catch(e){if(!db){db=emptyDb();store.del(SKEY)}toast(e.message)}
+  render();
+  setInterval(cloudRefresh,45000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)cloudRefresh()});
+  if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+
 
 /* ---------- formats (unified everywhere) ---------- */
 const CUR='ر.ق';
@@ -567,7 +620,7 @@ P.terms=()=>`${pageH('الشروط والخصوصية','ملخص الشروط ا
    <li>نجمع البيانات اللازمة لتقديم الخدمة فقط: الاسم والجوال والبريد ورقم الهوية وسجل المعاملات.</li>
    <li>لا نبيع بياناتك ولا نشاركها مع أي جهة إلا بأمر نظامي.</li>
    <li>كلمات المرور محفوظة مشفّرة ولا يطّلع عليها أحد.</li>
-   <li>في هذا النموذج تبقى البيانات على جهازك وحده، في المتصفح أو في ملف نسخة الكمبيوتر.</li>
+   <li>${CLOUD?'تُحفظ بيانات الحسابات في قاعدة بيانات سحابية محمية، لا يقرأ فيها العميل إلا بياناته، ولا تُنفَّذ أي عملية مالية إلا عبر خادم بركات.':'في هذا النموذج تبقى البيانات على جهازك وحده، في المتصفح أو في ملف نسخة الكمبيوتر.'}</li>
    <li>لك أن تطلب تصحيح بياناتك أو إغلاق حسابك عبر <a href="#/p/contact">نموذج التواصل</a>.</li></ul></div></div>`;
 function vLogin(){
   return `<div class="auth card"><h2 style="font-size:22px">الدخول إلى حسابك</h2><p class="sub" style="margin-bottom:16px">للعملاء والإدارة.</p>
@@ -764,7 +817,7 @@ function contractBox(r){
 }
 C.invest=u=>{
   const prof=db.tx.filter(t=>t.uid===u.id&&t.type==='profit').slice().reverse();
-  const pool=db.users.reduce((a,x)=>a+x.bal.invest,0);
+  const pool=db.poolTotal!=null?db.poolTotal:db.users.reduce((a,x)=>a+x.bal.invest,0);
   return `<div class="stack"><div class="head"><div><h2>الاستثمار بالمضاربة</h2><p class="sub">وعاء استثماري مشترك يدار في أنشطة حلال، ويوزع ربحه الفعلي دورياً.</p></div><a class="btn" href="#/c/accounts">إيداع في الاستثمار</a></div>
   <div class="grid g3">
    <div class="card kpi"><span>رصيدك الاستثماري</span><b>${money(u.bal.invest)}</b></div>
@@ -828,7 +881,7 @@ C.takaful=u=>{
    cl.map(x=>{const pl=db.policies.find(y=>y.id===x.pid);return [`<span dir="ltr">${x.id}</span>`,fdate(x.at),pl?PLANS[pl.plan].name:'—',esc(x.desc),money(x.amt),`<span class="tag ${CLST[x.status][1]}">${CLST[x.status][0]}</span>${x.note?`<br><small class="sub">${esc(x.note)}</small>`:''}`]}),'لا توجد مطالبات.')}</div>`;
 };
 C.help=u=>{
-  const mine=db.msgs.filter(m=>m.uid===u.id).slice().reverse();let ch=false;mine.forEach(m=>{if(m.status==='replied'&&!m.seen){m.seen=true;ch=true}});if(ch)save();
+  const mine=db.msgs.filter(m=>m.uid===u.id).slice().reverse();let ch=false;mine.forEach(m=>{if(m.status==='replied'&&!m.seen){m.seen=true;ch=true}});if(ch)markSeen();
   return `<div class="stack"><div class="head"><div><h2>المساعدة والدعم</h2><p class="sub">أرسل استفسارك أو شكواك، وتجد رد فريقنا هنا.</p></div><a href="#/p/faq">الأسئلة الشائعة</a></div>
   <div class="card"><form data-form="contact"><input type="hidden" name="name" value="${esc(u.name)}"><input type="hidden" name="email" value="${esc(u.email)}"><input type="hidden" name="phone" value="${u.phone}"><div class="f">
    <label>الموضوع<select name="subject"><option>استفسار عام</option><option>التمويل</option><option>الاستثمار</option><option>التكافل</option><option>الإيداع والسحب</option><option>الزكاة والصدقات</option><option>شكوى</option><option>اقتراح</option></select></label>
@@ -841,7 +894,7 @@ C.notes=u=>{const l=db.notes.filter(n=>n.to===u.id).slice().reverse();
   const html=`<div class="stack"><div class="head"><div><h2>الإشعارات</h2><p class="sub">كل ما يخص حسابك من قرارات وتحديثات.</p></div>${l.length?'<button class="btn sm ghost" data-act="notesClear">حذف المقروءة</button>':''}</div>
   ${due(u)}
   <div class="stack notes">${l.length?l.map(n=>`<a class="card ${n.seen?'':'unseen'}" href="${esc(n.link||'#/c/home')}" style="text-decoration:none;color:inherit"><span class="dot" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg></span><span><b style="font-weight:${n.seen?500:700}">${esc(n.text)}</b><br><small class="sub">${fdt(n.at)}</small></span></a>`).join(''):'<div class="card empty">لا توجد إشعارات بعد.</div>'}</div></div>`;
-  l.forEach(n=>n.seen=true);save();return html};
+  l.forEach(n=>n.seen=true);markSeen();return html};
 function due(u){const out=[];db.reqs.filter(r=>r.uid===u.id&&r.status==='active').forEach(r=>{const s=nextDue(r);if(!s)return;const days=Math.ceil((new Date(s.due)-Date.now())/864e5);
   if(days<=7)out.push(`<div class="note ${days<0?'bad':'warn'}"><b>${days<0?'قسط متأخر':'قسط قريب'}:</b> ${money(s.amt)} على ${PRODUCTS[r.product].name} ${days<0?'كان مستحقاً في':'يستحق في'} ${fdate(s.due)}. <a href="#/c/finance/${r.id}">سدّد الآن</a></div>`)});return out.join('')}
 C.profile=u=>`<div class="stack"><div class="head"><h2>ملفي</h2></div>
@@ -993,7 +1046,7 @@ A.settings=()=>{const s=db.settings;
   </div><div style="margin-top:14px"><button class="btn">حفظ الإعدادات</button></div></form></div>
   <div class="card"><h3>النسخ الاحتياطي والاستعادة</h3><p class="sub" style="margin-bottom:10px">احفظ نسخة كاملة من بيانات النظام في ملف على جهازك، واستعدها متى شئت أو انقلها إلى جهاز آخر. يُنصح بحفظ نسخة في نهاية كل يوم عمل.</p><div class="row"><button class="btn" data-act="backup">حفظ نسخة احتياطية</button><button class="btn ghost" data-act="restore">استعادة من نسخة</button></div><input type="file" id="restoreFile" accept=".json,application/json" hidden>
   <!--SRVINFO--><p class="sub" style="margin-top:10px">${db.lastBackup?`آخر نسخة محفوظة: ${fdt(db.lastBackup)}`:'لم تُحفظ أي نسخة بعد.'}</p></div>
-  <div class="card"><h3>بيانات التجربة</h3><p class="sub" style="margin-bottom:10px">تعيد النظام إلى بياناته الأولى على هذا الجهاز.</p><button class="btn bad" data-act="reset">إعادة ضبط بيانات التجربة</button></div></div>`;
+  <div class="card"><h3>بيانات التجربة</h3><p class="sub" style="margin-bottom:10px">${CLOUD?'تعيد قاعدة البيانات إلى بيانات التجربة الأولى، وتبقى حسابات العملاء المسجلين بأرصدة صفرية.':'تعيد النظام إلى بياناته الأولى على هذا الجهاز.'}</p><button class="btn bad" data-act="reset">إعادة ضبط بيانات التجربة</button></div></div>`;
 };
 const monthKey=d=>{const x=new Date(d);return x.getFullYear()+'-'+pad(x.getMonth()+1)};
 function compliance(){const sl=db.reqs.filter(r=>['sale','lease'].includes(PRODUCTS[r.product].kind)&&['offer','active','completed'].includes(r.status));
@@ -1062,26 +1115,26 @@ const FORMS={
     need(avail(u)>=a,'الرصيد المتاح غير كافٍ.');
     dialog(`<h3>تأكيد التحويل</h3><div class="split"><span>إلى</span><b style="direction:rtl">${esc(to.name)}</b></div><div class="split"><span>رقم الحساب</span><b>${to.acct}</b></div><div class="split"><span>المبلغ</span><b>${money(a)}</b></div><div class="split"><span>الرسوم</span><b>${money(0)}</b></div>
      <div class="row" style="margin-top:16px"><button class="btn" data-act="doTransfer" data-id="${to.id}" data-v="${a}" data-n="${esc(f.note)}">تأكيد</button><button class="btn ghost" data-act="close">إلغاء</button></div>`)},
-  cash(f){const u=me();need(u.status==='active','الحساب غير مفعّل.');const a=r2(+f.amt);need(a>=10,'أقل مبلغ 10.00 '+CUR);
+  cash(f){const u=me();need(u.status==='active','الحساب غير مفعّل.');need(['deposit','withdraw'].includes(f.kind),'نوع الطلب غير صحيح.');const a=r2(+f.amt);need(a>=10,'أقل مبلغ 10.00 '+CUR);
     if(f.kind==='withdraw')need(avail(u)>=a,'الرصيد المتاح غير كافٍ.');
     db.cash.push({id:uid('c'),uid:u.id,kind:f.kind,amt:a,method:f.method,ref:f.ref.trim(),status:'pending',at:now()});
     logA(`طلب ${f.kind==='deposit'?'إيداع':'سحب'} ${money(a)}`);save();toast('أُرسل الطلب، وسيُنفذ بعد التحقق.');render()},
-  fin(f){const u=me();need(u.status==='active','الحساب غير مفعّل.');const s=db.settings;
+  fin(f){const u=me();need(u.status==='active','الحساب غير مفعّل.');const s=db.settings;need(Object.hasOwn(PRODUCTS,f.product),'صيغة تمويل غير معروفة.');need(Number.isInteger(+f.term)&&+f.term>=1&&+f.term<=360,'مدة التمويل غير صحيحة.');
     const a=+f.amount;need(a>=500,'أقل مبلغ 500.00 '+CUR);
     if(f.product==='qard')need(a<=s.qardMax,`الحد الأعلى للقرض الحسن ${money(s.qardMax)}.`);
     if(f.product==='musharaka')need(+f.down>=s.minDown,`أدنى حصة أولى ${s.minDown}%.`);
     need(f.asset.trim().length>=3,'صف الأصل أو الغرض.');
     const r=newReq(u,f.product,{amount:a,term:f.term,down:f.down,share:f.share,asset:f.asset.trim(),purpose:f.purpose.trim()});
     logA(`طلب ${PRODUCTS[f.product].name} ${r.id} بمبلغ ${money(a)}`);save();toast('أُرسل طلبك للمراجعة');go('#/c/finance/'+r.id)},
-  settle(f){const u=me();const r=db.reqs.find(x=>x.id===f.id&&x.uid===u.id&&x.status==='active');need(r,'العقد غير متاح.');
+  settle(f){const u=me();const r=db.reqs.find(x=>x.id===f.id&&x.uid===u.id&&x.status==='active'&&x.product==='mudaraba');need(r,'العقد غير متاح.');
     const p=r2(+f.profit);need(p>=-r.amount,'الخسارة لا تتجاوز رأس المال.');
     const pay=p>=0?r2(r.amount+p*r.bankShare/100):r2(r.amount+p);
     need(avail(u)>=pay,`يلزم رصيد ${money(pay)} في الحساب الجاري.`);
     addTx(u,'current',-pay,'installment',`تسوية مضاربة ${r.id}: رأس المال ${p>=0?'وحصة الربح':'بعد خصم الخسارة'}`);r.status='completed';r.settled={profit:p,paid:pay,at:now()};
     logA(`تسوية مضاربة ${r.id} بربح ${money(p)}`);save();toast('تمت التسوية');render()},
-  zakatpay(f){const u=me();const due=+$('#zk').dataset.due;need(due>0,'لا زكاة مستحقة.');need(avail(u)>=due,'الرصيد الجاري غير كافٍ.');
+  zakatpay(f){const u=me();need(u.status==='active','الحساب غير مفعّل.');const due=r2(+(f.due!=null?f.due:$('#zk').dataset.due));need(due>0,'لا زكاة مستحقة.');need(avail(u)>=due,'الرصيد الجاري غير كافٍ.');
     addTx(u,'current',-due,'zakat','زكاة المال · توكيل بالتوزيع');db.funds.zakat=r2(db.funds.zakat+due);logA(`إخراج زكاة ${money(due)}`);save();toast('تقبّل الله زكاتك');render()},
-  give(f){const u=me();const a=r2(+f.amt);need(a>0,'أدخل مبلغاً صحيحاً.');need(avail(u)>=a,'الرصيد غير كافٍ.');
+  give(f){const u=me();need(u.status==='active','الحساب غير مفعّل.');need(['sadaqa','waqf'].includes(f.kind),'نوع التبرع غير صحيح.');const a=r2(+f.amt);need(a>0,'أدخل مبلغاً صحيحاً.');need(avail(u)>=a,'الرصيد غير كافٍ.');
     addTx(u,'current',-a,f.kind,f.kind==='waqf'?'مساهمة في الوقف النقدي':'صدقة');db.funds[f.kind]=r2(db.funds[f.kind]+a);logA(`${f.kind==='waqf'?'وقف':'صدقة'} ${money(a)}`);save();toast('جزاك الله خيراً');render()},
   async pw(f){const u=me();need(u.pass===await hash(f.old,u.salt),'كلمة المرور الحالية غير صحيحة.');u.pass=await hash(f.pw,u.salt);logA('تغيير كلمة المرور');save();toast('حُفظت كلمة المرور الجديدة');render()},
   decide(f,btn){const r=db.reqs.find(x=>x.id===f.id&&x.status==='pending');need(r,'الطلب لم يعد قيد المراجعة.');
@@ -1098,15 +1151,15 @@ const FORMS={
     dialog(`<h3>معاينة التوزيع · ${esc(f.period)}</h3><div class="split"><span>الوعاء</span><b>${money(pool)}</b></div><div class="split"><span>صافي الربح</span><b>${money(gross)}</b></div><div class="split"><span>حصة المضارب</span><b>${money(mud)}</b></div><div class="split"><span>للمودعين</span><b>${money(net)}</b></div>
      <div style="max-height:220px;overflow:auto;margin-top:10px">${inv.map(u=>`<div class="split"><span>${esc(u.name)}</span><b>${money(r2(net*u.bal.invest/pool))}</b></div>`).join('')}</div>
      <div class="row" style="margin-top:16px"><button class="btn" data-act="doDist" data-id="${esc(f.period)}" data-v="${gross}">اعتماد التوزيع</button><button class="btn ghost" data-act="close">إلغاء</button></div>`)},
-  fundout(f){const a=r2(+f.amt);need(a>0,'أدخل مبلغاً.');need(db.funds[f.fund]>=a,'رصيد الصندوق غير كافٍ.');
+  fundout(f){need(Object.hasOwn(FUNDS,f.fund),'صندوق غير معروف.');const a=r2(+f.amt);need(a>0,'أدخل مبلغاً.');need(db.funds[f.fund]>=a,'رصيد الصندوق غير كافٍ.');
     db.funds[f.fund]=r2(db.funds[f.fund]-a);(db.fundOut=db.fundOut||[]).push({at:now(),fund:f.fund,to:f.to,note:f.note.trim(),amt:a});
     logA(`صرف ${money(a)} من ${FUNDS[f.fund]} إلى ${f.to}`);save();toast('سُجل الصرف');render()},
-  settings(f){const s=db.settings;for(const k in s){if(f[k]!==undefined&&f[k]!=='')s[k]=+f[k]}logA('تحديث الإعدادات');save();toast('حُفظت الإعدادات');render()}
+  settings(f){const s=db.settings;for(const k in s){if(f[k]!==undefined&&f[k]!==''&&Number.isFinite(+f[k])&&+f[k]>=0)s[k]=+f[k]}logA('تحديث الإعدادات');save();toast('حُفظت الإعدادات');render()}
 };
 const ACTS={
   logout(){const u=me();if(u)logA('تسجيل خروج',u.name);store.del(SKEY);save();toast('تم تسجيل الخروج');go('#/')},
   close(){closeDlg()},
-  doTransfer(b){const u=me(),to=userById(b.dataset.id),a=+b.dataset.v;need(avail(u)>=a,'الرصيد غير كافٍ.');
+  doTransfer(b){const u=me(),to=userById(b.dataset.id),a=r2(+b.dataset.v);need(u.status==='active','الحساب غير مفعّل.');need(to&&to.role==='customer'&&to.id!==u.id&&to.status!=='frozen','المستفيد غير متاح.');need(a>0,'أدخل مبلغاً صحيحاً.');need(avail(u)>=a,'الرصيد غير كافٍ.');
     const n=b.dataset.n?' · '+b.dataset.n:'';
     addTx(u,'current',-a,'transfer',`تحويل إلى ${to.name}${n}`);addTx(to,'current',a,'transfer',`تحويل من ${u.name}${n}`);notify(to.id,`وصلك تحويل بمبلغ ${money(a)} من ${u.name}.`,'#/c/accounts');
     logA(`تحويل ${money(a)} إلى ${to.acct}`);save();closeDlg();toast('تم التحويل بنجاح');render()},
@@ -1116,7 +1169,7 @@ const ACTS={
     if(r.product==='mudaraba')addTx(u,'current',r.amount,'finance',`رأس مال مضاربة ${r.id}`);
     r.status='active';r.accepted=now();r.schedule=buildSchedule(r,now());logA(`قبول عقد ${r.id}`);save();toast('تم إبرام العقد');render()},
   decline(b){const u=me();const r=db.reqs.find(x=>x.id===b.dataset.id&&x.uid===u.id&&x.status==='offer');need(r,'العرض غير متاح.');r.status='cancelled';logA(`اعتذار العميل عن ${r.id}`);save();toast('أُلغي العرض');render()},
-  pay(b){const u=me();const r=db.reqs.find(x=>x.id===b.dataset.id&&x.uid===u.id);const s=nextDue(r);need(s,'لا أقساط مستحقة.');
+  pay(b){const u=me();const r=db.reqs.find(x=>x.id===b.dataset.id&&x.uid===u.id&&x.status==='active');need(r,'العقد غير متاح.');const s=nextDue(r);need(s,'لا أقساط مستحقة.');
     need(avail(u)>=s.amt,`الرصيد المتاح ${money(avail(u))} لا يكفي للقسط.`);
     addTx(u,'current',-s.amt,'installment',`قسط ${s.n} · ${PRODUCTS[r.product].name}`);s.paid=true;s.paidAt=now();
     if(r.product==='qard')db.funds.qard=r2(db.funds.qard+s.amt);
@@ -1129,10 +1182,10 @@ const ACTS={
     logA(`تنفيذ ${c.kind==='deposit'?'إيداع':'سحب'} ${money(c.amt)} لـ${u.name}`);save();toast('تم التنفيذ');render()},
   cashno(b){const c=db.cash.find(x=>x.id===b.dataset.id&&x.status==='pending');need(c,'الطلب معالج.');
     dialog(`<h3>رفض الطلب</h3><form data-form="cashreject"><input type="hidden" name="id" value="${c.id}"><div class="f"><label>السبب<input name="note" required maxlength="100"></label><div class="row"><button class="btn bad">رفض</button><button type="button" class="btn ghost" data-act="close">إلغاء</button></div></div></form>`)},
-  ustat(b){const c=userById(b.dataset.id);c.status=b.dataset.v;notify(c.id,c.status==='active'?'فُعّل حسابك، ويمكنك الآن استخدام كل الخدمات.':'أُوقف حسابك مؤقتاً. تواصل معنا لمعرفة السبب.','#/c/home');logA(`${c.status==='active'?'تفعيل':'إيقاف'} حساب ${c.name}`);save();toast(c.status==='active'?'فُعّل الحساب':'أُوقف الحساب');render()},
+  ustat(b){const c=userById(b.dataset.id);need(c&&c.role==='customer'&&['active','frozen'].includes(b.dataset.v),'طلب غير صحيح.');c.status=b.dataset.v;notify(c.id,c.status==='active'?'فُعّل حسابك، ويمكنك الآن استخدام كل الخدمات.':'أُوقف حسابك مؤقتاً. تواصل معنا لمعرفة السبب.','#/c/home');logA(`${c.status==='active'?'تفعيل':'إيقاف'} حساب ${c.name}`);save();toast(c.status==='active'?'فُعّل الحساب':'أُوقف الحساب');render()},
   async resetpw(b){const c=userById(b.dataset.id);const p='BR'+Math.random().toString().slice(2,8)+'@';c.pass=await hash(p,c.salt);logA(`إعادة تعيين كلمة مرور ${c.name}`);save();
     dialog(`<h3>كلمة المرور المؤقتة</h3><p>أبلغ العميل بها عبر قناة موثوقة:</p><p style="font-size:22px;font-weight:700;direction:ltr;text-align:center;margin:12px 0">${p}</p><button class="btn" data-act="close">تم</button>`)},
-  doDist(b){const gross=+b.dataset.v,period=b.dataset.id;const inv=db.users.filter(u=>u.role==='customer'&&u.bal.invest>0);const pool=r2(inv.reduce((a,u)=>a+u.bal.invest,0));
+  doDist(b){const gross=r2(+b.dataset.v),period=String(b.dataset.id||'').slice(0,60);const inv=db.users.filter(u=>u.role==='customer'&&u.bal.invest>0);const pool=r2(inv.reduce((a,u)=>a+u.bal.invest,0));need(Number.isFinite(gross)&&gross!==0&&pool>0&&gross>-pool,'بيانات التوزيع غير صحيحة.');
     const mud=gross>0?r2(gross*db.settings.mudaribShare/100):0,net=r2(gross-mud);
     inv.forEach(u=>{const sh=r2(net*u.bal.invest/pool);if(sh){addTx(u,'invest',sh,'profit',`${sh>0?'حصتك من ربح':'حصتك من خسارة'} وعاء المضاربة · ${period}`);notify(u.id,`وُزّعت نتيجة وعاء المضاربة (${period})، وحصتك ${money(sh)}.`,'#/c/invest')}});
     db.dist.push({id:uid('p'),at:now(),period,gross,mud,net,pool,by:me().name});logA(`توزيع ${gross>0?'ربح':'خسارة'} المضاربة ${period}: ${money(gross)}`);save();closeDlg();toast('اعتُمد التوزيع');render()},
@@ -1152,11 +1205,11 @@ FORMS.claim=f=>{const u=me();need(u.status==='active','الحساب غير مف�
   const c={id:'K-'+(++db.seq),uid:u.id,pid:pl.id,amt:a,desc:f.desc.trim(),status:'pending',at:now()};db.claims.push(c);logA(`مطالبة تكافل ${c.id} بمبلغ ${money(a)}`);save();toast('أُرسلت المطالبة للمراجعة');render()};
 FORMS.claimreject=f=>{const c=db.claims.find(x=>x.id===f.id&&x.status==='pending');need(c,'المطالبة معالجة.');c.status='rejected';c.note=f.note.trim();c.decided=now();notify(c.uid,`لم تُقبل مطالبة التكافل ${c.id}: ${c.note}`,'#/c/takaful');logA(`رفض مطالبة ${c.id}`);save();closeDlg();toast('رُفضت المطالبة');render()};
 Object.assign(ACTS,{
-  tkjoin(b){const u=me();need(u.status==='active','الحساب غير مفعّل.');const k=b.dataset.id;need(PLANS[k],'برنامج غير معروف.');need(!db.policies.some(x=>x.uid===u.id&&x.plan===k&&x.status==='active'),'أنت مشترك في هذا البرنامج.');
+  tkjoin(b){const u=me();need(u.status==='active','الحساب غير مفعّل.');const k=b.dataset.id;need(Object.hasOwn(PLANS,k),'برنامج غير معروف.');need(!db.policies.some(x=>x.uid===u.id&&x.plan===k&&x.status==='active'),'أنت مشترك في هذا البرنامج.');
     const pl={id:'T-'+(++db.seq),uid:u.id,plan:k,start:now(),paidThrough:now(),status:'active'};contribute(u,pl);db.policies.push(pl);logA(`اشتراك في ${PLANS[k].name} ${pl.id}`);save();toast('تم الاشتراك، وأنت مغطى حتى '+fdate(pl.paidThrough));render()},
   tkpay(b){const u=me();const pl=db.policies.find(x=>x.id===b.dataset.id&&x.uid===u.id&&x.status==='active');need(pl,'الاشتراك غير متاح.');contribute(u,pl);logA(`سداد اشتراك ${pl.id}`);save();toast('سُدد الاشتراك، والتغطية حتى '+fdate(pl.paidThrough));render()},
   tkcancel(b){const u=me();const pl=db.policies.find(x=>x.id===b.dataset.id&&x.uid===u.id&&x.status==='active');need(pl,'الاشتراك غير متاح.');need(!db.claims.some(c=>c.pid===pl.id&&c.status==='pending'),'لا يمكن الإلغاء وعليه مطالبة قيد المراجعة.');
-    if(ACTS.tkcancel.armed!==pl.id){ACTS.tkcancel.armed=pl.id;toast('اضغط «إلغاء» مرة أخرى للتأكيد');setTimeout(()=>ACTS.tkcancel.armed=null,5000);return}
+    if(!b.dataset.ok&&ACTS.tkcancel.armed!==pl.id){ACTS.tkcancel.armed=pl.id;toast('اضغط «إلغاء» مرة أخرى للتأكيد');setTimeout(()=>ACTS.tkcancel.armed=null,5000);return}
     ACTS.tkcancel.armed=null;pl.status='cancelled';pl.cancelled=now();logA(`إلغاء اشتراك ${pl.id}`);save();toast('أُلغي الاشتراك');render()},
   claimok(b){const c=db.claims.find(x=>x.id===b.dataset.id&&x.status==='pending');need(c,'المطالبة معالجة.');need(db.funds.takaful>=c.amt,'رصيد صندوق التكافل لا يكفي.');
     const u=userById(c.uid);db.funds.takaful=r2(db.funds.takaful-c.amt);addTx(u,'current',c.amt,'takaful',`تعويض تكافل ${c.id}`);notify(u.id,`صُرف تعويض التكافل ${c.id} بمبلغ ${money(c.amt)} إلى حسابك الجاري.`,'#/c/takaful');c.status='paid';c.decided=now();logA(`صرف تعويض ${c.id} ${money(c.amt)} لـ${u.name}`);save();toast('صُرف التعويض إلى حساب العميل');render()},
@@ -1208,7 +1261,7 @@ document.addEventListener('change',e=>{if(e.target.matches('[data-live]'))previe
 $('#dlg').addEventListener('click',e=>{if(e.target.id==='dlg')closeDlg()});
 window.addEventListener('hashchange',render);
 window.addEventListener('storage',e=>{if(e.key===KEY&&e.newValue){db=JSON.parse(e.newValue);normDb();render()}});
-(async()=>{
+if(typeof BARAKAT_SERVER!=='undefined'){}else if(CLOUD)cloudInit();else (async()=>{
   try{db=JSON.parse(store.get(KEY)||'null')}catch(e){db=null}
   if(!db||db.v!==1)await seed();
   normDb();

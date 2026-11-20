@@ -5,7 +5,9 @@ const {chromium}=require('playwright');const fs=require('fs');const path=require
 const WEB=!!process.env.BASE;
 const PKG=WEB?null:path.resolve(process.argv[2]);const SHOTS=path.resolve(process.argv[3]||'shots');fs.mkdirSync(SHOTS,{recursive:true});
 const PORT=47840,ORIGIN=`http://127.0.0.1:${PORT}/`;
-const APP=WEB?process.env.BASE.replace(/\/?$/,'/'):ORIGIN;
+// الوضع السحابي (اختياري): CLOUD_URL وCLOUD_KEY يربطان الواجهة بخادم بركات (Supabase أو المحاكي المحلي) بدل التخزين المحلي
+const CLOUD=WEB&&process.env.CLOUD_URL?{url:process.env.CLOUD_URL,key:process.env.CLOUD_KEY||''}:null;
+const APP=WEB?process.env.BASE.replace(/\/?$/,'/')+(CLOUD&&process.env.BASE.startsWith('http:')?'?cloud=1':!CLOUD&&process.env.FORCE_LOCAL?'?local=1':''):ORIGIN;
 const BIN=WEB?null:(process.env.BIN||path.join(PKG,process.platform==='win32'?'Barakat-Windows.exe':process.platform==='darwin'?(process.arch==='arm64'?'bin/barakat-mac-arm64':'bin/barakat-mac-intel'):'Barakat-Linux'));
 let srv;
 const start=async()=>{if(WEB)return;srv=spawn(BIN,[],{env:{...process.env,BARAKAT_NO_BROWSER:'1'},cwd:'/'});for(let i=0;i<40;i++){try{const r=await fetch(ORIGIN+'api/ping');if(r.ok)break}catch(e){}await new Promise(r=>setTimeout(r,250))}};
@@ -14,8 +16,10 @@ const TMP=WEB?fs.mkdtempSync(path.join(require('os').tmpdir(),'barakat-e2e-')):n
 let PROFILE=WEB?path.join(TMP,'p1'):path.join(PKG,'data/browser');
 const net=[];let ok=0;const T=(c,m)=>{if(!c)throw new Error('FAIL: '+m);ok++;console.log('✓',m)};
 const allowed=u=>u.startsWith('data:')||u.startsWith('blob:')||u.startsWith('file:')||(WEB?true:u.startsWith(ORIGIN));
-async function ctx(vp){const c=await chromium.launchPersistentContext(PROFILE,{viewport:vp||{width:1280,height:860},acceptDownloads:true});
-  await c.route('**/*',r=>{const u=r.request().url();if(allowed(u))return r.continue();net.push(u);return r.abort()});return c}
+async function ctx(vp){const c=await chromium.launchPersistentContext(PROFILE,{viewport:vp||{width:1280,height:860},acceptDownloads:true,...(CLOUD?{serviceWorkers:'block'}:{})});
+  await c.route('**/*',r=>{const u=r.request().url();if(allowed(u))return r.continue();net.push(u);return r.abort()});
+  if(CLOUD)await c.route(/\/barakat\/(index\.html)?(\?[^#]*)?$/,async r=>{const res=await r.fetch();const b=(await res.text()).replace("const CLOUD_CFG={url:'',key:''};",'const CLOUD_CFG='+JSON.stringify(CLOUD)+';');r.fulfill({response:res,body:b})});
+  return c}
 const login=async(p,id,pw)=>{await p.goto(APP+'#/login');await p.waitForTimeout(300);if(await p.$('[data-act=logout]')){await p.click('[data-act=logout]');await p.waitForTimeout(300);await p.goto(APP+'#/login')}
   await p.fill('form[data-form=login] [name=id]',id);await p.fill('form[data-form=login] [name=pw]',pw);await p.click('form[data-form=login] button');await p.waitForTimeout(500)};
 const logout=async p=>{await p.click('[data-act=logout]');await p.waitForTimeout(300)};
@@ -121,7 +125,9 @@ const ADMIN=['admin@barakat.qa','Barakat@Admin2026'],CLIENT=['client@barakat.qa'
   await start();PROFILE=path.join(PKG,'..','profile-new')}else PROFILE=path.join(TMP,'p1');
  c=await ctx();p=c.pages()[0]||await c.newPage();await login(p,'sara@test.qa','Sara@2026');
  T(p.url().includes('#/c/'),WEB?'بعد إغلاق المتصفح وإعادة فتحه: البيانات محفوظة':'بعد إعادة تشغيل البرنامج وبمتصفح جديد: البيانات محفوظة في الملف');
- T(await p.evaluate(()=>db.tx.some(t=>t.amt===-750)),'التحويل محفوظ بعد إعادة التشغيل');await logout(p);
+ if(CLOUD){T(await p.evaluate(()=>db.users.length===1&&me().status==='active'&&db.msgs.some(m=>m.uid===me().id&&m.reply)&&!db.tx.some(t=>t.amt===-750)),'سحابي: حساب سارة المفعّل ورسالتها والرد محفوظة في القاعدة، ولا ترى حركات غيرها');await logout(p);
+  await login(p,...CLIENT);T(await p.evaluate(()=>db.tx.some(t=>t.amt===-750)),'سحابي: تحويل العميل محفوظ ويظهر له من متصفح جديد')}
+ else T(await p.evaluate(()=>db.tx.some(t=>t.amt===-750)),'التحويل محفوظ بعد إعادة التشغيل');await logout(p);
  // ---------- restore
  await login(p,...ADMIN);await p.goto(APP+'#/a/settings');
  await p.setInputFiles('#restoreFile',bk);await p.waitForSelector('[data-act=restoreOk]');await p.click('[data-act=restoreOk]');await p.waitForTimeout(400);
