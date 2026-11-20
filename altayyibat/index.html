@@ -390,6 +390,47 @@ html[dir=rtl] .trk-nav .flip{transform:scaleX(-1)}
 @media (max-width:560px){.trk-hero{grid-template-columns:1fr;justify-items:center}.trk-bars{width:100%}.trk-tabs{top:calc(env(safe-area-inset-top,0px) + 104px)}.trk-kpi .v{font-size:1.3rem}}
 @media print{body.trk-printing>*:not(#trkPrint){display:none!important}body.trk-printing #trkPrint{display:block!important;color:#000}#trkPrint table{font-size:11pt}#trkPrint h1{font-size:18pt}#trkPrint .trk-chart text{fill:#444}}
 </style>
+<style id="auc-css">
+/* المزاد العلاجي (auction) */
+.auc-tabs{position:sticky;top:calc(env(safe-area-inset-top,0px) + 108px);z-index:5;background:var(--bg);padding-block:6px;margin-block:-6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+.auc-tabs::-webkit-scrollbar{display:none}
+.auc-tabs .chip{flex-shrink:0;white-space:nowrap}
+.auc-hero{background:linear-gradient(135deg,var(--pine-soft),var(--copper-soft));border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;display:grid;gap:8px}
+.auc-hero b{font-family:var(--f-display);font-size:1.05rem}
+.auc-steps{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));margin:0;padding:0;list-style:none;counter-reset:s}
+.auc-steps li{counter-increment:s;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:.9rem;position:relative;padding-inline-start:44px}
+.auc-steps li::before{content:counter(s);position:absolute;inset-inline-start:10px;top:10px;width:26px;height:26px;border-radius:50%;background:var(--pine);color:var(--pine-ink);display:grid;place-items:center;font-weight:700;font-size:.85rem}
+.auc-fil{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));align-items:end}
+.auc-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))}
+.auc-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:grid;gap:8px;align-content:start;position:relative;min-width:0}
+.auc-card.best{border-color:var(--copper);box-shadow:inset 0 0 0 1px var(--copper)}
+.auc-card h3{margin:0;font-size:1.02rem;line-height:1.5}
+.auc-top{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.auc-clinic{font-size:.88rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center}
+.auc-price{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.auc-price b{font-family:var(--f-display);font-size:1.5rem;line-height:1.2;direction:ltr;unicode-bidi:isolate}
+.auc-price s{color:var(--muted);font-size:.9rem;direction:ltr;unicode-bidi:isolate}
+.auc-off{background:var(--copper);color:#fff;border-radius:6px;padding:1px 8px;font-size:.8rem;font-weight:700;direction:ltr}
+.auc-inc{font-size:.88rem;color:var(--muted);margin:0}
+.auc-until{font-size:.82rem}
+.auc-until.soon{color:var(--bad);font-weight:600}
+.auc-demo{background:var(--warn-soft);color:var(--warn)}
+.auc-act{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.auc-f{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
+.auc-f .wide{grid-column:1/-1}
+.auc-chk{display:flex;gap:10px;align-items:flex-start;line-height:1.6}
+.auc-chk input{margin-top:6px;flex-shrink:0;accent-color:var(--pine);width:18px;height:18px}
+.auc-list{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.auc-list li{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--bg);display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.auc-list li .m{display:grid;gap:2px;min-width:0;flex:1 1 220px}
+.auc-meter{height:8px;border-radius:99px;background:var(--sunk);overflow:hidden}
+.auc-meter i{display:block;height:100%;background:var(--pine);border-radius:99px;transition:width .25s}
+.auc-ok{border:1px solid var(--ok);background:var(--ok-soft);border-radius:var(--r);padding:12px 14px;display:grid;gap:8px}
+.auc-code{font-family:var(--f-mono);direction:ltr;font-size:.75rem;word-break:break-all;background:var(--sunk);border-radius:8px;padding:8px;max-height:84px;overflow:auto;user-select:all}
+.auc-num{direction:ltr;unicode-bidi:isolate;display:inline-block}
+.auc-flag li::marker{color:var(--bad)}
+@media(max-width:560px){.auc-price b{font-size:1.3rem}}
+</style>
 
 <header class="top">
   <div class="wrap">
@@ -4326,7 +4367,7 @@ const NAV_GROUPS = [
  ["heal",["الاستشفاء والطب التكميلي","Healing and complementary medicine"],["heal","pt","herbs","prophetic","tcm"]],
  ["mind",["الصحة النفسية","Mental health"],["mind","therapy","psydx","psyassess","iq"]],
  ["beauty",["الجمال","Beauty"],["mkislam","mknatural"]],
- ["svc",["الخدمات","Services"],["consult","calendar","admin"]],
+ ["svc",["الخدمات","Services"],["auction","consult","calendar","admin"]],
 ];
 const NAV_DESC = {
  track:["سجّل قياساتك اليومية وتابع تطورها","Log your daily readings and follow their trend"],
@@ -5240,6 +5281,519 @@ window.addEventListener("hashchange", ()=>{ if(/^#track\?/.test(location.hash)&&
 window.TY_TRACK = {get data(){ return D; }, score, insights:(per,anchor)=>{ const P=period(per,anchor||today()), n=range(P.a,P.b).length; return insights(P,{a:addD(P.a,-n),b:addD(P.a,-1)}); }, parseCSV, csvToDays, reload:()=>{ draw(); }};
 if(typeof renderRail==="function") renderRail();
 if(linked || ["","#","#track","#home","#admin"].includes(location.hash)) { if(typeof go==="function") go(); }
+})();
+</script>
+<script id="auc-js">
+// ===== المزاد العلاجي: عروض العيادات الشريكة، طلب عروض، اقتراحات، انضمام العيادات، وإدارة (الإصدار 2.0) =====
+(()=>{
+if(typeof VIEWS==="undefined"||typeof R==="undefined") return;
+const EN = window.TY_LANG==="en";
+const T = (a,e) => EN ? e : a;
+const q = (s,r=document)=>r.querySelector(s), qa=(s,r=document)=>[...r.querySelectorAll(s)];
+const h = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const say = m => (typeof toast==="function"?toast(m):alert(m));
+const CONTACT = {mail:"munijizqa@gmail.com", wa:"97451600498", waShow:"+974 5160 0498"};
+
+// ---------- التواريخ والأرقام (صيغة موحدة: أرقام لاتينية، «30 نوفمبر 2026») ----------
+const MON = EN ? ["January","February","March","April","May","June","July","August","September","October","November","December"] : ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+const p2 = n => String(n).padStart(2,"0");
+const dk = d => `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;
+const pd = k => { const [y,m,d]=k.split("-").map(Number); return new Date(y,m-1,d); };
+const today = () => dk(new Date());
+const addD = (k,n) => { const d=pd(k); d.setDate(d.getDate()+n); return dk(d); };
+const fdate = k => { const d=pd(k); return `${d.getDate()} ${MON[d.getMonth()]} ${d.getFullYear()}`; };
+const fstamp = t => { const d=new Date(t); return `${fdate(dk(d))} · ${p2(d.getHours())}:${p2(d.getMinutes())}`; };
+const left = k => Math.round((pd(k)-pd(today()))/864e5);
+const num = n => (+n).toLocaleString("en-US",{maximumFractionDigits:2});
+const money = (n,c) => `${num(n)} ${c}`;
+const toLat = s => String(s??"").replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(/[۰-۹]/g,d=>"۰۱۲۳۴۵۶۷۸۹".indexOf(d));
+const normPhone = s => { let v=toLat(s).replace(/[^\d+]/g,""); if(v.startsWith("00")) v="+"+v.slice(2); return /^\+\d{8,15}$/.test(v) ? v : null; };
+const days = n => EN ? `${n} day${n===1?"":"s"}` : (n===1?"يوم":n===2?"يومان":n>=3&&n<=10?`${n} أيام`:`${n} يوماً`);
+
+// ---------- القوائم ----------
+const SPEC = [["dental","الأسنان","Dental"],["derm","الجلدية والتجميل","Dermatology & aesthetics"],["eye","العيون وتصحيح النظر","Eye care & vision correction"],["ortho","العظام والمفاصل","Orthopedics"],["gyn","النساء والخصوبة","Women's health & fertility"],["peds","الأطفال","Pediatrics"],["ent","الأنف والأذن والحنجرة","ENT"],["cardio","القلب والفحوص","Cardiology & check-ups"],["physio","العلاج الطبيعي","Physiotherapy"],["psych","الصحة النفسية","Mental health"],["nutri","التغذية والسمنة","Nutrition & weight"],["lab","التحاليل والأشعة","Labs & imaging"],["other","تخصصات أخرى","Other"]];
+const CITY = [["cairo","القاهرة","Cairo"],["alex","الإسكندرية","Alexandria"],["riyadh","الرياض","Riyadh"],["jeddah","جدة","Jeddah"],["dammam","الدمام","Dammam"],["doha","الدوحة","Doha"],["dubai","دبي","Dubai"],["abudhabi","أبو ظبي","Abu Dhabi"],["kuwait","الكويت","Kuwait City"],["manama","المنامة","Manama"],["muscat","مسقط","Muscat"],["amman","عمّان","Amman"],["baghdad","بغداد","Baghdad"],["beirut","بيروت","Beirut"],["tunis","تونس","Tunis"],["casa","الدار البيضاء","Casablanca"],["algiers","الجزائر","Algiers"],["khartoum","الخرطوم","Khartoum"],["online","عن بُعد (استشارة مرئية)","Online (video consult)"]];
+const CUR = ["USD","EUR","EGP","SAR","AED","QAR","KWD","BHD","OMR","JOD","IQD","LBP","TND","MAD","DZD","SDG"];
+const sp = id => SPEC.find(x=>x[0]===id) || SPEC[SPEC.length-1];
+const cy = id => CITY.find(x=>x[0]===id) || [id,id,id];
+const spN = id => EN ? sp(id)[2] : sp(id)[1];
+const cyN = id => EN ? cy(id)[2] : cy(id)[1];
+const opts = (list,sel,allLbl) => (allLbl?`<option value="">${allLbl}</option>`:"") + list.map(x=>`<option value="${x[0]}" ${x[0]===sel?"selected":""}>${h(EN?x[2]:x[1])}</option>`).join("");
+const loc = (o,k) => EN ? (o[k+"e"]||o[k]) : o[k];
+
+// ---------- بيانات تجريبية (واضحة التمييز ويمكن للمدير إخفاؤها أو استبدالها) ----------
+const DEMO_C = [
+ {id:"demo-c1",n:"عيادة تجريبية (أ) — أسنان",ne:"Demo Clinic A — Dental",city:"cairo",specs:["dental"],ab:"عيادة نموذجية لتوضيح طريقة عرض العيادات الشريكة.",abe:"A sample clinic that shows how partner clinics appear."},
+ {id:"demo-c2",n:"عيادة تجريبية (ب) — أسنان",ne:"Demo Clinic B — Dental",city:"riyadh",specs:["dental"],ab:"عيادة نموذجية لتوضيح منافسة العروض في التخصص نفسه.",abe:"A sample clinic that shows offers competing in one specialty."},
+ {id:"demo-c3",n:"عيادة تجريبية (ج) — جلدية",ne:"Demo Clinic C — Dermatology",city:"doha",specs:["derm"],ab:"عيادة نموذجية.",abe:"A sample clinic."},
+ {id:"demo-c4",n:"عيادة تجريبية (د) — عيون",ne:"Demo Clinic D — Eye care",city:"amman",specs:["eye","ent"],ab:"عيادة نموذجية.",abe:"A sample clinic."},
+ {id:"demo-c5",n:"عيادة تجريبية (هـ) — عظام وعلاج طبيعي",ne:"Demo Clinic E — Ortho & physio",city:"cairo",specs:["ortho","physio"],ab:"عيادة نموذجية.",abe:"A sample clinic."},
+ {id:"demo-c6",n:"عيادة تجريبية (و) — نساء وأطفال",ne:"Demo Clinic F — Women & children",city:"dubai",specs:["gyn","peds"],ab:"عيادة نموذجية.",abe:"A sample clinic."},
+ {id:"demo-c7",n:"عيادة تجريبية (ز) — قلب وتحاليل",ne:"Demo Clinic G — Cardiology & labs",city:"riyadh",specs:["cardio","lab"],ab:"عيادة نموذجية.",abe:"A sample clinic."},
+ {id:"demo-c8",n:"عيادة تجريبية (ح) — تغذية",ne:"Demo Clinic H — Nutrition",city:"jeddah",specs:["nutri"],ab:"عيادة نموذجية.",abe:"A sample clinic."}
+].map(c=>({...c,demo:true,kind:"aucClinic"}));
+const DEMO_O = [
+ ["demo-o1","demo-c1","dental","فحص شامل مع تنظيف وتلميع","Full check-up with scaling and polishing",40,70,"USD",45,"كشف، أشعة بانوراما، تنظيف الجير، تلميع","Exam, panoramic X-ray, scaling, polishing"],
+ ["demo-o2","demo-c1","dental","تبييض الأسنان بالليزر","Laser teeth whitening",180,300,"USD",30,"جلسة واحدة مع جل حماية وتعليمات العناية","One session with protective gel and aftercare"],
+ ["demo-o3","demo-c2","dental","تبييض الأسنان بالليزر","Laser teeth whitening",160,280,"USD",21,"جلسة واحدة وفحص قبلي","One session and a pre-check"],
+ ["demo-o4","demo-c3","derm","تنظيف بشرة عميق (3 جلسات)","Deep facial cleansing (3 sessions)",90,150,"USD",40,"تقييم البشرة وثلاث جلسات متباعدة","Skin assessment and three spaced sessions"],
+ ["demo-o5","demo-c4","eye","فحص نظر شامل مع قياس ضغط العين","Full eye exam with eye-pressure check",35,60,"USD",60,"قياس النظر، ضغط العين، فحص قاع العين","Refraction, eye pressure, fundus exam"],
+ ["demo-o6","demo-c5","ortho","تقييم عظام وعلاج طبيعي أولي","Orthopedic assessment and initial physio",60,100,"USD",35,"كشف وتقييم حركة وخطة علاج","Exam, movement assessment and a plan"],
+ ["demo-o7","demo-c5","physio","6 جلسات علاج طبيعي للظهر","6 physiotherapy sessions for the back",120,200,"USD",50,"تقييم أولي وست جلسات وبرنامج منزلي","Initial assessment, six sessions and a home programme"],
+ ["demo-o8","demo-c6","gyn","باقة متابعة حمل (3 زيارات)","Pregnancy follow-up bundle (3 visits)",150,240,"USD",55,"ثلاث زيارات مع سونار وتحاليل أساسية","Three visits with ultrasound and basic tests"],
+ ["demo-o9","demo-c7","cardio","فحص قلب شامل","Comprehensive heart check",110,190,"USD",45,"كشف وتخطيط قلب وإيكو","Consultation, ECG and echocardiogram"],
+ ["demo-o10","demo-c8","nutri","برنامج تغذية 3 أشهر مع متابعة","3-month nutrition programme with follow-up",130,220,"USD",60,"خطة غذائية ومتابعة شهرية وقياس تركيب الجسم","Meal plan, monthly follow-up and body composition"],
+ ["demo-o11","demo-c7","lab","باقة تحاليل الصحة العامة","General health lab panel",50,85,"USD",30,"صورة دم، سكر، دهون، كلى وكبد، فيتامين د","CBC, glucose, lipids, kidney and liver, vitamin D"]
+].map(([id,clinic,spec,t,te,price,was,cur,d,inc,ince])=>({id,clinic,spec,t,te,price,was,cur,d,inc,ince,demo:true,kind:"aucOffer"}));
+
+const hidden = id => !!(typeof S!=="undefined" && S.hidden && S.hidden.has(id));
+const customs = k => (typeof S!=="undefined" && S.custom ? S.custom : []).filter(e=>e.kind===k).map(e=>({...e,id:e._id}));
+const clinics = () => [...DEMO_C.filter(c=>!hidden(c.id)), ...customs("aucClinic")];
+const clinicById = id => clinics().find(c=>c.id===id);
+const offerUntil = o => o.until || addD(today(), o.d||30);
+const offers = () => [...DEMO_O.filter(o=>!hidden(o.id)), ...customs("aucOffer")]
+  .map(o=>{ const c=clinicById(o.clinic); return c ? {...o, c, until:offerUntil(o), city:o.city||c.city} : null; })
+  .filter(o=>o && left(o.until)>=0);
+const discount = o => o.was>o.price ? Math.round((o.was-o.price)/o.was*100) : 0;
+const bestIn = (o,all) => { const same=all.filter(x=>x.spec===o.spec&&x.cur===o.cur&&x.id!==o.id); return same.length>0 && same.every(x=>x.price>o.price); };
+
+// ---------- بيانات المستخدم على هذا الجهاز (لكل حساب ملفه) ----------
+const ses = () => { try{ return JSON.parse(localStorage.getItem("ty_session")) }catch{ return null } };
+const KEY = () => "ty_auc_" + ((ses()||{}).uid || "guest");
+const load = () => { try{ const d=JSON.parse(localStorage.getItem(KEY())); if(d) return {req:[],inq:[],apps:[],chk:{},...d}; }catch{} return {req:[],inq:[],apps:[],chk:{}}; };
+let D = load();
+const save = () => { try{ localStorage.setItem(KEY(), JSON.stringify(D)); }catch{ say(T("تعذّر الحفظ: مساحة التخزين ممتلئة","Could not save: storage is full")); } };
+const UI = (()=>{ try{ return JSON.parse(localStorage.getItem("ty_auc_ui"))||{} }catch{ return {} } })();
+const St = {tab:UI.tab||"offers", q:"", spec:"", city:"", sort:"disc", lastReq:null, sugSpec:UI.sugSpec||""};
+const keepUI = () => { try{ localStorage.setItem("ty_auc_ui",JSON.stringify({tab:St.tab,sugSpec:St.sugSpec})) }catch{} };
+const uid = p => p+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+
+// ---------- الرسائل (الإرسال إلى المنصة بالواتساب أو البريد) ----------
+const waUrl = t => `https://wa.me/${CONTACT.wa}?text=${encodeURIComponent(t)}`;
+const mailUrl = (s,t) => `mailto:${CONTACT.mail}?subject=${encodeURIComponent(s)}&body=${encodeURIComponent(t)}`;
+const sendBtns = (subject,text) => `<div class="auc-act">
+  <a class="btn" href="${h(waUrl(text))}" target="_blank" rel="noopener">${T("أرسل بالواتساب","Send via WhatsApp")}</a>
+  <a class="btn ghost" href="${h(mailUrl(subject,text))}">${T("أرسل بالبريد","Send by email")}</a>
+  <button class="btn ghost" type="button" data-aucCopy="${h(text)}">${T("انسخ النص","Copy text")}</button></div>
+  <p class="small muted">${T("تُرسَل الرسالة إلى إدارة المنصة من تطبيق الواتساب أو البريد لديك، وتتولى الإدارة التنسيق مع العيادة. لا يُرسَل شيء قبل أن تضغط «إرسال» في ذلك التطبيق.","The message goes to the platform team from your WhatsApp or email app, and the team coordinates with the clinic. Nothing is sent until you press “Send” in that app.")}</p>`;
+const L = (a,e,v) => v ? `${T(a,e)}: ${v}\n` : "";
+const msgInq = i => `${T("طلب حجز عبر «المزاد العلاجي» — الطيبات","Booking request via “Therapeutic Auction” — Al-Tayyibat")}\n${L("العرض","Offer",i.offer)}${L("العيادة","Clinic",i.clinic)}${L("السعر","Price",i.price)}${L("الاسم","Name",i.name)}${L("الهاتف","Phone",i.phone)}${L("الموعد المفضل","Preferred date",i.date?fdate(i.date):"")}${L("ملاحظات","Notes",i.note)}${i.demo?T("(ملاحظة: عرض تجريبي)\n","(Note: demo offer)\n"):""}`;
+const msgReq = r => `${T("طلب عروض علاجية عبر «المزاد العلاجي» — الطيبات","Treatment offers request via “Therapeutic Auction” — Al-Tayyibat")}\n${L("التخصص","Specialty",spN(r.spec))}${L("الحاجة العلاجية","Treatment needed",r.need)}${L("المدينة","City",cyN(r.city))}${L("الميزانية القصوى","Maximum budget",r.budget?money(r.budget,r.cur):"")}${L("التوقيت","Timing",tmN(r.when))}${L("الاسم","Name",r.name)}${L("الهاتف","Phone",r.phone)}${L("ملاحظات","Notes",r.note)}`;
+const TM = [["urgent","عاجل خلال أيام","Urgent, within days"],["month","خلال شهر","Within a month"],["flex","مرن","Flexible"]];
+const tmN = id => { const x=TM.find(t=>t[0]===id)||TM[2]; return EN?x[2]:x[1]; };
+const code = o => "AUC1:"+btoa(unescape(encodeURIComponent(JSON.stringify(o))));
+const decode = s => { try{ const m=String(s).match(/AUC1:[A-Za-z0-9+/=]+/); return m ? JSON.parse(decodeURIComponent(escape(atob(m[0].slice(5))))) : null; }catch{ return null; } };
+const msgApp = a => `${T("طلب انضمام عيادة شريكة — المزاد العلاجي، الطيبات","Partner clinic application — Therapeutic Auction, Al-Tayyibat")}\n${L("العيادة","Clinic",a.n)}${L("التخصصات","Specialties",a.specs.map(spN).join("، "))}${L("المدينة","City",cyN(a.city))}${L("رقم الترخيص","Licence no.",a.lic)}${L("المسؤول","Contact person",a.person)}${L("الهاتف","Phone",a.phone)}${L("البريد","Email",a.email)}${L("العرض المقترح","Proposed offer",a.offer?`${a.offer} — ${money(a.price,a.cur)}`:"")}\n${T("رمز الطلب (للإدارة):","Application code (for admin):")}\n${code(a)}\n`;
+
+// ---------- الأيقونات ----------
+const ic = p => `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const TABS = [
+ ["offers",T("العروض","Offers"),ic('<path d="M20 12v8H4v-8M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7z"/>')],
+ ["request",T("اطلب عروضاً","Request offers"),ic('<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>')],
+ ["tips",T("اقتراحات ونصائح","Suggestions & tips"),ic('<path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2V17h6v-.3c0-.8.4-1.5 1-2A7 7 0 0 0 12 2z"/>')],
+ ["clinic",T("للعيادات","For clinics"),ic('<path d="M3 21V8l9-5 9 5v13M9 21v-6h6v6M12 9v4M10 11h4"/>')],
+ ["mine",T("طلباتي","My requests"),ic('<path d="M9 11l3 3 8-8M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/>')]
+];
+
+const DISC = `<div class="disclaimer" style="margin-top:16px"><b>${T("تنبيه مهم:","Important:")}</b> ${T("«المزاد العلاجي» وسيط تعريفي لعرض عروض العيادات الشريكة ومقارنتها، وليس مقدّم رعاية طبية ولا يضمن نتيجة علاج. الأسعار استرشادية وتُؤكَّد مع العيادة قبل الحجز، وتحقق دائماً من ترخيص العيادة والطبيب. العروض المعلَّمة «تجريبي» أمثلة لتوضيح الخدمة وليست لعيادات حقيقية. في الحالات الطارئة اتصل بالإسعاف فوراً ولا تنتظر عرضاً.","“Therapeutic Auction” is an introduction service that lists and compares partner-clinic offers. It is not a care provider and does not guarantee any treatment result. Prices are indicative and confirmed with the clinic before booking; always verify the clinic and doctor licence. Offers marked “Demo” are examples that illustrate the service, not real clinics. In an emergency call the ambulance at once and do not wait for an offer.")}</div>`;
+
+// ---------- العرض: بطاقة عرض ----------
+function card(o, all, opt={}){
+  const d=discount(o), lf=left(o.until), best=bestIn(o,all);
+  const untilTxt = lf===0 ? T("ينتهي اليوم","Ends today") : T(`ينتهي ${fdate(o.until)} (بقي ${days(lf)})`,`Ends ${fdate(o.until)} (${days(lf)} left)`);
+  return `<article class="auc-card ${best||opt.top?"best":""}" data-oid="${h(o.id)}">
+  <div class="auc-top">${o.demo?`<span class="tag auc-demo">${T("تجريبي","Demo")}</span>`:o.c.ver?`<span class="tag t1">${T("ترخيص موثّق","Licence verified")}</span>`:`<span class="tag tp">${T("شريك","Partner")}</span>`}<span class="tag tp">${h(spN(o.spec))}</span>${best?`<span class="tag t2">${T("أفضل سعر في تخصصه","Best price in its specialty")}</span>`:""}${opt.top?`<span class="tag t2">${opt.top}</span>`:""}</div>
+  <h3>${h(loc(o,"t"))}</h3>
+  <div class="auc-clinic"><span>${h(loc(o.c,"n"))}</span><span>📍 ${h(cyN(o.city))}</span></div>
+  <div class="auc-price"><b>${h(money(o.price,o.cur))}</b>${d?`<s>${h(money(o.was,o.cur))}</s><span class="auc-off">-${d}%</span>`:""}</div>
+  ${o.inc||o.ince?`<p class="auc-inc">${T("يشمل:","Includes:")} ${h(loc(o,"inc"))}</p>`:""}
+  <div class="auc-until ${lf<=7?"soon":"muted"}">${untilTxt}</div>
+  <div class="auc-act"><button class="btn" type="button" data-inq="${h(o.id)}">${T("احجز / استفسر","Book / enquire")}</button><button class="btn ghost" type="button" data-cmp="${h(o.spec)}">${T("قارن عروض التخصص","Compare this specialty")}</button></div>
+  </article>`;
+}
+const sorters = {
+  disc:(a,b)=>discount(b)-discount(a)||a.price-b.price,
+  price:(a,b)=>a.cur===b.cur?a.price-b.price:a.cur.localeCompare(b.cur),
+  soon:(a,b)=>left(a.until)-left(b.until),
+  new:(a,b)=>(b.ts||0)-(a.ts||0)||discount(b)-discount(a)
+};
+function filtered(){
+  const all=offers(), qq=norm(St.q);
+  return all.filter(o=>(!St.spec||o.spec===St.spec)&&(!St.city||o.city===St.city)&&(!qq||norm([o.t,o.te,o.inc,o.c.n,o.c.ne,spN(o.spec),cyN(o.city)].join(" ")).includes(qq))).sort(sorters[St.sort]||sorters.disc);
+}
+const norm = s => toLat(String(s||"")).toLowerCase().replace(/[ًٌٍَُِّْـ]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه");
+
+function vOffers(){
+  const all=offers(), cities=[...new Set(all.map(o=>o.city))].map(c=>cy(c));
+  const specs=SPEC.filter(s=>all.some(o=>o.spec===s[0]));
+  const list=filtered();
+  return `<div class="auc-hero"><b>${T("كيف يعمل المزاد العلاجي؟","How does the Therapeutic Auction work?")}</b>
+  <ol class="auc-steps"><li>${T("تصفّح عروض العيادات الشريكة وقارن الأسعار والمزايا.","Browse partner-clinic offers and compare prices and what is included.")}</li><li>${T("أو اطلب عروضاً: اكتب حاجتك العلاجية وتتنافس العيادات على خدمتك.","Or request offers: describe your need and clinics compete to serve you.")}</li><li>${T("اختر الأفضل لك سعراً وقرباً وجودة، واحجز عبر المنصة.","Pick what suits you in price, distance and quality, and book through the platform.")}</li></ol></div>
+  <div class="card" style="cursor:default;margin-top:14px"><div class="auc-fil">
+   <div class="field"><label for="aucQ">${T("بحث","Search")}</label><input type="search" id="aucQ" value="${h(St.q)}" placeholder="${T("عرض، عيادة، تخصص…","Offer, clinic, specialty…")}"></div>
+   <div class="field"><label for="aucSp">${T("التخصص","Specialty")}</label><select id="aucSp">${opts(specs,St.spec,T("كل التخصصات","All specialties"))}</select></div>
+   <div class="field"><label for="aucCy">${T("المدينة","City")}</label><select id="aucCy">${opts(cities,St.city,T("كل المدن","All cities"))}</select></div>
+   <div class="field"><label for="aucSo">${T("الترتيب","Sort by")}</label><select id="aucSo">${[["disc",T("الأعلى خصماً","Biggest discount")],["price",T("الأقل سعراً","Lowest price")],["soon",T("ينتهي قريباً","Ending soon")],["new",T("الأحدث","Newest")]].map(([v,n])=>`<option value="${v}" ${St.sort===v?"selected":""}>${n}</option>`).join("")}</select></div>
+  </div></div>
+  <p class="small muted" id="aucCount" style="margin:10px 2px">${T(`${list.length} عرضاً متاحاً`,`${list.length} offer${list.length===1?"":"s"} available`)}${(St.q||St.spec||St.city)?` · <button type="button" class="chip" data-aucClear>${T("مسح الفلاتر","Clear filters")}</button>`:""}</p>
+  <div class="auc-grid" id="aucGrid">${list.length?list.map(o=>card(o,all)).join(""):`<div class="card" style="cursor:default"><b>${T("لا توجد عروض مطابقة حالياً","No matching offers right now")}</b><p class="muted">${T("جرّب تغيير الفلاتر، أو اطلب عروضاً وسيتنافس الشركاء على خدمتك.","Try other filters, or request offers and partners will compete to serve you.")}</p><div><button class="btn" type="button" data-aucGo="request">${T("اطلب عروضاً الآن","Request offers now")}</button></div></div>`}</div>
+  ${DISC}`;
+}
+function redrawGrid(){
+  const g=q("#aucGrid"); if(!g) return; const all=offers(), list=filtered();
+  g.innerHTML = list.length ? list.map(o=>card(o,all)).join("") : `<div class="card" style="cursor:default"><b>${T("لا توجد عروض مطابقة حالياً","No matching offers right now")}</b><p class="muted">${T("جرّب تغيير الفلاتر، أو اطلب عروضاً وسيتنافس الشركاء على خدمتك.","Try other filters, or request offers and partners will compete to serve you.")}</p><div><button class="btn" type="button" data-aucGo="request">${T("اطلب عروضاً الآن","Request offers now")}</button></div></div>`;
+  const c=q("#aucCount"); if(c) c.innerHTML=`${T(`${list.length} عرضاً متاحاً`,`${list.length} offer${list.length===1?"":"s"} available`)}${(St.q||St.spec||St.city)?` · <button type="button" class="chip" data-aucClear>${T("مسح الفلاتر","Clear filters")}</button>`:""}`;
+}
+
+// ---------- الحجز والاستفسار ----------
+function openInq(id){
+  const o=offers().find(x=>x.id===id); if(!o) return say(T("انتهى هذا العرض أو أُزيل","This offer has ended or was removed"));
+  const s=ses();
+  openDrawer(`<h2>${T("احجز أو استفسر عن العرض","Book or enquire about the offer")}</h2>
+  <div class="card" style="cursor:default"><b>${h(loc(o,"t"))}</b><span class="muted small">${h(loc(o.c,"n"))} · ${h(cyN(o.city))}</span><span class="auc-num"><b>${h(money(o.price,o.cur))}</b></span></div>
+  ${o.demo?`<p class="disclaimer" style="margin-top:10px">${T("هذا عرض تجريبي لتوضيح آلية الخدمة. يمكنك تجربة الطلب بحرية.","This is a demo offer that illustrates the service. You can try the request freely.")}</p>`:""}
+  <form id="aucInqF" data-oid="${h(o.id)}" style="display:grid;gap:12px;margin-top:12px">
+   <div class="field"><label for="iN">${T("الاسم","Name")}</label><input type="text" id="iN" required maxlength="60" value="${h(s?.name||"")}" autocomplete="name"></div>
+   <div class="field"><label for="iP">${T("رقم الهاتف أو الواتساب (بصيغة دولية)","Phone or WhatsApp (international format)")}</label><input type="text" id="iP" dir="ltr" required inputmode="tel" placeholder="+201001234567" autocomplete="tel"></div>
+   <div class="field"><label for="iD">${T("الموعد المفضل (اختياري)","Preferred date (optional)")}</label><input type="date" id="iD" min="${today()}"></div>
+   <div class="field"><label for="iT">${T("ملاحظات (اختياري، دون معلومات حساسة)","Notes (optional, no sensitive details)")}</label><textarea id="iT" maxlength="400"></textarea></div>
+   <p class="auc-err small" id="iE" role="alert" style="color:var(--bad);margin:0"></p>
+   <div><button class="btn" type="submit">${T("حفظ الطلب وتجهيز الرسالة","Save request and prepare message")}</button></div></form>`);
+}
+document.addEventListener("submit", e=>{
+  const f=e.target;
+  if(f.id==="aucInqF"){ e.preventDefault();
+    const o=offers().find(x=>x.id===f.dataset.oid), ph=normPhone(q("#iP",f).value);
+    if(!ph) return q("#iE",f).textContent=T("اكتب رقماً صحيحاً بصيغة دولية مثل +201001234567","Enter a valid number in international format, e.g. +201001234567");
+    if(!o) return q("#iE",f).textContent=T("انتهى هذا العرض","This offer has ended");
+    const i={id:uid("i"),ts:Date.now(),oid:o.id,offer:loc(o,"t"),clinic:loc(o.c,"n"),price:money(o.price,o.cur),name:q("#iN",f).value.trim(),phone:ph,date:q("#iD",f).value,note:q("#iT",f).value.trim(),demo:!!o.demo};
+    D.inq.unshift(i); save();
+    f.outerHTML=`<div class="auc-ok" style="margin-top:12px"><b>✓ ${T("تم حفظ طلبك في «طلباتي» على جهازك","Your request was saved in “My requests” on your device")}</b>${sendBtns(T("حجز عرض — المزاد العلاجي","Offer booking — Therapeutic Auction"),msgInq(i))}</div>`;
+  }
+  if(f.id==="aucReqF"){ e.preventDefault(); submitReq(f); }
+  if(f.id==="aucAppF"){ e.preventDefault(); submitApp(f); }
+  if(f.id==="aucAdC"){ e.preventDefault(); saveClinic(f); }
+  if(f.id==="aucAdO"){ e.preventDefault(); saveOffer(f); }
+  if(f.id==="aucAdI"){ e.preventDefault(); importCode(f); }
+});
+
+// ---------- اطلب عروضاً ----------
+function matches(r){
+  const all=offers().filter(o=>o.spec===r.spec);
+  return all.map(o=>{
+    let s=discount(o)/10;
+    if(o.city===r.city) s+=3; else if(o.city==="online") s+=1;
+    if(r.budget&&o.cur===r.cur){ s+= o.price<=r.budget ? 3 : -2; }
+    return {o,s,inBudget:!!(r.budget&&o.cur===r.cur&&o.price<=r.budget)};
+  }).sort((a,b)=>b.s-a.s||a.o.price-b.o.price);
+}
+function matchHTML(r){
+  const m=matches(r), all=offers();
+  if(!m.length) return `<p class="muted">${T("لا توجد عروض منشورة لهذا التخصص بعد. أرسل طلبك وستعرض عليك العيادات الشريكة عروضها.","No published offers for this specialty yet. Send your request and partner clinics will bring you their offers.")}</p>`;
+  return `<h3>${T("أفضل العروض المطابقة لطلبك الآن","Best offers matching your request now")}</h3><div class="auc-grid">${m.slice(0,3).map((x,i)=>card(x.o,all,{top:i===0?T("الأنسب لطلبك","Best fit for you"):x.inBudget?T("ضمن ميزانيتك","Within your budget"):""})).join("")}</div>`;
+}
+function vRequest(){
+  const s=ses();
+  return `<div class="card" style="cursor:default"><h2 style="margin:0">${T("اطلب عروضاً علاجية","Request treatment offers")}</h2>
+  <p class="muted">${T("صف حاجتك العلاجية، فنعرض لك فوراً أنسب العروض المنشورة، ونرسل طلبك للعيادات الشريكة لتتنافس بعروضها. لا تكتب بيانات هوية أو معلومات طبية حساسة؛ يكفي وصف عام.","Describe what treatment you need. We instantly show the best published offers, and pass your request to partner clinics to compete with their offers. Do not enter ID details or sensitive medical data; a general description is enough.")}</p>
+  <form id="aucReqF" class="auc-f" novalidate>
+   <div class="field"><label for="rS">${T("التخصص","Specialty")}</label><select id="rS" required>${opts(SPEC,St.spec||"dental")}</select></div>
+   <div class="field"><label for="rC">${T("المدينة المفضلة","Preferred city")}</label><select id="rC">${opts(CITY,St.city||"cairo")}</select></div>
+   <div class="field wide"><label for="rN">${T("ما الذي تحتاجه؟","What do you need?")}</label><input type="text" id="rN" required maxlength="140" placeholder="${T("مثال: تبييض أسنان، فحص شامل، جلسات علاج طبيعي","e.g. teeth whitening, full check-up, physiotherapy sessions")}"></div>
+   <div class="field"><label for="rB">${T("الميزانية القصوى (اختياري)","Maximum budget (optional)")}</label><input type="number" id="rB" min="0" step="any" inputmode="decimal"></div>
+   <div class="field"><label for="rU">${T("العملة","Currency")}</label><select id="rU">${CUR.map(c=>`<option>${c}</option>`).join("")}</select></div>
+   <div class="field"><label for="rW">${T("التوقيت","Timing")}</label><select id="rW">${TM.map(t=>`<option value="${t[0]}" ${t[0]==="month"?"selected":""}>${EN?t[2]:t[1]}</option>`).join("")}</select></div>
+   <div class="field"><label for="rNm">${T("الاسم","Name")}</label><input type="text" id="rNm" maxlength="60" value="${h(s?.name||"")}" autocomplete="name"></div>
+   <div class="field"><label for="rP">${T("الهاتف أو الواتساب (بصيغة دولية)","Phone or WhatsApp (international format)")}</label><input type="text" id="rP" dir="ltr" inputmode="tel" required placeholder="+201001234567" autocomplete="tel"></div>
+   <div class="field wide"><label for="rT">${T("ملاحظات (اختياري)","Notes (optional)")}</label><textarea id="rT" maxlength="400"></textarea></div>
+   <label class="auc-chk wide"><input type="checkbox" id="rOk" required><span>${T("أوافق على مشاركة بيانات هذا الطلب مع إدارة المنصة والعيادات الشريكة المناسبة للرد عليّ.","I agree to share this request's details with the platform team and suitable partner clinics so they can reply to me.")}</span></label>
+   <p class="small wide" id="rE" role="alert" style="color:var(--bad);margin:0"></p>
+   <div class="wide"><button class="btn" type="submit">${T("اعرض أنسب العروض وجهّز طلبي","Show best offers and prepare my request")}</button></div>
+  </form></div>
+  <div id="aucRes" style="margin-top:14px">${St.lastReq?`<div class="auc-ok"><b>✓ ${T("آخر طلب لك","Your latest request")}</b>${sendBtns(T("طلب عروض — المزاد العلاجي","Offers request — Therapeutic Auction"),msgReq(St.lastReq))}</div>${matchHTML(St.lastReq)}`:""}</div>${DISC}`;
+}
+function submitReq(f){
+  const err=q("#rE",f), ph=normPhone(q("#rP",f).value), need=q("#rN",f).value.trim(), b=parseFloat(toLat(q("#rB",f).value));
+  if(need.length<3) return err.textContent=T("اكتب حاجتك العلاجية بإيجاز","Briefly describe the treatment you need");
+  if(!ph) return err.textContent=T("اكتب رقماً صحيحاً بصيغة دولية مثل +201001234567","Enter a valid number in international format, e.g. +201001234567");
+  if(!q("#rOk",f).checked) return err.textContent=T("يلزم الموافقة على مشاركة بيانات الطلب","You need to agree to share the request details");
+  if(q("#rB",f).value&&!(b>=0)) return err.textContent=T("الميزانية رقم غير صحيح","Budget is not a valid number");
+  err.textContent="";
+  const r={id:uid("r"),ts:Date.now(),spec:q("#rS",f).value,city:q("#rC",f).value,need,budget:b>0?b:0,cur:q("#rU",f).value,when:q("#rW",f).value,name:q("#rNm",f).value.trim(),phone:ph,note:q("#rT",f).value.trim()};
+  D.req.unshift(r); save(); St.lastReq=r;
+  q("#aucRes").innerHTML=`<div class="auc-ok"><b>✓ ${T("تم حفظ طلبك في «طلباتي» على جهازك. أرسله الآن للمنصة ليصل إلى العيادات:","Your request is saved in “My requests” on your device. Send it now so it reaches the clinics:")}</b>${sendBtns(T("طلب عروض — المزاد العلاجي","Offers request — Therapeutic Auction"),msgReq(r))}</div>${matchHTML(r)}`;
+  q("#aucRes").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+// ---------- اقتراحات ونصائح ----------
+const CHECK = [
+ ["lic",T("تحققت من ترخيص العيادة والطبيب لدى الجهة الصحية الرسمية في بلدك.","I verified the clinic and doctor licence with the official health authority in my country.")],
+ ["inc",T("عرفت بدقة ما يشمله السعر وما لا يشمله (كشف، أشعة، أدوية، متابعة).","I know exactly what the price includes and excludes (exam, imaging, medication, follow-up).")],
+ ["cmp",T("قارنت ثلاثة عروض على الأقل من عيادات مختلفة.","I compared at least three offers from different clinics.")],
+ ["cons",T("سألت عن استشارة أولى وهل تُخصم من سعر العلاج.","I asked about an initial consultation and whether it is deducted from the treatment price.")],
+ ["risk",T("فهمت المخاطر والبدائل وفترة التعافي المتوقعة من الطبيب نفسه.","I understood the risks, alternatives and expected recovery from the doctor in person.")],
+ ["fol",T("اتفقت على سياسة المتابعة والمضاعفات وما يحدث إن احتجت إجراءً إضافياً.","I agreed on follow-up and complications policy and what happens if more care is needed.")],
+ ["can",T("اطلعت على سياسة الإلغاء والاسترداد مكتوبةً قبل الدفع.","I read the cancellation and refund policy in writing before paying.")],
+ ["rec",T("طلبت تقريراً أو وصفاً مكتوباً لما سيُجرى ولما تم.","I asked for a written plan and report of what will be and was done.")],
+ ["sec",T("طلبت رأياً ثانياً قبل أي جراحة أو إجراء كبير.","I asked for a second opinion before any surgery or major procedure.")]
+];
+const QS = {
+ dental:[["هل أحتاج أشعة قبل البدء، وهل هي ضمن السعر؟","Do I need X-rays first, and are they included?"],["ما نوع المواد المستخدمة وبلد منشئها وضمانها؟","What materials are used, where are they from, and what is the warranty?"],["كم جلسة أحتاج، وما العناية بعدها؟","How many visits will I need, and what aftercare is required?"]],
+ derm:[["ما نوع الجهاز أو المنتج المستخدم وهل هو معتمد؟","Which device or product is used, and is it approved?"],["ما الآثار المتوقعة وكيف أتعامل معها؟","What side effects are expected and how do I handle them?"],["هل يناسب نوع بشرتي؟","Is it suitable for my skin type?"]],
+ eye:[["هل أنا مرشح مناسب لهذا الإجراء بعد الفحص الكامل؟","Am I a suitable candidate after a full exam?"],["ما نسبة المضاعفات وكيف تُعالَج؟","What are the complication rates and how are they treated?"],["هل المتابعة اللاحقة مشمولة؟","Is later follow-up included?"]],
+ ortho:[["هل توجد بدائل غير جراحية أجرّبها أولاً؟","Are there non-surgical options to try first?"],["كم تستغرق فترة التعافي والعودة للعمل؟","How long is recovery and the return to work?"],["هل التأهيل والعلاج الطبيعي مشمولان؟","Are rehab and physiotherapy included?"]],
+ gyn:[["من الطبيب المتابع، وهل أراه في كل زيارة؟","Who is my doctor, and will I see them at every visit?"],["ما الفحوص والسونارات المشمولة تحديداً؟","Which tests and ultrasounds are included exactly?"],["ماذا يحدث في الطوارئ خارج المواعيد؟","What happens in an emergency out of hours?"]],
+ peds:[["هل يوجد طبيب أطفال متخصص ومعدات مناسبة للأعمار؟","Is there a paediatric specialist with age-appropriate equipment?"],["كيف تُدار الحالات الطارئة للأطفال؟","How are paediatric emergencies handled?"],["هل اللقاحات والمتابعة مشمولة؟","Are vaccines and follow-up included?"]],
+ ent:[["هل الإجراء ضروري الآن أم يمكن المراقبة؟","Is the procedure necessary now, or can we observe?"],["ما نوع التخدير ومدة البقاء؟","What anaesthesia is used and how long is the stay?"],["ما المضاعفات المحتملة؟","What complications are possible?"]],
+ cardio:[["ما الفحوص ضمن الباقة ومن يفسّر النتائج؟","Which tests are in the package and who interprets them?"],["هل أحصل على تقرير مكتوب لأعرضه على طبيبي؟","Do I get a written report to show my own doctor?"],["ماذا لو ظهرت نتيجة غير طبيعية؟","What if a result is abnormal?"]],
+ physio:[["من يعالجني: أخصائي مرخّص؟","Who treats me: a licensed therapist?"],["كم مدة الجلسة وعدد الجلسات المتوقع؟","How long is a session and how many are expected?"],["هل أحصل على برنامج منزلي مكتوب؟","Do I get a written home programme?"]],
+ psych:[["ما مؤهلات المعالج وأسلوبه العلاجي؟","What are the therapist's qualifications and approach?"],["كيف تُحفظ سرية بياناتي؟","How is my confidentiality protected?"],["كيف نقيس التحسن؟","How will we measure improvement?"]],
+ nutri:[["هل الخطة مخصّصة لحالتي وتحاليلي؟","Is the plan tailored to my condition and tests?"],["ما نتيجة واقعية متوقعة وفي كم مدة؟","What realistic result is expected, and in what time?"],["هل أتواصل مع الأخصائي بين الزيارات؟","Can I contact the dietitian between visits?"]],
+ lab:[["هل المعمل معتمد، وكم يستغرق ظهور النتائج؟","Is the lab accredited, and how long do results take?"],["هل التحضير (الصيام) مطلوب؟","Is preparation (fasting) required?"],["هل يشرح طبيب النتائج؟","Will a doctor explain the results?"]],
+ other:[["ما خطة العلاج بالتفصيل والتكلفة الإجمالية؟","What is the treatment plan in detail and the total cost?"],["ما المخاطر والبدائل؟","What are the risks and alternatives?"],["ما سياسة المتابعة والاسترداد؟","What are the follow-up and refund policies?"]]
+};
+function vTips(){
+  const all=offers(), lr=D.req[0], city=(lr&&lr.city)||St.city||"";
+  const pick = (arr,fn) => arr.slice().sort(fn)[0];
+  const sug=[];
+  const topDisc = pick(all.filter(o=>discount(o)>0),(a,b)=>discount(b)-discount(a));
+  if(topDisc) sug.push([T("الأعلى خصماً","Biggest discount"),topDisc]);
+  const soon = pick(all,(a,b)=>left(a.until)-left(b.until));
+  if(soon&&(!topDisc||soon.id!==topDisc.id)) sug.push([T("ينتهي قريباً","Ending soon"),soon]);
+  const near = city&&pick(all.filter(o=>o.city===city),(a,b)=>discount(b)-discount(a));
+  if(near&&!sug.some(x=>x[1].id===near.id)) sug.push([T(`الأقرب إليك (${cyN(city)})`,`Nearest to you (${cyN(city)})`),near]);
+  const online = pick(all.filter(o=>o.city==="online"),(a,b)=>a.price-b.price);
+  if(online) sug.push([T("استشارة عن بُعد","Online consult"),online]);
+  const done=CHECK.filter(([k])=>D.chk[k]).length, qs=QS[St.sugSpec||"dental"]||QS.other;
+  return `<div class="card" style="cursor:default"><h2 style="margin:0">${T("مقترحات لك","Picked for you")}</h2><p class="muted small" style="margin:0">${lr?T(`بناءً على آخر طلب لك (${spN(lr.spec)} · ${cyN(lr.city)}).`,`Based on your latest request (${spN(lr.spec)} · ${cyN(lr.city)}).`):T("اطلب عروضاً ليتخصص الاقتراح حسب مدينتك وحاجتك.","Request offers and these picks will match your city and need.")}</p></div>
+  <div class="auc-grid" style="margin-top:12px">${sug.length?sug.map(([t,o])=>card(o,all,{top:t})).join(""):`<p class="muted">${T("لا توجد عروض منشورة حالياً.","No published offers right now.")}</p>`}</div>
+
+  <h2 style="margin-top:22px">${T("اختيارات سريعة حسب التخصص","Quick choices by specialty")}</h2>
+  <div class="chips">${SPEC.filter(s=>all.some(o=>o.spec===s[0])).map(s=>`<button type="button" class="chip" data-aucSpec="${s[0]}">${h(EN?s[2]:s[1])} <small class="muted">(${all.filter(o=>o.spec===s[0]).length})</small></button>`).join("")}</div>
+  <div class="chips" style="margin-top:8px"><button type="button" class="chip" data-aucPreset="price">${T("الأرخص أولاً","Cheapest first")}</button><button type="button" class="chip" data-aucPreset="disc">${T("الأعلى خصماً","Biggest discounts")}</button><button type="button" class="chip" data-aucPreset="soon">${T("ينتهي قريباً","Ending soon")}</button><button type="button" class="chip" data-aucPreset="online">${T("عن بُعد فقط","Online only")}</button></div>
+
+  <h2 style="margin-top:22px">${T("كيف تختار العيادة المناسبة؟","How to choose the right clinic")}</h2>
+  <div class="card" style="cursor:default"><div class="auc-meter" aria-hidden="true"><i style="width:${Math.round(done/CHECK.length*100)}%"></i></div>
+  <p class="small muted" style="margin:0" id="aucChkN">${T(`أنجزت ${done} من ${CHECK.length} خطوات قبل الحجز`,`${done} of ${CHECK.length} steps done before booking`)}</p>
+  ${CHECK.map(([k,t])=>`<label class="auc-chk"><input type="checkbox" data-aucChk="${k}" ${D.chk[k]?"checked":""}><span>${t}</span></label>`).join("")}</div>
+
+  <h2 style="margin-top:22px">${T("أسئلة تسألها للعيادة قبل الحجز","Questions to ask the clinic before booking")}</h2>
+  <div class="field" style="max-width:340px"><label for="aucQs">${T("التخصص","Specialty")}</label><select id="aucQs">${opts(SPEC,St.sugSpec||"dental")}</select></div>
+  <ul class="clean" style="margin-top:8px">${qs.map(x=>`<li>${EN?x[1]:x[0]}</li>`).join("")}</ul>
+
+  <div class="disclaimer" style="border-inline-start-color:var(--bad)"><b>${T("علامات تحذير تستدعي التوقف:","Warning signs — stop and think:")}</b>
+  <ul class="auc-flag" style="margin:6px 0 0;padding-inline-start:20px">
+   <li>${T("ضغط للحجز أو الدفع الفوري «قبل انتهاء العرض اليوم».","Pressure to book or pay immediately “before the offer ends today”.")}</li>
+   <li>${T("وعد بنتيجة مضمونة 100% أو بلا أي مخاطر.","A promise of a 100% guaranteed result or zero risk.")}</li>
+   <li>${T("خصم كبير جداً دون تفصيل لما يشمله السعر.","A very large discount with no breakdown of what is included.")}</li>
+   <li>${T("رفض إظهار الترخيص أو اسم الطبيب أو سياسة الاسترداد.","Refusal to show the licence, the doctor's name or the refund policy.")}</li>
+   <li>${T("طلب دفع كامل مسبق عبر وسيلة لا يمكن تتبعها.","A demand for full upfront payment by an untraceable method.")}</li></ul></div>${DISC}`;
+}
+
+// ---------- للعيادات ----------
+const aSel = new Set();
+function vClinic(){
+  aSel.clear();
+  return `<div class="card" style="cursor:default"><h2 style="margin:0">${T("انضمّ شريكاً في المزاد العلاجي","Join as a partner clinic")}</h2>
+  <p class="muted">${T("اعرض عروض عيادتك على مرضى يبحثون عن أفضل خدمة علاجية، وتنافس بعروضك على طلباتهم. تراجع الإدارة بيانات الترخيص قبل النشر.","Show your clinic's offers to patients looking for the best treatment service, and compete for their requests. The team reviews licence details before publishing.")}</p>
+  <ul class="clean"><li>${T("يلزم ترخيص ساري للعيادة من الجهة الصحية الرسمية.","A valid clinic licence from the official health authority is required.")}</li><li>${T("يجب أن تكون العروض صادقة وواضحة التفاصيل والمدة، دون وعود بنتائج مضمونة.","Offers must be honest, clear on content and validity, with no guaranteed-result promises.")}</li><li>${T("شروط الشراكة وأي عمولة تُتفق عليها كتابةً مع الإدارة قبل النشر.","Partnership terms and any commission are agreed in writing with the team before publishing.")}</li></ul></div>
+  <form id="aucAppF" class="card auc-f" style="cursor:default;margin-top:14px" novalidate>
+   <div class="field"><label for="aN">${T("اسم العيادة","Clinic name")}</label><input type="text" id="aN" required maxlength="80"></div>
+   <div class="field"><label for="aL">${T("رقم الترخيص","Licence number")}</label><input type="text" id="aL" dir="ltr" required maxlength="40"></div>
+   <div class="field"><label for="aC">${T("المدينة","City")}</label><select id="aC">${opts(CITY,"cairo")}</select></div>
+   <div class="field"><label for="aPn">${T("المسؤول عن التواصل","Contact person")}</label><input type="text" id="aPn" required maxlength="60"></div>
+   <div class="field"><label for="aP">${T("الهاتف أو الواتساب (بصيغة دولية)","Phone or WhatsApp (international format)")}</label><input type="text" id="aP" dir="ltr" required inputmode="tel" placeholder="+201001234567"></div>
+   <div class="field"><label for="aE">${T("البريد الإلكتروني","Email")}</label><input type="text" id="aE" dir="ltr" required inputmode="email" autocapitalize="off"></div>
+   <div class="field wide"><label>${T("التخصصات","Specialties")}</label><div class="chips" id="aSp">${SPEC.map(s=>`<button type="button" class="chip" data-aSp="${s[0]}" aria-pressed="false">${h(EN?s[2]:s[1])}</button>`).join("")}</div></div>
+   <div class="field wide"><label for="aO">${T("عرض مقترح (اختياري)","Proposed offer (optional)")}</label><input type="text" id="aO" maxlength="120" placeholder="${T("مثال: فحص شامل مع تنظيف","e.g. full check-up with cleaning")}"></div>
+   <div class="field"><label for="aPr">${T("السعر","Price")}</label><input type="number" id="aPr" min="0" step="any" inputmode="decimal"></div>
+   <div class="field"><label for="aU">${T("العملة","Currency")}</label><select id="aU">${CUR.map(c=>`<option>${c}</option>`).join("")}</select></div>
+   <label class="auc-chk wide"><input type="checkbox" id="aOk" required><span>${T("أقرّ بأن بيانات العيادة وترخيصها صحيحة، وأوافق على مراجعة الإدارة لها قبل النشر.","I confirm the clinic details and licence are correct and agree to the team's review before publishing.")}</span></label>
+   <p class="small wide" id="aErr" role="alert" style="color:var(--bad);margin:0"></p>
+   <div class="wide"><button class="btn" type="submit">${T("حفظ الطلب وتجهيز رسالة الإدارة","Save application and prepare message")}</button></div>
+  </form><div id="aucAppRes" style="margin-top:14px"></div>${DISC}`;
+}
+function submitApp(f){
+  const err=q("#aErr",f), ph=normPhone(q("#aP",f).value), mail=q("#aE",f).value.trim(), pr=parseFloat(toLat(q("#aPr",f).value))||0, n=q("#aN",f).value.trim();
+  if(n.length<3) return err.textContent=T("اكتب اسم العيادة","Enter the clinic name");
+  if(q("#aL",f).value.trim().length<3) return err.textContent=T("اكتب رقم الترخيص","Enter the licence number");
+  if(!aSel.size) return err.textContent=T("اختر تخصصاً واحداً على الأقل","Choose at least one specialty");
+  if(q("#aPn",f).value.trim().length<3) return err.textContent=T("اكتب اسم المسؤول","Enter the contact person");
+  if(!ph) return err.textContent=T("اكتب رقماً صحيحاً بصيغة دولية مثل +201001234567","Enter a valid number in international format, e.g. +201001234567");
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail)) return err.textContent=T("اكتب بريداً إلكترونياً صحيحاً","Enter a valid email address");
+  if(!q("#aOk",f).checked) return err.textContent=T("يلزم الإقرار والموافقة","Confirmation is required");
+  err.textContent="";
+  const a={id:uid("a"),ts:Date.now(),n,lic:q("#aL",f).value.trim(),city:q("#aC",f).value,specs:[...aSel],person:q("#aPn",f).value.trim(),phone:ph,email:mail,offer:q("#aO",f).value.trim(),price:pr,cur:q("#aU",f).value};
+  D.apps.unshift(a); save();
+  q("#aucAppRes").innerHTML=`<div class="auc-ok"><b>✓ ${T("تم حفظ طلب الانضمام على جهازك. أرسله للإدارة لمراجعته:","The application is saved on your device. Send it to the team for review:")}</b>${sendBtns(T("طلب انضمام عيادة — المزاد العلاجي","Clinic application — Therapeutic Auction"),msgApp(a))}</div>`;
+  q("#aucAppRes").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+// ---------- طلباتي ----------
+function vMine(){
+  const s=ses();
+  const li = (m,id,kind,send) => `<li><div class="m">${m}</div><div class="auc-act" style="margin:0">${send}<button class="btn ghost" type="button" data-aucDel="${kind}:${id}">${T("حذف","Delete")}</button></div></li>`;
+  const rq=D.req.map(r=>li(`<b>${h(spN(r.spec))} — ${h(r.need)}</b><span class="small muted">${h(cyN(r.city))} · ${r.budget?h(money(r.budget,r.cur))+" · ":""}${h(tmN(r.when))} · ${fstamp(r.ts)}</span>`,r.id,"req",`<button class="btn ghost" type="button" data-aucShow="req:${r.id}">${T("عروض مطابقة","Matching offers")}</button>`)).join("");
+  const iq=D.inq.map(i=>li(`<b>${h(i.offer)}</b><span class="small muted">${h(i.clinic)} · ${h(i.price)} · ${fstamp(i.ts)}</span>`,i.id,"inq",`<a class="btn ghost" href="${h(waUrl(msgInq(i)))}" target="_blank" rel="noopener">${T("إرسال","Send")}</a>`)).join("");
+  const ap=D.apps.map(a=>li(`<b>${h(a.n)}</b><span class="small muted">${h(cyN(a.city))} · ${a.specs.map(spN).map(h).join("، ")} · ${fstamp(a.ts)}</span>`,a.id,"apps",`<a class="btn ghost" href="${h(waUrl(msgApp(a)))}" target="_blank" rel="noopener">${T("إرسال","Send")}</a>`)).join("");
+  return `<div class="card" style="cursor:default"><h2 style="margin:0">${T("طلباتي","My requests")}</h2><p class="muted small" style="margin:0">${s?T(`محفوظة في حسابك (${h(s.name)}) على هذا الجهاز فقط.`,`Saved in your account (${h(s.name)}) on this device only.`):T("محفوظة على هذا الجهاز فقط. سجّل الدخول لتبقى مرتبطة بحسابك.","Saved on this device only. Sign in to keep them tied to your account.")}</p></div>
+  <h3 style="margin-top:16px">${T("طلبات العروض","Offer requests")} (${D.req.length})</h3>${rq?`<ul class="auc-list">${rq}</ul>`:`<p class="muted">${T("لا توجد طلبات بعد.","No requests yet.")}</p>`}
+  <div id="aucShowRes"></div>
+  <h3 style="margin-top:16px">${T("طلبات الحجز والاستفسار","Booking enquiries")} (${D.inq.length})</h3>${iq?`<ul class="auc-list">${iq}</ul>`:`<p class="muted">${T("لا توجد طلبات حجز بعد.","No booking enquiries yet.")}</p>`}
+  ${D.apps.length?`<h3 style="margin-top:16px">${T("طلبات انضمام العيادة","Clinic applications")} (${D.apps.length})</h3><ul class="auc-list">${ap}</ul>`:""}${DISC}`;
+}
+
+// ---------- الواجهة والأحداث ----------
+R.auction = () => `<div class="view-head"><h1>${T("المزاد العلاجي","Therapeutic Auction")}</h1><p>${T("أفضل خدمة علاجية بأفضل سعر: عروض عيادات شريكة تتنافس لخدمتك. قارن، أو اطلب عروضاً مخصصة لحاجتك، واحجز عبر المنصة.","The best treatment service at the best price: partner clinics compete to serve you. Compare, or request offers tailored to your need, and book through the platform.")}</p></div>
+<nav class="chips auc-tabs" aria-label="${T("أقسام المزاد العلاجي","Therapeutic Auction sections")}">${TABS.map(([id,n,i])=>`<button type="button" class="chip" data-atab="${id}" aria-pressed="${St.tab===id}" style="display:inline-flex;align-items:center;gap:6px">${i}${n}${id==="mine"&&(D.req.length+D.inq.length)?` <small>(${D.req.length+D.inq.length})</small>`:""}</button>`).join("")}</nav>
+<div id="aucBody" style="margin-top:14px"></div>`;
+AFTER.auction = () => {
+  D = load();
+  const sec=q('#main section[data-view="auction"]'); if(!sec) return;
+  sec.addEventListener("click",onClick); sec.addEventListener("input",onInput); sec.addEventListener("change",onChange);
+  draw();
+};
+function draw(){
+  const b=q("#aucBody"); if(!b) return;
+  qa("[data-atab]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.atab===St.tab));
+  b.innerHTML = ({offers:vOffers,request:vRequest,tips:vTips,clinic:vClinic,mine:vMine}[St.tab]||vOffers)();
+}
+function go2(tab){ St.tab=tab; keepUI(); draw(); const t=q(".auc-tabs"); t&&t.scrollIntoView({block:"start"}); }
+function onInput(e){
+  if(e.target.id==="aucQ"){ St.q=e.target.value; redrawGrid(); }
+}
+function onChange(e){
+  const t=e.target;
+  if(t.id==="aucSp"){ St.spec=t.value; redrawGrid(); }
+  if(t.id==="aucCy"){ St.city=t.value; redrawGrid(); }
+  if(t.id==="aucSo"){ St.sort=t.value; redrawGrid(); }
+  if(t.id==="aucQs"){ St.sugSpec=t.value; keepUI(); draw(); }
+  if(t.dataset&&t.dataset.aucchk){ D.chk[t.dataset.aucchk]=t.checked; save(); const n=CHECK.filter(([k])=>D.chk[k]).length; const el=q("#aucChkN"); if(el) el.textContent=T(`أنجزت ${n} من ${CHECK.length} خطوات قبل الحجز`,`${n} of ${CHECK.length} steps done before booking`); const m=q(".auc-meter i"); if(m) m.style.width=Math.round(n/CHECK.length*100)+"%"; }
+}
+function onClick(e){
+  const t=e.target.closest("button,a"); if(!t) return;
+  const ds=t.dataset;
+  if(ds.atab){ go2(ds.atab); }
+  else if(ds.aucgo){ go2(ds.aucgo); }
+  else if(ds.inq){ openInq(ds.inq); }
+  else if(ds.cmp){ St.spec=ds.cmp; St.city=""; St.q=""; St.sort="price"; St.tab="offers"; keepUI(); draw(); q(".auc-tabs")?.scrollIntoView({block:"start"}); }
+  else if("aucclear" in ds){ St.q="";St.spec="";St.city=""; draw(); }
+  else if(ds.aucspec){ St.spec=ds.aucspec; St.city=""; St.q=""; St.sort="price"; go2("offers"); }
+  else if(ds.aucpreset){ St.q=""; St.spec=""; if(ds.aucpreset==="online"){ St.city="online"; St.sort="price"; } else { St.city=""; St.sort=ds.aucpreset; } go2("offers"); }
+  else if(ds.aspSel!==undefined||ds.asp){ const id=ds.asp; if(aSel.has(id)) aSel.delete(id); else aSel.add(id); t.setAttribute("aria-pressed",aSel.has(id)); }
+  else if(ds.aucdel){ const [k,id]=ds.aucdel.split(":"); if(t.dataset.armed){ D[k]=D[k].filter(x=>x.id!==id); save(); draw(); } else { t.dataset.armed="1"; t.textContent=T("تأكيد الحذف","Confirm delete"); } }
+  else if(ds.aucshow){ const r=D.req.find(x=>x.id===ds.aucshow.split(":")[1]); const el=q("#aucShowRes"); if(r&&el) el.innerHTML=matchHTML(r); }
+}
+// نسخ النص وإغلاق النافذة: يعمل داخل الصفحة وداخل النافذة المنبثقة
+document.addEventListener("click",e=>{
+  const c=e.target.closest("[data-aucCopy]"); if(!c) return;
+  const txt=c.getAttribute("data-auccopy")||c.dataset.auccopy;
+  (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>say(T("تم النسخ","Copied")),()=>{ const ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta); ta.select(); try{document.execCommand("copy"); say(T("تم النسخ","Copied"));}catch{} ta.remove(); });
+});
+
+// ---------- لوحة الإدارة: العيادات والعروض ----------
+function adminHTML(){
+  const cl=customs("aucClinic"), of=customs("aucOffer");
+  const specChips = SPEC.map(s=>`<label class="chip" style="cursor:pointer"><input type="checkbox" name="cs" value="${s[0]}" style="margin-inline-end:4px"> ${h(s[1])}</label>`).join("");
+  const itemClinic = c => `<li><div class="m"><b>${h(c.n)}</b><span class="small muted">${h(cyN(c.city))} · ${(c.specs||[]).map(x=>h(sp(x)[1])).join("، ")}${c.ver?" · ✓ موثّق":""}</span></div><div class="auc-act" style="margin:0"><button class="btn ghost" type="button" data-aucEdC="${h(c.id)}">تعديل</button><button class="btn ghost" type="button" data-aucDelE="${h(c.id)}">حذف</button></div></li>`;
+  const itemOffer = o => `<li><div class="m"><b>${h(o.t)}</b><span class="small muted">${h((clinicById(o.clinic)||{}).n||"—")} · ${h(money(o.price,o.cur))} · حتى ${fdate(offerUntil(o))}${left(offerUntil(o))<0?" (منتهٍ)":""}</span></div><div class="auc-act" style="margin:0"><button class="btn ghost" type="button" data-aucEdO="${h(o.id)}">تعديل</button><button class="btn ghost" type="button" data-aucDelE="${h(o.id)}">حذف</button></div></li>`;
+  const demoRow = d => `<li><div class="m"><b>${h(d.n||d.t)}</b><span class="small muted">تجريبي</span></div><button class="btn ghost" type="button" data-aucHide="${h(d.id)}">${hidden(d.id)?"إظهار":"إخفاء"}</button></li>`;
+  return `<div class="panel" id="aucAdm"><h2>المزاد العلاجي: العيادات والعروض</h2>
+  <p class="small muted">أضف العيادات الشريكة وعروضها هنا، ثم صدّر ملف المحتوى (زر «نشر المحتوى لكل الزوار» أعلاه) وارفعه ليراها كل الزوار. العيادات والعروض المعلَّمة «تجريبي» أمثلة يمكنك إخفاؤها أو الإبقاء عليها حتى تنشر عروضاً حقيقية. طلبات المرضى وطلبات انضمام العيادات تصلك بالواتساب أو البريد؛ الصق «رمز الطلب» أدناه لتعبئة بيانات العيادة تلقائياً.</p>
+  <div id="aucAdStats"><div class="grid-3" style="margin-bottom:12px"><div class="card" style="cursor:default"><span class="muted small">عيادات منشورة</span><b style="font-size:1.4rem">${clinics().length}</b></div><div class="card" style="cursor:default"><span class="muted small">عروض سارية</span><b style="font-size:1.4rem">${offers().length}</b></div><div class="card" style="cursor:default"><span class="muted small">مضافة من الإدارة</span><b style="font-size:1.4rem">${cl.length+of.length}</b></div></div></div>
+  <form id="aucAdI" class="field" style="margin-bottom:14px"><label for="aiC">استيراد رمز طلب انضمام عيادة</label><div class="row"><input type="text" id="aiC" dir="ltr" placeholder="AUC1:…" style="flex:1 1 240px"><button class="btn ghost" type="submit">تعبئة النموذج</button></div></form>
+  <div class="grid-2">
+  <form id="aucAdC" class="panel"><h3 id="aucCh">إضافة عيادة شريكة</h3><input type="hidden" id="acId">
+   <div class="field"><label for="acN">اسم العيادة (عربي)</label><input type="text" id="acN" required maxlength="80"></div>
+   <div class="field"><label for="acNe">اسم العيادة (إنجليزي)</label><input type="text" id="acNe" dir="ltr" maxlength="80"></div>
+   <div class="field"><label for="acCt">المدينة</label><select id="acCt">${opts(CITY,"cairo")}</select></div>
+   <div class="field"><label>التخصصات</label><div class="chips">${specChips}</div></div>
+   <div class="field"><label for="acP">الهاتف (بصيغة دولية، يظهر للإدارة فقط)</label><input type="text" id="acP" dir="ltr" placeholder="+201001234567"></div>
+   <div class="field"><label for="acL">رقم الترخيص</label><input type="text" id="acL" dir="ltr" maxlength="40"></div>
+   <label class="auc-chk"><input type="checkbox" id="acV"><span>تم التحقق من الترخيص (تظهر شارة «ترخيص موثّق»)</span></label>
+   <div class="field"><label for="acA">نبذة (عربي)</label><textarea id="acA" maxlength="300"></textarea></div>
+   <div><button class="btn" type="submit">حفظ العيادة</button> <button class="btn ghost" type="button" id="acReset">جديد</button></div></form>
+  <form id="aucAdO" class="panel"><h3 id="aucOh">إضافة عرض</h3><input type="hidden" id="aoId">
+   <div class="field"><label for="aoC">العيادة</label><select id="aoC" required>${clinics().map(c=>`<option value="${h(c.id)}">${h(c.n)}</option>`).join("")}</select></div>
+   <div class="field"><label for="aoT">عنوان العرض (عربي)</label><input type="text" id="aoT" required maxlength="120"></div>
+   <div class="field"><label for="aoTe">عنوان العرض (إنجليزي)</label><input type="text" id="aoTe" dir="ltr" maxlength="120"></div>
+   <div class="field"><label for="aoS">التخصص</label><select id="aoS">${opts(SPEC,"dental")}</select></div>
+   <div class="field"><label for="aoCt">المدينة (اتركها فارغة لمدينة العيادة)</label><select id="aoCt">${opts(CITY,"","مدينة العيادة")}</select></div>
+   <div class="row"><div class="field" style="flex:1 1 110px"><label for="aoP">السعر بعد الخصم</label><input type="number" id="aoP" min="0" step="any" required></div><div class="field" style="flex:1 1 110px"><label for="aoW">السعر قبل الخصم</label><input type="number" id="aoW" min="0" step="any"></div><div class="field" style="flex:1 1 90px"><label for="aoU">العملة</label><select id="aoU">${CUR.map(c=>`<option>${c}</option>`).join("")}</select></div></div>
+   <div class="field"><label for="aoD">ينتهي العرض في</label><input type="date" id="aoD" required min="${today()}" max="${addD(today(),365)}"></div>
+   <div class="field"><label for="aoI">ما يشمله العرض (عربي)</label><textarea id="aoI" maxlength="240"></textarea></div>
+   <div class="field"><label for="aoIe">ما يشمله العرض (إنجليزي)</label><textarea id="aoIe" dir="ltr" maxlength="240"></textarea></div>
+   <div><button class="btn" type="submit">حفظ العرض</button> <button class="btn ghost" type="button" id="aoReset">جديد</button></div></form>
+  </div>
+  <div id="aucAdLists"><h3>العيادات المضافة (${cl.length})</h3>${cl.length?`<ul class="auc-list">${cl.map(itemClinic).join("")}</ul>`:`<p class="muted small">لا توجد عيادات مضافة بعد.</p>`}
+  <h3>العروض المضافة (${of.length})</h3>${of.length?`<ul class="auc-list">${of.map(itemOffer).join("")}</ul>`:`<p class="muted small">لا توجد عروض مضافة بعد.</p>`}
+  <h3>العيادات والعروض التجريبية</h3><ul class="auc-list">${[...DEMO_C,...DEMO_O].map(demoRow).join("")}</ul></div></div>`;
+}
+const adminAfter = AFTER.admin;
+AFTER.admin = () => { if(adminAfter) adminAfter(); mountAdmin(); };
+function mountAdmin(){
+  const sec=q('#main section[data-view="admin"]'); if(!sec) return;
+  const old=q("#aucAdm"); const html=adminHTML();
+  if(old) old.outerHTML=html;
+  else { const anchor=q("#trkAdm")||sec.querySelector(".view-head"); anchor ? anchor.insertAdjacentHTML("afterend",html) : sec.insertAdjacentHTML("afterbegin",html); }
+  wireAdmin();
+}
+function wireAdmin(){
+  const root=q("#aucAdm"); if(!root) return;
+  root.addEventListener("click",async e=>{
+    const t=e.target.closest("button"); if(!t) return; const ds=t.dataset;
+    if(ds.aucedc){ const c=customs("aucClinic").find(x=>x.id===ds.aucedc); if(c) fillClinic(c); }
+    if(ds.aucedo){ const o=customs("aucOffer").find(x=>x.id===ds.aucedo); if(o) fillOffer(o); }
+    if(t.id==="acReset") resetClinic(); if(t.id==="aoReset") resetOffer();
+    if(ds.aucdele){ if(t.dataset.armed){ try{ await S.db.doc("entries/"+ds.aucdele).delete(); say("تم الحذف"); }catch{ say("تعذر الحذف"); } } else { t.dataset.armed="1"; t.textContent="تأكيد الحذف"; } }
+    if(ds.auchide){ const id=ds.auchide; try{ hidden(id) ? await S.db.doc("entries/hide-"+id).delete() : await S.db.doc("entries/hide-"+id).set({kind:"hide",target:id}); say(hidden(id)?"تم الإظهار":"تم الإخفاء"); }catch{ say("تعذر التنفيذ"); } }
+  });
+}
+function refreshAdmin(){
+  const root=q("#aucAdm"); if(!root) return;
+  const tmp=document.createElement("div"); tmp.innerHTML=adminHTML();
+  ["#aucAdStats","#aucAdLists"].forEach(sel=>{ const n=tmp.querySelector(sel), o=q(sel,root); if(n&&o) o.innerHTML=n.innerHTML; });
+  const sel=q("#aoC"), ns=tmp.querySelector("#aoC"); if(sel&&ns){ const v=sel.value; sel.innerHTML=ns.innerHTML; if([...sel.options].some(o=>o.value===v)) sel.value=v; }
+}
+const fv = (id,v) => { const el=q("#"+id); if(el) el.value=v??""; };
+function fillClinic(c){ fv("acId",c.id);fv("acN",c.n);fv("acNe",c.ne);fv("acCt",c.city);fv("acP",c.phone);fv("acL",c.lic);fv("acA",c.ab); q("#acV").checked=!!c.ver; qa('#aucAdC [name=cs]').forEach(x=>x.checked=(c.specs||[]).includes(x.value)); q("#aucCh").textContent="تعديل العيادة"; q("#aucAdC").scrollIntoView({block:"center"}); }
+function resetClinic(){ q("#aucAdC").reset(); fv("acId",""); q("#aucCh").textContent="إضافة عيادة شريكة"; }
+function fillOffer(o){ fv("aoId",o.id);fv("aoC",o.clinic);fv("aoT",o.t);fv("aoTe",o.te);fv("aoS",o.spec);fv("aoCt",o.city||"");fv("aoP",o.price);fv("aoW",o.was);fv("aoU",o.cur);fv("aoD",o.until);fv("aoI",o.inc);fv("aoIe",o.ince); q("#aucOh").textContent="تعديل العرض"; q("#aucAdO").scrollIntoView({block:"center"}); }
+function resetOffer(){ q("#aucAdO").reset(); fv("aoId",""); q("#aucOh").textContent="إضافة عرض"; }
+async function put(id,body,msg){ if(!S.db) return say("قاعدة البيانات غير متاحة"); try{ await S.db.doc("entries/"+id).set(body); say(msg); }catch{ say("تعذر الحفظ: يلزم تسجيل الدخول بحساب المدير"); } }
+function saveClinic(f){
+  const n=q("#acN",f).value.trim(), ph=q("#acP",f).value.trim()?normPhone(q("#acP",f).value):"", specs=qa("[name=cs]:checked",f).map(x=>x.value);
+  if(!n) return say("اكتب اسم العيادة"); if(!specs.length) return say("اختر تخصصاً واحداً على الأقل"); if(ph===null) return say("رقم الهاتف غير صحيح: استخدم الصيغة الدولية مثل +201001234567");
+  const id=q("#acId",f).value||uid("auc-c-"), old=customs("aucClinic").find(x=>x.id===id)||{};
+  put(id,{kind:"aucClinic",n,ne:q("#acNe",f).value.trim(),city:q("#acCt",f).value,specs,phone:ph||"",lic:q("#acL",f).value.trim(),ver:q("#acV",f).checked,ab:q("#acA",f).value.trim(),ts:old.ts||Date.now()},"تم حفظ العيادة").then(()=>{ resetClinic(); });
+}
+function saveOffer(f){
+  const price=parseFloat(q("#aoP",f).value), was=parseFloat(q("#aoW",f).value)||0, until=q("#aoD",f).value;
+  if(!(price>=0)||!q("#aoP",f).value) return say("اكتب سعراً صحيحاً");
+  if(was&&was<price) return say("السعر قبل الخصم يجب ألا يقل عن السعر بعده");
+  if(!until||until<today()) return say("تاريخ الانتهاء يجب أن يكون اليوم أو بعده");
+  const id=q("#aoId",f).value||uid("auc-o-"), old=customs("aucOffer").find(x=>x.id===id)||{};
+  put(id,{kind:"aucOffer",clinic:q("#aoC",f).value,t:q("#aoT",f).value.trim(),te:q("#aoTe",f).value.trim(),spec:q("#aoS",f).value,city:q("#aoCt",f).value,price,was,cur:q("#aoU",f).value,until,inc:q("#aoI",f).value.trim(),ince:q("#aoIe",f).value.trim(),ts:old.ts||Date.now()},"تم حفظ العرض").then(()=>{ resetOffer(); });
+}
+function importCode(f){
+  const a=decode(q("#aiC",f).value); if(!a) return say("الرمز غير صالح");
+  fv("acN",a.n); fv("acCt",a.city); fv("acP",a.phone); fv("acL",a.lic);
+  qa("[name=cs]").forEach(x=>x.checked=(a.specs||[]).includes(x.value));
+  if(a.offer){ fv("aoT",a.offer); fv("aoP",a.price||""); fv("aoU",a.cur||"USD"); if((a.specs||[])[0]) fv("aoS",a.specs[0]); }
+  say("تمت تعبئة نموذج العيادة. راجع الترخيص ثم احفظ، وأضف العرض بعد حفظ العيادة.");
+  q("#aucAdC").scrollIntoView({block:"center"});
+}
+
+// إعادة الرسم عند وصول بيانات الإدارة المحدَّثة
+if(typeof applyEntries==="function"){ const _ap=applyEntries; applyEntries = function(docs){ _ap(docs); try{ const v=currentView(); if(v==="auction"&&q("#aucBody")&&!q("#drawer .drawer")) draw(); if(v==="admin"&&q("#aucAdm")) refreshAdmin(); }catch(e){} }; }
+
+// ---------- التسجيل في التنقل ----------
+if(!VIEWS.some(v=>v[0]==="auction")){ const i=VIEWS.findIndex(v=>v[0]==="consult"); VIEWS.splice(i>=0?i:VIEWS.length-3, 0, ["auction", T("المزاد العلاجي","Therapeutic Auction")]); }
+window.TY_NAV_META = Object.assign(window.TY_NAV_META||{}, {auction:{g:"svc", d:["أفضل خدمة علاجية: عروض عيادات شريكة تتنافس لخدمتك، قارن واحجز أو اطلب عروضاً","The best treatment service: partner clinics compete for you. Compare and book, or request offers"]}});
+if(EN && typeof I18N_EN!=="undefined") I18N_EN["المزاد العلاجي"]="Therapeutic Auction";
+window.TY_AUCTION = {offers, clinics, matches, discount};
+if(typeof renderRail==="function") renderRail();
+if(["#auction"].includes(location.hash) && typeof go==="function") go();
 })();
 </script><script src="pwa-install.js" defer></script>
 
