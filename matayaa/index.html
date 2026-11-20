@@ -266,6 +266,205 @@ footer .legal{grid-column:1/-1;border-top:1px solid #3a3550;padding-top:16px;fon
 .visit div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
 .visit b{display:block;margin-bottom:2px}
 .visit span{color:var(--muted);font-size:.93rem}
+
+/* ============ v3 look: living sky, app shell, art cards, planner ============ */
+:root{--r:18px;--shadow:0 1px 2px #1e1b2e0f,0 8px 24px -12px #1e1b2e33}
+body{background:var(--bg) radial-gradient(1200px 500px at 100% -10%,#c8913a14,transparent 60%)}
+.btn{border-radius:999px;padding:11px 22px}
+.btn-sm{border-radius:999px}
+.btn-lg{min-height:54px;padding:14px 28px;font-size:1.06rem}
+.btn-gold{background:linear-gradient(180deg,#D9A24A,#C8913A);box-shadow:0 6px 18px -8px #c8913acc}
+.btn-glass{background:#ffffff1c;color:#fff;border:1px solid #ffffff40;backdrop-filter:blur(8px)}
+.btn-glass:hover{background:#ffffff2e}
+.muted{color:var(--muted)}
+.linkish{background:none;border:none;color:var(--gold-ink);font:inherit;text-decoration:underline;cursor:pointer;padding:0}
+
+/* shell */
+.bar{background:#1E1B2Ef2;backdrop-filter:blur(12px);border-bottom:1px solid #ffffff14}
+.nav{margin-inline-start:auto;flex-wrap:nowrap;align-items:center}
+.nav a,.nav button{color:#e8dcc6;text-decoration:none;padding:8px 14px;border-radius:999px;font:inherit;font-size:.93rem;font-weight:600;white-space:nowrap;background:none;border:none;cursor:pointer}
+.nav a:hover,.nav button:hover{background:#ffffff14;color:#fff}
+.nav a[aria-current="page"]{background:var(--gold);color:var(--night)}
+.nav .nav-plan{border:1px solid #C8913A88}
+@media (max-width:1240px){.nav{display:flex;position:static;flex-direction:row;padding:0;border:0;background:none}.nav a{padding:8px 11px}}
+@media (max-width:900px){.nav{display:none!important}}
+.menu-btn{display:none!important}
+.sheet{position:fixed;inset:0;z-index:80;background:#0d0b16a6;display:flex;align-items:flex-end;justify-content:center;animation:fade .18s ease}
+.sheet-panel{background:var(--surface);color:var(--fg);width:min(720px,100%);border-radius:24px 24px 0 0;padding:20px 18px calc(22px + env(safe-area-inset-bottom,0px));max-height:86vh;overflow:auto;animation:up .22s ease}
+@media (min-width:901px){.sheet{align-items:center}.sheet-panel{border-radius:24px}}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.tile{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:14px;border-radius:16px;background:var(--chip);color:var(--fg);text-decoration:none;font-weight:700;font-size:.92rem;border:1px solid transparent}
+.tile:hover{border-color:var(--gold)}
+.tile svg{width:26px;height:26px;color:var(--gold-ink)}
+@keyframes fade{from{opacity:0}}@keyframes up{from{transform:translateY(30px);opacity:0}}
+
+.dock{display:none}
+@media (max-width:900px){
+  .dock{display:grid;grid-template-columns:repeat(5,1fr);align-items:end;position:fixed;inset:auto 10px calc(10px + env(safe-area-inset-bottom,0px)) 10px;z-index:55;background:#1E1B2Ef5;backdrop-filter:blur(12px);border:1px solid #ffffff1a;border-radius:22px;padding:6px;gap:2px;box-shadow:0 10px 30px -10px #000a}
+  .dock a,.dock button{display:flex;flex-direction:column;align-items:center;gap:2px;color:#cfc2a8;text-decoration:none;font:inherit;font-size:.72rem;font-weight:700;padding:6px 2px;border-radius:14px;background:none;border:none;cursor:pointer}
+  .dock svg{width:22px;height:22px}
+  .dock a[aria-current="page"]{color:#fff;background:#ffffff14}
+  .dock .dock-main{background:linear-gradient(180deg,#D9A24A,#C8913A);color:var(--night);transform:translateY(-14px);border-radius:18px;padding:10px 2px;box-shadow:0 8px 20px -8px #c8913a}
+  .dock .dock-main[aria-current="page"]{background:linear-gradient(180deg,#D9A24A,#C8913A);color:var(--night)}
+  body{padding-bottom:calc(86px + env(safe-area-inset-bottom,0px))}
+  .toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+}
+
+/* living sky hero */
+.hero.sky{min-height:min(88vh,720px);display:flex;align-items:center;background:none;isolation:isolate}
+.sky-bg{position:absolute;inset:0;z-index:-2;background:linear-gradient(180deg,var(--s1),var(--s2) 55%,var(--s3))}
+.ph-dawn{--s1:#2B2A55;--s2:#8C5E86;--s3:#F2A86E;--dune1:#3a2a38;--dune2:#5b3b45;--dune3:#7c5150}
+.ph-morning{--s1:#6FA6D6;--s2:#B8D6EA;--s3:#F5E3C2;--dune1:#B87A3E;--dune2:#D49A55;--dune3:#E7BD7D}
+.ph-noon{--s1:#4E8FCB;--s2:#A9CDE8;--s3:#F7E7C8;--dune1:#B97C40;--dune2:#D9A15D;--dune3:#ECC88E}
+.ph-asr{--s1:#5E83B8;--s2:#E3B783;--s3:#F2C98B;--dune1:#9C5E2E;--dune2:#C27E43;--dune3:#DBA262}
+.ph-sunset{--s1:#2C2450;--s2:#B4546A;--s3:#F39A4C;--dune1:#3C2222;--dune2:#6B3428;--dune3:#9A4E2E}
+.ph-night{--s1:#0E0C1D;--s2:#1E1B3A;--s3:#3A2F56;--dune1:#120F1E;--dune2:#1E1A2F;--dune3:#2B2541}
+.scene{position:absolute;inset:auto 0 0 0;width:100%;height:100%;z-index:-1}
+.scene .d3{fill:var(--dune3)}.scene .d2{fill:var(--dune2)}.scene .d1{fill:var(--bg)}
+.scene .cm,.scene .palm,.scene .tent{fill:var(--dune1);stroke:var(--dune1)}
+.scene .palm{fill:none}
+.scene .sun{fill:#FFF1CF}.scene .sun-halo{fill:#FFF1CF;opacity:.22}
+.ph-sunset .scene .sun{fill:#FFC67A}
+.scene .moon{fill:#F4EBD6}.scene .moon-cut{fill:var(--s2)}
+.scene .stars circle{fill:#fff;animation:tw 3.5s ease-in-out infinite}
+@keyframes tw{50%{opacity:.25}}
+.caravan{animation:walk 80s linear infinite;animation-delay:-38s}
+.caravan .lg{animation:step .9s ease-in-out infinite alternate;transform-origin:50% 0}
+@keyframes walk{from{transform:translateX(1250px)}to{transform:translateX(-520px)}}
+@keyframes step{to{transform:skewX(8deg)}}
+.hero-in{position:relative;padding-block:56px 240px;color:#fff;display:block!important}
+.hero.sky h1{color:#fff;font-size:clamp(2.5rem,7vw,4.8rem);line-height:1.12;text-shadow:0 2px 24px #0005}
+.hero.sky h1 em{font-style:normal;color:#FFD48A}
+.hero.sky.ph-morning h1 em,.hero.sky.ph-noon h1 em,.hero.sky.ph-asr h1 em{color:#9A4E1E}
+.ph-morning .hero-in,.ph-noon .hero-in,.ph-asr .hero-in{color:#1E1B2E}
+.ph-morning.hero.sky h1,.ph-noon.hero.sky h1,.ph-asr.hero.sky h1{color:#1E1B2E;text-shadow:none}
+.ph-morning .lead,.ph-noon .lead,.ph-asr .lead{color:#2c2838!important}
+.ph-morning .btn-glass,.ph-noon .btn-glass,.ph-asr .btn-glass{color:#1E1B2E;border-color:#1e1b2e40;background:#ffffff70}
+.hero.sky .lead{color:#efe5d3;max-width:52ch;font-size:1.15rem;margin-top:16px}
+.greet{display:block;font-family:var(--display);font-size:1.4rem;opacity:.9;margin-bottom:4px}
+.live{display:inline-flex;align-items:center;gap:8px;background:#0000002e;color:#fff;border:1px solid #ffffff30;border-radius:999px;padding:6px 14px;font-size:.88rem;margin-bottom:18px;backdrop-filter:blur(6px)}
+.live .dot{width:9px;height:9px;border-radius:50%;background:#e57373}.live .dot.on{background:#7FE0A0;box-shadow:0 0 0 4px #7fe0a033}
+@media (max-width:760px){.hero.sky{min-height:720px;align-items:flex-start}.hero-in{padding-block:30px 250px}.hero.sky .lead{font-size:1.02rem}.hero .cta .btn{flex:1 1 100%}}
+
+/* sections */
+.sec-head h2{font-size:clamp(1.7rem,3.6vw,2.5rem)}
+.band-night{background:var(--night);color:#e8dcc6}
+.band-night h2{color:#fff}
+.split-2{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center}
+@media (max-width:860px){.split-2{grid-template-columns:1fr}}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stats div{background:#ffffff0d;border:1px solid #ffffff1a;border-radius:18px;padding:18px}
+.stats b{display:block;font-size:2.2rem;color:var(--gold);font-family:var(--display)}
+.stats small{color:#cfc2a8}
+.map-teaser{display:block;border-radius:22px;overflow:hidden;box-shadow:var(--shadow);background:var(--map-bg)}
+.map-teaser svg{display:block;width:100%;height:auto}
+
+.hscroll{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 14px;margin-inline:-2px;scrollbar-width:thin}
+.now-card{flex:0 0 190px;scroll-snap-align:start;text-align:start;display:flex;flex-direction:column;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px;font:inherit;color:var(--fg);cursor:pointer;box-shadow:var(--shadow)}
+.now-card:hover{border-color:var(--gold)}
+.now-ic{width:38px;height:38px;border-radius:12px;background:var(--chip);color:var(--gold-ink);display:grid;place-items:center}.now-ic svg{width:22px;height:22px}
+.now-t{font-size:1.35rem;font-weight:800;color:var(--gold-ink)}
+.now-card small{color:var(--muted)}
+
+.moods{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media (max-width:980px){.moods{grid-template-columns:1fr 1fr}}
+.mood{position:relative;overflow:hidden;text-align:start;border:none;border-radius:22px;padding:22px 18px;min-height:190px;display:flex;flex-direction:column;gap:6px;color:#fff;font:inherit;cursor:pointer;box-shadow:var(--shadow);transition:transform .15s}
+.mood:hover{transform:translateY(-3px)}
+.mood b{font-family:var(--display);font-size:1.5rem;line-height:1.2}
+.mood small{opacity:.9;font-size:.9rem}
+.mood-ic{width:44px;height:44px;border-radius:14px;background:#ffffff26;display:grid;place-items:center;margin-bottom:auto}.mood-ic svg{width:26px;height:26px}
+.mood-go{font-weight:800;font-size:.85rem;margin-top:6px}
+.m-family{background:linear-gradient(150deg,#E2A04E,#9B4A2C)}
+.m-adventure{background:linear-gradient(150deg,#C47A3A,#5E3B22)}
+.m-stars{background:linear-gradient(150deg,#3A3360,#0E0C1D)}
+.m-heritage{background:linear-gradient(150deg,#5E8A55,#2A4630)}
+@media (max-width:520px){.mood{min-height:160px;padding:16px 14px}.mood b{font-size:1.25rem}}
+
+/* art cards */
+.xcard{padding:0;overflow:hidden;box-shadow:var(--shadow);transition:transform .15s,box-shadow .15s;border-radius:20px}
+.xcard:hover{transform:translateY(-3px);box-shadow:0 14px 34px -16px #1e1b2e55}
+.xcard .art{position:relative;height:118px}
+.xcard .art svg:first-child{position:absolute;inset:0;width:100%;height:100%}
+.art-ic{position:absolute;inset-inline-start:16px;bottom:-22px;width:52px;height:52px;border-radius:16px;background:var(--surface);color:var(--gold-ink);display:grid;place-items:center;box-shadow:0 6px 16px -6px #0006}
+.art-ic svg{width:30px;height:30px}
+.art-badge{position:absolute;inset-inline-end:12px;top:12px;background:#1E1B2Eb3;color:#fff;font-size:.74rem;font-weight:700;padding:3px 10px;border-radius:999px;backdrop-filter:blur(4px)}
+.xcard .cbody{padding:30px 18px 18px;display:flex;flex-direction:column;gap:8px;flex:1}
+.xcard h3{font-size:1.32rem}
+
+/* page heads become dusk bands */
+.page-head,.plan-hero{background:linear-gradient(160deg,#2C2450,#1E1B2E 55%,#3A2632);color:var(--sand);position:relative;overflow:hidden}
+.page-head::after,.plan-hero::after{content:"";position:absolute;inset:auto -10% -40px -10%;height:80px;background:var(--bg);border-radius:50% 50% 0 0/100% 100% 0 0}
+.page-head .wrap,.plan-hero .wrap{position:relative;z-index:1;padding-block:40px 64px}
+.plan-hero h1{color:#fff;font-size:clamp(2rem,5vw,3.2rem)}
+.plan-hero p{color:#ddd0b8;max-width:64ch;margin-top:10px}
+.plan-hero .eyebrow,.page-head .eyebrow{color:#E0B26A}
+.pass-hero{background:linear-gradient(160deg,#9B4A2C,#C8913A 60%,#E2A04E)}
+.pass-hero p{color:#fff3df}
+
+/* planner */
+.plan-grid>*,.plan-body>*{min-width:0}
+.plan-grid{display:grid;grid-template-columns:minmax(300px,400px) 1fr;gap:22px;align-items:start}
+@media (max-width:980px){.plan-grid{grid-template-columns:1fr}}
+.plan-form{position:sticky;top:84px;border-radius:22px}
+@media (max-width:980px){.plan-form{position:static}}
+.pstep{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.pn{width:30px;height:30px;border-radius:50%;background:var(--night);color:var(--gold);display:grid;place-items:center;font-weight:800}
+.pchips,.dchips{display:flex;flex-wrap:wrap;gap:8px}
+.pchip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:8px 14px;font:inherit;font-size:.92rem;font-weight:600;cursor:pointer;min-height:40px}
+.pchip svg{width:18px;height:18px;color:var(--gold-ink)}
+.pchip small{color:var(--muted);font-weight:500}
+.pchip[aria-pressed="true"]{background:var(--night);color:#fff;border-color:var(--night)}
+.pchip[aria-pressed="true"] svg,.pchip[aria-pressed="true"] small{color:#E0B26A}
+:root[data-theme="dark"] .pchip[aria-pressed="true"]{background:var(--gold);color:var(--night)}
+.ppl{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.days{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin}
+.day{flex:0 0 66px;display:flex;flex-direction:column;align-items:center;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:16px;padding:8px 4px;font:inherit;cursor:pointer;line-height:1.3}
+.day b{font-size:1.3rem}.day small{font-size:.72rem;color:var(--muted)}
+.day[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:var(--night)}.day[aria-pressed="true"] small{color:var(--night)}
+.plan-card{background:var(--surface);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);overflow:hidden}
+.plan-top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:20px 22px;border-bottom:1px dashed var(--line)}
+.plan-sum{text-align:end;display:flex;flex-direction:column}
+.plan-sum b{font-size:1.9rem;color:var(--gold-ink);font-family:var(--display);line-height:1.1}
+.plan-sum small{color:var(--muted)}
+.plan-body{display:grid;grid-template-columns:1.25fr .75fr;gap:18px;padding:18px 22px}
+@media (max-width:1180px){.plan-body{grid-template-columns:1fr}}
+.timeline{list-style:none;margin:0;padding:0;position:relative}
+.stop{display:grid;grid-template-columns:62px 40px 1fr;gap:10px;padding-bottom:18px;position:relative;animation:up .35s ease both;animation-delay:calc(var(--i)*60ms)}
+.stop::before{content:"";position:absolute;inset-inline-start:calc(62px + 10px + 19px);top:40px;bottom:0;border-inline-start:2px dashed var(--line)}
+.stop:last-child::before{display:none}
+.stop-time{text-align:end;line-height:1.25;padding-top:6px}.stop-time b{display:block;font-size:.95rem}.stop-time small{color:var(--muted);font-size:.75rem}
+.stop-dot{width:40px;height:40px;border-radius:50%;background:var(--night);color:var(--gold);display:grid;place-items:center;position:relative;z-index:1}.stop-dot svg{width:22px;height:22px}
+.stop-body{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:12px 14px;min-width:0}
+.stop-body h3{font-size:1.15rem}.stop-body p{color:var(--muted);font-size:.9rem}
+.stop-act{margin-top:8px;align-items:center}
+.stop-act .right{gap:6px}
+@media (max-width:520px){.stop{grid-template-columns:52px 34px 1fr;gap:8px}.stop::before{inset-inline-start:calc(52px + 8px + 16px)}.stop-dot{width:34px;height:34px}.stop-act .right{width:100%}}
+.plan-map .route-map{width:100%;height:auto;display:block;border-radius:16px}
+.rm-bg{fill:var(--map-bg)}.rm-z{fill:var(--surface);stroke:var(--line);stroke-width:2}
+.rm-path{fill:none;stroke:var(--gold);stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:4 16;animation:dash 2s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-40}}
+.rm-dot{fill:var(--night);stroke:var(--gold);stroke-width:4}.rm-gate{fill:var(--gold)}
+.rm-t{fill:#fff;font:800 22px var(--body)}
+.plan-cta{display:flex;gap:10px;flex-wrap:wrap;padding:16px 22px 22px;border-top:1px dashed var(--line)}
+@media (max-width:520px){.plan-cta .btn{flex:1 1 100%}}
+.mini-list{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+.mini-list li{display:grid;grid-template-columns:70px 1fr auto;gap:8px;padding:8px 10px;background:var(--chip);border-radius:10px;font-size:.92rem}
+
+/* day pass */
+.pass-list{list-style:none;padding:0;margin:0;display:grid;gap:14px;max-width:760px;margin-inline:auto}
+.pass{display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--shadow);position:relative}
+.pass::after{content:"";position:absolute;inset-block:14px;inset-inline-end:166px;border-inline-start:2px dashed var(--line)}
+.pass-free::after{display:none}
+.pass-time{font-size:1.2rem;font-weight:800;color:var(--gold-ink);min-width:70px}
+.pass .qr{background:#fff;padding:8px;border-radius:12px;width:150px}
+.pass .qr svg{width:134px!important;height:134px!important}
+@media (max-width:620px){.pass{grid-template-columns:1fr;text-align:center}.pass::after{display:none}.pass .qr{margin-inline:auto}}
+.dsearch{margin-top:18px;max-width:560px}
+.dsearch input{width:100%;border-radius:999px;padding:14px 20px;border:1px solid #ffffff30;background:#ffffff14;color:#fff;font:inherit}
+.dsearch input::placeholder{color:#d6c8ae}
+footer .brandline{color:#a99c84}
+footer .brandline a{display:inline;color:#E0B26A}
+@media (max-width:760px){footer .wrap{grid-template-columns:1fr}}
 </style>
 
 <header class="bar">
@@ -275,23 +474,19 @@ footer .legal{grid-column:1/-1;border-top:1px solid #3a3550;padding-top:16px;fon
       <span><b>مطايا</b><small>الشحانية · قطر</small></span>
     </a>
     <nav class="nav" id="nav" aria-label="القائمة الرئيسية">
+      <a href="#home">اليوم</a>
+      <a href="#plan" class="nav-plan">صمّم يومك</a>
+      <a href="#discover">اكتشف</a>
       <a href="#map">الخريطة</a>
-      <a href="#experiences">التجارب</a>
-      <a href="#packages">الباقات</a>
-      <a href="#events">الفعاليات</a>
-      <a href="#tour">المتحف</a>
-      <a href="#weddings">المناسبات</a>
-      <a href="#membership">العضويات</a>
-      <a href="#sponsor">ناقتي</a>
-      <a href="#shop">المتجر</a>
-      <a href="#en" lang="en">English</a>
+      <a href="#tickets">تذاكري</a>
+      <button type="button" id="moreBtn" aria-haspopup="dialog">المزيد</button>
     </nav>
     <div class="bar-actions">
       <button class="icon-btn" id="searchBtn" type="button" aria-label="بحث"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button>
-      <a class="icon-btn" href="#cart" aria-label="سلة المتجر">سلة <span class="cart-count" id="cartCount">0</span></a>
+      <a class="icon-btn" href="#cart" aria-label="سلة المتجر"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg> <span class="cart-count" id="cartCount">0</span></a>
       <a class="icon-btn" href="#account" id="acctBtn">حسابي</a>
       <button class="icon-btn" id="themeBtn" type="button" aria-label="تبديل المظهر الفاتح والداكن"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg></button>
-      <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="nav">القائمة</button>
+      <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-haspopup="dialog">الأقسام</button>
     </div>
   </div>
 </header>
@@ -302,42 +497,25 @@ footer .legal{grid-column:1/-1;border-top:1px solid #3a3550;padding-top:16px;fon
   <div class="wrap">
     <div>
       <h4>مطايا الشحانية</h4>
-      <p>مطايا الشحانية.. نحمل الموروث إلى العالم. وجهة تراثية وعائلية متكاملة في الشحانية بدولة قطر.</p>
+      <p>نحمل الموروث إلى العالم. وجهة تراثية وعائلية في الشحانية بدولة قطر، مفتوحة يومياً من <span class="num">8:00 ص</span> إلى <span class="num">10:00 م</span>.</p>
       <p class="mt">الهاتف: <span class="placeholder num">+974 0000 0000</span> (يُعتمد لاحقاً)</p>
-      <p>البريد: <span class="placeholder">يُعلن عند الإطلاق</span></p>
     </div>
     <div>
-      <h4>احجز</h4>
-      <a href="#experiences">التجارب مع الحيوانات</a>
-      <a href="#packages">باقات الزيارة</a>
-      <a href="#events">الفعاليات</a>
-      <a href="#dining">حجز طاولة</a>
-      <a href="#weddings">الأعراس والمناسبات</a>
-      <a href="#tickets">تذاكري</a>
+      <h4>زيارتك</h4>
+      <a href="#plan">صمّم يومك</a><a href="#discover">كل التجارب</a><a href="#map">الخريطة التفاعلية</a><a href="#tour">الجولة الصوتية</a><a href="#tickets">تذاكري</a>
     </div>
     <div>
-      <h4>المنصة</h4>
-      <a href="#map">الخريطة التفاعلية</a>
-      <a href="#tour">المتحف والجولة الصوتية</a>
-      <a href="#zoo">حديقة الحيوان</a>
-      <a href="#markets">الأسواق</a>
-      <a href="#meera">ميرة مطايا</a>
-      <a href="#academy">الأكاديمية</a>
-      <a href="#membership">العضويات</a>
-      <a href="#sponsor">ناقتي والرعاية</a>
-      <a href="#reviews">آراء الزوار</a>
-      <a href="#shop">متجر مطايا</a>
-      <a href="#en" lang="en">English</a>
-      <a href="#contact">تواصل معنا</a>
-      <a href="#admin">لوحة الإدارة</a>
+      <h4>المزيد</h4>
+      <a href="#membership">العضويات</a><a href="#sponsor">ناقتي والرعاية</a><a href="#weddings">الأعراس والمناسبات</a><a href="#shop">متجر مطايا</a><a href="#reviews">آراء الزوار</a><a href="#en" lang="en">English</a><a href="#contact">تواصل معنا</a><a href="#admin">لوحة الإدارة</a>
     </div>
     <div class="legal">
       <span>© <span class="num">2026</span> مطايا الشحانية. جميع الحقوق محفوظة.</span>
-      <span>نسخة تشغيلية قبل الافتتاح. الأسعار والمواعيد تقديرية إلى حين اعتمادها.</span>
+      <span class="brandline">نسخة تشغيلية قبل الافتتاح · تصميم وتطوير <a href="https://munjiz-qa.github.io/">منجز</a></span>
     </div>
   </div>
 </footer>
-<nav class="dock" aria-label="اختصارات الجوال"><a href="#map">الخريطة</a><a href="#packages" class="dock-main">احجز</a><a href="#tickets">تذاكري</a><button type="button" id="dockSearch">بحث</button></nav>
+<nav class="dock" aria-label="التنقل السريع"><a href="#home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>اليوم</a><a href="#discover"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>اكتشف</a><a href="#plan" class="dock-main"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.6 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg>صمّم يومك</a><a href="#tickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8a2 2 0 0 0 2-2h14a2 2 0 0 0 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 0-2 2H5a2 2 0 0 0-2-2v-2a2 2 0 0 0 0-4z"/><path d="M14 6v12" stroke-dasharray="2 2"/></svg>تذاكري</a><button type="button" id="dockMore"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>المزيد</button></nav>
+<div class="sheet" id="sheet" hidden></div>
 <div class="toast" id="toast" hidden><div id="toastMsg"></div></div>
 <div class="modal" id="modal" hidden><div class="panel" id="modalBody"></div></div>
 
@@ -578,8 +756,8 @@ async function render(keepScroll){
   let html;try{html=await fn()}catch(e){html=`<section class="block"><div class="wrap"><div class="panel empty"><h3>تعذر تحميل الصفحة</h3><p class="mt">${esc(errMsg(e))}</p></div></div></section>`}
   if(seq!==renderSeq)return;
   v.innerHTML=html;
-  document.querySelectorAll(".nav a").forEach(a=>{if(a.getAttribute("href")==="#"+h)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
-  document.getElementById("nav").classList.remove("open");document.getElementById("menuBtn").setAttribute("aria-expanded","false");
+  document.querySelectorAll(".nav a,.dock a").forEach(a=>{if(a.getAttribute("href")==="#"+h)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
+  closeMore();
   const u=currentUser();document.getElementById("acctBtn").textContent=isAdmin()&&h==="admin"?"الإدارة":(u?u.name.split(" ")[0]:"حسابي");
   if(after[h])after[h]();
   if(!keepScroll)window.scrollTo(0,0);
@@ -807,6 +985,179 @@ route("en",()=>{const pick=["pkg-family","pkg-intl","pkg-night","camel-ride","ho
 
 after.en=()=>{document.querySelectorAll('.en a[href="#tour"]').forEach(a=>a.addEventListener("click",()=>{tourLang="en"}))};
 
+/* ============ v3: «يومك في مطايا» — living sky, day planner, discover, day pass ============ */
+const OPEN_H=[8,22];
+function qatarNow(){const d=new Date();return d}
+function minutesOf(t){const [h,m]=t.split(":").map(Number);return h*60+m}
+function hhmm(m){return pad(Math.floor(m/60))+":"+pad(m%60)}
+function phaseOf(d){const f=new URLSearchParams(location.search).get("sky");if(f&&PHASE[f])return f;const h=d.getHours()+d.getMinutes()/60;if(h<5)return "night";if(h<7)return "dawn";if(h<11)return "morning";if(h<15)return "noon";if(h<17)return "asr";if(h<18.75)return "sunset";return "night"}
+const PHASE={dawn:["الفجر","صباح الخير"],morning:["الضحى","صباح الخير"],noon:["الظهيرة","نهارك سعيد"],asr:["العصر","مساء الخير"],sunset:["الغروب","مساء الخير"],night:["الليل","مساء الخير"]};
+function openState(d){const m=d.getHours()*60+d.getMinutes();if(m>=OPEN_H[0]*60&&m<OPEN_H[1]*60)return {open:true,txt:`مفتوح الآن حتى <span class="num">${fmtTime(hhmm(OPEN_H[1]*60))}</span>`};return {open:false,txt:`مغلق الآن · يفتح <span class="num">${fmtTime(hhmm(OPEN_H[0]*60))}</span>`}}
+function relMin(m){if(m<1)return "الآن";if(m<60)return `بعد <span class="num">${m}</span> دقيقة`;const h=Math.floor(m/60),r=m%60;return `بعد <span class="num">${h}</span> ${h===1?"ساعة":h===2?"ساعتين":"ساعات"}${r?` و<span class="num">${r}</span> دقيقة`:""}`}
+
+/* original illustration: a caravan crossing the dunes under a sky that follows the hour */
+const CAMEL=`<g class="cm"><path d="M30 40 Q33 19 45 22 Q51 11 59 23 Q68 29 66 41 Z"/><path d="M31 37 Q22 33 20 22 Q19 14 12 13" fill="none" stroke-width="5.5"/><ellipse cx="10" cy="13.5" rx="5.5" ry="3.2"/><path class="lg" d="M35 40 L34 58 M41 41 L42 58 M57 41 L56 58 M63 40 L65 58" fill="none" stroke-width="3"/><path d="M66 33 Q71 38 69 46" fill="none" stroke-width="2"/></g>`;
+function skyScene(phase){const night=phase==="night"||phase==="dawn";
+ const sunPos={dawn:[1040,250],morning:[930,120],noon:[260,96],asr:[340,130],sunset:[200,232],night:[880,110]}[phase];
+ const stars=night?Array.from({length:38},(_,i)=>{const x=(i*263)%1200,y=(i*97)%230+10,r=(i%5===0)?1.8:1.1;return `<circle cx="${x}" cy="${y}" r="${r}" style="animation-delay:${(i%7)*.6}s"/>`}).join(""):"";
+ return `<svg class="scene" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+ <g class="stars">${stars}</g>
+ ${night?`<path transform="translate(${sunPos[0]} ${sunPos[1]})" class="moon" d="M8 -34 A34 34 0 1 0 30 18 A28 28 0 1 1 8 -34Z"/>`:`<circle cx="${sunPos[0]}" cy="${sunPos[1]}" r="${phase==="sunset"?62:46}" class="sun"/><circle cx="${sunPos[0]}" cy="${sunPos[1]}" r="${phase==="sunset"?110:90}" class="sun-halo"/>`}
+ <path class="d3" d="M0 300 C180 250 300 262 470 290 S800 250 960 268 S1140 290 1200 280 V420 H0Z"/>
+ <path class="d2" d="M0 330 C160 300 330 318 520 336 S860 300 1030 318 S1160 334 1200 330 V420 H0Z"/>
+ <g class="caravan"><g transform="translate(0 270)">${[0,1,2,3].map(i=>`<g transform="translate(${i*92} ${i%2?2:0}) scale(${i===0?1.06:1})">${CAMEL}</g>`).join("")}<g transform="translate(378 6)" class="cm"><circle cx="8" cy="8" r="5"/><path d="M8 14 L8 36 M8 20 L1 30 M8 20 L14 28 M8 36 L3 52 M8 36 L13 52" fill="none" stroke-width="3.2"/><path d="M2 6 Q8 -2 14 6" fill="none" stroke-width="2.4"/></g></g></g>
+ <path class="d1" d="M0 362 C200 340 360 352 560 372 S900 344 1080 360 S1180 372 1200 370 V420 H0Z"/>
+ <g class="palm" transform="translate(1080 250)"><path d="M14 118 Q10 70 20 22" fill="none" stroke-width="7"/><path d="M20 22 Q-6 8 -26 26 M20 22 Q40 -4 66 12 M20 22 Q4 -14 -14 -12 M20 22 Q44 10 58 40 M20 22 Q-4 22 -16 52" fill="none" stroke-width="5"/></g>
+ <g class="tent" transform="translate(120 318)"><path d="M0 46 L40 6 L80 46 Z"/><path d="M40 6 L40 46 M30 46 L40 28 L50 46" fill="none" stroke-width="2.5"/></g>
+</svg>`}
+
+/* interests, durations and zones used by the planner */
+const LIKES=[["camel","الإبل","camel"],["horse","الخيل","horse"],["animals","الحيوانات والطيور","paw"],["food","المائدة القطرية","food"],["culture","الثقافة والشعر","book"],["stars","السماء والنجوم","star"],["shop","الأسواق والحرف","market"]];
+const WHO=[["family","عائلة مع أطفال",2,2],["couple","زوجان",2,0],["friends","أصدقاء",4,0],["guests","ضيوف من الخارج",2,0],["solo","بمفردي",1,0]];
+const WHEN=[["morning","صباحاً","08:00","13:30"],["afternoon","عصراً","15:00","19:30"],["evening","مساءً","16:30","22:00"]];
+const TAGS={"camel-ride":["camel"],"camel-milking":["camel","food"],"photo-animals":["camel","horse"],"horse-ride":["horse"],"pony-ride":["horse","kids"],"horse-carriage":["horse","couple"],"groom-day":["horse","kids"],"family-race":["horse","kids"],"donkey-cart":["animals","kids"],"falcon-show":["animals","culture","guests"],"zoo-entry":["animals","kids"],"zoo-feeding":["animals","kids"],"ev-majlis":["culture"],"ev-stars":["stars","culture"],"ev-nightmarket":["shop","food"],"rs-badia":["food"],"rs-fareej":["food","kids"],"rs-qafila":["food"],"rs-milk":["food","kids"],"rs-qahwa":["food","culture"]};
+const DURM={"camel-ride":30,"camel-milking":30,"photo-animals":20,"horse-ride":40,"pony-ride":15,"horse-carriage":30,"groom-day":120,"family-race":60,"donkey-cart":25,"falcon-show":30,"zoo-entry":100,"zoo-feeding":25,"ev-majlis":120,"ev-stars":90,"ev-nightmarket":120,dine:75,"free-museum":60,"free-market":45};
+const ZONE_OF={exp:8,zoo:7,dine:4,"ev-stars":11,"ev-majlis":5,"ev-nightmarket":2,"free-museum":6,"free-market":2};
+const FREE_STOPS=[{id:"free-museum",name:"متحف «أفلا ينظرون» والجولة الصوتية",desc:"ثماني محطات بصوت الراوي، بالعربية أو الإنجليزية.",icon:"museum",tags:["culture","guests"],link:"#tour",win:["09:00","21:00"]},{id:"free-market",name:"سوق المطايا الشعبي",desc:"الحرف الحية والأسر المنتجة والتمور والبخور.",icon:"market",tags:["shop","culture"],link:"#markets",win:["09:00","22:00"]}];
+function zoneOf(id,cat){return ZONE_OF[id]||ZONE_OF[cat]||1}
+function onDate(it,date){if(it.weekday&&!it.weekday.includes(parseIso(date).getDay()))return false;if(it.dates&&!it.dates.includes(date.slice(5)))return false;return true}
+
+function defaultPlan(){const d=isoDate(new Date());const h=new Date().getHours();return {who:"family",when:h<11?"morning":h<16?"afternoon":"evening",date:h>=20?isoDate(new Date(Date.now()+864e5)):d,likes:["camel","animals","food"],adults:2,children:2,skip:[],pin:{}}}
+function planState(){if(!S.plan){let p=null;try{p=JSON.parse(Store.session.get("plan")||"null")}catch(e){}S.plan=p&&p.date>=isoDate(new Date())?p:defaultPlan()}return S.plan}
+function savePlan(){try{Store.session.set("plan",JSON.stringify(S.plan))}catch(e){}}
+
+function buildPlan(P){
+ const w=WHEN.find(x=>x[0]===P.when);const ws=minutesOf(w[2]),we=minutesOf(w[3]);
+ const now=new Date();const today=P.date===isoDate(now);const nowM=today?now.getHours()*60+now.getMinutes()+20:0;
+ const kids=P.children>0;
+ const score=(id,tags,cat)=>{let s=0;for(const l of P.likes)if(tags.includes(l))s+=4;if(kids&&tags.includes("kids"))s+=2;if(!kids&&tags.includes("kids")&&!tags.some(t=>P.likes.includes(t)))s-=3;if(P.who==="couple"&&tags.includes("couple"))s+=3;if(P.who==="guests"&&tags.includes("guests"))s+=3;if(id==="groom-day"&&!kids)s-=9;if(id==="pony-ride"&&!kids)s-=9;if(cat==="dine")s-=1;return s};
+ const pool=[];
+ catalog().filter(it=>["exp","zoo","event","dine"].includes(it.cat)&&TAGS[it.id]&&onDate(it,P.date)).forEach(it=>{if(P.skip.includes(it.id))return;pool.push({id:it.id,it,tags:TAGS[it.id],cat:it.cat,name:it.name,icon:it.icon,desc:it.desc,slots:it.slots.map(minutesOf),dur:it.cat==="dine"?DURM.dine:(DURM[it.id]||40),s:score(it.id,TAGS[it.id],it.cat)})});
+ FREE_STOPS.forEach(f=>{if(P.skip.includes(f.id))return;const a=minutesOf(f.win[0]),b=minutesOf(f.win[1]);const sl=[];for(let m=a;m<=b;m+=15)sl.push(m);pool.push({id:f.id,tags:f.tags,free:true,cat:"free",name:f.name,icon:f.icon,desc:f.desc,link:f.link,slots:sl,dur:DURM[f.id],s:score(f.id,f.tags,"free")-1})});
+ const usable=c=>c.slots.some(m=>m>=Math.max(ws,nowM)&&m+c.dur<=we+30);
+ let cands=pool.filter(usable).sort((a,b)=>b.s-a.s);
+ const out=[];let cur=Math.max(ws,nowM);let meal=false;const maxStops=P.when==="morning"?4:5;
+ const mealM=P.when==="morning"?null:P.when==="afternoon"?null:minutesOf("19:00");
+ const pickAt=(c,from)=>c.slots.filter(m=>m>=from&&m+c.dur<=we+30).sort((a,b)=>a-b)[0];
+ let guard=0;
+ while(out.length<maxStops&&guard++<20){
+  const wantMeal=!meal&&(P.likes.includes("food")||(mealM!=null&&cur>=mealM-60)||out.length===maxStops-1);
+  let best=null,bt=null;
+  for(const c of cands){if(out.some(o=>o.id===c.id))continue;if(c.cat==="dine"&&meal)continue;const t=pickAt(c,cur);if(t==null)continue;const wait=t-cur;const tm=t;const inMeal=(tm>=720&&tm<=840)||(tm>=1110&&tm<=1260);if(c.cat==="dine"&&!inMeal)continue;const fresh=(c.tags||[]).some(t=>P.likes.includes(t)&&!out.some(o=>(o.tags||[]).includes(t)))?18:0;const val=c.s*10+fresh-wait*0.6+(c.cat==="dine"&&wantMeal?30:0);if(!best||val>best.v){best={c,v:val};bt=t}}
+  if(!best)break;const c=best.c;if(c.cat==="dine")meal=true;
+  out.push({...c,t:bt});cur=bt+c.dur+15;if(cur>we)break;
+ }
+ out.sort((a,b)=>a.t-b.t);
+ const people=P.adults+P.children;let total=0;
+ out.forEach(o=>{if(o.it){const tt=bookingTotals(o.it,{adults:P.adults,children:(o.cat==="dine")?0:P.children},null);o.price=o.cat==="dine"?0:tt.total;o.cost=o.it.price;total+=o.price}else o.price=0});
+ return {stops:out,total,people,alts:cands.filter(c=>!out.some(o=>o.id===c.id)).slice(0,6)};
+}
+
+function routeSVG(stops){const pts=[1,...stops.map(s=>zoneOf(s.id,s.cat))];const c=n=>{const g=ZONE_GEO[n];return [g[0]+g[2]/2,g[1]+g[3]/2]};
+ const P=pts.map(c);const d=P.map((p,i)=>(i?"L":"M")+p[0].toFixed(0)+" "+p[1].toFixed(0)).join(" ");
+ return `<svg viewBox="0 0 1000 640" class="route-map" role="img" aria-label="مسار يومك على خريطة مطايا"><rect x="20" y="20" width="960" height="600" rx="28" class="rm-bg"/>${Object.keys(ZONE_GEO).map(n=>{const g=ZONE_GEO[n];return `<rect x="${g[0]}" y="${g[1]}" width="${g[2]}" height="${g[3]}" rx="12" class="rm-z"/>`}).join("")}<path d="${d}" class="rm-path"/>${P.map((p,i)=>`<g transform="translate(${p[0]} ${p[1]})"><circle r="${i?24:20}" class="${i?"rm-dot":"rm-gate"}"/><text y="8" text-anchor="middle" class="rm-t">${i?i:"⌂"}</text></g>`).join("")}</svg>`}
+
+function stopCard(s,i,P){const end=s.t+s.dur;return `<li class="stop" style="--i:${i}"><div class="stop-time"><b class="num">${fmtTime(hhmm(s.t))}</b><small class="num">${fmtTime(hhmm(end))}</small></div><div class="stop-dot">${ic(s.icon)}</div><div class="stop-body"><span class="eyebrow">${s.free?"دخول حر":CAT_LABEL[s.cat]} · المنطقة <span class="num">${zoneOf(s.id,s.cat)}</span></span><h3>${esc(s.name)}</h3><p>${esc(s.desc)}</p><div class="row stop-act"><span class="price">${s.free?"مجاني":s.cat==="dine"?"حجز طاولة مجاني":`<span class="num">${money(s.price)}</span> <small>لـ<span class="num">${P.adults+P.children}</span> ${P.adults+P.children>2?"أشخاص":"شخص"}</small>`}</span><span class="right row"><button class="btn btn-ghost btn-sm" type="button" data-swap="${s.id}">بدّل</button><button class="btn btn-ghost btn-sm" type="button" data-drop="${s.id}" aria-label="احذف ${esc(s.name)}">احذف</button></span></div></div></li>`}
+
+route("plan",()=>{const P=planState();const days=Array.from({length:8},(_,i)=>isoDate(new Date(Date.now()+i*864e5)));
+ const chip=(grp,v,label,on,icn)=>`<button type="button" class="pchip" data-${grp}="${v}" aria-pressed="${on}">${icn?ic(icn):""}<span>${label}</span></button>`;
+ return `<section class="plan-hero"><div class="wrap"><span class="eyebrow">مخطط اليوم</span><h1>صمّم يومك في مطايا</h1><p>ثلاثة اختيارات، ويرتّب لك مطايا جدولاً واقعياً بالمواعيد المتاحة فعلاً، ومساراً على الخريطة، وتكلفة واضحة. ثم احجز يومك كله بخطوة واحدة.</p></div></section>
+ <section class="block plan"><div class="wrap plan-grid">
+  <form class="panel plan-form" id="planForm" onsubmit="return false">
+   <div class="pstep"><span class="pn">١</span><h3>مَن معك؟</h3></div><div class="pchips">${WHO.map(w=>chip("who",w[0],w[1],P.who===w[0])).join("")}</div>
+   <div class="ppl mt"><div class="field"><label>البالغون</label><div class="stepper"><button type="button" data-pp="adults" data-d="-1" aria-label="إنقاص البالغين">−</button><output id="pAdults" class="num">${P.adults}</output><button type="button" data-pp="adults" data-d="1" aria-label="زيادة البالغين">+</button></div></div><div class="field"><label>الأطفال</label><div class="stepper"><button type="button" data-pp="children" data-d="-1" aria-label="إنقاص الأطفال">−</button><output id="pChildren" class="num">${P.children}</output><button type="button" data-pp="children" data-d="1" aria-label="زيادة الأطفال">+</button></div></div></div>
+   <div class="pstep mt2"><span class="pn">٢</span><h3>متى؟</h3></div>
+   <div class="days" role="group" aria-label="اليوم">${days.map((d,i)=>{const x=parseIso(d);return `<button type="button" class="day" data-date="${d}" aria-pressed="${P.date===d}"><small>${i===0?"اليوم":i===1?"غداً":DAYS[x.getDay()]}</small><b class="num">${x.getDate()}</b><small>${MONTHS[x.getMonth()]}</small></button>`}).join("")}</div>
+   <div class="pchips mt">${WHEN.map(w=>chip("when",w[0],`${w[1]} <small class="num">${fmtTime(w[2])} – ${fmtTime(w[3])}</small>`,P.when===w[0])).join("")}</div>
+   <div class="pstep mt2"><span class="pn">٣</span><h3>ماذا تحبون؟</h3></div><div class="pchips">${LIKES.map(l=>chip("like",l[0],l[1],P.likes.includes(l[0]),l[2])).join("")}</div>
+   ${P.skip.length?`<p class="hint mt"><button type="button" class="linkish" id="pReset">استعادة الفقرات المحذوفة (<span class="num">${P.skip.length}</span>)</button></p>`:""}
+  </form>
+  <div class="plan-out" id="planOut" aria-live="polite"></div>
+ </div></section>`});
+function drawPlan(){const P=planState();const R=buildPlan(P);S.planR=R;const out=document.getElementById("planOut");if(!out)return;
+ const d=parseIso(P.date);const bookable=R.stops.filter(s=>!s.free);
+ out.innerHTML=R.stops.length?`<div class="plan-card"><div class="plan-top"><div><span class="eyebrow">يومك المقترح</span><h2>${DAYS[d.getDay()]} <span class="num">${d.getDate()}</span> ${MONTHS[d.getMonth()]}</h2><p class="hint"><span class="num">${R.stops.length}</span> محطات · من <span class="num">${fmtTime(hhmm(R.stops[0].t))}</span> إلى <span class="num">${fmtTime(hhmm(R.stops[R.stops.length-1].t+R.stops[R.stops.length-1].dur))}</span></p></div><div class="plan-sum"><small>التكلفة التقديرية</small><b class="num">${R.total?money(R.total):"مجاني"}</b><small>لـ<span class="num">${R.people}</span> ${R.people>2?"أشخاص":"شخص"}</small></div></div>
+  <div class="plan-body"><ol class="timeline">${R.stops.map((s,i)=>stopCard(s,i,P)).join("")}</ol><div class="plan-map">${routeSVG(R.stops)}<p class="hint">المسار يبدأ من البوابة <span class="num">(1)</span> ويمر بالمناطق بالترتيب. <a href="#map">الخريطة الكاملة</a></p></div></div>
+  <div class="plan-cta"><button class="btn btn-gold btn-lg" type="button" id="bookDay" ${bookable.length?"":"disabled"}>احجز يومي كاملاً · <span class="num">${bookable.length}</span> ${bookable.length>2?"حجوزات":"حجز"}</button><button class="btn btn-ghost" type="button" id="sharePlan">مشاركة الجدول</button></div></div>`
+  :`<div class="panel empty"><h3>لا توجد مواعيد كافية في هذه الفترة</h3><p class="mt">جرّب فترة أخرى أو يوماً آخر، أو أضف اهتماماً جديداً.</p></div>`;
+ out.querySelectorAll("[data-drop]").forEach(b=>b.onclick=()=>{P.skip.push(b.dataset.drop);savePlan();render(true)});
+ out.querySelectorAll("[data-swap]").forEach(b=>b.onclick=()=>{const s=R.stops.find(x=>x.id===b.dataset.swap);const alt=R.alts.find(a=>a.cat===s.cat&&a.id!==s.id)||R.alts.find(a=>a.cat!=="dine")||R.alts[0];if(!alt){toast("لا يوجد بديل متاح في هذه الفترة.");return}P.skip.push(s.id);savePlan();render(true);toast("استبدلنا «"+s.name+"»")});
+ const bd=document.getElementById("bookDay");if(bd)bd.onclick=()=>openDayCheckout(R,P);
+ const sh=document.getElementById("sharePlan");if(sh)sh.onclick=async()=>{const txt="يومي في مطايا الشحانية — "+fmtDate(P.date,true)+"\n"+R.stops.map(s=>fmtTime(hhmm(s.t))+"  "+s.name).join("\n")+"\n"+location.href.split("#")[0]+"#plan";try{if(navigator.share){await navigator.share({title:"يومي في مطايا",text:txt})}else{await navigator.clipboard.writeText(txt);toast("نُسخ الجدول. ألصقه في أي محادثة.")}}catch(e){}};
+}
+after.plan=()=>{const P=planState();const f=document.getElementById("planForm");
+ f.querySelectorAll("[data-who]").forEach(b=>b.onclick=()=>{const w=WHO.find(x=>x[0]===b.dataset.who);P.who=w[0];P.adults=w[2];P.children=w[3];savePlan();render(true)});
+ f.querySelectorAll("[data-when]").forEach(b=>b.onclick=()=>{P.when=b.dataset.when;savePlan();render(true)});
+ f.querySelectorAll("[data-date]").forEach(b=>b.onclick=()=>{P.date=b.dataset.date;savePlan();render(true)});
+ f.querySelectorAll("[data-like]").forEach(b=>b.onclick=()=>{const k=b.dataset.like;P.likes=P.likes.includes(k)?P.likes.filter(x=>x!==k):[...P.likes,k];savePlan();render(true)});
+ f.querySelectorAll("[data-pp]").forEach(b=>b.onclick=()=>{const k=b.dataset.pp;P[k]=Math.min(15,Math.max(k==="adults"?1:0,P[k]+Number(b.dataset.d)));savePlan();render(true)});
+ const rs=document.getElementById("pReset");if(rs)rs.onclick=()=>{P.skip=[];savePlan();render(true)};
+ drawPlan()};
+
+function openDayCheckout(R,P){const u=currentUser();const bk=R.stops.filter(s=>!s.free);
+ modal(`<div class="row"><h3>تأكيد يومك</h3><button class="btn btn-ghost btn-sm right" data-close type="button">إغلاق</button></div>
+ <p class="hint mt">${fmtDate(P.date,true)} · <span class="num">${P.adults+P.children}</span> ${P.adults+P.children>2?"أشخاص":"شخص"} · تُصدر تذكرة برمز QR لكل محطة.</p>
+ <ul class="mini-list mt">${bk.map(s=>`<li><span class="num">${fmtTime(hhmm(s.t))}</span><span>${esc(s.name)}</span><span class="num">${s.price?money(s.price):"مجاني"}</span></li>`).join("")}</ul>
+ <form id="dayForm" class="form-grid mt" novalidate><div class="field"><label for="dName">الاسم الكامل</label><input id="dName" autocomplete="name" value="${esc(u?.name||"")}"></div><div class="field"><label for="dPhone">رقم الجوال</label><input id="dPhone" inputmode="tel" placeholder="5555 1234" value="${esc(u?u.phone.replace("+974 ",""):"")}"></div>
+ <div class="field full"><label for="dPay">الدفع</label><select id="dPay">${R.total?`<option value="card">بطاقة (دفع تجريبي)</option><option value="onsite">عند الوصول</option>`:`<option value="free">لا يلزم دفع مسبق</option>`}</select></div>
+ <div class="full row"><button class="btn btn-gold" type="submit" id="dSubmit">${R.total?`ادفع <span class="num">${money(R.total)}</span> واحجز`:"أكّد الحجز"}</button><span class="err" id="dErr"></span></div></form>`);
+ document.getElementById("dayForm").onsubmit=async e=>{e.preventDefault();const f=e.target;const err=document.getElementById("dErr");const name=f.dName.value.trim();const ph=normPhone(f.dPhone.value);
+  if(name.length<3)return err.textContent="اكتب الاسم الكامل.";if(!ph)return err.textContent="اكتب رقم جوال قطري صحيحاً من 8 أرقام.";
+  const btn=document.getElementById("dSubmit");busy(btn,true);err.textContent="";const done=[],failed=[];
+  for(const s of bk){try{const rec=await API.book({itemId:s.id,date:P.date,time:hhmm(s.t),adults:P.adults,children:s.cat==="dine"?0:P.children,name,phone:ph,email:"",notes:"ضمن مخطط اليوم",pay:s.cat==="dine"?"free":f.dPay.value});done.push(rec);delete S.cap[s.id+"|"+P.date]}catch(x){failed.push([s.name,errMsg(x)])}}
+  if(!done.length){busy(btn,false);err.textContent=failed[0]?failed[0][0]+": "+failed[0][1]:"تعذر الحجز.";return}
+  if(S.me)S.me.bookings=[...done,...(S.me.bookings||[])];
+  const free=R.stops.filter(s=>s.free).map(s=>({free:true,name:s.name,t:s.t,link:s.link}));
+  Store.session.set("lastDay",JSON.stringify({date:P.date,name,phone:ph,tickets:done,free,failed}));S.plan=null;Store.session.set("plan","null");closeModal();go("day")};
+}
+
+route("day",()=>{let D=null;try{D=JSON.parse(Store.session.get("lastDay")||"null")}catch(e){}if(!D)return `<section class="plan-hero"><div class="wrap"><h1>تصريح اليوم</h1><p>لم تحجز يوماً بعد في هذه الجلسة.</p></div></section><section class="block"><div class="wrap"><a class="btn btn-gold" href="#plan">صمّم يومك</a> <a class="btn btn-ghost" href="#tickets">تذاكري</a></div></section>`;
+ const items=[...D.tickets.map(t=>({k:minutesOf(t.time),t})),...D.free.map(f=>({k:f.t,f}))].sort((a,b)=>a.k-b.k);const sum=D.tickets.reduce((a,b)=>a+(b.total||0),0);
+ return `<section class="plan-hero pass-hero"><div class="wrap"><span class="eyebrow">تصريح اليوم</span><h1>يومك جاهز يا ${esc(D.name.split(" ")[0])}</h1><p>${fmtDate(D.date,true)} · <span class="num">${D.tickets.length}</span> ${D.tickets.length>2?"تذاكر":"تذكرة"} · الإجمالي <span class="num">${money(sum)}</span>. اعرض رمز كل محطة عند وصولك إليها.</p></div></section>
+ <section class="block"><div class="wrap">${D.failed.length?`<div class="notice warn">تعذر حجز: ${D.failed.map(x=>esc(x[0])+" ("+esc(x[1])+")").join("، ")}. بقية اليوم محجوز.</div>`:""}
+ <ol class="pass-list">${items.map(x=>x.t?`<li class="pass"><div class="pass-time num">${fmtTime(x.t.time)}</div><div class="pass-body"><span class="eyebrow">${CAT_LABEL[x.t.cat]}</span><h3>${esc(x.t.itemName)}</h3><p class="code num">${x.t.id}</p><p class="hint">${x.t.total?money(x.t.total):"مجاني"} · ${x.t.status==="pending"?"الدفع عند الوصول":"مؤكد"}</p></div><div class="qr" data-qr="${x.t.id}"></div></li>`:`<li class="pass pass-free"><div class="pass-time num">${fmtTime(hhmm(x.f.t))}</div><div class="pass-body"><span class="eyebrow">دخول حر</span><h3>${esc(x.f.name)}</h3><p class="hint"><a href="${x.f.link}">اعرف أكثر</a></p></div></li>`).join("")}</ol>
+ <div class="row mt2" style="justify-content:center"><a class="btn btn-gold" href="#tickets">كل تذاكري</a><a class="btn btn-ghost" href="#plan">خطّط يوماً آخر</a><a class="btn btn-ghost" href="#tour">ابدأ الجولة الصوتية</a></div></div></section>`});
+after.day=drawQRs;
+
+/* discover: one place for everything bookable */
+const DCATS=[["all","الكل"],["exp","التجارب"],["zoo","الحيوانات"],["pkg","الباقات"],["event","الفعاليات"],["dine","المطاعم"],["academy","الأكاديمية"]];
+route("discover",()=>{const c=Store.session.get("dcat")||"all";const q=Store.session.get("dq")||"";
+ return `<section class="plan-hero"><div class="wrap"><span class="eyebrow">اكتشف</span><h1>كل ما في مطايا، في مكان واحد</h1><p>تجارب مع الإبل والخيل، حديقة الحيوان، الباقات، الفعاليات، المطاعم التراثية، وبرامج الأكاديمية.</p><div class="dsearch"><input id="dq" type="search" placeholder="ابحث: صقور، غروب، أطفال…" value="${esc(q)}" aria-label="ابحث في التجارب"></div></div></section>
+ <section class="block"><div class="wrap"><div class="dchips" role="tablist">${DCATS.map(x=>`<button type="button" class="pchip" data-dcat="${x[0]}" aria-pressed="${c===x[0]}">${x[1]}</button>`).join("")}</div><div class="grid mt2" id="dGrid"></div></div></section>`});
+after.discover=()=>{const draw=()=>{const c=Store.session.get("dcat")||"all";const q=norm((document.getElementById("dq").value||"").trim());const list=catalog().filter(it=>(c==="all"||it.cat===c)&&(!q||norm(it.name+" "+it.desc+" "+(EN[it.id]||[]).join(" ")).includes(q)));document.getElementById("dGrid").innerHTML=list.length?list.map(itemCard).join(""):`<div class="panel empty">لا نتائج. جرّب كلمة أخرى.</div>`};
+ document.querySelectorAll("[data-dcat]").forEach(b=>b.onclick=()=>{Store.session.set("dcat",b.dataset.dcat);document.querySelectorAll("[data-dcat]").forEach(x=>x.setAttribute("aria-pressed",x===b));draw()});
+ document.getElementById("dq").oninput=e=>{Store.session.set("dq",e.target.value);draw()};draw()};
+
+/* new card with original scene art */
+const ART={exp:["#F2C27B","#C8742F"],zoo:["#BFD8B0","#5E8A55"],pkg:["#F3D9A4","#B98A3A"],event:["#3A3360","#16132A"],academy:["#C9C3E6","#4B4380"],dine:["#F1B48A","#9B4A2C"]};
+function artFor(it){const a=ART[it.cat]||ART.pkg;const dark=it.cat==="event";return `<svg viewBox="0 0 320 120" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="g-${it.id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a[0]}"/><stop offset="1" stop-color="${a[1]}"/></linearGradient></defs><rect width="320" height="120" fill="url(#g-${it.id})"/>${dark?[30,80,140,200,260,300,60,230].map((x,i)=>`<circle cx="${x}" cy="${12+(i*23)%60}" r="1.4" fill="#F6EFE3" opacity=".8"/>`).join(""):`<circle cx="${60+(it.id.length*17)%200}" cy="34" r="16" fill="#FFF4DD" opacity=".75"/>`}<path d="M0 92 C60 74 110 80 170 92 S270 78 320 88 V120 H0Z" fill="#000" opacity=".14"/><path d="M0 104 C70 92 140 98 200 106 S290 98 320 102 V120 H0Z" fill="#000" opacity=".18"/></svg><span class="art-ic">${ic(it.icon)}</span>`}
+function itemCard(it){return `<article class="card xcard c-${it.cat}"><div class="art">${artFor(it)}<span class="art-badge">${CAT_LABEL[it.cat]}</span></div><div class="cbody"><h3>${esc(it.name)}</h3><p>${esc(it.desc)}</p><div class="meta">${it.dur?`<span class="tag">${esc(it.dur)}</span>`:""}${it.age?`<span class="tag">${esc(it.age)}</span>`:""}</div><div class="foot">${priceLabel(it)}<button class="btn btn-gold btn-sm" type="button" data-book="${it.id}">${it.cat==="dine"?"احجز طاولة":it.cat==="academy"?"سجّل الآن":"احجز الآن"}</button></div></div></article>`}
+
+/* "now at Matayaa": the next sessions today */
+function nextSessions(){const now=new Date();const nm=now.getHours()*60+now.getMinutes();let date=isoDate(now);let list=[];
+ const collect=(d,from)=>catalog().filter(it=>["exp","zoo","event"].includes(it.cat)&&onDate(it,d)).flatMap(it=>it.slots.map(t=>({it,t:minutesOf(t)})).filter(x=>x.t>=from)).sort((a,b)=>a.t-b.t);
+ list=collect(date,nm);let tomorrow=false;if(list.length<4){date=isoDate(new Date(Date.now()+864e5));list=[...list,...collect(date,0).map(x=>({...x,tm:true}))];tomorrow=true}
+ const seen=new Set();return list.filter(x=>{if(seen.has(x.it.id))return false;seen.add(x.it.id);return true}).slice(0,8).map(x=>({...x,nm}))}
+
+route("home",()=>{const now=new Date();const ph=phaseOf(now);const os=openState(now);const ns=nextSessions();
+ const moods=[["family","احتفال العائلة","حيوانات، ركوب، وغداء في الفريج",["camel","animals","food"],"family","morning","paw"],["adventure","مغامرة البر","الجمال والخيل والصقور حتى الغروب",["camel","horse","animals"],"friends","afternoon","camel"],["stars","ليلة النجوم","عشاء على الجمر ثم مرصد سهيل",["stars","food","culture"],"couple","evening","star"],["heritage","أصالة وحكاية","المتحف، السوق، ومجلس القصيد",["culture","shop","food"],"guests","evening","book"]];
+ return `<section class="hero sky ph-${ph}"><div class="sky-bg"></div>${skyScene(ph)}<div class="wrap hero-in"><div class="live"><span class="dot ${os.open?"on":""}"></span>${os.txt} · <span>${PHASE[ph][0]} في الشحانية</span></div><span class="greet">${PHASE[ph][1]}</span><h1>يومك في البادية<br><em>يبدأ من هنا</em></h1><p class="lead">اختر مَن معك وما تحبون، ونرتّب لكم يوماً كاملاً بين الإبل والخيل والمائدة القطرية، بمواعيد حقيقية وتذكرة واحدة على جوالك.</p><div class="cta"><a class="btn btn-gold btn-lg" href="#plan">صمّم يومك في <span class="num">30</span> ثانية</a><a class="btn btn-glass" href="#discover">تصفّح كل التجارب</a></div></div></section>
+ <section class="block now-block"><div class="wrap"><div class="sec-head"><div><span class="eyebrow">الآن في مطايا</span><h2>المواعيد القادمة</h2></div><a class="btn btn-ghost btn-sm" href="#discover">الكل</a></div>
+  <div class="hscroll">${ns.map(x=>`<button type="button" class="now-card" data-book="${x.it.id}"><span class="now-ic">${ic(x.it.icon)}</span><span class="now-t num">${fmtTime(hhmm(x.t))}</span><b>${esc(x.it.name)}</b><small>${x.tm?"غداً":relMin(x.t-x.nm)}</small></button>`).join("")}</div></div></section>
+ <section class="block"><div class="wrap"><div class="sec-head"><div><span class="eyebrow">مزاج اليوم</span><h2>ابدأ بفكرة جاهزة</h2></div></div>
+  <div class="moods">${moods.map(m=>`<button type="button" class="mood m-${m[0]}" data-mood="${m[0]}"><span class="mood-ic">${ic(m[6])}</span><b>${m[1]}</b><small>${m[2]}</small><span class="mood-go">رتّب اليوم ←</span></button>`).join("")}</div></div></section>
+ <section class="block band-sand"><div class="wrap"><div class="sec-head"><div><span class="eyebrow">لا تجدها إلا هنا</span><h2>تجارب تُروى بعد الزيارة</h2></div><a class="btn btn-ghost btn-sm" href="#discover">كل التجارب</a></div><div class="grid">${["camel-milking","horse-carriage","falcon-show","ev-stars"].map(item).filter(Boolean).map(itemCard).join("")}</div></div></section>
+ <section class="block"><div class="wrap split-2"><div><span class="eyebrow">13 منطقة · 500,000 م²</span><h2>«درب القوافل» يصل كل شيء</h2><p class="mt muted">من البوابة إلى السوق والمطاعم، ثم الحيوانات والمتحف، وصولاً إلى المخيم والمضمار والمراعي. اضغط أي منطقة لتعرف ما فيها.</p><div class="row mt2"><a class="btn btn-gold" href="#map">افتح الخريطة</a><a class="btn btn-ghost" href="#tour">الجولة الصوتية</a></div></div><a class="map-teaser" href="#map" aria-label="افتح الخريطة التفاعلية">${mapSVG(0,true)}</a></div></section>
+ <section class="block band-night"><div class="wrap split-2"><div><span class="eyebrow" style="color:#E0B26A">عضوية القافلة</span><h2>زوروا كأنكم من أهل المكان</h2><p class="mt">دخول مجاني للحديقة والمتحف، خصم <span class="num">10%</span> على التجارب والمطاعم، وأولوية في الفعاليات، للأسرة حتى <span class="num">6</span> أفراد.</p><div class="row mt2"><a class="btn btn-gold" href="#membership">العضويات</a><a class="btn btn-glass" href="#sponsor">تبنَّ ناقة</a></div></div><div class="stats"><div><b class="num">13</b><small>منطقة</small></div><div><b class="num">33</b><small>تجربة وبرنامجاً</small></div><div><b class="num">5</b><small>مطاعم تراثية</small></div><div><b class="num">8</b><small>محطات صوتية</small></div></div></div></section>`});
+after.home=()=>{document.querySelectorAll("[data-mood]").forEach(b=>b.onclick=()=>{const m={family:[["camel","animals","food"],"family","morning"],adventure:[["camel","horse","animals"],"friends","afternoon"],stars:[["stars","food","culture"],"couple","evening"],heritage:[["culture","shop","food"],"guests","evening"]}[b.dataset.mood];const w=WHO.find(x=>x[0]===m[1]);const h=new Date().getHours();S.plan={...defaultPlan(),likes:m[0],who:m[1],adults:w[2],children:w[3],when:m[2]};if(m[2]==="morning"&&h>=11||m[2]==="afternoon"&&h>=17)S.plan.date=isoDate(new Date(Date.now()+864e5));savePlan();go("plan")})};
+
+/* "more" sheet */
+const MORE=[["#map","الخريطة التفاعلية","gate"],["#tour","المتحف والجولة الصوتية","museum"],["#membership","العضويات","card"],["#sponsor","ناقتي والرعاية","camel"],["#weddings","الأعراس والمناسبات","ring"],["#events","الفعاليات","star"],["#markets","الأسواق","market"],["#meera","ميرة مطايا","cart"],["#shop","متجر مطايا","cart"],["#academy","الأكاديمية","cap"],["#reviews","آراء الزوار","book"],["#zones","المخطط العام","track"],["#en","English","leaf"],["#account","حسابي","paw"],["#contact","تواصل معنا","milk"],["#admin","لوحة الإدارة","vet"]];
+function openMore(){const s=document.getElementById("sheet");s.innerHTML=`<div class="sheet-panel" role="dialog" aria-modal="true" aria-label="كل الأقسام"><div class="row"><h3>كل الأقسام</h3><button class="btn btn-ghost btn-sm right" type="button" data-sclose>إغلاق</button></div><div class="tiles mt">${MORE.map(m=>`<a href="${m[0]}" class="tile" ${m[0]==="#en"?'lang="en"':""}>${ic(m[2])}<span>${m[1]}</span></a>`).join("")}</div></div>`;s.hidden=false;s.querySelector("a").focus()}
+function closeMore(){document.getElementById("sheet").hidden=true}
+document.getElementById("sheet").addEventListener("click",e=>{if(e.target.id==="sheet"||e.target.closest("[data-sclose]")||e.target.closest(".tile"))closeMore()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeMore();closeModal()}});
+
 /* ============ booking ============ */
 function eventDates(it,from,days){const out=[];const d=new Date(from);for(let i=0;i<days;i++){const s=isoDate(d);const md=s.slice(5);if(it.dates?it.dates.includes(md):it.weekday?it.weekday.includes(d.getDay()):true)out.push(s);d.setDate(d.getDate()+1)}return out}
 function allowedDates(it){const t=new Date();if(it.dates)return eventDates(it,t,460);return eventDates(it,t,it.cat==="academy"?120:90)}
@@ -965,8 +1316,7 @@ after.admin=()=>{
 async function startScan(){const msg=document.getElementById("vCamMsg");const v=document.getElementById("vVideo");if(!("BarcodeDetector" in window)){msg.textContent="المسح بالكاميرا غير متاح في هذا المتصفح. اكتب الرقم يدوياً.";return}try{const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}});v.srcObject=st;v.hidden=false;await v.play();const det=new BarcodeDetector({formats:["qr_code"]});msg.textContent="وجّه الكاميرا إلى رمز التذكرة.";const tick=async()=>{if(v.hidden)return;try{const r=await det.detect(v);if(r[0]){st.getTracks().forEach(t=>t.stop());v.hidden=true;msg.textContent="";verify(r[0].rawValue);return}}catch(e){}requestAnimationFrame(tick)};tick()}catch(e){msg.textContent="تعذر فتح الكاميرا. اكتب الرقم يدوياً."}}
 
 /* ============ boot ============ */
-document.getElementById("searchBtn").onclick=openSearch;document.getElementById("dockSearch").onclick=openSearch;
-document.getElementById("menuBtn").onclick=e=>{const n=document.getElementById("nav");n.classList.toggle("open");e.currentTarget.setAttribute("aria-expanded",n.classList.contains("open"))};
+document.getElementById("searchBtn").onclick=openSearch;["menuBtn","moreBtn","dockMore"].forEach(id=>document.getElementById(id).onclick=openMore);
 document.getElementById("themeBtn").onclick=()=>{const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;r.dataset.theme=dark?"light":"dark";try{localStorage.setItem("matayaa.theme",r.dataset.theme)}catch(e){}};
 try{const th=localStorage.getItem("matayaa.theme");if(th)document.documentElement.dataset.theme=th}catch(e){}
 updateCartCount();
