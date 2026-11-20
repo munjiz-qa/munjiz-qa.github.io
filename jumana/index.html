@@ -2374,9 +2374,11 @@ async function saveName(){const n=$("#hnin").value.trim(),g=nameGlyphs(n);if(!g.
   x.strokeStyle="#1D3C78";x.lineWidth=5;x.beginPath();x.roundRect(cx,95,cw,130,65);x.stroke();x.beginPath();x.moveTo(cx+cw+8,105);x.lineTo(cx+cw+8,215);x.stroke();
   x.fillStyle="#14233F";x.textBaseline="middle";x.fillText(txt,cx+30,162);if(det){x.fillStyle="#A97A1E";x.fillText(G(det),cx+cw+30,162)}
   x.direction="rtl";x.textAlign="center";x.fillStyle="#14233F";x.font='700 30px "Reem Kufi", sans-serif';x.fillText(n,W/2,270);x.font='500 18px "IBM Plex Sans Arabic", sans-serif';x.fillStyle="#56627A";x.fillText("جُمانة مصر القديمة",W/2,310);
-  const url=cv.toDataURL("image/png"),a=document.createElement("a");a.href=url;a.download="اسمي-بالهيروغليفية.png";document.body.appendChild(a);a.click();a.remove();
+  const url=cv.toDataURL("image/png");let dl=null;try{dl=window.claude&&window.claude.use?await window.claude.use("downloads"):null}catch(e){}
+  if(dl){const blob=await new Promise(r=>cv.toBlob(r,"image/png"));dl.save({filename:"اسمي-بالهيروغليفية.png",data:blob}).then(()=>toast("حُفظت الصورة")).catch(e=>{if(e&&e.code!=="declined")toast("تعذّر الحفظ هنا، اضغط مطولاً على المعاينة لحفظها")})}
+  else{const a=document.createElement("a");a.href=url;a.download="اسمي-بالهيروغليفية.png";document.body.appendChild(a);a.click();a.remove()}
   $("#hnprev")?.remove();const im=document.createElement("img");im.id="hnprev";im.src=url;im.alt="صورة الاسم بالهيروغليفية";im.className="hnprev";$("#hname").appendChild(im);
-  toast("حُفظت الصورة. ويمكنك أيضاً الضغط مطولاً على المعاينة لحفظها");award("namer")}
+  if(!dl)toast("حُفظت الصورة، ويمكنك أيضاً الضغط مطولاً على المعاينة لحفظها");award("namer")}
 document.addEventListener("input",ev=>{if(ev.target.id==="hnin")renderName()});
 document.addEventListener("change",ev=>{if(ev.target.id==="hndet")renderName()});
 document.addEventListener("click",ev=>{if(ev.target.id==="hnsave")saveName()});
