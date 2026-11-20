@@ -45,6 +45,9 @@ input[dir=ltr]{text-align:left}
 .btn:hover{border-color:var(--copper)}
 .btn.pri{background:var(--copper);border-color:var(--copper);color:#fff}
 .btn.pri:hover{filter:brightness(1.07)}
+/* الوضع الداكن: النحاس فاتح فيُكتب عليه بلون الخلفية الداكنة لتباين مطابق للمعيار */
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn.pri,:root:not([data-theme="light"]) #toast.bad{color:var(--bg)}}
+:root[data-theme="dark"] .btn.pri,:root[data-theme="dark"] #toast.bad{color:var(--bg)}
 .btn.sm{min-height:36px;padding:5px 12px;font-size:.85rem}
 .btn.bad{color:var(--bad)}
 .btn[disabled]{opacity:.55;cursor:wait}

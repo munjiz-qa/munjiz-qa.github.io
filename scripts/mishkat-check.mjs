@@ -34,8 +34,9 @@ ok((await p.$$('.path')).length >= 4 && (await p.$$('.path .scard')).length >= 2
   const st = await m.evaluate(() => JSON.parse(localStorage.getItem('mishkat:kids') || '{}').nuh);
   ok(k.s === 5 && k.a >= 5 && k.q === 3 && st === 3, 'قصة سفينة نوح: ٥ مشاهد مصوّرة بآياتها، و٣ أسئلة تمنح النجوم');
   await m.evaluate(() => location.hash = 'ulum'); await m.waitForSelector('#u-nuzul .u-q blockquote', { timeout: 60000 }).catch(() => {});
-  const u = await m.evaluate(() => ({ ch: document.querySelectorAll('.u-ch').length, ix: document.querySelectorAll('.u-index li').length, q: document.querySelectorAll('#u-nuzul .u-q').length, a: document.querySelectorAll('#u-nuzul .u-ev .ayah').length }));
-  ok(u.ch >= 28 && u.ix === u.ch && u.q >= 3 && u.a >= 5, 'علوم القرآن: أبواب مسلسلة بفهرسها، وشواهد الباب الأول بآياتها ونقول المفسرين');
+  const uq = () => m.evaluate(() => ({ ch: document.querySelectorAll('.u-ch').length, ix: document.querySelectorAll('.u-index li').length, q: document.querySelectorAll('#u-nuzul .u-q').length, a: document.querySelectorAll('#u-nuzul .u-ev .ayah').length }));
+  let u = await uq(); for (let t = 0; t < 60 && !(u.q >= 3 && u.a >= 5 && u.ch >= 30); t++) { await m.waitForTimeout(1000); u = await uq(); }
+  ok(u.ch >= 33 && u.ix === u.ch && u.q >= 3 && u.a >= 5, 'علوم القرآن: أبواب مسلسلة بفهرسها، وشواهد الباب الأول بآياتها ونقول المفسرين');
   for (const [v, min, nm] of [['duaa', 30, 'أدعية القرآن'], ['nisaa', 40, 'ركن المرأة في القرآن'], ['rijal', 40, 'ركن الرجل في القرآن'], ['shifa', 30, 'الأمراض والعلاج في القرآن'], ['usra', 35, 'ركن الأسرة في القرآن']]) {
     await m.evaluate(h => location.hash = h, v); await m.waitForSelector('.th-item', { timeout: 30000 }).catch(() => {});
     await m.evaluate(() => { const d = document.querySelector('.th-item'); if (d) d.open = true; }); await m.waitForSelector('.th-item .u-tf blockquote', { timeout: 60000 }).catch(() => {});
@@ -198,8 +199,9 @@ ok(/الآيات القرآنية/.test(doc) && /أقوال المفسرين/.te
 }
 { // التلاوة المتصلة، والقبلة وتقويم الشهر، واختبار الحفظ: الصفحات تعمل وبياناتها صحيحة
   await p.evaluate(() => location.hash = 'recite'); await p.waitForSelector('#rcGo', { timeout: 30000 }).catch(() => {});
-  const r = await p.evaluate(() => ({ go: !!document.querySelector('#rcGo'), rs: document.querySelectorAll('#rcR option').length }));
-  ok(r.go && r.rs >= 10, `التلاوة المتصلة: ${r.rs} قارئاً`);
+  const r = await p.evaluate(() => ({ go: !!document.querySelector('#rcGo'), rs: document.querySelectorAll('#rcCards .rc-card').length, jump: !!document.querySelector('#rcJump #jS') }));
+  ok(r.go && r.rs >= 10, `التلاوة المتصلة: ${r.rs} قارئاً (بطاقات)`);
+  ok(r.jump, 'التلاوة المتصلة: قسم «اذهب إلى آية» ظاهر');
   await p.evaluate(() => location.hash = 'prayer'); await p.waitForSelector('#prMon table', { timeout: 30000 }).catch(() => {});
   const m = await p.evaluate(() => { const d = new Date(); return { rows: document.querySelectorAll('#prMon tbody tr').length, days: new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate(), q: typeof qibla === 'function' ? Math.round(qibla(30.0444, 31.2357)) : 0, dial: !!document.querySelector('#qDial') }; });
   ok(m.rows === m.days && m.dial && Math.abs(m.q - 136) <= 2, `مواقيت الشهر كاملاً (${m.rows} يوماً) وبوصلة القبلة (القاهرة ${m.q}°)`);
