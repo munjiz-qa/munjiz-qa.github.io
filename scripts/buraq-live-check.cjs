@@ -12,6 +12,16 @@ const get = async (p, tries = 3) => { for (let i = 0; i < tries; i++) { try { co
     "data/fx.json", "files/BURAQ_BQ10_v3_BOM.xlsx", "files/BURAQ_car_conversion_plans.xlsx", "files/BURAQ_workshop_equipment.xlsx", "files/BURAQ_MADAD_Egypt.xlsx", "files/BURAQ_Business_Development.xlsx", "files/BURAQ_BQ10_v3.glb"]) {
     const r = await get(p); check(r.s === 200 && r.b.length > (p.endsWith(".json") ? 20 : 200), `${p || "index"}: ${r.s} (${r.b.length} bytes)`);
   }
+  // ملفات Excel: كل معادلة لها قيمة محفوظة، فتظهر الأرقام في معاينة الجوال وGoogle Drive وQuick Look دون إعادة حساب
+  { const zlib = require("zlib");
+    const sheets = (buf) => { const out = []; let e = buf.lastIndexOf(Buffer.from([0x50, 0x4b, 5, 6])); let o = buf.readUInt32LE(e + 16), n = buf.readUInt16LE(e + 10);
+      for (let i = 0; i < n; i++) { const m = buf.readUInt16LE(o + 10), cs = buf.readUInt32LE(o + 20), nl = buf.readUInt16LE(o + 28), xl = buf.readUInt16LE(o + 30), cl = buf.readUInt16LE(o + 32), lo = buf.readUInt32LE(o + 42); const name = buf.toString("utf8", o + 46, o + 46 + nl);
+        if (/^xl\/worksheets\/sheet\d+\.xml$/.test(name)) { const ln = buf.readUInt16LE(lo + 26), lx = buf.readUInt16LE(lo + 28), d = buf.subarray(lo + 30 + ln + lx, lo + 30 + ln + lx + cs); out.push(m === 8 ? zlib.inflateRawSync(d).toString("utf8") : d.toString("utf8")); }
+        o += 46 + nl + xl + cl; } return out; };
+    for (const f of ["BURAQ_BQ10_v3_BOM", "BURAQ_car_conversion_plans", "BURAQ_workshop_equipment", "BURAQ_MADAD_Egypt", "BURAQ_Business_Development"]) {
+      const r = await get(`files/${f}.xlsx`); let tot = 0, empty = 0;
+      try { for (const x of sheets(r.b)) { tot += (x.match(/<f[ >]/g) || []).length; empty += (x.match(/<\/f><v><\/v>|<\/f><v\/>/g) || []).length; } } catch (e) { empty = -1; }
+      check(empty === 0 && tot > 0, `${f}.xlsx: ${tot} معادلة بقيم محفوظة` + (empty ? ` (بلا قيمة: ${empty})` : "")); } }
   { const r = await get("data/fx.json"); let d = {}; try { d = JSON.parse(r.b.toString("utf8")); } catch (e) {} const ok = d.QAR > 3 && d.QAR < 4.5 && d.EGP > 10 && d.EGP < 500; check(ok, `سعر الصرف الاحتياطي سليم (QAR ${d.QAR} · EGP ${d.EGP} · ${d.date})`); const m = /(\d\d)\/(\d\d)\/(\d{4})/.exec(d.date || ""); const age = m ? (Date.now() - Date.UTC(+m[3], +m[2] - 1, +m[1])) / 864e5 : 999; if (age > 5) console.log(`::warning::سعر الصرف الاحتياطي قديم (${d.date}). تحقق من مسار أسعار صرف براق.`); }
   // كل ما تشير إليه الصفحات من سكربتات وأنماط محلية موجود
   for (const page of ["", "account.html", "admin.html"]) {
@@ -29,7 +39,14 @@ const get = async (p, tries = 3) => { for (let i = 0; i < tries; i++) { try { co
     const errs = [];
     const mk = async () => { const p = await ctx.newPage(); p.on("pageerror", (e) => errs.push(e.message)); return p; };
     const idx = await mk();
+    // حارس الأداء: مكتبات Firebase (نحو 700KB) لا تُطلب قبل اكتمال الصفحة الرئيسية، ثم تُحمَّل بعدها فعلاً
+    let loaded = false; const early = [], late = [];
+    idx.on("request", (rq) => { if (/vendor\/firebase-/.test(rq.url())) (loaded ? late : early).push(rq.url()); });
+    idx.once("load", () => { loaded = true; });
     await idx.goto(BASE + (process.env.BURAQ_EMU ? "?emu" : ""), { waitUntil: "load", timeout: 45000 });
+    for (let i = 0; i < 40 && late.length < 3; i++) await idx.waitForTimeout(500); // على جهاز بطيء قد يتأخر الخمول، فننتظر حتى 20 ثانية
+    check(early.length === 0, `${name}: لا طلبات Firebase قبل اكتمال الرئيسية ${early.length ? early.map((u) => u.split("/").pop()).join(" ") : ""}`);
+    check(late.length >= 3, `${name}: ربط الحسابات يُحمَّل بعد اكتمال الصفحة (${late.length} ملفات)`);
     check((await idx.title()).includes("براق"), `${name}: عنوان الصفحة الرئيسية`);
     check((await idx.content()).includes("+974 5160 0498") && (await idx.content()).includes("munijizqa@gmail.com"), `${name}: بيانات التواصل الموحدة`);
     await idx.waitForSelector("#cvBrand option:nth-child(5)", { state: "attached", timeout: 20000 }).catch(() => {});
