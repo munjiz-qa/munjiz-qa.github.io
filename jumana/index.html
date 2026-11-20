@@ -258,7 +258,12 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer nav a{color:var(--mut
 .pcols{display:grid;grid-template-columns:1fr 1fr;gap:14px}.pcols>div{background:var(--surface2);border-radius:12px;padding:12px}.pcols p{margin:6px 0 0}
 .punk{margin:0;color:var(--muted)}.psrc{margin:6px 0 0;padding-inline-start:20px}
 @media (max-width:640px){.pcols{grid-template-columns:1fr}}
-.view>*,.box>*{min-width:0}#aq,#hnin{min-width:0;width:100%}.priest .tools .btn,#hname .tools .btn{flex:none}.flash{outline:3px solid var(--gold);outline-offset:2px}.bkpts{margin:0;padding-inline-start:20px}.bklinks{gap:6px}.say.on{background:var(--faience);color:#fff;border-color:var(--faience)}
+.view>*,.box>*{min-width:0}#aq,#hnin{min-width:0;width:100%}.priest .tools .btn,#hname .tools .btn{flex:none}.story{gap:14px}.stbar{height:6px;background:var(--surface2);border-radius:9px;overflow:hidden}.stbar i{display:block;height:100%;background:var(--gold)}
+.tl{position:relative;padding:6px 0 4px;overflow:hidden}.tlrow{position:relative;height:46px}.tlb{height:34px}.tlera{position:absolute;top:0;height:42px;border:0;border-radius:6px;color:#fff;font-size:.72rem;overflow:hidden;cursor:pointer;padding:0 2px;opacity:.85}.tlera span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tlera.on{opacity:1;outline:3px solid var(--gold);outline-offset:1px;z-index:1}.tlbat{position:absolute;top:2px;transform:translateX(50%);width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-size:.85rem;padding:0}@media(max-width:560px){.tlbat{width:20px;height:20px;font-size:.62rem}}.tlbat.on{background:var(--gold);color:#fff}.tlaxis{position:relative;height:22px;border-top:1px solid var(--line);font-size:.7rem;color:var(--muted)}.tlaxis span{position:absolute;top:4px;transform:translateX(50%);white-space:nowrap}
+#cmpsel select{flex:1 1 200px}#cmpout{display:grid;gap:12px}
+.tchcode{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--goldsoft);border-radius:10px;padding:10px 14px}.tchcode b{font-size:1.5rem;letter-spacing:.08em}.sheetq{display:grid;gap:12px;margin:0;padding-inline-start:22px}.sheeto{margin:0;padding-inline-start:22px;columns:2 160px}.sheeto li.key{font-weight:700;color:var(--ok)}
+@media print{body.printing *{visibility:hidden!important}body.printing #tchsheet,body.printing #tchsheet *{visibility:visible!important}body.printing #tchsheet{position:absolute;inset:0 0 auto 0;border:0;box-shadow:none}}
+.flash{outline:3px solid var(--gold);outline-offset:2px}.bkpts{margin:0;padding-inline-start:20px}.bklinks{gap:6px}.say.on{background:var(--faience);color:#fff;border-color:var(--faience)}
 #hname{display:grid;gap:12px}.hncart{display:flex;align-items:center;justify-content:center;gap:10px;min-height:110px;flex-wrap:wrap}.hnc{font-family:var(--f-glyph);font-size:2.6rem;color:var(--ink);border:3px solid var(--lapis);border-radius:60px;padding:8px 26px;direction:ltr;unicode-bidi:isolate;box-shadow:inset 0 0 0 4px var(--goldsoft);overflow-wrap:anywhere;max-width:100%}.hndet{font-size:2.6rem;color:var(--gold)}.gl{font-family:var(--f-glyph)}.hnmap{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;margin-top:8px}.hnmap .gl{font-size:1.4rem;color:var(--lapis)}.hnprev{max-width:100%;border-radius:10px;border:1px solid var(--line)}
 #daily{display:grid;gap:10px}.dyh{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.dyo{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
 .hallnav{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}.scroll{background:linear-gradient(90deg,#d9c08a 0,#efdcae 4%,#f6e9c8 50%,#efdcae 96%,#d9c08a 100%);color:#2a2214;border-radius:6px;padding:26px clamp(18px,4vw,44px);box-shadow:0 6px 20px rgba(0,0,0,.18);display:grid;gap:10px;background-size:100% 100%}.scroll h3{margin:0;font-size:1.5rem}.scroll .meta{color:#5d4c2c}.scroll .papn{justify-self:start}.scroll ul{margin:0;padding-inline-start:20px}
@@ -299,6 +304,8 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer nav a{color:var(--mut
       <a href="#library">الموسوعات والمتاحف</a>
       <a href="#papyri">موسوعة البرديات</a>
       <a href="#books">الكتب وخلاصاتها</a>
+      <a href="#story">يوم في حياة</a>
+      <a href="#compare">قارن العصور والمعارك</a>
       <a href="#egyptology">علم المصريات</a>
       <a href="#topics">موضوعات</a>
       <a href="#glyphs">الهيروغليفية</a>
@@ -524,6 +531,23 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer nav a{color:var(--mut
   <div class="tools" id="bkcats"><button class="chip on" data-bkcat="all">الكل</button><button class="chip" data-bkcat="مصادر قديمة ووسيطة">مصادر قديمة ووسيطة</button><button class="chip" data-bkcat="الموسوعات والمراجع العامة">الموسوعات والمراجع العامة</button><button class="chip" data-bkcat="اللغة والكتابة">اللغة والكتابة</button><button class="chip" data-bkcat="الدين والفكر">الدين والفكر</button><button class="chip" data-bkcat="العلوم">العلوم</button><button class="chip" data-bkcat="الآثار والاكتشافات">الآثار والاكتشافات</button><button class="chip" data-bkcat="الأدب والنصوص">الأدب والنصوص</button><button class="chip" data-bkcat="تاريخ علم المصريات">تاريخ علم المصريات</button><button class="chip" data-bkcat="الكتب العربية الحديثة">الكتب العربية الحديثة</button></div>
   <div class="grid" id="bklist"></div>
   <p class="meta">البيانات الببليوغرافية للطبعة الأولى أو الأشهر. والخلاصات من إعداد المنصة لتعريف القارئ بمحتوى الكتاب، ولا تغني عن قراءته.</p>
+</section>
+<section class="view" id="v-story" hidden>
+  <div><div class="eyebrow">قصة تفاعلية</div><h2>يوم في حياة مصري قديم</h2>
+  <p class="lede">اختر شخصية وعِش يومها من الفجر إلى الغروب. كل اختيار يكشف معلومة موثقة عن الحياة اليومية في مصر القديمة.</p></div>
+  <div id="storybody"></div>
+</section>
+<section class="view" id="v-compare" hidden>
+  <div><div class="eyebrow">خط زمني للمقارنة</div><h2>قارن العصور والمعارك</h2>
+  <p class="lede">العصور الكبرى وأشهر معارك مصر على خط زمني واحد من 3200 ق.م إلى الميلاد. اضغط على عصرين أو معركتين، أو اخترهما من القائمتين، لتظهر المقارنة.</p></div>
+  <div class="box" id="cmptl"></div>
+  <div class="tools" id="cmpsel"></div>
+  <div id="cmpout"></div>
+</section>
+<section class="view" id="v-teacher" hidden>
+  <div><div class="eyebrow">للمدارس والمعلمين</div><h2>وضع المعلم</h2>
+  <p class="lede">أنشئ اختباراً موحداً لفصلك برمز يدخله الطلاب، واطبع ورقة عمل بمفتاح الإجابات، دون حاجة إلى حسابات للطلاب.</p></div>
+  <div id="tchbody"></div>
 </section>
 <section class="view" id="v-egyptology" hidden>
   <div><div class="eyebrow">العلم الذي يدرس مصر القديمة</div><h2>علم المصريات</h2>
@@ -2406,6 +2430,109 @@ document.addEventListener("input",ev=>{if(ev.target.id==="hallr"){sayStop();HALL
 document.addEventListener("keydown",ev=>{if(current()==="papyri"&&TABS.pmode==="hall"&&!/INPUT|TEXTAREA|SELECT/.test(ev.target.tagName)){if(ev.key==="ArrowLeft"){HALL++;renderHall()}else if(ev.key==="ArrowRight"){HALL--;renderHall()}}});
 
 /* ---------------- اسأل الكاهن: إجابات من محتوى المنصة فقط (v14) ---------------- */
+/* ---------------- يوم في حياة (v15) ---------------- */
+const STORIES=[
+ {id:"scribe",g:0x133DE,who:"نب آمون",role:"تلميذ كاتب في طيبة",when:"الدولة الحديثة، نحو 1250 ق.م",
+  sc:[
+   {t:"يستيقظ نب آمون قبل شروق الشمس في بيت من الطوب اللبن قرب معبد الكرنك. أمه تخبز الخبز في الفرن الطيني، وأبوه كاتب في مخازن المعبد.",
+    ch:[["يأخذ أدوات الكتابة ويسرع إلى المدرسة","يحمل لوح الكاتب وفيه قرصان من الحبر، أسود من السناج وأحمر من المغرة، وأقلاماً من نبات السمار. والكاتب ورسمه في الهيروغليفية علامة واحدة (Y3)."],["يفطر أولاً مع أسرته","فطوره خبز وبصل وجعة خفيفة، وهي من غذاء المصريين اليومي، وكانت أجور العمال تُصرف خبزاً وجعة وحبوباً."]]},
+   {t:"في «بيت الحياة» يجلس التلاميذ متربعين أمام المعلم، يكتبون على قطع الفخار والحجر الجيري (الأوستراكا) لأن البردي غالٍ.",
+    ch:[["ينسخ نصاً كلاسيكياً بعناية","كان التلاميذ ينسخون نصوصاً مثل «تعاليم أمنمحات» و«هجاء المهن»، ويُصحح المعلم أخطاءهم بالحبر الأحمر. وكثير من الأوستراكا المدرسية وُجد في دير المدينة."],["يتسلل للعب مع أصدقائه","تحذر النصوص المدرسية من الكسل بشدة، ففي بردية لانسنج يقول المعلم: «كن كاتباً، فهي تنجيك من الكدح». وكان التأديب قاسياً أحياناً."]]},
+   {t:"بعد الظهر يرافق أباه إلى مخازن الغلال ليتعلم الحساب العملي: كم كيساً من القمح دخل المخزن اليوم؟",
+    ch:[["يحسب الأكياس بالكسور المصرية","استعمل المصريون الكسور الواحدية مثل نصف وثلث وربع، وفي بردية رايند جداول تساعد الكاتب على القسمة والتوزيع."],["يسجل الأرقام بالهيراطيقية","الهيراطيقية خط سريع مختصر من الهيروغليفية، كتبت به الحسابات والرسائل والأدب، أما الهيروغليفية فللنقوش الرسمية."]]},
+   {t:"عند الغروب يعود نب آمون إلى بيته، ويحكي لأخته الصغيرة حكاية سمعها في المدرسة.",
+    ch:[["يحكي قصة الملاح الغريق","قصة من الدولة الوسطى عن ملاح نجا إلى جزيرة يحكمها ثعبان عظيم، وهي محفوظة في بردية بمتحف الإرميتاج (ب-05 في المنصة)."],["يحكي قصة الأخوين","قصة أنوبو وباتا في بردية دوربيني (ب-28)، ويقارن الدارسون مطلعها بقصة يوسف عليه السلام وامرأة العزيز."]]}
+  ],end:"صار الكاتب في مصر موظف الدولة الأول: يحسب الضرائب، ويكتب الرسائل، ويسجل الأحكام. وكان التعليم طريق الترقي الاجتماعي."},
+ {id:"worker",g:0x13289,who:"باكي",role:"عامل في بناء المقابر الملكية بدير المدينة",when:"عهد رمسيس الثالث، نحو 1160 ق.م",
+  sc:[
+   {t:"يغادر باكي قريته دير المدينة صاعداً الجبل نحو وادي الملوك، حيث يعمل مع فريقه في نحت مقبرة الملك.",
+    ch:[["ينضم إلى «الجانب الأيمن» من الفريق","كان عمال المقابر يُقسمون إلى «جانب أيمن» و«جانب أيسر»، لكل منهما رئيس عمال، ويقيمون في أكواخ قرب الموقع أيام العمل."],["يسأل عن جدول العمل","الأسبوع المصري عشرة أيام، وكان العمال يعملون عادة ثمانية أيام ويستريحون يومين، مع إجازات للأعياد والمرض، وكلها مسجلة في دفاتر الحضور."]]},
+   {t:"داخل المقبرة الظلام دامس. يحتاج الفريق إلى الضوء ليواصل النحت والرسم.",
+    ch:[["يشعل المصابيح ذات الفتائل","كانت الفتائل من قماش مفتول يُغمس في الدهن، وتسجل الدفاتر عدد الفتائل المصروفة كل يوم. ويرجح الباحثون أنهم أضافوا الملح لتقليل الدخان على الجدران."],["يراقب الرسامين","يرسم الرسام الخطوط الأولى بالأحمر، ثم يصحح رئيس الرسامين بالأسود، ثم ينحت النحاتون ويلون الملونون. وفي بعض المقابر ما زالت مراحل العمل ظاهرة."]]},
+   {t:"يتأخر صرف الأجور من الحبوب عدة أسابيع، والعائلات في القرية تشكو الجوع.",
+    ch:[["ينضم إلى زملائه في التوقف عن العمل","في السنة 29 من حكم رمسيس الثالث توقف العمال عن العمل وجلسوا خلف المعابد، فاستُمع إلى شكواهم وصُرفت الأجور. سجّل ذلك الكاتب أمون نخت في بردية الإضراب (ب-29)."],["يكتب شكوى إلى الوزير","كان كثير من عمال دير المدينة يجيدون القراءة والكتابة، وتركوا آلاف الأوستراكا من رسائل وشكاوى وحسابات، وهي من أغنى مصادر الحياة اليومية."]]},
+   {t:"في يوم الراحة يعود باكي إلى بيته في القرية، فيجد ابنه مريضاً.",
+    ch:[["يستدعي طبيب الفريق","كان للعمال طبيب يعالجهم، وتسجل دفاتر الحضور غياب العامل بسبب المرض أو لدغة عقرب أو رعاية قريب مريض."],["يقدم قرباناً في مقصورة القرية","عبد أهل دير المدينة المعبودات الكبرى، وكرّموا أيضاً الملك أمنحتب الأول وأمه أحمس نفرتاري بوصفهما حاميين للقرية."]]}
+  ],end:"بنى عمال دير المدينة مقابر الملوك قروناً، وكانوا حرفيين مهرة يتقاضون أجوراً منتظمة، لا عبيداً. وتعد قريتهم أفضل قرية موثقة من العالم القديم."},
+ {id:"farmer",g:0x13216,who:"مِريت",role:"فلاحة في مصر الوسطى",when:"الدولة الوسطى، نحو 1900 ق.م",
+  sc:[
+   {t:"إنه فصل «آخت»، فصل الفيضان. غطت مياه النيل الحقول، وجلبت معها الطمي الأسود الخصب.",
+    ch:[["تساعد في تقوية الجسور","قسم المصريون السنة إلى ثلاثة فصول، لكل فصل أربعة أشهر من ثلاثين يوماً: آخت (الفيضان) وبرت (البذر) وشمو (الحصاد)، وأضافوا خمسة أيام في آخرها."],["تسأل عن ارتفاع الفيضان","كانوا يقيسون منسوب النيل بمقاييس النيل على درجات محفورة. والفيضان المنخفض يعني مجاعة، والمفرط يهدم القرى."]]},
+   {t:"انحسرت المياه في فصل «برت». حان وقت البذر.",
+    ch:[["تنثر بذور القمح والشعير","زرع المصريون القمح (الإيمر) والشعير والكتان، وكانوا يطلقون الأغنام أو الخنازير على الحقل لتدفن البذور بأقدامها، كما تصور المقابر."],["تحضر المحراث الخشبي","المحراث الخشبي تجره الأبقار، ويتبعه من يكسر الكتل الترابية بالفأس. ولم تدخل الأدوات الحديدية إلا في عصر متأخر."]]},
+   {t:"يصل كتبة الدولة ومعهم المساحون لقياس الحقول وتقدير الضريبة.",
+    ch:[["تراقب المساحين وحبالهم","كان المساحون يقيسون الحقول بحبال معقودة على مسافات منتظمة، وأعادوا تحديد الحدود بعد كل فيضان. وفي «تعاليم أمنموبي» تحذير من نقل حدود حقل الجار."],["تسأل عن مقدار الضريبة","تُقدَّر الضريبة بحسب مساحة الأرض وارتفاع الفيضان، وتُدفع حبوباً. وتكشف بردية ويلبور (ب-35) كيف سُجلت الحقول وحائزوها وغلتها."]]},
+   {t:"جاء فصل «شمو»، الحصاد. الحقل ذهبي، والقرية كلها تعمل.",
+    ch:[["تحصد بالمنجل","كانت المناجل من الخشب بأسنان من الصوان. ويُترك أعلى السيقان ليُحصد السنبل، ثم تدوسه الماشية في الجرن لفصل الحب عن القش."],["تغني مع الحاصدين","سجلت المقابر أغاني العمال وحواراتهم المكتوبة فوق مشاهد الحصاد، وهي من أقدم الأغاني الشعبية المدونة."]]}
+  ],end:"قام اقتصاد مصر كله على عمل الفلاحين وتنظيم الماء والأرض. ومن هنا جاء علمهم في الحساب والمساحة والتقويم."}
+];
+TABS.story=TABS.story||null;let ST={id:null,i:0,pick:null};
+function renderStory(){const B=$("#storybody");if(!B)return;const done=store.get("stories",[]);
+  if(!ST.id){B.innerHTML=`<div class="grid">${STORIES.map(s=>`<button class="card sci" data-dlst="${s.id}"><span class="g">${G(s.g)}</span><b>${s.who}</b><small>${s.role}</small><small class="meta">${s.when}${done.includes(s.id)?" · أكملتها ✓":""}</small></button>`).join("")}</div>`;return}
+  const s=STORIES.find(x=>x.id===ST.id);
+  if(ST.i>=s.sc.length){B.innerHTML=`<article class="box story"><span class="meta">${s.who} · ${s.role}</span><h3 style="margin:0">انتهى اليوم</h3><p style="margin:0">${s.end}</p><div class="tools"><button class="btn" data-dlback>اختر شخصية أخرى</button><button class="chip" data-dlst="${s.id}">أعد القصة</button></div></article>`;
+    if(!done.includes(s.id)){done.push(s.id);store.set("stories",done);me.xp+=10;if(done.length>=STORIES.length)award("story");saveMe();toast("أكملت القصة، +10 نقاط")}return}
+  const c=s.sc[ST.i];
+  B.innerHTML=`<article class="box story"><div class="dyh"><span class="meta">${s.who} · ${s.role} · ${s.when}</span><span class="chip num">${ST.i+1} من ${s.sc.length}</span></div><div class="stbar"><i style="width:${(ST.i/s.sc.length)*100}%"></i></div><p style="margin:0;font-size:1.08rem">${c.t}</p>
+  <div class="dyo">${c.ch.map((o,k)=>`<button class="opt${ST.pick===k?" right":""}" data-dlch="${k}"${ST.pick!==null?" disabled":""}>${o[0]}</button>`).join("")}</div>
+  ${ST.pick!==null?`<div class="callout">${c.ch[ST.pick][1]}</div><div class="tools"><button class="btn" data-dlnext>${ST.i+1<s.sc.length?"تابع اليوم":"أنهِ اليوم"}</button>${c.ch.length>1?`<button class="chip" data-dlother>اعرف ما وراء الاختيار الآخر</button>`:""}</div>`:""}<div><button class="chip" data-dlback>العودة إلى الشخصيات</button></div></article>`}
+document.addEventListener("click",ev=>{const t=ev.target;let b;
+  if(b=t.closest("[data-dlst]")){ST={id:b.dataset.dlst,i:0,pick:null};renderStory();return}
+  if(t.closest("[data-dlback]")){ST={id:null,i:0,pick:null};renderStory();return}
+  if(b=t.closest("[data-dlch]")){ST.pick=+b.dataset.dlch;renderStory();return}
+  if(t.closest("[data-dlother]")){const s=STORIES.find(x=>x.id===ST.id),c=s.sc[ST.i];ST.pick=(ST.pick+1)%c.ch.length;renderStory();return}
+  if(t.closest("[data-dlnext]")){ST.i++;ST.pick=null;renderStory();window.scrollTo({top:0})}});
+
+/* ---------------- مقارنة العصور والمعارك (v15) ---------------- */
+const BATTLES=[
+ {id:"hyksos",y:1550,t:"طرد الهكسوس وسقوط أواريس",k:"أحمس الأول",vs:"الهكسوس",r:"انتصار مصري، وقيام الدولة الحديثة",src:"نقش أحمس بن أبانا في مقبرته بالكاب"},
+ {id:"megiddo",y:1457,t:"معركة مجدو",k:"تحتمس الثالث",vs:"تحالف كنعاني بقيادة أمير قادش",r:"انتصار مصري بعد حصار دام سبعة أشهر",src:"حوليات تحتمس الثالث في معبد الكرنك"},
+ {id:"kadesh",y:1274,t:"معركة قادش",k:"رمسيس الثاني",vs:"الحيثيون بقيادة مواتالي الثاني",r:"غير حاسمة، وتلتها أول معاهدة سلام مدونة نحو 1259 ق.م",src:"قصيدة قادش (ب-22) ونقوش المعابد"},
+ {id:"libya",y:1208,t:"حرب مرنبتاح ضد الليبيين",k:"مرنبتاح",vs:"الليبيون وحلفاؤهم من شعوب البحر",r:"انتصار مصري",src:"نقوش الكرنك ولوحة مرنبتاح"},
+ {id:"seapeoples",y:1177,t:"معركة الدلتا ضد شعوب البحر",k:"رمسيس الثالث",vs:"شعوب البحر",r:"انتصار مصري برّاً وبحراً",src:"نقوش معبد مدينة هابو، وبردية هاريس الكبرى (ب-31)"},
+ {id:"shoshenq",y:925,t:"حملة شيشنق الأول على فلسطين",k:"شيشنق الأول",vs:"مدن فلسطين",r:"حملة ناجحة",src:"نقش بوابة بوباسطة في الكرنك"},
+ {id:"thebes",y:663,t:"نهب الآشوريين لطيبة",k:"تانوت أماني",vs:"آشوربانيبال الآشوري",r:"هزيمة مصرية ونهب طيبة",src:"حوليات آشوربانيبال"},
+ {id:"carchemish",y:605,t:"معركة قرقميش",k:"نخاو الثاني",vs:"البابليون بقيادة نبوخذنصر",r:"هزيمة مصرية وانحسار نفوذها في الشام",src:"الأخبار البابلية"},
+ {id:"pelusium",y:525,t:"معركة الفرما (بيلوزيوم)",k:"بسماتيك الثالث",vs:"الفرس بقيادة قمبيز",r:"هزيمة مصرية وبداية الحكم الفارسي",src:"هيرودوت، الكتاب الثالث"},
+ {id:"raphia",y:217,t:"معركة رفح",k:"بطليموس الرابع",vs:"السلوقيون بقيادة أنطيوخوس الثالث",r:"انتصار مصري بمشاركة واسعة لجنود مصريين",src:"بوليبيوس، ومرسوم رفح"},
+ {id:"actium",y:31,t:"معركة أكتيوم",k:"كليوباترا السابعة وأنطونيو",vs:"أوكتافيوس",r:"هزيمة، ثم ضم روما لمصر عام 30 ق.م",src:"بلوتارخ وديو كاسيوس"}
+];
+let CMP=store.get("cmp",["new","kadesh"]);
+function cmpItem(id){const e=ERAS.find(x=>x.id===id);if(e)return{id,kind:"عصر",t:e.name,span:bc(e.from,e.to),dur:e.from-e.to,rows:[["الأسرات",e.dyn],["العاصمة",e.cap],["أبرز الأحداث",(e.ev||[]).slice(0,3).join("، ")]]};
+  const b=BATTLES.find(x=>x.id===id);if(b){const era=ERAS.find(e=>b.y<=e.from&&b.y>=e.to);return{id,kind:"معركة",t:b.t,span:bc(b.y),rows:[["القائد المصري",b.k],["الطرف الآخر",b.vs],["النتيجة",b.r],["العصر",era?era.name:"—"],["المصدر",b.src]]}}return null}
+function renderCompare(){const T=$("#cmptl");if(!T)return;const L=3200,R=0,X=y=>((L-y)/(L-R))*100;
+  const eras=ERAS.filter(e=>e.to<L);
+  T.innerHTML=`<div class="tl"><div class="tlrow">${eras.map(e=>`<button class="tlera${CMP.includes(e.id)?" on":""}" data-cmp="${e.id}" style="inset-inline-start:${X(Math.min(e.from,L))}%;width:${X(e.to)-X(Math.min(e.from,L))}%;background:${e.c}" title="${e.name}"><span>${e.name}</span></button>`).join("")}</div>
+  <div class="tlrow tlb">${BATTLES.map(b=>`<button class="tlbat${CMP.includes(b.id)?" on":""}" data-cmp="${b.id}" style="inset-inline-start:${X(b.y)}%" title="${b.t} (${b.y} ق.م)" aria-label="${b.t}">⚔</button>`).join("")}</div>
+  <div class="tlaxis">${[3000,2500,2000,1500,1000,500,0].map(y=>`<span style="inset-inline-start:${X(y)}%">${y?y+" ق.م":"الميلاد"}</span>`).join("")}</div></div>`;
+  $("#cmpsel").innerHTML=[0,1].map(k=>`<select class="field" data-cmpsel="${k}" aria-label="العنصر ${k+1}"><optgroup label="العصور">${ERAS.map(e=>`<option value="${e.id}"${CMP[k]===e.id?" selected":""}>${e.name}</option>`).join("")}</optgroup><optgroup label="المعارك">${BATTLES.map(b=>`<option value="${b.id}"${CMP[k]===b.id?" selected":""}>${b.t}</option>`).join("")}</optgroup></select>`).join("");
+  const A=cmpItem(CMP[0]),B=cmpItem(CMP[1]);let gap="";
+  const yr=it=>it.kind==="عصر"?ERAS.find(e=>e.id===it.id).from:BATTLES.find(b=>b.id===it.id).y;
+  if(A&&B){const d=Math.abs(yr(A)-yr(B));gap=`<p class="callout" style="margin:0">بين بداية «${A.t}» و«${B.t}» نحو <b class="num">${d}</b> سنة.</p>`}
+  $("#cmpout").innerHTML=`<div class="two">${[A,B].map(it=>it?`<article class="box"><span class="meta">${it.kind} · <span class="num">${it.span}</span>${it.dur?` · نحو <span class="num">${it.dur}</span> سنة`:""}</span><h3 style="margin:0">${it.t}</h3><dl class="wdl">${it.rows.map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join("")}</dl></article>`:"").join("")}</div>${gap}`}
+document.addEventListener("click",ev=>{const b=ev.target.closest("[data-cmp]");if(!b)return;const id=b.dataset.cmp;if(CMP.includes(id))return;CMP=[CMP[1],id];store.set("cmp",CMP);renderCompare()});
+document.addEventListener("change",ev=>{const s=ev.target.closest("[data-cmpsel]");if(!s)return;CMP[+s.dataset.cmpsel]=s.value;store.set("cmp",CMP);renderCompare()});
+
+/* ---------------- وضع المعلم (v15) ---------------- */
+function prng(seed){let s=seed>>>0||1;return()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296}}
+function classSet(code){const m=/^([0-9A-Z]{4})-(\d{1,2})$/.exec(String(code||"").trim().toUpperCase());if(!m)return null;const n=Math.min(20,Math.max(5,+m[2]));const seed=parseInt(m[1],36);
+  const pool=qVisible().slice().sort((a,b)=>String(a.id).localeCompare(String(b.id)));const r=prng(seed);const a=pool.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}
+  return a.slice(0,n).map(q=>{const o=q.a.map((t,i)=>({t,ok:i===0}));for(let i=o.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[o[i],o[j]]=[o[j],o[i]]}return{...q,opts:o}})}
+let TCH=store.get("teacher",{code:"",n:10,key:false,cls:""});
+function renderTeacher(){const B=$("#tchbody");if(!B)return;const set=TCH.code?classSet(TCH.code):null;
+  B.innerHTML=`<div class="two"><div class="box"><h3 style="margin:0">١. أنشئ اختبار الفصل</h3><p style="margin:0;color:var(--muted)">اختر عدد الأسئلة، فتحصل على رمز يُدخله الطلاب في صفحة الاختبارات، فتظهر لهم الأسئلة نفسها بالترتيب نفسه.</p>
+  <div class="tools"><input class="field" id="tchcls" maxlength="40" placeholder="اسم الفصل، مثال: الصف الثاني الإعدادي (أ)" value="${esc(TCH.cls)}" aria-label="اسم الفصل"><select class="field" id="tchn" aria-label="عدد الأسئلة" style="flex:0 0 auto">${[5,10,15,20].map(n=>`<option${TCH.n===n?" selected":""}>${n}</option>`).join("")}</select><button class="btn" id="tchnew">أنشئ رمزاً جديداً</button></div>
+  ${set?`<div class="tchcode"><span class="meta">رمز الفصل</span><b class="num" dir="ltr">${TCH.code}</b><button class="chip" id="tchcopy">انسخ الرمز</button></div>`:""}</div>
+  <div class="box"><h3 style="margin:0">٢. اطبع ورقة العمل</h3><p style="margin:0;color:var(--muted)">ورقة للطباعة أو الحفظ PDF، فيها الأسئلة والاختيارات، ومفتاح الإجابات للمعلم.</p><label class="tools"><input type="checkbox" id="tchkey"${TCH.key?" checked":""}> إظهار مفتاح الإجابات</label><div><button class="btn" id="tchprint"${set?"":" disabled"}>اطبع ورقة العمل</button></div><p class="meta" style="margin:0">يُدخل الطالب الرمز في صفحة «الاختبارات» تحت «لديك رمز فصل؟». ويستطيع المعلم أن يراجع أداء طلابه بأسمائهم في لوحة الصدارة.</p></div></div>
+  ${set?`<article class="box sheet" id="tchsheet"><div class="dyh"><h3 style="margin:0">ورقة عمل: الحضارة المصرية القديمة</h3><span class="meta num" dir="ltr">${TCH.code}</span></div><p class="meta" style="margin:0">${esc(TCH.cls)||"الفصل: ................"} · الاسم: ............................ · التاريخ: ${dayKey()}</p><ol class="sheetq">${set.map(q=>`<li><p style="margin:0 0 4px">${q.q}</p><ol class="sheeto" type="أ">${q.opts.map(o=>`<li${TCH.key&&o.ok?' class="key"':""}>${o.t}</li>`).join("")}</ol></li>`).join("")}</ol>${TCH.key?`<p class="meta">مفتاح الإجابات: ${set.map((q,i)=>`${i+1}) ${"أبجد"[q.opts.findIndex(o=>o.ok)]}`).join(" · ")}</p>`:""}<p class="meta" style="margin:0">جُمانة مصر القديمة</p></article>`:""}`}
+document.addEventListener("click",ev=>{const id=ev.target.id;
+  if(id==="tchnew"){TCH.n=+$("#tchn").value;TCH.cls=$("#tchcls").value.trim().slice(0,40);const r=Math.floor(Math.random()*1679616).toString(36).toUpperCase().padStart(4,"0");TCH.code=r+"-"+TCH.n;store.set("teacher",TCH);renderTeacher()}
+  else if(id==="tchcopy"){try{navigator.clipboard.writeText(TCH.code).then(()=>toast("نُسخ الرمز"),()=>toast("الرمز: "+TCH.code))}catch(e){toast("الرمز: "+TCH.code)}}
+  else if(id==="tchprint"){document.body.classList.add("printing");window.print();setTimeout(()=>document.body.classList.remove("printing"),500)}
+  else if(id==="qclassgo"){const c=$("#qclass").value.trim().toUpperCase(),set=classSet(c);if(!set){toast("الرمز غير صحيح، مثال: K7QZ-10");return}me.nick=($("#nick")?.value||me.nick).trim().slice(0,24);saveMe();Q={items:set,i:0,score:0,correct:0,streak:0,maxStreak:0,answered:false,cls:c};renderQuiz()}});
+document.addEventListener("change",ev=>{if(ev.target.id==="tchkey"){TCH.key=ev.target.checked;store.set("teacher",TCH);renderTeacher()}else if(ev.target.id==="tchn"||ev.target.id==="tchcls"){TCH.n=+$("#tchn").value;TCH.cls=$("#tchcls").value.trim().slice(0,40);store.set("teacher",TCH)}});
+BADGES.push({id:"story",g:0x13000,n:"راوي الأيام"});
+
 let PIDX=null;
 function askPriest(){const q=($("#aq").value||"").trim(),O=$("#aout");if(q.length<3){O.innerHTML="";return}
   const stop=new Set(["ما","من","هل","كيف","لماذا","متى","اين","أين","هو","هي","في","عن","على","الى","إلى","مع","التي","الذي","ماذا","كان","كانت","و","او","أو","ذلك","هذا","هذه","لي","عند","قدماء","المصريين","المصريون","مصر"]);
@@ -2519,7 +2646,7 @@ function renderQuiz(){
   const el=$("#quiz");
   if(!Q){el.innerHTML=`<h3>جولة جديدة</h3><p style="color:var(--muted)">عشرة أسئلة مختارة عشوائياً من بنك يضم <b class="num">${qVisible().length}</b> سؤالاً عن الملوك والآثار والديانة والكتابة.</p>
     <label for="nick" style="color:var(--muted);font-size:.9rem">اسمك في لوحة الصدارة</label><input class="field" id="nick" maxlength="24" placeholder="مثال: كاتب طيبة" value="${esc(me.nick)}">
-    <div><button class="btn" id="qgo">ابدأ الاختبار</button></div>`;
+    <div><button class="btn" id="qgo">ابدأ الاختبار</button></div><details><summary>لديك رمز فصل من معلمك؟</summary><div class="tools"><input class="field" id="qclass" maxlength="8" dir="ltr" placeholder="K7QZ-10" aria-label="رمز الفصل"><button class="btn" id="qclassgo">ابدأ اختبار الفصل</button></div></details><p class="meta" style="margin:0">معلم؟ <a href="#teacher">افتح وضع المعلم</a></p>`;
     $("#qgo").onclick=()=>{me.nick=$("#nick").value.trim().slice(0,24);saveMe();quizStart()};return}
   if(Q.i>=Q.items.length){
     const n=Q.items.length,perfect=Q.correct===n;
@@ -2740,8 +2867,8 @@ document.addEventListener("click",ev=>{
 });
 
 /* ---------------- router ---------------- */
-const VIEWS=["home","explore","unique","tawhid","library","papyri","books","egyptology","chrono","sciences","religion","world","origins","timeline","kings","map","gods","topics","glyphs","quiz","search","about","admin"];
-const R={home:renderHome,unique:renderUnique,tawhid:renderTawhid,library:renderLibrary,papyri:()=>{renderPapyri();renderHall()},books:renderBooks,egyptology:renderEgyptology,explore:renderAxes,chrono:renderChrono,sciences:renderSciences,religion:renderReligion,world:renderWorld,search:renderSearch,about:renderAbout,origins:()=>{renderOrigins();renderStations()},timeline:renderTimeline,kings:renderKings,map:renderMap,gods:renderGods,topics:renderTopics,glyphs:()=>{renderGlyphs();renderLearn();renderHEditor();renderHDict();renderName()},quiz:()=>{renderQuiz();renderProfile();renderBoard();renderDaily()},admin:renderAdmin};
+const VIEWS=["home","explore","unique","tawhid","library","papyri","books","story","compare","teacher","egyptology","chrono","sciences","religion","world","origins","timeline","kings","map","gods","topics","glyphs","quiz","search","about","admin"];
+const R={home:renderHome,unique:renderUnique,tawhid:renderTawhid,library:renderLibrary,papyri:()=>{renderPapyri();renderHall()},books:renderBooks,story:renderStory,compare:renderCompare,teacher:renderTeacher,egyptology:renderEgyptology,explore:renderAxes,chrono:renderChrono,sciences:renderSciences,religion:renderReligion,world:renderWorld,search:renderSearch,about:renderAbout,origins:()=>{renderOrigins();renderStations()},timeline:renderTimeline,kings:renderKings,map:renderMap,gods:renderGods,topics:renderTopics,glyphs:()=>{renderGlyphs();renderLearn();renderHEditor();renderHDict();renderName()},quiz:()=>{renderQuiz();renderProfile();renderBoard();renderDaily()},admin:renderAdmin};
 function current(){const h=location.hash.slice(1);return VIEWS.includes(h)?h:"home"}
 function route(){
   const v=current();closeModal();VIEWS.forEach(n=>{document.getElementById("v-"+n).hidden=n!==v});
