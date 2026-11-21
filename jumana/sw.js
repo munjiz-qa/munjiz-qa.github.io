@@ -1,11 +1,6 @@
-/* يتيح فتح جُمانة بعد تثبيته حتى عند انقطاع الاتصال. الشبكة أولاً دائماً لتبقى المنصة محدّثة، والنسخة المحفوظة احتياط فقط.
-   لا يتدخل في أي طلب لجهة خارجية، ولا يحفظ إلا ملفات الصفحة نفسها التي فُتحت. */
-const CACHE = "jumana-202611150215", CORE = ["./", "index.html", "manifest.webmanifest", "pwa-install.js", "assets/icon.svg", "assets/icon-192.png", "assets/icon-180.png"];
-self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
-self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith("jumana-") && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
-self.addEventListener("fetch", e => {
-  const r = e.request, u = new URL(r.url);
-  if (r.method !== "GET" || u.origin !== location.origin || !u.pathname.startsWith(new URL("./", location.href).pathname) || r.headers.has("range")) return;
-  e.respondWith(fetch(r).then(res => { if (res.ok && res.status === 200 && +(res.headers.get("content-length") || 0) < 5e6) { const c = res.clone(); caches.open(CACHE).then(x => x.put(r, c)); } return res; })
-    .catch(() => caches.match(r, { ignoreSearch: true }).then(m => m || (r.mode === "navigate" ? caches.match("index.html") : Response.error()))));
-});
+const V="jumana-v17";const CORE=["./","./index.html","./manifest.webmanifest","./icon.svg","./icon-192.png","./icon-512.png"];
+self.addEventListener("install",e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
+self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==V).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
+self.addEventListener("fetch",e=>{const r=e.request;if(r.method!=="GET")return;const u=new URL(r.url);
+ if(r.mode==="navigate"){e.respondWith(fetch(r).then(res=>{const c=res.clone();caches.open(V).then(x=>x.put("./index.html",c));return res}).catch(()=>caches.match("./index.html")));return}
+ if(u.origin===location.origin||/(fonts\.(googleapis|gstatic)|cdnjs\.cloudflare)\.com$/.test(u.hostname)){e.respondWith(caches.match(r).then(m=>m||fetch(r).then(res=>{if(res.ok||res.type==="opaque"){const c=res.clone();caches.open(V).then(x=>x.put(r,c))}return res})))}});
