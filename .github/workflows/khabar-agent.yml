@@ -60,4 +60,5 @@ jobs:
           git add khabar/data
           git diff --cached --quiet && exit 0
           git commit -q -m "خبر: ${{ steps.m.outputs.mode == 'brief' && 'خلاصة جديدة بقلم الوكيل' || steps.m.outputs.mode == 'breaking' && 'رصد العاجل' || 'سجل الشفافية' }}"
-          for i in 1 2 3; do git pull --rebase -q && git push && exit 0; sleep 5; done; exit 1
+          # الملفات المشتقة (فهرس البحث وتقرير الشفافية) قد تتعارض مع التزام آخر؛ تُقدَّم نسخة هذا التشغيل، ويُلغى أي دمج عالق قبل المحاولة التالية
+          for i in 1 2 3; do git pull --rebase -X theirs -q && git push && exit 0; git rebase --abort 2>/dev/null || true; sleep 5; done; exit 1

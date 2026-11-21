@@ -61,4 +61,7 @@ jobs:
           git config user.name "khabar-bot"
           git config user.email "actions@users.noreply.github.com"
           git add khabar/data/headlines.json khabar/data/climate.json khabar/data/desks.json khabar/data/editorial.json khabar/data/countries.json khabar/data/countries-editorial.json khabar/data/countries-check.json khabar/data/forecast.json khabar/data/forecast khabar/data/search.json khabar/data/transparency.json khabar/feeds khabar/s khabar/sitemap.xml khabar/news-sitemap.xml
-          git diff --cached --quiet || (git commit -m "خبر: تحديث العناوين الآلية وأخبار المناخ والأقسام" && git pull --rebase -q && git push)
+          git diff --cached --quiet && exit 0
+          git commit -q -m "خبر: تحديث العناوين الآلية وأخبار المناخ والأقسام"
+          # الملفات المشتقة (فهرس البحث وتقرير الشفافية) قد تتعارض مع التزام آخر؛ تُقدَّم نسخة هذا التشغيل، ويُلغى أي دمج عالق قبل المحاولة التالية
+          for i in 1 2 3; do git pull --rebase -X theirs -q && git push && exit 0; git rebase --abort 2>/dev/null || true; sleep 5; done; exit 1
