@@ -4,7 +4,7 @@ name: Barakat desktop
 on:
   push:
     branches: [main, 'claude/**']
-    paths: ['barakat/index.html', 'barakat/sw.js', 'barakat/manifest.webmanifest', 'barakat/icons/**', 'barakat/document/**', 'scripts/barakat-desktop/**', '.github/workflows/barakat-desktop.yml']
+    paths: ['barakat/index.html', 'barakat/sw.js', 'barakat/manifest.webmanifest', 'barakat/icons/**', 'barakat/document/**', 'scripts/barakat-desktop/**', 'scripts/barakat-online/**', '.github/workflows/barakat-desktop.yml']
   workflow_dispatch:
 permissions:
   contents: write
@@ -42,6 +42,28 @@ jobs:
         with:
           name: shots-site
           path: shots-site
+  cloud:
+    # الوضع السحابي: قاعدة Postgres حقيقية + محاكي Supabase + خادم بركات نفسه، ثم كل الأدوار وفحوص الأمان والتزامن
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env: { POSTGRES_PASSWORD: postgres }
+        ports: ['5432:5432']
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 12
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with: { node-version: 22 }
+      - run: npm init -y >/dev/null && npm i playwright@1.48.2 pg@8.13.1 >/dev/null && npx playwright install --with-deps chromium
+      - name: Cloud mode, all roles + security + concurrency
+        env: { PGHOST: localhost, PGPORT: '5432', PGUSER: postgres, PGPASSWORD: postgres, SHOTS: shots-cloud }
+        run: PG_MODULE_DIR=$PWD/node_modules bash scripts/barakat-online/local/run-tests.sh
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: shots-cloud
+          path: shots-cloud
   test:
     needs: build
     strategy:
@@ -88,7 +110,7 @@ jobs:
           name: shots-${{ matrix.os }}
           path: shots
   publish:
-    needs: [test, site]
+    needs: [test, site, cloud]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
@@ -123,7 +145,7 @@ jobs:
           for old in shatirhassan/ shatirhassan/app/ baitalmal/ surra/; do curl -fsSL "https://munjiz-qa.github.io/$old" | grep -q "barakat" && echo "redirect ok: $old"; done
           curl -fsIL "https://github.com/munjiz-qa/munjiz-qa.github.io/releases/download/barakat-desktop/Barakat-Desktop.zip" | grep -i "^HTTP" | tail -1
       - name: Test all roles on the published site
-        run: BASE=https://munjiz-qa.github.io/barakat/ node scripts/barakat-desktop/e2e.cjs - shots-live
+        run: FORCE_LOCAL=1 BASE=https://munjiz-qa.github.io/barakat/ node scripts/barakat-desktop/e2e.cjs - shots-live
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
