@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-20T20:31:18.111Z",
+ "updated": "2026-11-21T00:22:28.571Z",
  "rule": "two_independent_outlets",
  "window_h": 48,
  "feeds": {
@@ -7,7 +7,7 @@
   "reliefweb:en": 2,
   "guardian:en": 6,
   "bbc:en": 5,
-  "aljazeera:en": 1,
+  "aljazeera:en": 2,
   "icn:en": 3,
   "grist:en": 3,
   "chn:en": 5,
@@ -16,20 +16,47 @@
   "sciam:en": 1,
   "france24:en": 1,
   "dw:en": 7,
-  "google:en": 100,
+  "google:en": 161,
   "un:ar": 1,
   "bbc:ar": 0,
   "aljazeera:ar": 0,
   "dw:ar": 0,
   "france24:ar": 1,
-  "aawsat:ar": 5,
-  "annahar:ar": 0,
+  "aawsat:ar": 6,
+  "annahar:ar": 2,
   "alquds:ar": 0,
-  "youm7:ar": "error",
-  "skynews:ar": 0,
+  "youm7:ar": 0,
+  "skynews:ar": 1,
   "google:ar": 56
  },
  "ar": [
+  {
+   "id": "ar-2026112020-zedekw",
+   "title": "عاصفة تدمر آلاف المنازل في البرازيل",
+   "date": "2026-11-20T20:22:00.000Z",
+   "outlets": 2,
+   "grade": "confirmed",
+   "methods": [
+    "outlets"
+   ],
+   "sources": [
+    {
+     "name": "النهار",
+     "title": "عاصفة تدمر آلاف المنازل في البرازيل",
+     "url": "https://www.annahar.com/ar/368460/عاصفة-تدمر-لاف-المنازل-في-البرازيل",
+     "date": "2026-11-20",
+     "official": false
+    },
+    {
+     "name": "الشرق الأوسط",
+     "title": "عاصفة تدمّر آلاف المنازل في البرازيل",
+     "url": "https://aawsat.com/node/5343757",
+     "date": "2026-11-20",
+     "official": false
+    }
+   ],
+   "data": null
+  },
   {
    "id": "ar-2026112006-49obj9",
    "title": "ختام قمة المناخ في تركيا وسط تعثر جهود كبح انبعاثات الوقود الأحفوري",
@@ -83,36 +110,50 @@
     }
    ],
    "data": null
-  },
+  }
+ ],
+ "en": [
   {
-   "id": "ar-2026111918-wgxwkv",
-   "title": "حالة الطقس المتوقعة غدا الجمعة 20 نوفمبر 2026 🔺ارتفاع طفيف في درجات الحرارة على أغلب الأنحاء. ☀ليسود طقس مائل للحرارة نهارًا على أغلب الأنحاء، حار على جنوب الصعيد، مائل للبرودة إلى بارد ليلًا وفي الصباح الباكر على أغلب ",
-   "date": "2026-11-19T18:53:19.000Z",
-   "outlets": 2,
-   "grade": "confirmed",
+   "id": "en-2026111905-hblj73",
+   "title": "Cyclone Akvan: Signal No. 3 Issued at Bangladesh Seaports",
+   "date": "2026-11-19T05:29:39.000Z",
+   "outlets": 3,
+   "grade": "strong",
    "methods": [
-    "outlets"
+    "outlets",
+    "data"
    ],
    "sources": [
     {
-     "name": "Facebook",
-     "title": "حالة الطقس المتوقعة غدا الجمعة 20 نوفمبر 2026 🔺ارتفاع طفيف في درجات الحرارة على أغلب الأنحاء. ☀ليسود طقس مائل للحرارة نهارًا على أغلب الأنحاء، حار على جنوب الصعيد، مائل للبرودة إلى بارد ليلًا وفي الصباح الباكر على أغلب ",
-     "url": "https://www.facebook.com/ema.gov.eg/posts/%D8%AD%D8%A7%D9%84%D8%A9-%D8%A7%D9%84%D8%B7%D9%82%D8%B3-%D8%A7%D9%84%D9%85%D8%AA%D9%88%D9%82%D8%B9%D8%A9-%D8%BA%D8%AF%D8%A7-%D8%A7%D9%84%D8%AC%D9%85%D8%B9%D8%A9-20-%D9%86%D9%88%D9%81%D9%85%D8%A8%D8%B1-2026%D8%A7%D8%B1%D8%AA%D9%81%D8%A7%D8%B9-%D8%B7%D9%81%D9%8A%D9%81-%D9%81%D9%8A-%D8%AF%D8%B1%D8%AC%D8%A7%D8%AA-%D8%A7%D9%84%D8%AD%D8%B1%D8%A7%D8%B1%D8%A9-%D8%B9%D9%84%D9%89-%D8%A3%D8%BA/1588602516631643/",
+     "name": "https://www.businesstimes-bd.com/",
+     "title": "Cyclone Akvan: Signal No. 3 Issued at Bangladesh Seaports",
+     "url": "https://www.businesstimes-bd.com/bangladesh/12584",
      "date": "2026-11-19",
      "official": false
     },
     {
-     "name": "المشهد السوداني",
-     "title": "حالة الطقس في السودان الجمعة 20 نوفمبر 2026.. بين الحرارة والبرودة والامطار",
-     "url": "https://almashhadalsudani.com/sudan-news/weather-in-sudan/180631/",
+     "name": "Sambad English",
+     "title": "Cyclone 'Akvan': Heavy rainfall warning for several Odisha districts",
+     "url": "https://sambadenglish.com/latest-news/cyclone-akvan-heavy-rainfall-warning-for-several-odisha-districts-12825182",
+     "date": "2026-11-20",
+     "official": false
+    },
+    {
+     "name": "News On AIR",
+     "title": "Heavy rainfall warning issued for five districts of West Bengal as Cyclone Akvan approaches",
+     "url": "https://newsonair.gov.in/heavy-rainfall-warning-issued-for-five-districts-of-west-bengal-as-cyclone-akvan-approaches/",
      "date": "2026-11-20",
      "official": false
     }
    ],
-   "data": null
-  }
- ],
- "en": [
+   "data": {
+    "name": "GDACS",
+    "title": "Tropical Cyclone AKVAN-26",
+    "alert": "Green",
+    "url": "https://www.gdacs.org/report.aspx?eventid=1001351&episodeid=13&eventtype=TC",
+    "date": "2026-11-20"
+   }
+  },
   {
    "id": "en-2026112018-wjzb0w",
    "title": "Factious climate talks enter overtime without new draft deal in sight – as it happened",
@@ -131,9 +172,9 @@
      "official": false
     },
     {
-     "name": "DW.com",
-     "title": "COP31: UN Climate summit enters final phase with no deal in sight after fossil fuels omitted from draft",
-     "url": "https://www.dw.com/en/cop31-un-climate-summit-enters-final-phase-with-no-deal-in-sight/live-79999516",
+     "name": "DW",
+     "title": "COP31: UN Climate summit enters final phase with no deal in sight",
+     "url": "https://www.dw.com/en/cop31-un-climate-summit-enters-final-phase-with-no-deal-in-sight/live-79999516?maca=en-rss-en-all-1573-rdf",
      "date": "2026-11-20",
      "official": false
     }
@@ -141,8 +182,8 @@
    "data": null
   },
   {
-   "id": "en-2026112016-wmwvfc",
-   "title": "Video. Turkey: Activists chant 'shame' as COP31 negotiations falter",
+   "id": "en-2026112016-8muw55",
+   "title": "Turkey: Activists chant 'shame' as COP31 negotiations falter",
    "date": "2026-11-20T16:13:13.000Z",
    "outlets": 2,
    "grade": "confirmed",
@@ -151,17 +192,152 @@
    ],
    "sources": [
     {
+     "name": "AOL.co.uk",
+     "title": "Turkey: Activists chant 'shame' as COP31 negotiations falter",
+     "url": "https://www.aol.co.uk/articles/turkey-activists-chant-shame-cop31-161313000.html",
+     "date": "2026-11-20",
+     "official": false
+    },
+    {
      "name": "Euronews.com",
      "title": "Video. Turkey: Activists chant 'shame' as COP31 negotiations falter",
      "url": "https://www.euronews.com/video/2026/11/20/turkey-activists-chant-shame-as-cop31-negotiations-falter",
      "date": "2026-11-20",
      "official": false
+    }
+   ],
+   "data": null
+  },
+  {
+   "id": "en-2026112023-bdkk5e",
+   "title": "UK and EU Agree to Link Emissions Trading Schemes",
+   "date": "2026-11-20T23:48:48.000Z",
+   "outlets": 2,
+   "grade": "confirmed",
+   "methods": [
+    "outlets"
+   ],
+   "sources": [
+    {
+     "name": "Ship & Bunker",
+     "title": "UK and EU Agree to Link Emissions Trading Schemes",
+     "url": "https://shipandbunker.com/news/emea/687643-uk-and-eu-agree-to-link-emissions-trading-schemes",
+     "date": "2026-11-20",
+     "official": false
     },
     {
-     "name": "AOL.co.uk",
-     "title": "Turkey: Activists chant 'shame' as COP31 negotiations falter",
-     "url": "https://www.aol.co.uk/articles/turkey-activists-chant-shame-cop31-161313000.html",
+     "name": "Riviera Maritime Media",
+     "title": "UK and EU leaders pledge to link emissions trading schemes",
+     "url": "https://www.rivieramm.com/news-content-hub/uk-and-eu-leaders-pledge-to-link-emissions-trading-schemes-90645",
+     "date": "2026-11-21",
+     "official": false
+    }
+   ],
+   "data": null
+  },
+  {
+   "id": "en-2026112021-x341fa",
+   "title": "Don’t wait to call 911: Pelham fire chief’s Thanksgiving warning as drought dries out Alabama",
+   "date": "2026-11-20T21:44:00.000Z",
+   "outlets": 2,
+   "grade": "confirmed",
+   "methods": [
+    "outlets"
+   ],
+   "sources": [
+    {
+     "name": "WBRC 6 News",
+     "title": "Don’t wait to call 911: Pelham fire chief’s Thanksgiving warning as drought dries out Alabama",
+     "url": "https://www.wbrc.com/2026/11/20/dont-wait-call-911-pelham-fire-chiefs-thanksgiving-warning-drought-dries-out-alabama/",
      "date": "2026-11-20",
+     "official": false
+    },
+    {
+     "name": "cedarnews.net",
+     "title": "Pelham fire chief’s Thanksgiving warning as drought dries out Alabama — Don’t wait to call 911",
+     "url": "https://cedarnews.net/newstasks/1172721/pelham-fire-chiefs-thanksgiving-warning-drought-dries/",
+     "date": "2026-11-20",
+     "official": false
+    }
+   ],
+   "data": null
+  },
+  {
+   "id": "en-2026112020-2q33rc",
+   "title": "Meta rethinks its 2030 climate goal as AI emissions soar",
+   "date": "2026-11-20T20:45:14.000Z",
+   "outlets": 2,
+   "grade": "confirmed",
+   "methods": [
+    "outlets"
+   ],
+   "sources": [
+    {
+     "name": "Scripps News",
+     "title": "Meta rethinks its 2030 climate goal as AI emissions soar",
+     "url": "https://www.scrippsnews.com/science-and-tech/artificial-intelligence/meta-rethinks-its-2030-climate-goal-as-ai-emissions-soar",
+     "date": "2026-11-20",
+     "official": false
+    },
+    {
+     "name": "Ars Technica",
+     "title": "Meta reconsiders 2030 net-zero goal amid record emissions from AI data centers",
+     "url": "https://arstechnica.com/ai/2026/11/meta-reconsiders-2030-net-zero-goal-amid-record-emissions-from-ai-data-centers/",
+     "date": "2026-11-20",
+     "official": false
+    }
+   ],
+   "data": null
+  },
+  {
+   "id": "en-2026112011-z3ekhx",
+   "title": "More worried, yet more hopeful: the paradox of young people's climate action",
+   "date": "2026-11-20T11:18:33.000Z",
+   "outlets": 2,
+   "grade": "confirmed",
+   "methods": [
+    "outlets"
+   ],
+   "sources": [
+    {
+     "name": "Imperial College London",
+     "title": "More worried, yet more hopeful: the paradox of young people's climate action",
+     "url": "https://www.imperial.ac.uk/news/articles/medicine/school-public-health/2026/more-worried-yet-more-hopeful-the-paradox-of-young-peoples-climate-action/",
+     "date": "2026-11-20",
+     "official": false
+    },
+    {
+     "name": "Phys.org",
+     "title": "More worried, yet more hopeful: The paradox of young people's climate action",
+     "url": "https://phys.org/news/2026-11-paradox-young-people-climate-action.html",
+     "date": "2026-11-20",
+     "official": false
+    }
+   ],
+   "data": null
+  },
+  {
+   "id": "en-2026111910-fl641e",
+   "title": "Wildfire danger warning for seven South African provinces",
+   "date": "2026-11-19T10:30:06.000Z",
+   "outlets": 2,
+   "grade": "confirmed",
+   "methods": [
+    "outlets"
+   ],
+   "sources": [
+    {
+     "name": "Joburg ETC",
+     "title": "Wildfire danger warning for seven South African provinces",
+     "url": "https://www.joburgetc.com/best-of-johannesburg/weather/wildfire-danger-warning-for-seven-south-african-provinces/",
+     "date": "2026-11-19",
+     "official": false
+    },
+    {
+     "name": "Cape Town ETC",
+     "title": "Wildfire danger warning issued for Western Cape and six other provinces",
+     "url": "https://www.capetownetc.com/news/weather/wildfire-danger-warning-issued-for-western-cape-and-six-other-provinces/",
+     "date": "2026-11-19",
      "official": false
     }
    ],
@@ -169,7 +345,7 @@
   }
  ],
  "dropped": {
-  "ar": 42,
-  "en": 117
+  "ar": 47,
+  "en": 0
  }
 }
