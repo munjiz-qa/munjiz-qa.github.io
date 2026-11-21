@@ -26,8 +26,8 @@
 /* Layout: a single learning column under a sticky header; the home view pairs "today's step" with a progress panel, the path view climbs four weekly flights of steps. */
 :root{
   --bg:#EDF2F0; --surface:#FFFFFF; --sunk:#E3EBE8; --ink:#0F2620; --muted:#566B65; --line:#D2DDD9;
-  --accent:#0B7A63; --accent-soft:#D6EEE7; --on-accent:#FFFFFF;
-  --gold:#B57A06; --gold-soft:#FAEFD5; --ok:#1E844A; --ok-soft:#DDF1E4; --bad:#AE3F2B; --bad-soft:#F8E1DB;
+  --accent:#0A715B; --accent-soft:#D6EEE7; --on-accent:#FFFFFF;
+  --gold:#B57A06; --gold-ink:#8A5A00; --gold-soft:#FAEFD5; --ok:#1E844A; --ok-soft:#DDF1E4; --bad:#AE3F2B; --bad-soft:#F8E1DB;
   --f-display:"Reem Kufi","IBM Plex Sans Arabic",Tahoma,sans-serif;
   --f-body:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;
   --r:14px;
@@ -35,11 +35,11 @@
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0A1412; --surface:#111F1C; --sunk:#0D1916; --ink:#E3EDE9; --muted:#93A8A1; --line:#22342F;
   --accent:#3CC4A0; --accent-soft:#143A31; --on-accent:#052019;
-  --gold:#E8B54C; --gold-soft:#2C2412; --ok:#5DCF8C; --ok-soft:#13301F; --bad:#EF806C; --bad-soft:#3A1C16; color-scheme:dark}}
+  --gold:#E8B54C; --gold-ink:#E8B54C; --gold-soft:#2C2412; --ok:#5DCF8C; --ok-soft:#13301F; --bad:#EF806C; --bad-soft:#3A1C16; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0A1412; --surface:#111F1C; --sunk:#0D1916; --ink:#E3EDE9; --muted:#93A8A1; --line:#22342F;
   --accent:#3CC4A0; --accent-soft:#143A31; --on-accent:#052019;
-  --gold:#E8B54C; --gold-soft:#2C2412; --ok:#5DCF8C; --ok-soft:#13301F; --bad:#EF806C; --bad-soft:#3A1C16; color-scheme:dark}
+  --gold:#E8B54C; --gold-ink:#E8B54C; --gold-soft:#2C2412; --ok:#5DCF8C; --ok-soft:#13301F; --bad:#EF806C; --bad-soft:#3A1C16; color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.75}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
@@ -78,7 +78,7 @@ a{color:var(--accent)}
 .btn.sm{padding:6px 12px;font-size:.88rem}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .chip{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:600;border-radius:999px;padding:2px 10px;background:var(--sunk);color:var(--muted)}
-.chip.ok{background:var(--ok-soft);color:var(--ok)} .chip.now{background:var(--accent-soft);color:var(--accent)} .chip.gold{background:var(--gold-soft);color:var(--gold)}
+.chip.ok{background:var(--ok-soft);color:var(--ok)} .chip.now{background:var(--accent-soft);color:var(--accent)} .chip.gold{background:var(--gold-soft);color:var(--gold-ink)}
 .banner{display:flex;gap:10px;align-items:flex-start;font-size:.9rem;padding:10px 14px;border-radius:10px;background:var(--sunk);color:var(--muted)}
 textarea,input[type=text],input[type=time]{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
 textarea{min-height:110px;resize:vertical}
@@ -124,7 +124,7 @@ textarea:focus,input:focus{outline:2px solid var(--accent);outline-offset:0;bord
 .box{border-radius:var(--r);padding:16px 18px;display:flex;flex-direction:column;gap:10px}
 .box.try{background:var(--sunk);border:1px dashed var(--line)}
 .box.try pre{margin:0;white-space:pre-wrap;font-family:var(--f-body);font-size:.95rem;line-height:1.8}
-.box.tip{background:var(--gold-soft)} .box.tip .eyebrow{color:var(--gold)}
+.box.tip{background:var(--gold-soft)} .box.tip .eyebrow{color:var(--gold-ink)}
 .box.task{background:var(--surface);border:1px solid var(--line)}
 .feedback{white-space:pre-wrap;background:var(--accent-soft);border-radius:10px;padding:12px 14px;font-size:.95rem}
 .quiz .q{display:flex;flex-direction:column;gap:8px;padding-block:6px}
@@ -184,7 +184,7 @@ select{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius
 .kv{display:grid;grid-template-columns:auto 1fr;gap:8px 18px}
 .err{color:var(--bad);min-height:1.2em;margin:0;font-weight:600}
 .pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.8rem;font-weight:600;background:var(--sunk);color:var(--muted);white-space:nowrap}
-.pill.gold{background:var(--gold-soft);color:var(--gold)}.pill.ok{background:var(--ok-soft);color:var(--ok)}.pill.bad{background:var(--bad-soft);color:var(--bad)}
+.pill.gold{background:var(--gold-soft);color:var(--gold-ink)}.pill.ok{background:var(--ok-soft);color:var(--ok)}.pill.bad{background:var(--bad-soft);color:var(--bad)}
 .btn.danger{color:var(--bad)}
 input:not([type]),input[type=password],input[type=search]{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
 td .btn.sm{white-space:nowrap}
@@ -224,7 +224,7 @@ td .btn.sm{white-space:nowrap}
     <a href="#contact">تواصل معنا</a>
   </div>
 </div></footer>
-<a class="wa" href="https://wa.me/97451600498?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%D8%8C%20%D8%A3%D8%B3%D8%AA%D9%81%D8%B3%D8%B1%20%D8%B9%D9%86%20%D9%85%D9%86%D8%B5%D8%A9%20%D9%85%D8%B9%D9%84%D9%85%20Teacher" target="_blank" rel="noopener" aria-label="تواصل مع منجز عبر واتساب"><svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg></a>
+<aside aria-label="تواصل عبر واتساب"><a class="wa" href="https://wa.me/97451600498?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%D8%8C%20%D8%A3%D8%B3%D8%AA%D9%81%D8%B3%D8%B1%20%D8%B9%D9%86%20%D9%85%D9%86%D8%B5%D8%A9%20%D9%85%D8%B9%D9%84%D9%85%20Teacher" target="_blank" rel="noopener" aria-label="تواصل مع منجز عبر واتساب"><svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg></a></aside>
 </div>
 
 <script>
