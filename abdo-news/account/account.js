@@ -38,7 +38,7 @@ function open(rec){
   $('#admin-link').hidden=rec.role!=='super';
   const sv=(()=>{try{return Object.keys(JSON.parse(localStorage.getItem('khabar-saved'))||{}).length}catch(e){return 0}})();
   const m=$('#meta');m.textContent='';
-  [[fmtDay(rec.created),'عضو منذ'],[`${({am:'الصباح',md:'الظهيرة',pm:'المساء',nt:'الليل'}[BRIEF.edition]||'المساء')} · ${fmtDay(BRIEF.date)}`,'آخر خلاصة'],[String(sv),'خبراً محفوظاً']].forEach(([v,l])=>{const d=el('div');d.append(el('small',null,l),el('b',null,v));m.append(d)});
+  [[fmtDay(rec.created),'عضو منذ'],[`${({am:'الصباح',md:'الظهيرة',pm:'المساء',nt:'الليل'}[BRIEF.edition]||'المساء')} · ${fmtDay(BRIEF.date)}`,'آخر خلاصة'],[String(sv),'الأخبار المحفوظة']].forEach(([v,l])=>{const d=el('div');d.append(el('small',null,l),el('b',null,v));m.append(d)});
   renderFollow();renderMine();renderSaved();
 }
 function renderFollow(){
