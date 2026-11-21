@@ -391,7 +391,7 @@ html[dir=rtl] .trk-nav .flip{transform:scaleX(-1)}
 @media print{body.trk-printing>*:not(#trkPrint){display:none!important}body.trk-printing #trkPrint{display:block!important;color:#000}#trkPrint table{font-size:11pt}#trkPrint h1{font-size:18pt}#trkPrint .trk-chart text{fill:#444}}
 </style>
 <style id="auc-css">
-/* المزاد العلاجي (auction) */
+/* سعر العافية (auction) */
 .auc-tabs{position:sticky;top:calc(env(safe-area-inset-top,0px) + 108px);z-index:5;background:var(--bg);padding-block:6px;margin-block:-6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
 .auc-tabs::-webkit-scrollbar{display:none}
 .auc-tabs .chip{flex-shrink:0;white-space:nowrap}
@@ -5339,7 +5339,7 @@ if(linked || ["","#","#track","#home","#admin"].includes(location.hash)) { if(ty
 })();
 </script>
 <script id="auc-js">
-// ===== المزاد العلاجي: عروض العيادات الشريكة، طلب عروض، اقتراحات، انضمام العيادات، وإدارة (الإصدار 2.0) =====
+// ===== سعر العافية: عروض العيادات الشريكة، طلب عروض، اقتراحات، انضمام العيادات، وإدارة (الإصدار 2.1) =====
 (()=>{
 if(typeof VIEWS==="undefined"||typeof R==="undefined") return;
 const EN = window.TY_LANG==="en";
@@ -5432,25 +5432,25 @@ const sendBtns = (subject,text) => `<div class="auc-act">
   <button class="btn ghost" type="button" data-aucCopy="${h(text)}">${T("انسخ النص","Copy text")}</button></div>
   <p class="small muted">${T("تُرسَل الرسالة إلى إدارة المنصة من تطبيق الواتساب أو البريد لديك، وتتولى الإدارة التنسيق مع العيادة. لا يُرسَل شيء قبل أن تضغط «إرسال» في ذلك التطبيق.","The message goes to the platform team from your WhatsApp or email app, and the team coordinates with the clinic. Nothing is sent until you press “Send” in that app.")}</p>`;
 const L = (a,e,v) => v ? `${T(a,e)}: ${v}\n` : "";
-const msgInq = i => `${T("طلب حجز عبر «المزاد العلاجي» — الطيبات","Booking request via “Therapeutic Auction” — Al-Tayyibat")}\n${L("العرض","Offer",i.offer)}${L("العيادة","Clinic",i.clinic)}${L("السعر","Price",i.price)}${L("الاسم","Name",i.name)}${L("الهاتف","Phone",i.phone)}${L("الموعد المفضل","Preferred date",i.date?fdate(i.date):"")}${L("ملاحظات","Notes",i.note)}${i.demo?T("(ملاحظة: عرض تجريبي)\n","(Note: demo offer)\n"):""}`;
-const msgReq = r => `${T("طلب عروض علاجية عبر «المزاد العلاجي» — الطيبات","Treatment offers request via “Therapeutic Auction” — Al-Tayyibat")}\n${L("التخصص","Specialty",spN(r.spec))}${L("الحاجة العلاجية","Treatment needed",r.need)}${L("المدينة","City",cyN(r.city))}${L("الميزانية القصوى","Maximum budget",r.budget?money(r.budget,r.cur):"")}${L("التوقيت","Timing",tmN(r.when))}${L("الاسم","Name",r.name)}${L("الهاتف","Phone",r.phone)}${L("ملاحظات","Notes",r.note)}`;
+const msgInq = i => `${T("طلب حجز عبر «سعر العافية» — الطيبات","Booking request via “Wellness Price” — Al-Tayyibat")}\n${L("العرض","Offer",i.offer)}${L("العيادة","Clinic",i.clinic)}${L("السعر","Price",i.price)}${L("الاسم","Name",i.name)}${L("الهاتف","Phone",i.phone)}${L("الموعد المفضل","Preferred date",i.date?fdate(i.date):"")}${L("ملاحظات","Notes",i.note)}${i.demo?T("(ملاحظة: عرض تجريبي)\n","(Note: demo offer)\n"):""}`;
+const msgReq = r => `${T("طلب عروض علاجية عبر «سعر العافية» — الطيبات","Treatment offers request via “Wellness Price” — Al-Tayyibat")}\n${L("التخصص","Specialty",spN(r.spec))}${L("الحاجة العلاجية","Treatment needed",r.need)}${L("المدينة","City",cyN(r.city))}${L("الميزانية القصوى","Maximum budget",r.budget?money(r.budget,r.cur):"")}${L("التوقيت","Timing",tmN(r.when))}${L("الاسم","Name",r.name)}${L("الهاتف","Phone",r.phone)}${L("ملاحظات","Notes",r.note)}`;
 const TM = [["urgent","عاجل خلال أيام","Urgent, within days"],["month","خلال شهر","Within a month"],["flex","مرن","Flexible"]];
 const tmN = id => { const x=TM.find(t=>t[0]===id)||TM[2]; return EN?x[2]:x[1]; };
 const code = o => "AUC1:"+btoa(unescape(encodeURIComponent(JSON.stringify(o))));
 const decode = s => { try{ const m=String(s).match(/AUC1:[A-Za-z0-9+/=]+/); return m ? JSON.parse(decodeURIComponent(escape(atob(m[0].slice(5))))) : null; }catch{ return null; } };
-const msgApp = a => `${T("طلب انضمام عيادة شريكة — المزاد العلاجي، الطيبات","Partner clinic application — Therapeutic Auction, Al-Tayyibat")}\n${L("العيادة","Clinic",a.n)}${L("التخصصات","Specialties",a.specs.map(spN).join("، "))}${L("المدينة","City",cyN(a.city))}${L("رقم الترخيص","Licence no.",a.lic)}${L("المسؤول","Contact person",a.person)}${L("الهاتف","Phone",a.phone)}${L("البريد","Email",a.email)}${L("العرض المقترح","Proposed offer",a.offer?`${a.offer} — ${money(a.price,a.cur)}`:"")}\n${T("رمز الطلب (للإدارة):","Application code (for admin):")}\n${code(a)}\n`;
+const msgApp = a => `${T("طلب انضمام عيادة شريكة — سعر العافية، الطيبات","Partner clinic application — Wellness Price, Al-Tayyibat")}\n${L("العيادة","Clinic",a.n)}${L("التخصصات","Specialties",a.specs.map(spN).join("، "))}${L("المدينة","City",cyN(a.city))}${L("رقم الترخيص","Licence no.",a.lic)}${L("المسؤول","Contact person",a.person)}${L("الهاتف","Phone",a.phone)}${L("البريد","Email",a.email)}${L("العرض المقترح","Proposed offer",a.offer?`${a.offer} — ${money(a.price,a.cur)}`:"")}\n${T("رمز الطلب (للإدارة):","Application code (for admin):")}\n${code(a)}\n`;
 
 // ---------- الأيقونات ----------
 const ic = p => `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
 const TABS = [
- ["offers",T("العروض","Offers"),ic('<path d="M20 12v8H4v-8M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7z"/>')],
- ["request",T("اطلب عروضاً","Request offers"),ic('<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>')],
- ["tips",T("اقتراحات ونصائح","Suggestions & tips"),ic('<path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2V17h6v-.3c0-.8.4-1.5 1-2A7 7 0 0 0 12 2z"/>')],
+ ["offers",T("عروض العيادات","Clinic offers"),ic('<path d="M20 12v8H4v-8M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7z"/>')],
+ ["request",T("اطلب طبيبك","Find your doctor"),ic('<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>')],
+ ["tips",T("وفّر صحتك","Save on care"),ic('<path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2V17h6v-.3c0-.8.4-1.5 1-2A7 7 0 0 0 12 2z"/>')],
  ["clinic",T("للعيادات","For clinics"),ic('<path d="M3 21V8l9-5 9 5v13M9 21v-6h6v6M12 9v4M10 11h4"/>')],
  ["mine",T("طلباتي","My requests"),ic('<path d="M9 11l3 3 8-8M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/>')]
 ];
 
-const DISC = `<div class="disclaimer" style="margin-top:16px"><b>${T("تنبيه مهم:","Important:")}</b> ${T("«المزاد العلاجي» وسيط تعريفي لعرض عروض العيادات الشريكة ومقارنتها، وليس مقدّم رعاية طبية ولا يضمن نتيجة علاج. الأسعار استرشادية وتُؤكَّد مع العيادة قبل الحجز، وتحقق دائماً من ترخيص العيادة والطبيب. العروض المعلَّمة «تجريبي» أمثلة لتوضيح الخدمة وليست لعيادات حقيقية. في الحالات الطارئة اتصل بالإسعاف فوراً ولا تنتظر عرضاً.","“Therapeutic Auction” is an introduction service that lists and compares partner-clinic offers. It is not a care provider and does not guarantee any treatment result. Prices are indicative and confirmed with the clinic before booking; always verify the clinic and doctor licence. Offers marked “Demo” are examples that illustrate the service, not real clinics. In an emergency call the ambulance at once and do not wait for an offer.")}</div>`;
+const DISC = `<div class="disclaimer" style="margin-top:16px"><b>${T("تنبيه مهم:","Important:")}</b> ${T("«سعر العافية» وسيط تعريفي لعرض عروض العيادات الشريكة ومقارنتها، وليس مقدّم رعاية طبية ولا يضمن نتيجة علاج. الأسعار استرشادية وتُؤكَّد مع العيادة قبل الحجز، وتحقق دائماً من ترخيص العيادة والطبيب. العروض المعلَّمة «تجريبي» أمثلة لتوضيح الخدمة وليست لعيادات حقيقية. في الحالات الطارئة اتصل بالإسعاف فوراً ولا تنتظر عرضاً.","“Wellness Price” is an introduction service that lists and compares partner-clinic offers. It is not a care provider and does not guarantee any treatment result. Prices are indicative and confirmed with the clinic before booking; always verify the clinic and doctor licence. Offers marked “Demo” are examples that illustrate the service, not real clinics. In an emergency call the ambulance at once and do not wait for an offer.")}</div>`;
 
 // ---------- العرض: بطاقة عرض ----------
 function card(o, all, opt={}){
@@ -5482,8 +5482,8 @@ function vOffers(){
   const all=offers(), cities=[...new Set(all.map(o=>o.city))].map(c=>cy(c));
   const specs=SPEC.filter(s=>all.some(o=>o.spec===s[0]));
   const list=filtered();
-  return `<div class="auc-hero"><b>${T("كيف يعمل المزاد العلاجي؟","How does the Therapeutic Auction work?")}</b>
-  <ol class="auc-steps"><li>${T("تصفّح عروض العيادات الشريكة وقارن الأسعار والمزايا.","Browse partner-clinic offers and compare prices and what is included.")}</li><li>${T("أو اطلب عروضاً: اكتب حاجتك العلاجية وتتنافس العيادات على خدمتك.","Or request offers: describe your need and clinics compete to serve you.")}</li><li>${T("اختر الأفضل لك سعراً وقرباً وجودة، واحجز عبر المنصة.","Pick what suits you in price, distance and quality, and book through the platform.")}</li></ol></div>
+  return `<div class="auc-hero"><div class="chips auc-tag"><span class="tag tp">${T("تنافس طبي","Medical competition")}</span><span class="tag tp">${T("عروض العيادات","Clinic offers")}</span><span class="tag tp">${T("وفّر صحتك","Save on your health")}</span><span class="tag tp">${T("اطلب طبيبك","Find your doctor")}</span></div><b>${T("كيف تعمل «سعر العافية»؟","How does Wellness Price work?")}</b>
+  <ol class="auc-steps"><li>${T("تصفّح عروض العيادات الشريكة وقارن الأسعار والمزايا.","Browse partner-clinic offers and compare prices and what is included.")}</li><li>${T("أو اطلب طبيبك: اكتب حاجتك العلاجية وتتنافس العيادات على خدمتك.","Or request offers: describe your need and clinics compete to serve you.")}</li><li>${T("اختر الأفضل لك سعراً وقرباً وجودة، واحجز عبر المنصة.","Pick what suits you in price, distance and quality, and book through the platform.")}</li></ol></div>
   <div class="card" style="cursor:default;margin-top:14px"><div class="auc-fil">
    <div class="field"><label for="aucQ">${T("بحث","Search")}</label><input type="search" id="aucQ" value="${h(St.q)}" placeholder="${T("عرض، عيادة، تخصص…","Offer, clinic, specialty…")}"></div>
    <div class="field"><label for="aucSp">${T("التخصص","Specialty")}</label><select id="aucSp">${opts(specs,St.spec,T("كل التخصصات","All specialties"))}</select></div>
@@ -5523,7 +5523,7 @@ document.addEventListener("submit", e=>{
     if(!o) return q("#iE",f).textContent=T("انتهى هذا العرض","This offer has ended");
     const i={id:uid("i"),ts:Date.now(),oid:o.id,offer:loc(o,"t"),clinic:loc(o.c,"n"),price:money(o.price,o.cur),name:q("#iN",f).value.trim(),phone:ph,date:q("#iD",f).value,note:q("#iT",f).value.trim(),demo:!!o.demo};
     D.inq.unshift(i); save();
-    f.outerHTML=`<div class="auc-ok" style="margin-top:12px"><b>✓ ${T("تم حفظ طلبك في «طلباتي» على جهازك","Your request was saved in “My requests” on your device")}</b>${sendBtns(T("حجز عرض — المزاد العلاجي","Offer booking — Therapeutic Auction"),msgInq(i))}</div>`;
+    f.outerHTML=`<div class="auc-ok" style="margin-top:12px"><b>✓ ${T("تم حفظ طلبك في «طلباتي» على جهازك","Your request was saved in “My requests” on your device")}</b>${sendBtns(T("حجز عرض — سعر العافية","Offer booking — Wellness Price"),msgInq(i))}</div>`;
   }
   if(f.id==="aucReqF"){ e.preventDefault(); submitReq(f); }
   if(f.id==="aucAppF"){ e.preventDefault(); submitApp(f); }
@@ -5565,7 +5565,7 @@ function vRequest(){
    <p class="small wide" id="rE" role="alert" style="color:var(--bad);margin:0"></p>
    <div class="wide"><button class="btn" type="submit">${T("اعرض أنسب العروض وجهّز طلبي","Show best offers and prepare my request")}</button></div>
   </form></div>
-  <div id="aucRes" style="margin-top:14px">${St.lastReq?`<div class="auc-ok"><b>✓ ${T("آخر طلب لك","Your latest request")}</b>${sendBtns(T("طلب عروض — المزاد العلاجي","Offers request — Therapeutic Auction"),msgReq(St.lastReq))}</div>${matchHTML(St.lastReq)}`:""}</div>${DISC}`;
+  <div id="aucRes" style="margin-top:14px">${St.lastReq?`<div class="auc-ok"><b>✓ ${T("آخر طلب لك","Your latest request")}</b>${sendBtns(T("طلب عروض — سعر العافية","Offers request — Wellness Price"),msgReq(St.lastReq))}</div>${matchHTML(St.lastReq)}`:""}</div>${DISC}`;
 }
 function submitReq(f){
   const err=q("#rE",f), ph=normPhone(q("#rP",f).value), need=q("#rN",f).value.trim(), b=parseFloat(toLat(q("#rB",f).value));
@@ -5576,7 +5576,7 @@ function submitReq(f){
   err.textContent="";
   const r={id:uid("r"),ts:Date.now(),spec:q("#rS",f).value,city:q("#rC",f).value,need,budget:b>0?b:0,cur:q("#rU",f).value,when:q("#rW",f).value,name:q("#rNm",f).value.trim(),phone:ph,note:q("#rT",f).value.trim()};
   D.req.unshift(r); save(); St.lastReq=r;
-  q("#aucRes").innerHTML=`<div class="auc-ok"><b>✓ ${T("تم حفظ طلبك في «طلباتي» على جهازك. أرسله الآن للمنصة ليصل إلى العيادات:","Your request is saved in “My requests” on your device. Send it now so it reaches the clinics:")}</b>${sendBtns(T("طلب عروض — المزاد العلاجي","Offers request — Therapeutic Auction"),msgReq(r))}</div>${matchHTML(r)}`;
+  q("#aucRes").innerHTML=`<div class="auc-ok"><b>✓ ${T("تم حفظ طلبك في «طلباتي» على جهازك. أرسله الآن للمنصة ليصل إلى العيادات:","Your request is saved in “My requests” on your device. Send it now so it reaches the clinics:")}</b>${sendBtns(T("طلب عروض — سعر العافية","Offers request — Wellness Price"),msgReq(r))}</div>${matchHTML(r)}`;
   q("#aucRes").scrollIntoView({behavior:"smooth",block:"start"});
 }
 
@@ -5649,7 +5649,7 @@ function vTips(){
 const aSel = new Set();
 function vClinic(){
   aSel.clear();
-  return `<div class="card" style="cursor:default"><h2 style="margin:0">${T("انضمّ شريكاً في المزاد العلاجي","Join as a partner clinic")}</h2>
+  return `<div class="card" style="cursor:default"><h2 style="margin:0">${T("انضمّ شريكاً في سعر العافية","Join as a partner clinic")}</h2>
   <p class="muted">${T("اعرض عروض عيادتك على مرضى يبحثون عن أفضل خدمة علاجية، وتنافس بعروضك على طلباتهم. تراجع الإدارة بيانات الترخيص قبل النشر.","Show your clinic's offers to patients looking for the best treatment service, and compete for their requests. The team reviews licence details before publishing.")}</p>
   <ul class="clean"><li>${T("يلزم ترخيص ساري للعيادة من الجهة الصحية الرسمية.","A valid clinic licence from the official health authority is required.")}</li><li>${T("يجب أن تكون العروض صادقة وواضحة التفاصيل والمدة، دون وعود بنتائج مضمونة.","Offers must be honest, clear on content and validity, with no guaranteed-result promises.")}</li><li>${T("شروط الشراكة وأي عمولة تُتفق عليها كتابةً مع الإدارة قبل النشر.","Partnership terms and any commission are agreed in writing with the team before publishing.")}</li></ul></div>
   <form id="aucAppF" class="card auc-f" style="cursor:default;margin-top:14px" novalidate>
@@ -5680,7 +5680,7 @@ function submitApp(f){
   err.textContent="";
   const a={id:uid("a"),ts:Date.now(),n,lic:q("#aL",f).value.trim(),city:q("#aC",f).value,specs:[...aSel],person:q("#aPn",f).value.trim(),phone:ph,email:mail,offer:q("#aO",f).value.trim(),price:pr,cur:q("#aU",f).value};
   D.apps.unshift(a); save();
-  q("#aucAppRes").innerHTML=`<div class="auc-ok"><b>✓ ${T("تم حفظ طلب الانضمام على جهازك. أرسله للإدارة لمراجعته:","The application is saved on your device. Send it to the team for review:")}</b>${sendBtns(T("طلب انضمام عيادة — المزاد العلاجي","Clinic application — Therapeutic Auction"),msgApp(a))}</div>`;
+  q("#aucAppRes").innerHTML=`<div class="auc-ok"><b>✓ ${T("تم حفظ طلب الانضمام على جهازك. أرسله للإدارة لمراجعته:","The application is saved on your device. Send it to the team for review:")}</b>${sendBtns(T("طلب انضمام عيادة — سعر العافية","Clinic application — Wellness Price"),msgApp(a))}</div>`;
   q("#aucAppRes").scrollIntoView({behavior:"smooth",block:"start"});
 }
 
@@ -5699,12 +5699,11 @@ function vMine(){
 }
 
 // ---------- الواجهة والأحداث ----------
-R.auction = () => `<div class="view-head"><h1>${T("المزاد العلاجي","Therapeutic Auction")}</h1><p>${T("أفضل خدمة علاجية بأفضل سعر: عروض عيادات شريكة تتنافس لخدمتك. قارن، أو اطلب عروضاً مخصصة لحاجتك، واحجز عبر المنصة.","The best treatment service at the best price: partner clinics compete to serve you. Compare, or request offers tailored to your need, and book through the platform.")}</p></div>
-<nav class="chips auc-tabs" aria-label="${T("أقسام المزاد العلاجي","Therapeutic Auction sections")}">${TABS.map(([id,n,i])=>`<button type="button" class="chip" data-atab="${id}" aria-pressed="${St.tab===id}" style="display:inline-flex;align-items:center;gap:6px">${i}${n}${id==="mine"&&(D.req.length+D.inq.length)?` <small>(${D.req.length+D.inq.length})</small>`:""}</button>`).join("")}</nav>
+R.auction = () => `<div class="view-head"><h1>${T("سعر العافية","Wellness Price")}</h1><p>${T("سعر العافية: تنافس طبي يوفّر صحتك. عروض عيادات شريكة تتنافس لخدمتك بأفضل سعر؛ قارن، أو اطلب طبيبك بعرض مخصص لحاجتك، واحجز عبر المنصة.","Wellness Price: medical competition that saves your health. Partner clinics compete to serve you at the best price. Compare, or request offers tailored to your need, and book through the platform.")}</p></div>
+<nav class="chips auc-tabs" aria-label="${T("أقسام سعر العافية","Wellness Price sections")}">${TABS.map(([id,n,i])=>`<button type="button" class="chip" data-atab="${id}" aria-pressed="${St.tab===id}" style="display:inline-flex;align-items:center;gap:6px">${i}${n}${id==="mine"&&(D.req.length+D.inq.length)?` <small>(${D.req.length+D.inq.length})</small>`:""}</button>`).join("")}</nav>
 <div id="aucBody" style="margin-top:14px"></div>`;
 AFTER.auction = () => {
   D = load();
-  try{ const g=JSON.parse(sessionStorage.getItem("ty_auc_go")||"null"); if(g){ sessionStorage.removeItem("ty_auc_go"); St.spec=g.spec||""; St.tab=g.tab||"offers"; if(typeof keepUI==="function") keepUI(); } }catch(e){}
   const sec=q('#main section[data-view="auction"]'); if(!sec) return;
   sec.addEventListener("click",onClick); sec.addEventListener("input",onInput); sec.addEventListener("change",onChange);
   draw();
@@ -5754,7 +5753,7 @@ function adminHTML(){
   const itemClinic = c => `<li><div class="m"><b>${h(c.n)}</b><span class="small muted">${h(cyN(c.city))} · ${(c.specs||[]).map(x=>h(sp(x)[1])).join("، ")}${c.ver?" · ✓ موثّق":""}</span></div><div class="auc-act" style="margin:0"><button class="btn ghost" type="button" data-aucEdC="${h(c.id)}">تعديل</button><button class="btn ghost" type="button" data-aucDelE="${h(c.id)}">حذف</button></div></li>`;
   const itemOffer = o => `<li><div class="m"><b>${h(o.t)}</b><span class="small muted">${h((clinicById(o.clinic)||{}).n||"—")} · ${h(money(o.price,o.cur))} · حتى ${fdate(offerUntil(o))}${left(offerUntil(o))<0?" (منتهٍ)":""}</span></div><div class="auc-act" style="margin:0"><button class="btn ghost" type="button" data-aucEdO="${h(o.id)}">تعديل</button><button class="btn ghost" type="button" data-aucDelE="${h(o.id)}">حذف</button></div></li>`;
   const demoRow = d => `<li><div class="m"><b>${h(d.n||d.t)}</b><span class="small muted">تجريبي</span></div><button class="btn ghost" type="button" data-aucHide="${h(d.id)}">${hidden(d.id)?"إظهار":"إخفاء"}</button></li>`;
-  return `<div class="panel" id="aucAdm"><h2>المزاد العلاجي: العيادات والعروض</h2>
+  return `<div class="panel" id="aucAdm"><h2>سعر العافية: العيادات والعروض</h2>
   <p class="small muted">أضف العيادات الشريكة وعروضها هنا، ثم صدّر ملف المحتوى (زر «نشر المحتوى لكل الزوار» أعلاه) وارفعه ليراها كل الزوار. العيادات والعروض المعلَّمة «تجريبي» أمثلة يمكنك إخفاؤها أو الإبقاء عليها حتى تنشر عروضاً حقيقية. طلبات المرضى وطلبات انضمام العيادات تصلك بالواتساب أو البريد؛ الصق «رمز الطلب» أدناه لتعبئة بيانات العيادة تلقائياً.</p>
   <div id="aucAdStats"><div class="grid-3" style="margin-bottom:12px"><div class="card" style="cursor:default"><span class="muted small">عيادات منشورة</span><b style="font-size:1.4rem">${clinics().length}</b></div><div class="card" style="cursor:default"><span class="muted small">عروض سارية</span><b style="font-size:1.4rem">${offers().length}</b></div><div class="card" style="cursor:default"><span class="muted small">مضافة من الإدارة</span><b style="font-size:1.4rem">${cl.length+of.length}</b></div></div></div>
   <form id="aucAdI" class="field" style="margin-bottom:14px"><label for="aiC">استيراد رمز طلب انضمام عيادة</label><div class="row"><input type="text" id="aiC" dir="ltr" placeholder="AUC1:…" style="flex:1 1 240px"><button class="btn ghost" type="submit">تعبئة النموذج</button></div></form>
@@ -5844,9 +5843,9 @@ function importCode(f){
 if(typeof applyEntries==="function"){ const _ap=applyEntries; applyEntries = function(docs){ _ap(docs); try{ const v=currentView(); if(v==="auction"&&q("#aucBody")&&!q("#drawer .drawer")) draw(); if(v==="admin"&&q("#aucAdm")) refreshAdmin(); }catch(e){} }; }
 
 // ---------- التسجيل في التنقل ----------
-if(!VIEWS.some(v=>v[0]==="auction")){ const i=VIEWS.findIndex(v=>v[0]==="consult"); VIEWS.splice(i>=0?i:VIEWS.length-3, 0, ["auction", T("المزاد العلاجي","Therapeutic Auction")]); }
+if(!VIEWS.some(v=>v[0]==="auction")){ const i=VIEWS.findIndex(v=>v[0]==="consult"); VIEWS.splice(i>=0?i:VIEWS.length-3, 0, ["auction", T("سعر العافية","Wellness Price")]); }
 window.TY_NAV_META = Object.assign(window.TY_NAV_META||{}, {auction:{g:"svc", d:["أفضل خدمة علاجية: عروض عيادات شريكة تتنافس لخدمتك، قارن واحجز أو اطلب عروضاً","The best treatment service: partner clinics compete for you. Compare and book, or request offers"]}});
-if(EN && typeof I18N_EN!=="undefined") I18N_EN["المزاد العلاجي"]="Therapeutic Auction";
+if(EN && typeof I18N_EN!=="undefined") I18N_EN["سعر العافية"]="Wellness Price";
 window.TY_AUCTION = {offers, clinics, matches, discount};
 if(typeof renderRail==="function") renderRail();
 if(["#auction"].includes(location.hash) && typeof go==="function") go();
@@ -6335,7 +6334,7 @@ function offersHTML(spec, max){
 // ---------- مركز التخصصات ----------
 R.specs = () => {
   const grpChips = [["",T("الكل","All")], ...Object.keys(GRP).map(k=>[k,gname(k)])];
-  return `<div class="view-head"><h1>${T("التخصصات الطبية","Medical specialties")}</h1><p>${T("دليلك إلى فروع الطب: لكل تخصص صفحة تشرح ما يعالجه وأشهر حالاته ومتى تراجع الطبيب وعلامات الخطر والوقاية والفحوص، مع روابط إلى أقسام المنصة وعروض المزاد.","Your guide to the branches of medicine: each specialty has a page explaining what it treats, its common conditions, when to see a doctor, warning signs, prevention and tests, with links to platform sections and Auction offers.")}</p></div>
+  return `<div class="view-head"><h1>${T("التخصصات الطبية","Medical specialties")}</h1><p>${T("دليلك إلى فروع الطب: لكل تخصص صفحة تشرح ما يعالجه وأشهر حالاته ومتى تراجع الطبيب وعلامات الخطر والوقاية والفحوص، مع روابط إلى أقسام المنصة وعروض سعر العافية.","Your guide to the branches of medicine: each specialty has a page explaining what it treats, its common conditions, when to see a doctor, warning signs, prevention and tests, with links to platform sections and Auction offers.")}</p></div>
 <div class="spx-hero"><b>${T("اعرف التخصص الأنسب لحالتك","Find the right specialty for your problem")}</b>
 <div class="spx-tools"><input type="search" id="spxQ" placeholder="${T("ابحث باسم تخصص أو مرض أو عَرَض…","Search a specialty, condition or symptom…")}" aria-label="${T("بحث في التخصصات","Search specialties")}"><a class="btn" href="#check">${T("فحص الأعراض","Symptom checker")}</a></div></div>
 <nav class="spx-chips" aria-label="${T("تصفية حسب المجموعة","Filter by group")}">${grpChips.map(([k,n])=>`<button type="button" class="chip" data-spxg="${k}" aria-pressed="${St.grp===k}">${h(n)}</button>`).join("")}</nav>
@@ -6380,7 +6379,7 @@ function spView(id){
 </div>
 ${dl.length?`<section class="spx-sec" style="margin-top:20px"><h2>${T("اقرأ في الموسوعة","Read in the encyclopedia")}</h2><div class="chips">${dl.map(d=>`<button class="chip" type="button" data-dis="${h(d.id)}">${h(EN&&d.en?d.en:d.n)}</button>`).join("")}</div></section>`:""}
 ${rel.length?`<section class="spx-sec" style="margin-top:20px"><h2>${T("أقسام وأدوات ذات صلة","Related sections and tools")}</h2><div class="chips">${rel.map(v=>`<a class="chip" href="#${v[0]}" style="text-decoration:none">${h(typeof viewLabel==="function"?viewLabel(v):v[1])}</a>`).join("")}${s.id==="gensurg"||s.id==="ent"||s.id==="plastic"||s.id==="ortho"||s.id==="derm"?"":""}</div></section>`:""}
-${aucLbl?`<section class="spx-sec" style="margin-top:20px"><h2>${T("عروض المزاد العلاجي","Therapeutic Auction offers")}</h2>${offersHTML(s.auc,3)}</section>`:`<section class="spx-sec" style="margin-top:20px"><h2>${T("هل تحتاج رأياً أو عرضاً؟","Need an opinion or an offer?")}</h2><div class="row"><a class="btn" href="#consult">${T("اسأل فريق الطيبات","Ask the Al-Tayyibat team")}</a><a class="btn ghost" href="#auction">${T("المزاد العلاجي","Therapeutic Auction")}</a></div></section>`}
+${aucLbl?`<section class="spx-sec" style="margin-top:20px"><h2>${T("عروض سعر العافية","Wellness Price offers")}</h2>${offersHTML(s.auc,3)}</section>`:`<section class="spx-sec" style="margin-top:20px"><h2>${T("هل تحتاج رأياً أو عرضاً؟","Need an opinion or an offer?")}</h2><div class="row"><a class="btn" href="#consult">${T("اسأل فريق الطيبات","Ask the Al-Tayyibat team")}</a><a class="btn ghost" href="#auction">${T("المزاد العلاجي","Wellness Price")}</a></div></section>`}
 <nav class="spx-nav" style="margin-top:22px" aria-label="${T("التنقل بين التخصصات","Between specialties")}">${prev?`<a class="card" href="#sp-${prev.id}">‹ ${h(P(prev.n))}</a>`:`<a class="card" href="#specs">‹ ${T("كل التخصصات","All specialties")}</a>`}${next?`<a class="card" href="#sp-${next.id}" style="text-align:end">${h(P(next.n))} ›</a>`:`<a class="card" href="#dental" style="text-align:end">${T("طب الأسنان","Dentistry")} ›</a>`}</nav>
 ${disc()}`;
 }
@@ -6409,7 +6408,7 @@ const dv = {
  },
  treat(){
   return `<div class="spx-acc">${DEN.treat.map(p=>`<details><summary>${h(P(p[0]))}</summary><dl><dt>${T("متى يُستعمل؟","When it is used")}</dt><dd>${h(P(p[1]))}</dd><dt>${T("ماذا يحدث؟","What happens")}</dt><dd>${h(P(p[2]))}</dd><dt>${T("ملاحظات","Notes")}</dt><dd>${h(P(p[3]))}</dd></dl></details>`).join("")}</div>
-  <div class="disclaimer" style="margin-top:12px">${T("الأسعار والمدد تختلف بين العيادات والحالات، ولا نضع أرقاماً ثابتة هنا. اطلب خطة علاج مكتوبة وقارن العروض في «المزاد العلاجي».","Prices and durations vary between clinics and cases, so we give no fixed figures here. Ask for a written plan and compare offers in the Therapeutic Auction.")}</div>`;
+  <div class="disclaimer" style="margin-top:12px">${T("الأسعار والمدد تختلف بين العيادات والحالات، ولا نضع أرقاماً ثابتة هنا. اطلب خطة علاج مكتوبة وقارن العروض في «سعر العافية».","Prices and durations vary between clinics and cases, so we give no fixed figures here. Ask for a written plan and compare offers in the Wellness Price.")}</div>`;
  },
  kids(){
   const tbl=(title,rows)=>`<div class="spx-box"><h3>${title}</h3><div class="spx-scroll"><table><thead><tr><th>${T("السن","Tooth")}</th><th>${T("البزوغ التقريبي","Approximate eruption")}</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${h(P(r[0]))}</td><td>${h(P(r[1]))}</td></tr>`).join("")}</tbody></table></div></div>`;
@@ -6451,7 +6450,7 @@ AFTER.dental = () => {
   sec.addEventListener("change",e=>{ const r=e.target.dataset&&e.target.dataset.risk; if(r===undefined) return; St.risk[r]=e.target.checked; const n=DEN.risk.reduce((a,x,i)=>a+(St.risk[i]?x[1]:0),0), tot=DEN.risk.reduce((a,x)=>a+x[1],0); drawDen(); const el=q(`[data-risk="${r}"]`); el&&el.focus(); });
 };
 
-// ---------- من التخصصات إلى المزاد (تفعيل التصفية) ----------
+// ---------- من التخصصات إلى سعر العافية (تفعيل التصفية) ----------
 document.addEventListener("click",e=>{ const a=e.target.closest("[data-aucgo]"); if(!a) return; try{ sessionStorage.setItem("ty_auc_go",JSON.stringify({spec:a.dataset.aucgo,tab:a.dataset.auctab||"offers"})); }catch{} },true);
 
 // ---------- الصفحة الرئيسية: لا نُغرق الرئيسية بـ 30 بطاقة ----------
