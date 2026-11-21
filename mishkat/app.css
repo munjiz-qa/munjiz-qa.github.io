@@ -1797,3 +1797,26 @@ body{overflow-x:clip;position:relative;max-width:100%;touch-action:manipulation}
 .rc-jrow .field select,.rc-jrow .field input{width:100%;min-width:0;border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:9px;padding:8px 10px}
 .rec-ay input{width:4.6em;border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:8px;padding:4px 6px;font-size:.85rem}
 @media (max-width:640px){.rc-jrow{grid-template-columns:1fr 1fr}.rc-jrow .btn{grid-column:1/-1}}
+/* ===== tasbih ===== */
+.tsb-rosary{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:18px 14px;background:radial-gradient(120% 90% at 50% 0,var(--accent-soft),transparent 70%),var(--sheet)}
+.tsb-head{display:flex;flex-direction:column;gap:2px}.tsb-head h2{margin:0}
+.tsb-pick{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;width:100%}
+.tsb-pick select{max-width:100%;min-width:0;flex:1 1 240px}
+.tsb-seqb[aria-pressed=true],.tsb-t[aria-pressed=true],#tsbVib[aria-pressed=true]{background:var(--accent);color:var(--sheet);border-color:var(--accent)}
+.tsb-text{font-family:var(--f-quran);font-size:1.7rem;line-height:2.1;color:var(--ink);max-width:640px;min-height:2.2em}
+.tsb-en{font-size:.95rem;color:var(--muted);max-width:640px;margin:0}
+.tsb-bs{margin:0}
+.tsb-targets{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center}
+.tsb-t{cursor:pointer;min-height:40px;padding:6px 14px}.tsb-t:disabled{opacity:.45}
+.tsb-custom{width:96px;text-align:center}
+.tsb-tap{position:relative;width:min(72vw,260px);aspect-ratio:1;border-radius:50%;border:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--ink);background:radial-gradient(circle at 35% 30%,var(--sheet),var(--accent-soft));box-shadow:var(--shadow),inset 0 0 0 2px var(--line);-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none;transition:transform .08s}
+.tsb-tap:active{transform:scale(.965)}.tsb-tap:focus-visible{outline:3px solid var(--saffron);outline-offset:4px}
+.tsb-tap svg{position:absolute;inset:6px;width:calc(100% - 12px);height:calc(100% - 12px)}
+.tsb-trk{fill:none;stroke:var(--line);stroke-width:5}.tsb-prg{fill:none;stroke:var(--saffron);stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset .18s}
+.tsb-cnt{font-size:clamp(3rem,16vw,4.6rem);line-height:1.2;font-weight:700;position:relative}.tsb-of{position:relative;font-size:.95rem;color:var(--muted);margin-top:.35em}
+.tsb-msg{min-height:1.5em;margin:0;color:var(--ok);font-weight:600}
+.tsb-acts{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}.tsb-stat{margin:0}
+.tsb-ar{font-family:var(--f-quran);font-size:1.5rem;line-height:2.1;margin:0;padding:10px 14px;border-inline-start:3px solid var(--saffron);background:var(--accent-soft);border-radius:10px}
+.tsb-en2{margin:0;color:var(--muted);font-size:.95rem}
+@media (max-width:640px){.tsb-text{font-size:1.45rem}.tsb-ar{font-size:1.3rem}}
+@media (prefers-reduced-motion:reduce){.tsb-tap,.tsb-prg{transition:none}}
