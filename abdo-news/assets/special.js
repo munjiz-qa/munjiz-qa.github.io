@@ -299,10 +299,27 @@ function actions(kind,id){
   const pr=el('button','btn ghost',L('اطبع','Print'));pr.type='button';pr.onclick=()=>{hit('srp-'+kind);print()};
   w.append(ex,ls,sh,pr);return w;
 }
+// عنوان التقرير: اسم الموضوع لا نص الطلب (STYLE.md، القسم 6)
+function topicTitle(q){let t=String(q||'').replace(/\s+/g,' ').trim();
+  t=t.replace(/^(?:من فضلك|لو سمحت|أرجو|أريد|اريد|أود|نريد|ابغى|أبغى|اعطني|أعطني|اكتب(?: لي)?|جهّز(?: لي)?|جهز(?: لي)?|please|i want|i need|give me|write|prepare)\s*/i,'')
+   .replace(/^(?:تقريراً?|تقرير(?:اً)?|ملخصاً?|معلومات|المعلومات(?: المتيسرة| المتاحة| المتوفرة)?|كل ما(?: يتعلق)?|a report|report|information|everything)\s*/i,'')
+   .replace(/^(?:عن|حول|بشأن|بخصوص|on|about|regarding)\s+/i,'').replace(/[.؟?!،,:]+$/,'');
+  if(t.length>110){const c=t.slice(0,110);t=c.slice(0,Math.max(c.lastIndexOf(' '),60))+'…'}
+  return t?t.charAt(0).toUpperCase()+t.slice(1):String(q||'')}
+// مقدمة التقرير المولَّد: ما يرصده، والفترة، والعدد، والمحاور، وأحدث بند. لا تضيف معلومة من خارج البنود.
+function genLead(topic,RF,per,items,outl,axesUsed){
+  const ax=AXES.filter(a=>axesUsed.has(a[0])).map(a=>RL==='en'?a[2]:a[1]);
+  const reg=RF?(RL==='en'?' in '+RF.label[1]:' في '+RF.label[0]):'';
+  const prd=per.from==='0000-00-00'?R(' حتى '+fmtDate(per.to),' up to '+fmtDate(per.to)):R(` بين ${fmtDate(per.from)} و${fmtDate(per.to)}`,` between ${fmtDate(per.from)} and ${fmtDate(per.to)}`);
+  const lst=items.slice().sort((a,b)=>b.date.localeCompare(a.date))[0];
+  const lt=lst?String(lst[RL]||lst.ar||lst.en||'').split(/(?<=[.؟?!])\s/)[0]:'';
+  const joinAr=a=>a.length<2?a.join(''):a.slice(0,-1).join('، ')+' و'+a[a.length-1];
+  return R(`يرصد هذا التقرير ما نشرته المصادر الموثّقة عن «${topic}»${reg}${prd}، في ${nItems(items.length)} أكدتها ${outl} جهة مستقلة.${ax.length?` وتأتي المادة من ${joinAr(ax)}.`:''}${lt?` وأحدث ما ورد (${fmtDate(lst.date)}): ${lt.replace(/[.]$/,'')}.`:''}`,
+    `This report covers what verified sources published on “${topic}”${reg}${prd}: ${nItems(items.length)} confirmed by ${outl} independent outlets.${ax.length?` The material comes from ${ax.join(', ')}.`:''}${lt?` Latest (${fmtDate(lst.date)}): ${lt.replace(/[.]$/,'')}.`:''}`)}
 function renderGenerated(spec,Q,RF,per,items,weak,total,match){
   const out=$('#sr-out');out.textContent='';const art=el('article','sr-report');art.lang=RL;art.dir=RL==='en'?'ltr':'rtl';out.append(art);
   const head=el('header','sr-rhead');head.append(el('span','eyebrow',R('تقرير خاص مولَّد من بيانات «عبدو نيوز» الموثّقة','Special report generated from Abdo News verified data')));
-  const h=el('h2','sr-title',spec.q.length>140?spec.q.slice(0,138)+'…':spec.q);h.id='sr-title';head.append(h);
+  const TOPIC=topicTitle(spec.q),h=el('h2','sr-title',TOPIC);h.id='sr-title';head.append(h);
   const meta=el('p','mute sr-meta');meta.textContent=[R('المنطقة: ','Region: ')+(RF?(RL==='en'?RF.label[1]:RF.label[0]):R('كل العالم','Whole world')),
     R('الفترة: ','Period: ')+(per.from==='0000-00-00'?R('كل ما في الأرشيف حتى ','Whole archive to ')+fmtDate(per.to):fmtDate(per.from)+R(' إلى ',' to ')+fmtDate(per.to)),
     R('التحقق: ','Verification: ')+(spec.v>=3?R('ثلاث جهات مستقلة فأكثر','three or more independent outlets'):R('جهتان مستقلتان فأكثر','two or more independent outlets')),
@@ -317,6 +334,7 @@ function renderGenerated(spec,Q,RF,per,items,weak,total,match){
     e.append(requestBox(spec));art.append(e);return}
   const outl=new Set(items.flatMap(x=>x.sources.map(party))),dates=items.map(x=>x.date).sort(),axesUsed=new Set(items.map(x=>x.axis));
   const span=!dates.length?'—':dates[0]===dates[dates.length-1]?fmtDate(dates[0]):(dates[0].slice(0,4)===dates[dates.length-1].slice(0,4)?fmtDate(dates[0]).replace(/ \d{4}$/,''):fmtDate(dates[0]))+' – '+fmtDate(dates[dates.length-1]);
+  art.append(el('p','sr-lead',genLead(TOPIC,RF,per,items,outl.size,axesUsed)));
   art.append(kpis([[items.length,R('البنود الموثّقة','verified items')],[outl.size,R('الجهات المستقلة','independent outlets')],[items.reduce((a,x)=>a+x.sources.length,0),R('الروابط الأصلية','original links')],[span,R('المدى الزمني','time span')]]));
   // أبرز ما ورد: الأكثر توثيقاً ومطابقة
   const top=items.slice().sort((a,b)=>b.s-a.s||b.outlets-a.outlets||b.date.localeCompare(a.date)).slice(0,spec.fmt==='brief'?Math.min(10,items.length):Math.min(5,items.length));
@@ -379,7 +397,7 @@ async function openCurated(id,push){
   RL=LANG;hit('special');hit('sro-'+id.slice(0,36));
   out.textContent='';const art=el('article','sr-report sr-curated');art.lang=RL;art.dir=RL==='en'?'ltr':'rtl';out.append(art);
   const head=el('header','sr-rhead');head.append(el('span','eyebrow',R('تقرير خاص محرَّر · مصادر مفتوحة','Edited special report · open sources')));
-  const h=el('h2','sr-title',r.title[RL]);h.id='sr-title';head.append(h,el('p','sr-sub-t',r.subtitle[RL]));
+  const h=el('h2','sr-title',r.title[RL]);h.id='sr-title';head.append(h,el('p','sr-sub-t',r.subtitle[RL]));if(r.lead&&r.lead[RL])head.append(el('p','sr-lead',r.lead[RL]));
   head.append(el('p','mute sr-meta',[R('الفترة المغطاة: ','Coverage: ')+fmtDate(r.period.from).replace(/^\d+ /,'')+R(' إلى ',' to ')+fmtDate(r.period.to),R('آخر تحديث: ','Updated: ')+fmtDate(r.updated),R('القاعدة: كل بند من جهتين مستقلتين على الأقل','Rule: every item from at least two independent outlets')].join(' · ')));
   if(r.request){const q=el('blockquote','sr-req-q');q.append(el('b',null,R('الطلب: ','Request: ')),document.createTextNode(r.request[RL]));head.append(q)}
   art.append(head,actions('cur'));
