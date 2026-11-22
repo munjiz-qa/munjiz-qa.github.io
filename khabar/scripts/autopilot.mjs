@@ -54,7 +54,7 @@ export function cleanTitle(t, source = '') {
   let x = String(t || '').replace(/\s+/g, ' ').trim();
   if (source) for (const sep of [' - ', ' | ', ' – ', ' — ']) if (x.endsWith(sep + source)) x = x.slice(0, -(sep.length + source.length));
   x = x.replace(/\s[|–—-]\s[^|–—-]{2,28}$/, m => /[؀-ۿ]{2,}|[A-Z][a-z]+/.test(m) && !/\d/.test(m) && m.split(' ').length <= 5 ? '' : m);
-  x = x.replace(/^(?:عاجل|خاص|بالفيديو|فيديو|بالصور|شاهد|شاهدوا|حصري|breaking|watch|exclusive|video|live)\s*[:|،\-–]?\s*/i, '')
+  x = x.replace(/^(?:[A-Z][a-z]+ [A-Z][a-z]+ )?(?:latest|live)\s*:\s*/i, '').replace(/^(?:عاجل|خاص|بالفيديو|فيديو|بالصور|شاهد|شاهدوا|حصري|breaking|watch|exclusive|video|live)\s*[:|،\-–]?\s*/i, '')
     .replace(/\s*(?:\(|\[)?(?:فيديو|صور|بالفيديو|video|photos)(?:\)|\])\s*$/i, '');
   x = x.replace(/([ء-ي])ـ+([ء-ي])/g, '$1$2').replace(/ـ{2,}/g, 'ـ').replace(/الـ\s+(?=\d)/g, 'الـ');
   x = x.replace(/\s*(?:\.{2,}|…)\s*(?=\S)/g, (m, i) => (x.slice(0, i).split(' ').length <= 6 && !/^(?:بعد|عقب|رغم|مع|وسط|قبل|خلال|في)\s/.test(x) ? ': ' : '، ')).replace(/\s*(?:\.{2,}|…)\s*$/, '');
@@ -62,7 +62,7 @@ export function cleanTitle(t, source = '') {
   return x;
 }
 // عناوين الخدمات اليومية والأسئلة والإثارة لا تدخل الخلاصة الآلية
-const FILLER = /مواقيت الصلاة|موعد (?:أذان|الصلاة|مباراة|مباريات)|مواعيد (?:القطارات|قطارات|مباريات|المباريات|الصرف)|تردد قناة|ترددات|بث مباشر|القنوات الناقلة|حالة الطقس اليوم|درجات الحرارة اليوم|أسعار .{0,25} اليوم|سعر .{0,25} اليوم|نتيجة مباراة|تشكيل (?:الأهلي|الزمالك|منتخب)|حظك|الأبراج|live stream|how to watch|what time|kick-?off time|\bodds\b|predictions?\b|\bquiz\b/i;
+const FILLER = /مواقيت الصلاة|موعد (?:أذان|الصلاة|مباراة|مباريات)|مواعيد (?:القطارات|قطارات|مباريات|المباريات|الصرف)|تردد قناة|ترددات|بث مباشر|القنوات الناقلة|حالة الطقس اليوم|درجات الحرارة اليوم|أسعار .{0,45} اليوم|سعر .{0,45} اليوم|^الآن(?: في| ب)|نتيجة مباراة|تشكيل (?:الأهلي|الزمالك|منتخب)|حظك|الأبراج|live stream|how to watch|what time|kick-?off time|\bodds\b|predictions?\b|\bquiz\b/i;
 const QUESTION = /[؟?]\s*$|^(?:كيف|ماذا|لماذا|هل|ما هو|ما هي|من هو|من هي|متى|أين|ما الذي|ما سبب|إليك|تعرف|تعرّف|what|why|how|who|when|where|is|are|can|will|should)\b/i;
 // الوسم من موضوع العنوان بدل وسم عام
 const TOPICS = [
