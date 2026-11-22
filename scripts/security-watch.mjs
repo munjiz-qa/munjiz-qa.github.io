@@ -18,7 +18,7 @@ const LABEL = 'security-alert';
 const ALLOWED = new Set(['aboelezz2005@gmail.com', 'munijizqa@gmail.com', 'baseeratactions@users.noreply.github.com', '341908079+baseeratactions@users.noreply.github.com', 'noreply@anthropic.com',
   'actions@users.noreply.github.com', 'noreply@github.com', '41898282+github-actions[bot]@users.noreply.github.com',
   // the owner's own addresses: GitHub's id-prefixed noreply, and the Munjiz company mailbox
-  '341908079+baseeratactions@users.noreply.github.com', 'munijizqa@gmail.com', 'munjiz-qa@users.noreply.github.com',
+  '341908079+baseeratactions@users.noreply.github.com', 'munijizqa@gmail.com', 'munjiz-qa@users.noreply.github.com', 'basira-caller-bot@users.noreply.github.com',   // the repo's own basira-caller-data.yml workflow
   ...String(env.ALLOWED_EMAILS || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean)]);
 const SECRETS = [
   [/ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{40,}/, 'مفتاح GitHub'],
