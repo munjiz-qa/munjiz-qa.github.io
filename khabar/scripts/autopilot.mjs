@@ -49,6 +49,35 @@ const DIRECT = {
 };
 // نجمع عناوين أكثر ثم لا نُبقي إلا ما نشرته جهتان مستقلتان على الأقل (قاعدة المصدرين، 17 نوفمبر 2026)
 const PER_ZONE = {ar: 14, en: 12}, KEEP = {ar: 6, en: 5}, MAX_AGE_H = 24;
+// تنظيف عنوان الناشر وفق STYLE.md (القسم 7): لاحقة اسم الموقع، كلمات الإثارة، النقطتان، التطويل، الفراغات.
+export function cleanTitle(t, source = '') {
+  let x = String(t || '').replace(/\s+/g, ' ').trim();
+  if (source) for (const sep of [' - ', ' | ', ' – ', ' — ']) if (x.endsWith(sep + source)) x = x.slice(0, -(sep.length + source.length));
+  x = x.replace(/\s[|–—-]\s[^|–—-]{2,28}$/, m => /[؀-ۿ]{2,}|[A-Z][a-z]+/.test(m) && !/\d/.test(m) && m.split(' ').length <= 5 ? '' : m);
+  x = x.replace(/^(?:عاجل|خاص|بالفيديو|فيديو|بالصور|شاهد|شاهدوا|حصري|breaking|watch|exclusive|video|live)\s*[:|،\-–]?\s*/i, '')
+    .replace(/\s*(?:\(|\[)?(?:فيديو|صور|بالفيديو|video|photos)(?:\)|\])\s*$/i, '');
+  x = x.replace(/([ء-ي])ـ+([ء-ي])/g, '$1$2').replace(/ـ{2,}/g, 'ـ').replace(/الـ\s+(?=\d)/g, 'الـ');
+  x = x.replace(/\s*(?:\.{2,}|…)\s*(?=\S)/g, (m, i) => (x.slice(0, i).split(' ').length <= 6 && !/^(?:بعد|عقب|رغم|مع|وسط|قبل|خلال|في)\s/.test(x) ? ': ' : '، ')).replace(/\s*(?:\.{2,}|…)\s*$/, '');
+  x = x.replace(/\s+([،؛:.,!?؟])/g, '$1').replace(/!+/g, '').replace(/[.]+$/, '').replace(/\s+/g, ' ').trim();
+  return x;
+}
+// عناوين الخدمات اليومية والأسئلة والإثارة لا تدخل الخلاصة الآلية
+const FILLER = /مواقيت الصلاة|موعد (?:أذان|الصلاة|مباراة|مباريات)|مواعيد (?:القطارات|قطارات|مباريات|المباريات|الصرف)|تردد قناة|ترددات|بث مباشر|القنوات الناقلة|حالة الطقس اليوم|درجات الحرارة اليوم|أسعار .{0,25} اليوم|سعر .{0,25} اليوم|نتيجة مباراة|تشكيل (?:الأهلي|الزمالك|منتخب)|حظك|الأبراج|live stream|how to watch|what time|kick-?off time|\bodds\b|predictions?\b|\bquiz\b/i;
+const QUESTION = /[؟?]\s*$|^(?:كيف|ماذا|لماذا|هل|ما هو|ما هي|من هو|من هي|متى|أين|ما الذي|ما سبب|إليك|تعرف|تعرّف|what|why|how|who|when|where|is|are|can|will|should)\b/i;
+// الوسم من موضوع العنوان بدل وسم عام
+const TOPICS = [
+  [/قمة|وزير الخارجية|سفير|زيارة|مباحثات|دبلوماس|الأمم المتحدة|مجلس الأمن|وساطة|summit|minister|ambassador|talks|diplomat|United Nations|mediat/i, ['دبلوماسية', 'Diplomacy']],
+  [/هجوم|صاروخ|مسيّرة|مسيرة|غارة|غارات|اعتراض|قصف|عسكري|الجيش|قوات|الحوثي|قتلى|قتيل|attack|missile|drone|strike|military|army|troops|killed|Houthi/i, ['أمن', 'Security']],
+  [/نفط|برنت|غاز|طاقة|أوبك|oil|Brent|gas|energy|OPEC|LNG/i, ['طاقة', 'Energy']],
+  [/بورصة|أسهم|مؤشر|الدولار|الجنيه|الذهب|التضخم|الفائدة|اقتصاد|استثمار|تجارة|صفقة|بنك|stock|shares|index|dollar|gold|inflation|rate|econom|invest|trade|bank|market/i, ['اقتصاد', 'Economy']],
+  [/مباراة|منتخب|الدوري|كأس|بطولة|لاعب|المدرب|هدف|ميدالية|match|league|cup|championship|player|coach|medal|goal/i, ['رياضة', 'Sport']],
+  [/صحة|مستشفى|وباء|لقاح|مرض|health|hospital|vaccine|disease|outbreak/i, ['صحة', 'Health']],
+  [/مناخ|طقس|أمطار|حرارة|فيضان|climate|weather|rain|flood|heat/i, ['طقس ومناخ', 'Weather & climate']],
+  [/مهرجان|معرض|متحف|فيلم|ثقافة|كتاب|festival|exhibition|museum|film|culture|book/i, ['ثقافة', 'Culture']],
+  [/انتخابات|البرلمان|الرئيس|الحكومة|حزب|قانون|election|parliament|president|government|party|law/i, ['سياسة', 'Politics']],
+  [/ذكاء اصطناعي|تقنية|رقمي|تطبيق|AI\b|tech|digital|app\b|cyber/i, ['تقنية', 'Technology']]
+];
+const topic = t => (TOPICS.find(([re]) => re.test(t)) || [0, ['أخبار عامة', 'General']])[1];
 const SKIP = /netflix|horror|celebrity|lifestyle|juniors|in video:|franchis|pizz|testimonial|horoscope|recipe|gymnast|coupon|promo code|lottery|برج|حظك|وصفة|سعر الذهب اليوم .* عيار|مواعيد مباريات اليوم/i;
 const ent = s => s.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(+n)).replace(/&amp;/g, '&');
 const text = s => ent(s || '').replace(/<[^>]*>/g, '').replace(/[\u0000-\u001f<>]/g, ' ').replace(/\s+/g, ' ').trim();
@@ -89,6 +118,9 @@ const STATS = {google: 0, decoded: 0, direct: 0, failed: []};
 async function collect(zone, lang, since) {
   const q = Q[zone], out = [], seen = new Set();
   const take = (title, source, url, d) => {
+    title = cleanTitle(title, source);
+    if (FILLER.test(title) || QUESTION.test(title) || title.split(' ').length < 4) return;
+    if (zone !== 'qatar' && Q.qatar.must[lang].test(title)) return; // ما يذكر قطر مكانه دائرة قطر
     const key = title.replace(/\W+/g, '').slice(0, 40);
     if (!title || !source || seen.has(key) || !/^https:\/\//.test(url) || host(url).endsWith('google.com') || !q.must[lang].test(title) || SKIP.test(title) || d < since) return;
     seen.add(key); out.push({title: title.slice(0, 240), source: source.slice(0, 80), url, date: iso(d), t: +d});
@@ -118,14 +150,16 @@ async function collect(zone, lang, since) {
 const ZNAME = {qatar: ['قطر', 'Qatar'], gulf: ['الخليج', 'The Gulf'], egypt: ['مصر', 'Egypt'], world: ['العالم', 'The World']};
 async function autoBrief(exp, prev) {
   const since = Date.now() - MAX_AGE_H * 3600e3, sources = {}, zones = [];
+  const USED = new Set();
   let total = 0;
   for (const z of Object.keys(Q)) {
     const items = [];
     for (const lang of ['ar', 'en']) {
       const got = await collect(z, lang, since);
-      cluster(got.map(h => ({...h, outlet: outlet(h.url)}))).slice(0, KEEP[lang]).forEach((c, i) => {
+      cluster(got.map(h => ({...h, outlet: outlet(h.url)}))).filter(c => { const k = c.items[0].title.replace(/\W+/g, '').slice(0, 40); if (USED.has(k)) return false; USED.add(k); return true; }).slice(0, KEEP[lang]).forEach((c, i) => {
         const src = c.items.slice(0, 3).map((h, j) => { const sid = `auto-${z}-${lang}${i + 1}-${j + 1}`; sources[sid] = {ar: h.source, en: h.source, date: h.date, url: h.url}; return sid; });
-        items.push({id: `${z[0]}${lang === 'ar' ? 'a' : 'e'}${i + 1}`, cat: {ar: 'عنوان أكدته جهتان فأكثر', en: 'Headline confirmed by two or more outlets'}, ar: lang === 'ar' ? c.items[0].title : '', en: lang === 'en' ? c.items[0].title : '', src});
+        const tp = topic(c.items[0].title);
+        items.push({id: `${z[0]}${lang === 'ar' ? 'a' : 'e'}${i + 1}`, cat: {ar: tp[0], en: tp[1]}, confirmed: c.items.length, ar: lang === 'ar' ? c.items[0].title : '', en: lang === 'en' ? c.items[0].title : '', src});
       });
     }
     total += items.length;
@@ -134,9 +168,12 @@ async function autoBrief(exp, prev) {
   if (total < 8) return null; // لا تُستبدل خلاصة سابقة بخلاصة هزيلة
   const first = l => zones.map(z => z.items.find(i => i[l])).filter(Boolean);
   const pick = (l, sep) => first(l).map(i => i[l]).join(sep);
+  // الخيط: جملة لكل دائرة بالترتيب الثابت (STYLE.md، القسم 4)، ويُعلن أنه آلي
+  const ZIN = {qatar: ['في قطر', 'In Qatar'], gulf: ['وفي الخليج', 'In the Gulf'], egypt: ['وفي مصر', 'In Egypt'], world: ['وفي العالم', 'Around the world']};
+  const line = l => zones.map(z => { const i = z.items.find(x => x[l]); return i ? `${ZIN[z.id][l === 'ar' ? 0 : 1]}، ${i[l]}.`.replace('، ', l === 'ar' ? '، ' : ', ') : ''; }).filter(Boolean).join(' ');
   const thread = {
-    ar: `${ED_WHEN[exp.edition]} اليوم بعناوين مصادره كما نشرتها: ${pick('ar', '؛ ')}.`,
-    en: `${exp.edition === 'nt' ? 'Tonight' : `This ${ED_EN[exp.edition].toLowerCase()}`} in the outlets' own headlines: ${pick('en', '; ')}.`,
+    ar: `خلاصة ${ED_AR[exp.edition]} الآلية، بعناوين الناشرين كما نشرتها وكل عنوان أكدته جهتان مستقلتان على الأقل. ${line('ar')}`,
+    en: `Automatic ${ED_EN[exp.edition].toLowerCase()} brief, in the publishers' own headlines, each confirmed by at least two independent outlets. ${line('en')}`,
     src: [...new Set([...first('ar'), ...first('en')].flatMap(i => i.src))]
   };
   // الأسواق والمواعيد من الخلاصة السابقة، بشرط حداثة المصدر وعدم فوات الموعد

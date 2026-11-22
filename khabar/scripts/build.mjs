@@ -20,7 +20,8 @@ const search = [], seenTxt = new Set();
 for (const b of briefs) for (const z of b.zones || []) for (const i of z.items || []) {
   const key = String(i.ar || i.en || '').slice(0, 70); if (seenTxt.has(key)) continue; seenTxt.add(key);
   const src = (i.src || []).map(s => b.sources?.[s]).filter(Boolean);
-  search.push([b.id, z.id, i.id, cut(i.ar, 200), cut(i.en, 170), src.slice(0, 2).map(s => [s.ar || s.en, s.url])]);
+  const hA = i.h?.ar ? i.h.ar + '. ' : '', hE = i.h?.en ? i.h.en + '. ' : '';
+  search.push([b.id, z.id, i.id, cut(hA + (i.ar || ''), 200), cut(hE + (i.en || ''), 170), src.slice(0, 2).map(s => [s.ar || s.en, s.url])]);
 }
 writeFileSync(DATA + 'search.json', JSON.stringify({updated: new Date().toISOString(), fields: ['brief', 'zone', 'item', 'ar', 'en', 'sources'], items: search}));
 
@@ -52,7 +53,7 @@ const brief = rj(DATA + 'brief.json', null);
 if (brief) for (const lang of ['ar', 'en']) {
   const items = brief.zones.flatMap(z => z.items.filter(i => i[lang]).map(i => {
     const src = (i.src || []).map(s => brief.sources[s]).filter(Boolean);
-    return {title: cut(i[lang], 140), link: SITE + '#i-' + i.id, guid: brief.id + '/' + i.id, date: brief.published, desc: i[lang] + '\n\n' + (lang === 'ar' ? 'المصادر: ' : 'Sources: ') + src.map(s => `${s[lang] || s.ar} ${s.url}`).join(' · ')};
+    return {title: cut(i.h?.[lang] || i[lang], 140), link: SITE + '#i-' + i.id, guid: brief.id + '/' + i.id, date: brief.published, desc: i[lang] + '\n\n' + (lang === 'ar' ? 'المصادر: ' : 'Sources: ') + src.map(s => `${s[lang] || s.ar} ${s.url}`).join(' · ')};
   }));
   writeFileSync(`${K}feeds/brief${lang === 'en' ? '-en' : ''}.xml`, rss(lang === 'ar' ? 'عبدو نيوز: الخلاصة اليومية الموثّقة' : 'Abdo News: the verified daily brief', SITE, lang === 'ar' ? 'كل خبر بمصدره ورابطه الأصلي' : 'Every story with its source and original link', lang, items));
 }
@@ -90,7 +91,7 @@ const share = (file, title, desc, to, date) => writeFileSync(K + 's/' + file, `<
 const keep = new Set();
 if (brief) for (const z of brief.zones) for (const i of z.items) {
   const src = (i.src || []).map(x => brief.sources[x]).filter(Boolean), f = `${brief.id}-${i.id}.html`; keep.add(f);
-  share(f, i.ar || i.en, 'المصادر: ' + src.map(x => x.ar || x.en).join('، '), '#i-' + i.id, brief.published);
+  share(f, i.h?.ar || i.ar || i.en, (i.h?.ar ? cut(i.ar, 140) + ' · ' : '') + 'المصادر: ' + src.map(x => x.ar || x.en).join('، '), '#i-' + i.id, brief.published);
 }
 if (desks) for (const [id, d] of Object.entries(desks.desks)) for (const i of d.items) {
   const f = `d-${i.id}.html`; keep.add(f);
