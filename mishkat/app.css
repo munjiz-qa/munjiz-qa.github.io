@@ -1112,6 +1112,24 @@ html[dir=ltr] .an-matn,html[dir=ltr] .am-matn{border-radius:10px 0 0 10px}
 .an-qt,.am-qt{margin:0}
 @media (max-width:640px){.an .an-n .an-ar{font-size:1.65rem}.an-n,.an-ay,.an-h,.am-m,.am-h{padding:12px}.an-q,.am-q{font-size:1.35rem;line-height:2.1}.an-ays,.am-ays{padding:4px 10px}.an-matn,.am-matn{font-size:1.02rem;padding:8px 10px}.an-hero::after,.am-hero::after{width:110px;height:110px}}
 @media print{.an-links,.am-links{display:none}.an-ays,.am-ays{background:none}}
+/* الأبواب الإضافية لركن أسماء الله الحسنى: القائمة التسعون والمقترنة والمضافة والفروق */
+.an-no{flex:none;min-width:30px;height:30px;padding:0 6px;border-radius:999px;display:grid;place-items:center;background:var(--saffron);color:#fff;font-weight:700;font-size:.88rem}
+.an-n99 header,.an-pr header{align-items:center}
+.an-kind{margin:0}
+.an-cnt{margin:0;font-size:.9rem;color:var(--muted)}
+.an-all>summary{cursor:pointer;font-size:.88rem;color:var(--accent);list-style:none;font-weight:700}.an-all>summary::-webkit-details-marker{display:none}
+.an-all>summary::before{content:'+ ';}.an-all[open]>summary::before{content:'− ';}
+.an-rc{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.an-rc a{font-size:.8rem;background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:2px 10px;text-decoration:none;direction:ltr}
+.an-rc a:hover{background:var(--accent);color:var(--accent-ink)}
+.an-find-w{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:12px}
+.an-find{flex:1 1 240px;min-width:0;border:1px solid var(--line);border-radius:12px;padding:9px 14px;font:inherit;background:var(--sheet);color:var(--ink)}
+.an-find:focus{outline:2px solid var(--accent);outline-offset:1px}
+.an-intro-n{margin:0 0 12px;line-height:1.9}
+.an .an-sub{margin:20px 0 10px;font-size:1.1rem;color:var(--accent)}
+.an-pr .an-ar{font-size:1.45rem}
+.an .an-pr .an-ar{font-size:1.45rem}
+@media (max-width:640px){.an .an-pr .an-ar{font-size:1.3rem}.an-find{flex-basis:100%}}
 /* ---------- الحج والعمرة (#hajj) */
 .hj-hero{background:radial-gradient(120% 140% at 0 0,var(--accent-soft),transparent 62%),linear-gradient(135deg,var(--saffron-soft),var(--sheet));position:relative;overflow:hidden}
 .hj-hero::after{content:"";position:absolute;inset-inline-end:-26px;bottom:-34px;width:150px;height:150px;border-radius:14px;background:#22222a;border:3px solid var(--saffron);opacity:.2;transform:rotate(8deg)}
@@ -1797,3 +1815,26 @@ body{overflow-x:clip;position:relative;max-width:100%;touch-action:manipulation}
 .rc-jrow .field select,.rc-jrow .field input{width:100%;min-width:0;border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:9px;padding:8px 10px}
 .rec-ay input{width:4.6em;border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:8px;padding:4px 6px;font-size:.85rem}
 @media (max-width:640px){.rc-jrow{grid-template-columns:1fr 1fr}.rc-jrow .btn{grid-column:1/-1}}
+/* ===== tasbih ===== */
+.tsb-rosary{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:18px 14px;background:radial-gradient(120% 90% at 50% 0,var(--accent-soft),transparent 70%),var(--sheet)}
+.tsb-head{display:flex;flex-direction:column;gap:2px}.tsb-head h2{margin:0}
+.tsb-pick{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;width:100%}
+.tsb-pick select{max-width:100%;min-width:0;flex:1 1 240px}
+.tsb-seqb[aria-pressed=true],.tsb-t[aria-pressed=true],#tsbVib[aria-pressed=true]{background:var(--accent);color:var(--sheet);border-color:var(--accent)}
+.tsb-text{font-family:var(--f-quran);font-size:1.7rem;line-height:2.1;color:var(--ink);max-width:640px;min-height:2.2em}
+.tsb-en{font-size:.95rem;color:var(--muted);max-width:640px;margin:0}
+.tsb-bs{margin:0}
+.tsb-targets{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center}
+.tsb-t{cursor:pointer;min-height:40px;padding:6px 14px}.tsb-t:disabled{opacity:.45}
+.tsb-custom{width:96px;text-align:center}
+.tsb-tap{position:relative;width:min(72vw,260px);aspect-ratio:1;border-radius:50%;border:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--ink);background:radial-gradient(circle at 35% 30%,var(--sheet),var(--accent-soft));box-shadow:var(--shadow),inset 0 0 0 2px var(--line);-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none;transition:transform .08s}
+.tsb-tap:active{transform:scale(.965)}.tsb-tap:focus-visible{outline:3px solid var(--saffron);outline-offset:4px}
+.tsb-tap svg{position:absolute;inset:6px;width:calc(100% - 12px);height:calc(100% - 12px)}
+.tsb-trk{fill:none;stroke:var(--line);stroke-width:5}.tsb-prg{fill:none;stroke:var(--saffron);stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset .18s}
+.tsb-cnt{font-size:clamp(3rem,16vw,4.6rem);line-height:1.2;font-weight:700;position:relative}.tsb-of{position:relative;font-size:.95rem;color:var(--muted);margin-top:.35em}
+.tsb-msg{min-height:1.5em;margin:0;color:var(--ok);font-weight:600}
+.tsb-acts{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}.tsb-stat{margin:0}
+.tsb-ar{font-family:var(--f-quran);font-size:1.5rem;line-height:2.1;margin:0;padding:10px 14px;border-inline-start:3px solid var(--saffron);background:var(--accent-soft);border-radius:10px}
+.tsb-en2{margin:0;color:var(--muted);font-size:.95rem}
+@media (max-width:640px){.tsb-text{font-size:1.45rem}.tsb-ar{font-size:1.3rem}}
+@media (prefers-reduced-motion:reduce){.tsb-tap,.tsb-prg{transition:none}}

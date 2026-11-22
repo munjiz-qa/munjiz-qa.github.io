@@ -680,3 +680,6 @@ footer .fc b{color:#e8cf8f}
 .drop.small a:hover,.drop.small a:focus-visible{background:var(--chip)}
 .top .brand>svg{flex:none}
 @media (max-width:420px){html[lang="en"] .top .brand .bsub{display:none}}
+
+/* live office status in the footer */
+.gt-open{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}.gt-open i{width:10px;height:10px;border-radius:50%;background:#9aa3ab;flex:none}.gt-open.on i{background:#2ecc71;box-shadow:0 0 0 3px rgba(46,204,113,.25)}.gt-open.off i{background:#e0a106}.gt-open a{text-decoration:underline}
