@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="assets/mm.css?v=20261123a">
+<link rel="stylesheet" href="assets/mm.css?v=20261123b">
 </head>
 <body>
 <header class="top"><div class="wrap">
@@ -24,7 +24,7 @@
 <section class="hero"><div class="wrap">
   <span class="uni">🎓 جامعة المنصورة · الدراسات العليا</span>
   <h1>ماجستير <em>الدفعة الثانية 2026</em></h1>
-  <p>سجّل بياناتك مرة واحدة واختر رقم مجموعة العمل التي تنضم إليها. يمكنك العودة في أي وقت لتعديل بياناتك أو تغيير مجموعتك برقم هاتفك ورمزك السري.</p>
+  <p>سجّل بياناتك مرة واحدة واختر رقم مجموعة العمل التي تنضم إليها. يمكنك العودة في أي وقت لتعديل بياناتك أو تغيير مجموعتك برقم هاتفك.</p>
   <div class="stats">
     <div class="stat"><b class="num" id="sTotal">—</b><span>طالب مسجّل</span></div>
     <div class="stat"><b class="num" id="sGroups">—</b><span>مجموعة عمل</span></div>
@@ -44,7 +44,7 @@
   <section id="p-register" role="tabpanel" aria-labelledby="t-register">
     <form class="card" id="regForm" novalidate>
       <h2>تسجيل طالب جديد</h2>
-      <p class="sub">الحقول المعلّمة بـ <span class="req">*</span> مطلوبة. تُحفظ البيانات في قاعدة بيانات الدفعة ولا يطّلع على الهاتف والبريد إلا إدارة الدفعة. لا يلزم أي حساب أو بريد للتسجيل.</p>
+      <p class="sub">ثلاث خطوات فقط: اكتب اسمك ورقم هاتفك واختر مجموعتك. لا يلزم أي حساب أو بريد أو كلمة مرور، ولا يطّلع على الهاتف إلا إدارة الدفعة.</p>
       <div class="grid">
         <label class="f full"><span class="lt">الاسم الكامل <span class="req" aria-hidden="true">*</span></span><small>ثلاثياً على الأقل كما في البطاقة، مثل: أحمد محمد علي حسن</small>
           <input name="name" autocomplete="name" required maxlength="120"></label>
@@ -54,13 +54,7 @@
           <input name="email" type="email" class="ltrin" autocomplete="email" maxlength="120"></label>
         <div class="f full"><span style="font-weight:600;font-size:14.5px">رقم المجموعة <span class="req" aria-hidden="true">*</span></span>
           <div class="gpick" id="regGroups" role="radiogroup" aria-label="رقم المجموعة"></div></div>
-        <label class="f full">ملاحظات <small>اختياري: التخصص، أو أي معلومة تريد إبلاغ الإدارة بها</small>
-          <textarea name="notes" maxlength="500"></textarea></label>
-        <label class="f"><span class="lt">رمز سري للتعديل لاحقاً <span class="req" aria-hidden="true">*</span></span><small>من 4 إلى 8 أرقام، احفظه لتعديل بياناتك</small>
-          <input name="pin" class="ltrin" inputmode="numeric" type="password" autocomplete="new-password" required maxlength="8"></label>
-        <label class="f"><span class="lt">تأكيد الرمز السري <span class="req" aria-hidden="true">*</span></span><small>اكتب الرمز نفسه مرة أخرى</small>
-          <input name="pin2" class="ltrin" inputmode="numeric" type="password" autocomplete="new-password" required maxlength="8"></label>
-      </div>
+        </div>
       <div id="regMsg" class="msg" hidden></div>
       <div class="actions"><button class="btn pri" type="submit">تسجيل البيانات</button></div>
     </form>
@@ -71,13 +65,10 @@
   <section id="p-edit" role="tabpanel" aria-labelledby="t-edit" hidden>
     <form class="card" id="loginForm" novalidate>
       <h2>تعديل بياناتي</h2>
-      <p class="sub">ادخل برقم الهاتف الذي سجّلت به والرمز السري الذي اخترته. إن نسيت الرمز فاطلب من إدارة الدفعة إعادة تعيينه.</p>
-      <div class="grid">
-        <label class="f">رقم الهاتف<input name="phone" class="ltrin" inputmode="tel" autocomplete="tel" required></label>
-        <label class="f">الرمز السري<input name="pin" class="ltrin" inputmode="numeric" type="password" autocomplete="current-password" required></label>
-      </div>
+      <p class="sub">اكتب رقم الهاتف الذي سجّلت به لتعديل بياناتك أو تغيير مجموعتك.</p>
+      <label class="f">رقم الهاتف<input name="phone" class="ltrin" inputmode="tel" autocomplete="tel" required placeholder="01012345678"></label>
       <div id="loginMsg" class="msg" hidden></div>
-      <div class="actions"><button class="btn pri" type="submit">دخول</button></div>
+      <div class="actions"><button class="btn pri" type="submit">عرض بياناتي</button></div>
     </form>
     <form class="card" id="editForm" novalidate hidden>
       <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
@@ -92,7 +83,6 @@
         <div class="f full"><span style="font-weight:600;font-size:14.5px">رقم المجموعة</span>
           <div class="gpick" id="editGroups" role="radiogroup" aria-label="رقم المجموعة"></div></div>
         <label class="f full">ملاحظات<textarea name="notes" maxlength="500"></textarea></label>
-        <label class="f">رمز سري جديد <small>اتركه فارغاً إن لم ترد تغييره</small><input name="pin" class="ltrin" inputmode="numeric" type="password" autocomplete="new-password" maxlength="8"></label>
       </div>
       <div id="editMsg" class="msg" hidden></div>
       <div class="actions"><button class="btn pri" type="submit">حفظ التعديلات</button></div>
@@ -114,8 +104,8 @@
   <a href="admin.html">دخول الإدارة</a>
 </div></footer>
 
-<script src="assets/config.js?v=20261123a"></script>
-<script src="assets/mm.js?v=20261123a"></script>
-<script src="assets/app.js?v=20261123a"></script>
+<script src="assets/config.js?v=20261123b"></script>
+<script src="assets/mm.js?v=20261123b"></script>
+<script src="assets/app.js?v=20261123b"></script>
 </body>
 </html>

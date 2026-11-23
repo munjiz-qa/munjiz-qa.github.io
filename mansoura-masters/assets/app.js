@@ -83,7 +83,7 @@
     return {
       name: cleanName(fd.get("name")), phoneRaw: String(fd.get("phone") || ""), phone: normPhone(fd.get("phone")),
       email: String(fd.get("email") || "").trim().toLowerCase(), group: chosen ? Number(chosen.value) : null,
-      notes: String(fd.get("notes") || "").trim(), pin: digits(fd.get("pin") || "").trim(), pin2: digits(fd.get("pin2") || "").trim(),
+      notes: String(fd.get("notes") || "").trim(),
     };
   }
   function validate(d, needPin) {
@@ -93,10 +93,6 @@
     if (!d.phone) return "رقم الهاتف غير صحيح، اكتبه بالشكل 01012345678";
     if (d.email && !/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(d.email)) return "البريد الإلكتروني غير صحيح";
     if (!d.group) return "اختر رقم المجموعة";
-    if (needPin) {
-      if (!/^\d{4,8}$/.test(d.pin)) return "الرمز السري من 4 إلى 8 أرقام";
-      if (d.pin !== d.pin2) return "الرمز السري وتأكيده غير متطابقين";
-    } else if (d.pin && !/^\d{4,8}$/.test(d.pin)) return "الرمز السري الجديد من 4 إلى 8 أرقام";
     return null;
   }
   $("#regForm").addEventListener("submit", async (e) => {
@@ -106,12 +102,12 @@
     if (bad) { showMsg(msg, bad); return; }
     showMsg(msg, ""); busy(btn, true, "جارٍ التسجيل…");
     try {
-      const r = await api("mjs_register", { p_name: d.name, p_phone: d.phone, p_email: d.email, p_group: d.group, p_notes: d.notes, p_pin: d.pin });
+      const r = await api("mjs_register", { p_name: d.name, p_phone: d.phone, p_email: d.email, p_group: d.group, p_notes: d.notes });
       S.token = r.token; S.me = r.student; store.set("stoken", r.token);
       f.reset(); f.hidden = true;
       const s = r.student;
       $("#regDone").hidden = false;
-      $("#regDone").innerHTML = `<h2>تم تسجيلك بنجاح ✓</h2><p class="sub">احتفظ بكود الطالب. لتعديل بياناتك لاحقاً استخدم رقم هاتفك ورمزك السري.</p>
+      $("#regDone").innerHTML = `<h2>تم تسجيلك بنجاح ✓</h2><p class="sub">احتفظ بكود الطالب. لتعديل بياناتك لاحقاً اكتب رقم هاتفك في تبويب «تعديل بياناتي».</p>
         <div class="code">${esc(s.code)}</div>
         <dl class="kv"><dt>الاسم</dt><dd>${esc(s.full_name)}</dd><dt>الهاتف</dt><dd class="ltr">${esc(s.phone)}</dd>
         ${s.email ? `<dt>البريد</dt><dd class="ltr">${esc(s.email)}</dd>` : ""}<dt>المجموعة</dt><dd>${esc(s.group_num)}</dd><dt>تاريخ التسجيل</dt><dd class="num">${esc(s.created_date)}</dd></dl>
@@ -127,7 +123,7 @@
   /* ---------- الدخول والتعديل ---------- */
   function fillEditor() {
     const s = S.me, f = $("#editForm");
-    f.name.value = s.full_name; f.phone.value = s.phone; f.email.value = s.email || ""; f.notes.value = s.notes || ""; f.pin.value = "";
+    f.name.value = s.full_name; f.phone.value = s.phone; f.email.value = s.email || ""; f.notes.value = s.notes || "";
     $("#myCode").textContent = s.code;
     $("#myMeta").textContent = `تاريخ التسجيل ${s.created_date} · آخر تعديل ${s.updated}`;
     renderPicker($("#editGroups"), "eg", s.group_num);
@@ -138,12 +134,11 @@
   $("#loginForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const f = e.currentTarget, btn = f.querySelector("button"), msg = $("#loginMsg");
-    const phone = normPhone(f.phone.value), pin = digits(f.pin.value).trim();
+    const phone = normPhone(f.phone.value);
     if (!phone) { showMsg(msg, "رقم الهاتف غير صحيح، اكتبه بالشكل 01012345678"); return; }
-    if (!pin) { showMsg(msg, "اكتب الرمز السري"); return; }
-    showMsg(msg, ""); busy(btn, true, "جارٍ الدخول…");
+    showMsg(msg, ""); busy(btn, true, "جارٍ البحث…");
     try {
-      const r = await api("mjs_student_login", { p_phone: phone, p_pin: pin });
+      const r = await api("mjs_student_phone_login", { p_phone: phone });
       S.token = r.token; S.me = r.student; store.set("stoken", r.token); f.reset(); showEditor();
     } catch (err) { showMsg(msg, err.message); }
     finally { busy(btn, false); }
@@ -156,7 +151,7 @@
     if (bad) { showMsg(msg, bad); return; }
     showMsg(msg, ""); busy(btn, true);
     try {
-      S.me = await api("mjs_student_update", { p_token: S.token, p_name: d.name, p_phone: d.phone, p_email: d.email, p_group: d.group, p_notes: d.notes, p_new_pin: d.pin || "" });
+      S.me = await api("mjs_student_update", { p_token: S.token, p_name: d.name, p_phone: d.phone, p_email: d.email, p_group: d.group, p_notes: d.notes, p_new_pin: "" });
       fillEditor(); showMsg(msg, "تم حفظ التعديلات بنجاح", "ok"); toast("تم حفظ التعديلات"); loadPublic();
     } catch (err) {
       if (err.code === "28000") { logout(); showMsg($("#loginMsg"), err.message); }

@@ -68,7 +68,7 @@
       <td class="ltr num">${esc(s.phone)}</td><td class="ltr">${esc(s.email || "")}</td>
       <td>${s.group_num != null ? `<span class="badge g">${s.group_num}</span>` : '<span class="badge">بدون</span>'}</td>
       <td class="num">${esc(s.created_date)}</td><td title="${esc(s.notes || "")}">${esc((s.notes || "").slice(0, 30))}${(s.notes || "").length > 30 ? "…" : ""}</td>
-      <td><button class="btn ghost sm" data-edit="${s.id}">تعديل</button><button class="btn ghost sm" data-pin="${s.id}">رمز جديد</button><button class="btn danger sm" data-del="${s.id}">حذف</button></td></tr>`).join("")
+      <td><button class="btn ghost sm" data-edit="${s.id}">تعديل</button><button class="btn danger sm" data-del="${s.id}">حذف</button></td></tr>`).join("")
       || '<tr><td colspan="9" style="text-align:center;color:var(--mute);padding:24px">لا يوجد طلاب مطابقون</td></tr>';
   }
   $("#q").addEventListener("input", renderRows);
@@ -80,7 +80,6 @@
     sf.reset(); showMsg($("#dlgMsg"), "");
     sf.group_num.innerHTML = '<option value="">اختر المجموعة</option>' + S.d.groups.map((g) => `<option value="${g.num}">${esc(groupLabel(g))} · ${g.count}${g.capacity ? "/" + g.capacity : ""}</option>`).join("");
     $("#dlgTitle").textContent = s ? "تعديل بيانات " + s.code : "إضافة طالب";
-    $("#pinHint").textContent = s ? "اتركه فارغاً للإبقاء على الرمز الحالي" : "اتركه فارغاً لإنشاء رمز تلقائي";
     if (s) { sf.id.value = s.id; sf.full_name.value = s.full_name; sf.phone.value = s.phone; sf.email.value = s.email || ""; sf.group_num.value = s.group_num ?? ""; sf.notes.value = s.notes || ""; }
     dlg.showModal(); sf.full_name.focus();
   }
@@ -95,9 +94,9 @@
     if (!sf.group_num.value) { showMsg(msg, "اختر رقم المجموعة"); return; }
     busy(btn, true);
     try {
-      const r = await adm("save_student", { id: sf.id.value || null, full_name: name, phone, email: sf.email.value.trim(), group_num: Number(sf.group_num.value), notes: sf.notes.value, pin: digits(sf.pin.value).trim(), force: sf.force.checked });
+      const r = await adm("save_student", { id: sf.id.value || null, full_name: name, phone, email: sf.email.value.trim(), group_num: Number(sf.group_num.value), notes: sf.notes.value, force: sf.force.checked });
       dlg.close(); await load();
-      toast(r.pin ? `تم الحفظ. الرمز السري للطالب: ${r.pin}` : "تم حفظ بيانات الطالب", r.pin ? 9000 : 2600);
+      toast("تم حفظ بيانات الطالب");
     } catch (err) { showMsg(msg, err.message); }
     finally { busy(btn, false); }
   });
