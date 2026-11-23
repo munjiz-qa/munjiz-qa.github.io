@@ -8,7 +8,7 @@ const get = async (p, tries = 3) => { for (let i = 0; i < tries; i++) { try { co
 
 (async () => {
   // 1) الملفات
-  for (const p of ["", "account.html", "admin.html", "manifest.webmanifest", "sw.js", "app/icon-192.png", "acct/vendor/firebase-app.js", "acct/vendor/firebase-auth.js", "acct/vendor/firebase-firestore.js", "vendor/three/three.module.min.js", "vendor/three/addons/loaders/GLTFLoader.js", "vendor/three/addons/controls/OrbitControls.js", "vendor/three/addons/environments/RoomEnvironment.js", "vendor/three/addons/utils/BufferGeometryUtils.js",
+  for (const p of ["", "account.html", "admin.html", "manifest.webmanifest", "sw.js", "app/icon-192.png", "acct/vendor/firebase-app.js", "acct/vendor/firebase-auth.js", "acct/vendor/firebase-firestore.js", "fonts/fonts.css", "fonts/noto-sans-arabic-arabic-wght-normal.woff2", "fonts/noto-sans-arabic-latin-wght-normal.woff2", "vendor/three/three.module.min.js", "vendor/three/addons/loaders/GLTFLoader.js", "vendor/three/addons/controls/OrbitControls.js", "vendor/three/addons/environments/RoomEnvironment.js", "vendor/three/addons/utils/BufferGeometryUtils.js",
     "data/fx.json", "files/BURAQ_BQ10_v3_BOM.xlsx", "files/BURAQ_car_conversion_plans.xlsx", "files/BURAQ_workshop_equipment.xlsx", "files/BURAQ_MADAD_Egypt.xlsx", "files/BURAQ_Business_Development.xlsx", "files/BURAQ_BQ10_v3.glb"]) {
     const r = await get(p); check(r.s === 200 && r.b.length > (p.endsWith(".json") ? 20 : 200), `${p || "index"}: ${r.s} (${r.b.length} bytes)`);
   }
@@ -41,12 +41,12 @@ const get = async (p, tries = 3) => { for (let i = 0; i < tries; i++) { try { co
     const idx = await mk();
     // حارس الأداء: مكتبات Firebase (نحو 700KB) لا تُطلب قبل اكتمال الصفحة الرئيسية، ثم تُحمَّل بعدها فعلاً
     let loaded = false; const early = [], late = [], cdn = [];
-    ctx.on("request", (rq) => { if (/cdn\.jsdelivr|unpkg\.com|cdnjs\./.test(rq.url())) cdn.push(rq.url()); });
+    ctx.on("request", (rq) => { if (/cdn\.jsdelivr|unpkg\.com|cdnjs\.|fonts\.(googleapis|gstatic)\.com/.test(rq.url())) cdn.push(rq.url()); });
     idx.on("request", (rq) => { if (/vendor\/firebase-/.test(rq.url())) (loaded ? late : early).push(rq.url()); });
     idx.once("load", () => { loaded = true; });
     await idx.goto(BASE + (process.env.BURAQ_EMU ? "?emu" : ""), { waitUntil: "load", timeout: 45000 });
     for (let i = 0; i < 40 && late.length < 3; i++) await idx.waitForTimeout(500); // على جهاز بطيء قد يتأخر الخمول، فننتظر حتى 20 ثانية
-    check(cdn.length === 0, `${name}: النموذج ثلاثي الأبعاد لا يعتمد على CDN خارجي ${cdn.join(" ")}`);
+    check(cdn.length === 0, `${name}: الصفحة الرئيسية لا تعتمد على CDN أو Google Fonts (النموذج والخط محليان) ${cdn.join(" ")}`);
     check(early.length === 0, `${name}: لا طلبات Firebase قبل اكتمال الرئيسية ${early.length ? early.map((u) => u.split("/").pop()).join(" ") : ""}`);
     check(late.length >= 3, `${name}: ربط الحسابات يُحمَّل بعد اكتمال الصفحة (${late.length} ملفات)`);
     check((await idx.title()).includes("براق"), `${name}: عنوان الصفحة الرئيسية`);
