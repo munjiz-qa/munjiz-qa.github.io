@@ -110,7 +110,7 @@
       $("#regDone").innerHTML = `<h2>تم تسجيلك بنجاح ✓</h2><p class="sub">احتفظ بكود الطالب. لتعديل بياناتك لاحقاً اكتب رقم هاتفك في تبويب «تعديل بياناتي».</p>
         <div class="code">${esc(s.code)}</div>
         <dl class="kv"><dt>الاسم</dt><dd>${esc(s.full_name)}</dd><dt>الهاتف</dt><dd class="ltr">${esc(s.phone)}</dd>
-        ${s.email ? `<dt>البريد</dt><dd class="ltr">${esc(s.email)}</dd>` : ""}<dt>المجموعة</dt><dd>${esc(s.group_num)}</dd><dt>تاريخ التسجيل</dt><dd class="num">${esc(s.created_date)}</dd></dl>
+        ${s.email ? `<dt>البريد</dt><dd class="ltr">${esc(s.email)} <small>(مخفي)</small></dd>` : ""}<dt>المجموعة</dt><dd>${esc(s.group_num)}</dd><dt>تاريخ التسجيل</dt><dd class="num">${esc(s.created_date)}</dd></dl>
         <div class="actions" style="justify-content:center"><button class="btn pri" type="button" id="toEdit">مراجعة بياناتي</button><button class="btn ghost" type="button" id="toGroups">عرض المجموعات</button></div>`;
       $("#toEdit").onclick = () => { showEditor(); go("edit"); };
       $("#toGroups").onclick = () => go("groups");
@@ -123,7 +123,7 @@
   /* ---------- الدخول والتعديل ---------- */
   function fillEditor() {
     const s = S.me, f = $("#editForm");
-    f.name.value = s.full_name; f.phone.value = s.phone; f.email.value = s.email || ""; f.notes.value = s.notes || "";
+    f.name.value = s.full_name; f.phone.value = s.phone; f.email.value = ""; f.email.placeholder = s.email ? s.email + " (مخفي)" : "اختياري، مثل name@example.com"; f.notes.value = s.notes || "";
     $("#myCode").textContent = s.code;
     $("#myMeta").textContent = `تاريخ التسجيل ${s.created_date} · آخر تعديل ${s.updated}`;
     renderPicker($("#editGroups"), "eg", s.group_num);
