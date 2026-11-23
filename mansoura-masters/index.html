@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ماجستير الدفعة الثانية 2026 · جامعة المنصورة | منجز</title>
+<meta name="description" content="سجل طلاب ماجستير الدفعة الثانية 2026 بجامعة المنصورة على منصة منجز: التسجيل واختيار مجموعة العمل وتعديل البيانات.">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#7a1e3a">
+<meta property="og:title" content="جامعة المنصورة · ماجستير الدفعة الثانية 2026">
+<meta property="og:description" content="سجّل بياناتك واختر مجموعة العمل على منصة منجز.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect x='4' y='4' width='72' height='72' rx='18' fill='%237a1e3a'/%3E%3Cpath d='M22 42l12 12 24-28' fill='none' stroke='%23b8923a' stroke-width='8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="assets/mm.css?v=20261123a">
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="./"><svg width="34" height="34" viewBox="0 0 80 80" aria-hidden="true"><rect x="5" y="5" width="70" height="70" rx="18" fill="none" stroke="#b8923a" stroke-width="5"/><path d="M22 42l12 12 24-28" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>منجز<small>سجل الطلاب ومجموعات العمل</small></span></a>
+  <nav aria-label="روابط"><a href="#" data-go="register">التسجيل</a><a href="#" data-go="edit">تعديل بياناتي</a><a href="admin.html">الإدارة</a></nav>
+</div></header>
+
+<section class="hero"><div class="wrap">
+  <span class="uni">🎓 جامعة المنصورة · الدراسات العليا</span>
+  <h1>ماجستير <em>الدفعة الثانية 2026</em></h1>
+  <p>سجّل بياناتك مرة واحدة واختر رقم مجموعة العمل التي تنضم إليها. يمكنك العودة في أي وقت لتعديل بياناتك أو تغيير مجموعتك برقم هاتفك ورمزك السري.</p>
+  <div class="stats">
+    <div class="stat"><b class="num" id="sTotal">—</b><span>طالب مسجّل</span></div>
+    <div class="stat"><b class="num" id="sGroups">—</b><span>مجموعة عمل</span></div>
+    <div class="stat"><b class="num" id="sSeats">—</b><span id="sSeatsL">مقعد متاح</span></div>
+  </div>
+  <div class="tabs" role="tablist" aria-label="الأقسام">
+    <button role="tab" id="t-register" aria-controls="p-register" aria-selected="true">التسجيل</button>
+    <button role="tab" id="t-edit" aria-controls="p-edit" aria-selected="false">تعديل بياناتي</button>
+    <button role="tab" id="t-groups" aria-controls="p-groups" aria-selected="false">المجموعات</button>
+  </div>
+</div></section>
+
+<main><div class="wrap">
+  <div id="globalMsg" class="msg warn" hidden></div>
+
+  <!-- التسجيل -->
+  <section id="p-register" role="tabpanel" aria-labelledby="t-register">
+    <form class="card" id="regForm" novalidate>
+      <h2>تسجيل طالب جديد</h2>
+      <p class="sub">الحقول المعلّمة بـ <span class="req">*</span> مطلوبة. تُحفظ البيانات في قاعدة بيانات الدفعة ولا يطّلع على الهاتف والبريد إلا إدارة الدفعة. لا يلزم أي حساب أو بريد للتسجيل.</p>
+      <div class="grid">
+        <label class="f full"><span class="lt">الاسم الكامل <span class="req" aria-hidden="true">*</span></span><small>ثلاثياً على الأقل كما في البطاقة، مثل: أحمد محمد علي حسن</small>
+          <input name="name" autocomplete="name" required maxlength="120"></label>
+        <label class="f"><span class="lt">رقم الهاتف <span class="req" aria-hidden="true">*</span></span><small>11 رقماً، مثل 01012345678</small>
+          <input name="phone" class="ltrin" inputmode="tel" autocomplete="tel" required maxlength="20"></label>
+        <label class="f">البريد الإلكتروني <small>اختياري، مثل name@example.com</small>
+          <input name="email" type="email" class="ltrin" autocomplete="email" maxlength="120"></label>
+        <div class="f full"><span style="font-weight:600;font-size:14.5px">رقم المجموعة <span class="req" aria-hidden="true">*</span></span>
+          <div class="gpick" id="regGroups" role="radiogroup" aria-label="رقم المجموعة"></div></div>
+        <label class="f full">ملاحظات <small>اختياري: التخصص، أو أي معلومة تريد إبلاغ الإدارة بها</small>
+          <textarea name="notes" maxlength="500"></textarea></label>
+        <label class="f"><span class="lt">رمز سري للتعديل لاحقاً <span class="req" aria-hidden="true">*</span></span><small>من 4 إلى 8 أرقام، احفظه لتعديل بياناتك</small>
+          <input name="pin" class="ltrin" inputmode="numeric" type="password" autocomplete="new-password" required maxlength="8"></label>
+        <label class="f"><span class="lt">تأكيد الرمز السري <span class="req" aria-hidden="true">*</span></span><small>اكتب الرمز نفسه مرة أخرى</small>
+          <input name="pin2" class="ltrin" inputmode="numeric" type="password" autocomplete="new-password" required maxlength="8"></label>
+      </div>
+      <div id="regMsg" class="msg" hidden></div>
+      <div class="actions"><button class="btn pri" type="submit">تسجيل البيانات</button></div>
+    </form>
+    <div class="card done" id="regDone" hidden></div>
+  </section>
+
+  <!-- تعديل -->
+  <section id="p-edit" role="tabpanel" aria-labelledby="t-edit" hidden>
+    <form class="card" id="loginForm" novalidate>
+      <h2>تعديل بياناتي</h2>
+      <p class="sub">ادخل برقم الهاتف الذي سجّلت به والرمز السري الذي اخترته. إن نسيت الرمز فاطلب من إدارة الدفعة إعادة تعيينه.</p>
+      <div class="grid">
+        <label class="f">رقم الهاتف<input name="phone" class="ltrin" inputmode="tel" autocomplete="tel" required></label>
+        <label class="f">الرمز السري<input name="pin" class="ltrin" inputmode="numeric" type="password" autocomplete="current-password" required></label>
+      </div>
+      <div id="loginMsg" class="msg" hidden></div>
+      <div class="actions"><button class="btn pri" type="submit">دخول</button></div>
+    </form>
+    <form class="card" id="editForm" novalidate hidden>
+      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
+        <h2>بياناتي <span class="badge g ltr" id="myCode"></span></h2>
+        <button type="button" class="btn ghost sm" id="logoutBtn">خروج</button>
+      </div>
+      <p class="sub" id="myMeta"></p>
+      <div class="grid">
+        <label class="f full">الاسم الكامل<input name="name" autocomplete="name" required maxlength="120"></label>
+        <label class="f">رقم الهاتف<input name="phone" class="ltrin" inputmode="tel" required maxlength="20"></label>
+        <label class="f">البريد الإلكتروني <small>اختياري</small><input name="email" type="email" class="ltrin" maxlength="120"></label>
+        <div class="f full"><span style="font-weight:600;font-size:14.5px">رقم المجموعة</span>
+          <div class="gpick" id="editGroups" role="radiogroup" aria-label="رقم المجموعة"></div></div>
+        <label class="f full">ملاحظات<textarea name="notes" maxlength="500"></textarea></label>
+        <label class="f">رمز سري جديد <small>اتركه فارغاً إن لم ترد تغييره</small><input name="pin" class="ltrin" inputmode="numeric" type="password" autocomplete="new-password" maxlength="8"></label>
+      </div>
+      <div id="editMsg" class="msg" hidden></div>
+      <div class="actions"><button class="btn pri" type="submit">حفظ التعديلات</button></div>
+    </form>
+  </section>
+
+  <!-- المجموعات -->
+  <section id="p-groups" role="tabpanel" aria-labelledby="t-groups" hidden>
+    <div class="card">
+      <h2>مجموعات العمل</h2>
+      <p class="sub" id="groupsSub">عدد الطلاب في كل مجموعة يتحدّث لحظياً مع كل تسجيل.</p>
+      <div class="groups" id="groupsView"></div>
+    </div>
+  </section>
+</div></main>
+
+<footer><div class="wrap">
+  <span>منجز · سجل طلاب ماجستير جامعة المنصورة، الدفعة الثانية 2026</span>
+  <a href="admin.html">دخول الإدارة</a>
+</div></footer>
+
+<script src="assets/config.js?v=20261123a"></script>
+<script src="assets/mm.js?v=20261123a"></script>
+<script src="assets/app.js?v=20261123a"></script>
+</body>
+</html>
