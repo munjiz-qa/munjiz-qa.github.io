@@ -219,6 +219,9 @@ async function health(brief) {
   const cn = readJSON('countries.json', {}), cnAge = (Date.now() - new Date(cn.updated)) / 3600e3;
   const cnBad = Object.values(cn.countries || {}).flatMap(c => c.items || []).filter(i => new Set((i.sources || []).map(s => outlet(s.url))).size < 2).length;
   checks.push({name: 'الأوضاع في الدول حديثة وكل خبر من جهتين', ok: cnAge < 8 && cnBad === 0, detail: `آخر تحديث قبل ${isNaN(cnAge) ? '—' : cnAge.toFixed(1)} ساعة، ${Object.values(cn.countries || {}).reduce((s, c) => s + (c.items || []).length, 0)} خبراً، ${cnBad} دون جهتين`});
+  // ملخص الدول للصفحة الرئيسية (countries-home.json) يجب أن يكون من نسخة الملف الكامل نفسها
+  const cnh = readJSON('countries-home.json', {});
+  checks.push({name: 'ملخص الدول للرئيسية مطابق للملف الكامل', ok: cnh.updated === cn.updated, detail: cnh.updated === cn.updated ? 'من النسخة نفسها' : `الملخص ${cnh.updated || '—'} والكامل ${cn.updated || '—'}`});
   const fc = readJSON('forecast.json', {}), fcA = (Date.now() - new Date(fc.updated)) / 3600e3, fcN = Object.keys(fc.countries || {}).length;
   const fcEv = readJSON('forecast/events.json', {events: []}).events || [], fcBad = fcEv.filter(e => new Set((e.sources || []).map(s => outlet(s.url))).size < 2).length;
   checks.push({name: 'التوقعات محسوبة حديثاً وكل حدث من جهتين', ok: fcA < 8 && fcN >= 20 && fcBad === 0, detail: `آخر حساب قبل ${isNaN(fcA) ? '—' : fcA.toFixed(1)} ساعة، ${fcN} دولة، ${fcEv.length} حدثاً، ${fcBad} دون جهتين`});
@@ -272,7 +275,7 @@ catch (e) { console.error('تعذّر الرصد العسكري:', e.message); }
   // الأوضاع في الدول: تُحدَّث كل 3 ساعات من khabar.yml، ويعيدها الطيار هنا إن تأخرت (مع خلاصات كل 6 ساعات)، ثم بوابة التحقق
   const cn = readJSON('countries.json', {}), cnAge = (Date.now() - new Date(cn.updated)) / 3600e3;
   if (!(cnAge < 3.5) && !ARGS.has('--dry')) {
-    try { execFileSync(process.execPath, ['khabar/scripts/countries.mjs'], {stdio: 'inherit', timeout: 12 * 60e3}); execFileSync('python3', ['khabar/agent/countries.py', '--enforce', '--quiet'], {stdio: 'inherit'}); } catch (e) { console.error('countries', e.message); }
+    try { execFileSync(process.execPath, ['khabar/scripts/countries.mjs'], {stdio: 'inherit', timeout: 12 * 60e3}); execFileSync('python3', ['khabar/agent/countries.py', '--enforce', '--quiet'], {stdio: 'inherit'}); execFileSync('python3', ['khabar/scripts/countries_home.py'], {stdio: 'inherit'}); } catch (e) { console.error('countries', e.message); }
   }
   // التوقعات: تُحسب كل 3 ساعات من khabar.yml، ويعيدها الطيار إن تأخرت 4 ساعات، ثم بوابة التحقق
   const fcj = readJSON('forecast.json', {}), fcAge = (Date.now() - new Date(fcj.updated)) / 3600e3;
