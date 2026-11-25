@@ -7628,9 +7628,9 @@ REG.forEach(([k,ar,en,get])=>{
 const COLLS = REG.filter(r=>COLL[r[0]]).map(r=>COLL[r[0]]);
 
 // ---------- الوثيقة ----------
-const blankDoc = () => ({v:1, updated:null, c:{}, nav:null, text:[]});
-const norm = d => { const o=jc(d)||blankDoc(); o.v=1; o.c=o.c||{}; o.text=o.text||[]; if(o.nav===undefined) o.nav=null; return o; };
-const core = d => { const o=norm(d); delete o.updated; delete o.base; for(const k in o.c){ const c=o.c[k]; if(!c) {delete o.c[k]; continue} if(!Object.keys(c.edit||{}).length) delete c.edit; if(!Object.keys(c.add||{}).length) delete c.add; if(!(c.del||[]).length) delete c.del; if(!c.order) delete c.order; if(!Object.keys(c).length) delete o.c[k]; } if(!o.text.length) o.text=[]; return o; };
+const blankDoc = () => ({v:1, updated:null, c:{}, nav:null, text:[], code:{css:"",js:"",html:""}});
+const norm = d => { const o=jc(d)||blankDoc(); o.v=1; o.c=o.c||{}; o.text=o.text||[]; if(o.nav===undefined) o.nav=null; o.code=Object.assign({css:"",js:"",html:""},o.code||{}); return o; };
+const core = d => { const o=norm(d); delete o.updated; delete o.base; for(const k in o.c){ const c=o.c[k]; if(!c) {delete o.c[k]; continue} if(!Object.keys(c.edit||{}).length) delete c.edit; if(!Object.keys(c.add||{}).length) delete c.add; if(!(c.del||[]).length) delete c.del; if(!c.order) delete c.order; if(!Object.keys(c).length) delete o.c[k]; } if(!o.text.length) o.text=[]; if(!o.code.css&&!o.code.js&&!o.code.html) delete o.code; return o; };
 let PUB = norm(jr(LS.pub,null));
 let D = isAdm() ? norm(jr(LS.draft,null)||PUB) : PUB;
 const dirty = () => !same(core(D),core(PUB));
@@ -7670,7 +7670,14 @@ function applyNav(nav){
   for(let i=VIEWS.length-1;i>=0;i--){ const id=VIEWS[i][0]; if(lab[id]&&lab[id][0]){ VIEWS[i][1]=lab[id][0]; if(lab[id][1]&&typeof I18N_EN!=="undefined") I18N_EN[lab[id][0]]=lab[id][1]; } if(hide.has(id)) VIEWS.splice(i,1); }
 }
 let RULES = [];
-const applyAll = doc => { COLLS.forEach(co=>applyColl(co,(doc.c||{})[co.k])); applyNav(doc.nav); RULES=(doc.text||[]).filter(r=>r&&r.f&&r.t&&r.t.trim()); };
+const NOCODE = /[?&#]nocode\b/.test(location.href) || (()=>{ try{ return localStorage.getItem("ty_cms_nocode")==="1" }catch{ return false } })();
+function applyCode(doc){
+  const c=(doc.code)||{}; const set=(id,tag,txt,parent)=>{ let e=document.getElementById(id); if(!txt||NOCODE){ e&&e.remove(); return } if(!e){ e=document.createElement(tag); e.id=id; if(tag==="div") e.setAttribute("data-cms-user",""); (parent||document.body).appendChild(e); } if(tag==="style") e.textContent=txt; else e.innerHTML=txt; };
+  set("cms-user-css","style",c.css,document.head); set("cms-user-html","div",c.html);
+}
+let jsRan=false; const jsErr=[];
+function runUserJs(doc){ const js=(doc.code||{}).js; if(jsRan||!js||NOCODE) return; jsRan=true; try{ new Function(js)(); }catch(e){ jsErr.push(String(e&&e.message||e)); console.error("cms user js:",e); } }
+const applyAll = doc => { applyCode(doc); COLLS.forEach(co=>applyColl(co,(doc.c||{})[co.k])); applyNav(doc.nav); RULES=(doc.text||[]).filter(r=>r&&r.f&&r.t&&r.t.trim()); };
 const refreshView = () => { try{ if(typeof go==="function") go(); }catch{} };
 
 // ---------- النصوص: استبدال نصوص الموقع ----------
@@ -7706,7 +7713,7 @@ const sum = () => { let ed=0,ad=0,dl=0,or=0; for(const k in D.c){ const c=D.c[k]
 // ---------- واجهة المحرر ----------
 const UI = Object.assign({tab:"content",coll:COLLS[0]?.k||"",qs:""}, jr(LS.ui,{}));
 const saveUI = () => jw(LS.ui,{tab:UI.tab,coll:UI.coll});
-const TABS = [["content",T("المحتوى","Content")],["nav",T("التنقل والأقسام","Navigation")],["text",T("نصوص الموقع","Site texts")],["publish",T("النشر والنسخ","Publish")]];
+const TABS = [["content",T("المحتوى","Content")],["nav",T("التنقل والأقسام","Navigation")],["text",T("نصوص الموقع","Site texts")],["code",T("الكود والملفات","Code & files")],["publish",T("النشر والنسخ","Publish")]];
 R.cms = () => `<div class="view-head"><h1>${T("محرر المحتوى","Content editor")}</h1><p>${T("أضف أو عدّل أو احذف أو رتّب أي محتوى في المنصة: الأمراض، الأدوية، الأخبار، المراجع، الأقسام والنصوص. تظهر تعديلاتك لك فوراً، وتُنشر لكل الزوار بزر «نشر».","Add, edit, delete or reorder any content on the platform: diseases, drugs, news, references, sections and texts. Your changes show to you at once and go to all visitors when you press Publish.")}</p></div><div id="cmsRoot"></div>`;
 AFTER.cms = () => { if(!isAdm()){ q("#cmsRoot").innerHTML=`<div class="panel"><h2>${T("هذه الصفحة للمدير فقط","This page is for the admin only")}</h2><p class="muted">${T("سجّل الدخول بحساب الإدارة لفتح المحرر.","Sign in with the admin account to open the editor.")}</p><button class="btn" type="button" id="cmsLogin">${T("تسجيل الدخول","Sign in")}</button></div>`; q("#cmsLogin").onclick=()=>window.tyAccount&&window.tyAccount(); return; } draw(); };
 function draw(){
@@ -7714,7 +7721,7 @@ function draw(){
   const s=sum();
   root.innerHTML = `${dirty()?`<div class="alert" style="margin-bottom:12px"><b>${T("لديك تعديلات غير منشورة","You have unpublished changes")}</b> · ${T("تظهر لك فقط حتى تنشرها.","Only you see them until you publish.")} <button class="btn" type="button" data-go="publish" style="margin-inline-start:8px">${T("انتقل إلى النشر","Go to Publish")}</button></div>`:""}
   <div class="cms-tabs" role="tablist">${TABS.map(([k,n])=>`<button type="button" role="tab" class="btn ${UI.tab===k?"":"ghost"}" data-tab="${k}" aria-selected="${UI.tab===k}">${n}</button>`).join("")}</div>
-  <div id="cmsBody">${UI.tab==="content"?vContent():UI.tab==="nav"?vNav():UI.tab==="text"?vText():vPublish()}</div>`;
+  <div id="cmsBody">${UI.tab==="content"?vContent():UI.tab==="nav"?vNav():UI.tab==="text"?vText():UI.tab==="code"?vCode():vPublish()}</div>`;
   wire(root); window.scrollTo(0,sy);
 }
 function wire(root){
@@ -7838,6 +7845,7 @@ async function act(a,k,btn){
   }
   if(UI.tab==="nav") return navAct(a,k);
   if(UI.tab==="text") return textAct(a,k);
+  if(UI.tab==="code") return codeAct(a,k);
   if(UI.tab==="publish") return pubAct(a,k);
 }
 
@@ -7919,6 +7927,61 @@ document.addEventListener("click",e=>{
   });
 },true);
 
+
+// ===== تبويب الكود والملفات =====
+const FS = {list:null, file:null, text:"", sha:null, orig:"", hist:null, msg:""};
+const TXT_EXT = /\.(html?|css|js|json|txt|md|webmanifest|svg|xml)$/i;
+const ghc = () => Object.assign({},GH0,jr(LS.gh,{}));
+const ghh = (g,extra) => Object.assign({Authorization:"Bearer "+g.t,Accept:"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"},extra||{});
+const ghapi = g => `https://api.github.com/repos/${g.o}/${g.r}`;
+function vCode(){
+  const c=D.code||{}, g=ghc();
+  return `<div class="panel"><h2>${T("كود مخصّص (CSS / JavaScript / HTML)","Custom code (CSS / JavaScript / HTML)")}</h2>
+  <p class="muted small">${T("يُنشر مع cms.json ويُطبَّق على كل الصفحات. الـ CSS يُطبَّق فوراً، وJavaScript يُنفَّذ عند تحميل الصفحة (جرّبه بزر «تجربة»). للطوارئ إن عطّل كودٌ الموقع: افتح الموقع بإضافة ‎?nocode=1‎ للرابط لتعطيل كل الكود المخصّص.","Published with cms.json and applied on every page. CSS applies at once; JavaScript runs on page load (try it with “Run”). Emergency: if code breaks the site, open it with ?nocode=1 added to the URL to disable all custom code.")}</p>
+  ${NOCODE?`<div class="alert">${T("الكود المخصّص معطّل في هذه الجلسة (nocode).","Custom code is disabled in this session (nocode).")}</div>`:""}
+  <div class="cms-f"><label for="ccCss"><span>CSS</span></label><textarea id="ccCss" class="json" rows="8" spellcheck="false">${h(c.css||"")}</textarea></div>
+  <div class="cms-f"><label for="ccJs"><span>JavaScript</span></label><textarea id="ccJs" class="json" rows="8" spellcheck="false">${h(c.js||"")}</textarea></div>
+  <div class="cms-f"><label for="ccHtml"><span>HTML (${T("يُضاف في نهاية الصفحة","appended at the end of the page")})</span></label><textarea id="ccHtml" class="json" rows="6" spellcheck="false">${h(c.html||"")}</textarea></div>
+  <div class="row" style="gap:8px"><button class="btn" type="button" data-a="ccsave">${T("حفظ الكود (مسودة)","Save code (draft)")}</button><button class="btn ghost" type="button" data-a="ccrun">${T("تجربة JavaScript الآن","Run JavaScript now")}</button></div><p id="ccMsg" class="small" role="status"></p></div>
+  <div class="panel"><h2>${T("تحرير ملفات الموقع مباشرة (GitHub)","Edit site files directly (GitHub)")}</h2>
+  <p class="muted small">${T("وصول كامل لملفات مجلد altayyibat في المستودع. كل حفظ يصبح commit فيمكن الرجوع لأي نسخة سابقة من «سجل الملف». يتطلب رمز GitHub المحفوظ في تبويب النشر.","Full access to the files in the altayyibat folder of the repository. Every save is a commit, so any earlier version can be restored from the file history. Needs the GitHub token saved in the Publish tab.")}</p>
+  ${g.t?"":`<div class="alert">${T("احفظ رمز GitHub أولاً من تبويب «النشر».","Save the GitHub token first in the Publish tab.")}</div>`}
+  <div class="row" style="gap:8px;margin-bottom:10px"><button class="btn ghost" type="button" data-a="flist">${T("تحميل قائمة الملفات","Load file list")}</button>${FS.list?`<select id="fsSel" style="flex:1;min-width:0;padding:9px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--ink)" dir="ltr">${FS.list.map(f=>`<option value="${h(f.path)}" ${f.path===FS.file?"selected":""}>${h(f.path)} (${Math.round(f.size/1024)} KB)</option>`).join("")}</select><button class="btn" type="button" data-a="fopen">${T("فتح","Open")}</button>`:""}</div>
+  <p id="fsMsg" class="small" role="status"></p>
+  ${FS.file?`<div class="cms-f"><label for="fsTxt"><span dir="ltr">${h(FS.file)}</span></label><textarea id="fsTxt" class="json" rows="22" spellcheck="false" wrap="off">${h(FS.text)}</textarea></div>
+  <div class="cms-f"><label for="fsMsgIn">${T("رسالة الحفظ","Commit message")}</label><input id="fsMsgIn" value="${h(FS.msg||"تعديل "+FS.file+" من محرر المحتوى")}"></div>
+  <div class="row" style="gap:8px"><button class="btn" type="button" data-a="fsave">${T("حفظ في المستودع (commit)","Save to repository (commit)")}</button><button class="btn ghost" type="button" data-a="fhist">${T("سجل الملف والتراجع","File history and rollback")}</button><button class="btn ghost" type="button" data-a="freload">${T("تجاهل وإعادة التحميل","Discard and reload")}</button></div>
+  ${FS.hist?`<div style="margin-top:10px">${FS.hist.map(x=>`<div class="cms-hist"><span dir="auto">${h(new Date(x.date).toLocaleString(EN?"en-GB":"ar-EG-u-nu-latn"))} · ${h(x.msg.slice(0,80))}</span><button class="btn ghost" type="button" data-a="frestore" data-k="${h(x.sha)}">${T("تحميل هذه النسخة في المحرر","Load this version into the editor")}</button></div>`).join("")||`<p class="muted">—</p>`}</div>`:""}`:""}</div>`;
+}
+const codeMsg = (id,m,bad) => { const e=q(id); if(e){ e.textContent=m; e.className="small "+(bad?"cms-bad":"cms-ok"); } };
+async function codeAct(a,k){
+  if(["ccsave","ccrun"].includes(a)){
+    D.code={css:q("#ccCss").value,js:q("#ccJs").value,html:q("#ccHtml").value};
+    if(a==="ccsave"){ commit(T("كود","Code")); codeMsg("#ccMsg",T("حُفظ كمسودة. اذهب إلى «النشر» لنشره للزوار.","Saved as a draft. Go to Publish to release it to visitors.")); return; }
+    try{ new Function(D.code.js)(); codeMsg("#ccMsg",T("نُفِّذ بلا أخطاء.","Ran without errors.")); }catch(e){ codeMsg("#ccMsg",T("خطأ: ","Error: ")+e.message,1); } return;
+  }
+  const g=ghc(); const msg="#fsMsg";
+  if(!g.t){ codeMsg(msg,T("لا يوجد رمز GitHub.","No GitHub token."),1); return; }
+  try{
+    if(a==="flist"){ codeMsg(msg,T("جارٍ التحميل…","Loading…")); const r=await fetch(`${ghapi(g)}/git/trees/${encodeURIComponent(g.b)}?recursive=1`,{headers:ghh(g),cache:"no-store"}); if(!r.ok) throw new Error("HTTP "+r.status); const j=await r.json(); const base=g.p.replace(/[^/]*$/,""); FS.list=j.tree.filter(f=>f.type==="blob"&&f.path.startsWith(base)&&TXT_EXT.test(f.path)).sort((x,y)=>x.path.localeCompare(y.path)); return draw(); }
+    if(a==="fopen"||a==="freload"){ const path=a==="fopen"?q("#fsSel").value:FS.file; codeMsg(msg,T("جارٍ فتح الملف…","Opening…")); const [rt,rm]=await Promise.all([fetch(`${ghapi(g)}/contents/${path}?ref=${encodeURIComponent(g.b)}`,{headers:ghh(g,{Accept:"application/vnd.github.raw+json"}),cache:"no-store"}),fetch(`${ghapi(g)}/contents/${path}?ref=${encodeURIComponent(g.b)}`,{headers:ghh(g),cache:"no-store"})]); if(!rt.ok||!rm.ok) throw new Error("HTTP "+rt.status); FS.file=path; FS.text=await rt.text(); FS.sha=(await rm.json()).sha; FS.orig=FS.text; FS.hist=null; FS.msg=""; return draw(); }
+    if(a==="fhist"){ const r=await fetch(`${ghapi(g)}/commits?path=${encodeURIComponent(FS.file)}&sha=${encodeURIComponent(g.b)}&per_page=15`,{headers:ghh(g),cache:"no-store"}); if(!r.ok) throw new Error("HTTP "+r.status); FS.text=q("#fsTxt").value; FS.msg=q("#fsMsgIn").value; FS.hist=(await r.json()).map(x=>({sha:x.sha,date:x.commit.author.date,msg:x.commit.message})); return draw(); }
+    if(a==="frestore"){ const r=await fetch(`${ghapi(g)}/contents/${FS.file}?ref=${k}`,{headers:ghh(g,{Accept:"application/vnd.github.raw+json"}),cache:"no-store"}); if(!r.ok) throw new Error("HTTP "+r.status); FS.text=await r.text(); FS.msg=T("استرجاع نسخة سابقة من ","Restore an earlier version of ")+FS.file; FS.hist=null; draw(); codeMsg("#fsMsg",T("حُمّلت النسخة في المحرر. اضغط «حفظ» لتثبيتها.","Version loaded into the editor. Press Save to commit it.")); return; }
+    if(a==="fsave"){
+      const text=q("#fsTxt").value, m=q("#fsMsgIn").value.trim()||"تعديل من محرر المحتوى";
+      if(FS.file.endsWith(".json")){ try{ JSON.parse(text) }catch(e){ return codeMsg(msg,T("JSON غير صالح: ","Invalid JSON: ")+e.message,1) } }
+      if(FS.file.endsWith("index.html")&&!text.includes('id="cms-js"')&&!await ask(T("هذا الملف لا يحتوي كتلة محرر المحتوى. حفظه سيعطّل المحرر. متأكد؟","This file lacks the content-editor block. Saving will disable the editor. Sure?"),T("حفظ رغم ذلك","Save anyway"))) return;
+      if(!await ask(T("حفظ التغييرات في المستودع؟ يظهر الملف المعدّل للزوار خلال دقائق.","Commit changes to the repository? Visitors see the edited file within minutes."),T("حفظ","Save"))) return;
+      codeMsg(msg,T("جارٍ الحفظ…","Saving…"));
+      const rm=await fetch(`${ghapi(g)}/contents/${FS.file}?ref=${encodeURIComponent(g.b)}`,{headers:ghh(g),cache:"no-store"}); const cur=rm.ok?(await rm.json()).sha:undefined;
+      if(cur&&cur!==FS.sha&&!await ask(T("تغيّر الملف في المستودع بعد فتحه. الحفظ سيستبدل النسخة الأحدث. متابعة؟","The file changed in the repository after you opened it. Saving will overwrite the newer version. Continue?"),T("استبدال","Overwrite"))) return;
+      const r=await fetch(`${ghapi(g)}/contents/${FS.file}`,{method:"PUT",headers:ghh(g,{"Content-Type":"application/json"}),body:JSON.stringify({message:m,content:b64(text),sha:cur,branch:g.b})});
+      if(!r.ok){ let mm=""; try{ mm=(await r.json()).message }catch{} throw new Error("HTTP "+r.status+(mm?" · "+mm:"")); }
+      const j=await r.json(); FS.sha=j.content&&j.content.sha; FS.orig=text; FS.text=text; FS.hist=null; draw(); codeMsg("#fsMsg",T("تم الحفظ ✓ (commit). يمكنك التراجع من «سجل الملف».","Saved ✓ (commit). You can roll back from the file history.")); return;
+    }
+  }catch(e){ codeMsg(msg,T("تعذّر: ","Failed: ")+(e.message||e),1); }
+}
+
 // ===== تبويب النشر =====
 const GH0 = {o:"munjiz-qa",r:"munjiz-qa.github.io",b:"main",p:"altayyibat/cms.json",t:""};
 function vPublish(){
@@ -7981,7 +8044,7 @@ function pill(){ q(".cms-pill")?.remove(); if(isAdm()&&dirty()&&location.hash!==
 window.addEventListener("hashchange",()=>setTimeout(pill,50)); setInterval(pill,4000);
 
 // ---------- التشغيل ----------
-applyAll(D); pill();
+applyAll(D); runUserJs(D); pill();
 if(isAdm()||RULES.length) applyText(document.body);
 if(location.hash==="#cms"||RULES.length||dirty()||PUB.updated) refreshView();
 if(location.protocol!=="file:") fetch("cms.json",{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>{
@@ -7989,7 +8052,7 @@ if(location.protocol!=="file:") fetch("cms.json",{cache:"no-store"}).then(r=>r.o
   const nj=norm(j); if(same(nj,PUB)) return;
   const wasDirty=dirty(); PUB=nj; jw(LS.pub,PUB);
   if(!isAdm()) D=PUB; else if(!wasDirty) { D=norm(PUB); jw(LS.draft,D); }
-  applyAll(D); applyText(document.body); refreshView(); pill();
+  applyAll(D); runUserJs(D); applyText(document.body); refreshView(); pill();
 }).catch(()=>{});
 })();
 </script><script src="pwa-install.js" defer></script>
