@@ -248,6 +248,9 @@ body.dragging,body.dragging *{cursor:grabbing!important;user-select:none}
 .typegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}.typegrid .btn{white-space:normal;justify-content:flex-start;text-align:start}
 .imgp{max-width:100%;max-height:150px;border-radius:10px;margin-top:8px;display:block}.imgf .row{margin-top:6px}
 label.chk{display:flex;gap:8px;align-items:center}label.chk input{width:auto;min-height:0}
+textarea.code{font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;direction:ltr;text-align:left;white-space:pre;overflow:auto;tab-size:2;width:100%}
+.sw{display:inline-block;width:18px;height:18px;border-radius:5px;vertical-align:middle;border:1px solid var(--line)}
+.clr input[type=color]{width:56px;min-height:38px;padding:2px;border-radius:8px}.ltrh{text-align:right;overflow-wrap:anywhere}
 @media (max-width:640px){.srow .acts{width:100%}.srow .acts .btn{flex:1 0 auto}}
 </style>
 </head>
@@ -432,6 +435,7 @@ const PTABS=[['#/','الرئيسية'],['#/p/accounts','الحسابات وال�
 const CTABS=[['#/c/home','الرئيسية'],['#/c/accounts','حساباتي'],['#/c/transfer','التحويل'],['#/c/cash','الإيداع والسحب'],['#/c/finance','التمويل'],['#/c/invest','الاستثمار'],['#/c/takaful','التكافل'],['#/c/zakat','الزكاة والخير'],['#/c/help','المساعدة','help'],['#/c/profile','ملفي']];
 const ATABS=[['#/a/home','لوحة التحكم'],['#/a/requests','طلبات التمويل','reqs'],['#/a/cash','الإيداع والسحب','cash'],['#/a/users','العملاء','users'],['#/a/profit','توزيع الأرباح'],['#/a/takaful','التكافل','claims'],['#/a/funds','الزكاة والصناديق'],['#/a/messages','الرسائل','msgs'],['#/a/reports','التقارير'],['#/a/site','محتوى الموقع'],['#/a/settings','الإعدادات'],['#/a/log','سجل العمليات']];
 function render(){
+  if(!db)return;
   renderChrome();
   const h=location.hash||'#/';const u=me();const [ ,area,page,arg]=h.split('/');
   // header
@@ -1653,6 +1657,132 @@ document.addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id)retu
 const endDrag=e=>{if(!drag)return;const d=drag;drag=null;d.row.classList.remove('drag');document.body.classList.remove('dragging');const to=[...d.list.children].indexOf(d.row);if(to!==d.from&&to>=0)moveIn(d.l,d.from,to,'تم تغيير الترتيب بالسحب');};
 document.addEventListener('pointerup',endDrag);document.addEventListener('pointercancel',endDrag);
 
+/* ---------- التحكم الكامل: المظهر، الكود المخصص، محرّر البيانات، ملفات البرمجة ---------- */
+const THEME0={acc:'#17594a',accSoft:'#e9f3ef',gold:'#d9ad52',accDark:'#7fcbb3'};
+const okColor=c=>/^#[0-9a-f]{6}$/i.test(String(c||''));
+let codeRan=false;
+function applyTheme(){const t=Object.assign({},THEME0,S().theme||{}),c=S().code||{};let el=$('#cmsStyle');if(!el){el=document.createElement('style');el.id='cmsStyle';document.head.appendChild(el)}
+ const L=[];if(t.acc!==THEME0.acc&&okColor(t.acc))L.push(`--acc:${t.acc}`);if(t.accSoft!==THEME0.accSoft&&okColor(t.accSoft))L.push(`--acc-soft:${t.accSoft}`);if(t.gold!==THEME0.gold&&okColor(t.gold))L.push(`--gold:${t.gold}`);
+ const D=t.accDark!==THEME0.accDark&&okColor(t.accDark)?`--acc:${t.accDark}`:'';
+ el.textContent=(L.length?`:root{${L.join(';')}}`:'')+(D?`@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){${D}}}:root[data-theme="dark"]{${D}}`:'')+'\n'+String(c.css||'')}
+function runCustomCode(){if(codeRan)return;codeRan=true;const c=S().code||{};
+ if(c.head){try{document.head.appendChild(document.createRange().createContextualFragment(c.head))}catch(e){console.error('بركات: خطأ في كود الرأس المخصص',e)}}
+ if(c.js){try{new Function(c.js)()}catch(e){console.error('بركات: خطأ في JavaScript المخصص',e)}}}
+BR.html=b=>String(b.html||'');
+BT.html={n:'HTML مخصص',f:[['html','كود HTML','code']],auto:'يُعرض كما هو داخل الصفحة. وسوم script هنا لا تعمل؛ ضع JavaScript في تبويب «التحكم المتقدم».'};
+const PLAN0F=JSON.parse(JSON.stringify(Object.fromEntries(Object.entries(PLANS).map(([k,p])=>[k,{fee:p.fee,cap:p.cap}]))));
+const CATPLANF=[['k','الوسم المختصر'],['name','الاسم'],['desc','الوصف','area'],['fee','الاشتراك الشهري ('+CUR+')','num'],['cap','أقصى تعويض للمطالبة ('+CUR+')','num']];
+const ADV={dbPrev:null,file:null,dir:'barakat',list:null,hist:null,busy:false};
+const fldBase=fld;
+fld=function(spec,v){const [k,l,kind]=spec;
+ if(kind==='code')return `<label>${l}<textarea name="${k}" rows="12" dir="ltr" spellcheck="false" class="code">${esc(v)}</textarea></label>`;
+ if(kind==='num')return `<label>${l}<input name="${k}" type="number" step="0.01" min="0" value="${esc(v)}" dir="ltr" inputmode="decimal"></label>`;
+ if(kind==='color')return `<label class="clr">${l}<span class="row"><input type="color" name="${k}" value="${esc(v)}"><code dir="ltr">${esc(v)}</code></span></label>`;
+ return fldBase(spec,v)};
+const readBase=readFields;
+readFields=function(fields,d,obj){readBase(fields.filter(f=>!['num','code','color'].includes(f[2])),d,obj);
+ fields.forEach(([k,l,kind])=>{if(kind==='num'){const n=r2(+d[k]);need(isFinite(n)&&n>=0,`القيمة «${l}» غير صحيحة.`);obj[k]=n}
+  else if(kind==='code')obj[k]=String(d[k]??'');else if(kind==='color'){need(okColor(d[k]),'اختر لوناً صحيحاً.');obj[k]=d[k].toLowerCase()}});return obj};
+const applyCatBase=applyCatalog;
+applyCatalog=function(){const c=(S().catalog||{}).plans||{};
+ Object.keys(PLANS).forEach(k=>{if(!PLAN0[k]&&!c[k])delete PLANS[k]});
+ Object.entries(c).forEach(([k,o])=>{if(!PLANS[k])PLANS[k]={}});
+ applyCatBase();Object.keys(PLANS).forEach(k=>{if(PLAN0F[k]&&!(c[k]&&'fee' in c[k]))Object.assign(PLANS[k],PLAN0F[k])})};
+SITE_TABS.push(['adv','التحكم المتقدم'],['code','ملفات البرمجة']);
+const siteTabsMap=()=>({pages:siteTabPages,brand:siteTabBrand,footer:siteTabFooter,catalog:siteTabCatalog,publish:siteTabPublish,adv:siteTabAdv,code:siteTabCode});
+A.site=(u,arg)=>{arg=arg||'pages';if(arg.startsWith('pg-')){A.site.tab='pages';return siteBar()+sitePageEd(arg.slice(3))}A.site.tab=SITE_TABS.some(t=>t[0]===arg)?arg:'pages';return siteBar()+siteTabsMap()[A.site.tab]()};
+A.site.tab='pages';
+const catBase=siteTabCatalog;
+siteTabCatalog=function(){const html=catBase();const c=S().catalog.plans||{};
+ const rows=Object.entries(PLANS).map(([k,p])=>`<div class="srow"><div class="hd"><div class="ttl"><span class="tag">${esc(p.k)}</span> <b>${esc(p.name)}</b><small>${esc(p.desc)}</small><small>الاشتراك ${money(p.fee)} · أقصى تعويض ${money(p.cap)}</small>${c[k]?` <span class="tag warn">${PLAN0[k]?'معدّل':'برنامج مضاف'}</span>`:''}</div>
+  <div class="acts"><button class="btn sm ghost" data-act="siteDlg" data-c="cat:plans:${k}">تعديل</button>${c[k]&&PLAN0[k]?`<button class="btn sm ghost" data-act="siteCatReset" data-k="plans:${k}">الأصل</button>`:''}${!PLAN0[k]?`<button class="btn sm bad" data-act="planDel" data-k="${k}">حذف</button>`:''}</div></div></div>`).join('');
+ return html.replace(/<div class="card" style="margin-top:16px"><h3>برامج التكافل<\/h3>[\s\S]*$/,`<div class="card" style="margin-top:16px"><div class="row" style="justify-content:space-between"><div><h3 style="margin:0">برامج التكافل</h3><p class="sub">الاسم والوصف والاشتراك الشهري وحد التعويض، وإضافة برامج جديدة.</p></div><button class="btn" data-act="siteDlg" data-c="newplan">إضافة برنامج</button></div><div class="slist" style="margin-top:12px">${rows}</div></div>`)};
+function siteTabAdv(){const s=S(),t=Object.assign({},THEME0,s.theme||{}),c=s.code||{},cl=isCloud();
+ return `<div class="note warn" style="margin-bottom:16px"><b>صلاحية كاملة.</b> ما يُكتب هنا يغيّر شكل الموقع وسلوكه لكل الزوار بعد النشر. كل تعديل قابل للتراجع، ويُحفظ قبله نسخة في السجل.</div>
+ <div class="grid g2" style="align-items:start">
+  <div class="card"><h3>الألوان</h3><p class="sub" style="margin-bottom:10px">ألوان العلامة في كل الموقع والحسابات ولوحة الإدارة. الخط ثابت: IBM Plex Sans Arabic.</p>
+   ${[['acc','اللون الرئيسي'],['accSoft','الخلفية الهادئة'],['gold','اللون الذهبي'],['accDark','اللون الرئيسي في الوضع الداكن']].map(([k,l])=>`<div class="split"><span>${l}</span><b><span class="sw" style="background:${esc(t[k])}"></span> <code dir="ltr">${esc(t[k])}</code></b></div>`).join('')}
+   <div class="row" style="margin-top:12px"><button class="btn" data-act="siteDlg" data-c="theme">تعديل الألوان</button>${s.theme?'<button class="btn ghost" data-act="themeReset">الألوان الأصلية</button>':''}</div></div>
+  <div class="card"><h3>الكود المخصص</h3><p class="sub" style="margin-bottom:10px">CSS لتعديل التصميم، وJavaScript يعمل عند فتح كل صفحة، وكود يُضاف إلى رأس الصفحة (مثل أدوات التحليل والتحقق).</p>
+   <div class="split"><span>CSS</span><b>${c.css?`${c.css.length.toLocaleString('en-US')} حرفاً`:'—'}</b></div><div class="split"><span>JavaScript</span><b>${c.js?`${c.js.length.toLocaleString('en-US')} حرفاً`:'—'}</b></div><div class="split"><span>رأس الصفحة</span><b>${c.head?`${c.head.length.toLocaleString('en-US')} حرفاً`:'—'}</b></div>
+   <div class="row" style="margin-top:12px"><button class="btn" data-act="siteDlg" data-c="code">تعديل الكود المخصص</button></div></div></div>
+ <div class="card" style="margin-top:16px"><h3>محرّر بيانات المحتوى (JSON)</h3><p class="sub" style="margin-bottom:10px">كل محتوى الموقع في ملف واحد: الصفحات والأقسام والهوية والتذييل والألوان والكود. عدّله مباشرة ثم اضغط «تطبيق».</p>
+  <form data-form="advSite"><textarea name="json" rows="16" dir="ltr" spellcheck="false" class="code">${esc(JSON.stringify(pubPayload(),null,1))}</textarea><p class="err"></p><div class="row" style="margin-top:10px"><button class="btn">تطبيق على المحتوى</button></div></form></div>
+ <div class="card" style="margin-top:16px"><h3>محرّر بيانات النظام (JSON)</h3><p class="sub" style="margin-bottom:10px">كل بيانات النظام: العملاء والحسابات والحركات والتمويل والتكافل والصناديق والإعدادات والرسائل والسجل. التعديل هنا مباشر، فاحفظ <a href="#/a/settings">نسخة احتياطية</a> قبله.</p>
+  ${cl?'<p class="note">في الوضع السحابي تُدار البيانات في الخادم، وتعديلها من الإعدادات وشاشات الإدارة.</p>':`<form data-form="advDb"><textarea name="json" rows="16" dir="ltr" spellcheck="false" class="code" id="advDbTa" placeholder="اضغط «تحميل البيانات» لعرضها هنا"></textarea><p class="err"></p>
+  <div class="row" style="margin-top:10px"><button type="button" class="btn ghost" data-act="advDbLoad">تحميل البيانات</button><button class="btn">تطبيق على النظام</button>${ADV.dbPrev?'<button type="button" class="btn ghost" data-act="advDbUndo">التراجع عن آخر تطبيق</button>':''}</div></form>`}</div>`}
+function codeAllowed(p){return /\.(html|js|json|css|webmanifest|md|txt|svg|xml)$/i.test(p)}
+function siteTabCode(){const c=pubCfg(),f=ADV.file;
+ if(!c.token)return `<div class="card"><h3>ملفات البرمجة</h3><p class="sub" style="margin-bottom:10px">تعديل الكود المصدري للموقع نفسه (الصفحات والبرمجة والإعدادات) مباشرة في مستودعه على GitHub، مع سجل كامل لكل نسخة واسترجاع أي نسخة سابقة. يحتاج رمز النشر نفسه.</p><button class="btn" data-act="sitePubCfg">إضافة رمز النشر</button></div>`;
+ if(f)return `<div class="card"><div class="row" style="justify-content:space-between"><div><a href="#" data-act="codeBack">→ كل الملفات</a><h3 style="margin:4px 0 0" dir="ltr" class="ltrh">${esc(f.path)}</h3><p class="sub">${(f.text.length).toLocaleString('en-US')} حرفاً${f.dirty?' · <span class="tag warn">تعديلات لم تُحفظ</span>':''}</p></div>
+  <div class="row"><button class="btn sm ghost" data-act="codeHist">سجل النسخ</button><a class="btn sm ghost" href="https://github.com/${esc(c.repo)}/blob/${esc(c.branch)}/${esc(f.path)}" target="_blank" rel="noopener">فتح في GitHub</a></div></div>
+  <form data-form="codeSave" style="margin-top:12px"><textarea name="text" rows="26" dir="ltr" spellcheck="false" class="code" data-adv="code">${esc(f.text)}</textarea>
+  <label style="margin-top:10px">وصف التعديل<input name="msg" maxlength="140" placeholder="مثال: تعديل نص زر فتح الحساب"></label><p class="err"></p>
+  <div class="row" style="margin-top:10px"><button class="btn">حفظ ونشر</button><button type="button" class="btn ghost" data-act="codeCheck">فحص الكود دون حفظ</button><button type="button" class="btn ghost" data-act="codeReload">إلغاء التعديلات</button></div>
+  <p class="sub" style="margin-top:8px;font-size:13px">قبل الحفظ يُفحص الكود تلقائياً، فلا يُنشر ملف فيه خطأ في بناء JavaScript أو JSON. يظهر التعديل على الموقع خلال دقيقة إلى دقيقتين، وكل نسخة محفوظة في السجل.</p></form>
+  ${ADV.hist?`<div style="margin-top:16px"><h3>سجل نسخ الملف</h3>${table([{l:'التاريخ'},{l:'الوصف'},{l:''}],ADV.hist.map((h,i)=>[fdt(h.at),esc(h.msg),i?`<button class="btn sm ghost" data-act="codeRestore" data-sha="${esc(h.sha)}">استرجاع هذه النسخة</button>`:'<span class="tag ok">الحالية</span>']),'لا يوجد سجل.')}</div>`:''}</div>`;
+ const L=ADV.list;if(!L&&!ADV.busy){ADV.busy=true;setTimeout(()=>codeLs().catch(e=>{ADV.list=[];toast(e.message);render()}).finally(()=>{ADV.busy=false}),0)}
+ return `<div class="card"><div class="row" style="justify-content:space-between"><div><h3 style="margin:0">ملفات البرمجة</h3><p class="sub" dir="ltr" style="text-align:right">${esc(c.repo)} · ${esc(ADV.dir)}/</p></div><div class="row">${ADV.dir.includes('/')?'<button class="btn sm ghost" data-act="codeUp">المجلد الأعلى</button>':''}<button class="btn sm ghost" data-act="codeLs">تحديث القائمة</button></div></div>
+  ${L?`<div class="slist" style="margin-top:12px">${L.map(x=>`<div class="srow"><div class="hd"><div class="ttl"><b dir="ltr" style="text-align:right">${x.type==='dir'?'📁 ':''}${esc(x.name)}</b><small>${x.type==='dir'?'مجلد':(x.size/1024).toFixed(1)+' ك.ب'}</small></div><div class="acts">${x.type==='dir'?`<button class="btn sm ghost" data-act="codeCd" data-p="${esc(x.path)}">فتح</button>`:codeAllowed(x.name)?`<button class="btn sm" data-act="codeOpen" data-p="${esc(x.path)}">تعديل</button>`:'<span class="tag mute">ملف ثنائي</span>'}</div></div></div>`).join('')}</div>`:'<p class="sub" style="margin-top:12px">جارٍ تحميل القائمة…</p>'}</div>`}
+async function gh(path,opt){const c=pubCfg();const r=await fetch(`https://api.github.com/repos/${c.repo}/${path}`,{cache:'no-store',...(opt||{}),headers:{Authorization:'Bearer '+c.token,Accept:'application/vnd.github+json',...((opt||{}).headers||{})}}).catch(()=>null);
+ need(r,'تعذّر الاتصال بـ GitHub. تحقق من الإنترنت.');if(!r.ok)throw new Error(ghErr(r.status));return r.json()}
+const unb64=s=>new TextDecoder().decode(Uint8Array.from(atob(String(s).replace(/\s/g,'')),ch=>ch.charCodeAt(0)));
+function checkCode(path,text){
+ if(/\.json$|\.webmanifest$/i.test(path)){try{JSON.parse(text)}catch(e){throw new Error('خطأ في بناء JSON: '+e.message)}}
+ if(/\.js$/i.test(path)){try{new Function(text)}catch(e){throw new Error('خطأ في بناء JavaScript: '+e.message)}}
+ if(/\.html$/i.test(path)){need(/<\/html>\s*$/i.test(text.trim()+'\n'),'الملف لا ينتهي بالوسم </html>. تأكد أنك لم تحذف نهاية الملف.');
+  const doc=new DOMParser().parseFromString(text,'text/html');doc.querySelectorAll('script:not([src])').forEach((s,i)=>{if(s.type&&!/javascript|module/.test(s.type))return;try{new Function(s.textContent)}catch(e){throw new Error(`خطأ في بناء JavaScript داخل الوسم script رقم ${i+1}: ${e.message}`)}})}}
+async function codeLs(){ADV.list=null;ADV.busy=true;render();const j=await gh(`contents/${ADV.dir}?ref=${encodeURIComponent(pubCfg().branch)}&t=${Date.now()}`);
+ ADV.list=(Array.isArray(j)?j:[]).sort((a,b)=>(a.type===b.type?a.name.localeCompare(b.name):a.type==='dir'?-1:1));render()}
+async function codeOpen(p){const j=await gh(`contents/${p}?ref=${encodeURIComponent(pubCfg().branch)}&t=${Date.now()}`);need(j.encoding==='base64'&&j.content,'الملف كبير جداً للتعديل من هنا. عدّله من GitHub مباشرة.');
+ ADV.file={path:p,sha:j.sha,text:unb64(j.content),orig:null,dirty:false};ADV.file.orig=ADV.file.text;ADV.hist=null;render()}
+Object.assign(ACTS,{
+ themeReset(){siteEdit(s=>{delete s.theme},'عادت الألوان الأصلية')},
+ planDel(b){const k=b.dataset.k;need(!db.policies.some(p=>p.plan===k),'لا يمكن حذف برنامج عليه اشتراكات. عدّل اسمه أو وصفه بدلاً من ذلك.');siteEdit(s=>{delete s.catalog.plans[k]},'حُذف البرنامج')},
+ advDbLoad(){$('#advDbTa').value=JSON.stringify(db,null,1);toast('حُمّلت بيانات النظام')},
+ advDbUndo(){need(ADV.dbPrev,'لا يوجد تطبيق سابق.');db=JSON.parse(ADV.dbPrev);ADV.dbPrev=null;normDb();save();logA('التراجع عن تعديل بيانات النظام');render();toast('عادت البيانات كما كانت قبل آخر تطبيق')},
+ codeLs(){return codeLs()},codeCd(b){ADV.dir=b.dataset.p;return codeLs()},codeUp(){ADV.dir=ADV.dir.split('/').slice(0,-1).join('/')||'barakat';return codeLs()},
+ codeOpen(b){return codeOpen(b.dataset.p)},
+ codeBack(){if(ADV.file&&ADV.file.dirty&&ACTS.codeBack.armed!==1){ACTS.codeBack.armed=1;setTimeout(()=>ACTS.codeBack.armed=0,5000);return toast('لديك تعديلات لم تُحفظ. اضغط مرة أخرى للخروج دون حفظ.')}ADV.file=null;ADV.hist=null;if(!ADV.list)return codeLs();render()},
+ codeReload(){if(!ADV.file)return;ADV.file.text=ADV.file.orig;ADV.file.dirty=false;render();toast('أُلغيت التعديلات')},
+ codeCheck(){checkCode(ADV.file.path,ADV.file.text);toast('الكود سليم البناء')},
+ async codeHist(){const c=pubCfg(),j=await gh(`commits?path=${encodeURIComponent(ADV.file.path)}&sha=${encodeURIComponent(c.branch)}&per_page=15`);
+  ADV.hist=j.map(x=>({sha:x.sha,at:x.commit.committer.date,msg:x.commit.message.split('\n')[0]}));render()},
+ async codeRestore(b){const j=await gh(`contents/${ADV.file.path}?ref=${b.dataset.sha}`);need(j.content,'تعذّرت قراءة النسخة.');ADV.file.text=unb64(j.content);ADV.file.dirty=ADV.file.text!==ADV.file.orig;render();
+  toast('حُمّلت النسخة في المحرّر. راجعها ثم اضغط «حفظ ونشر»')}
+});
+const dlgBase=ACTS.siteDlg;
+ACTS.siteDlg=function(b){const s=S(),[kind,a,x]=b.dataset.c.split(':');
+ if(kind==='theme')return formDlg('ألوان الموقع','theme',[['acc','اللون الرئيسي','color'],['accSoft','الخلفية الهادئة','color'],['gold','اللون الذهبي','color'],['accDark','اللون الرئيسي في الوضع الداكن','color']],Object.assign({},THEME0,s.theme||{}));
+ if(kind==='code')return formDlg('الكود المخصص','code',[['css','CSS','code'],['js','JavaScript (يعمل عند فتح الصفحة)','code'],['head','كود رأس الصفحة (HTML)','code']],s.code||{},'يُطبَّق CSS فوراً، ويعمل JavaScript وكود الرأس عند إعادة تحميل الصفحة. الخطأ في JavaScript يُرفض قبل الحفظ.');
+ if(kind==='newplan')return formDlg('برنامج تكافل جديد','newplan',[['key','المعرّف (حروف إنجليزية صغيرة)'],...CATPLANF],{k:'',fee:50,cap:5000});
+ if(kind==='cat'&&a==='plans'){const o=PLANS[x];return formDlg('تعديل '+o.name,b.dataset.c,CATPLANF,o,'يسري الاشتراك الجديد على الأشهر القادمة، وحد التعويض على المطالبات الجديدة.')}
+ return dlgBase(b)};
+const saveBase=FORMS.siteSave;
+FORMS.siteSave=d=>{const [kind,a,b]=String(d._ctx).split(':');
+ if(kind==='theme'){const t=readFields([['acc',,'color'],['accSoft',,'color'],['gold',,'color'],['accDark',,'color']],d,{});siteEdit(s=>{s.theme=t},'حُفظت الألوان');return closeDlg()}
+ if(kind==='code'){const c=readFields([['css',,'code'],['js',,'code'],['head',,'code']],d,{});if(c.js)try{new Function(c.js)}catch(e){throw new Error('خطأ في بناء JavaScript: '+e.message)}
+  siteVersion('قبل تعديل الكود المخصص');siteEdit(s=>{s.code=c},'حُفظ الكود المخصص. أعد تحميل الصفحة ليعمل JavaScript');return closeDlg()}
+ if(kind==='newplan'||(kind==='cat'&&a==='plans')){const o=readFields(CATPLANF,d,{});need(o.name,'اكتب اسم البرنامج.');need(o.fee>0&&o.cap>0,'الاشتراك وحد التعويض أكبر من صفر.');
+  let k=b;if(kind==='newplan'){k=fromSlug(d.key).replace(/-/g,'');need(/^[a-z][a-z0-9]{1,20}$/.test(k),'المعرّف حروف إنجليزية صغيرة وأرقام، ويبدأ بحرف.');need(!PLANS[k],'هذا المعرّف مستخدم.');o.k=o.k||'تكافل'}
+  siteEdit(s=>{s.catalog.plans=s.catalog.plans||{};s.catalog.plans[k]=o},kind==='newplan'?'أُضيف البرنامج':'حُفظ البرنامج');return closeDlg()}
+ return saveBase(d)};
+FORMS.advSite=d=>{let x;try{x=JSON.parse(d.json)}catch(e){throw new Error('خطأ في بناء JSON: '+e.message)}need(x&&Array.isArray(x.pages)&&x.pages.length,'الملف يجب أن يحتوي على قائمة الصفحات pages.');
+ siteVersion('قبل تعديل بيانات المحتوى مباشرة');siteEdit(s=>{Object.keys(s).forEach(k=>delete s[k]);Object.assign(s,normSite(x))},'طُبّق تعديل بيانات المحتوى')};
+FORMS.advDb=d=>{need(!isCloud(),'غير متاح في الوضع السحابي.');let x;try{x=JSON.parse(d.json)}catch(e){throw new Error('خطأ في بناء JSON: '+e.message)}
+ need(x&&x.v===1&&['users','tx','reqs','cash','log'].every(k=>Array.isArray(x[k]))&&x.settings&&x.funds,'البيانات ناقصة: يلزم v=1 والقوائم users وtx وreqs وcash وlog والكائنان settings وfunds.');
+ need(x.users.some(u=>u.role==='admin'),'يجب أن يبقى حساب إدارة واحد على الأقل.');
+ ADV.dbPrev=JSON.stringify(db);const cur=me();db=x;normDb();if(!cur||!db.users.some(u=>u.id===cur.id))store.del(SKEY);logA('تعديل بيانات النظام مباشرة من التحكم المتقدم');save();render();toast('طُبّقت البيانات على النظام')};
+FORMS.codeSave=async d=>{const f=ADV.file;need(f,'افتح ملفاً أولاً.');f.text=d.text;checkCode(f.path,f.text);need(f.text!==f.orig,'لا توجد تعديلات للحفظ.');
+ const c=pubCfg(),msg=(d.msg||'').trim()||`تعديل ${f.path.split('/').pop()} من لوحة الإدارة`;
+ const j=await gh(`contents/${f.path}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:`${S().brand.name}: ${msg}`,content:b64(f.text),sha:f.sha,branch:c.branch})});
+ f.sha=j.content.sha;f.orig=f.text;f.dirty=false;ADV.hist=null;logA('تعديل ملف برمجي: '+f.path);save();render();
+ dialog(`<h3>حُفظ الملف ونُشر</h3><p>يظهر التعديل على الموقع خلال دقيقة إلى دقيقتين. يمكنك استرجاع أي نسخة سابقة من «سجل النسخ».</p><div class="row" style="margin-top:16px"><button class="btn" data-act="close">حسناً</button></div>`)};
+document.addEventListener('input',e=>{if(e.target.matches('[data-adv=code]')&&ADV.file){ADV.file.text=e.target.value;ADV.file.dirty=ADV.file.text!==ADV.file.orig}
+ if(e.target.matches('.clr input[type=color]')){const cd=e.target.parentElement.querySelector('code');if(cd)cd.textContent=e.target.value}});
+document.addEventListener('keydown',e=>{if(e.key==='Tab'&&e.target.matches('textarea.code')){e.preventDefault();const t=e.target,a=t.selectionStart;t.setRangeText('  ',a,t.selectionEnd,'end');t.dispatchEvent(new Event('input',{bubbles:true}))}});
+const setSiteBase=setSite;setSite=function(s,p){setSiteBase(s,p);applyTheme()};
+
 document.addEventListener('submit',async e=>{
   const f=e.target.closest('form[data-form]');if(!f)return;e.preventDefault();
   const btn=e.submitter&&e.submitter.name==='d'?e.submitter.value:null;
@@ -1675,7 +1805,7 @@ window.addEventListener('storage',e=>{if(e.key===KEY&&e.newValue){db=JSON.parse(
   if(!db||db.v!==1)await seed();
   normDb();
   initSite();const lp=loadPublished();await Promise.race([lp,new Promise(r=>setTimeout(r,1500))]);
-  render();lp.then(ch=>{if(ch&&!$('dialog[open]'))render()});
+  render();runCustomCode();lp.then(ch=>{if(ch&&!$('dialog[open]'))render()});
   if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
 })();
 </script>

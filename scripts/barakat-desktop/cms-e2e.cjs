@@ -18,7 +18,12 @@ const view=p=>p.textContent('#view');
  let c=await newCtx();let p=c.pages()[0]||await c.newPage();const errs=[];p.on('pageerror',e=>errs.push(e.message));
  // محاكاة واجهة GitHub للنشر (يُستبدل بالنشر الحقيقي على الموقع المنشور)
  await c.route('https://api.github.com/**',async r=>{const q=r.request();
-  if(q.url().includes('/contents/')){if(q.method()==='GET')return r.fulfill({status:404,body:'{}',contentType:'application/json'});
+  const u=q.url();const J=(o,st)=>r.fulfill({status:st||200,contentType:'application/json',body:JSON.stringify(o)});
+  if(/\/contents\/barakat\?/.test(u))return J([{name:'document',path:'barakat/document',type:'dir',size:0},{name:'index.html',path:'barakat/index.html',type:'file',size:170000},{name:'sw.js',path:'barakat/sw.js',type:'file',size:900}]);
+  if(/\/contents\/barakat\/sw\.js/.test(u)){if(q.method()==='PUT'){pub.code=JSON.parse(q.postData());return J({content:{sha:'s2'}})}
+   const ref=(u.match(/ref=([^&]+)/)||[])[1];const txt=ref==='old1'?'/* old version */\nself.addEventListener("fetch",()=>{});':fs.readFileSync(path.join(__dirname,'../../barakat/sw.js'),'utf8');return J({sha:'s1',encoding:'base64',content:Buffer.from(txt).toString('base64')})}
+  if(/\/commits\?/.test(u))return J([{sha:'s1',commit:{message:'آخر تعديل',committer:{date:'2026-11-25T08:00:00Z'}}},{sha:'old1',commit:{message:'نسخة أقدم',committer:{date:'2026-11-20T08:00:00Z'}}}]);
+  if(u.includes('/contents/')){if(q.method()==='GET')return r.fulfill({status:404,body:'{}',contentType:'application/json'});
    pub.put=JSON.parse(q.postData());pub.auth=q.headers()['authorization'];return r.fulfill({status:201,body:'{"content":{"sha":"x"}}',contentType:'application/json'})}
   return r.fulfill({status:200,contentType:'application/json',body:JSON.stringify({full_name:'munjiz-qa/munjiz-qa.github.io',permissions:{push:true}})})});
  await p.goto(APP);await p.waitForSelector('.hero');
@@ -120,6 +125,35 @@ const view=p=>p.textContent('#view');
  await p.click('[data-c=newpage]');await wait(150);await p.screenshot({path:SHOTS+'/cms-4-dialog-mobile.png'});await p.click('dialog [data-act=close]');
  await p.goto(APP+'#/p/sukuk');await wait(300);T(await p.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),'الجوال: الصفحة الجديدة بلا تمرير أفقي');
  await p.setViewportSize({width:1280,height:860});
+
+ // ---------- التحكم المتقدم (صلاحية كاملة)
+ await p.goto(APP+'#/a/site/adv');await wait(250);T((await view(p)).includes('صلاحية كاملة'),'المدير: شاشة «التحكم المتقدم» تفتح');
+ await p.click('[data-c=theme]');await p.fill('dialog [name=acc]','#7a2e5c');await save(p);
+ T(await p.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--acc').trim())==='#7a2e5c','تغيير اللون الرئيسي يسري على الموقع كله');
+ await p.click('[data-act=themeReset]');await wait(200);T(await p.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--acc').trim())==='#17594a','استعادة الألوان الأصلية');
+ await p.click('[data-c=code]');await p.fill('dialog [name=js]','this is not valid js (');await save(p);T(await p.isVisible('dialog[open]')&&(await p.textContent('dialog .err')).includes('JavaScript'),'رفض JavaScript فيه خطأ قبل الحفظ');
+ await p.fill('dialog [name=css]','.hero h1{letter-spacing:1px}');await p.fill('dialog [name=js]',"document.documentElement.dataset.cms='ok'");await p.fill('dialog [name=head]','<meta name="barakat-verify" content="cms-test">');await save(p);
+ await p.goto(APP+'#/');await p.reload();await p.waitForSelector('.hero');await wait(300);
+ T(await p.evaluate(()=>getComputedStyle(document.querySelector('.hero h1')).letterSpacing==='1px'),'CSS المخصص يسري');
+ T(await p.evaluate(()=>document.documentElement.dataset.cms==='ok'&&!!document.querySelector('meta[name=barakat-verify]')),'JavaScript وكود الرأس المخصصان يعملان بعد إعادة التحميل');
+ // قسم HTML مخصص
+ await p.goto(APP+'#/a/site/pg-about');await wait(200);await p.click('[data-act=siteAddBlk]');await p.click('dialog [data-act=siteNewBlk][data-t=html]');await p.fill('dialog [name=html]','<div id="customHtml" class="card"><h3>قسم بكود HTML</h3><p>محتوى مخصص بالكامل.</p></div>');await save(p);
+ await p.goto(APP+'#/p/about');await wait(200);T(await p.isVisible('#customHtml'),'قسم HTML مخصص يظهر في الصفحة');
+ // برامج التكافل بقيمها المالية
+ await p.goto(APP+'#/a/site/catalog');await wait(200);await p.click('[data-c=newplan]');await p.fill('dialog [name=key]','travel');await p.fill('dialog [name=k]','سفر');await p.fill('dialog [name=name]','تكافل السفر');await p.fill('dialog [name=desc]','تغطية نفقات العلاج والطوارئ أثناء السفر.');await p.fill('dialog [name=fee]','35');await p.fill('dialog [name=cap]','8000');await save(p);
+ await p.click('[data-c="cat:plans:health"]');await p.fill('dialog [name=fee]','160');await save(p);
+ await p.goto(APP+'#/p/takaful');await wait(200);const tk=await view(p);T(tk.includes('تكافل السفر')&&tk.includes('35.00 ر.ق')&&tk.includes('8,000.00 ر.ق')&&tk.includes('160.00 ر.ق'),'إضافة برنامج تكافل جديد وتعديل اشتراك برنامج قائم');
+ // محرّر بيانات المحتوى
+ await p.goto(APP+'#/a/site/adv');await wait(200);const sj=JSON.parse(await p.inputValue('form[data-form=advSite] textarea'));sj.brand.tagline='بركةٌ ونماء';
+ await p.fill('form[data-form=advSite] textarea',JSON.stringify(sj));await p.click('form[data-form=advSite] button');await wait(250);T((await p.textContent('header .brand small'))==='بركةٌ ونماء','محرّر بيانات المحتوى (JSON) يطبّق التعديل');
+ await p.fill('form[data-form=advSite] textarea','{"pages":');await p.click('form[data-form=advSite] button');await wait(150);T((await p.textContent('form[data-form=advSite] .err')).includes('JSON'),'محرّر المحتوى يرفض JSON غير صالح');
+ // محرّر بيانات النظام
+ await p.click('[data-act=advDbLoad]');const dj=JSON.parse(await p.inputValue('#advDbTa'));dj.settings.goldPrice=300;
+ await p.fill('#advDbTa',JSON.stringify(dj));await p.click('form[data-form=advDb] button:not([type])');await wait(250);
+ await p.goto(APP+'#/');await wait(200);T((await view(p)).includes('25,500.00'),'محرّر بيانات النظام يطبّق التعديل (سعر الذهب ونصاب الزكاة)');
+ await p.goto(APP+'#/a/site/adv');await wait(200);await p.click('[data-act=advDbUndo]');await wait(200);T(await p.evaluate(()=>db.settings.goldPrice!==300),'التراجع عن تعديل بيانات النظام');
+ await p.click('[data-act=advDbLoad]');const dj2=JSON.parse(await p.inputValue('#advDbTa'));dj2.users=dj2.users.filter(u=>u.role!=='admin');await p.fill('#advDbTa',JSON.stringify(dj2));await p.click('form[data-form=advDb] button:not([type])');await wait(150);
+ T((await p.textContent('form[data-form=advDb] .err')).includes('حساب إدارة'),'محرّر النظام يمنع حذف آخر حساب إدارة');
  // تصدير واستيراد
  await p.goto(APP+'#/a/site/publish');await wait(200);const [dl]=await Promise.all([p.waitForEvent('download'),p.click('[data-act=siteExport]')]);
  const exp=path.join(os.tmpdir(),'barakat-content.json');await dl.saveAs(exp);const ej=JSON.parse(fs.readFileSync(exp,'utf8'));T(ej.pages.some(x=>x.slug==='sukuk'),'تنزيل ملف المحتوى');
@@ -134,7 +168,18 @@ const view=p=>p.textContent('#view');
  await p.click('[data-act=sitePublish]');await p.waitForSelector('dialog:has-text("تم النشر بنجاح")');
  T(pub.put&&pub.put.branch==='main'&&pub.auth==='Bearer github_pat_TEST','النشر يرسل ملف المحتوى إلى المستودع');
  const pj=JSON.parse(Buffer.from(pub.put.content,'base64').toString('utf8'));T(pj.pages.some(x=>x.slug==='sukuk')&&!JSON.stringify(pj).includes('github_pat'),'الملف المنشور يحوي المحتوى ولا يحوي رمز النشر');
- await p.click('dialog [data-act=close]');T((await view(p)).includes('المحتوى منشور للزوار'),'حالة المحتوى «منشور» بعد النشر');
+ await p.click('dialog [data-act=close]');
+ // ملفات البرمجة (مستودع GitHub)
+ await p.goto(APP+'#/a/site/code');await wait(300);T((await view(p)).includes('index.html')&&(await view(p)).includes('sw.js'),'ملفات البرمجة: قائمة ملفات الموقع من المستودع');
+ await p.click('[data-act=codeOpen][data-p="barakat/sw.js"]');await wait(300);T((await p.inputValue('textarea[data-adv=code]')).includes('barakat-v'),'فتح ملف برمجي في المحرّر');
+ const orig=await p.inputValue('textarea[data-adv=code]');await p.fill('textarea[data-adv=code]',orig+'\nfunction broken({');await p.click('form[data-form=codeSave] button.btn:not(.ghost)');await wait(200);
+ T((await p.textContent('form[data-form=codeSave] .err')).includes('JavaScript')&&!pub.code,'رفض حفظ كود فيه خطأ بناء');
+ await p.fill('textarea[data-adv=code]',orig.replace("barakat-v","barakat-cms-v"));await p.fill('form[data-form=codeSave] [name=msg]','تحديث اسم ذاكرة التخزين');await p.click('form[data-form=codeSave] button.btn:not(.ghost)');await p.waitForSelector('dialog:has-text("حُفظ الملف ونُشر")');
+ T(pub.code&&Buffer.from(pub.code.content,'base64').toString('utf8').includes('barakat-cms-v')&&pub.code.sha==='s1','حفظ الملف البرمجي ونشره في المستودع');await p.click('dialog [data-act=close]');
+ await p.click('[data-act=codeHist]');await wait(300);await p.click('[data-act=codeRestore][data-sha=old1]');await wait(300);T((await p.inputValue('textarea[data-adv=code]')).includes('old version'),'استرجاع نسخة سابقة من سجل الملف');
+ await p.screenshot({path:SHOTS+'/cms-9-code-editor-desktop.png',fullPage:false});
+ await p.setViewportSize({width:390,height:844});await p.goto(APP+'#/a/site/adv');await wait(250);T(await p.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),'الجوال: التحكم المتقدم بلا تمرير أفقي');await p.setViewportSize({width:1280,height:860});
+  await p.goto(APP+'#/a/site/publish');await wait(200);T((await view(p)).includes('المحتوى منشور للزوار'),'حالة المحتوى «منشور» بعد النشر');
  await p.screenshot({path:SHOTS+'/cms-5-publish-desktop.png',fullPage:true});
  await c.close();
  // ---------- زائر جديد وعميل على جهاز آخر يريان المحتوى المنشور
@@ -142,6 +187,8 @@ const view=p=>p.textContent('#view');
   c=await newCtx();p=c.pages()[0]||await c.newPage();await p.goto(APP);await p.waitForSelector('.hero');await wait(300);
   T((await p.textContent('h1')).includes('مالك ينمو بأمان'),'زائر على جهاز آخر يرى المحتوى المنشور');
   T(await p.isVisible('#tabsIn a[href="#/p/sukuk"]')&&await p.isVisible('.annc'),'الزائر يرى الصفحة الجديدة وشريط الإعلان');
+  T(await p.evaluate(()=>document.documentElement.dataset.cms==='ok'),'الزائر على جهاز آخر يعمل لديه JavaScript المنشور');
+  await p.goto(APP+'#/p/takaful');await wait(200);T((await view(p)).includes('تكافل السفر'),'الزائر يرى برنامج التكافل الجديد');
   await p.screenshot({path:SHOTS+'/cms-6-visitor-desktop.png',fullPage:true});
   await p.goto(APP+'#/p/sukuk');await wait(300);await p.screenshot({path:SHOTS+'/cms-7-new-page-desktop.png',fullPage:true});
   await p.goto(APP+'#/a/site');await wait(300);T(p.url().includes('#/login'),'الزائر على الجهاز الآخر لا يصل إلى إدارة المحتوى');
