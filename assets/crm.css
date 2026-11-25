@@ -247,3 +247,8 @@ td.good{color:var(--ok)}td.warn{color:var(--amber)}td.bad{color:#c0392b}
 /* الرسم الشهري يتسع لاثني عشر شهراً على الجوال، وجدول التقارير يمرّ داخل بطاقته، فلا تتمدد الصفحة أفقياً */
 #rpOut .panel{overflow-x:auto}
 @media (max-width:520px){.cols{gap:3px}.cols>.col{min-width:0}.cols .col small{font-size:10px}.cols .col:nth-last-child(even) small{visibility:hidden}}
+/* 2026-11-25: phone header keeps all sections and «خروج» on one tidy row */
+@media (max-width:620px){.crm .top nav.tabs.groups{flex-wrap:nowrap;width:100%;gap:2px;justify-content:space-between}
+  .crm .top nav.groups>button,.crm .top nav.groups .gmore>summary{padding:6px 8px;font-size:14px;white-space:nowrap}
+  .crm .top nav.groups #logout{margin-inline-start:4px;padding:5px 9px}}
+@media (max-width:360px){.crm .top nav.groups>button,.crm .top nav.groups .gmore>summary{padding:6px 5px;font-size:13px}}

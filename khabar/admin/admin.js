@@ -33,7 +33,7 @@ $('#login-form').onsubmit=async e=>{
 $('#logout').onclick=()=>{S.del('khabar-admin');S.del('khabar-admin-user');S.del('khabar-token');location.reload()};
 
 function open(){
-  $('#login-form').hidden=true;$('#app').hidden=false;$('#logout').hidden=false;$('#who').textContent=(ME.name||ME.u)+' · مدير شامل';
+  $('#login-form').hidden=true;$('#app').hidden=false;$('#logout').hidden=false;if($('#to-cms'))$('#to-cms').hidden=false;$('#who').textContent=(ME.name||ME.u)+' · مدير شامل';
   const n=BRIEF.zones.reduce((s,z)=>s+z.items.length,0);
   const k=$('#kpis');k.textContent='';
   [[n,'خبر في الخلاصة الحالية'],[Object.keys(BRIEF.sources).length,'مصدراً موثّقاً'],[BRIEF.roadmap.length,'موعداً في خريطة الطريق'],[ADMIN.hidden.length,'خبراً مخفياً'],[MIL?MIL.regions.reduce((s,r)=>s+r.items.length,0):'—','خبراً عسكرياً بجهتين فأكثر'],[WARS?WARS.wars.length:'—','ملفات حروب يتابعها الموقع']].forEach(([v,l])=>{const d=el('div');d.append(el('b',null,String(v)),el('small',null,l));k.append(d)});

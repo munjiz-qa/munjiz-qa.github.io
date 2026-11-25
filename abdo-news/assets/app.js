@@ -93,7 +93,11 @@ function header(){
   $('#theme-btn').setAttribute('aria-label',dark?t('theme_light'):t('theme_dark'));
   document.title=LANG==='en'?'Abdo News | Your daily brief from Doha to the world':'عبدو نيوز | خلاصة يومك من الدوحة إلى العالم';
   const tabs=$('#tabs');tabs.textContent='';
-  [['today'],['marsad'],...ZONES.map(z=>[z,ZC[z]]),['military','#8A3A2E'],['wars','#C4392F'],['countries','#1F3A93'],['forecast','#D9A21A'],['desks','#7A3FB0'],['special','#0F6E8C'],['weather'],['roadmap'],['ledger'],['saved'],['about']].forEach(([id,c])=>{
+  // ترتيب الأقسام وإخفاؤها من شاشة «إدارة المحتوى» (admin.json: tabs_order وtabs_off)؛ «اليوم» يبقى ظاهراً دائماً
+  let NAV=[['today'],['marsad'],...ZONES.map(z=>[z,ZC[z]]),['military','#8A3A2E'],['wars','#C4392F'],['countries','#1F3A93'],['forecast','#D9A21A'],['desks','#7A3FB0'],['special','#0F6E8C'],['weather'],['roadmap'],['ledger'],['saved'],['about']];
+  {const ord=ADMIN.tabs_order||[],off=new Set(ADMIN.tabs_off||[]);const r=id=>{const i=ord.indexOf(id);return i<0?999:i};
+   if(ord.length)NAV=NAV.map((x,i)=>[x,i]).sort((a,b)=>r(a[0][0])-r(b[0][0])||a[1]-b[1]).map(x=>x[0]);NAV=NAV.filter(([id])=>id==='today'||!off.has(id))}
+  NAV.forEach(([id,c])=>{
     const a=el('a','tab');a.href=id==='weather'?'weather/':id==='forecast'?'forecast/':id==='special'?'special/':'#'+id;if(c){const i=el('i');i.style.background=c==='var(--ink)'?'var(--deep-ink)':c;a.append(i)}a.append(t(id));
     if(id===VIEW||(id==='today'&&VIEW.startsWith('b-'))||(id==='wars'&&VIEW.startsWith('war-'))||(id==='countries'&&window.KC&&KC.has(VIEW))||(id==='desks'&&window.KD&&KD.has(VIEW)))a.setAttribute('aria-current','page');tabs.append(a)});
   if(window.KD)KD.a11y();
