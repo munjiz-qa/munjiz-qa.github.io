@@ -45,14 +45,61 @@ var SAIF_CORE = (function () {
   /* ---------- الأدوار والصلاحيات ---------- */
   var ROLES = { admin: "مدير شامل", client: "عميل" };
   var PERMS = {
-    admin: ["scan", "ownReports", "device", "profile", "users", "allReports", "audit", "settings", "backup", "health"],
+    admin: ["scan", "ownReports", "device", "profile", "users", "allReports", "audit", "settings", "backup", "health", "content"],
     client: ["scan", "ownReports", "device", "profile"]
   };
   var PERM_NAMES = {
     scan: "فحص الملفات وختم التقارير", ownReports: "تقاريره وسلسلة أختامه", device: "مراقبة جهازه لحظة بلحظة", profile: "تعديل بياناته وكلمة مروره",
-    users: "إدارة الحسابات والأدوار", allReports: "الاطلاع على فحوص جميع العملاء", audit: "سجل التدقيق الكامل", settings: "إعدادات المنصة", backup: "النسخ الاحتياطي والاستعادة", health: "صحة المنصة والفحص الذاتي"
+    users: "إدارة الحسابات والأدوار", allReports: "الاطلاع على فحوص جميع العملاء", audit: "سجل التدقيق الكامل", settings: "إعدادات المنصة", backup: "النسخ الاحتياطي والاستعادة", health: "صحة المنصة والفحص الذاتي", content: "إدارة محتوى الموقع"
   };
   function can(u, p) { return !!(u && u.active !== false && PERMS[u.role] && PERMS[u.role].indexOf(p) >= 0); }
+
+
+  /* ---------- محتوى الموقع (الصفحة العامة للزائر) ---------- */
+  var CONTENT_LIM = { blocks: 12, items: 24 };
+  function defaultContent() {
+    return {
+      v: 1,
+      tagline: "حارس سرية البيانات · منجز لخدمات الأعمال",
+      hero: { title: "بياناتك السرية تبقى سرية، وأنت ترى ذلك لحظة بلحظة", text: "سَيْف يفحص ملفاتك على جهازك نفسه، فيكشف أرقام الهواتف والهويات والحسابات البنكية وكلمات المرور والمفاتيح المكشوفة، ويختم كل تقرير ببصمة لا تقبل التعديل، ويتابع حالة جهازك واتصاله مباشرة.", loginLabel: "الدخول إلى حسابك", waLabel: "اطلب حساباً عبر واتساب" },
+      spotlight: { title: "ملفاتك لا تغادر جهازك", text: "يُحفظ من كل ملف اسمه وحجمه وبصمته ونتيجة الفحص مقنّعة فقط، أما المحتوى فيُقرأ داخل المتصفح ثم يُترك." },
+      blocks: [{ id: "b1", type: "cards", title: "", visible: true, items: [
+        { id: "i1", title: "فحص محلي للمحتوى", text: "نصوص وجداول وملفات Word وExcel وPowerPoint، مع إخفاء أي بيانات حساسة عند عرضها.", visible: true },
+        { id: "i2", title: "أختام متسلسلة", text: "كل تقرير مختوم ببصمة SHA-256 مرتبطة بالتقرير السابق، فأي تعديل لاحق يُكشف فوراً.", visible: true },
+        { id: "i3", title: "متابعة الجهاز مباشرة", text: "الاتصال، وسرعة الشبكة، والتخزين، والبطارية، واستجابة الجهاز، وأمان المتصفح، تُحدَّث كل ثانية.", visible: true },
+        { id: "i4", title: "صلاحيات واضحة", text: "العميل يرى ملفاته وتقاريره فقط، والمدير الشامل يدير الحسابات ويطلع على كل الفحوص والسجل.", visible: true }] }],
+      contact: { phone: "+974 5160 0498", email: "munijizqa@gmail.com" }
+    };
+  }
+  /* تنقية المحتوى: تقصّ النصوص، وتتحقق من البنية، وتوحّد الهاتف، وتولّد معرّفات للعناصر الجديدة. تُستعمل عند الحفظ وعند قراءة ملف منشور */
+  function normContent(c) {
+    var D = defaultContent(); c = c && typeof c === "object" ? c : {};
+    function t(v, n, d) { var r = clean(String(v == null ? "" : v).replace(/\r/g, "").replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, " "), n); return r === "" && d !== undefined ? d : r; }
+    function ml(v, n) { return String(v == null ? "" : v).replace(/\r/g, "").replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, " ").trim().slice(0, n); }
+    var seen = {};
+    function id(v, pre) { var k = String(v || "").replace(/[^A-Za-z0-9_-]/g, "").slice(0, 16); while (!k || seen[k]) k = pre + Math.random().toString(36).slice(2, 8); seen[k] = 1; return k; }
+    var h = c.hero || {}, sp = c.spotlight || {}, ct = c.contact || {};
+    var out = {
+      v: 1,
+      tagline: t(c.tagline, 100, D.tagline),
+      hero: { title: t(h.title, 160, D.hero.title), text: ml(h.text, 700), loginLabel: t(h.loginLabel, 40, D.hero.loginLabel), waLabel: t(h.waLabel, 40, D.hero.waLabel) },
+      spotlight: { title: t(sp.title, 100), text: ml(sp.text, 500) },
+      blocks: [], contact: {}
+    };
+    (Array.isArray(c.blocks) ? c.blocks : []).slice(0, CONTENT_LIM.blocks).forEach(function (b) {
+      if (!b || typeof b !== "object") return;
+      var o = { id: id(b.id, "b"), type: b.type === "text" ? "text" : "cards", title: t(b.title, 100), visible: b.visible !== false, items: [] };
+      (Array.isArray(b.items) ? b.items : []).slice(0, CONTENT_LIM.items).forEach(function (i) {
+        if (!i || typeof i !== "object") return;
+        o.items.push({ id: id(i.id, "i"), title: t(i.title, 100), text: ml(i.text, 800), visible: i.visible !== false });
+      });
+      out.blocks.push(o);
+    });
+    var ph = normPhone(ct.phone != null ? ct.phone : D.contact.phone), em = t(ct.email != null ? ct.email : D.contact.email, 120).toLowerCase();
+    out.contact.phone = /^\+\d[\d ]{6,18}$/.test(ph) ? ph : D.contact.phone;
+    out.contact.email = /^[^\s@<>"']+@[^\s@<>"']+\.[^\s@<>"']+$/.test(em) ? em : D.contact.email;
+    return out;
+  }
 
   var SEV = { high: "عالٍ", mid: "متوسط", low: "منخفض" };
   var DEF_SETTINGS = { sessionHours: 12, warnBelow: 90, alertBelow: 60, maxAttempts: 5, lockMinutes: 10 };
@@ -117,6 +164,7 @@ var SAIF_CORE = (function () {
 
     var a = req.action, S = settings();
     if (a === "alive") return { ok: true, rev: R("sys/rev", 0), at: env.now(), server: !!env.server };
+    if (a === "content") { var cc = R("sys/content", null); return { ok: true, content: normContent(cc || defaultContent()), custom: !!cc, at: cc ? cc.at || "" : "" }; }
 
     if (a === "login") {
       var name = clean(req.user, 60).toLowerCase(), L = users(), u = L.filter(function (x) { return x.user.toLowerCase() === name; })[0];
@@ -240,6 +288,17 @@ var SAIF_CORE = (function () {
       return { ok: true, users: rest.map(pub) };
     }
 
+    if (a === "saveContent") {
+      if ((x = need("content"))) return x;
+      if (req.reset) { kv.del("sys/content"); audit(me, "إعادة محتوى الموقع إلى الأصل", ""); bump(); return { ok: true, content: defaultContent(), custom: false }; }
+      if (!req.content || typeof req.content !== "object") return err("bad", "لا يوجد محتوى للحفظ.");
+      var nc = normContent(req.content);
+      if (!clean((req.content.hero || {}).title, 160)) return err("bad", "عنوان الواجهة الرئيسية مطلوب.");
+      var cnt = nc.blocks.reduce(function (n, b) { return n + b.items.length; }, 0);
+      nc.at = env.now(); W("sys/content", nc); audit(me, "تعديل محتوى الموقع", nc.blocks.length + " قسم · " + cnt + " عنصر"); bump();
+      return { ok: true, content: nc, custom: true, at: nc.at };
+    }
+
     if (a === "audit") { if ((x = need("audit"))) return x; return { ok: true, items: R("sys/audit", []) || [] }; }
 
     if (a === "settings") {
@@ -293,6 +352,6 @@ var SAIF_CORE = (function () {
     return err("bad", "طلب غير معروف.");
   }
 
-  return { handle: handle, sha256: sha256, pwHash: pwHash, ROLES: ROLES, PERMS: PERMS, PERM_NAMES: PERM_NAMES, SEV: SEV, can: can, normPhone: normPhone };
+  return { handle: handle, sha256: sha256, pwHash: pwHash, ROLES: ROLES, PERMS: PERMS, PERM_NAMES: PERM_NAMES, SEV: SEV, can: can, normPhone: normPhone, defaultContent: defaultContent, normContent: normContent };
 })();
 if (typeof module !== "undefined") module.exports = SAIF_CORE;

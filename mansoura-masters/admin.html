@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="assets/mm.css?v=20261123c">
+<link rel="stylesheet" href="assets/mm.css?v=20261125a">
 </head>
 <body>
 <header class="top"><div class="wrap">
@@ -19,6 +19,7 @@
 </div></header>
 
 <main><div class="wrap">
+  <h1 class="vh">لوحة إدارة سجل طلاب ماجستير المنصورة</h1>
   <form class="card" id="loginForm" style="max-width:460px;margin:30px auto" novalidate>
     <h2>دخول الإدارة</h2>
     <p class="sub">جامعة المنصورة · ماجستير الدفعة الثانية 2026</p>
@@ -36,12 +37,12 @@
     </div>
     <div class="tabs" role="tablist" aria-label="أقسام الإدارة">
       <button role="tab" id="t-students" aria-controls="p-students" aria-selected="true">الطلاب</button>
-      <button role="tab" id="t-groups" aria-controls="p-groups" aria-selected="false">المجموعات</button>
-      <button role="tab" id="t-settings" aria-controls="p-settings" aria-selected="false">الإعدادات والمزامنة</button>
-      <button role="tab" id="t-audit" aria-controls="p-audit" aria-selected="false">سجل العمليات</button>
+      <button role="tab" id="t-groups" tabindex="-1" aria-controls="p-groups" aria-selected="false">المجموعات</button>
+      <button role="tab" id="t-settings" tabindex="-1" aria-controls="p-settings" aria-selected="false">الإعدادات والمزامنة</button>
+      <button role="tab" id="t-audit" tabindex="-1" aria-controls="p-audit" aria-selected="false">سجل العمليات</button>
     </div>
 
-    <section id="p-students" role="tabpanel" class="card" style="margin-top:14px">
+    <section id="p-students" role="tabpanel" aria-labelledby="t-students" tabindex="0" class="card" style="margin-top:14px">
       <div class="toolbar">
         <input type="search" id="q" placeholder="بحث بالاسم أو الهاتف أو البريد أو الكود" aria-label="بحث">
         <select id="fg" aria-label="تصفية بالمجموعة"><option value="">كل المجموعات</option></select>
@@ -55,7 +56,7 @@
       </table></div>
     </section>
 
-    <section id="p-groups" role="tabpanel" class="card" style="margin-top:14px" hidden>
+    <section id="p-groups" role="tabpanel" aria-labelledby="t-groups" tabindex="0" class="card" style="margin-top:14px" hidden>
       <h2>المجموعات</h2>
       <p class="sub">حدّد عدد المجموعات واسم كل مجموعة وسعتها القصوى. اترك السعة فارغة لتكون المجموعة مفتوحة العدد.</p>
       <div class="grid">
@@ -70,7 +71,7 @@
       <div class="actions"><button class="btn pri" type="button" id="gSave">حفظ المجموعات</button></div>
     </section>
 
-    <section id="p-settings" role="tabpanel" style="margin-top:14px" hidden>
+    <section id="p-settings" role="tabpanel" aria-labelledby="t-settings" tabindex="0" style="margin-top:14px" hidden>
       <div class="card">
         <h2>إعدادات التسجيل</h2>
         <div class="grid" style="margin-top:12px">
@@ -100,7 +101,7 @@
       </div>
     </section>
 
-    <section id="p-audit" role="tabpanel" class="card" style="margin-top:14px" hidden>
+    <section id="p-audit" role="tabpanel" aria-labelledby="t-audit" tabindex="0" class="card" style="margin-top:14px" hidden>
       <h2>سجل العمليات</h2>
       <p class="sub">آخر 60 عملية على قاعدة البيانات.</p>
       <ul class="audit" id="auditList"></ul>
@@ -124,8 +125,8 @@
 </form></dialog>
 
 <footer><div class="wrap"><span>منجز · لوحة إدارة سجل طلاب ماجستير جامعة المنصورة 2026</span></div></footer>
-<script src="assets/config.js?v=20261123c"></script>
-<script src="assets/mm.js?v=20261123c"></script>
-<script src="assets/admin.js?v=20261123c"></script>
+<script src="assets/config.js?v=20261125a"></script>
+<script src="assets/mm.js?v=20261125a"></script>
+<script src="assets/admin.js?v=20261125a"></script>
 </body>
 </html>

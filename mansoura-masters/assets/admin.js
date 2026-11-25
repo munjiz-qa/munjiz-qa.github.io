@@ -31,9 +31,20 @@
 
   /* ---------- التبويبات ---------- */
   const tabs = ["students", "groups", "settings", "audit"];
-  tabs.forEach((t) => $("#t-" + t).addEventListener("click", () => {
-    tabs.forEach((x) => { $("#t-" + x).setAttribute("aria-selected", String(x === t)); $("#p-" + x).hidden = x !== t; });
-  }));
+  const pick = (t, focus) => {
+    tabs.forEach((x) => { const b = $("#t-" + x); b.setAttribute("aria-selected", String(x === t)); b.tabIndex = x === t ? 0 : -1; $("#p-" + x).hidden = x !== t; });
+    if (focus) $("#t-" + t).focus();
+  };
+  tabs.forEach((t, i) => {
+    const b = $("#t-" + t);
+    b.addEventListener("click", () => pick(t));
+    // لوحة المفاتيح: الأسهم بين التبويبات (الاتجاه من اليمين إلى اليسار)، و Home و End للأول والأخير
+    b.addEventListener("keydown", (e) => {
+      const n = tabs.length, k = { ArrowLeft: i + 1, ArrowRight: i - 1, Home: 0, End: n - 1 }[e.key];
+      if (k === undefined) return;
+      e.preventDefault(); pick(tabs[(k + n) % n], true);
+    });
+  });
 
   /* ---------- التحميل ---------- */
   async function load() {

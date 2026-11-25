@@ -4,7 +4,7 @@ self.addEventListener('install', e => e.waitUntil(caches.open(SHELL).then(c => c
 self.addEventListener('activate', e => e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith('mishkat-shell-') && k !== SHELL).map(k => caches.delete(k)))).then(() => self.clients.claim())));
 self.addEventListener('fetch', e => {
   const u = new URL(e.request.url); if (e.request.method !== 'GET') return;
-  if (u.origin === location.origin && (u.pathname.endsWith('config.json'))) { e.respondWith(fetch(e.request).then(r => { const c = r.clone(); caches.open(SHELL).then(x => x.put(e.request, c)); return r; }).catch(() => caches.match(e.request))); return; }
+  if (u.origin === location.origin && (u.pathname.endsWith('config.json') || u.pathname.endsWith('overrides.json'))) { e.respondWith(fetch(e.request).then(r => { const c = r.clone(); caches.open(SHELL).then(x => x.put(e.request, c)); return r; }).catch(() => caches.match(e.request))); return; }
   if (u.hostname === 'everyayah.com') return;
   const isData = u.origin === location.origin && (u.pathname.includes('/data/t/') || u.pathname.includes('/data/hadith/') || u.pathname.includes('/data/tr/'));
   const isFont = /fonts\.(googleapis|gstatic)\.com$/.test(u.hostname);

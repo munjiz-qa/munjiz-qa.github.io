@@ -69,6 +69,18 @@ const get = async (p, tries = 3) => { for (let i = 0; i < tries; i++) { try { co
     check(fe.length === 0, `${name}: لا أخطاء جافاسكربت ${fe.join(" | ").slice(0, 200)}`);
     await ctx.close();
   }
+  // الهواتف الصغيرة (320 و360 بكسل): لا تمرير أفقي في الصفحات الثلاث
+  for (const w of [320, 360]) {
+    const ctx = await br.newContext({ viewport: { width: w, height: 700 }, isMobile: true, hasTouch: true, locale: "ar" });
+    await ctx.route(/fonts\.googleapis|fonts\.gstatic/, (r) => r.abort());
+    const pg = await ctx.newPage();
+    for (const [label, path] of [["الرئيسية", ""], ["العميل", "account.html"], ["الإدارة", "admin.html"]]) {
+      await pg.goto(BASE + path + (process.env.BURAQ_EMU ? "?emu" : ""), { waitUntil: "load", timeout: 45000 }); await pg.waitForTimeout(1500);
+      const ov = await pg.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      check(ov <= 0, `هاتف ${w}px: لا تمرير أفقي في ${label} (${ov})`);
+    }
+    await ctx.close();
+  }
   await br.close();
   console.log(out.join("\n")); console.log(fails ? `فشل ${fails} فحصاً` : "كل فحوص براق ناجحة");
   process.exit(fails ? 1 : 0);

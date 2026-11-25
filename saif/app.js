@@ -5,6 +5,20 @@ const C = window.SAIF_CORE, CFG = window.SAIF_CONFIG || {};
 const API = String(CFG.API || "").trim(), LOCAL = !API;
 const CONTACT = { phone: "+974 5160 0498", wa: "97451600498", email: "munijizqa@gmail.com", site: "https://munjiz-qa.github.io/" };
 const HEALTH_BADGE = "https://github.com/munjiz-qa/munjiz-qa.github.io/actions/workflows/saif-health.yml/badge.svg";
+/* محتوى الموقع العام: يأتي من الخادم أو من هذا الجهاز (إن عدّله المدير)، وإلا من الملف المنشور content.json، وإلا من الأصل المدمج */
+let SITE = null;
+const TAG = () => (SITE && SITE.tagline) || C.defaultContent().tagline;
+function applySite(c) {
+  SITE = c; const d = String(c.contact.phone).replace(/\D/g, "");
+  CONTACT.phone = c.contact.phone; CONTACT.wa = d; CONTACT.email = c.contact.email;
+}
+async function loadContent() {
+  let r = null;
+  try { r = await call("content"); } catch (e) { }
+  let c = r && r.content;
+  if (r && !r.custom) { try { const f = await fetch("content.json", { cache: "no-cache" }); if (f.ok) c = C.normContent(await f.json()); } catch (e) { } }
+  applySite(c || C.defaultContent()); return SITE;
+}
 const HEALTH_URL = "https://github.com/munjiz-qa/munjiz-qa.github.io/actions/workflows/saif-health.yml";
 
 /* ---------- التخزين وطبقة الاتصال ---------- */
@@ -25,7 +39,7 @@ const env = {
   now: () => new Date().toISOString(), rand, seed: CFG.SEED || [], server: false
 };
 let bc = null; try { bc = new BroadcastChannel("saif"); } catch (e) { }
-const MUTATE = ["login", "logout", "profile", "scan", "saveUser", "delUser", "settings", "restore"];
+const MUTATE = ["login", "logout", "profile", "scan", "saveUser", "delUser", "settings", "restore", "saveContent"];
 async function call(action, body) {
   const req = Object.assign({ action, token: ls.get("saif-token") || "" }, body || {});
   let r;
@@ -96,7 +110,7 @@ const S = { user: null, rev: null, page: null, lastSync: null, online: navigator
 const can = p => C.can(S.user, p);
 const NAV = [
   ["home", "اللوحة", null], ["scan", "فحص الملفات", "scan"], ["reports", "التقارير والأختام", "ownReports"], ["device", "جهازي مباشر", "device"],
-  ["users", "الحسابات والصلاحيات", "users"], ["health", "صحة المنصة", "health"], ["audit", "سجل التدقيق", "audit"], ["settings", "الإعدادات والنسخ", "settings"], ["account", "حسابي", "profile"]
+  ["users", "الحسابات والصلاحيات", "users"], ["health", "صحة المنصة", "health"], ["audit", "سجل التدقيق", "audit"], ["content", "محتوى الموقع", "content"], ["settings", "الإعدادات والنسخ", "settings"], ["account", "حسابي", "profile"]
 ];
 function clearTimers() { S.timers.forEach(t => clearInterval(t)); S.timers = []; }
 function every(ms, fn) { S.timers.push(setInterval(fn, ms)); }
@@ -105,6 +119,7 @@ async function route() {
   clearTimers();
   const pg = (location.hash.replace(/^#\/?/, "").split("?")[0]) || "home";
   if (!S.user && ls.get("saif-token")) { try { const r = await call("me"); S.user = r.user; S.rev = r.rev; S.settings = r.settings; } catch (e) { S.user = null; } }
+  await loadContent();
   if (!S.user) return pg === "login" ? renderLogin() : renderPublic();
   const item = NAV.find(n => n[0] === pg);
   S.page = item && (!item[2] || can(item[2])) ? pg : "home";
@@ -119,7 +134,7 @@ document.addEventListener("click", e => { const k = e.target.closest && e.target
 function shell() {
   const u = S.user;
   $("#app").innerHTML = `<a class="skip" href="#">انتقل إلى المحتوى</a><header class="top"><div class="top-in">
-      <a class="brand" href="#home">${LOGO()}<span><b>سَيْف</b><small>حارس سرية البيانات · منجز لخدمات الأعمال</small></span></a>
+      <a class="brand" href="#home">${LOGO()}<span><b>سَيْف</b><small>${esc(TAG())}</small></span></a>
       <span class="live" id="live" title="حالة الاتصال والمزامنة"><i></i><span id="liveT">مباشر</span></span>
       <span class="who"><span class="nm">${esc(u.name)}</span><span class="pill ${u.role === "admin" ? "warn" : "ok"} rl">${esc(u.roleName)}</span></span>
       <button class="sm ghost ico" id="thm" type="button" aria-label="تبديل المظهر بين الفاتح والداكن" title="تبديل المظهر"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor" stroke="none"/></svg></button>
@@ -156,26 +171,31 @@ window.addEventListener("storage", e => { if (e.key === "saif-token" && !e.newVa
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && S.user) liveTick(); });
 
 /* ---------- الزائر ---------- */
+const nl = t => esc(t).replace(/\n/g, "<br>");
+/* صفحة التعريف العامة: تُبنى كلها من محتوى الموقع، فتظهر تعديلات المدير فوراً وتُستعمل نفسها في المعاينة داخل شاشة الإدارة */
+function landing(c) {
+  const h = c.hero, sp = c.spotlight;
+  const blocks = c.blocks.filter(b => b.visible).map(b => {
+    const its = b.items.filter(i => i.visible);
+    if (!its.length && !b.title) return "";
+    if (b.type === "text") return `<section class="card sec-text">${b.title ? `<h2>${esc(b.title)}</h2>` : ""}${its.map(i => `<div class="tx">${i.title ? `<h3>${esc(i.title)}</h3>` : ""}<p>${nl(i.text)}</p></div>`).join("")}</section>`;
+    return `<section class="sec">${b.title ? `<h2 class="sec-h">${esc(b.title)}</h2>` : ""}<div class="grid feat">${its.map(i => `<div class="card"><h3>${esc(i.title)}</h3><p>${nl(i.text)}</p></div>`).join("")}</div></section>`;
+  }).join("");
+  return `<section class="hero"><div><h1>${esc(h.title)}</h1>
+      ${h.text ? `<p>${nl(h.text)}</p>` : ""}
+      <div class="row"><a class="btn pri" href="#login">${esc(h.loginLabel)}</a><a class="btn" href="https://wa.me/${CONTACT.wa}" target="_blank" rel="noopener">${esc(h.waLabel)}</a></div></div>
+      ${sp.title || sp.text ? `<div class="card"><div class="verdict">${ring(100, "ok")}<div><b style="font-size:18px">${esc(sp.title)}</b><p class="mute small" style="margin:6px 0 0">${nl(sp.text)}</p></div></div></div>` : ""}
+    </section>${blocks}`;
+}
 function renderPublic() {
   document.title = "سَيْف · حارس سرية البيانات من منجز";
-  $("#app").innerHTML = `<a class="skip" href="#">انتقل إلى المحتوى</a><header class="top"><div class="top-in"><a class="brand" href="#">${LOGO()}<span><b>سَيْف</b><small>حارس سرية البيانات · منجز لخدمات الأعمال</small></span></a>
+  $("#app").innerHTML = `<a class="skip" href="#">انتقل إلى المحتوى</a><header class="top"><div class="top-in"><a class="brand" href="#">${LOGO()}<span><b>سَيْف</b><small>${esc(TAG())}</small></span></a>
     <span class="live" id="pubLive"><i></i><span>المنصة تعمل الآن</span></span><a class="btn pri sm" href="#login">تسجيل الدخول</a></div></header>
-  <main class="wrap" id="main" tabindex="-1">
-    <section class="hero"><div><h1>بياناتك السرية تبقى سرية، وأنت ترى ذلك لحظة بلحظة</h1>
-      <p>سَيْف يفحص ملفاتك على جهازك نفسه، فيكشف أرقام الهواتف والهويات والحسابات البنكية وكلمات المرور والمفاتيح المكشوفة، ويختم كل تقرير ببصمة لا تقبل التعديل، ويتابع حالة جهازك واتصاله مباشرة.</p>
-      <div class="row"><a class="btn pri" href="#login">الدخول إلى حسابك</a><a class="btn" href="https://wa.me/${CONTACT.wa}" target="_blank" rel="noopener">اطلب حساباً عبر واتساب</a></div></div>
-      <div class="card"><div class="verdict">${ring(100, "ok")}<div><b style="font-size:18px">ملفاتك لا تغادر جهازك</b><p class="mute small" style="margin:6px 0 0">يُحفظ من كل ملف اسمه وحجمه وبصمته ونتيجة الفحص مقنّعة فقط، أما المحتوى فيُقرأ داخل المتصفح ثم يُترك.</p></div></div></div>
-    </section>
-    <section class="grid feat">
-      <div class="card"><h3>فحص محلي للمحتوى</h3><p>نصوص وجداول وملفات Word وExcel وPowerPoint، مع إخفاء أي بيانات حساسة عند عرضها.</p></div>
-      <div class="card"><h3>أختام متسلسلة</h3><p>كل تقرير مختوم ببصمة SHA-256 مرتبطة بالتقرير السابق، فأي تعديل لاحق يُكشف فوراً.</p></div>
-      <div class="card"><h3>متابعة الجهاز مباشرة</h3><p>الاتصال، وسرعة الشبكة، والتخزين، والبطارية، واستجابة الجهاز، وأمان المتصفح، تُحدَّث كل ثانية.</p></div>
-      <div class="card"><h3>صلاحيات واضحة</h3><p>العميل يرى ملفاته وتقاريره فقط، والمدير الشامل يدير الحسابات ويطلع على كل الفحوص والسجل.</p></div>
-    </section></main>${footer()}`;
+  <main class="wrap" id="main" tabindex="-1">${landing(SITE)}</main>${footer()}`;
 }
 function renderLogin() {
   document.title = "تسجيل الدخول · سَيْف";
-  $("#app").innerHTML = `<a class="skip" href="#">انتقل إلى المحتوى</a><header class="top"><div class="top-in"><a class="brand" href="#">${LOGO()}<span><b>سَيْف</b><small>حارس سرية البيانات · منجز لخدمات الأعمال</small></span></a><a class="btn sm" href="#">الصفحة الرئيسية</a></div></header>
+  $("#app").innerHTML = `<a class="skip" href="#">انتقل إلى المحتوى</a><header class="top"><div class="top-in"><a class="brand" href="#">${LOGO()}<span><b>سَيْف</b><small>${esc(TAG())}</small></span></a><a class="btn sm" href="#">الصفحة الرئيسية</a></div></header>
   <main class="wrap" id="main" tabindex="-1"><section class="card login" style="margin-top:28px"><h2>تسجيل الدخول</h2>
     <form id="lf" novalidate><label>اسم المستخدم<input id="lu" autocomplete="username" dir="ltr" autocapitalize="none" spellcheck="false" required></label>
     <label>كلمة المرور<span class="pwrap"><input id="lp" type="password" autocomplete="current-password" dir="ltr" required><button type="button" class="sm" id="pt">إظهار</button></span></label>
@@ -552,6 +572,69 @@ const PAGES = {
       m.querySelector("#yr").onclick = async ev => { busy(ev.target, true); try { await call("restore", { backup: b }); m.remove(); toast("تمت الاستعادة."); S.user = null; route(); } catch (er) { toast(er.message); busy(ev.target, false); } };
       e.target.value = "";
     };
+  },
+
+  async content(v) {
+    const r = await call("content");
+    const clone = o => JSON.parse(JSON.stringify(o));
+    let D = clone(r.content), snap = JSON.stringify(D), custom = r.custom, at = r.at;
+    const uid = p => p + rand(5);
+    const dirty = () => JSON.stringify(D) !== snap;
+        const setp = (o, path, val) => { const ks = path.split("."), last = ks.pop(); const t = ks.reduce((a, k) => a[k], o); t[last] = val; };
+    const mv = (arr, i, d) => { const j = i + d; if (j < 0 || j >= arr.length) return false; [arr[i], arr[j]] = [arr[j], arr[i]]; return true; };
+    const ask = (msg, label) => new Promise(res => { const m = modal(`<h2>تأكيد</h2><p>${esc(msg)}</p><div class="row"><button class="pri" id="cy" type="button">${esc(label)}</button><button data-close type="button">إلغاء</button></div>`); m.querySelector("#cy").onclick = () => { m.remove(); res(true); }; m.addEventListener("click", e => { if (e.target === m || e.target.closest("[data-close]")) res(false); }); });
+    const fld = (p, label, val, o = {}) => `<label>${label}${o.area ? `<textarea data-p="${p}" rows="${o.rows || 3}" maxlength="${o.max || 800}">${esc(val)}</textarea>` : `<input data-p="${p}" value="${esc(val)}" maxlength="${o.max || 120}" ${o.dir ? `dir="${o.dir}"` : ""} ${o.type ? `type="${o.type}"` : ""}>`}</label>`;
+    const ctl = (b, i, nBefore, nAfter, label) => `<span class="ctl"><button type="button" class="sm ghost" data-a="up" data-b="${b}" ${i != null ? `data-i="${i}"` : ""} ${nBefore ? "" : "disabled"} aria-label="تحريك ${label} للأعلى" title="للأعلى">↑</button><button type="button" class="sm ghost" data-a="down" data-b="${b}" ${i != null ? `data-i="${i}"` : ""} ${nAfter ? "" : "disabled"} aria-label="تحريك ${label} للأسفل" title="للأسفل">↓</button><button type="button" class="sm ghost dan" data-a="del" data-b="${b}" ${i != null ? `data-i="${i}"` : ""} aria-label="حذف ${label}" title="حذف">حذف</button></span>`;
+    v.innerHTML = `<h1 class="pg">محتوى الموقع <small>الصفحة العامة التي يراها الزائر</small></h1>
+      <div class="bar noprint" id="bar"><span id="st" class="pill na"></span><span class="sp"></span>
+        <button type="button" id="rv">تراجع عن التعديلات</button><button type="button" id="ex">تصدير content.json</button><label class="btn" style="margin:0">استيراد<input type="file" id="im" accept=".json,application/json" hidden></label><button type="button" id="rs" class="dan">إعادة الأصل</button><button type="button" class="pri" id="sv">حفظ ونشر</button></div>
+      <p class="note" style="margin:0 0 12px">${LOCAL ? "المنصة تعمل في الوضع المستقل: الحفظ يُطبَّق فوراً على هذا الجهاز وعلى كل من يفتح الموقع منه. لتعميم النسخة على كل الزوار على كل الأجهزة، صدّر الملف content.json وارفعه إلى مجلد saif في الموقع، أو فعّل خادم البيانات المشترك فيتشارك الجميع المحتوى مباشرة." : "الحفظ يظهر لكل الزوار فور حفظه لأن المنصة متصلة بخادم البيانات المشترك."}</p>
+      <div id="ed"></div>
+      <section class="card" style="margin-top:14px"><h2>المعاينة الحية <small>تتحدث مع كل تعديل قبل الحفظ</small></h2><div id="pv" class="pv" inert></div></section>`;
+    const ed = $("#ed");
+    function status() { const d = dirty(); const el = $("#st"); el.className = "pill " + (d ? "warn" : custom ? "ok" : "na"); el.textContent = d ? "تعديلات غير محفوظة" : custom ? "منشور · " + (at ? fmt(at) : "") : "الأصل المدمج (لم يُعدَّل بعد)"; $("#sv").disabled = !d; $("#rv").disabled = !d; }
+    function preview() { const cc = C.normContent(D); const keep = Object.assign({}, CONTACT); Object.assign(CONTACT, { phone: cc.contact.phone, wa: cc.contact.phone.replace(/\D/g, ""), email: cc.contact.email }); $("#pv").innerHTML = landing(cc); Object.assign(CONTACT, keep); }
+    function draw(focusSel) {
+      const sc = window.scrollY;
+      ed.innerHTML = `<div class="card"><h2>الواجهة الرئيسية</h2><div class="grid g2">${fld("tagline", "الشعار اللفظي في الأعلى", D.tagline, { max: 100 })}${fld("hero.title", "العنوان الرئيسي", D.hero.title, { max: 160 })}</div>
+        ${fld("hero.text", "النص التعريفي", D.hero.text, { area: 1, rows: 3, max: 700 })}
+        <div class="grid g2">${fld("hero.loginLabel", "نص زر الدخول", D.hero.loginLabel, { max: 40 })}${fld("hero.waLabel", "نص زر واتساب", D.hero.waLabel, { max: 40 })}</div>
+        <div class="grid g2">${fld("spotlight.title", "عنوان البطاقة المميزة (اتركه فارغاً لإخفائها)", D.spotlight.title, { max: 100 })}${fld("spotlight.text", "نص البطاقة المميزة", D.spotlight.text, { area: 1, rows: 2, max: 500 })}</div></div>
+      ${D.blocks.map((b, bi) => `<div class="card blk${b.visible ? "" : " hid"}" data-blk="${bi}"><h2><span class="pill na">${b.type === "text" ? "قسم نصي" : "بطاقات"}</span> قسم ${bi + 1}${b.visible ? "" : ' <span class="pill warn">مخفي</span>'}<span class="sp"></span>${ctl(bi, null, bi > 0, bi < D.blocks.length - 1, "القسم " + (bi + 1))}</h2>
+        <div class="grid g2">${fld(`blocks.${bi}.title`, "عنوان القسم (اختياري)", b.title, { max: 100 })}<label class="chkl" style="align-self:end"><input type="checkbox" data-p="blocks.${bi}.visible" ${b.visible ? "checked" : ""}> ظاهر للزوار</label></div>
+        ${b.items.map((it, ii) => `<div class="itm${it.visible ? "" : " hid"}"><div class="row"><b class="mute small">${b.type === "text" ? "فقرة" : "بطاقة"} ${ii + 1}</b><label class="chkl small" style="margin:0"><input type="checkbox" data-p="blocks.${bi}.items.${ii}.visible" ${it.visible ? "checked" : ""}> ظاهرة</label><span class="sp"></span>${ctl(bi, ii, ii > 0, ii < b.items.length - 1, (b.type === "text" ? "الفقرة " : "البطاقة ") + (ii + 1))}</div>
+          ${fld(`blocks.${bi}.items.${ii}.title`, "العنوان", it.title, { max: 100 })}${fld(`blocks.${bi}.items.${ii}.text`, "النص", it.text, { area: 1, rows: 3, max: 800 })}</div>`).join("") || '<p class="empty">لا عناصر في هذا القسم.</p>'}
+        <button type="button" data-a="add-item" data-b="${bi}">+ إضافة ${b.type === "text" ? "فقرة" : "بطاقة"}</button></div>`).join("")}
+      <div class="row" style="margin-top:14px"><button type="button" data-a="add-block" data-t="cards">+ قسم بطاقات</button><button type="button" data-a="add-block" data-t="text">+ قسم نصي</button></div>
+      <div class="card" style="margin-top:14px"><h2>بيانات التواصل <small>تظهر في أسفل كل الصفحات وفي زر واتساب</small></h2><div class="grid g2">${fld("contact.phone", "الهاتف وواتساب", D.contact.phone, { dir: "ltr", max: 24 })}${fld("contact.email", "البريد الإلكتروني", D.contact.email, { dir: "ltr", type: "email", max: 120 })}</div></div>`;
+      if (focusSel) { const f = ed.querySelector(focusSel); if (f) f.focus(); }
+      window.scrollTo(0, sc); status(); preview();
+    }
+    ed.addEventListener("input", e => { const p = e.target.dataset && e.target.dataset.p; if (!p || e.target.type === "checkbox") return; setp(D, p, e.target.value); status(); preview(); });
+    ed.addEventListener("change", e => { const p = e.target.dataset && e.target.dataset.p; if (!p || e.target.type !== "checkbox") return; setp(D, p, e.target.checked); draw(); });
+    ed.addEventListener("click", async e => {
+      const b = e.target.closest("button[data-a]"); if (!b || b.disabled) return;
+      const a = b.dataset.a, bi = b.dataset.b != null ? +b.dataset.b : null, ii = b.dataset.i != null ? +b.dataset.i : null, blk = bi != null ? D.blocks[bi] : null;
+      const sel = `button[data-a="${a}"][data-b="${bi}"]${ii != null ? `[data-i="${ii}"]` : ""}`;
+      if (a === "up" || a === "down") { const d = a === "up" ? -1 : 1; if (ii != null ? mv(blk.items, ii, d) : mv(D.blocks, bi, d)) { const nb = ii != null ? bi : bi + d, ni = ii != null ? ii + d : null; draw(`button[data-a="${a}"][data-b="${nb}"]${ni != null ? `[data-i="${ni}"]` : ""}:not([disabled])`); } }
+      else if (a === "del") {
+        const what = ii != null ? (blk.items[ii].title || "هذا العنصر") : (blk.title || "القسم " + (bi + 1) + " بكل عناصره");
+        if (await ask(`حذف «${what}»؟ لن يظهر في الموقع بعد الحفظ، ويمكنك التراجع قبل الحفظ.`, "حذف")) { if (ii != null) blk.items.splice(ii, 1); else D.blocks.splice(bi, 1); draw(); toast("حُذف. اضغط «حفظ ونشر» لتثبيت التعديل."); }
+      }
+      else if (a === "add-item") { if (blk.items.length >= 24) return toast("بلغ القسم الحد الأقصى (24 عنصراً)."); blk.items.push({ id: uid("i"), title: "", text: "", visible: true }); draw(`[data-p="blocks.${bi}.items.${blk.items.length - 1}.title"]`); }
+      else if (a === "add-block") { if (D.blocks.length >= 12) return toast("بلغ الموقع الحد الأقصى (12 قسماً)."); D.blocks.push({ id: uid("b"), type: b.dataset.t, title: "", visible: true, items: [{ id: uid("i"), title: "", text: "", visible: true }] }); draw(`[data-p="blocks.${D.blocks.length - 1}.title"]`); }
+    });
+    $("#sv").onclick = async ev => {
+      const bt = ev.currentTarget; busy(bt, true);
+      try { const res = await call("saveContent", { content: D }); D = clone(res.content); snap = JSON.stringify(D); custom = true; at = res.at; applySite(res.content); draw(); toast("حُفظ المحتوى ونُشر في الصفحة العامة."); }
+      catch (er) { toast(er.message); }
+      busy(bt, false); status();
+    };
+    $("#rv").onclick = async () => { if (await ask("التراجع عن كل التعديلات غير المحفوظة؟", "تراجع")) { D = JSON.parse(snap); draw(); } };
+    $("#rs").onclick = async () => { if (await ask("إعادة محتوى الموقع إلى الأصل؟ سيُحذف المحتوى المخصص المحفوظ. يُنصح بتصدير content.json أولاً.", "إعادة الأصل")) { try { const res = await call("saveContent", { reset: true }); D = clone(res.content); snap = JSON.stringify(D); custom = false; at = ""; applySite(res.content); draw(); toast("أُعيد المحتوى إلى الأصل."); } catch (er) { toast(er.message); } } };
+    $("#ex").onclick = () => { download("content.json", JSON.stringify(C.normContent(D), null, 2) + "\n"); toast("نُزّل content.json."); };
+    $("#im").onchange = async e => { const f = e.target.files[0]; if (!f) return; try { D = C.normContent(JSON.parse(await f.text())); draw(); toast("استُورد المحتوى. راجعه ثم اضغط «حفظ ونشر»."); } catch (er) { toast("الملف ليس JSON صالحاً."); } e.target.value = ""; };
+    draw();
   },
 
   async account(v) {

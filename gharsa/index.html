@@ -1,0 +1,827 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="description" content="غرسة: منصة عربية متكاملة للزراعة المنزلية في قطر والخليج. مكتبة نباتات، دليل الزراعة والتربة والري، تجهيز الغرف والشرفات، حاسبة جدوى، وتقويم زراعي.">
+<meta name="theme-color" content="#2F7A4C">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 34 34'%3E%3Crect width='34' height='34' rx='10' fill='%232F7A4C'/%3E%3Cpath d='M17 27V15M11 27h12' stroke='white' stroke-width='2.4' stroke-linecap='round'/%3E%3Cpath d='M17 17c0-5 3.5-8.5 8.5-8.5 0 5-3.5 8.5-8.5 8.5Z' fill='white'/%3E%3C/svg%3E">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
+<script src="config.js"></script>
+<script src="content.js"></script>
+<script src="store.js"></script>
+<title>غَرسة للزراعة المنزلية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: sticky top bar + hash-routed views; each view is a centered column (max 1120px) with grids that collapse to one column on phones */
+:root{
+  --bg:#F2F5EF; --surface:#FFFFFF; --surface-2:#E6ECE2; --fg:#17241C; --muted:#56655B; --line:#D3DCCF;
+  --leaf:#2F7A4C; --leaf-ink:#FFFFFF; --leaf-soft:#DCEBDF; --ochre:#B7791F; --ochre-soft:#F6E7CC;
+  --sky:#2C6E8F; --sky-soft:#DCEBF2; --danger:#B3261E; --danger-soft:#F7DEDB;
+  --font-display:"Reem Kufi","IBM Plex Sans Arabic",Tahoma,sans-serif;
+  --font-body:"IBM Plex Sans Arabic","Segoe UI",Tahoma,Arial,sans-serif;
+  --r:14px; --shadow:0 1px 2px rgba(23,36,28,.06),0 6px 20px rgba(23,36,28,.06);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1511; --surface:#16201A; --surface-2:#1E2A23; --fg:#E7EFE8; --muted:#9DB0A3; --line:#2C3A31;
+  --leaf:#5DBB82; --leaf-ink:#08140D; --leaf-soft:#1D3527; --ochre:#E3A94A; --ochre-soft:#3A2D16;
+  --sky:#6DB3D6; --sky-soft:#173040; --danger:#F08A80; --danger-soft:#3D1C1A; --shadow:none; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1511; --surface:#16201A; --surface-2:#1E2A23; --fg:#E7EFE8; --muted:#9DB0A3; --line:#2C3A31;
+  --leaf:#5DBB82; --leaf-ink:#08140D; --leaf-soft:#1D3527; --ochre:#E3A94A; --ochre-soft:#3A2D16;
+  --sky:#6DB3D6; --sky-soft:#173040; --danger:#F08A80; --danger-soft:#3D1C1A; --shadow:none; color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.8;direction:rtl;text-align:right}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+a{color:var(--leaf)}
+h1,h2,h3{font-family:var(--font-display);line-height:1.35;text-wrap:balance;margin:0}
+h1{font-size:clamp(2rem,5vw,3.2rem)} h2{font-size:clamp(1.5rem,3.2vw,2.1rem)} h3{font-size:1.1rem;font-family:var(--font-body);font-weight:700}
+p{margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.num{font-variant-numeric:tabular-nums}
+/* top bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;gap:12px;padding-block:10px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--fg);flex-shrink:0}
+.brand b{font-family:var(--font-display);font-size:1.45rem;letter-spacing:0}
+.brand small{display:block;font-size:.72rem;color:var(--muted);line-height:1.2}
+.nav{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0}
+.nav::-webkit-scrollbar{display:none}
+.nav a{white-space:nowrap;text-decoration:none;color:var(--muted);padding:7px 12px;border-radius:999px;font-size:.92rem;font-weight:500}
+.nav a:hover{color:var(--fg);background:var(--surface-2)}
+.nav a[aria-current="page"]{background:var(--leaf);color:var(--leaf-ink)}
+.nav a.admin-link{border:1px dashed var(--ochre);color:var(--ochre)}
+.theme-btn{flex-shrink:0;display:grid;place-items:center;border:1px solid var(--line);background:transparent;color:var(--fg);width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:1rem}
+@media (max-width:760px){.bar .wrap{flex-wrap:wrap}.nav{order:3;flex-basis:100%}.brand small{display:none}.theme-btn{margin-inline-start:auto}}
+/* views */
+main{padding-block:28px 64px}
+.view{display:grid;gap:36px}
+.view[hidden]{display:none!important}
+.eyebrow{font-size:.8rem;font-weight:600;color:var(--leaf);letter-spacing:.02em}
+.lead{color:var(--muted);font-size:1.08rem;max-width:68ch}
+.sec-head{display:grid;gap:8px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:900px){.g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){.g2,.g3,.g4{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;display:grid;gap:10px;align-content:start;min-width:0}
+.card p,.card li{color:var(--muted)}
+.card ul,.prose ul,.prose ol{margin:0;padding-inline-start:1.2em;display:grid;gap:4px}
+.tag{display:inline-flex;align-items:center;gap:4px;font-size:.78rem;font-weight:600;padding:2px 10px;border-radius:999px;background:var(--surface-2);color:var(--fg);white-space:nowrap}
+.tag.leaf{background:var(--leaf-soft);color:var(--leaf)}
+.tag.ochre{background:var(--ochre-soft);color:var(--ochre)}
+.tag.sky{background:var(--sky-soft);color:var(--sky)}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:600;padding:10px 20px;border-radius:999px;border:1px solid transparent;cursor:pointer;text-decoration:none;background:var(--leaf);color:var(--leaf-ink)}
+.btn.ghost{background:transparent;border-color:var(--line);color:var(--fg)}
+.btn.small{padding:6px 14px;font-size:.88rem}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+:focus-visible{outline:3px solid var(--ochre);outline-offset:2px}
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:32px;align-items:center}
+.hero .copy{display:grid;gap:18px}
+.hero .actions{display:flex;flex-wrap:wrap;gap:10px}
+.hero svg{width:100%;height:auto;max-width:100%}
+@media (max-width:820px){.hero{grid-template-columns:minmax(0,1fr)}.hero svg{max-width:420px;justify-self:center}}
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.facts div{background:var(--surface);padding:16px;display:grid;gap:2px}
+.facts b{font-family:var(--font-display);font-size:1.6rem;color:var(--leaf)}
+.facts span{font-size:.88rem;color:var(--muted)}
+@media (max-width:700px){.facts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tile{text-decoration:none;color:inherit;transition:border-color .15s,transform .15s}
+.tile:hover{border-color:var(--leaf);transform:translateY(-2px)}
+.tile .ico{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--leaf-soft);color:var(--leaf)}
+.tile .ico svg{width:22px;height:22px}
+/* plant library */
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{font:inherit;font-size:.9rem;padding:6px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.search{font:inherit;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);min-width:0;flex:1 1 220px}
+.plant{gap:12px}
+.plant header{display:flex;justify-content:space-between;align-items:start;gap:10px}
+.plant h3{font-size:1.2rem}
+.plant .sci{font-size:.8rem;color:var(--muted);font-style:italic;direction:ltr;text-align:right}
+.meters{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:.85rem;align-items:center}
+.meters span{color:var(--muted)}
+.dots{display:flex;gap:3px}
+.dots i{width:16px;height:6px;border-radius:3px;background:var(--surface-2)}
+.dots i.on{background:var(--leaf)}
+.dots.ochre i.on{background:var(--ochre)} .dots.sky i.on{background:var(--sky)}
+.empty{padding:28px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:var(--r)}
+/* prose / guides */
+.prose{display:grid;gap:12px;max-width:75ch}
+.prose p,.prose li{color:var(--muted)}
+.prose strong{color:var(--fg)}
+.steps{counter-reset:s;display:grid;gap:12px;padding:0;margin:0;list-style:none}
+.steps li{counter-increment:s;display:grid;grid-template-columns:36px minmax(0,1fr);gap:12px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.steps li::before{content:counter(s);display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--leaf);color:var(--leaf-ink);font-weight:700;font-variant-numeric:tabular-nums}
+.steps li b{display:block;color:var(--fg)}
+.steps li span{color:var(--muted)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:10px}
+.tabs button{font:inherit;font-weight:600;padding:8px 16px;border-radius:10px;border:0;background:transparent;color:var(--muted);cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--leaf-soft);color:var(--leaf)}
+.panel{display:grid;gap:20px}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{padding:10px 14px;border-bottom:1px solid var(--line);text-align:right;vertical-align:top}
+th{background:var(--surface-2);font-weight:600;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:left;direction:ltr}
+.note{background:var(--ochre-soft);color:var(--fg);border-radius:var(--r);padding:14px 18px;font-size:.95rem}
+.note.sky{background:var(--sky-soft)}
+/* room diagram */
+.diagram{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px;overflow-x:auto}
+.diagram svg{display:block;min-width:560px;width:100%;height:auto}
+/* calculator */
+.calc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:20px;align-items:start}
+@media (max-width:860px){.calc{grid-template-columns:minmax(0,1fr)}}
+.field{display:grid;gap:4px}
+.field label{font-weight:600;font-size:.92rem}
+.field small{color:var(--muted);font-size:.8rem}
+input[type=number],input[type=text],input[type=tel],select,textarea{font:inherit;width:100%;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+textarea{min-height:96px;resize:vertical}
+.seg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.seg button{font:inherit;text-align:right;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--fg);cursor:pointer;display:grid;gap:2px}
+.seg button small{color:var(--muted);font-size:.78rem}
+.seg button[aria-pressed="true"]{border-color:var(--leaf);background:var(--leaf-soft)}
+.results{display:grid;gap:14px}
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.kpi{background:var(--surface-2);border-radius:12px;padding:12px 14px;display:grid;gap:2px}
+.kpi span{font-size:.82rem;color:var(--muted)}
+.kpi b{font-family:var(--font-display);font-size:1.45rem;font-variant-numeric:tabular-nums}
+.kpi.good b{color:var(--leaf)} .kpi.warn b{color:var(--ochre)} .kpi.bad b{color:var(--danger)}
+.verdict{border-radius:12px;padding:14px 16px;font-weight:600}
+.verdict.good{background:var(--leaf-soft);color:var(--leaf)}
+.verdict.warn{background:var(--ochre-soft);color:var(--ochre)}
+.verdict.bad{background:var(--danger-soft);color:var(--danger)}
+.chart svg{width:100%;height:auto;display:block}
+.toggle{display:flex;gap:6px;background:var(--surface-2);padding:4px;border-radius:999px;width:max-content;max-width:100%}
+.toggle button{font:inherit;font-size:.88rem;font-weight:600;border:0;padding:6px 14px;border-radius:999px;background:transparent;color:var(--muted);cursor:pointer}
+.toggle button[aria-pressed="true"]{background:var(--surface);color:var(--fg);box-shadow:var(--shadow)}
+/* calendar */
+.cal th:first-child,.cal td:first-child{position:sticky;right:0;background:var(--surface);z-index:1;min-width:130px}
+.cal th:first-child{background:var(--surface-2)}
+.cal td.m{padding:6px 2px;text-align:center;min-width:44px}
+.cal .c{display:block;height:18px;border-radius:4px;margin:0 2px}
+.c.sow{background:var(--leaf)} .c.grow{background:var(--leaf-soft)} .c.harvest{background:var(--ochre)} .c.indoor{background:var(--sky-soft);border:1px dashed var(--sky)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.86rem;color:var(--muted)}
+.legend i{display:inline-block;width:16px;height:10px;border-radius:3px;margin-inline-end:6px;vertical-align:middle}
+.month-now{outline:2px solid var(--ochre);outline-offset:-2px}
+/* business */
+.canvas{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:auto;gap:10px}
+.canvas .card{padding:14px}
+.canvas h3{font-size:1rem}
+.canvas .tall{grid-row:span 2}
+.canvas .wide{grid-column:span 5}
+.canvas .half{grid-column:span 2}
+.canvas .half3{grid-column:span 3}
+@media (max-width:900px){.canvas{grid-template-columns:minmax(0,1fr)}.canvas .tall{grid-row:auto}.canvas .wide,.canvas .half,.canvas .half3{grid-column:auto}}
+.price{display:grid;gap:10px}
+.price .amount{font-family:var(--font-display);font-size:1.7rem;color:var(--leaf)}
+.price .amount small{font-size:.85rem;color:var(--muted);font-family:var(--font-body)}
+.price.featured{border-color:var(--leaf);border-width:2px}
+.phases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.phases{grid-template-columns:minmax(0,1fr)}}
+/* forms + admin */
+.form{display:grid;gap:14px}
+.form .row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:600px){.form .row{grid-template-columns:minmax(0,1fr)}}
+.status{font-size:.92rem;padding:10px 14px;border-radius:10px}
+.status.ok{background:var(--leaf-soft);color:var(--leaf)}
+.status.err{background:var(--danger-soft);color:var(--danger)}
+.status.info{background:var(--sky-soft);color:var(--sky)}
+.req-list{display:grid;gap:10px}
+.req{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:6px}
+.req header{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:center}
+.req p{color:var(--muted);font-size:.92rem}
+.st-new{background:var(--sky-soft);color:var(--sky)} .st-progress{background:var(--ochre-soft);color:var(--ochre)} .st-done{background:var(--leaf-soft);color:var(--leaf)} .st-cancel{background:var(--danger-soft);color:var(--danger)}
+.admin-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.admin-tools select{width:auto}
+.announce{background:var(--ochre-soft);color:var(--fg);text-align:center;padding:10px 16px;font-weight:600}
+footer{border-top:1px solid var(--line);padding-block:28px;color:var(--muted);font-size:.88rem}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+</head><body>
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="#home" aria-label="غرسة، الصفحة الرئيسية">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="10" fill="var(--leaf)"/><path d="M17 27V15" stroke="var(--leaf-ink)" stroke-width="2.4" stroke-linecap="round"/><path d="M17 17c0-5 3.5-8.5 8.5-8.5 0 5-3.5 8.5-8.5 8.5Z" fill="var(--leaf-ink)"/><path d="M17 20c0-4-2.8-6.8-6.8-6.8 0 4 2.8 6.8 6.8 6.8Z" fill="var(--leaf-ink)" opacity=".75"/><path d="M11 27h12" stroke="var(--leaf-ink)" stroke-width="2.4" stroke-linecap="round"/></svg>
+      <span><b>غَرسة</b><small id="tagline">منصة الزراعة المنزلية</small></span>
+    </a>
+    <nav class="nav" aria-label="أقسام المنصة">
+      <a href="#home">الرئيسية</a>
+      <a href="#plants">مكتبة النباتات</a>
+      <a href="#guide">دليل الزراعة</a>
+      <a href="#spaces">تجهيز المكان</a>
+      <a href="#feasibility">الجدوى والاستثمار</a>
+      <a href="#calendar">تقويم قطر</a>
+      <a href="#topics">مواضيع متقدمة</a>
+      <a href="#business">النموذج التجاري</a>
+      <a href="#services">اطلب خدمة</a>
+    </nav>
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="تبديل المظهر"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18Z" fill="currentColor"/></svg></button>
+  </div>
+</header>
+
+<div class="announce" id="announce" hidden></div>
+<main class="wrap">
+
+<!-- ============ HOME ============ -->
+<section class="view" id="v-home" data-view="home">
+  <div class="hero">
+    <div class="copy">
+      <span class="eyebrow" id="heroEyebrow">من الشرفة إلى المائدة</span>
+      <h1 id="heroTitle">ازرع طعامك وعطرك وزهورك في بيتك، بخطة واضحة وأرقام صادقة</h1>
+      <p class="lead" id="heroLead">غرسة منصة عربية متكاملة للزراعة المنزلية في مناخ الخليج: أي النباتات تختار، وكيف تجهّز الغرفة أو الشرفة أو الحديقة الصغيرة، وما التربة والري المناسبان، ومتى تزرع في قطر، وهل يحقق مشروعك المنزلي عائداً فعلياً.</p>
+      <div class="actions">
+        <a class="btn" href="#plants">استكشف النباتات</a>
+        <a class="btn ghost" href="#feasibility">احسب الجدوى</a>
+      </div>
+    </div>
+    <svg viewBox="0 0 420 340" role="img" aria-label="رسم توضيحي لنافذة عليها أصص نباتات">
+      <rect x="40" y="20" width="340" height="230" rx="18" fill="var(--sky-soft)"/>
+      <circle cx="310" cy="80" r="30" fill="var(--ochre)" opacity=".85"/>
+      <path d="M40 160 Q120 120 200 150 T380 140 V250 H40Z" fill="var(--leaf-soft)"/>
+      <rect x="40" y="20" width="340" height="230" rx="18" fill="none" stroke="var(--line)" stroke-width="6"/>
+      <line x1="210" y1="20" x2="210" y2="250" stroke="var(--line)" stroke-width="6"/>
+      <rect x="20" y="250" width="380" height="18" rx="6" fill="var(--fg)" opacity=".85"/>
+      <!-- pot 1 basil -->
+      <path d="M62 250 l8-48 h52 l8 48Z" fill="var(--ochre)"/>
+      <g fill="var(--leaf)"><ellipse cx="80" cy="185" rx="16" ry="10" transform="rotate(-25 80 185)"/><ellipse cx="112" cy="182" rx="16" ry="10" transform="rotate(25 112 182)"/><ellipse cx="96" cy="166" rx="14" ry="9"/><ellipse cx="86" cy="150" rx="12" ry="8" transform="rotate(-30 86 150)"/><ellipse cx="106" cy="148" rx="12" ry="8" transform="rotate(30 106 148)"/></g>
+      <path d="M96 202 V150" stroke="var(--leaf)" stroke-width="3"/>
+      <!-- pot 2 tomato -->
+      <path d="M165 250 l6-62 h70 l6 62Z" fill="var(--surface)" stroke="var(--fg)" stroke-width="2" opacity=".95"/>
+      <path d="M206 188 V90" stroke="var(--leaf)" stroke-width="3"/><path d="M206 120 l-26-14 M206 140 l24-12 M206 160 l-22-8" stroke="var(--leaf)" stroke-width="3" stroke-linecap="round"/>
+      <g fill="var(--leaf)"><ellipse cx="176" cy="104" rx="12" ry="7"/><ellipse cx="232" cy="126" rx="12" ry="7"/><ellipse cx="182" cy="150" rx="11" ry="6"/><ellipse cx="210" cy="88" rx="10" ry="6"/></g>
+      <g fill="var(--danger)"><circle cx="192" cy="130" r="8"/><circle cx="222" cy="148" r="9"/><circle cx="214" cy="106" r="7"/></g>
+      <!-- pot 3 flower -->
+      <path d="M290 250 l8-44 h58 l8 44Z" fill="var(--sky)"/>
+      <path d="M327 206 V140" stroke="var(--leaf)" stroke-width="3"/><ellipse cx="312" cy="180" rx="12" ry="6" fill="var(--leaf)" transform="rotate(-30 312 180)"/>
+      <g fill="var(--ochre)"><circle cx="327" cy="124" r="10"/><circle cx="341" cy="134" r="10"/><circle cx="313" cy="134" r="10"/><circle cx="320" cy="150" r="10"/><circle cx="335" cy="150" r="10"/></g><circle cx="327" cy="139" r="7" fill="var(--fg)"/>
+      <text x="210" y="300" text-anchor="middle" font-family="IBM Plex Sans Arabic, sans-serif" font-size="14" fill="var(--muted)">ريحان · طماطم كرزية · قطيفة</text>
+      <text x="210" y="322" text-anchor="middle" font-family="IBM Plex Sans Arabic, sans-serif" font-size="12" fill="var(--muted)">نافذة جنوبية: 6 ساعات ضوء مباشر يومياً</text>
+    </svg>
+  </div>
+
+  <div class="facts num" id="factsGrid"></div>
+
+  <div class="sec-head">
+    <span class="eyebrow">لماذا الزراعة في البيت؟</span>
+    <h2>أهمية الزراعة المنزلية</h2>
+  </div>
+  <div class="grid g3" id="benefitGrid"></div>
+
+  <div class="sec-head">
+    <span class="eyebrow">ابدأ من هنا</span>
+    <h2>أقسام المنصة</h2>
+  </div>
+  <div class="grid g4" id="homeTiles"></div>
+</section>
+
+<!-- ============ PLANTS ============ -->
+<section class="view" id="v-plants" data-view="plants" hidden>
+  <div class="sec-head">
+    <span class="eyebrow">مكتبة النباتات</span>
+    <h2>ما النباتات التي تصلح للزراعة في المنزل؟</h2>
+    <p class="lead">اخترنا نباتات تنجح فعلاً في البيوت الخليجية، داخل الغرف أو على الشرفات أو في الحدائق الصغيرة. صفِّ حسب النوع والمكان، وافتح أي بطاقة لترى احتياجها من الضوء والماء ومدة الحصاد وأفضل موسم لزراعتها في قطر.</p>
+  </div>
+  <div class="filters" role="group" aria-label="تصفية حسب النوع" id="catFilters"></div>
+  <div class="filters" role="group" aria-label="تصفية حسب المكان" id="placeFilters"></div>
+  <div class="filters"><input class="search" id="plantSearch" type="text" placeholder="ابحث باسم النبات، مثل: نعناع" aria-label="ابحث عن نبات"><span class="tag num" id="plantCount"></span></div>
+  <div class="grid g3" id="plantGrid"></div>
+</section>
+
+<!-- ============ GUIDE ============ -->
+<section class="view" id="v-guide" data-view="guide" hidden>
+  <div class="sec-head">
+    <span class="eyebrow">دليل الزراعة</span>
+    <h2>كيف تزرع النباتات في المنزل؟</h2>
+    <p class="lead">من اختيار الوعاء إلى أول قطفة. اتبع الخطوات بالترتيب، ثم راجع أقسام التربة والري والتسميد.</p>
+  </div>
+  <div class="tabs" role="tablist" id="guideTabs">
+    <button role="tab" aria-selected="true" data-tab="g-steps">خطوات الزراعة</button>
+    <button role="tab" aria-selected="false" data-tab="g-soil">التربة</button>
+    <button role="tab" aria-selected="false" data-tab="g-water">طرق الري</button>
+    <button role="tab" aria-selected="false" data-tab="g-feed">التسميد</button>
+    <button role="tab" aria-selected="false" data-tab="g-prop">طرق الإكثار</button>
+  </div>
+
+  <div class="panel" id="g-steps">
+    <ol class="steps" id="stepList"></ol>
+  </div>
+
+  <div class="panel" id="g-soil" hidden>
+    <div class="prose"><p>التربة في الأصص تختلف عن تربة الأرض: يجب أن تحتفظ بالرطوبة وتصرّف الماء الزائد معاً، وأن تبقى خفيفة مسامية حتى تتنفس الجذور. التربة المحلية في قطر غالباً رملية كلسية فقيرة بالمادة العضوية وقلوية (درجة حموضة 8 تقريباً)، لذلك تحتاج إلى تحسين دائم.</p></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>الخلطة</th><th>المكونات بالحجم</th><th>تناسب</th></tr></thead>
+      <tbody id="soilBody"></tbody></table></div>
+    <div class="grid g3">
+      <div class="card"><h3>درجة الحموضة pH</h3><p>معظم الخضار تفضّل 6.0 إلى 7.0. الماء والتربة في الخليج يميلان إلى القلوية، فإذا اصفرّت الأوراق الحديثة مع بقاء العروق خضراء فهذا نقص حديد ناتج غالباً عن القلوية.</p></div>
+      <div class="card"><h3>الملوحة</h3><p>اغسل تربة الأصص بري غزير مرة شهرياً لطرد الأملاح المتراكمة، وتجنب ماء البئر المالح. القشرة البيضاء على سطح التربة علامة تراكم أملاح.</p></div>
+      <div class="card"><h3>تجديد التربة</h3><p>لا تُعِد استخدام تربة الأصص أكثر من موسم دون تجديد. أضف إليها ثلثاً من السماد العضوي الجديد، واستبدلها كلياً إذا ظهرت أمراض جذور.</p></div>
+    </div>
+  </div>
+
+  <div class="panel" id="g-water" hidden>
+    <div class="table-wrap"><table>
+      <thead><tr><th>الطريقة</th><th>كيف تعمل</th><th>المزايا</th><th>تناسب</th></tr></thead>
+      <tbody id="waterBody"></tbody></table></div>
+    <div class="note"><strong>قاعدة الصيف في قطر:</strong> اسقِ النباتات الخارجية في الصباح الباكر قبل السابعة أو بعد الغروب، ولا تسقِ ظهراً. أصص الشرفات المعرضة للشمس قد تحتاج ريّتين يومياً في يوليو وأغسطس، والتغطية بطبقة نشارة 5 سم تقلل التبخر كثيراً.</div>
+    <div class="grid g2">
+      <div class="card"><h3>علامات العطش</h3><ul><li>ذبول في منتصف النهار لا يتعافى مساءً</li><li>حواف أوراق جافة بنية ومقرمشة</li><li>تربة تنفصل عن جدار الأصيص</li></ul></div>
+      <div class="card"><h3>علامات الري الزائد</h3><ul><li>أوراق سفلية صفراء طرية</li><li>ذبول رغم رطوبة التربة</li><li>رائحة عفن وذباب فطري صغير حول الأصيص</li></ul></div>
+    </div>
+  </div>
+
+  <div class="panel" id="g-feed" hidden>
+    <div class="grid g3">
+      <div class="card"><h3>الأسمدة الكيميائية المتوازنة</h3><p>تُكتب بثلاثة أرقام N-P-K، مثل 20-20-20. النيتروجين للأوراق، والفوسفور للجذور والإزهار، والبوتاسيوم للثمار والمقاومة. استخدم تركيزاً متوازناً للورقيات، وتركيزاً أعلى بالبوتاسيوم عند إزهار الطماطم والفلفل.</p></div>
+      <div class="card"><h3>الأسمدة العضوية</h3><p>السماد البلدي المتحلل، وسماد ديدان الأرض، ومستخلص الأعشاب البحرية، ومنقوع الكومبوست. تطلق غذاءها ببطء وتحسن بنية التربة، وهي الأنسب للمطبخ المنزلي.</p></div>
+      <div class="card"><h3>جدول بسيط</h3><p>الأعشاب والورقيات: كل أسبوعين بنصف التركيز. النباتات المثمرة: أسبوعياً بعد بدء الإزهار. نباتات الزينة الداخلية: مرة شهرياً من مارس إلى أكتوبر، وتتوقف في الشتاء.</p></div>
+    </div>
+    <div class="note">الإفراط في التسميد يحرق الجذور ويترك حواف الأوراق بنية. القليل المنتظم أفضل من الكثير المتقطع.</div>
+  </div>
+
+  <div class="panel" id="g-prop" hidden>
+    <div class="grid g2">
+      <div class="card"><h3>البذور</h3><p>الأرخص والأوسع اختياراً. استخدم صواني إنبات بخلطة ناعمة، واحفظها في 20 إلى 27 درجة مئوية. تنقل الشتلات إلى أصصها بعد ظهور ورقتين حقيقيتين.</p></div>
+      <div class="card"><h3>العُقل الساقية</h3><p>اقطع فرعاً بطول 10 سم تحت عقدة، وانزع الأوراق السفلية، وضعه في ماء أو تربة رطبة. تنجح مع النعناع والريحان وإكليل الجبل والبوتوس والجهنمية.</p></div>
+      <div class="card"><h3>التقسيم</h3><p>افصل النبات الكبير إلى عدة نباتات بجذورها. يناسب الثوم المعمّر وعشب الليمون والألوفيرا ونبات الثعبان.</p></div>
+      <div class="card"><h3>إعادة الإنبات من المطبخ</h3><p>قواعد البصل الأخضر والكرفس والخس تعود للنمو في كوب ماء خلال أيام، وفصوص الثوم والزنجبيل تنبت في الأصص. تجربة ممتعة للأطفال.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SPACES ============ -->
+<section class="view" id="v-spaces" data-view="spaces" hidden>
+  <div class="sec-head">
+    <span class="eyebrow">تجهيز المكان</span>
+    <h2>الزراعة داخل غرفة أو شرفة أو حديقة صغيرة</h2>
+    <p class="lead">اختر نوع المساحة لترى التصميم المقترح، ومتطلبات الإضاءة والتهوية، وتشكيلة النباتات التي تنجح معاً.</p>
+  </div>
+  <div class="tabs" role="tablist" id="spaceTabs">
+    <button role="tab" aria-selected="true" data-tab="s-room">غرفة داخلية</button>
+    <button role="tab" aria-selected="false" data-tab="s-balcony">شرفة أو سطح</button>
+    <button role="tab" aria-selected="false" data-tab="s-garden">حديقة صغيرة</button>
+    <button role="tab" aria-selected="false" data-tab="s-light">الإضاءة والتهوية</button>
+  </div>
+
+  <div class="panel" id="s-room">
+    <div class="diagram">
+      <svg viewBox="0 0 760 330" role="img" aria-label="مخطط غرفة زراعة داخلية">
+        <rect x="20" y="20" width="720" height="290" rx="12" fill="var(--surface-2)" stroke="var(--line)" stroke-width="3"/>
+        <rect x="640" y="20" width="100" height="8" fill="var(--sky)"/><text x="690" y="48" text-anchor="middle" font-size="13" fill="var(--fg)" font-family="IBM Plex Sans Arabic">نافذة</text>
+        <rect x="40" y="40" width="200" height="110" rx="8" fill="var(--leaf-soft)" stroke="var(--leaf)" stroke-width="2"/>
+        <text x="140" y="80" text-anchor="middle" font-size="15" font-weight="700" fill="var(--fg)" font-family="IBM Plex Sans Arabic">رف زراعة 4 طوابق</text>
+        <text x="140" y="104" text-anchor="middle" font-size="12" fill="var(--muted)" font-family="IBM Plex Sans Arabic">إضاءة LED طيف كامل</text>
+        <text x="140" y="124" text-anchor="middle" font-size="12" fill="var(--muted)" font-family="IBM Plex Sans Arabic">ميكروجرين · خس · ريحان</text>
+        <rect x="40" y="180" width="200" height="110" rx="8" fill="var(--sky-soft)" stroke="var(--sky)" stroke-width="2"/>
+        <text x="140" y="222" text-anchor="middle" font-size="15" font-weight="700" fill="var(--fg)" font-family="IBM Plex Sans Arabic">برج زراعة مائية</text>
+        <text x="140" y="246" text-anchor="middle" font-size="12" fill="var(--muted)" font-family="IBM Plex Sans Arabic">30 فتحة · مضخة بمؤقت</text>
+        <text x="140" y="266" text-anchor="middle" font-size="12" fill="var(--muted)" font-family="IBM Plex Sans Arabic">خس · جرجير · فراولة</text>
+        <rect x="500" y="60" width="220" height="70" rx="8" fill="var(--ochre-soft)" stroke="var(--ochre)" stroke-width="2"/>
+        <text x="610" y="92" text-anchor="middle" font-size="15" font-weight="700" fill="var(--fg)" font-family="IBM Plex Sans Arabic">حافة النافذة</text>
+        <text x="610" y="114" text-anchor="middle" font-size="12" fill="var(--muted)" font-family="IBM Plex Sans Arabic">أعشاب عطرية في أصص 15 سم</text>
+        <circle cx="390" cy="90" r="34" fill="none" stroke="var(--fg)" stroke-width="2" stroke-dasharray="5 4"/>
+        <path d="M368 90 h44 M390 68 v44" stroke="var(--fg)" stroke-width="2"/>
+        <text x="390" y="146" text-anchor="middle" font-size="12" fill="var(--fg)" font-family="IBM Plex Sans Arabic">مروحة دوّارة</text>
+        <rect x="560" y="220" width="160" height="70" rx="8" fill="var(--surface)" stroke="var(--line)" stroke-width="2"/>
+        <text x="640" y="250" text-anchor="middle" font-size="14" font-weight="700" fill="var(--fg)" font-family="IBM Plex Sans Arabic">طاولة عمل</text>
+        <text x="640" y="272" text-anchor="middle" font-size="12" fill="var(--muted)" font-family="IBM Plex Sans Arabic">صواني إنبات · أدوات</text>
+        <rect x="300" y="230" width="200" height="60" rx="8" fill="var(--surface)" stroke="var(--line)" stroke-width="2"/>
+        <text x="400" y="256" text-anchor="middle" font-size="14" font-weight="700" fill="var(--fg)" font-family="IBM Plex Sans Arabic">نباتات زينة أرضية</text>
+        <text x="400" y="276" text-anchor="middle" font-size="12" fill="var(--muted)" font-family="IBM Plex Sans Arabic">مونستيرا · زاميا · نبات الثعبان</text>
+        <path d="M250 200 C300 170 330 150 360 120" stroke="var(--sky)" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+        <defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="var(--sky)"/></marker></defs>
+        <text x="282" y="210" font-size="12" fill="var(--sky)" font-family="IBM Plex Sans Arabic">حركة هواء</text>
+      </svg>
+    </div>
+    <div class="grid g3" id="space-room"></div>
+
+  </div>
+
+  <div class="panel" id="s-balcony" hidden>
+    <div class="grid g3" id="space-balcony"></div>
+
+  </div>
+
+  <div class="panel" id="s-garden" hidden>
+    <div class="grid g3" id="space-garden"></div>
+
+  </div>
+
+  <div class="panel" id="s-light" hidden>
+    <div class="prose"><p>الضوء هو غذاء النبات. يقاس شدة الضوء بوحدة <strong>اللوكس</strong>، ويمكنك قياسه بتطبيق مجاني على الهاتف. قارن قراءتك بالجدول التالي لتعرف ما يناسب مكانك.</p></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>الموقع</th><th class="num">شدة الضوء (لوكس)</th><th>يصلح لـ</th></tr></thead>
+      <tbody>
+        <tr><td>ركن غرفة بعيد عن النافذة</td><td class="num">250 – 1,000</td><td>نبات الثعبان، الزاميا، البوتوس</td></tr>
+        <tr><td>على بعد 1 إلى 2 متر من نافذة مشمسة</td><td class="num">1,000 – 5,000</td><td>المونستيرا، زنبق السلام، النعناع</td></tr>
+        <tr><td>حافة نافذة جنوبية</td><td class="num">5,000 – 20,000</td><td>الأعشاب العطرية، الخس، الصبار</td></tr>
+        <tr><td>شرفة مظللة جزئياً</td><td class="num">10,000 – 30,000</td><td>معظم الخضار الورقية والزهور</td></tr>
+        <tr><td>شمس مباشرة خارجية</td><td class="num">50,000 – 100,000</td><td>الطماطم، الفلفل، الباذنجان، الجهنمية</td></tr>
+      </tbody></table></div>
+    <div class="grid g2">
+      <div class="card"><h3>الإضاءة الصناعية</h3><ul><li>استخدم مصابيح LED طيف كامل بحرارة لون 4,000 إلى 6,500 كلفن</li><li>ارفعها 20 إلى 30 سم فوق الورقيات، و40 سم فوق النباتات المثمرة</li><li>الورقيات: 14 إلى 16 ساعة يومياً. المثمرة: 16 إلى 18 ساعة</li><li>استهلاك لوحة 40 واط لمدة 16 ساعة نحو 19 كيلوواط ساعة شهرياً</li></ul></div>
+      <div class="card"><h3>التهوية الصحيحة</h3><ul><li>مروحة دوّارة صغيرة تحرّك الأوراق بلطف، فتقوّي السيقان وتمنع الفطريات</li><li>افتح النافذة صباحاً 15 دقيقة، أو استخدم شفاط هواء في الغرفة المغلقة</li><li>لا تضع النباتات تحت تيار المكيف المباشر لأنه يجفف الأوراق</li><li>اترك مسافة بين الأصص حتى يمر الهواء</li><li>الرطوبة فوق 75% مع ركود الهواء بيئة مثالية للعفن</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEASIBILITY ============ -->
+<section class="view" id="v-feasibility" data-view="feasibility" hidden>
+  <div class="sec-head">
+    <span class="eyebrow">الجدوى والاستثمار</span>
+    <h2>هل الزراعة المنزلية مجدية اقتصادياً؟</h2>
+    <p class="lead">الإجابة المختصرة: تختلف حسب الهدف. للاستهلاك العائلي تحقق توفيراً جيداً في الأعشاب والورقيات، وضعيفاً في المحاصيل الرخيصة كالبطاطس والبصل. وللبيع، تصبح مربحة فعلاً في منتجات عالية القيمة سريعة الدورة مثل الميكروجرين والأعشاب الطازجة. جرّب الحاسبة بأرقامك.</p>
+  </div>
+
+  <div class="grid g3" id="verdictGrid"></div>
+
+  <div class="calc">
+    <div class="card" style="gap:16px">
+      <h3>حاسبة جدوى غرسة</h3>
+      <div class="toggle" role="group" aria-label="الهدف">
+        <button type="button" data-goal="sell" aria-pressed="true">مشروع للبيع</button>
+        <button type="button" data-goal="home" aria-pressed="false">توفير منزلي</button>
+      </div>
+      <div class="seg" id="modelSeg"></div>
+      <div class="field"><label for="units" id="unitsLabel">عدد الوحدات</label><input id="units" type="number" min="1" step="1"><small id="unitsHint"></small></div>
+      <div class="row grid g2">
+        <div class="field"><label for="setup">تكلفة تجهيز الوحدة (ر.ق)</label><input id="setup" type="number" min="0" step="1"></div>
+        <div class="field"><label for="cycleCost">تكلفة الدورة للوحدة (ر.ق)</label><input id="cycleCost" type="number" min="0" step="0.5"><small>بذور وتربة وسماد ومحلول</small></div>
+        <div class="field"><label for="yield">إنتاج الوحدة في الدورة (كغم)</label><input id="yield" type="number" min="0" step="0.05"></div>
+        <div class="field"><label for="cycleDays">مدة الدورة (يوم)</label><input id="cycleDays" type="number" min="1" step="1"></div>
+        <div class="field"><label for="price" id="priceLabel">سعر البيع (ر.ق للكيلوغرام)</label><input id="price" type="number" min="0" step="1"></div>
+        <div class="field"><label for="power">الكهرباء والماء شهرياً (ر.ق)</label><input id="power" type="number" min="0" step="1"></div>
+        <div class="field"><label for="other">تغليف وتوصيل وتسويق شهرياً (ر.ق)</label><input id="other" type="number" min="0" step="1"></div>
+        <div class="field"><label for="waste">نسبة الهدر وغير المباع (%)</label><input id="waste" type="number" min="0" max="90" step="1"></div>
+      </div>
+      <button class="btn ghost small" type="button" id="resetCalc">استعادة القيم المرجعية</button>
+    </div>
+    <div class="card results" aria-live="polite">
+      <h3 id="resTitle">النتائج الشهرية</h3>
+      <div class="kpis" id="kpis"></div>
+      <div class="verdict" id="verdict"></div>
+      <div class="chart" id="chart"></div>
+      <p style="font-size:.84rem">القيم المرجعية تقديرية مبنية على متوسط أسعار التجزئة والجملة في الدوحة عام 2026، وتُعدَّل حسب المورد والجودة. لا تمثل ضماناً للربح.</p>
+    </div>
+  </div>
+
+  <div class="sec-head"><h2>طرق استثمار الزراعة المنزلية</h2></div>
+  <div class="grid g3" id="investGrid"></div>
+  <div class="note sky"><strong>قبل البيع:</strong> تواصل مع وزارة البلدية في قطر بشأن متطلبات الترخيص المنزلي أو التجاري واشتراطات سلامة الغذاء، فبيع الأغذية الطازجة للمطاعم يتطلب عادة سجلاً تجارياً وشهادة صحية.</div>
+</section>
+
+<!-- ============ CALENDAR ============ -->
+<section class="view" id="v-calendar" data-view="calendar" hidden>
+  <div class="sec-head">
+    <span class="eyebrow">تقويم الزراعة في قطر</span>
+    <h2>متى تزرع كل نبات في مناخ الخليج؟</h2>
+    <p class="lead">الموسم الذهبي للزراعة الخارجية في قطر يمتد من سبتمبر إلى أبريل. أما من مايو إلى أغسطس فتنتقل الزراعة إلى الداخل أو إلى الظل مع نباتات تتحمل الحر. الشهر الحالي مُحدَّد بإطار.</p>
+  </div>
+  <div class="legend">
+    <span><i class="c sow" style="display:inline-block"></i>زراعة البذور أو الشتلات</span>
+    <span><i class="c grow" style="display:inline-block"></i>نمو ورعاية</span>
+    <span><i class="c harvest" style="display:inline-block"></i>حصاد</span>
+    <span><i class="c indoor" style="display:inline-block"></i>داخل البيت أو في الظل فقط</span>
+  </div>
+  <div class="table-wrap"><table class="cal" id="calTable"></table></div>
+  <div class="grid g3" id="seasonCards"></div>
+</section>
+
+<!-- ============ TOPICS ============ -->
+<section class="view" id="v-topics" data-view="topics" hidden>
+  <div class="sec-head">
+    <span class="eyebrow">مواضيع متقدمة</span>
+    <h2>ما بعد الأصيص الأول</h2>
+    <p class="lead">مواضيع مقترحة تكمل رحلتك، من الزراعة بلا تربة إلى إدارة الآفات بطرق آمنة داخل البيت.</p>
+  </div>
+  <div class="grid g2" id="topicGrid"></div>
+</section>
+
+<!-- ============ BUSINESS ============ -->
+<section class="view" id="v-business" data-view="business" hidden>
+  <div class="sec-head">
+    <span class="eyebrow">النموذج التجاري المقترح</span>
+    <h2>كيف تتحول غرسة إلى شركة مستدامة؟</h2>
+    <p class="lead">غرسة منصة محتوى مجانية تجذب الجمهور، تتحول إلى متجر وخدمات واشتراكات. المحتوى يبني الثقة، والحاسبة والتقويم يعيدان الزائر، والخدمات والعُدد تولّد الإيراد.</p>
+  </div>
+
+  <div class="canvas" id="canvasGrid"></div>
+
+  <div class="sec-head"><h2>الباقات والأسعار المقترحة</h2></div>
+  <div class="grid g4" id="pkgGrid"></div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>العُدد الجاهزة</th><th>المحتوى</th><th class="num">السعر (ر.ق)</th><th class="num">التكلفة (ر.ق)</th><th class="num">هامش الربح</th></tr></thead>
+    <tbody id="kitBody"></tbody></table></div>
+
+  <div class="sec-head"><h2>التوقعات المالية لثلاث سنوات</h2><p class="lead">سيناريو متوسط بفريق يبدأ بثلاثة أشخاص في الدوحة، مع رأس مال تأسيس تقديري 180,000 ر.ق.</p></div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>البند</th><th class="num">السنة 1</th><th class="num">السنة 2</th><th class="num">السنة 3</th></tr></thead>
+    <tbody id="forecastBody"></tbody></table></div>
+
+  <div class="sec-head"><h2>خطة الإطلاق</h2></div>
+  <div class="phases" id="phaseGrid"></div>
+
+  <div class="grid g4" id="insightGrid"></div>
+</section>
+
+<!-- ============ SERVICES ============ -->
+<section class="view" id="v-services" data-view="services" hidden>
+  <div class="sec-head">
+    <span class="eyebrow">اطلب خدمة</span>
+    <h2>نساعدك في تجهيز مساحتك الخضراء</h2>
+    <p class="lead">أرسل طلبك وسيتواصل معك فريق غرسة لتحديد موعد. تُحفظ أرقام طلباتك على هذا الجهاز لتعود إليها متى شئت.</p>
+  </div>
+  <div class="calc">
+    <form class="card form" id="reqForm" novalidate>
+      <h3>نموذج الطلب</h3>
+      <div class="row">
+        <div class="field"><label for="fName">الاسم الكامل</label><input id="fName" type="text" required autocomplete="name" placeholder="مثال: سارة أحمد"></div>
+        <div class="field"><label for="fPhone">رقم الجوال</label><input id="fPhone" type="tel" required inputmode="tel" placeholder="+974 5555 1234" dir="ltr"><small>ثمانية أرقام قطرية، وسيُحفظ بصيغة ‎+974 XXXX XXXX</small></div>
+      </div>
+      <div class="row">
+        <div class="field"><label for="fService">الخدمة المطلوبة</label>
+          <select id="fService"></select></div>
+        <div class="field"><label for="fSpace">نوع المساحة</label>
+          <select id="fSpace"><option>غرفة داخلية</option><option>شرفة</option><option>سطح</option><option>حديقة صغيرة</option><option>مكتب أو منشأة</option></select></div>
+      </div>
+      <div class="row">
+        <div class="field"><label for="fArea">المنطقة</label><input id="fArea" type="text" placeholder="مثال: الوكرة"></div>
+        <div class="field"><label for="fSize">المساحة التقريبية (م²)</label><input id="fSize" type="number" min="0" step="1" placeholder="8"></div>
+        <input id="fHp" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);opacity:0;border:0;padding:0">
+      </div>
+      <div class="field"><label for="fNotes">تفاصيل إضافية</label><textarea id="fNotes" placeholder="ما النباتات التي ترغب بها؟ هل لديك مصدر ماء قريب؟"></textarea></div>
+      <button class="btn" type="submit" id="fSubmit">إرسال الطلب</button>
+      <div id="fStatus" role="status" hidden></div>
+    </form>
+    <div class="card">
+      <h3>طلباتي على هذا الجهاز</h3>
+      <div id="myReqs" class="req-list"><p class="empty">ستظهر طلباتك هنا بعد إرسالها، مع رقم كل طلب وتاريخه.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 غَرسة للزراعة المنزلية. جميع الحقوق محفوظة.</span>
+    <span id="footerNote">المحتوى إرشادي عام، ويُنصح بمراجعة مختص عند الاشتباه بأمراض النبات.</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const fmt=(n,d=0)=>Number(n).toLocaleString('en-US',{maximumFractionDigits:d,minimumFractionDigits:d});
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const MONTHS=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const fmtDate=ts=>{const d=new Date(ts);return d.getDate()+' '+MONTHS[d.getMonth()]+' '+d.getFullYear()};
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+
+/* ---------- theme ---------- */
+const root=document.documentElement;
+const savedTheme=store.get('gh-theme'); if(savedTheme) root.setAttribute('data-theme',savedTheme);
+$('#themeBtn').addEventListener('click',()=>{
+  const cur=root.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+  const nx=cur==='dark'?'light':'dark'; root.setAttribute('data-theme',nx); store.set('gh-theme',nx);
+});
+
+/* ---------- router ---------- */
+const VIEWS=['home','plants','guide','spaces','feasibility','calendar','topics','business','services'];
+function route(){
+  let v=(location.hash||'#home').slice(1); if(!VIEWS.includes(v)) v='home';
+  $$('.view').forEach(s=>s.hidden=s.dataset.view!==v);
+  $$('.nav a').forEach(a=>a.getAttribute('href')==='#'+v?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current'));
+  const cur=$('.nav a[aria-current]'); if(cur) cur.scrollIntoView({block:'nearest',inline:'center'});
+  window.scrollTo(0,0);
+}
+addEventListener('hashchange',route);
+
+/* ---------- home tiles ---------- */
+const ICON={
+ leaf:'<path d="M5 19c0-8 6-14 14-14 0 8-6 14-14 14Z"/><path d="M5 19 13 11"/>',
+ book:'<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2Z"/><path d="M4 5v16"/>',
+ home:'<path d="M3 11 12 4l9 7v9H3Z"/><path d="M10 20v-6h4v6"/>',
+ chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+ cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+ drop:'<path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11Z"/>',
+ brief:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V4h6v3"/>',
+ hand:'<path d="M4 14h4l3 3h6a2 2 0 0 0 0-4h-4"/><path d="M14 9a3 3 0 1 0 0-.01"/>'
+};
+const svgI=k=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+ICON[k]+'</svg>';
+const TILES=[
+ ['plants','leaf','مكتبة النباتات','34 نباتاً بين عطرية وزهور ومثمرة وزينة، مع بطاقة عناية لكل نبات.'],
+ ['guide','book','دليل الزراعة','الخطوات والتربة والري والتسميد وطرق الإكثار.'],
+ ['spaces','home','تجهيز المكان','تصميم الغرفة والشرفة والحديقة الصغيرة والإضاءة والتهوية.'],
+ ['feasibility','chart','الجدوى والاستثمار','حاسبة تفاعلية للتكلفة والعائد وفترة الاسترداد.'],
+ ['calendar','cal','تقويم قطر','متى تزرع وتحصد كل نبات على مدار العام.'],
+ ['topics','drop','مواضيع متقدمة','الزراعة المائية والكومبوست والآفات والميكروجرين.'],
+ ['business','brief','النموذج التجاري','نموذج العمل والباقات والتوقعات المالية.'],
+ ['services','hand','اطلب خدمة','تجهيز وتركيب ورعاية واستشارات.']
+];
+$('#homeTiles').innerHTML=TILES.map(t=>`<a class="card tile" href="#${t[0]}"><span class="ico">${svgI(t[1])}</span><h3>${t[2]}</h3><p>${t[3]}</p></a>`).join('');
+
+/* ---------- plants ---------- */
+// light/water/ease 1-3; place: in=indoor, bal=balcony, gar=garden; season text for Qatar
+let P=[];
+const CAT={all:'الكل',aro:'نباتات عطرية',flo:'زهور',fru:'نباتات مثمرة',veg:'خضار ورقية',orn:'زينة داخلية'};
+const PLACE={any:'كل الأماكن',in:'داخل الغرفة',bal:'شرفة أو سطح',gar:'حديقة'};
+const LV=['','منخفض','متوسط','مرتفع'];
+let fCat='all',fPlace='any',fQ='';
+const dots=(n,cls='')=>`<span class="dots ${cls}" aria-label="${LV[n]}">${[1,2,3].map(i=>`<i class="${i<=n?'on':''}"></i>`).join('')}</span>`;
+function chips(el,map,get,setf){
+  el.innerHTML=Object.entries(map).map(([k,v])=>`<button type="button" class="chip" data-k="${k}" aria-pressed="${get()===k}">${v}</button>`).join('');
+  el.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;setf(b.dataset.k);el.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed',c.dataset.k===get()));renderPlants();});
+}
+chips($('#catFilters'),CAT,()=>fCat,v=>fCat=v);
+chips($('#placeFilters'),PLACE,()=>fPlace,v=>fPlace=v);
+$('#plantSearch').addEventListener('input',e=>{fQ=e.target.value.trim();renderPlants();});
+function renderPlants(){
+  const list=P.filter(p=>(fCat==='all'||p.cat===fCat)&&(fPlace==='any'||(p.places||[]).includes(fPlace))&&(!fQ||String(p.name).includes(fQ)));
+  $('#plantCount').textContent=list.length+' نباتاً';
+  $('#plantGrid').innerHTML=list.length?list.map(p=>`
+   <article class="card plant">
+     <header><div><h3>${esc(p.name)}</h3><div class="sci">${esc(p.sci)}</div></div><span class="tag ${p.cat==='aro'?'leaf':p.cat==='flo'?'ochre':p.cat==='fru'?'':'sky'}">${CAT[p.cat]||''}</span></header>
+     <div class="meters"><span>الضوء</span>${dots(+p.light||1,'ochre')}<span>الماء</span>${dots(+p.water||1,'sky')}<span>السهولة</span>${dots(+p.ease||1)}</div>
+     <div class="tags">${(p.places||[]).map(x=>`<span class="tag">${PLACE[x]||''}</span>`).join('')}</div>
+     <p><strong>الحصاد:</strong> ${esc(p.harvest)}<br><strong>الموسم في قطر:</strong> ${esc(p.season)}</p>
+     <p>${esc(p.tip)}</p>
+   </article>`).join(''):'<div class="empty">لا توجد نباتات تطابق هذا البحث. جرّب نوعاً أو مكاناً آخر.</div>';
+}
+
+/* ---------- tabs ---------- */
+function tabs(id){
+  const el=$(id); el.addEventListener('click',e=>{const b=e.target.closest('button[data-tab]');if(!b)return;
+    el.querySelectorAll('button').forEach(x=>{const on=x===b;x.setAttribute('aria-selected',on);$('#'+x.dataset.tab).hidden=!on;});});
+}
+tabs('#guideTabs'); tabs('#spaceTabs');
+
+/* ---------- calculator ---------- */
+const MODELS={
+ micro:{name:'ميكروجرين',sub:'صوانٍ على رف إضاءة',unit:'صينية',hint:'رف واحد بأربعة طوابق يتسع لنحو 20 صينية',units:20,setup:90,cycleCost:6,yield:0.3,cycleDays:12,price:120,homePrice:200,power:60,other:250,waste:15},
+ herbs:{name:'أعشاب في أصص',sub:'ريحان ونعناع وبقدونس',unit:'أصيص',hint:'أصيص 3 لترات ذاتي الري',units:30,setup:35,cycleCost:3,yield:0.12,cycleDays:30,price:45,homePrice:60,power:25,other:120,waste:15},
+ hydro:{name:'برج زراعة مائية',sub:'خس وجرجير وورقيات',unit:'برج',hint:'برج عمودي بثلاثين فتحة',units:2,setup:2450,cycleCost:45,yield:6,cycleDays:42,price:30,homePrice:35,power:45,other:100,waste:10},
+ bed:{name:'حوض خضار بالحديقة',sub:'طماطم وفلفل وخيار',unit:'حوض 2 م²',hint:'حوض مرتفع مع ري بالتنقيط',units:3,setup:650,cycleCost:60,yield:18,cycleDays:120,price:12,homePrice:10,power:20,other:0,waste:20}
+};
+let model='micro',goal='sell';
+const IDS=['units','setup','cycleCost','yield','cycleDays','price','power','other','waste'];
+$('#modelSeg').innerHTML=Object.entries(MODELS).map(([k,m])=>`<button type="button" data-m="${k}" aria-pressed="${k===model}"><b>${m.name}</b><small>${m.sub}</small></button>`).join('');
+function loadModel(){
+  const m=MODELS[model];
+  IDS.forEach(id=>{$('#'+id).value=(id==='price'&&goal==='home')?m.homePrice:(goal==='home'&&id==='other')?0:m[id];});
+  $('#unitsLabel').textContent='عدد الوحدات ('+m.unit+')'; $('#unitsHint').textContent=m.hint;
+  calc();
+}
+$('#modelSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;model=b.dataset.m;$$('#modelSeg button').forEach(x=>x.setAttribute('aria-pressed',x===b));loadModel();});
+$$('.toggle [data-goal]').forEach(b=>b.addEventListener('click',()=>{goal=b.dataset.goal;$$('.toggle [data-goal]').forEach(x=>x.setAttribute('aria-pressed',x===b));
+  $('#priceLabel').textContent=goal==='sell'?'سعر البيع (ر.ق للكيلوغرام)':'سعر الشراء من السوق (ر.ق للكيلوغرام)';loadModel();}));
+IDS.forEach(id=>$('#'+id).addEventListener('input',calc));
+$('#resetCalc').addEventListener('click',loadModel);
+function calc(){
+  const v={};IDS.forEach(id=>v[id]=Math.max(0,parseFloat($('#'+id).value)||0));
+  const cyclesPerMonth=30/Math.max(1,v.cycleDays);
+  const kg=v.units*v.yield*cyclesPerMonth*(1-Math.min(v.waste,90)/100);
+  const revenue=kg*v.price;
+  const running=v.units*v.cycleCost*cyclesPerMonth+v.power+v.other;
+  const capex=v.units*v.setup;
+  const net=revenue-running;
+  const payback=net>0?capex/net:Infinity;
+  const roi=capex>0?(net*12-capex)/capex*100:0;
+  const isSell=goal==='sell';
+  $('#resTitle').textContent=isSell?'النتائج الشهرية للمشروع':'التوفير الشهري للأسرة';
+  const pb=payback===Infinity?'لا يسترد':payback<1?'أقل من شهر':fmt(payback,1)+' شهر';
+  $('#kpis').innerHTML=[
+    ['تكلفة التجهيز لمرة واحدة',fmt(capex)+' ر.ق',''],
+    ['الإنتاج الصافي',fmt(kg,1)+' كغم',''],
+    [isSell?'الإيراد':'قيمة الإنتاج بسعر السوق',fmt(revenue)+' ر.ق',''],
+    ['التكاليف التشغيلية',fmt(running)+' ر.ق',''],
+    [isSell?'صافي الربح':'صافي التوفير',fmt(net)+' ر.ق',net>0?'good':'bad'],
+    ['فترة الاسترداد',pb,payback<=6?'good':payback<=18?'warn':'bad'],
+    ['العائد في السنة الأولى',fmt(roi)+'%',roi>0?'good':roi>-50?'warn':'bad'],
+    ['هامش الربح',revenue>0?fmt(net/revenue*100)+'%':'—',net>0?'good':'bad']
+  ].map(k=>`<div class="kpi ${k[2]}"><span>${k[0]}</span><b>${k[1]}</b></div>`).join('');
+  const vd=$('#verdict');
+  if(net<=0){vd.className='verdict bad';vd.textContent=isSell?'غير مجدٍ بهذه الأرقام: التكاليف التشغيلية تتجاوز الإيراد. ارفع السعر أو الإنتاج أو خفّض التكاليف.':'غير اقتصادي للتوفير: تكلفة الإنتاج أعلى من الشراء من السوق، لكنه قد يستحق للمتعة والجودة.';}
+  else if(payback<=6){vd.className='verdict good';vd.textContent=isSell?'مجدٍ جداً: يسترد رأس المال خلال ستة أشهر أو أقل.':'اقتصادي جداً: يسترد تكلفته سريعاً ويوفر مبلغاً شهرياً واضحاً.';}
+  else if(payback<=18){vd.className='verdict warn';vd.textContent=isSell?'مجدٍ بشروط: الاسترداد بين ستة أشهر وسنة ونصف، ويحتاج قنوات بيع ثابتة.':'اقتصادي على المدى المتوسط: يسترد تكلفته خلال سنة ونصف تقريباً.';}
+  else {vd.className='verdict bad';vd.textContent='ضعيف الجدوى: فترة الاسترداد تتجاوز سنة ونصف. ركّز على منتجات أعلى قيمة.';}
+  drawChart(capex,net);
+}
+function drawChart(capex,net){
+  const W=520,H=210,L=64,R=14,T=16,B=36;
+  const pts=[];for(let m=0;m<=12;m++)pts.push(-capex+net*m);
+  let mn=Math.min(0,...pts),mx=Math.max(0,...pts);if(mx===mn)mx=mn+1;
+  const pad=(mx-mn)*.08;mn-=pad;mx+=pad;
+  const x=m=>W-R-(m/12)*(W-L-R); // RTL: month 0 on the right
+  const y=v=>T+(mx-v)/(mx-mn)*(H-T-B);
+  const ticks=4,step=(mx-mn)/ticks;let grid='';
+  for(let i=0;i<=ticks;i++){const v=mn+step*i;grid+=`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="IBM Plex Sans Arabic" direction="ltr">${fmt(Math.round(v))}</text>`;}
+  let xl='';[0,3,6,9,12].forEach(m=>xl+=`<text x="${x(m)}" y="${H-12}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="IBM Plex Sans Arabic">شهر ${m}</text>`);
+  const path=pts.map((v,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)).join(' ');
+  const area=path+` L${x(12)} ${y(0)} L${x(0)} ${y(0)} Z`;
+  const end=pts[12];
+  $('#chart').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="الرصيد التراكمي خلال 12 شهراً">${grid}
+   <line x1="${L}" x2="${W-R}" y1="${y(0)}" y2="${y(0)}" stroke="var(--fg)" stroke-width="1.2"/>
+   <path d="${area}" fill="${end>=0?'var(--leaf-soft)':'var(--danger-soft)'}" opacity=".8"/>
+   <path d="${path}" fill="none" stroke="${end>=0?'var(--leaf)':'var(--danger)'}" stroke-width="2.5"/>
+   <circle cx="${x(12)}" cy="${y(end)}" r="5" fill="${end>=0?'var(--leaf)':'var(--danger)'}"/>
+   <text x="${x(12)+8}" y="${y(end)-10}" font-size="12" font-weight="700" fill="var(--fg)" font-family="IBM Plex Sans Arabic" text-anchor="start">${fmt(Math.round(end))} ر.ق</text>
+   ${xl}</svg><p style="font-size:.84rem">الرصيد التراكمي خلال السنة الأولى بعد خصم تكلفة التجهيز.</p>`;
+}
+loadModel();
+
+/* ---------- calendar ---------- */
+// codes per month Jan..Dec: s=sow, g=grow, h=harvest, i=indoor-only, .=none
+const cm=new Date().getMonth();
+const cls={s:'sow',g:'grow',h:'harvest',i:'indoor'};
+$('#seasonCards').classList.replace('g3','g4');
+
+/* ---------- topics ---------- */
+
+
+
+/* ---------- content rendering ---------- */
+const ul=a=>(a&&a.length)?`<ul>${a.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'';
+const setText=(id,v)=>{const el=document.getElementById(id);if(el&&v!=null&&v!=='')el.textContent=v;};
+function applyContent(C){
+  const S=C.site||{};
+  setText('tagline',S.tagline);setText('heroEyebrow',S.heroEyebrow);setText('heroTitle',S.heroTitle);setText('heroLead',S.heroLead);setText('footerNote',S.footerNote);
+  const an=$('#announce');an.hidden=!S.announcement;an.textContent=S.announcement||'';
+  $('#factsGrid').innerHTML=(C.facts||[]).map(f=>`<div><b>${esc(f.value)}</b><span>${esc(f.label)}</span></div>`).join('');
+  $('#benefitGrid').innerHTML=(C.benefits||[]).map(b=>`<div class="card"><h3>${esc(b.title)}</h3><p>${esc(b.text)}</p></div>`).join('');
+  P=C.plants||[];renderPlants();
+  $('#stepList').innerHTML=(C.steps||[]).map(x=>`<li><div><b>${esc(x.title)}</b><span>${esc(x.text)}</span></div></li>`).join('');
+  $('#soilBody').innerHTML=(C.soils||[]).map(x=>`<tr><td><strong>${esc(x.name)}</strong></td><td>${esc(x.mix)}</td><td>${esc(x.for)}</td></tr>`).join('');
+  $('#waterBody').innerHTML=(C.irrigation||[]).map(x=>`<tr><td><strong>${esc(x.name)}</strong></td><td>${esc(x.how)}</td><td>${esc(x.pros)}</td><td>${esc(x.for)}</td></tr>`).join('');
+  ['room','balcony','garden'].forEach(g=>{const el=$('#space-'+g);if(el)el.innerHTML=(C.spaces||[]).filter(x=>x.group===g).map(x=>`<div class="card"><h3>${esc(x.title)}</h3>${x.text?`<p>${esc(x.text)}</p>`:''}${ul(x.items)}</div>`).join('');});
+  $('#verdictGrid').innerHTML=(C.verdicts||[]).map(x=>`<div class="card"><span class="tag ${esc(x.tone)}">${esc(x.badge)}</span><h3>${esc(x.title)}</h3><p>${esc(x.text)}</p></div>`).join('');
+  $('#investGrid').innerHTML=(C.invest||[]).map(x=>`<div class="card"><h3>${esc(x.title)}</h3><p>${esc(x.text)}</p></div>`).join('');
+  $('#calTable').innerHTML='<thead><tr><th>النبات</th>'+MONTHS.map((m,i)=>`<th class="m ${i===cm?'month-now':''}" style="text-align:center;font-size:.8rem">${m}</th>`).join('')+'</tr></thead><tbody>'+
+    (C.calendar||[]).map(r=>'<tr><td><strong>'+esc(r.plant)+'</strong></td>'+[...String(r.months||'').padEnd(12,'.')].slice(0,12).map((c,i)=>`<td class="m ${i===cm?'month-now':''}">${cls[c]?`<span class="c ${cls[c]}" title="${MONTHS[i]}"></span>`:''}</td>`).join('')+'</tr>').join('')+'</tbody>';
+  $('#seasonCards').innerHTML=(C.seasons||[]).map(x=>`<div class="card"><span class="tag ${esc(x.tone)}">${esc(x.title)}</span><p>${esc(x.text)}</p></div>`).join('');
+  $('#topicGrid').innerHTML=(C.topics||[]).map(t=>`<div class="card"><h3>${esc(t.title)}</h3><p>${esc(t.text)}</p>${ul(t.items)}</div>`).join('');
+  $('#canvasGrid').innerHTML=(C.canvas||[]).map(x=>`<div class="card ${x.size&&x.size!=='normal'?esc(x.size):''}"><h3>${esc(x.title)}</h3>${ul(x.items)}</div>`).join('');
+  $('#pkgGrid').innerHTML=(C.packages||[]).map(x=>`<div class="card price${x.featured?' featured':''}"><span class="tag ${esc(x.tone)}">${esc(x.badge)}</span><h3>${esc(x.name)}</h3><div class="amount num">${esc(x.price)} <small>${esc(x.unit)}</small></div>${ul(x.items)}</div>`).join('');
+  $('#kitBody').innerHTML=(C.kits||[]).map(x=>{const pr=+x.price||0,co=+x.cost||0;return `<tr><td>${esc(x.name)}</td><td>${esc(x.contents)}</td><td class="num">${fmt(pr)}</td><td class="num">${fmt(co)}</td><td class="num">${pr?fmt((pr-co)/pr*100):'—'}%</td></tr>`}).join('');
+  $('#forecastBody').innerHTML=(C.forecast||[]).map(x=>{const td=v=>{const n=parseFloat(String(v).replace(/,/g,''));const col=x.bold&&/ربح|صافي/.test(x.label)&&!isNaN(n)?` style="color:var(${n<0?'--danger':'--leaf'})"`:'';return `<td class="num"${col}>${x.bold?'<strong>':''}${esc(v)}${x.bold?'</strong>':''}</td>`};return `<tr><td>${x.bold?'<strong>':''}${esc(x.label)}${x.bold?'</strong>':''}</td>${td(x.y1)}${td(x.y2)}${td(x.y3)}</tr>`}).join('');
+  $('#phaseGrid').innerHTML=(C.phases||[]).map(x=>`<div class="card"><span class="tag ${esc(x.tone)}">${esc(x.period)}</span><h3>${esc(x.title)}</h3>${ul(x.items)}</div>`).join('');
+  $('#insightGrid').innerHTML=(C.insights||[]).map(x=>`<div class="card"><h3>${esc(x.title)}</h3>${x.text?`<p>${esc(x.text)}</p>`:''}${ul(x.items)}</div>`).join('');
+  const sel=$('#fService'),cur=sel.value;sel.innerHTML=(C.services||[]).map(x=>`<option>${esc(x)}</option>`).join('');if(cur)sel.value=cur;
+}
+applyContent(window.GHARSA_DEFAULT);
+if(window.GharsaStore)window.GharsaStore.load().then(c=>{if(c&&c!==window.GHARSA_DEFAULT)applyContent(c);}).catch(()=>{});
+
+/* ---------- service requests ---------- */
+// الطلبات تصل إلى نظام العملاء عبر الخادم المحدد في GHARSA_API، وتُحفظ نسخة منها في متصفح الزائر ليعود إليها.
+const GHARSA_API=(window.GHARSA_CONFIG&&window.GHARSA_CONFIG.API)||'';
+const MY_KEY='gharsa-my-requests';
+let myItems=[];try{myItems=JSON.parse(store.get(MY_KEY)||'[]')||[]}catch(e){myItems=[]}
+function normPhone(raw){
+  let d=String(raw).replace(/[^\d]/g,'');
+  if(d.startsWith('00974'))d=d.slice(5);else if(d.startsWith('974')&&d.length===11)d=d.slice(3);
+  if(!/^[3-7]\d{7}$/.test(d))return null;
+  return '+974 '+d.slice(0,4)+' '+d.slice(4);
+}
+function renderMine(){
+  const el=$('#myReqs');
+  if(!myItems.length){el.innerHTML='<p class="empty">ستظهر طلباتك هنا بعد إرسالها، مع رقم كل طلب وتاريخه.</p>';return;}
+  el.innerHTML=[...myItems].sort((a,b)=>b.createdAt-a.createdAt).map(r=>`<div class="req"><header><strong>${esc(r.service)}</strong><span class="tag ${r.sent?'st-new':'st-cancel'}">${r.sent?'تم الاستلام':'لم يُرسل'}</span></header>
+   <p class="num">رقم الطلب: <span dir="ltr">${esc(r.no)}</span> · ${fmtDate(r.createdAt)}</p>
+   <p class="num">${esc(r.name)} · <span dir="ltr">${esc(r.phone)}</span></p>
+   <p>${esc(r.space)}${r.area?' · '+esc(r.area):''}${r.size?' · '+esc(r.size)+' م²':''}</p>${r.notes?`<p>${esc(r.notes)}</p>`:''}</div>`).join('');
+}
+renderMine();
+function showStatus(kind,msg){const s=$('#fStatus');s.hidden=false;s.className='status '+kind;s.textContent=msg;}
+$('#reqForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const name=$('#fName').value.trim(), phone=normPhone($('#fPhone').value);
+  if(name.length<3){showStatus('err','اكتب الاسم الكامل (ثلاثة أحرف على الأقل).');$('#fName').focus();return;}
+  if(!phone){showStatus('err','رقم الجوال غير صحيح. اكتب رقماً قطرياً من ثمانية أرقام، مثل 5555 1234.');$('#fPhone').focus();return;}
+  const d=new Date(),p=x=>String(x).padStart(2,'0');
+  const no=`GH-${String(d.getFullYear()).slice(2)}${p(d.getMonth()+1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`;
+  const item={no,name,phone,service:$('#fService').value,space:$('#fSpace').value,area:$('#fArea').value.trim().slice(0,60),
+    size:$('#fSize').value?String(Math.round(+$('#fSize').value)):'',notes:$('#fNotes').value.trim().slice(0,600),createdAt:Date.now(),sent:false};
+  if(!GHARSA_API){showStatus('err','استقبال الطلبات غير مفعّل حالياً. أعد المحاولة لاحقاً.');return;}
+  const btn=$('#fSubmit');btn.disabled=true;showStatus('info','جارٍ إرسال الطلب…');
+  const details=`غرسة للزراعة المنزلية: ${item.service}\nنوع المساحة: ${item.space}${item.area?'\nالمنطقة: '+item.area:''}${item.size?'\nالمساحة: '+item.size+' م²':''}${item.notes?'\nتفاصيل: '+item.notes:''}`;
+  try{
+    const r=await fetch(GHARSA_API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'request',quote:no,company:'',name,phone,email:'',type:'غرسة للزراعة المنزلية',plan:item.service,contact:'الجوال',services:details,codes:[],lang:'ar',page:location.href,hp:$('#fHp').value})});
+    const j=await r.json(); if(!j.ok)throw new Error(j.error||'not ok');
+    item.sent=true; if(j.id)item.no=String(j.id);
+    myItems.push(item);store.set(MY_KEY,JSON.stringify(myItems.slice(-30)));renderMine();
+    $('#reqForm').reset();
+    showStatus('ok','تم استلام طلبك بنجاح. رقم الطلب: '+item.no+'. سيتواصل معك فريق غرسة قريباً على الرقم '+phone+'.');
+  }catch(err){showStatus('err','تعذّر إرسال الطلب الآن. تحقق من الاتصال بالإنترنت وأعد المحاولة بعد قليل.');}
+  finally{btn.disabled=false;}
+});
+
+route();
+})();
+</script>
+
+</body></html>

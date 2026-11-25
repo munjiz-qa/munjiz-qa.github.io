@@ -68,13 +68,144 @@
     textile: '<path d="M18 3 6 15M6 15l-2 6 6-2M16 5l3 3"/><path d="M14 3c3 0 7 4 7 7"/>',
     gifts: '<rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M3 9h18v-3H3zM12 6v14M12 6c-2-4-6-3-5 0M12 6c2-4 6-3 5 0"/>',
     agri: '<path d="M12 21v-9M12 12C12 7 8 5 4 5c0 4 3 7 8 7zM12 14c0-4 3-7 8-7 0 4-3 7-8 7z"/>',
+    cake: '<path d="M4 20h16v-7H4zM4 15.5c2.2 1.4 3.9 1.4 5.3 0 1.4 1.4 3.9 1.4 5.4 0 1.4 1.4 3.1 1.4 5.3 0M7 13V9h10v4M12 9V6"/><path d="M12 3.5c.8.7.8 1.5 0 2.2-.8-.7-.8-1.5 0-2.2z"/>',
+    coffee: '<path d="M5 9h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5zM16 10.5h1.5a2.5 2.5 0 0 1 0 5H16M8 3.5c.8 1-.8 2 0 3M12 3.5c.8 1-.8 2 0 3"/>',
+    gem: '<path d="M7 4h10l4 5-9 11L3 9zM3 9h18M10 4l2 16M14 4l-2 16"/>',
+    heart: '<path d="M12 20s-7.5-4.6-7.5-10.2A4.2 4.2 0 0 1 12 7.3a4.2 4.2 0 0 1 7.5 2.5C19.5 15.4 12 20 12 20z"/>',
+    star: '<path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/>',
+    brush: '<path d="M14.5 4.5 19.5 9.5 11 18l-5-5zM6 13l-1.6 4.6c-.3 1 .5 1.8 1.5 1.5L10.5 18"/>',
+    box: '<path d="M4 8l8-4 8 4v8l-8 4-8-4zM4 8l8 4 8-4M12 12v8M8 6l8 4"/>',
+    leaf: '<path d="M5 19C5 10 10.5 4.5 20 4.5 20 14 14.5 19 5 19zM5 19l8.5-8.5"/>',
+    help: '<circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.6 2.3c-.7.4-1.2.9-1.2 1.7v.4M12 17h.01"/>',
+    up: '<path d="m6 15 6-6 6 6"/>', down: '<path d="m6 9 6 6 6-6"/>',
+    edit: '<path d="M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4"/>', trash: '<path d="M4 7h16M9.5 7V4.5h5V7M6.5 7l1 13h9l1-13M10 11v5M14 11v5"/>',
+    grip: '<circle cx="9" cy="6" r=".9"/><circle cx="15" cy="6" r=".9"/><circle cx="9" cy="12" r=".9"/><circle cx="15" cy="12" r=".9"/><circle cx="9" cy="18" r=".9"/><circle cx="15" cy="18" r=".9"/>',
+    eye: '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>', check: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
   };
   const ic = (n, cls = "") => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[n] || ""}</svg>`;
   const CAT_COLORS = { food: ["#F6E1DA", "#B9573F"], beauty: ["#EFE3F3", "#7A4A8C"], crafts: ["#F6E7CB", "#9A6512"], textile: ["#E3E6F6", "#3A3F8F"], gifts: ["#F9E0E6", "#A33B5B"], agri: ["#E1EEE6", "#3E7556"] };
+  const ICON_NAMES = { food: "طعام", beauty: "عناية", crafts: "حرف", textile: "خياطة", gifts: "هدايا", agri: "زراعة", cake: "حلويات", coffee: "قهوة", gem: "مجوهرات", heart: "قلب", star: "نجمة", brush: "فن", box: "تغليف", leaf: "ورقة", spark: "بريق", store: "متجر", search: "بحث", truck: "توصيل", shield: "ضمان", book: "كتاب", msg: "رسالة", img: "صورة" };
+  const catObj = (id) => S.cats.find((c) => c.id === id);
+  const catColors = (id) => {
+    const c = catObj(id);
+    if (c && c.hue != null) return [`hsl(${c.hue} 55% 93%)`, `hsl(${c.hue} 45% 34%)`];
+    return CAT_COLORS[id] || ["#F6E7CB", "#9A6512"];
+  };
+  const hueColors = (h) => [`hsl(${h} 55% 93%)`, `hsl(${h} 45% 34%)`];
+  const catIcon = (id) => (catObj(id) || {}).icon || (I[id] ? id : "spark");
+  const pubCats = () => S.cats.filter((c) => c.active !== false);
+
+  /* ---------- المحتوى القابل للتعديل من الإدارة (مع قيم افتراضية) ---------- */
+  const DEFAULTS = {
+    announce: { enabled: false, text: "أهلًا بكم في حبكة: تسوّق من الأسر المنتجة في قطر، وادعم الصنعة المحلية.", link: "#/browse", tone: "gold" },
+    hero: {
+      eyebrow: "منصة الأسر المنتجة في قطر", title: "كل ما يُصنع في البيوت بإتقان،", highlight: "في مكان واحد",
+      lead: "من مطابخ الفريج إلى أنامل الحرفيات: مأكولات بيتية، عطور وبخور، حرف وديكور، خياطة وتطريز، هدايا ومناسبات، وزراعة منزلية طازجة.",
+      placeholder: "ابحث عن لقيمات، بخور، تطريز...", show_stats: true,
+    },
+    sections: [
+      { id: "cats", label: "المجالات", title: "تسوّق حسب المجال", subtitle: "مجالات تحتضن مواهب البيوت القطرية", visible: true },
+      { id: "featured", label: "المنتجات المميزة والأحدث", title: "منتجات مختارة", subtitle: "طازجة من البيوت مباشرة", visible: true },
+      { id: "steps", label: "كيف تعمل المنصة", title: "كيف تعمل حبكة؟", subtitle: "تجربة واضحة للعميل والمنتج", visible: true },
+      { id: "shops", label: "المتاجر المميزة", title: "متاجر منزلية مميزة", subtitle: "تعرّف على أصحاب الحرفة", visible: true },
+      { id: "faq", label: "الأسئلة الشائعة", title: "أسئلة شائعة", subtitle: "إجابات سريعة لأكثر ما يسأل عنه العملاء والمنتجون", visible: true },
+      { id: "band", label: "دعوة المنتجين", title: "", subtitle: "", visible: true },
+    ],
+    steps: [
+      { icon: "search", title: "اكتشف واطلب", body: "تصفح المنتجات حسب المجال أو المنطقة، وأضف ما يعجبك إلى السلة، ثم أكمل الطلب بالتوصيل أو الاستلام." },
+      { icon: "store", title: "يجهّز المنتج طلبك", body: "يصل الطلب إلى صاحب المتجر فورًا، فيقبله ويجهّزه بعناية، وتتابع حالته خطوة بخطوة من حسابك." },
+      { icon: "truck", title: "استلم وقيّم", body: "تستلم طلبك وتدفع عند الاستلام، ثم تقيّم المنتج لتساعد غيرك وتدعم الأسر المنتجة." },
+    ],
+    band: { title: "حوّل موهبتك المنزلية إلى مشروع", body: "افتح متجرك على حبكة مجانًا، واعرض منتجاتك، واستقبل الطلبات وتابعها من لوحة واحدة. ومعك دليل البداية وحاسبة التسعير لتنطلق بثقة.", btn1: "افتح متجرك الآن", link1: "#/register?role=producer", btn2: "دليل البداية", link2: "#/guide" },
+    faq: [
+      { q: "كيف أدفع ثمن طلبي؟", a: "يتم الدفع مباشرة للمتجر عند الاستلام، نقدًا أو تحويلًا حسب ما يتفق عليه الطرفان." },
+      { q: "هل يمكنني إلغاء الطلب؟", a: "نعم، يمكنك إلغاء الطلب من صفحة «حسابي» قبل أن يقبله المتجر. بعد القبول يكون الإلغاء بالتنسيق مع المتجر." },
+      { q: "كيف أفتح متجرًا منزليًا على حبكة؟", a: "أنشئ حسابًا واختر «أنا منتج منزلي»، ثم أضف منتجاتك. تراجع الإدارة المتجر والمنتجات وتعتمدها ليظهر متجرك للعملاء." },
+      { q: "هل فتح المتجر مجاني؟", a: "نعم، التسجيل وفتح المتجر وعرض المنتجات مجاني بالكامل." },
+      { q: "من يتولى التوصيل؟", a: "يتولى كل متجر توصيل طلباته أو تسليمها، ويُتفق على رسوم التوصيل بين العميل والمتجر." },
+    ],
+    guide: {
+      eyebrow: "دليل المنتج المنزلي", title: "من فكرة في بيتك إلى مشروع ناجح",
+      lead: "دليل عملي مختصر يرافقك في اختيار المجال، والترخيص، والتسعير، وبناء العلامة، والتسويق، حتى أول طلب على حبكة.",
+      ideas_title: "أفكار المشاريع حسب المجال", start_title: "خطوات البداية في قطر", calc_title: "حاسبة التسعير",
+      calc_lead: "أدخل تكاليفك لكل وحدة، وتقترح الحاسبة سعرًا يغطي التكلفة ويحقق ربحًا عادلًا.",
+      calc_example: "مثال: علبة لقيمات تكلف موادها 12 ر.ق وتغليفها 3 ر.ق وتستغرق نصف ساعة.",
+      brand_title: "العلامة والتسويق", cta_title: "جاهز للانطلاق؟", cta_body: "افتح متجرك على حبكة مجانًا، وابدأ استقبال الطلبات.",
+    },
+    ideas: [
+      { icon: "food", hue: 12, title: "المأكولات والحلويات", desc: "الأكثر طلبًا والأسرع دورانًا، ويتطلب التزامًا صارمًا بسلامة الغذاء.", items: ["حلويات شعبية: لقيمات، خنفروش، بلاليط", "أطباق عائلية جاهزة ووجبات أسبوعية مجمدة", "مخبوزات وكيك المناسبات", "مونة البيت: بهارات، دبس، مخللات"], cost: "1,000 إلى 3,000 ر.ق" },
+      { icon: "beauty", hue: 285, title: "العناية والعطور", desc: "هوامش ربح جيدة وصلاحية طويلة، ويتميز فيه من يتقن الخلطات.", items: ["صابون طبيعي بالطريقة الباردة", "بخور ومعمول ودخون", "زيوت شعر وخلطات أعشاب", "عطور زيتية ومعطرات مفارش"], cost: "1,500 إلى 4,000 ر.ق" },
+      { icon: "crafts", hue: 38, title: "الحرف والديكور", desc: "منتجات فنية بقيمة عالية، يناسبها التسويق المرئي.", items: ["شموع معطرة بأوعية فخارية", "سعف النخيل والخوص", "فن الريزن واللوحات", "ديكورات رمضان والأعياد"], cost: "800 إلى 2,500 ر.ق" },
+      { icon: "textile", hue: 232, title: "الخياطة والتطريز", desc: "طلب مستمر طوال العام، ويتضاعف قبل المواسم.", items: ["جلابيات ومخاوير", "تطريز الأسماء والشعارات", "مفارش صلاة وأطقم مواليد", "تعديل الملابس وتفصيلها"], cost: "2,000 إلى 5,000 ر.ق" },
+      { icon: "gifts", hue: 340, title: "الهدايا والمناسبات", desc: "مشروع موسمي قوي يعتمد على الذوق وحسن التنسيق.", items: ["صناديق ضيافة وقرقيعان", "توزيعات مواليد وأعراس", "تنسيق الورد والهدايا", "تغليف الهدايا حسب الطلب"], cost: "1,000 إلى 3,000 ر.ق" },
+      { icon: "agri", hue: 145, title: "الزراعة المنزلية", desc: "مساحة صغيرة وعائد متكرر، وطلب متزايد على المنتج الطازج.", items: ["المايكروجرين للمطاعم والأسر", "أعشاب طازجة: نعناع، ريحان، زعتر", "شتلات وأصص منزلية", "خلطات تربة وسماد عضوي"], cost: "500 إلى 2,000 ر.ق" },
+    ],
+    start: [
+      { title: "اختر منتجًا واحدًا تتقنه", body: "ابدأ بمنتج أو اثنين تتميز فيهما، واختبرهما مع الأهل والجيران، وسجّل ملاحظاتهم قبل التوسع." },
+      { title: "رخّص نشاطك المنزلي", body: "استخرج ترخيص الأعمال المنزلية من وزارة التجارة والصناعة عبر خدماتها الإلكترونية. ولأنشطة الأغذية اشتراطات صحية إضافية، فراجع الجهات المختصة واطّلع على أحدث المتطلبات في موقع الوزارة الرسمي." },
+      { title: "اضبط الجودة والسلامة", body: "خصص مكانًا نظيفًا للعمل، ودوّن المكونات وتاريخ الإنتاج والصلاحية على كل عبوة، واستخدم تغليفًا آمنًا يحفظ المنتج." },
+      { title: "سعّر بعدالة", body: "لا تبع بأقل من تكلفتك. احسب المواد والتغليف ووقتك ونسبة للمصاريف ثم هامش الربح. استخدم الحاسبة أدناه." },
+      { title: "افتح متجرك على حبكة", body: "سجّل كمنتج منزلي، وأضف صورًا واضحة ووصفًا دقيقًا، وبعد اعتماد الإدارة يبدأ العملاء بالطلب." },
+      { title: "خدمة تصنع الولاء", body: "رد سريع، والتزام بالموعد، وبطاقة شكر صغيرة داخل الطلب. العميل الراضي يعود ويُعرّف غيره بك." },
+    ],
+    brand: [
+      { title: "اسم وهوية", items: ["اسم قصير سهل النطق يعكس منتجك", "لونان أساسيان وخط ثابت على كل العبوات", "ملصق يحمل الاسم والمكونات والتاريخ"] },
+      { title: "صور تبيع", items: ["ضوء النهار قرب النافذة", "خلفية بسيطة وزاوية علوية للأطباق", "صورة تُظهر الحجم الحقيقي للمنتج"] },
+      { title: "انتشار ذكي", items: ["شارك رابط متجرك على حبكة في حساباتك", "عروض المواسم: رمضان، العيد، اليوم الوطني، القرنقعوه", "اطلب من العملاء تقييم المنتج بعد الاستلام"] },
+    ],
+    about: {
+      eyebrow: "عن حبكة", title: "الحَبْكة: إتقانٌ يُصنع في البيت",
+      lead: "«الحَبْكة» في لساننا هي إحكام الصنعة وإتقانها، وهي العقدة التي تشدّ الخيط فلا ينفلت. ومن هذا المعنى وُلدت المنصة: نجمع خيوط المواهب المنزلية في قطر في نسيج واحد يصل إلى كل بيت.",
+      cards: [
+        { title: "رسالتنا", body: "تمكين الأسر المنتجة وأصحاب الصناعات المنزلية من الوصول إلى عملائهم بسهولة واحترافية." },
+        { title: "للعميل", body: "منتجات بيتية أصيلة من متاجر معتمدة، مع متابعة واضحة للطلب وتقييمات حقيقية بعد الاستلام فقط." },
+        { title: "للمنتج", body: "متجر مجاني ولوحة لإدارة المنتجات والطلبات والاستفسارات، مع دليل عملي وحاسبة للتسعير." },
+      ],
+      body: "### قيمنا\n- **الإتقان:** نعتمد المتاجر والمنتجات بعد مراجعتها.\n- **الشفافية:** أسعار واضحة وحالة طلب معلنة في كل خطوة.\n- **الأصالة:** نحتفي بالصنعة المحلية وروح البيت القطري.",
+    },
+    terms: {
+      title: "الشروط والأحكام", updated: "22 نوفمبر 2026",
+      body: "1. حبكة منصة وسيطة تربط العملاء بأصحاب الصناعات المنزلية، والمنتج مسؤول عن جودة منتجه وسلامته ومطابقته للوصف.\n2. يلتزم المنتج بالحصول على التراخيص اللازمة لنشاطه وفق الأنظمة المعمول بها في دولة قطر.\n3. تراجع الإدارة المتاجر والمنتجات قبل عرضها، ولها رفض أو إيقاف ما يخالف الشروط أو الذوق العام.\n4. الأسعار معروضة بالريال القطري، ويتم الدفع مباشرة بين العميل والمنتج عند الاستلام، ويُتفق على رسوم التوصيل بينهما.\n5. يحق للعميل إلغاء الطلب قبل قبوله من المنتج، وبعد القبول يكون الإلغاء بالتنسيق مع المنتج.\n6. التقييمات متاحة فقط لمن استلم الطلب، ويُمنع نشر محتوى مسيء أو مضلل.\n7. يُمنع استخدام المنصة لأي نشاط مخالف للأنظمة، وللإدارة إيقاف الحسابات المخالفة.",
+    },
+    privacy: {
+      title: "سياسة الخصوصية", updated: "22 نوفمبر 2026",
+      body: "- نجمع الاسم ورقم الجوال والبريد الإلكتروني والمنطقة لتشغيل الحساب وإتمام الطلبات.\n- يظهر رقم جوال العميل وعنوانه للمتجر الذي طلب منه فقط، لغرض تنفيذ الطلب والتواصل بشأنه.\n- تُحفظ كلمات المرور مشفّرة، ولا يطّلع عليها أحد.\n- لا نبيع بياناتك ولا نشاركها مع أي طرف لأغراض تسويقية.\n- يمكنك تعديل بياناتك من صفحة حسابك، أو طلب حذف الحساب عبر صفحة التواصل.",
+    },
+    footer: { about: "منصة قطرية تحتضن الصناعات المنزلية والأسر المنتجة، وتصل إتقانهم إلى كل بيت.", region: "دولة قطر", contact_lead: "يسعدنا استقبال استفساراتكم ومقترحاتكم، ويرد فريق حبكة خلال يوم عمل." },
+  };
+  const C = (k) => {
+    const v = S.content && S.content[k];
+    if (v == null) return DEFAULTS[k];
+    if (Array.isArray(DEFAULTS[k])) return Array.isArray(v) ? v : DEFAULTS[k];
+    return { ...DEFAULTS[k], ...v };
+  };
+  const homeSections = () => {
+    const saved = C("sections"), ids = saved.map((s) => s.id);
+    return [...saved.map((s) => ({ ...DEFAULTS.sections.find((d) => d.id === s.id), ...s })), ...DEFAULTS.sections.filter((d) => !ids.includes(d.id))];
+  };
+  /* نص منسّق بسيط: فقرات، قوائم نقطية (- ) ومرقمة (1. )، عناوين (### )، وخط عريض (**نص**) */
+  function rich(text) {
+    const inline = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+    const out = []; let list = null;
+    const flush = () => { if (list) { out.push(`<${list.t}>${list.items.map((x) => `<li>${inline(x)}</li>`).join("")}</${list.t}>`); list = null; } };
+    for (const raw of String(text || "").split("\n")) {
+      const line = raw.trim();
+      let m;
+      if (!line) { flush(); continue; }
+      if ((m = line.match(/^[-•]\s+(.*)$/))) { if (!list || list.t !== "ul") { flush(); list = { t: "ul", items: [] }; } list.items.push(m[1]); continue; }
+      if ((m = line.match(/^\d+[.)]\s+(.*)$/))) { if (!list || list.t !== "ol") { flush(); list = { t: "ol", items: [] }; } list.items.push(m[1]); continue; }
+      flush();
+      if ((m = line.match(/^#{2,3}\s+(.*)$/))) out.push(`<h3>${inline(m[1])}</h3>`);
+      else out.push(`<p>${inline(line)}</p>`);
+    }
+    flush();
+    return out.join("");
+  }
+  const safeLink = (l) => (/^(#\/|https:\/\/)/.test(String(l || "")) ? esc(l) : "#/");
 
   /* رسم فني أصلي لكل منتج بلا صورة */
   function art(cat, hue = 30, seed = "") {
-    const [bg, fg] = CAT_COLORS[cat] || ["#F6E7CB", "#9A6512"];
+    const [bg, fg] = catColors(cat);
     let h = 0; for (const c of String(seed)) h = (h * 31 + c.charCodeAt(0)) >>> 0;
     const r = (n) => ((h = (h * 1103515245 + 12345) >>> 0) % n);
     let dots = "";
@@ -85,7 +216,7 @@
       <path d="M0 ${220 + r(30)} C 120 ${170 + r(40)}, 260 ${260 - r(40)}, 400 ${200 + r(30)} V300 H0Z" fill="${ring}" opacity=".35"/>
       <g fill="none" stroke="${fg}" stroke-width="2" opacity=".25">${Array.from({ length: 5 }, (_, i) => `<circle cx="${300 - i * 3}" cy="${80 + i * 2}" r="${30 + i * 18}"/>`).join("")}</g>
       ${dots}
-      <g transform="translate(150 100) scale(4.2)" fill="none" stroke="${fg}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${I[cat] || I.spark}</g>
+      <g transform="translate(150 100) scale(4.2)" fill="none" stroke="${fg}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${I[catIcon(cat)] || I.spark}</g>
     </svg>`;
   }
   const pImg = (p) => (p.image ? `<img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy">` : art(p.category_id, p.shop?.hue, p.id + p.name));
@@ -96,7 +227,7 @@
     set(k, v) { try { localStorage.setItem("habka." + k, JSON.stringify(v)); } catch {} },
     del(k) { try { localStorage.removeItem("habka." + k); } catch {} },
   };
-  const S = { token: store.get("token", null), user: store.get("user", null), cart: store.get("cart", []), home: null, cats: [] };
+  const S = { token: store.get("token", null), user: store.get("user", null), cart: store.get("cart", []), home: null, cats: [], content: {} };
   const saveCart = () => { store.set("cart", S.cart); renderChrome(); };
 
   /* ---------- الاتصال بالخادم ---------- */
@@ -124,8 +255,8 @@
     renderChrome();
   }
   async function loadCats() {
-    if (S.cats.length) return S.cats;
-    S.home = await api("habka_home"); S.cats = S.home.categories; return S.cats;
+    if (S.cats.length && Date.now() - (S.loadedAt || 0) < 120000) return S.cats;
+    S.home = await api("habka_home"); S.cats = S.home.categories; S.content = S.home.content || {}; S.loadedAt = Date.now(); return S.cats;
   }
   const catName = (id) => (S.cats.find((c) => c.id === id) || {}).name || "";
 
@@ -184,6 +315,17 @@
     $("#bbar").innerHTML = bl.map(([h, i, t]) => `<a href="${h}" class="${route === h ? "on" : ""}">${ic(i)}<span>${t}</span>${i === "cart" && count ? `<span class="badge-dot num">${count}</span>` : ""}</a>`).join("");
   }
   document.addEventListener("click", () => $("#umenu")?.classList.remove("open"));
+  /* شريط الإعلانات والتذييل من المحتوى المُدار */
+  function renderSite() {
+    const a = C("announce"), F = C("footer"), el = $("#ann");
+    if (el) {
+      const on = a.enabled && String(a.text || "").trim();
+      el.className = on ? `ann ann-${esc(a.tone || "gold")}` : "ann";
+      el.innerHTML = on ? (a.link ? `<a href="${safeLink(a.link)}" ${/^https:/.test(a.link) ? 'target="_blank" rel="noopener"' : ""}>${esc(a.text)}</a>` : `<span>${esc(a.text)}</span>`) : "";
+    }
+    if ($("#fabout")) $("#fabout").textContent = F.about;
+    if ($("#fregion")) $("#fregion").textContent = F.region;
+  }
   async function logout() {
     try { await api("habka_logout", { p_token: S.token }); } catch {}
     setSession(null); toast("تم تسجيل الخروج"); location.hash = "#/";
@@ -204,8 +346,8 @@
       ${s.is_demo ? `<span class="chip" style="margin-top:8px">متجر تجريبي</span>` : ""}</div></a>`;
   }
   const catTile = (c) => {
-    const [bg, fg] = CAT_COLORS[c.id] || ["#eee", "#333"];
-    return `<a class="cat" href="#/browse?cat=${c.id}"><div class="ic" style="background:${bg};color:${fg}">${ic(c.icon)}</div><b>${esc(c.name)}</b><span>${esc(c.blurb)}</span></a>`;
+    const [bg, fg] = catColors(c.id);
+    return `<a class="cat" href="#/browse?cat=${c.id}"><div class="ic" style="background:${bg};color:${fg}">${ic(c.icon || "spark")}</div><b>${esc(c.name)}</b><span>${esc(c.blurb)}</span></a>`;
   };
 
   /* ---------- الصفحات ---------- */
@@ -213,17 +355,33 @@
 
   routes[""] = async () => {
     app.innerHTML = loader();
-    const h = (S.home = await api("habka_home")); S.cats = h.categories;
-    const f = h.featured;
+    const h = (S.home = await api("habka_home")); S.cats = h.categories; S.content = h.content || S.content || {}; S.loadedAt = Date.now();
+    renderSite();
+    const H = C("hero"), f = h.featured, cats = pubCats();
+    const head = (s, more = "") => `<div class="sec-head"><div>${s.title ? `<h2>${esc(s.title)}</h2>` : ""}${s.subtitle ? `<p>${esc(s.subtitle)}</p>` : ""}</div>${more}</div>`;
+    const SEC = {
+      cats: (s) => cats.length ? `<section class="block" data-sec="cats"><div class="wrap">${head(s)}<div class="grid g-cats">${cats.map(catTile).join("")}</div></div></section>` : "",
+      featured: (s) => `<section class="block" data-sec="featured"><div class="wrap">${head(s, `<a class="btn btn-ghost btn-sm" href="#/browse">عرض الكل</a>`)}
+        ${f.length ? `<div class="grid g-prod">${f.map(productCard).join("")}</div>` : empty("لا توجد منتجات بعد")}</div></section>`,
+      steps: (s) => { const st = C("steps"); return st.length ? `<section class="block" data-sec="steps"><div class="wrap">${head(s)}<div class="grid g-3 steps">
+        ${st.map((x) => `<div class="card step"><div class="ic">${ic(x.icon || "spark")}</div><h3>${esc(x.title)}</h3><p class="muted">${esc(x.body)}</p></div>`).join("")}</div></div></section>` : ""; },
+      shops: (s) => h.shops.length ? `<section class="block" data-sec="shops"><div class="wrap">${head(s, `<a class="btn btn-ghost btn-sm" href="#/shops">كل المتاجر</a>`)}<div class="grid g-3">${h.shops.map(shopCard).join("")}</div></div></section>` : "",
+      faq: (s) => { const fq = C("faq"); return fq.length ? `<section class="block" data-sec="faq"><div class="wrap">${head(s, `<a class="btn btn-ghost btn-sm" href="#/faq">كل الأسئلة</a>`)}<div class="faq">${fq.slice(0, 5).map(faqItem).join("")}</div></div></section>` : ""; },
+      band: () => { const b = C("band"); return `<section class="block" data-sec="band"><div class="wrap"><div class="band">
+        <svg class="pat" viewBox="0 0 400 200" preserveAspectRatio="none"><path d="M0 150 C100 80 200 220 400 90" stroke="#D9962B" stroke-width="2" fill="none"/><path d="M0 170 C120 100 220 230 400 120" stroke="#F3E6CF" stroke-width="1" fill="none"/></svg>
+        <div><h2>${esc(b.title)}</h2><p>${esc(b.body)}</p></div>
+        <div class="actions" style="justify-content:flex-end">${b.btn1 ? `<a class="btn btn-gold" href="${safeLink(b.link1)}">${ic("store")} ${esc(b.btn1)}</a>` : ""}${b.btn2 ? `<a class="btn btn-ghost" href="${safeLink(b.link2)}">${esc(b.btn2)}</a>` : ""}</div>
+      </div></div></section>`; },
+    };
     app.innerHTML = `
     <section class="hero"><div class="wrap">
       <div>
-        <span class="eyebrow">${ic("spark")} منصة الأسر المنتجة في قطر</span>
-        <h1>كل ما يُصنع في البيوت بإتقان، <span>في مكان واحد</span></h1>
-        <p class="lead">من مطابخ الفريج إلى أنامل الحرفيات: مأكولات بيتية، عطور وبخور، حرف وديكور، خياطة وتطريز، هدايا ومناسبات، وزراعة منزلية طازجة.</p>
-        <form class="search" id="hs" role="search"><input name="q" placeholder="ابحث عن لقيمات، بخور، تطريز..." aria-label="البحث"><button class="btn btn-primary">${ic("search")}<span class="hide-m">بحث</span></button></form>
-        <div class="hero-tags">${h.categories.slice(0, 6).map((c) => `<a href="#/browse?cat=${c.id}">${esc(c.name)}</a>`).join("")}</div>
-        <div class="stats"><div><b class="num">${h.stats.shops}</b><span>متجر منزلي معتمد</span></div><div><b class="num">${h.stats.products}</b><span>منتج متاح</span></div><div><b class="num">${h.stats.orders}</b><span>طلب عبر المنصة</span></div></div>
+        ${H.eyebrow ? `<span class="eyebrow">${ic("spark")} ${esc(H.eyebrow)}</span>` : ""}
+        <h1>${esc(H.title)} ${H.highlight ? `<span>${esc(H.highlight)}</span>` : ""}</h1>
+        ${H.lead ? `<p class="lead">${esc(H.lead)}</p>` : ""}
+        <form class="search" id="hs" role="search"><input name="q" placeholder="${esc(H.placeholder)}" aria-label="البحث"><button class="btn btn-primary">${ic("search")}<span class="hide-m">بحث</span></button></form>
+        <div class="hero-tags">${cats.slice(0, 6).map((c) => `<a href="#/browse?cat=${c.id}">${esc(c.name)}</a>`).join("")}</div>
+        ${H.show_stats !== false ? `<div class="stats"><div><b class="num">${h.stats.shops}</b><span>متجر منزلي معتمد</span></div><div><b class="num">${h.stats.products}</b><span>منتج متاح</span></div><div><b class="num">${h.stats.orders}</b><span>طلب عبر المنصة</span></div></div>` : ""}
       </div>
       <div class="hero-art" aria-hidden="true">
         <div class="tile" style="inset:0 18% 30% 0">${art("food", 20, "a")}</div>
@@ -232,38 +390,7 @@
         <div class="tile" style="inset:74% 70% 0 4%">${art("beauty", 280, "d")}</div>
       </div>
     </div></section>
-
-    <section class="block"><div class="wrap">
-      <div class="sec-head"><div><h2>تسوّق حسب المجال</h2><p>ستة مجالات تحتضن مواهب البيوت القطرية</p></div></div>
-      <div class="grid g-cats">${h.categories.map(catTile).join("")}</div>
-    </div></section>
-
-    <section class="block" style="padding-top:10px"><div class="wrap">
-      <div class="sec-head"><div><h2>أحدث المنتجات</h2><p>طازجة من البيوت مباشرة</p></div><a class="btn btn-ghost btn-sm" href="#/browse">عرض الكل</a></div>
-      ${f.length ? `<div class="grid g-prod">${f.map(productCard).join("")}</div>` : empty("لا توجد منتجات بعد")}
-    </div></section>
-
-    <section class="block"><div class="wrap">
-      <div class="sec-head"><div><h2>كيف تعمل حبكة؟</h2><p>تجربة واضحة للعميل والمنتج</p></div></div>
-      <div class="grid g-3 steps">
-        <div class="card step"><div class="ic">${ic("search")}</div><h3>اكتشف واطلب</h3><p class="muted">تصفح المنتجات حسب المجال أو المنطقة، وأضف ما يعجبك إلى السلة، ثم أكمل الطلب بالتوصيل أو الاستلام.</p></div>
-        <div class="card step"><div class="ic">${ic("store")}</div><h3>يجهّز المنتج طلبك</h3><p class="muted">يصل الطلب إلى صاحب المتجر فورًا، فيقبله ويجهّزه بعناية، وتتابع حالته خطوة بخطوة من حسابك.</p></div>
-        <div class="card step"><div class="ic">${ic("truck")}</div><h3>استلم وقيّم</h3><p class="muted">تستلم طلبك وتدفع عند الاستلام، ثم تقيّم المنتج لتساعد غيرك وتدعم الأسر المنتجة.</p></div>
-      </div>
-    </div></section>
-
-    ${h.shops.length ? `<section class="block" style="padding-top:10px"><div class="wrap">
-      <div class="sec-head"><div><h2>متاجر منزلية مميزة</h2><p>تعرّف على أصحاب الحرفة</p></div><a class="btn btn-ghost btn-sm" href="#/shops">كل المتاجر</a></div>
-      <div class="grid g-3">${h.shops.map(shopCard).join("")}</div>
-    </div></section>` : ""}
-
-    <section class="block"><div class="wrap">
-      <div class="band">
-        <svg class="pat" viewBox="0 0 400 200" preserveAspectRatio="none"><path d="M0 150 C100 80 200 220 400 90" stroke="#D9962B" stroke-width="2" fill="none"/><path d="M0 170 C120 100 220 230 400 120" stroke="#F3E6CF" stroke-width="1" fill="none"/></svg>
-        <div><h2>حوّل موهبتك المنزلية إلى مشروع</h2><p>افتح متجرك على حبكة مجانًا، واعرض منتجاتك، واستقبل الطلبات وتابعها من لوحة واحدة. ومعك دليل البداية وحاسبة التسعير لتنطلق بثقة.</p></div>
-        <div class="actions" style="justify-content:flex-end"><a class="btn btn-gold" href="#/register?role=producer">${ic("store")} افتح متجرك الآن</a><a class="btn btn-ghost" href="#/guide">دليل البداية</a></div>
-      </div>
-    </div></section>`;
+    ${homeSections().filter((s) => s.visible !== false && SEC[s.id]).map((s) => SEC[s.id](s)).join("")}`;
     $("#hs").onsubmit = (e) => { e.preventDefault(); location.hash = "#/browse?q=" + encodeURIComponent(e.target.q.value.trim()); };
   };
 
@@ -276,7 +403,7 @@
       <form class="search" id="bs" style="max-width:none;margin-top:0"><input name="q" value="${esc(term)}" placeholder="ابحث باسم المنتج أو المتجر" aria-label="البحث"><select name="sort" class="input" style="width:auto;border:0;min-height:40px" aria-label="الترتيب">
         <option value="new" ${sort === "new" ? "selected" : ""}>الأحدث</option><option value="price_asc" ${sort === "price_asc" ? "selected" : ""}>السعر: الأقل أولًا</option><option value="price_desc" ${sort === "price_desc" ? "selected" : ""}>السعر: الأعلى أولًا</option></select>
         <button class="btn btn-primary">${ic("search")}</button></form>
-      <div class="pills" style="margin-bottom:20px"><a class="pill ${!cat ? "on" : ""}" href="#/browse?q=${encodeURIComponent(term)}&sort=${sort}">الكل</a>${S.cats.map((c) => `<a class="pill ${cat === c.id ? "on" : ""}" href="#/browse?cat=${c.id}&q=${encodeURIComponent(term)}&sort=${sort}">${esc(c.name)}</a>`).join("")}</div>
+      <div class="pills" style="margin-bottom:20px"><a class="pill ${!cat ? "on" : ""}" href="#/browse?q=${encodeURIComponent(term)}&sort=${sort}">الكل</a>${pubCats().map((c) => `<a class="pill ${cat === c.id ? "on" : ""}" href="#/browse?cat=${c.id}&q=${encodeURIComponent(term)}&sort=${sort}">${esc(c.name)}</a>`).join("")}</div>
       <div id="res"><div class="grid g-prod">${'<div class="skel"></div>'.repeat(4)}</div></div>
     </div></div>`;
     const f = $("#bs");
@@ -348,7 +475,7 @@
     const cat = q.get("cat") || "";
     app.innerHTML = `<div class="page"><div class="wrap"><div class="crumbs"><a href="#/">الرئيسية</a> / المتاجر</div>
       <h1 style="font-size:clamp(24px,4vw,34px)">المتاجر المنزلية</h1><p class="muted">أسر منتجة وأصحاب حرف معتمدون من إدارة المنصة</p>
-      <div class="pills" style="margin:16px 0 20px"><a class="pill ${!cat ? "on" : ""}" href="#/shops">الكل</a>${S.cats.map((c) => `<a class="pill ${cat === c.id ? "on" : ""}" href="#/shops?cat=${c.id}">${esc(c.name)}</a>`).join("")}</div>
+      <div class="pills" style="margin:16px 0 20px"><a class="pill ${!cat ? "on" : ""}" href="#/shops">الكل</a>${pubCats().map((c) => `<a class="pill ${cat === c.id ? "on" : ""}" href="#/shops?cat=${c.id}">${esc(c.name)}</a>`).join("")}</div>
       <div id="res">${loader()}</div></div></div>`;
     const list = await api("habka_shops", { p_category: cat || null });
     $("#res").innerHTML = list.length ? `<div class="grid g-3">${list.map(shopCard).join("")}</div>` : empty("لا توجد متاجر في هذا المجال بعد");
@@ -458,7 +585,7 @@
           <div class="field"><label>كلمة المرور</label><input class="input ltr" type="password" name="password" required minlength="8" autocomplete="new-password"><span class="hint">8 أحرف على الأقل</span></div>
           ${role === "producer" ? `<h3 style="margin-top:8px">بيانات المتجر</h3>
             <div class="field"><label>اسم المتجر</label><input class="input" name="shop_name" required></div>
-            <div class="field"><label>مجال الإنتاج</label><select class="input" name="category_id" required>${S.cats.map((c) => `<option value="${c.id}">${esc(c.name)}</option>`).join("")}</select></div>
+            <div class="field"><label>مجال الإنتاج</label><select class="input" name="category_id" required>${pubCats().map((c) => `<option value="${c.id}">${esc(c.name)}</option>`).join("")}</select></div>
             <div class="field"><label>نبذة عن المتجر</label><textarea class="input" name="bio" placeholder="عرّف العملاء بما تصنعه وما يميزه"></textarea></div>
             <div class="row2"><div class="field"><label>رقم واتساب المتجر</label><input class="input ltr num" name="whatsapp" inputmode="tel" placeholder="+974 XXXX XXXX"><span class="hint">اتركه فارغًا لاستخدام رقم الجوال</span></div>
             <div class="field"><label>رقم الترخيص المنزلي (اختياري)</label><input class="input ltr" name="license_no"></div></div>
@@ -614,7 +741,7 @@
     if (tab === "shop") {
       pane.innerHTML = `<form class="card" id="sf" style="padding:24px"><h2>إعدادات المتجر</h2><div class="err"></div>
         <div class="field"><label>اسم المتجر</label><input class="input" name="shop_name" value="${esc(s.shop_name)}" required></div>
-        <div class="row2"><div class="field"><label>مجال الإنتاج</label><select class="input" name="category_id">${S.cats.map((c) => `<option value="${c.id}" ${c.id === s.category_id ? "selected" : ""}>${esc(c.name)}</option>`).join("")}</select></div>
+        <div class="row2"><div class="field"><label>مجال الإنتاج</label><select class="input" name="category_id">${pubCats().concat(S.cats.filter((c) => c.id === s.category_id && c.active === false)).map((c) => `<option value="${c.id}" ${c.id === s.category_id ? "selected" : ""}>${esc(c.name)}</option>`).join("")}</select></div>
         <div class="field"><label>المنطقة</label><select class="input" name="area">${AREAS.map((a) => `<option ${a === s.area ? "selected" : ""}>${a}</option>`).join("")}</select></div></div>
         <div class="field"><label>نبذة عن المتجر</label><textarea class="input" name="bio">${esc(s.bio || "")}</textarea></div>
         <div class="row2"><div class="field"><label>رقم واتساب</label><input class="input ltr num" name="whatsapp" value="${esc(s.whatsapp || "")}" required></div>
@@ -649,20 +776,24 @@
     });
   }
 
-  function productForm(p, done) {
+  function productForm(p, done, admin) {
     p = p || {};
     let image = "";
-    modal(p.id ? "تعديل المنتج" : "إضافة منتج جديد", `<form id="pfm"><div class="err"></div>
+    const cats = (admin ? S.cats : pubCats()).concat(S.cats.filter((c) => c.id === p.category_id && !admin && c.active === false));
+    modal(p.id ? "تعديل المنتج" : admin ? `إضافة منتج إلى ${p._shop || "المتجر"}` : "إضافة منتج جديد", `<form id="pfm"><div class="err"></div>
       <label class="img-drop"><div class="t-ph" id="prev">${p.id ? pImg(p) : `<div style="display:flex;align-items:center;justify-content:center;height:100%">${ic("img")}</div>`}</div>
         <div><b>صورة المنتج</b><div class="small muted">اختر صورة واضحة، وستُضغط تلقائيًا</div></div><input type="file" accept="image/*" id="pimg" class="sr"></label>
       <div class="field" style="margin-top:14px"><label>اسم المنتج</label><input class="input" name="name" value="${esc(p.name || "")}" required maxlength="80"></div>
-      <div class="row2"><div class="field"><label>التصنيف</label><select class="input" name="category_id">${S.cats.map((c) => `<option value="${c.id}" ${c.id === (p.category_id || S.user?.shop?.category_id) ? "selected" : ""}>${esc(c.name)}</option>`).join("")}</select></div>
+      <div class="row2"><div class="field"><label>التصنيف</label><select class="input" name="category_id">${cats.map((c) => `<option value="${c.id}" ${c.id === (p.category_id || S.user?.shop?.category_id) ? "selected" : ""}>${esc(c.name)}</option>`).join("")}</select></div>
       <div class="field"><label>الوحدة</label><input class="input" name="unit" value="${esc(p.unit || "قطعة")}" placeholder="قطعة، علبة، كيلو..."></div></div>
       <div class="row2"><div class="field"><label>السعر (ر.ق)</label><input class="input ltr num" name="price" type="number" step="0.5" min="1" value="${p.price || ""}" required></div>
       <div class="field"><label>الكمية المتوفرة</label><input class="input ltr num" name="stock" type="number" min="0" value="${p.stock ?? 10}" required></div></div>
       <div class="field"><label>مدة التجهيز بالأيام</label><input class="input ltr num" name="prep_days" type="number" min="0" max="60" value="${p.prep_days ?? 1}"><span class="hint">صفر يعني التجهيز في نفس اليوم</span></div>
       <div class="field"><label>الوصف</label><textarea class="input" name="description" placeholder="المكونات، الحجم، طريقة الحفظ...">${esc(p.description || "")}</textarea></div>
-      <p class="small muted">يُراجع المنتج من الإدارة قبل ظهوره، وتُعاد مراجعته عند تعديله.</p>
+      ${admin ? `<div class="row2"><div class="field"><label>حالة المنتج</label><select class="input" name="status">${["approved", "pending", "hidden", "rejected"].map((k) => `<option value="${k}" ${k === (p.status || "approved") ? "selected" : ""}>${STATUS[k]}</option>`).join("")}</select></div>
+        <div class="field"><label>&nbsp;</label><label class="ed-check"><input type="checkbox" name="featured" ${p.featured ? "checked" : ""}><span>منتج مميز يظهر أولًا</span></label></div></div>
+        ${p.image ? `<label class="ed-check" style="margin-bottom:12px"><input type="checkbox" name="remove_image"><span>إزالة الصورة الحالية واستخدام الرسم الفني</span></label>` : ""}`
+      : `<p class="small muted">يُراجع المنتج من الإدارة قبل ظهوره، وتُعاد مراجعته عند تعديله.</p>`}
       <button class="btn btn-primary btn-block">${p.id ? "حفظ التعديلات" : "إضافة المنتج"}</button></form>`, (el, close) => {
       $("#pimg", el).onchange = async (e) => {
         const f = e.target.files[0]; if (!f) return;
@@ -670,7 +801,202 @@
       };
       $("#pfm", el).onsubmit = async (e) => {
         e.preventDefault(); const f = formData(e.target);
-        try { await busy(e.submitter, () => api("habka_seller_save_product", { p_token: S.token, p: { ...f, id: p.id || null, image } })); close(); toast(p.id ? "حُفظ المنتج وأُرسل للمراجعة" : "أُضيف المنتج وأُرسل للمراجعة"); done(); }
+        try {
+          if (admin) {
+            await busy(e.submitter, () => api("habka_admin_save_product", { p_token: S.token, p: { ...f, id: p.id || null, shop_id: p.shop_id || p.shop?.id, image, featured: !!e.target.featured.checked, remove_image: !!(e.target.remove_image && e.target.remove_image.checked) } }));
+            close(); toast(p.id ? "حُفظ المنتج" : "أُضيف المنتج إلى المتجر"); done(); return;
+          }
+          await busy(e.submitter, () => api("habka_seller_save_product", { p_token: S.token, p: { ...f, id: p.id || null, image } })); close(); toast(p.id ? "حُفظ المنتج وأُرسل للمراجعة" : "أُضيف المنتج وأُرسل للمراجعة"); done();
+        }
+        catch (err) { showErr(e.target, err.message); }
+      };
+    });
+  }
+
+  /* ---------- محرر المحتوى (إدارة) ---------- */
+  const getP = (o, p) => p.split(".").reduce((a, k) => (a == null ? a : a[k]), o);
+  const setP = (o, p, v) => { const ks = p.split("."), last = ks.pop(); ks.reduce((a, k) => a[k], o)[last] = v; };
+  const blankOf = (fields) => Object.fromEntries(fields.map((f) => [f.k, f.t === "bool" ? true : f.t === "lines" || f.t === "list" ? [] : f.t === "hue" ? 30 : f.t === "icon" ? "spark" : ""]));
+  const fieldAt = (root, path) => { let f = root; for (const s of path.split(".").slice(1)) { if (/^\d+$/.test(s)) continue; f = f.fields.find((x) => x.k === s); } return f; };
+  const iconSelect = (val, attrs) => `<select class="input" ${attrs}>${Object.entries(ICON_NAMES).map(([k, n]) => `<option value="${k}" ${k === val ? "selected" : ""}>${n}</option>`).join("")}</select>`;
+  let ED_OPEN = new Set();
+  const RICH_HINT = "التنسيق: ابدأ السطر بـ «- » لقائمة نقطية، أو «1. » لقائمة مرقمة، أو «### » لعنوان فرعي، وضع النص بين ** و** ليظهر بخط عريض.";
+
+  function fieldHTML(f, val, path) {
+    const id = "f_" + path.replace(/\./g, "_");
+    const lab = `<label for="${id}">${esc(f.l)}</label>`;
+    const hint = f.h ? `<span class="hint">${esc(f.h)}</span>` : "";
+    switch (f.t) {
+      case "bool": return `<label class="ed-check"><input type="checkbox" id="${id}" data-p="${path}" data-t="bool" ${val ? "checked" : ""}><span>${esc(f.l)}</span></label>`;
+      case "area": return `<div class="field">${lab}<textarea class="input" id="${id}" data-p="${path}" rows="${f.rows || 3}">${esc(val)}</textarea>${hint}</div>`;
+      case "rich": return `<div class="field">${lab}<textarea class="input" id="${id}" data-p="${path}" rows="${f.rows || 9}">${esc(val)}</textarea><span class="hint">${RICH_HINT}</span></div>`;
+      case "lines": return `<div class="field">${lab}<textarea class="input" id="${id}" data-p="${path}" data-t="lines" rows="4">${esc((val || []).join("\n"))}</textarea><span class="hint">${esc(f.h || "عنصر واحد في كل سطر")}</span></div>`;
+      case "icon": return `<div class="field">${lab}<div class="ed-pick"><span class="ed-ic" data-prev="${path}">${ic(val || "spark")}</span>${iconSelect(val, `id="${id}" data-p="${path}" data-t="icon"`)}</div></div>`;
+      case "hue": { const [bg, fg] = hueColors(val ?? 30); return `<div class="field">${lab}<div class="ed-pick"><span class="ed-ic" data-prev="${path}" style="background:${bg};color:${fg}">${ic("spark")}</span><input type="range" min="0" max="359" class="ed-range" id="${id}" data-p="${path}" data-t="hue" value="${val ?? 30}" aria-label="${esc(f.l)}"></div></div>`; }
+      case "select": return `<div class="field">${lab}<select class="input" id="${id}" data-p="${path}">${f.o.map(([v, n]) => `<option value="${v}" ${v === val ? "selected" : ""}>${n}</option>`).join("")}</select></div>`;
+      case "list": return listHTML(f, val || [], path);
+      default: return `<div class="field">${lab}<input class="input ${f.t === "link" ? "ltr" : ""}" id="${id}" data-p="${path}" value="${esc(val)}" ${f.t === "link" ? 'placeholder="#/browse أو https://..."' : ""}>${f.t === "link" ? `<span class="hint">${esc(f.h || "رابط داخلي يبدأ بـ #/ أو رابط خارجي يبدأ بـ https://")}</span>` : hint}</div>`;
+    }
+  }
+  const tools = (path, i, n, fixed) => `<span class="ed-tools">
+    <button type="button" class="icon-btn sm" data-act="up" data-list="${path}" data-i="${i}" aria-label="تحريك للأعلى" ${i === 0 ? "disabled" : ""}>${ic("up")}</button>
+    <button type="button" class="icon-btn sm" data-act="down" data-list="${path}" data-i="${i}" aria-label="تحريك للأسفل" ${i === n - 1 ? "disabled" : ""}>${ic("down")}</button>
+    ${fixed ? "" : `<button type="button" class="icon-btn sm danger" data-act="del" data-list="${path}" data-i="${i}" aria-label="حذف">${ic("trash")}</button>`}</span>`;
+  function listHTML(f, arr, path) {
+    const nested = path.includes(".");
+    return `<div class="ed-list ${nested ? "nested" : ""}">${nested ? `<h4 class="ed-sub">${esc(f.l)}</h4>` : ""}
+      ${arr.map((it, i) => `<div class="ed-item ${ED_OPEN.has(path + "." + i) ? "open" : ""}" data-list="${path}" data-i="${i}">
+        <div class="ed-bar"><span class="ed-grip" draggable="true" title="اسحب لإعادة الترتيب">${ic("grip")}</span><b class="ed-n num">${i + 1}</b><button type="button" class="ed-t" data-act="toggle" data-list="${path}" data-i="${i}" aria-expanded="${ED_OPEN.has(path + "." + i)}">${esc((f.label && f.label(it)) || "عنصر جديد")}</button><i class="ed-chev">${ic("down")}</i>${tools(path, i, arr.length, f.fixed)}</div>
+        <div class="ed-body">${f.fields.map((sf) => fieldHTML(sf, it[sf.k], `${path}.${i}.${sf.k}`)).join("")}</div></div>`).join("")}
+      ${arr.length ? "" : `<p class="muted small">لا توجد عناصر بعد، أضف أول عنصر.</p>`}
+      ${f.fixed ? "" : `<button type="button" class="btn btn-ghost btn-sm" data-act="add" data-list="${path}">${ic("plus")} ${esc(f.add || "إضافة عنصر")}</button>`}</div>`;
+  }
+  /* ترتيب بالسحب والإفلات (الكمبيوتر) مع أزرار الأسهم (الجوال) */
+  function dragSort(root, sel, onMove) {
+    let from = null;
+    const clean = () => { $$(".dragging,.drop", root).forEach((x) => x.classList.remove("dragging", "drop")); };
+    const target = (e) => { let it = e.target.closest(sel); while (it && from && it.parentElement !== from.parentElement) it = it.parentElement.closest(sel); return it; };
+    root.addEventListener("dragstart", (e) => {
+      const g = e.target.closest(".ed-grip"); if (!g) return;
+      from = g.closest(sel); from.classList.add("dragging"); e.dataTransfer.effectAllowed = "move";
+      try { e.dataTransfer.setData("text/plain", ""); e.dataTransfer.setDragImage(from, 24, 24); } catch {}
+    });
+    root.addEventListener("dragover", (e) => { const it = target(e); if (!from || !it) return; e.preventDefault(); $$(".drop", root).forEach((x) => x.classList.remove("drop")); if (it !== from) it.classList.add("drop"); });
+    root.addEventListener("drop", (e) => { const it = target(e); if (!from || !it) return; e.preventDefault(); const a = +from.dataset.i, b = +it.dataset.i, l = from.dataset.list; clean(); from = null; if (a !== b) onMove(l, a, b); });
+    root.addEventListener("dragend", () => { clean(); from = null; });
+  }
+  const move = (arr, a, b) => arr.splice(b, 0, arr.splice(a, 1)[0]);
+
+  function mountEditor(box, key, root) {
+    const draft = { v: structuredClone(root.get ? root.get() : C(key)) };
+    ED_OPEN = new Set();
+    box.innerHTML = `<div class="ed-form"></div><div class="ed-save"><button type="button" class="btn btn-primary" data-save>${ic("check")} حفظ ونشر</button>
+      ${root.preview ? `<a class="btn btn-ghost" href="${root.preview}" target="_blank" rel="noopener">${ic("eye")} معاينة الصفحة</a>` : ""}
+      <button type="button" class="btn btn-ghost" data-reset>استعادة النص الافتراضي</button><span class="small muted" data-state></span></div>`;
+    const form = $(".ed-form", box), state = $("[data-state]", box);
+    const dirty = (t = "لديك تغييرات غير محفوظة") => { state.textContent = t; state.style.color = "var(--clay)"; };
+    const draw = () => { form.innerHTML = root.t === "list" ? listHTML(root, draft.v, "v") : root.fields.map((sf) => fieldHTML(sf, draft.v[sf.k], "v." + sf.k)).join(""); };
+    draw();
+    const onField = (e) => {
+      const el = e.target.closest("[data-p]"); if (!el) return;
+      const t = el.dataset.t; let v = el.value;
+      if (t === "bool") v = el.checked; else if (t === "lines") v = v.split("\n").map((s) => s.trim()).filter(Boolean); else if (t === "hue") v = +v;
+      setP(draft, el.dataset.p, v); dirty();
+      const pv = $(`[data-prev="${el.dataset.p}"]`, form);
+      if (pv && t === "icon") pv.innerHTML = ic(v);
+      if (pv && t === "hue") { const [bg, fg] = hueColors(v); pv.style.background = bg; pv.style.color = fg; }
+      const item = el.closest(".ed-item"), lf = item && fieldAt(root, item.dataset.list);
+      if (lf && lf.label) $(".ed-t", item).textContent = lf.label(getP(draft, item.dataset.list)[+item.dataset.i]) || "عنصر جديد";
+    };
+    form.addEventListener("input", onField); form.addEventListener("change", onField);
+    form.addEventListener("click", async (e) => {
+      const b = e.target.closest("[data-act]"); if (!b) return;
+      const arr = getP(draft, b.dataset.list), i = +b.dataset.i, act = b.dataset.act, k = b.dataset.list + "." + i;
+      if (act === "toggle") { const it = b.closest(".ed-item"), on = !ED_OPEN.has(k); if (on) ED_OPEN.add(k); else ED_OPEN = new Set([...ED_OPEN].filter((x) => x !== k)); it.classList.toggle("open", on); b.setAttribute("aria-expanded", on); return; }
+      if (act !== "add") ED_OPEN = new Set([...ED_OPEN].filter((x) => !x.startsWith(b.dataset.list + ".")));
+      if (act === "add") { arr.push(blankOf(fieldAt(root, b.dataset.list).fields)); ED_OPEN.add(b.dataset.list + "." + (arr.length - 1)); }
+      if (act === "up" && i > 0) move(arr, i, i - 1);
+      if (act === "down" && i < arr.length - 1) move(arr, i, i + 1);
+      if (act === "del") { if (!(await confirmBox("سيُحذف هذا العنصر من القائمة، ولن يُعتمد الحذف إلا بعد الضغط على «حفظ ونشر». هل تريد المتابعة؟", "حذف العنصر"))) return; arr.splice(i, 1); }
+      dirty(); draw();
+      if (act === "add") { const items = $$(`.ed-item[data-list="${b.dataset.list}"]`, form); const last = items[items.length - 1]; last?.scrollIntoView({ block: "center" }); $(".ed-body input:not([type=checkbox]),.ed-body textarea,.ed-body select", last)?.focus({ preventScroll: true }); }
+    });
+    dragSort(form, ".ed-item", (l, a, b) => { move(getP(draft, l), a, b); ED_OPEN = new Set([...ED_OPEN].filter((x) => !x.startsWith(l + "."))); dirty(); draw(); });
+    $("[data-reset]", box).onclick = async () => {
+      if (!(await confirmBox("ستُستعاد النصوص الافتراضية لهذا القسم في المحرر، ثم تعتمدها بالضغط على «حفظ ونشر».", "استعادة"))) return;
+      draft.v = structuredClone(DEFAULTS[key]); draw(); dirty("استُعيد النص الافتراضي، اضغط «حفظ ونشر» لاعتماده");
+    };
+    $("[data-save]", box).onclick = (e) => busy(e.currentTarget, async () => {
+      try {
+        await api("habka_admin_set_content", { p_token: S.token, p_key: key, p_value: draft.v });
+        S.content = { ...(S.content || {}), [key]: structuredClone(draft.v) }; renderSite();
+        state.textContent = "حُفظ ونُشر على الموقع"; state.style.color = "var(--sage)"; toast("حُفظت التعديلات ونُشرت على الموقع");
+      } catch (err) { toast(err.message, true); }
+    });
+  }
+
+  const CMS = [
+    { g: "الصفحة الرئيسية", items: [
+      ["hero", "الواجهة الرئيسية", "العنوان الرئيسي والفقرة التعريفية ومربع البحث في أعلى الصفحة الرئيسية.", { t: "obj", preview: "#/", fields: [
+        { k: "eyebrow", l: "السطر التمهيدي" }, { k: "title", l: "العنوان" }, { k: "highlight", l: "الجزء المميز من العنوان", h: "يظهر بلون الهوية بعد العنوان" },
+        { k: "lead", l: "الفقرة التعريفية", t: "area" }, { k: "placeholder", l: "النص الإرشادي في مربع البحث" }, { k: "show_stats", l: "إظهار أرقام المنصة (المتاجر والمنتجات والطلبات)", t: "bool" }] }],
+      ["sections", "أقسام الصفحة وترتيبها", "رتّب أقسام الصفحة الرئيسية بالسحب أو بالأسهم، وأظهر أي قسم أو أخفه، وعدّل عنوانه ووصفه.", { t: "list", fixed: true, preview: "#/", get: () => homeSections(), label: (x) => x.label, fields: [
+        { k: "visible", l: "إظهار هذا القسم", t: "bool" }, { k: "title", l: "عنوان القسم" }, { k: "subtitle", l: "الوصف المختصر" }] }],
+      ["steps", "كيف تعمل المنصة", "خطوات تشرح للزائر طريقة الطلب، تظهر في الصفحة الرئيسية.", { t: "list", add: "إضافة خطوة", preview: "#/", label: (x) => x.title, fields: [
+        { k: "icon", l: "الأيقونة", t: "icon" }, { k: "title", l: "العنوان" }, { k: "body", l: "الوصف", t: "area" }] }],
+      ["band", "دعوة المنتجين", "الشريط الداكن الذي يدعو أصحاب المواهب إلى فتح متاجرهم.", { t: "obj", preview: "#/", fields: [
+        { k: "title", l: "العنوان" }, { k: "body", l: "النص", t: "area" }, { k: "btn1", l: "نص الزر الأول" }, { k: "link1", l: "رابط الزر الأول", t: "link" },
+        { k: "btn2", l: "نص الزر الثاني (اتركه فارغًا لإخفائه)" }, { k: "link2", l: "رابط الزر الثاني", t: "link" }] }],
+      ["announce", "شريط الإعلانات", "شريط رفيع يظهر أعلى جميع صفحات الموقع، مناسب للعروض والمواسم والتنبيهات.", { t: "obj", preview: "#/", fields: [
+        { k: "enabled", l: "تفعيل شريط الإعلانات", t: "bool" }, { k: "text", l: "نص الإعلان", t: "area", rows: 2 }, { k: "link", l: "الرابط عند الضغط (اختياري)", t: "link" },
+        { k: "tone", l: "لون الشريط", t: "select", o: [["gold", "ذهبي"], ["ink", "كحلي"], ["sage", "أخضر"], ["clay", "طيني"]] }] }],
+    ] },
+    { g: "الأسئلة الشائعة", items: [
+      ["faq", "الأسئلة الشائعة", "تظهر في صفحة الأسئلة الشائعة وفي قسمها بالصفحة الرئيسية.", { t: "list", add: "إضافة سؤال", preview: "#/faq", label: (x) => x.q, fields: [
+        { k: "q", l: "السؤال" }, { k: "a", l: "الإجابة", t: "rich", rows: 4 }] }],
+    ] },
+    { g: "دليل المنتج", items: [
+      ["guide", "نصوص صفحة الدليل", "العناوين والفقرات الرئيسية في صفحة دليل المنتج المنزلي.", { t: "obj", preview: "#/guide", fields: [
+        { k: "eyebrow", l: "السطر التمهيدي" }, { k: "title", l: "العنوان الرئيسي" }, { k: "lead", l: "الفقرة التعريفية", t: "area" },
+        { k: "ideas_title", l: "عنوان قسم الأفكار" }, { k: "start_title", l: "عنوان قسم خطوات البداية" }, { k: "calc_title", l: "عنوان الحاسبة" },
+        { k: "calc_lead", l: "وصف الحاسبة", t: "area", rows: 2 }, { k: "calc_example", l: "مثال الحاسبة", t: "area", rows: 2 }, { k: "brand_title", l: "عنوان قسم العلامة والتسويق" },
+        { k: "cta_title", l: "عنوان الدعوة الختامية" }, { k: "cta_body", l: "نص الدعوة الختامية", t: "area", rows: 2 }] }],
+      ["ideas", "أفكار المشاريع", "بطاقات أفكار المشاريع حسب المجال.", { t: "list", add: "إضافة فكرة", preview: "#/guide#ideas", label: (x) => x.title, fields: [
+        { k: "icon", l: "الأيقونة", t: "icon" }, { k: "hue", l: "لون البطاقة", t: "hue" }, { k: "title", l: "العنوان" }, { k: "desc", l: "الوصف", t: "area", rows: 2 },
+        { k: "items", l: "أمثلة على المنتجات", t: "lines" }, { k: "cost", l: "رأس المال التقريبي", h: "مثال: 1,000 إلى 3,000 ر.ق" }] }],
+      ["start", "خطوات البداية", "الخطوات المرقمة لبدء المشروع المنزلي.", { t: "list", add: "إضافة خطوة", preview: "#/guide#start", label: (x) => x.title, fields: [
+        { k: "title", l: "العنوان" }, { k: "body", l: "الشرح", t: "area" }] }],
+      ["brand", "العلامة والتسويق", "بطاقات نصائح بناء العلامة والتسويق.", { t: "list", add: "إضافة بطاقة", preview: "#/guide#brand", label: (x) => x.title, fields: [
+        { k: "title", l: "العنوان" }, { k: "items", l: "النصائح", t: "lines" }] }],
+    ] },
+    { g: "الصفحات والتذييل", items: [
+      ["about", "من نحن", "محتوى صفحة «عن حبكة».", { t: "obj", preview: "#/about", fields: [
+        { k: "eyebrow", l: "السطر التمهيدي" }, { k: "title", l: "العنوان" }, { k: "lead", l: "الفقرة الافتتاحية", t: "area" },
+        { k: "cards", l: "البطاقات", t: "list", add: "إضافة بطاقة", label: (x) => x.title, fields: [{ k: "title", l: "العنوان" }, { k: "body", l: "النص", t: "area", rows: 2 }] },
+        { k: "body", l: "محتوى إضافي", t: "rich" }] }],
+      ["terms", "الشروط والأحكام", "نص صفحة الشروط والأحكام.", { t: "obj", preview: "#/terms", fields: [
+        { k: "title", l: "العنوان" }, { k: "updated", l: "تاريخ آخر تحديث", h: "بالصيغة الموحدة، مثال: 25 نوفمبر 2026" }, { k: "body", l: "النص", t: "rich", rows: 14 }] }],
+      ["privacy", "سياسة الخصوصية", "نص صفحة سياسة الخصوصية.", { t: "obj", preview: "#/privacy", fields: [
+        { k: "title", l: "العنوان" }, { k: "updated", l: "تاريخ آخر تحديث", h: "بالصيغة الموحدة، مثال: 25 نوفمبر 2026" }, { k: "body", l: "النص", t: "rich", rows: 14 }] }],
+      ["footer", "التذييل وصفحة التواصل", "نبذة التذييل والمنطقة، ونص الترحيب في صفحة التواصل.", { t: "obj", preview: "#/contact", fields: [
+        { k: "about", l: "نبذة التذييل", t: "area", rows: 2 }, { k: "region", l: "المنطقة في التذييل" }, { k: "contact_lead", l: "نص صفحة التواصل", t: "area", rows: 2 }] }],
+    ] },
+  ];
+
+  function catForm(c, done) {
+    c = c || { icon: "spark", hue: 30, active: true };
+    const [bg, fg] = hueColors(c.hue ?? 30);
+    modal(c.id ? "تعديل المجال" : "إضافة مجال جديد", `<form id="cfm"><div class="err"></div>
+      <div class="field"><label>اسم المجال</label><input class="input" name="name" value="${esc(c.name || "")}" required maxlength="60"></div>
+      <div class="field"><label>وصف مختصر</label><input class="input" name="blurb" value="${esc(c.blurb || "")}" maxlength="160" placeholder="مثال: أطباق بيتية، حلويات، مخبوزات"></div>
+      <div class="row2"><div class="field"><label>الأيقونة</label><div class="ed-pick"><span class="ed-ic" id="cprev" style="background:${bg};color:${fg}">${ic(c.icon || "spark")}</span>${iconSelect(c.icon || "spark", 'name="icon"')}</div></div>
+      <div class="field"><label>اللون</label><div class="ed-pick"><input type="range" class="ed-range" name="hue" min="0" max="359" value="${c.hue ?? 30}" aria-label="اللون"></div></div></div>
+      <label class="ed-check" style="margin-bottom:16px"><input type="checkbox" name="active" ${c.active !== false ? "checked" : ""}><span>ظاهر للزوار</span></label>
+      <button class="btn btn-primary btn-block">${c.id ? "حفظ التعديلات" : "إضافة المجال"}</button></form>`, (el, close) => {
+      const f = $("#cfm", el), pv = $("#cprev", el);
+      f.oninput = () => { const [b2, f2] = hueColors(+f.hue.value); pv.style.background = b2; pv.style.color = f2; pv.innerHTML = ic(f.icon.value); };
+      f.onsubmit = async (e) => {
+        e.preventDefault();
+        const p = { id: c.id || null, name: f.name.value, blurb: f.blurb.value, icon: f.icon.value, hue: +f.hue.value, active: f.active.checked };
+        try { await busy(e.submitter, () => api("habka_admin_save_category", { p_token: S.token, p })); close(); toast(c.id ? "حُفظ المجال" : "أُضيف المجال"); done(); }
+        catch (err) { showErr(f, err.message); }
+      };
+    });
+  }
+
+  function shopEditForm(s, done) {
+    modal(`تعديل متجر ${s.shop_name}`, `<form id="sem"><div class="err"></div>
+      <div class="field"><label>اسم المتجر</label><input class="input" name="shop_name" value="${esc(s.shop_name)}" required maxlength="60"></div>
+      <div class="row2"><div class="field"><label>المجال</label><select class="input" name="category_id">${S.cats.map((c) => `<option value="${c.id}" ${c.id === s.category_id ? "selected" : ""}>${esc(c.name)}</option>`).join("")}</select></div>
+      <div class="field"><label>المنطقة</label><select class="input" name="area">${AREAS.map((a) => `<option ${a === s.area ? "selected" : ""}>${a}</option>`).join("")}</select></div></div>
+      <div class="field"><label>نبذة المتجر</label><textarea class="input" name="bio">${esc(s.bio || "")}</textarea></div>
+      <div class="row2"><div class="field"><label>رقم واتساب</label><input class="input ltr num" name="whatsapp" value="${esc(s.whatsapp || "")}" inputmode="tel" placeholder="+974 XXXX XXXX"></div>
+      <div class="field"><label>رقم الترخيص المنزلي</label><input class="input ltr" name="license_no" value="${esc(s.license_no || "")}"></div></div>
+      <button class="btn btn-primary btn-block">حفظ التعديلات</button></form>`, (el, close) => {
+      $("#sem", el).onsubmit = async (e) => {
+        e.preventDefault(); const d = formData(e.target);
+        if (d.whatsapp && !normPhone(d.whatsapp)) return showErr(e.target, "رقم واتساب غير صحيح، أدخله بصيغة +974 XXXX XXXX");
+        try { await busy(e.submitter, () => api("habka_admin_save_shop", { p_token: S.token, p: { ...d, user_id: s.user_id } })); close(); toast("حُفظت بيانات المتجر"); done(); }
         catch (err) { showErr(e.target, err.message); }
       };
     });
@@ -679,13 +1005,13 @@
   /* ---------- لوحة الإدارة ---------- */
   routes["admin"] = async (q) => {
     if (needLogin(["admin"])) return;
-    await loadCats();
     const tab = q.get("tab") || "overview", filter = q.get("f") || "";
     app.innerHTML = loader();
+    S.cats = []; await loadCats();
     const [d, contacts] = await Promise.all([api("habka_admin", { p_token: S.token }), api("habka_admin_contacts", { p_token: S.token })]);
     const st = d.stats;
-    const tabs = [["overview", "نظرة عامة"], ["shops", "المتاجر", st.pending_shops], ["products", "المنتجات", st.pending_products], ["orders", "الطلبات", st.open_orders], ["users", "المستخدمون"], ["contacts", "رسائل التواصل", contacts.filter((c) => !c.is_read).length]];
-    app.innerHTML = `<div class="page"><div class="wrap"><div class="sec-head"><div><h1 style="font-size:clamp(24px,4vw,32px);margin:0">لوحة الإدارة</h1><p>إدارة منصة حبكة</p></div></div>
+    const tabs = [["overview", "نظرة عامة"], ["content", "إدارة المحتوى"], ["cats", "المجالات"], ["shops", "المتاجر", st.pending_shops], ["products", "المنتجات", st.pending_products], ["orders", "الطلبات", st.open_orders], ["users", "المستخدمون"], ["contacts", "رسائل التواصل", contacts.filter((c) => !c.is_read).length]];
+    app.innerHTML = `<div class="page"><div class="wrap"><div class="sec-head"><div><h1 style="font-size:clamp(24px,4vw,32px);margin:0">لوحة الإدارة</h1><p>إدارة منصة حبكة ومحتواها</p></div></div>
       <div class="dash"><nav class="card side">${tabs.map(([k, t, n]) => `<a href="#/admin?tab=${k}" class="${tab === k ? "on" : ""}">${t}${n ? `<span class="n num">${n}</span>` : ""}</a>`).join("")}</nav><div id="pane"></div></div></div></div>`;
     const pane = $("#pane"), reload = () => routes.admin(q);
     const fpills = (opts) => `<div class="pills" style="margin-bottom:14px">${opts.map(([v, t]) => `<a class="pill ${filter === v ? "on" : ""}" href="#/admin?tab=${tab}&f=${v}">${t}</a>`).join("")}</div>`;
@@ -698,7 +1024,45 @@
       pane.innerHTML = `<div class="kpis"><div class="card kpi"><span>المستخدمون</span><b class="num">${st.users}</b></div><div class="card kpi"><span>المتاجر المعتمدة</span><b class="num">${st.shops}</b></div>
         <div class="card kpi"><span>إجمالي الطلبات</span><b class="num">${st.orders}</b></div><div class="card kpi"><span>قيمة المبيعات المسلّمة</span><b class="num">${fmtMoney(st.gmv)}</b></div></div>
         <div class="grid g-2"><a class="card kpi" href="#/admin?tab=shops&f=pending"><span>متاجر بانتظار المراجعة</span><b class="num">${st.pending_shops}</b></a><a class="card kpi" href="#/admin?tab=products&f=pending"><span>منتجات بانتظار المراجعة</span><b class="num">${st.pending_products}</b></a></div>
+        <a class="card cms-cta" href="#/admin?tab=content"><span class="ed-ic">${ic("edit")}</span><div><b>إدارة محتوى الموقع</b><div class="small muted">عدّل نصوص الصفحة الرئيسية والأسئلة الشائعة والدليل والصفحات، وأضف واحذف ورتّب الأقسام والعناصر.</div></div></a>
         <div class="card" style="padding:20px;margin-top:16px"><h3>أحدث الطلبات</h3>${d.orders.slice(0, 6).map((o) => `<div style="display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);flex-wrap:wrap"><span><b class="tel">${o.code}</b> · ${esc(o.customer.name)} ← ${esc(o.shop.name)}</span><span>${stBadge(o.status)} <b class="num">${fmtMoney(o.total)}</b></span></div>`).join("") || `<p class="muted">لا توجد طلبات بعد</p>`}</div>`;
+    }
+
+    if (tab === "content") {
+      const all = CMS.flatMap((g) => g.items), cur = all.find((x) => x[0] === q.get("s")) || all[0];
+      pane.innerHTML = `<div class="sec-head" style="margin-bottom:12px"><div><h2 style="margin:0">إدارة المحتوى</h2><p>عدّل نصوص الموقع وأقسامه، وأضف العناصر واحذفها ورتّبها بالسحب أو بالأسهم، ثم اضغط «حفظ ونشر» لتظهر التعديلات للزوار فورًا.</p></div></div>
+        <div class="cms-nav">${CMS.map((g) => `<div class="cms-g"><span>${g.g}</span><div class="pills">${g.items.map(([k, t]) => `<a class="pill ${k === cur[0] ? "on" : ""}" href="#/admin?tab=content&s=${k}">${t}</a>`).join("")}</div></div>`).join("")}</div>
+        <div class="card ed" id="ed"><h3 style="margin:0">${cur[1]}</h3><p class="muted small" style="margin:4px 0 16px">${cur[2]}</p><div id="edbox"></div></div>`;
+      mountEditor($("#edbox"), cur[0], cur[3]);
+    }
+
+    if (tab === "cats") {
+      const cats = S.cats.slice(), cnt = (id) => d.products.filter((p) => p.category_id === id).length;
+      pane.innerHTML = `<div class="sec-head" style="margin-bottom:14px"><div><h2 style="margin:0">المجالات</h2><p>أضف مجالات المنتجات وعدّلها ورتّبها بالسحب أو بالأسهم، وأخفِ أي مجال مؤقتًا دون حذفه.</p></div><button class="btn btn-primary" id="addc">${ic("plus")} إضافة مجال</button></div>
+        <div class="ed-list" id="clist">${cats.map((c, i) => { const [bg, fg] = catColors(c.id); return `<div class="card ed-item cat-row" data-list="cats" data-i="${i}">
+          <div class="ed-bar"><span class="ed-grip" draggable="true" title="اسحب لإعادة الترتيب">${ic("grip")}</span><span class="ed-ic" style="background:${bg};color:${fg}">${ic(c.icon)}</span>
+          <div class="ed-t" style="white-space:normal"><b>${esc(c.name)}</b> ${c.active === false ? `<span class="st st-hidden">مخفي</span>` : ""}<div class="small muted">${esc(c.blurb || "")} · <span class="num">${cnt(c.id)}</span> منتج</div></div>
+          <span class="ed-tools"><button type="button" class="icon-btn sm" data-cm="${i}" data-d="-1" aria-label="تحريك للأعلى" ${i === 0 ? "disabled" : ""}>${ic("up")}</button><button type="button" class="icon-btn sm" data-cm="${i}" data-d="1" aria-label="تحريك للأسفل" ${i === cats.length - 1 ? "disabled" : ""}>${ic("down")}</button>
+          <button type="button" class="icon-btn sm" data-ce="${i}" aria-label="تعديل">${ic("edit")}</button><button type="button" class="icon-btn sm danger" data-cd="${i}" aria-label="حذف">${ic("trash")}</button></span></div></div>`; }).join("")}</div>`;
+      const saveOrder = async (ids) => { try { await api("habka_admin_reorder", { p_token: S.token, p_kind: "categories", p_ids: ids }); toast("حُفظ ترتيب المجالات"); reload(); } catch (e) { toast(e.message, true); } };
+      const ids = () => cats.map((c) => c.id);
+      $("#addc").onclick = () => catForm(null, reload);
+      $$("[data-ce]").forEach((b) => (b.onclick = () => catForm(cats[+b.dataset.ce], reload)));
+      $$("[data-cm]").forEach((b) => (b.onclick = () => { const a = ids(); move(a, +b.dataset.cm, +b.dataset.cm + +b.dataset.d); saveOrder(a); }));
+      dragSort($("#clist"), ".ed-item", (l, a, b) => { const x = ids(); move(x, a, b); saveOrder(x); });
+      $$("[data-cd]").forEach((b) => (b.onclick = async () => {
+        const c = cats[+b.dataset.cd], n = cnt(c.id), others = cats.filter((x) => x.id !== c.id);
+        if (!others.length) return toast("لا يمكن حذف المجال الوحيد في المنصة", true);
+        let moveTo = null;
+        if (n > 0) {
+          moveTo = await new Promise((res) => modal("حذف المجال", `<form id="dcf"><p>يحتوي مجال «${esc(c.name)}» على <b class="num">${n}</b> منتج. اختر المجال الذي تُنقل إليه المنتجات والمتاجر قبل الحذف:</p>
+            <div class="field"><select class="input" name="to">${others.map((x) => `<option value="${x.id}">${esc(x.name)}</option>`).join("")}</select></div>
+            <div class="actions" style="justify-content:flex-end"><button type="button" class="btn btn-ghost" data-x>تراجع</button><button class="btn btn-danger">نقل المنتجات وحذف المجال</button></div></form>`,
+            (el, close) => { $("#dcf", el).onsubmit = (e) => { e.preventDefault(); close(); res(e.target.to.value); }; $$("[data-x]", el).forEach((x) => x.addEventListener("click", () => res(null))); }));
+          if (!moveTo) return;
+        } else if (!(await confirmBox(`سيُحذف مجال «${c.name}» نهائيًا. هل أنت متأكد؟`, "حذف المجال"))) return;
+        try { await api("habka_admin_delete_category", { p_token: S.token, p_id: c.id, p_move_to: moveTo }); toast("حُذف المجال"); reload(); } catch (e) { toast(e.message, true); }
+      }));
     }
 
     if (tab === "shops") {
@@ -710,22 +1074,42 @@
         <dl class="kv small"><dt>المالك</dt><dd>${esc(s.owner)}</dd><dt>البريد</dt><dd>${tel(s.email)}</dd><dt>الجوال</dt><dd class="num">${tel(s.phone)}</dd><dt>واتساب</dt><dd class="num">${tel(s.whatsapp || "—")}</dd><dt>الترخيص</dt><dd>${esc(s.license_no || "—")}</dd><dt>المنتجات</dt><dd class="num">${s.products}</dd></dl>
         <div class="actions" style="margin-top:12px">${s.status !== "approved" ? `<button class="btn btn-sm btn-ok" data-sh="${s.user_id}" data-s="approved">اعتماد</button>` : ""}
         ${s.status === "pending" ? `<button class="btn btn-sm btn-danger" data-sh="${s.user_id}" data-s="rejected">رفض</button>` : ""}
-        ${s.status === "approved" ? `<button class="btn btn-sm btn-danger" data-sh="${s.user_id}" data-s="suspended">إيقاف</button><a class="btn btn-sm btn-ghost" href="#/shop/${s.user_id}">عرض المتجر</a>` : ""}</div></div>`).join("") : empty("لا توجد متاجر بهذه الحالة"));
+        ${s.status === "approved" ? `<button class="btn btn-sm btn-danger" data-sh="${s.user_id}" data-s="suspended">إيقاف</button><a class="btn btn-sm btn-ghost" href="#/shop/${s.user_id}">عرض المتجر</a>` : ""}
+        <button class="btn btn-sm btn-ghost" data-se="${s.user_id}">${ic("edit")} تعديل البيانات</button><button class="btn btn-sm btn-ghost" data-sp="${s.user_id}">${ic("plus")} إضافة منتج للمتجر</button></div></div>`).join("") : empty("لا توجد متاجر بهذه الحالة"));
       $$("[data-sh]").forEach((b) => (b.onclick = async () => {
         let n = null; if (b.dataset.s !== "approved") { n = await note(b.dataset.s === "rejected" ? "رفض المتجر" : "إيقاف المتجر"); if (n === null) return; }
         try { await api("habka_admin_shop", { p_token: S.token, p_id: b.dataset.sh, p_status: b.dataset.s, p_note: n }); toast("حُدّثت حالة المتجر"); reload(); } catch (e) { toast(e.message, true); }
       }));
+      $$("[data-se]").forEach((b) => (b.onclick = () => shopEditForm(d.shops.find((s) => s.user_id === b.dataset.se), reload)));
+      $$("[data-sp]").forEach((b) => (b.onclick = () => { const s = d.shops.find((x) => x.user_id === b.dataset.sp); productForm({ shop_id: s.user_id, category_id: s.category_id, status: "approved", _shop: s.shop_name }, reload, true); }));
     }
 
     if (tab === "products") {
-      const list = d.products.filter((p) => !filter || p.status === filter);
-      pane.innerHTML = `<h2>المنتجات</h2>${fpills([["", "الكل"], ["pending", "قيد المراجعة"], ["approved", "معتمدة"], ["rejected", "مرفوضة"], ["hidden", "مخفية"]])}` + (list.length ? `<div class="card table-wrap"><table class="t"><thead><tr><th></th><th>المنتج</th><th>المتجر</th><th>السعر</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody>
-        ${list.map((p) => `<tr><td><div class="t-ph">${pImg(p)}</div></td><td><b>${esc(p.name)}</b><div class="small muted" style="max-width:280px">${esc((p.description || "").slice(0, 90))}</div></td><td>${esc(p.shop.name)}</td><td class="num">${fmtMoney(p.price)}</td><td>${stBadge(p.status)}</td>
-        <td><div class="actions">${p.status !== "approved" ? `<button class="btn btn-sm btn-ok" data-pr="${p.id}" data-s="approved">اعتماد</button>` : ""}${p.status !== "rejected" ? `<button class="btn btn-sm btn-danger" data-pr="${p.id}" data-s="rejected">رفض</button>` : ""}${p.status === "approved" ? `<button class="btn btn-sm btn-ghost" data-pr="${p.id}" data-s="hidden">إخفاء</button>` : ""}</div></td></tr>`).join("")}</tbody></table></div>` : empty("لا توجد منتجات بهذه الحالة"));
+      const feat = filter === "featured";
+      const list = feat ? d.products.filter((p) => p.featured).sort((a, b) => (a.sort || 0) - (b.sort || 0)) : d.products.filter((p) => !filter || p.status === filter);
+      pane.innerHTML = `<h2>المنتجات</h2>${fpills([["", "الكل"], ["featured", "المميزة"], ["pending", "قيد المراجعة"], ["approved", "معتمدة"], ["rejected", "مرفوضة"], ["hidden", "مخفية"]])}
+        ${feat ? `<div class="notice small">المنتجات المميزة تظهر أولًا في الصفحة الرئيسية وصفحة المنتجات بهذا الترتيب. رتّبها بالسحب أو بالأسهم.</div>` : ""}` + (list.length ? `<div class="card table-wrap"><table class="t" id="ptab"><thead><tr>${feat ? "<th></th>" : ""}<th></th><th>المنتج</th><th>المتجر</th><th>السعر</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody>
+        ${list.map((p, i) => `<tr class="ed-item" data-list="feat" data-i="${i}">${feat ? `<td><div class="ed-tools" style="flex-direction:column"><span class="ed-grip" draggable="true">${ic("grip")}</span><button class="icon-btn sm" data-fm="${i}" data-d="-1" aria-label="تحريك للأعلى" ${i === 0 ? "disabled" : ""}>${ic("up")}</button><button class="icon-btn sm" data-fm="${i}" data-d="1" aria-label="تحريك للأسفل" ${i === list.length - 1 ? "disabled" : ""}>${ic("down")}</button></div></td>` : ""}
+        <td><div class="t-ph">${pImg(p)}</div></td><td><b>${esc(p.name)}</b>${p.featured ? ` <span class="chip feat">${ic("star")} مميز</span>` : ""}<div class="small muted" style="max-width:280px">${esc(catName(p.category_id))} · ${esc((p.description || "").slice(0, 70))}</div></td><td>${esc(p.shop.name)}</td><td class="num">${fmtMoney(p.price)}</td><td>${stBadge(p.status)}</td>
+        <td><div class="actions">${p.status !== "approved" ? `<button class="btn btn-sm btn-ok" data-pr="${p.id}" data-s="approved">اعتماد</button>` : ""}${p.status !== "rejected" ? `<button class="btn btn-sm btn-danger" data-pr="${p.id}" data-s="rejected">رفض</button>` : ""}${p.status === "approved" ? `<button class="btn btn-sm btn-ghost" data-pr="${p.id}" data-s="hidden">إخفاء</button>` : ""}
+          <button class="btn btn-sm btn-ghost" data-pf="${p.id}" data-on="${p.featured ? "0" : "1"}">${ic("star")} ${p.featured ? "إلغاء التمييز" : "تمييز"}</button><button class="btn btn-sm btn-ghost" data-pe="${p.id}">${ic("edit")} تعديل</button><button class="btn btn-sm btn-danger" data-pd="${p.id}">${ic("trash")} حذف</button></div></td></tr>`).join("")}</tbody></table></div>` : empty(feat ? "لا توجد منتجات مميزة بعد. اضغط «تمييز» بجوار أي منتج لإبرازه." : "لا توجد منتجات بهذه الحالة"));
       $$("[data-pr]").forEach((b) => (b.onclick = async () => {
         let n = null; if (b.dataset.s === "rejected") { n = await note("رفض المنتج"); if (n === null) return; }
         try { await api("habka_admin_product", { p_token: S.token, p_id: b.dataset.pr, p_status: b.dataset.s, p_note: n }); toast("حُدّثت حالة المنتج"); reload(); } catch (e) { toast(e.message, true); }
       }));
+      $$("[data-pf]").forEach((b) => (b.onclick = async () => { try { await busy(b, () => api("habka_admin_feature", { p_token: S.token, p_id: b.dataset.pf, p_on: b.dataset.on === "1" })); toast(b.dataset.on === "1" ? "أصبح المنتج مميزًا ويظهر أولًا" : "أُلغي تمييز المنتج"); reload(); } catch (e) { toast(e.message, true); } }));
+      $$("[data-pe]").forEach((b) => (b.onclick = () => productForm(d.products.find((p) => p.id === b.dataset.pe), reload, true)));
+      $$("[data-pd]").forEach((b) => (b.onclick = async () => {
+        const p = d.products.find((x) => x.id === b.dataset.pd);
+        if (!(await confirmBox(`سيُحذف المنتج «${p.name}» نهائيًا مع تقييماته، وتبقى الطلبات السابقة محفوظة. هل أنت متأكد؟`, "حذف المنتج"))) return;
+        try { await api("habka_admin_delete_product", { p_token: S.token, p_id: p.id }); toast("حُذف المنتج"); reload(); } catch (e) { toast(e.message, true); }
+      }));
+      if (feat) {
+        const saveOrder = async (ids) => { try { await api("habka_admin_reorder", { p_token: S.token, p_kind: "products", p_ids: ids }); toast("حُفظ ترتيب المنتجات المميزة"); reload(); } catch (e) { toast(e.message, true); } };
+        const ids = () => list.map((p) => p.id);
+        $$("[data-fm]").forEach((b) => (b.onclick = () => { const a = ids(); move(a, +b.dataset.fm, +b.dataset.fm + +b.dataset.d); saveOrder(a); }));
+        if ($("#ptab")) dragSort($("#ptab tbody"), ".ed-item", (l, a, b) => { const x = ids(); move(x, a, b); saveOrder(x); });
+      }
     }
 
     if (tab === "orders") {
@@ -755,32 +1139,19 @@
   };
 
   /* ---------- دليل المنتج ---------- */
-  const IDEAS = [
-    ["food", "المأكولات والحلويات", "الأكثر طلبًا والأسرع دورانًا، ويتطلب التزامًا صارمًا بسلامة الغذاء.", ["حلويات شعبية: لقيمات، خنفروش، بلاليط", "أطباق عائلية جاهزة ووجبات أسبوعية مجمدة", "مخبوزات وكيك المناسبات", "مونة البيت: بهارات، دبس، مخللات"], "1,000 إلى 3,000 ر.ق"],
-    ["beauty", "العناية والعطور", "هوامش ربح جيدة وصلاحية طويلة، ويتميز فيه من يتقن الخلطات.", ["صابون طبيعي بالطريقة الباردة", "بخور ومعمول ودخون", "زيوت شعر وخلطات أعشاب", "عطور زيتية ومعطرات مفارش"], "1,500 إلى 4,000 ر.ق"],
-    ["crafts", "الحرف والديكور", "منتجات فنية بقيمة عالية، يناسبها التسويق المرئي.", ["شموع معطرة بأوعية فخارية", "سعف النخيل والخوص", "فن الريزن واللوحات", "ديكورات رمضان والأعياد"], "800 إلى 2,500 ر.ق"],
-    ["textile", "الخياطة والتطريز", "طلب مستمر طوال العام، ويتضاعف قبل المواسم.", ["جلابيات ومخاوير", "تطريز الأسماء والشعارات", "مفارش صلاة وأطقم مواليد", "تعديل الملابس وتفصيلها"], "2,000 إلى 5,000 ر.ق"],
-    ["gifts", "الهدايا والمناسبات", "مشروع موسمي قوي يعتمد على الذوق وحسن التنسيق.", ["صناديق ضيافة وقرقيعان", "توزيعات مواليد وأعراس", "تنسيق الورد والهدايا", "تغليف الهدايا حسب الطلب"], "1,000 إلى 3,000 ر.ق"],
-    ["agri", "الزراعة المنزلية", "مساحة صغيرة وعائد متكرر، وطلب متزايد على المنتج الطازج.", ["المايكروجرين للمطاعم والأسر", "أعشاب طازجة: نعناع، ريحان، زعتر", "شتلات وأصص منزلية", "خلطات تربة وسماد عضوي"], "500 إلى 2,000 ر.ق"],
-  ];
   routes["guide"] = async () => {
+    const G = C("guide"), ideas = C("ideas"), start = C("start"), brand = C("brand");
     app.innerHTML = `<div class="page"><div class="wrap">
-      <div class="guide-hero"><span class="eyebrow">${ic("book")} دليل المنتج المنزلي</span><h1 style="font-size:clamp(26px,4.5vw,40px)">من فكرة في بيتك إلى مشروع ناجح</h1>
-      <p class="lead" style="max-width:720px;color:var(--ink-2)">دليل عملي مختصر يرافقك في اختيار المجال، والترخيص، والتسعير، وبناء العلامة، والتسويق، حتى أول طلب على حبكة.</p>
-      <div class="toc"><a class="pill" href="#/guide#ideas">أفكار المشاريع</a><a class="pill" href="#/guide#start">خطوات البداية</a><a class="pill" href="#/guide#calc">حاسبة التسعير</a><a class="pill" href="#/guide#brand">العلامة والتسويق</a></div></div>
-      <section id="ideas"><h2>أفكار المشاريع حسب المجال</h2><div class="grid g-3" style="margin-top:16px">${IDEAS.map(([c, t, d, list, cost]) => `<div class="card idea"><div class="cat" style="border:0;padding:0;text-align:start;background:none"><div class="ic" style="margin:0 0 10px;background:${CAT_COLORS[c][0]};color:${CAT_COLORS[c][1]}">${ic(c)}</div></div>
-        <h3>${t}</h3><p class="muted small">${d}</p><ul class="small">${list.map((x) => `<li>${x}</li>`).join("")}</ul><p class="small" style="margin:10px 0 0"><b>رأس مال تقريبي للبداية:</b> <span class="num">${cost}</span></p></div>`).join("")}</div></section>
-      <section id="start" class="block prose"><h2>خطوات البداية في قطر</h2><div class="grid g-2" style="margin-top:12px">
-        <div class="card idea"><h3>1. اختر منتجًا واحدًا تتقنه</h3><p class="muted">ابدأ بمنتج أو اثنين تتميز فيهما، واختبرهما مع الأهل والجيران، وسجّل ملاحظاتهم قبل التوسع.</p></div>
-        <div class="card idea"><h3>2. رخّص نشاطك المنزلي</h3><p class="muted">استخرج ترخيص الأعمال المنزلية من وزارة التجارة والصناعة عبر خدماتها الإلكترونية. ولأنشطة الأغذية اشتراطات صحية إضافية، فراجع الجهات المختصة واطّلع على أحدث المتطلبات في موقع الوزارة الرسمي.</p></div>
-        <div class="card idea"><h3>3. اضبط الجودة والسلامة</h3><p class="muted">خصص مكانًا نظيفًا للعمل، ودوّن المكونات وتاريخ الإنتاج والصلاحية على كل عبوة، واستخدم تغليفًا آمنًا يحفظ المنتج.</p></div>
-        <div class="card idea"><h3>4. سعّر بعدالة</h3><p class="muted">لا تبع بأقل من تكلفتك. احسب المواد والتغليف ووقتك ونسبة للمصاريف ثم هامش الربح. استخدم الحاسبة أدناه.</p></div>
-        <div class="card idea"><h3>5. افتح متجرك على حبكة</h3><p class="muted">سجّل كمنتج منزلي، وأضف صورًا واضحة ووصفًا دقيقًا، وبعد اعتماد الإدارة يبدأ العملاء بالطلب.</p></div>
-        <div class="card idea"><h3>6. خدمة تصنع الولاء</h3><p class="muted">رد سريع، والتزام بالموعد، وبطاقة شكر صغيرة داخل الطلب. العميل الراضي يعود ويُعرّف غيره بك.</p></div>
-      </div></section>
+      <div class="guide-hero"><span class="eyebrow">${ic("book")} ${esc(G.eyebrow)}</span><h1 style="font-size:clamp(26px,4.5vw,40px)">${esc(G.title)}</h1>
+      <p class="lead" style="max-width:720px;color:var(--ink-2)">${esc(G.lead)}</p>
+      <div class="toc">${ideas.length ? `<a class="pill" href="#/guide#ideas">${esc(G.ideas_title)}</a>` : ""}${start.length ? `<a class="pill" href="#/guide#start">${esc(G.start_title)}</a>` : ""}<a class="pill" href="#/guide#calc">${esc(G.calc_title)}</a>${brand.length ? `<a class="pill" href="#/guide#brand">${esc(G.brand_title)}</a>` : ""}</div></div>
+      ${ideas.length ? `<section id="ideas"><h2>${esc(G.ideas_title)}</h2><div class="grid g-3" style="margin-top:16px">${ideas.map((x) => { const [bg, fg] = hueColors(x.hue ?? 30); return `<div class="card idea"><div class="ic-sq" style="background:${bg};color:${fg}">${ic(x.icon || "spark")}</div>
+        <h3>${esc(x.title)}</h3><p class="muted small">${esc(x.desc)}</p>${(x.items || []).length ? `<ul class="small">${x.items.map((i) => `<li>${esc(i)}</li>`).join("")}</ul>` : ""}${x.cost ? `<p class="small" style="margin:10px 0 0"><b>رأس مال تقريبي للبداية:</b> <span class="num">${esc(x.cost)}</span></p>` : ""}</div>`; }).join("")}</div></section>` : ""}
+      ${start.length ? `<section id="start" class="block prose"><h2>${esc(G.start_title)}</h2><div class="grid g-2" style="margin-top:12px">
+        ${start.map((x, i) => `<div class="card idea"><h3><span class="num">${i + 1}</span>. ${esc(x.title)}</h3><p class="muted">${esc(x.body)}</p></div>`).join("")}</div></section>` : ""}
       <section id="calc" class="block"><div class="grid g-2" style="align-items:start">
-        <div><h2>حاسبة التسعير</h2><p class="muted">أدخل تكاليفك لكل وحدة، وتقترح الحاسبة سعرًا يغطي التكلفة ويحقق ربحًا عادلًا.</p>
-        <div class="notice small">مثال: علبة لقيمات تكلف موادها 12 ر.ق وتغليفها 3 ر.ق وتستغرق نصف ساعة.</div></div>
+        <div><h2>${esc(G.calc_title)}</h2><p class="muted">${esc(G.calc_lead)}</p>
+        ${G.calc_example ? `<div class="notice small">${esc(G.calc_example)}</div>` : ""}</div>
         <form class="card calc" id="cf">
           <div class="row2"><div class="field"><label>تكلفة المواد (ر.ق)</label><input class="input ltr num" name="m" type="number" value="12" min="0" step="0.5"></div>
           <div class="field"><label>التغليف (ر.ق)</label><input class="input ltr num" name="p" type="number" value="3" min="0" step="0.5"></div></div>
@@ -790,12 +1161,9 @@
           <div class="field"><label>هامش الربح %</label><input class="input ltr num" name="g" type="number" value="30" min="0"></div></div>
           <div class="out" id="co"></div></form>
       </div></section>
-      <section id="brand" class="block prose"><h2>العلامة والتسويق</h2><div class="grid g-3" style="margin-top:12px">
-        <div class="card idea"><h3>اسم وهوية</h3><ul class="small"><li>اسم قصير سهل النطق يعكس منتجك</li><li>لونان أساسيان وخط ثابت على كل العبوات</li><li>ملصق يحمل الاسم والمكونات والتاريخ</li></ul></div>
-        <div class="card idea"><h3>صور تبيع</h3><ul class="small"><li>ضوء النهار قرب النافذة</li><li>خلفية بسيطة وزاوية علوية للأطباق</li><li>صورة تُظهر الحجم الحقيقي للمنتج</li></ul></div>
-        <div class="card idea"><h3>انتشار ذكي</h3><ul class="small"><li>شارك رابط متجرك على حبكة في حساباتك</li><li>عروض المواسم: رمضان، العيد، اليوم الوطني، القرنقعوه</li><li>اطلب من العملاء تقييم المنتج بعد الاستلام</li></ul></div>
-      </div>
-      <div class="band" style="margin-top:28px"><div><h2>جاهز للانطلاق؟</h2><p>افتح متجرك على حبكة مجانًا، وابدأ استقبال الطلبات.</p></div><div class="actions" style="justify-content:flex-end"><a class="btn btn-gold" href="#/register?role=producer">افتح متجرك</a></div></div></section>
+      <section id="brand" class="block prose">${brand.length ? `<h2>${esc(G.brand_title)}</h2><div class="grid g-3" style="margin-top:12px">
+        ${brand.map((x) => `<div class="card idea"><h3>${esc(x.title)}</h3><ul class="small">${(x.items || []).map((i) => `<li>${esc(i)}</li>`).join("")}</ul></div>`).join("")}</div>` : ""}
+      <div class="band" style="margin-top:28px"><div><h2>${esc(G.cta_title)}</h2><p>${esc(G.cta_body)}</p></div><div class="actions" style="justify-content:flex-end"><a class="btn btn-gold" href="#/register?role=producer">افتح متجرك</a></div></div></section>
     </div></div>`;
     const f = $("#cf");
     const calc = () => {
@@ -809,20 +1177,27 @@
   };
 
   routes["about"] = async () => {
+    const A = C("about");
     app.innerHTML = `<div class="page"><div class="wrap prose" style="max-width:860px">
-      <span class="eyebrow">${ic("spark")} عن حبكة</span><h1 style="font-size:clamp(26px,4.5vw,40px)">الحَبْكة: إتقانٌ يُصنع في البيت</h1>
-      <p class="lead" style="font-size:18px">«الحَبْكة» في لساننا هي إحكام الصنعة وإتقانها، وهي العقدة التي تشدّ الخيط فلا ينفلت. ومن هذا المعنى وُلدت المنصة: نجمع خيوط المواهب المنزلية في قطر في نسيج واحد يصل إلى كل بيت.</p>
-      <div class="grid g-3" style="margin:24px 0">
-        <div class="card idea"><h3>رسالتنا</h3><p class="muted small">تمكين الأسر المنتجة وأصحاب الصناعات المنزلية من الوصول إلى عملائهم بسهولة واحترافية.</p></div>
-        <div class="card idea"><h3>للعميل</h3><p class="muted small">منتجات بيتية أصيلة من متاجر معتمدة، مع متابعة واضحة للطلب وتقييمات حقيقية بعد الاستلام فقط.</p></div>
-        <div class="card idea"><h3>للمنتج</h3><p class="muted small">متجر مجاني ولوحة لإدارة المنتجات والطلبات والاستفسارات، مع دليل عملي وحاسبة للتسعير.</p></div>
-      </div>
-      <h3>قيمنا</h3><ul><li><b>الإتقان:</b> نعتمد المتاجر والمنتجات بعد مراجعتها.</li><li><b>الشفافية:</b> أسعار واضحة وحالة طلب معلنة في كل خطوة.</li><li><b>الأصالة:</b> نحتفي بالصنعة المحلية وروح البيت القطري.</li></ul>
+      <span class="eyebrow">${ic("spark")} ${esc(A.eyebrow)}</span><h1 style="font-size:clamp(26px,4.5vw,40px)">${esc(A.title)}</h1>
+      <p class="lead" style="font-size:18px">${esc(A.lead)}</p>
+      ${(A.cards || []).length ? `<div class="grid g-3" style="margin:24px 0">${A.cards.map((c) => `<div class="card idea"><h3>${esc(c.title)}</h3><p class="muted small">${esc(c.body)}</p></div>`).join("")}</div>` : ""}
+      ${rich(A.body)}
       <div class="actions" style="margin-top:20px"><a class="btn btn-primary" href="#/browse">تسوّق الآن</a><a class="btn btn-ghost" href="#/contact">تواصل معنا</a></div></div></div>`;
   };
 
+  const faqItem = (x) => `<details class="faq-i"><summary><span>${esc(x.q)}</span>${ic("down")}</summary><div class="prose">${rich(x.a)}</div></details>`;
+  routes["faq"] = async () => {
+    const fq = C("faq");
+    app.innerHTML = `<div class="page"><div class="wrap" style="max-width:860px"><div class="crumbs"><a href="#/">الرئيسية</a> / الأسئلة الشائعة</div>
+      <span class="eyebrow">${ic("help")} مركز المساعدة</span><h1 style="font-size:clamp(26px,4.5vw,40px)">الأسئلة الشائعة</h1>
+      <p class="muted">إجابات واضحة عن الطلب والدفع والتوصيل وفتح المتاجر على حبكة.</p>
+      ${fq.length ? `<div class="faq">${fq.map(faqItem).join("")}</div>` : empty("لا توجد أسئلة منشورة حاليًا")}
+      <div class="notice" style="margin-top:20px">لم تجد إجابتك؟ <a href="#/contact"><b>تواصل معنا</b></a> ويسعدنا خدمتك.</div></div></div>`;
+  };
+
   routes["contact"] = async () => {
-    app.innerHTML = `<div class="page"><div class="wrap auth" style="max-width:640px"><div class="card"><h1 style="font-size:28px">تواصل معنا</h1><p class="muted">يسعدنا استقبال استفساراتكم ومقترحاتكم، ويرد فريق حبكة خلال يوم عمل.</p>
+    app.innerHTML = `<div class="page"><div class="wrap auth" style="max-width:640px"><div class="card"><h1 style="font-size:28px">تواصل معنا</h1><p class="muted">${esc(C("footer").contact_lead)}</p>
       <form id="ctf"><div class="err"></div>
         <div class="row2"><div class="field"><label>الاسم</label><input class="input" name="name" required value="${esc(S.user?.full_name || "")}"></div>
         <div class="field"><label>رقم الجوال</label><input class="input ltr num" name="phone" required inputmode="tel" placeholder="+974 XXXX XXXX" value="${esc(S.user?.phone || "")}"></div></div>
@@ -838,24 +1213,12 @@
     };
   };
 
-  routes["terms"] = async () => {
-    app.innerHTML = `<div class="page"><div class="wrap prose" style="max-width:860px"><h1 style="font-size:32px">الشروط والأحكام</h1><p class="muted">آخر تحديث: 22 نوفمبر 2026</p>
-      <ol><li>حبكة منصة وسيطة تربط العملاء بأصحاب الصناعات المنزلية، والمنتج مسؤول عن جودة منتجه وسلامته ومطابقته للوصف.</li>
-      <li>يلتزم المنتج بالحصول على التراخيص اللازمة لنشاطه وفق الأنظمة المعمول بها في دولة قطر.</li>
-      <li>تراجع الإدارة المتاجر والمنتجات قبل عرضها، ولها رفض أو إيقاف ما يخالف الشروط أو الذوق العام.</li>
-      <li>الأسعار معروضة بالريال القطري، ويتم الدفع مباشرة بين العميل والمنتج عند الاستلام، ويُتفق على رسوم التوصيل بينهما.</li>
-      <li>يحق للعميل إلغاء الطلب قبل قبوله من المنتج، وبعد القبول يكون الإلغاء بالتنسيق مع المنتج.</li>
-      <li>التقييمات متاحة فقط لمن استلم الطلب، ويُمنع نشر محتوى مسيء أو مضلل.</li>
-      <li>يُمنع استخدام المنصة لأي نشاط مخالف للأنظمة، وللإدارة إيقاف الحسابات المخالفة.</li></ol></div></div>`;
+  const legal = (k) => async () => {
+    const L = C(k);
+    app.innerHTML = `<div class="page"><div class="wrap prose" style="max-width:860px"><h1 style="font-size:32px">${esc(L.title)}</h1>${L.updated ? `<p class="muted">آخر تحديث: ${esc(L.updated)}</p>` : ""}${rich(L.body)}</div></div>`;
   };
-  routes["privacy"] = async () => {
-    app.innerHTML = `<div class="page"><div class="wrap prose" style="max-width:860px"><h1 style="font-size:32px">سياسة الخصوصية</h1><p class="muted">آخر تحديث: 22 نوفمبر 2026</p>
-      <ul><li>نجمع الاسم ورقم الجوال والبريد الإلكتروني والمنطقة لتشغيل الحساب وإتمام الطلبات.</li>
-      <li>يظهر رقم جوال العميل وعنوانه للمتجر الذي طلب منه فقط، لغرض تنفيذ الطلب والتواصل بشأنه.</li>
-      <li>تُحفظ كلمات المرور مشفّرة، ولا يطّلع عليها أحد.</li>
-      <li>لا نبيع بياناتك ولا نشاركها مع أي طرف لأغراض تسويقية.</li>
-      <li>يمكنك تعديل بياناتك من صفحة حسابك، أو طلب حذف الحساب عبر صفحة التواصل.</li></ul></div></div>`;
-  };
+  routes["terms"] = legal("terms");
+  routes["privacy"] = legal("privacy");
 
   /* ---------- الموجّه ---------- */
   async function router() {
@@ -866,9 +1229,10 @@
     const fn = routes[name] || routes[""];
     renderChrome();
     if (!(name === "guide" && location.hash.split("#")[2])) window.scrollTo(0, 0);
-    try { await fn(q, id); }
+    try { if (fn !== routes[""]) { await loadCats(); renderSite(); } await fn(q, id); }
     catch (e) { app.innerHTML = `<div class="page"><div class="wrap">${empty(esc(e.message), '<button class="btn btn-ghost" onclick="location.reload()">إعادة المحاولة</button>')}</div></div>`; }
-    document.title = (name && { browse: "المنتجات", shops: "المتاجر", cart: "السلة", login: "تسجيل الدخول", register: "إنشاء حساب", account: "حسابي", seller: "لوحة المتجر", admin: "لوحة الإدارة", guide: "دليل المنتج المنزلي", about: "عن حبكة", contact: "تواصل معنا", terms: "الشروط والأحكام", privacy: "سياسة الخصوصية" }[name] ? ({ browse: "المنتجات", shops: "المتاجر", cart: "السلة", login: "تسجيل الدخول", register: "إنشاء حساب", account: "حسابي", seller: "لوحة المتجر", admin: "لوحة الإدارة", guide: "دليل المنتج المنزلي", about: "عن حبكة", contact: "تواصل معنا", terms: "الشروط والأحكام", privacy: "سياسة الخصوصية" }[name] + " | حبكة") : "حبكة | منصة الصناعات المنزلية في قطر");
+    const TITLES = { browse: "المنتجات", shops: "المتاجر", cart: "السلة", login: "تسجيل الدخول", register: "إنشاء حساب", account: "حسابي", seller: "لوحة المتجر", admin: "لوحة الإدارة", guide: "دليل المنتج المنزلي", about: "عن حبكة", contact: "تواصل معنا", terms: "الشروط والأحكام", privacy: "سياسة الخصوصية", faq: "الأسئلة الشائعة" };
+    document.title = name && TITLES[name] ? `${TITLES[name]} | حبكة` : "حبكة | منصة الصناعات المنزلية في قطر";
   }
   window.addEventListener("hashchange", router);
   $("#yr").textContent = new Date().getFullYear();

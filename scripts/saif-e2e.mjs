@@ -45,6 +45,7 @@ const DOCX = mkZip([["[Content_Types].xml", "<Types/>"], ["word/document.xml", "
     await login("client", "wrong-pass"); ok((await p.textContent("#le")).includes("غير صحيحة"), "رفض كلمة مرور خاطئة"); await shot("login");
     await login("client", Cl); ok((await p.textContent("h1.pg")).includes("العميل الافتراضي"), "دخول العميل الافتراضي");
     const tabs = await p.$$eval("nav.tabs a", a => a.map(x => x.textContent)); ok(tabs.length === 5 && !tabs.includes("الحسابات والصلاحيات"), "قائمة العميل 5 أقسام فقط: " + tabs.join("، "));
+    await p.goto(BASE + "#content"); await p.waitForTimeout(300); ok(!(await p.isVisible("text=المعاينة الحية")), "العميل محجوب عن شاشة محتوى الموقع");
     await shot("client-home"); ok(!(await overflow()), "لا تمرير أفقي (عميل)");
     await p.goto(BASE + "#scan"); await p.click("#demo"); await p.waitForSelector("text=نتيجة الفحص", { timeout: 10000 });
     const res = await p.textContent("#res"); ok(res.includes("كلمة مرور مكتوبة") && res.includes("IBAN") && res.includes("بطاقة شخصية") && res.includes("بريد"), "الفحص اكتشف البيانات الحساسة في ملف الاختبار"); ok(!res.includes("Test-Only-123"), "القيم الحساسة مقنّعة"); await shot("client-scan");
@@ -78,7 +79,7 @@ const DOCX = mkZip([["[Content_Types].xml", "<Types/>"], ["word/document.xml", "
     await p.goto(BASE + "#account"); await p.waitForSelector("#pf"); await p.fill("[name=phone]", "55000012"); await p.click("#pb"); await p.waitForTimeout(500); ok((await p.inputValue("[name=phone]")) === "+974 5500 0012", "توحيد رقم الهاتف في الحساب"); await shot("client-account");
     await p.click("#out"); await p.waitForTimeout(400); ok(await p.isVisible(".hero"), "خروج العميل");
     await login("admin", A); ok((await p.textContent("h1.pg")).includes("المدير الشامل"), "دخول المدير الشامل");
-    const tA = await p.$$eval("nav.tabs a", a => a.length); ok(tA === 9, "قائمة المدير 9 أقسام"); await shot("admin-home"); ok(!(await overflow()), "لا تمرير أفقي (مدير)");
+    const tA = await p.$$eval("nav.tabs a", a => a.length); ok(tA === 10, "قائمة المدير 10 أقسام"); await shot("admin-home"); ok(!(await overflow()), "لا تمرير أفقي (مدير)");
     ok((await p.textContent("main")).includes("العميل الافتراضي"), "المدير يرى العميل وحالته في اللوحة");
     // إتاحة النوافذ المنبثقة: عنوان للقارئات الصوتية، وTab يبقى داخلها، وEsc يغلقها ويعيد التركيز للزر
     await p.goto(BASE + "#users"); await p.waitForSelector("#nu"); await p.focus("#nu"); await p.click("#nu");
@@ -91,6 +92,25 @@ const DOCX = mkZip([["[Content_Types].xml", "<Types/>"], ["word/document.xml", "
     await p.goto(BASE + "#reports?uid=u2"); await p.waitForSelector(".banner"); ok((await p.$$("details.rep")).length >= 2, "المدير يرى تقارير العميل");
     await p.goto(BASE + "#health"); await p.waitForSelector("#st .chk", { timeout: 8000 }); await p.waitForTimeout(1500); const hs = await p.$$eval("#st .dot", d => d.map(x => x.className)); ok(hs.length >= 9 && !hs.some(c => c.includes("alert")), "الفحص الذاتي: " + hs.length + " بنداً بلا تنبيه"); await shot("admin-health");
     await p.goto(BASE + "#audit"); await p.waitForSelector("#ab tr"); ok((await p.textContent("#ab")).includes("إنشاء حساب"), "سجل التدقيق يسجل العمليات"); await shot("admin-audit");
+    // إدارة محتوى الموقع: تعديل وإضافة وحذف وإعادة ترتيب ثم التحقق من ظهورها للزائر
+    await p.goto(BASE + "#content"); await p.waitForSelector("[data-blk]"); await shot("admin-content"); ok(!(await overflow()), "لا تمرير أفقي (شاشة المحتوى)");
+    ok(await p.locator("#sv").isDisabled(), "زر الحفظ معطّل قبل أي تعديل");
+    await p.fill('[data-p="hero.title"]', "عنوان الاختبار " + name);
+    await p.click('[data-a="add-item"][data-b="0"]'); await p.fill('[data-p="blocks.0.items.4.title"]', "بطاقة مضافة"); await p.fill('[data-p="blocks.0.items.4.text"]', "نص\nسطران");
+    await p.click('[data-a="up"][data-b="0"][data-i="4"]'); await p.click('[data-a="up"][data-b="0"][data-i="3"]');
+    ok((await p.inputValue('[data-p="blocks.0.items.2.title"]')) === "بطاقة مضافة", "إعادة ترتيب بطاقة بالأسهم");
+    await p.click('[data-a="del"][data-b="0"][data-i="0"]'); await p.click("#cy"); await p.waitForTimeout(200);
+    ok((await p.locator('[data-blk="0"] .itm').count()) === 4, "حذف بطاقة بعد التأكيد");
+    await p.click('[data-a="add-block"][data-t="text"]'); await p.fill('[data-p="blocks.1.title"]', "من نحن"); await p.fill('[data-p="blocks.1.items.0.title"]', "رسالتنا"); await p.fill('[data-p="blocks.1.items.0.text"]', "نحمي بياناتك.");
+    ok((await p.textContent("#pv")).includes("عنوان الاختبار") && (await p.textContent("#pv")).includes("من نحن"), "المعاينة الحية تتحدث قبل الحفظ");
+    await shot("admin-content-edited");
+    await p.click("#sv"); await p.waitForSelector("#st.ok", { timeout: 5000 });
+    // الزائر: نخرج المدير فتعرض الصفحة العامة (التخزين على الجهاز نفسه في الوضع المستقل) ونتحقق من التعديلات
+    await p.click("#out"); await p.waitForSelector(".hero");
+    const vt = await p.textContent("main"); ok(vt.includes("عنوان الاختبار " + name) && vt.includes("بطاقة مضافة") && vt.includes("من نحن") && !vt.includes("فحص محلي للمحتوى"), "الزائر يرى التعديلات (عنوان، بطاقة مضافة، قسم جديد، وبطاقة محذوفة غائبة)");
+    await shot("visitor-edited"); ok(!(await overflow()), "لا تمرير أفقي (زائر بعد التعديل)");
+    await login("admin", A); await p.goto(BASE + "#content"); await p.waitForSelector("[data-blk]");
+    await p.click("#rs"); await p.click("#cy"); await p.waitForSelector("#st.na", { timeout: 5000 }); ok((await p.inputValue('[data-p="hero.title"]')).includes("بياناتك السرية"), "إعادة الأصل");
     await p.goto(BASE + "#settings"); await p.waitForSelector("#bk"); const [dl] = await Promise.all([p.waitForEvent("download"), p.click("#bk")]); ok(dl.suggestedFilename().startsWith("saif-backup"), "تنزيل نسخة احتياطية"); await shot("admin-settings");
     // تفاعل لحظي بين نافذتين
     const p2 = await ctx.newPage(); await p2.goto(BASE + "#home"); await p2.waitForSelector("h1.pg");
