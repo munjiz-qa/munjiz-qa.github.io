@@ -1,4 +1,6 @@
 'use strict';
+// تاريخ موحّد في كل منجز: يوم/شهر/سنة (25/11/2026)
+const dmy=v=>{const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(v==null?'':v));return m?`${m[3]}/${m[2]}/${m[1]}`:(v==null?'':String(v))};
 // «حسابي»: حساب العميل. يعمل مع خادم Google Apps Script المضبوط في config.js (API).
 // Shared by portal.html and en/portal.html; the <html lang> decides the language.
 const EN=document.documentElement.lang==='en';
@@ -140,7 +142,7 @@ function reviewDlg(id){let d=$('rvDlg');
 document.addEventListener('click',e=>{const b=e.target.closest('[data-rv]');if(b)reviewDlg(b.dataset.rv)});
 const bal=t=>Math.max(0,(+t.fee||0)+(+t.govFee||0)-(+t.paid||0));
 const money=n=>`${fmt(n)} ${T.cur}`;
-const reqCols=[[T.th.no,r=>esc(r.id)],[T.th.date,r=>esc(String(r.created).slice(0,10))],[T.th.services,r=>esc(r.services).replace(/\n/g,'<br>')],[T.th.st,r=>stTag(r.status)]];
+const reqCols=[[T.th.no,r=>esc(r.id)],[T.th.date,r=>esc(dmy(r.created))],[T.th.services,r=>esc(r.services).replace(/\n/g,'<br>')],[T.th.st,r=>stTag(r.status)]];
 function render(){const c=ME.client,closed=t=>/منجزة|ملغاة/.test(t.status);
   $('dName').textContent=T.welcome(c.name);$('dMeta').textContent=`${T.client}: ${c.id} · ${T.user}: ${ME.username}`;
   const k=[ME.requests.filter(r=>/جديد|تم التواصل/.test(r.status)).length,ME.transactions.filter(t=>!closed(t)).length,ME.transactions.filter(t=>t.status==='منجزة').length,ME.files.length];
@@ -149,9 +151,9 @@ function render(){const c=ME.client,closed=t=>/منجزة|ملغاة/.test(t.sta
   $('soon').innerHTML=soon.length?`<ul class="plist">${soon.map(([t,d])=>`<li><b>${esc(t.service)}</b><span class="${d<0?'late':'mute'}">${esc(t.expiryDate)} · ${d<0?T.expired:T.inDays(d)}</span></li>`).join('')}</ul>`:`<p class="mute">${T.noSoon}</p>`;
   $('latest').innerHTML=table(ME.transactions.slice(0,5),txCols.slice(0,5));
   $('txList').innerHTML=table(ME.transactions,txCols);$('reqList').innerHTML=table(ME.requests,reqCols);
-  $('fileList').innerHTML=ME.files.length?`<ul class="plist files">${ME.files.map(f=>`<li><div><b>${esc(f.title)}</b><span class="mute sm">${esc(String(f.created).slice(0,10))}${f.txnId?` · ${T.txn} ${esc(f.txnId)}`:''}</span></div><button type="button" class="btn sm pri" data-f="${esc(f.id)}">${f.link?T.open:T.dl}</button></li>`).join('')}</ul>`:`<p class="mute">${T.none}</p>`;
+  $('fileList').innerHTML=ME.files.length?`<ul class="plist files">${ME.files.map(f=>`<li><div><b>${esc(f.title)}</b><span class="mute sm">${esc(dmy(f.created))}${f.txnId?` · ${T.txn} ${esc(f.txnId)}`:''}</span></div><button type="button" class="btn sm pri" data-f="${esc(f.id)}">${f.link?T.open:T.dl}</button></li>`).join('')}</ul>`:`<p class="mute">${T.none}</p>`;
   const pf=$('profF').elements;['name','type','phone','email','cr','estCard','taxNo','qid','address'].forEach(k=>{if(pf[k])pf[k].value=c[k]||''});if(!c.type)pf.type.value='منشأة';
-  $('credList').innerHTML=ME.credentials.length?`<ul class="plist">${ME.credentials.map(x=>`<li><div><b>${esc(x.portal)}</b><span class="mute sm" dir="ltr">${esc(x.username)} · ••••••</span><span class="mute sm">${esc(String(x.created).slice(0,10))}</span></div><button type="button" class="btn sm ghost" data-cdel="${esc(x.id)}">${T.credDel}</button></li>`).join('')}</ul>`:'';
+  $('credList').innerHTML=ME.credentials.length?`<ul class="plist">${ME.credentials.map(x=>`<li><div><b>${esc(x.portal)}</b><span class="mute sm" dir="ltr">${esc(x.username)} · ••••••</span><span class="mute sm">${esc(dmy(x.created))}</span></div><button type="button" class="btn sm ghost" data-cdel="${esc(x.id)}">${T.credDel}</button></li>`).join('')}</ul>`:'';
   $('msgList').innerHTML=ME.messages.length?ME.messages.map(m=>`<div class="bub ${m.from==='client'?'me':''}"><div class="pre">${esc(m.body)}</div><small class="mute">${m.from==='client'?T.you:T.office} · ${esc(m.created)}</small></div>`).join(''):`<p class="mute">${T.noMsg}</p>`;
   const live=ME.transactions.filter(t=>!/ملغاة/.test(t.status)),pays=ME.payments||[],tot=live.reduce((a,t)=>a+(+t.fee||0)+(+t.govFee||0),0),paid=live.reduce((a,t)=>a+(+t.paid||0),0);
   $('payK').innerHTML=[[T.payK[0],money(tot)],[T.payK[1],money(paid)],[T.payK[2],money(live.reduce((a,t)=>a+bal(t),0))]].map(([k,v],i)=>`<div class="kpi"><b class="num ${i===2&&v!==money(0)?'late':''}">${v}</b><span>${k}</span></div>`).join('');

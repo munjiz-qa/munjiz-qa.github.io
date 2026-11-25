@@ -115,7 +115,7 @@ function briefing(list){const n=ME_().name||ME_().username||'',h=new Date().getH
 // ---------- render ----------
 function render(){if(!ME)return;items=collect();byKey=Object.fromEntries(items.map(x=>[x.key,x]));
   const vis=items.filter(x=>showSnoozed||!snoozed(x.key)),nSn=items.length-items.filter(x=>!snoozed(x.key)).length,b=briefing(items);
-  const d=new Date(),date=d.toLocaleDateString(EN?'en-GB':'ar-QA-u-nu-latn',{weekday:'long',year:'numeric',month:'2-digit',day:'2-digit'});
+  const d=new Date(),date=d.toLocaleDateString(EN?'en-GB':'ar-QA-u-nu-latn',{weekday:'long',timeZone:'Asia/Qatar'})+(EN?', ':'، ')+dmy(d.toLocaleDateString('en-CA',{timeZone:'Asia/Qatar'}));
   const counts=Object.fromEntries(KINDS.map(([k])=>[k,vis.filter(x=>inKind(x,k)).length]));
   const list=vis.filter(x=>inKind(x,filter));
   V.innerHTML=`<div class="td-head"><div><h2>${esc(b.greet)}</h2><p class="mute sm">${esc(date)}</p></div><span class="sp"></span>
@@ -232,7 +232,7 @@ function find(q){const s=q.trim().toLowerCase(),dg=s.replace(/\D/g,''),idm=s.mat
       <li>${L('معاملات مفتوحة','Open transactions')}: <b class="num">${open.length}</b>${open.length?' · '+open.slice(0,3).map(t=>`<a href="#" data-txn="${esc(t.id)}">${esc(t.service)}</a> (${esc(trS(t.status))})`).join('، '):''}</li>
       ${R.length?`<li>${L('طلبات مفتوحة','Open requests')}: ${R.map(r=>`<span class="num">${esc(r.id)}</span> (${esc(trS(r.status))})`).join('، ')}</li>`:''}
       ${can('finance')?`<li>${L('المستحق عليه','Balance owed')}: <b class="num ${bal>0?'bad':''}">${money(bal)}</b></li>`:''}
-      <li>${L('آخر تواصل','Last contact')}: ${lg?`<span class="num">${esc(String(lg.created).slice(0,10))}</span> · ${esc(String(lg.subject||'').slice(0,60))}`:L('لا يوجد مسجّل','none recorded')}</li>
+      <li>${L('آخر تواصل','Last contact')}: ${lg?`<span class="num">${esc(dmy(lg.created))}</span> · ${esc(String(lg.subject||'').slice(0,60))}`:L('لا يوجد مسجّل','none recorded')}</li>
       <li><b>${L('الخطوة التالية','Next step')}:</b> ${its.length?`<a href="#" data-goto="${esc(its[0].key)}">${esc(its[0].next)}</a>`:L('لا يوجد إجراء معلّق لهذا العميل.','No pending action for this client.')}</li></ul></div>`}).join('')+
     rq.filter(r=>!r.clientId||!cli(r.clientId).id).slice(0,3).map(r=>`<p>${L('طلب','Request')} <span class="num">${esc(r.id)}</span> · ${esc(r.name)} · ${esc(trS(r.status))}</p>`).join('')}
 
