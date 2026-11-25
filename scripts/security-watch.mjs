@@ -15,10 +15,12 @@ const TELEGRAM = env.ALERT_TELEGRAM || '';
 const WINDOW_MIN = Number(env.WINDOW_MIN || 70);
 const LABEL = 'security-alert';
 // accounts allowed to change the main branch: the owner, Claude, the site's own data bots and GitHub's web editor
-const ALLOWED = new Set(['aboelezz2005@gmail.com', 'munijizqa@gmail.com', 'baseeratactions@users.noreply.github.com', 'noreply@anthropic.com',
+const ALLOWED = new Set(['aboelezz2005@gmail.com', 'munijizqa@gmail.com', 'baseeratactions@users.noreply.github.com', '341908079+baseeratactions@users.noreply.github.com', 'noreply@anthropic.com',
   'actions@users.noreply.github.com', 'noreply@github.com', '41898282+github-actions[bot]@users.noreply.github.com',
   // the owner's own addresses: GitHub's id-prefixed noreply, and the Munjiz company mailbox
   '341908079+baseeratactions@users.noreply.github.com', 'munijizqa@gmail.com', 'munjiz-qa@users.noreply.github.com',
+  // this repository's own data bot (.github/workflows/basira-caller-data.yml)
+  'basira-caller-bot@users.noreply.github.com',
   ...String(env.ALLOWED_EMAILS || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean)]);
 const SECRETS = [
   [/ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{40,}/, 'مفتاح GitHub'],

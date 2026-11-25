@@ -193,7 +193,7 @@ const NAV = LAB ? [
 ];
 let isOwner = false;
 function navHTML() {
-  return NAV.map(([sec, items, pc]) => (sec ? `<div class="sec${pc ? ' ' + pc : ''}">${pc ? '<i class="dot"></i>' : ''}${sec}</div>` : '') + items.filter(([v]) => (v !== 'admin' || (IS_PWA ? isAdmin() : isOwner)) && (v !== 'account' || IS_PWA))
+  return NAV.map(([sec, items, pc]) => (sec ? `<div class="sec${pc ? ' ' + pc : ''}">${pc ? '<i class="dot"></i>' : ''}${sec}</div>` : '') + items.filter(([v]) => ((v !== 'admin' && v !== 'cms') || (IS_PWA ? isAdmin() : isOwner)) && (v !== 'account' || IS_PWA))
     .map(([v, l, ic, nw]) => `<a href="#${v}" data-v="${v}"><svg><use href="#${ic}"/></svg>${l}${nw ? '<span class="new">جديد</span>' : ''}</a>`).join('')).join('');
 }
 function drawNav() { $('#nav').innerHTML = navHTML(); }
@@ -5401,6 +5401,9 @@ async function admin() {
   if (!isOwner && !IS_PWA) { V(`<div class="stack"><h1>لوحة الإدارة</h1><p class="muted">هذه الصفحة لمالك الموسوعة فقط.</p></div>`); return; }
   const tot = T.reduce((s, c) => s + c.items.length, 0);
   V(`<div class="stack" style="max-width:900px"><div><div class="eyebrow">لوحة الإدارة · ${IS_PWA ? 'مدير شامل: ' + esc(SESSION.name) : 'تظهر لك وحدك بصفتك مالك الموسوعة'}</div><h1>إدارة ${BRAND}</h1></div>
+  ${IS_PWA ? `<section class="panel stack tight cms-entry"><h3>محرّر المحتوى</h3><p class="muted small" style="margin:0">أضف الأقسام والفصول والنصوص أو عدّلها أو احذفها أو أعد ترتيبها، مع معاينة قبل الحفظ وتراجع عن أي تغيير، ثم انشرها لكل الزوار.</p><div class="toolbar"><a class="btn pri" href="#cms"><svg><use href="#i-grid"/></svg>فتح محرّر المحتوى</a></div></section>` : ''}
+  ${IS_PWA ? `<section class="panel stack tight cms-entry"><h3>محرّر المحتوى</h3><p class="muted small" style="margin:0">أضف الأقسام والفصول والنصوص أو عدّلها أو احذفها أو أعد ترتيبها، مع معاينة قبل الحفظ وتراجع عن أي تغيير، ثم انشرها لكل الزوار.</p><div class="toolbar"><a class="btn pri" href="#cms"><svg><use href="#i-grid"/></svg>فتح محرّر المحتوى</a></div></section>` : ''}
+  ${IS_PWA ? `<section class="panel stack tight cms-entry"><h3>محرّر المحتوى</h3><p class="muted small" style="margin:0">أضف الأقسام والفصول والنصوص أو عدّلها أو احذفها أو أعد ترتيبها، مع معاينة قبل الحفظ وتراجع عن أي تغيير، ثم انشرها لكل الزوار.</p><div class="toolbar"><a class="btn pri" href="#cms"><svg><use href="#i-grid"/></svg>فتح محرّر المحتوى</a></div></section>` : ''}
   <section class="panel stack tight"><h3>الإعلان العام</h3><p class="muted small" style="margin:0">يظهر شريطاً أعلى الصفحات لكل من يفتح الموسوعة. اتركه فارغاً لإخفائه.</p>
     <input class="field" id="adBanner" type="text" value="${esc(siteCfg.banner || '')}" placeholder="مثال: تمت إضافة فهرس جديد عن الأخلاق" style="width:100%"></section>
   <section class="panel stack tight"><h3>الآية المختارة للصفحة الرئيسية</h3><p class="muted small" style="margin:0">تحل محل «آية اليوم». اتركها فارغة ليعود الاختيار اليومي التلقائي.</p>
@@ -6063,7 +6066,7 @@ async function i18nInit() {
   if (LANG === 'ar') return;
   const html = document.documentElement, rtl = isRTL(LANG);
   html.lang = LANG; html.dir = rtl ? 'rtl' : 'ltr'; html.classList.add('i18n', rtl ? 'i18n-rtl' : 'i18n-ltr');
-  const loadDict = async code => { if (I18N.dict) return true; try { const d = await getJSON(`data/i18n/${code}.json`); I18N.sur = d.__surahs; I18N.rx = (d.__rx || []).map(([a, b]) => [new RegExp('^' + a + '$'), b]); delete d.__surahs; delete d.__rx; I18N.dict = d; I18N.dictCode = code;
+  const loadDict = async code => { if (I18N.dict) return true; try { const d = await getJSON(`data/i18n/${code}.json`); I18N.sur = d.__surahs; I18N.rx = (d.__rx || []).map(([a, b]) => [new RegExp('^' + a + '$'), b]); delete d.__surahs; delete d.__rx; I18N.dict = d; I18N.dictCode = code; if (window.CMS) CMS.mergeTr(); if (window.CMS) CMS.mergeTr(); if (window.CMS) CMS.mergeTr();
     const names = Object.keys(I18N.sur).sort((a, b) => b.length - a.length).map(x => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
     surRx = new RegExp(LB_OK ? `(?<![\\u0600-\\u06FF])(${names.join('|')})(?=:? #|$|[،؛)﴾]| ←| →)` : `(^|[^\\u0600-\\u06FF])(${names.join('|')})(?=:? #|$|[،؛)﴾]| ←| →)`, 'g'); return true; } catch (e) { return false; } };
   // المعاني: لغة الزائر إن وُجدت لها ترجمة معتمدة، وإلا الإنجليزية
@@ -6128,6 +6131,155 @@ function mkRegroup() {
   PATHS.forEach((p, gi) => p[3].forEach((x, i) => { PATH_OF[x[0]] = [gi, i]; }));
 }
 mkRegroup();
+/* ================= إدارة المحتوى: طبقة تعديلات منشورة (content/overrides.json) تُطبَّق فوق الأصل ولا تمسّه.
+   تُحمَّل لكل الزوار؛ أما محرّر التعديل (cms.js) فللمدير الشامل وحده. لا يُنفَّذ أي كود قادم من الملف: نصوص وأرقام وقوائم فقط. */
+const CMS = window.CMS = { ov: null, pub: null, orig: {}, stale: [], applied: {}, hidden: new Set(), custom: {}, preview: false, file: 'content/overrides.json', draftKey: 'cmsDraft', base: null };
+CMS.empty = () => ({ v: 1, updated: 0, log: [], structure: { cats: null, cards: {}, hide: [] }, pages: {}, mods: {}, tr: { en: {} } });
+CMS.clone = o => o == null ? o : JSON.parse(JSON.stringify(o));
+CMS.hash = v => { const s = JSON.stringify(v) ?? 'u'; let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h.toString(36); };
+/* تنظيف: لا وسوم ولا شيفرة، فكل نص يُعرض كنص مجرّد */
+CMS.clean = v => typeof v === 'string' ? v.replace(/[<>]/g, '').slice(0, 20000) : Array.isArray(v) ? v.map(CMS.clean) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).filter(([k]) => k !== '__proto__' && k !== 'constructor').map(([k, x]) => [k, CMS.clean(x)])) : (typeof v === 'number' || typeof v === 'boolean' || v === null ? v : undefined);
+CMS.norm = o => {
+  const e = CMS.empty(); if (!o || typeof o !== 'object' || o.v !== 1) return e;
+  const c = CMS.clean(o), st = c.structure || {};
+  e.updated = +c.updated || 0; e.note = typeof c.note === 'string' ? c.note : ''; e.log = Array.isArray(c.log) ? c.log.filter(x => x && typeof x === 'object').slice(-200) : [];
+  e.structure = { cats: Array.isArray(st.cats) ? st.cats.filter(x => x && typeof x.id === 'string' && Array.isArray(x.ids)).slice(0, 9) : null, cards: st.cards && typeof st.cards === 'object' ? st.cards : {}, hide: Array.isArray(st.hide) ? st.hide.filter(x => typeof x === 'string') : [] };
+  const S = x => typeof x === 'string' ? x : '';
+  if (c.pages && typeof c.pages === 'object') for (const [id, p] of Object.entries(c.pages)) {
+    if (!/^cx-[a-z0-9]{3,24}$/.test(id) || !p || typeof p.t !== 'string' || !Array.isArray(p.ch)) continue;
+    e.pages[id] = { t: p.t, et: S(p.et), d: S(p.d), ed: S(p.ed), ic: /^i-[a-z]+$/.test(p.ic || '') ? p.ic : 'i-book',
+      ch: p.ch.filter(x => x && typeof x === 'object' && typeof x.id === 'string').map(x => ({ id: x.id.replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 24) || 'c', t: S(x.t), et: S(x.et), blocks: (Array.isArray(x.blocks) ? x.blocks : []).filter(b => b && typeof b === 'object').map(b => ({ k: ['p', 'h', 'ay', 'q', 'list', 'note'].includes(b.k) ? b.k : 'p', x: S(b.x), s: S(b.s), en: S(b.en), es: S(b.es) })) })) };
+  }
+  if (c.mods && typeof c.mods === 'object') for (const [k, ops] of Object.entries(c.mods)) if (/^[a-z0-9_]{1,24}$/.test(k) && Array.isArray(ops)) e.mods[k] = ops.filter(o => o && typeof o === 'object' && Array.isArray(o.p) && o.p.every(x => typeof x === 'string' || typeof x === 'number') && ['set', 'del', 'arr'].includes(o.t));
+  const tr = c.tr && c.tr.en && typeof c.tr.en === 'object' ? c.tr.en : {}; Object.entries(tr).forEach(([a, b]) => { if (typeof b === 'string') e.tr.en[a] = b; });
+  Object.entries(e.structure.cards).forEach(([k, v]) => { if (!v || typeof v !== 'object') delete e.structure.cards[k]; });
+  return e;
+};
+/* مسارات التعديل: مفتاح نصي، أو «@المعرّف» لعنصر في قائمة عناصرها لها id، فلا تنكسر التعديلات إذا أُضيف أصلٌ جديد قبلها */
+CMS.walk = (d, path) => { let c = d; for (const s of path) { if (c == null || typeof c !== 'object') return undefined; c = s[0] === '@' && Array.isArray(c) ? c.find(x => x && x.id === s.slice(1)) : c[s]; } return c; };
+CMS.idArr = a => Array.isArray(a) && a.length > 0 && a.every(x => x && typeof x === 'object' && !Array.isArray(x) && typeof x.id === 'string') && new Set(a.map(x => x.id)).size === a.length;
+CMS.diff = (a, b, path, out) => {
+  if (JSON.stringify(a) === JSON.stringify(b)) return;
+  const ob = x => x && typeof x === 'object' && !Array.isArray(x);
+  if (CMS.idArr(a) && CMS.idArr(b)) {
+    const aid = a.map(x => x.id), bid = b.map(x => x.id), add = {}; b.forEach(x => { if (!aid.includes(x.id)) add[x.id] = x; });
+    const del = aid.filter(i => !bid.includes(i));
+    if (del.length || Object.keys(add).length || aid.filter(i => bid.includes(i)).join('\u0001') !== bid.filter(i => aid.includes(i)).join('\u0001')) out.push({ t: 'arr', p: path, order: bid, add, del });
+    b.forEach(x => { const o = a.find(y => y.id === x.id); if (o) CMS.diff(o, x, path.concat('@' + x.id), out); });
+    return;
+  }
+  if (ob(a) && ob(b)) { for (const k of new Set([...Object.keys(a), ...Object.keys(b)])) { if (!(k in b)) out.push({ t: 'del', p: path.concat(k) }); else if (!(k in a)) out.push({ t: 'set', p: path.concat(k), v: b[k] }); else CMS.diff(a[k], b[k], path.concat(k), out); } return; }
+  out.push({ t: 'set', p: path, v: b, was: CMS.hash(a) });
+};
+CMS.apply = (data, ops, stale) => {
+  for (const op of ops || []) {
+    if (!op || !Array.isArray(op.p)) continue;
+    try { CMS.applyOne(data, op, stale); } catch (e) { stale && stale.push(op); }
+  }
+};
+CMS.applyOne = (data, op, stale) => {
+  {
+    const path = op.p; if (path.some(x => x === '__proto__' || x === 'constructor' || x === 'prototype')) return;
+    if (op.t === 'arr') {
+      const arr = CMS.walk(data, path); if (!Array.isArray(arr)) { stale && stale.push(op); return; }
+      const by = new Map(arr.map(x => [x && x.id, x])); (op.del || []).forEach(i => by.delete(i)); Object.entries(op.add || {}).forEach(([i, v]) => by.set(i, v));
+      const out = []; (op.order || []).forEach(i => { if (by.has(i)) { out.push(by.get(i)); by.delete(i); } }); by.forEach(v => out.push(v));
+      arr.splice(0, arr.length, ...out); return;
+    }
+    const last = path[path.length - 1], par = CMS.walk(data, path.slice(0, -1));
+    if (par == null || typeof par !== 'object' || last == null) { stale && stale.push(op); return; }
+    if (op.t === 'del') delete par[last];
+    else if (op.t === 'set') { if (op.was != null && CMS.hash(par[last]) !== op.was) { stale && stale.push(op); return; } par[last] = CMS.clone(op.v); }
+  }
+};
+CMS.global = key => [key.toUpperCase(), 'Q_' + key].find(g => window[g] != null);
+CMS.patchMod = key => {
+  const g = CMS.global(key); if (!g || !CMS.ov) return; const ops = CMS.ov.mods[key] || [];
+  if (!CMS.orig[key] && (ops.length || (IS_PWA && isAdmin()))) CMS.orig[key] = CMS.clone(window[g]);
+  if (ops.length && CMS.applied[key] !== window[g]) { CMS.apply(window[g], ops, CMS.stale); CMS.applied[key] = window[g]; }
+};
+document.addEventListener('load', e => { const s = e.target; if (!s || s.tagName !== 'SCRIPT') return; const m = /(?:^|\/)mods\/([a-z0-9_]+)\.js(?:\?|$)/.exec(s.getAttribute('src') || ''); if (m) CMS.patchMod(m[1]); }, true);
+/* ترجمة النصوص المضافة أو المعدّلة: القاموس يبحث بنص عربي موحَّد الأرقام، فنوحّد مفاتيحنا مثله */
+CMS.trKey = s => String(s).replace(/\s+/g, ' ').trim().replace(DIGRX, '#');
+CMS.trVal = (ar, en) => { const g = String(ar).match(DIGRX) || []; if (!g.length) return en; let i = 0; return String(en).replace(/[0-9]+/g, m => (i++ < g.length ? '#' : m)); };
+CMS.trPairs = ov => {
+  const o = { ...ov.tr.en }, add = (a, e) => { if (a && e && ARX.test(a)) o[a] = e; };
+  Object.values(ov.pages).forEach(p => { add(p.t, p.et); add(p.d, p.ed); (p.ch || []).forEach(c => { add(c.t, c.et); (c.blocks || []).forEach(b => { add(b.x, b.en); add(b.s, b.es); }); }); });
+  Object.values(ov.structure.cards).forEach(c => { add(c.t, c.et); add(c.d, c.ed); });
+  (ov.structure.cats || []).forEach(c => { add(c.t, c.et); add(c.d, c.ed); });
+  return o;
+};
+CMS.mergeTr = () => { if (!CMS.ov || !I18N.dict || I18N.dictCode !== 'en') return; for (const [a, e] of Object.entries(CMS.trPairs(CMS.ov))) I18N.dict[CMS.trKey(a)] = CMS.trVal(a, e); };
+/* الأقسام المضافة: صفحة بفصول وكتل (فقرة، عنوان، آية، نقل موثّق، قائمة، تنبيه) */
+CMS.blockHTML = b => {
+  const x = String(b.x || ''), s = String(b.s || '');
+  switch (b.k) {
+    case 'h': return `<h3>${esc(x)}</h3>`;
+    case 'list': return `<ul class="cms-list">${x.split('\n').map(t => t.trim()).filter(Boolean).map(t => `<li>${esc(t)}</li>`).join('')}</ul>`;
+    case 'note': return `<div class="rs-warn" role="note"><b>${esc(s || 'تنبيه')}</b><p>${esc(x)}</p></div>`;
+    case 'q': return `<figure class="qs-quote rs-qt"><blockquote class="notranslate" translate="no" lang="ar" dir="rtl">${esc(x)}</blockquote>${s ? `<figcaption>${esc(s)}</figcaption>` : ''}</figure>`;
+    case 'ay': {
+      const m = x.replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).match(/^\s*(\d{1,3})\s*[:：]\s*(\d{1,3})\s*(?:[-–]\s*(\d{1,3}))?\s*$/); if (!m) return `<div class="rs-warn"><p>مرجع الآية غير صحيح: ${esc(x)}</p></div>`;
+      const sn = +m[1], a1 = +m[2], a2 = Math.min(+(m[3] || m[2]), a1 + 11), o = [];
+      for (let q = a1; q <= a2; q++) { const i = idxOf(sn, q); if (i >= 0) o.push(ayahHTML(i)); }
+      return o.length ? `<div class="cms-ay">${o.join('')}</div>` : `<div class="rs-warn"><p>مرجع الآية غير موجود: ${esc(x)}</p></div>`;
+    }
+    default: return `<p>${esc(x)}</p>`;
+  }
+};
+CMS.pageHTML = pg => `<div class="stack ulum rs cms-page"><section class="u-hero rs-hero"><span class="eyebrow">قسم مضاف</span><h1>${esc(pg.t || '')}</h1>${pg.d ? `<p class="lead">${esc(pg.d)}</p>` : ''}</section>
+  ${(pg.ch || []).length > 1 ? `<nav class="panel u-index" aria-label="الفهرس"><h2>الفهرس</h2><ol>${pg.ch.map((c, i) => `<li><a href="#" data-cmsj="${esc(c.id)}"><span class="u-n">${n(i + 1)}</span>${esc(c.t)}</a></li>`).join('')}</ol></nav>` : ''}
+  ${(pg.ch || []).map((c, i) => `<details class="u-ch panel rs-ch" id="cms-${esc(c.id)}"${i === 0 ? ' open' : ''}><summary><span class="u-n">${n(i + 1)}</span><span class="u-t">${esc(c.t)}</span></summary><div class="u-body stack tight">${(c.blocks || []).map(CMS.blockHTML).join('')}</div></details>`).join('')}</div>`;
+CMS.page = id => {
+  const pg = CMS.custom[id]; if (!pg) { V(`<div class="stack"><h1>القسم غير متاح</h1><p class="muted">لم يعد هذا القسم موجوداً.</p></div>`); return; }
+  V(CMS.pageHTML(pg));
+  $$('[data-cmsj]').forEach(a => a.onclick = e => { e.preventDefault(); const el = document.getElementById('cms-' + a.dataset.cmsj); if (el) { el.open = true; el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } });
+};
+CMS.snapshot = () => { if (CMS.base) return; CMS.base = { cats: CMS.clone(SEC_CATS), cards: {}, nav: {} }; PATHS.forEach(g => g[3].forEach(x => { CMS.base.cards[x[0]] = [x[1], x[2], x[3]]; })); };
+CMS.applyStructure = ov => {
+  CMS.snapshot(); const st = ov.structure; CMS.hidden = new Set(st.hide); CMS.custom = {};
+  const last = PATHS[PATHS.length - 1][3];
+  for (const [id, pg] of Object.entries(ov.pages)) {
+    if (!/^cx-[a-z0-9]{3,24}$/.test(id) || !pg || typeof pg.t !== 'string') continue;
+    CMS.custom[id] = pg; const ic = /^i-[a-z]+$/.test(pg.ic || '') ? pg.ic : 'i-book';
+    if (!PATH_OF[id]) { last.push([id, ic, pg.t, pg.d || '', () => '']); NAV[1][1].push([id, pg.t, ic, 0]); }
+    views[id] = () => CMS.page(id);
+  }
+  for (const [id, c] of Object.entries(st.cards)) {
+    const at = PATH_OF[id]; if (!at || !c) continue; const x = PATHS[at[0]][3][at[1]];
+    if (typeof c.t === 'string' && c.t) { x[2] = c.t; NAV.forEach(g => g[1].forEach(it => { if (it[0] === id) it[1] = c.t; })); }
+    if (typeof c.d === 'string') x[3] = c.d;
+  }
+  if (st.cats) { SEC_CATS.length = 0; st.cats.forEach(c => SEC_CATS.push([c.id, String(c.t || ''), String(c.d || ''), c.ids.filter(i => typeof i === 'string' && !CMS.hidden.has(i))])); }
+  else SEC_CATS.forEach(c => { c[3] = c[3].filter(i => !CMS.hidden.has(i)); });
+  PATHS.forEach(g => { g[3] = g[3].filter(x => !CMS.hidden.has(x[0])); });
+  CMS.hidden.forEach(id => { if (views[id]) views[id] = () => V(`<div class="stack"><h1>هذا القسم غير متاح حالياً</h1><p class="muted">أخفاه مدير الموسوعة من الموقع.</p><p><a class="btn" href="#home">الرئيسية</a></p></div>`); });
+  mkRegroup();
+  JOURNEYS.forEach(j => { j[2] = j[2].filter(id => PATH_OF[id] || id === 'guide'); });
+  if (!CMS.navDone) { NAV[NAV.length - 1][1].push(['cms', 'محرّر المحتوى', 'i-grid']); CMS.navDone = 1; }
+};
+CMS.banner = () => {
+  if (!CMS.preview || document.getElementById('cmsPrev')) return;
+  const b = document.createElement('div'); b.id = 'cmsPrev'; b.className = 'cms-prev no-print';
+  b.innerHTML = `<b>وضع المعاينة</b><span>ترى الآن التعديلات غير المنشورة، ولا يراها الزوار.</span><a class="btn" href="#cms">العودة إلى المحرّر</a><button class="btn" type="button" id="cmsPrevOff">الخروج من المعاينة</button>`;
+  document.body.prepend(b); document.getElementById('cmsPrevOff').onclick = () => { try { sessionStorage.removeItem('cmsPreview'); } catch (e) {} location.reload(); };
+};
+CMS.boot = async () => {
+  let pub = null;
+  if (!FILE_MODE) { try { const r = await fetch(CMS.file, { cache: 'no-cache' }); if (r.ok) pub = await r.json(); } catch (e) {} }
+  CMS.pub = CMS.norm(pub); let ov = CMS.pub;
+  try { if (IS_PWA && isAdmin() && sessionStorage.getItem('cmsPreview') === '1') { const d = LS.get(CMS.draftKey, null); if (d) { ov = CMS.norm(d); CMS.preview = true; } } } catch (e) {}
+  CMS.ov = ov; CMS.applyStructure(ov); drawNav(); CMS.mergeTr(); CMS.banner(); Object.keys(MODS).forEach(k => MODS[k] && CMS.patchMod(k));
+};
+views.cms = () => {
+  if (!IS_PWA || !isAdmin()) { V(`<div class="stack" style="max-width:640px"><div class="eyebrow">محرّر المحتوى</div><h1>هذه الصفحة للمدير الشامل فقط</h1><p class="lead">سجّل الدخول بحساب المدير من <a href="#account">صفحة حسابي</a>.</p></div>`); return; }
+  V(`<p class="loading">جارٍ فتح المحرّر…</p>`);
+  const go = () => { if (curRoute === 'cms') window.CMSUI.open(); };
+  if (window.CMSUI) return go();
+  if (!CMS.s) { CMS.s = document.createElement('script'); CMS.s.src = 'cms.js'; document.head.appendChild(CMS.s); const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'cms.css'; document.head.appendChild(l); }
+  CMS.s.addEventListener('load', go, { once: true });
+  CMS.s.addEventListener('error', () => { CMS.s.remove(); CMS.s = null; V(`<p class="loading">تعذّر فتح المحرّر، تحقق من الاتصال ثم أعد المحاولة.</p>`); }, { once: true });
+};
 /* أحدث ما زرته: آخر ٤ أقسام فُتحت، تُحفظ على الجهاز */
 const RECENT_KEY = 'recentSecs';
 function noteRecent(v) {
@@ -6149,6 +6301,9 @@ const i18nReady = i18nInit().catch(() => {});
     [Q, W, T, TF, GEO] = await Promise.all([gz('data/quran.txt'), gz('data/words.txt'), gz('data/topics.txt'), getJSON('data/tafsir.json'), getJSON('data/geo.json')]);
     prep();
     if (IS_PWA) { try { const base = await getJSON('config.json').catch(() => ({})), pv = LS.get('cfgPreview', null); siteCfg = pv && (pv.updated || 0) > (base.updated || 0) ? pv : base; applyCfg(); } catch (e) {} checkSession(); }
+    if (IS_PWA) { try { await CMS.boot(); } catch (e) { console.warn('cms', e); } }
+    if (IS_PWA) { try { await CMS.boot(); } catch (e) { console.warn('cms', e); } }
+    if (IS_PWA) { try { await CMS.boot(); } catch (e) { console.warn('cms', e); } }
     route(); connectCloud(); i18nReady.then(offlineAuto); try { if (localStorage.getItem('mishkat:fastremind')) setTimeout(() => toolsLoad(() => MTOOLS.remind()), 2500); } catch (e) {}
   } catch (err) { V(`<p class="loading">تعذّر تحميل البيانات. يتطلب التطبيق متصفحاً حديثاً (كروم أو سفاري أو فايرفوكس أو إيدج). ${esc(err.message)}</p>`); }
 })();

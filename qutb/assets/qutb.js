@@ -229,6 +229,14 @@ async function khabarStats(p, o, add) {
     if (br.auto) add('info', `${p.name}: الخلاصة الحالية آلية من الطيار الآلي، وستحل محلها الخلاصة التحريرية في موعدها التالي`, p.site);
     if (ls?.broken) add('warn', `${p.name}: ${plural(ls.broken, 'رابط مصدر معطّل', 'رابطا مصدر معطّلان', 'روابط مصادر معطّلة', 'رابط مصدر معطّلاً')} في الخلاصة`, p.site + '#ledger');
   } else o.rows.unshift(['الخلاصة الحالية', '<span class="skel">تعذّرت القراءة</span>']);
+  // إدارة المحتوى (25 نوفمبر 2026): شاشة المدير الشامل لإضافة كل محتوى الموقع وتعديله وحذفه وترتيبه، وبوابة الخادم تفحص كل نشر منها
+  try {
+    const cm = p.site.replace(/\/?$/, '/').replace('/khabar/', '/abdo-news/') + 'admin/content/';
+    let st = '';
+    try { const c = await raw(p.repo, base + 'cms-status.json'); st = c.ok ? ` · آخر نشر منها سليم ${ago(c.checked)}` : ` · <span class="pill bad">أُلغي آخر نشر منها</span> ${ago(c.checked)}`; if (!c.ok) add('warn', `${p.name}: أُلغي آخر نشر من «إدارة المحتوى» لمخالفته قواعد التوثيق أو الأسلوب`, cm); } catch (e) { st = ' · لم يُنشر منها شيء بعد'; }
+    o.rows.unshift(['إدارة المحتوى', `<a href="${esc(cm)}" target="_blank" rel="noopener">فتح الشاشة</a>${st}`]);
+    if (!(p.links || []).some(l => /admin\/content/.test(l.u))) p.links = [...(p.links || []), {t: 'إدارة المحتوى', u: cm}];
+  } catch (e) {}
   if (mr.status === 'fulfilled') {
     const ind = mr.value.indicators || [], stale = ind.filter(i => i.stale), rec = mr.value.record || {};
     o.rows.push(['مرصد المقارنات', `${num(ind.length)} مؤشراً · ${ind.filter(i => i.est && i.est.tier !== 'c').length} تقدير · ${rec.scored ? `أصاب ${rec.hits}/${rec.scored}` : 'لا محاسبة بعد'} · ${ago(mr.value.updated)}`]);

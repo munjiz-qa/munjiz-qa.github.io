@@ -107,6 +107,15 @@ async function textFor(ch){const tl=targetLang(),sl=scriptLang(ch.text);if(sl===
 function mark(e){if(CUR_EL===e)return;if(CUR_EL)CUR_EL.classList.remove('ls-on');CUR_EL=e;if(e){e.classList.add('ls-on');
   const r=e.getBoundingClientRect(),bar=document.getElementById('ls-bar'),bh=bar?bar.offsetHeight:0;
   const bh2=innerHeight-bh-130,beh=matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth';if(r.top<120||r.bottom>innerHeight-bh-20){if(r.height>bh2)scrollBy({top:r.top-130,behavior:beh});else e.scrollIntoView({block:'center',behavior:beh})}}}
+// نص يُنطق: يحوّل الرموز التي تقرؤها الأصوات خطأً إلى كلمات (STYLE.md، القسم 5). لا يغيّر النص المعروض.
+function speakable(t,lg,head){t=String(t||'').replace(/[«»"“”]/g,'').replace(/\s*·\s*/g,'، ');
+  if(lg==='ar'){t=t.replace(/(^|[\s(،:])[−–-]\s?(?=\d)/g,'$1ناقص ').replace(/(^|[\s(،:])\+\s?(?=\d)/g,'$1زائد ')
+    .replace(/(\d)\s?%/g,'$1 بالمئة').replace(/(\d)\s?°\s?C?/g,'$1 درجة').replace(/(\d)\s?×\s?(\d)/g,'$1 في $2')
+    .replace(/(^|[^\d.,\-])(\d{1,2})-(\d{1,2})(?![\d-])(?!\s?(?:عام|سنة|سنوات|أعوام|يوم|أيام|ساعة|كيلو|متر))/g,'$1$2 مقابل $3').replace(/([ء-ي])\/([ء-ي])/g,'$1 لكل $2')
+    .replace(/\bFIFA\b/g,'فيفا').replace(/\$\s?(\d[\d,.]*)/g,'$1 دولار')}
+  else{t=t.replace(/(^|[\s(,:])[−–]\s?(?=\d)/g,'$1minus ').replace(/(^|[\s(,:])\+\s?(?=\d)/g,'$1plus ')
+    .replace(/\bEGP\s?(\d[\d,.]*)/g,'$1 Egyptian pounds').replace(/\bUSD\s?(\d[\d,.]*)/g,'$1 dollars').replace(/\$\/bbl/g,'dollars per barrel').replace(/(\d)\s?°C/g,'$1 degrees')}
+  t=t.replace(/\s+/g,' ').trim();if(head&&!/[.!?؟:]$/.test(t))t+='.';return t}
 async function speakAt(i){
   if(!DOC)DOC=scan();const n=DOC.chunks.length;if(!n){note(UI('لا يوجد في هذه الصفحة نص يُقرأ الآن.','There is no readable text on this page yet.'),'warn');setState('idle');return}
   if(i>=n){finish();return}IDX=Math.max(0,i);const ch=DOC.chunks[IDX],tk=++TOKEN;mark(ch.el);progress();
@@ -114,7 +123,7 @@ async function speakAt(i){
   if(tk!==TOKEN||STATE!=='playing')return;
   const tl=targetLang(),lg=S.lang==='auto'||!canSpeak(tl)||NATIVE.has(tl)&&scriptLang(ch.text)!==tl?scriptLang(ch.text):tl;
   const pv=pickVoice(lg,S.gender);ACTIVE=pv;
-  const u=new SpeechSynthesisUtterance(text);u.lang=pv.voice?pv.voice.lang:lg;if(pv.voice)u.voice=pv.voice;u.rate=S.rate;u.pitch=pv.pitch;
+  const u=new SpeechSynthesisUtterance(speakable(text,lg,HEAD.test(ch.el.tagName)));u.lang=pv.voice?pv.voice.lang:lg;if(pv.voice)u.voice=pv.voice;u.rate=S.rate;u.pitch=pv.pitch;
   u.onend=()=>{if(tk===TOKEN&&STATE==='playing')speakAt(IDX+1)};
   u.onerror=ev=>{if(tk!==TOKEN||STATE!=='playing')return;if(ev.error==='interrupted'||ev.error==='canceled')return;
     if(ev.error==='not-allowed'){setState('paused');note(UI('اضغط زر التشغيل مرة أخرى للسماح بالصوت.','Tap play again to allow audio.'),'warn');return}

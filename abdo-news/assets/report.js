@@ -120,7 +120,7 @@ register({id:'brief',label:{ar:'الخلاصة والأرشيف: الدول وا
     const many=list.length>1,sections=[],dup=new Set();
     for(const b of list){const tag=many?` · ${L(EDN[b.edition]?EDN[b.edition][0]:'',EDN[b.edition]?EDN[b.edition][1]:'')} ${fmtDate(b.date)}`:'';
       for(const z of b.zones||[]){if(!zs.includes(z.id))continue;const s={title:(z.name&&(z.name[lg]||z.name.ar))+tag,items:[],tables:[]};
-        if(as.includes('news'))(z.items||[]).forEach(it=>{const tx=it[lg]||(lg==='en'?'':it.ar);if(!tx||dup.has(tx))return;dup.add(tx);const sr=res(it.src);s.items.push({kind:'news',cat:it.cat&&(it.cat[lg]||it.cat.ar)||'',text:tx,sources:sr,outlets:outlets(sr)})});
+        if(as.includes('news'))(z.items||[]).forEach(it=>{const tx0=it[lg]||(lg==='en'?'':it.ar),hh=it.h&&(it.h[lg]||(lg==='en'?'':it.h.ar)),tx=tx0&&hh?hh+'. '+tx0:tx0;if(!tx||dup.has(tx))return;dup.add(tx);const sr=res(it.src);s.items.push({kind:'news',cat:it.cat&&(it.cat[lg]||it.cat.ar)||'',text:tx,sources:sr,outlets:outlets(sr)})});
         if(as.includes('analysis')&&z.analysis&&z.analysis[lg]){const sr=res(z.analysis.src);s.items.push({kind:'analysis',cat:L('تحليل (رأي تحريري)','Analysis (editorial view)'),text:z.analysis[lg],sources:sr,outlets:outlets(sr)})}
         if(as.includes('technical')&&z.technical&&z.technical[lg]){const sr=res(z.technical.src);s.items.push({kind:'analysis',cat:L('قراءة فنية مبسّطة','Simple technical read'),text:z.technical[lg],sources:sr,outlets:outlets(sr)})}
         if(as.includes('outlook'))[].concat(z.outlook||[]).forEach(x=>{if(!x||!x[lg])return;const sr=res(x.src);s.items.push({kind:'outlook',cat:L('استقراء (توقّع وليس خبراً)','Outlook (forecast, not news)'),text:x[lg],sources:sr,outlets:outlets(sr)})});

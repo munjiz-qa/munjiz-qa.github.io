@@ -514,6 +514,73 @@ html[dir=rtl] .trk-nav .flip{transform:scaleX(-1)}
 .spx-offer s{color:var(--muted)}
 @media (max-width:560px){.spx-card{padding:12px}.spx-tile{width:40px;height:40px}}
 </style>
+<style id="mkc-css">
+/* كتالوج المكياج الطبيعي (mkc) */
+.mkc-hero{background:linear-gradient(135deg,var(--pine-soft),var(--copper-soft));border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:grid;gap:12px;margin-block:14px}
+.mkc-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.mkc-tools .search{flex:1 1 240px;min-width:0}
+.mkc-sel{display:grid;gap:3px;font-size:.82rem;color:var(--muted);flex:0 1 150px;min-width:120px}
+.mkc-sel select{width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font:inherit}
+.mkc-chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-block:2px}
+.mkc-chips::-webkit-scrollbar{display:none}
+.mkc-chips .chip{flex-shrink:0;white-space:nowrap}
+.mkc-chips .chip[aria-pressed=true],.mkc-batch .chip[aria-pressed=true]{background:var(--pine);color:var(--pine-ink);border-color:var(--pine)}
+.mkc-bar{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:center}
+.mkc-acts{display:flex;flex-wrap:wrap;gap:8px}
+.mkc-acts .btn{padding:6px 12px;font-size:.88rem}
+.mkc-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));margin-bottom:22px}
+.mkc-card{display:grid;grid-template-rows:auto 1fr;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;text-decoration:none;color:var(--ink);min-width:0}
+.mkc-card:hover,.mkc-card:focus-visible{border-color:var(--pine);box-shadow:var(--shadow)}
+.mkc-fig{margin:0;position:relative;background:linear-gradient(135deg,var(--pine-soft),var(--copper-soft));aspect-ratio:4/3;overflow:hidden}
+.mkc-ill{position:absolute;inset:0;display:grid;place-items:center}.mkc-ill svg{width:62%;max-height:84%}.mkc-ithumb{position:relative}.mkc-fig img,.mkc-ithumb img{position:absolute;inset:0}
+.mkc-fig img{width:100%;height:100%;object-fit:cover;display:block}
+.mkc-fig.big{aspect-ratio:16/10;border-radius:var(--r);margin-bottom:6px}
+.mkc-fig.sm{aspect-ratio:16/10;border-radius:8px;margin-bottom:8px}
+.mkc-fig figcaption{position:absolute;inset-inline:0;bottom:0;background:rgba(10,20,18,.62);color:#fff;font-size:.7rem;padding:2px 8px}
+.mkc-fig figcaption a{color:#fff;text-decoration:underline}
+.mkc-badge{position:absolute;top:8px;inset-inline-start:8px;background:var(--bad);color:#fff;font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:6px}
+.mkc-body{padding:12px 14px;display:grid;gap:6px;align-content:start}
+.mkc-body h3{margin:0;font-size:1rem}
+.mkc-body p{margin:0;color:var(--muted);font-size:.86rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mkc-meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.8rem;color:var(--muted)}
+.mkc-lv{display:inline-flex;gap:3px}.mkc-lv i{width:8px;height:8px;border-radius:50%;background:var(--line)}.mkc-lv i.on{background:var(--copper)}
+.mkc-dry{background:var(--ok-soft);color:var(--ok)}.mkc-wet{background:var(--warn-soft);color:var(--warn)}
+.mkc-sec{margin-block:22px;display:grid;gap:10px}.mkc-sec h2{margin:0}
+.mkc-acc{display:grid;gap:8px}
+.mkc-acc details,.mkc-credits{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px 14px}
+.mkc-acc summary,.mkc-credits summary{cursor:pointer;font-weight:600}
+.mkc-acc details[open]>summary{margin-bottom:8px}
+.mkc-acc ul,.mkc-acc ol{margin:0;padding-inline-start:1.3em;display:grid;gap:5px}
+.mkc-ings{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.mkc-ing{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:8px 12px}
+.mkc-ing summary{cursor:pointer;display:flex;gap:10px;align-items:center;font-weight:600;font-size:.92rem}
+.mkc-ithumb{width:44px;height:44px;border-radius:8px;overflow:hidden;flex-shrink:0;background:var(--pine-soft)}
+.mkc-ithumb img{width:100%;height:100%;object-fit:cover}
+.mkc-ing p{margin:6px 0;font-size:.88rem}.mkc-alg{color:var(--bad)}
+.mkc-opt{font-size:.72rem;background:var(--sunk);padding:0 6px;border-radius:5px;color:var(--muted)}
+.mkc-det h2{margin:.2em 0}.mkc-det h3{margin:1.1em 0 .4em;color:var(--pine)}
+.mkc-det .lead{color:var(--muted);margin:0 0 8px}
+.mkc-facts{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}.mkc-facts .tag{background:var(--sunk)}
+.mkc-ul,.mkc-ol{margin:0;padding-inline-start:1.3em;display:grid;gap:6px}
+.mkc-ul li::marker{color:var(--copper)}
+.mkc-warn{background:var(--warn-soft);border:1px solid var(--warn);border-radius:var(--r);padding:10px 14px;margin-block:10px}
+.mkc-warn.red{background:var(--bad-soft);border-color:var(--bad)}.mkc-warn.red b{color:var(--bad)}
+.mkc-warn p{margin:4px 0 0;font-size:.92rem}
+.mkc-batch{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.mkc-tip{background:var(--pine-soft);border-radius:var(--r);padding:10px 14px}
+.mkc-actions .btn{flex:1 1 auto;padding:9px 12px;font-size:.88rem;text-align:center}.mkc-actions{display:flex;flex-wrap:nowrap;flex-wrap:wrap;gap:8px;margin-top:16px;margin-block:10px}
+.mkc-banner{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;text-decoration:none;color:var(--ink);background:linear-gradient(135deg,var(--pine-soft),var(--copper-soft));border:1px solid var(--copper);border-radius:var(--r);padding:12px 14px;margin-block:14px}
+.mkc-bthumb{width:64px;height:64px;border-radius:10px;overflow:hidden;background:var(--surface)}.mkc-bthumb img{width:100%;height:100%;object-fit:cover}
+@media(max-width:560px){.mkc-banner{grid-template-columns:auto 1fr}.mkc-banner .btn{grid-column:1/-1;text-align:center}.mkc-grid{grid-template-columns:1fr 1fr;gap:10px}.mkc-body{padding:10px}.mkc-body p{display:none}.mkc-body h3{font-size:.92rem}.mkc-sel{flex:1 1 40%}}
+@media(max-width:360px){.mkc-grid{grid-template-columns:1fr}}
+#mkcPrint{display:none}
+@media print{body.mkc-printing>*:not(#mkcPrint){display:none!important}body.mkc-printing #mkcPrint{display:block!important;color:#000;background:#fff;padding:0}
+ #mkcPrint .mkc-ph{display:flex;justify-content:space-between;border-bottom:2px solid #1D6455;padding-bottom:6px;margin-bottom:10px;font-size:10pt}
+ #mkcPrint .mkc-pg{break-after:page;page-break-after:always}#mkcPrint .mkc-fig{max-height:6cm;aspect-ratio:auto}#mkcPrint .mkc-ill{position:absolute;inset:0;display:grid;place-items:center}.mkc-ill svg{width:62%;max-height:84%}.mkc-ithumb{position:relative}.mkc-fig img,.mkc-ithumb img{position:absolute;inset:0}
+.mkc-fig img{max-height:6cm;width:auto;max-width:100%}
+ #mkcPrint .mkc-fig figcaption{position:static;background:none;color:#444}#mkcPrint .mkc-fig figcaption a{color:#444}
+ #mkcPrint .mkc-warn,#mkcPrint .mkc-tip{background:none;border:1px solid #444}#mkcPrint h3{color:#000;break-after:avoid}#mkcPrint table{font-size:10pt}}
+</style>
 
 <header class="top">
   <div class="wrap">
@@ -3704,7 +3771,7 @@ window.TY_NAV_META = Object.assign(window.TY_NAV_META||{}, {
 });
 
 // ===== المكياج الإسلامي والمكياج الطبيعي =====
-const mkNav = cur => `<nav class="chips" aria-label="أقسام الجمال">${[["mkislam","المكياج الإسلامي"],["mknatural","المكياج الطبيعي"]].map(([h,n])=>`<a class="chip" href="#${h}" aria-pressed="${h===cur}" style="text-decoration:none;color:inherit">${n}</a>`).join("")}</nav>`;
+const mkNav = cur => `<nav class="chips" aria-label="أقسام الجمال">${[["mkislam","المكياج الإسلامي"],["mknatural","المكياج الطبيعي"],["mkcat",window.TY_LANG==="en"?"Making catalogue":"كتالوج التصنيع"]].map(([h,n])=>`<a class="chip" href="#${h}" aria-pressed="${h===cur}" style="text-decoration:none;color:inherit">${n}</a>`).join("")}</nav>`;
 const mkEv = e => { const q=/^سورة/.test(e.r); return `<blockquote class="hadith"><p>${q?"﴿":"«"}${esc(e.t)}${q?"﴾":"»"}</p><div class="hsrc small">${esc(e.r)} · <a href="${esc(e.u)}" target="_blank" rel="noopener">المصدر</a></div></blockquote>`; };
 function mkIslamCard(x, open){
   return `<details class="ig" ${open?"open":""} data-q="${esc(x.n+" "+x.rule+" "+x.med)}"><summary><span>${esc(x.n)}</span></summary>
@@ -4728,7 +4795,7 @@ const NAV_GROUPS = [
  ["spec",["التخصصات الطبية","Medical specialties"],["specs","dental"]],
  ["heal",["الاستشفاء والطب التكميلي","Healing and complementary medicine"],["heal","pt","herbs","prophetic","tcm"]],
  ["mind",["الصحة النفسية","Mental health"],["mind","therapy","psydx","psyassess","iq"]],
- ["beauty",["الجمال","Beauty"],["mkislam","mknatural"]],
+ ["beauty",["الجمال","Beauty"],["mkislam","mknatural","mkcat"]],
  ["svc",["الخدمات","Services"],["auction","consult","calendar","admin"]],
 ];
 const NAV_DESC = {
@@ -6774,6 +6841,683 @@ window.TY_NAV_META = Object.assign(window.TY_NAV_META||{}, M);
 window.TY_SPECS = {list:SP, dental:DEN};
 if(typeof renderRail==="function") renderRail();
 if((location.hash==="#specs"||location.hash==="#dental"||/^#sp-/.test(location.hash)) && typeof go==="function") go();
+})();
+</script>
+<script id="mkc-js">
+// ===== كتالوج تصنيع المكياج الطبيعي: بطاقات وفلاتر ووصفات كاملة وطباعة وتنزيل =====
+(()=>{
+if(typeof VIEWS==="undefined"||typeof R==="undefined"||typeof AFTER==="undefined") return;
+const EN = window.TY_LANG==="en";
+const T = (a,e) => EN ? e : a;
+const P = s => { s=String(s??""); const i=s.indexOf(" ## "); if(i<0) return s; return EN ? s.slice(i+4).trim() : s.slice(0,i).trim(); };
+const both = s => String(s??"").replace(/ ## /g," ");
+const h = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const q = (s,r=document)=>r.querySelector(s), qa=(s,r=document)=>[...r.querySelectorAll(s)];
+// ===== كتالوج المكياج الطبيعي: البيانات =====
+const GRP = {
+ lips:"الشفاه ## Lips", eyes:"العيون ## Eyes", brows:"الحواجب ## Brows", face:"الوجه والتغطية ## Face and coverage",
+ cheeks:"الخدود والإضاءة ## Cheeks and glow", care:"العناية والتنظيف ## Care and cleansing", hands:"اليدان والأظافر ## Hands and nails"
+};
+const SKINS = {dry:"جافة ## Dry", oily:"دهنية ## Oily", sens:"حساسة ## Sensitive", acne:"معرّضة للحبوب ## Acne-prone", norm:"عادية ## Normal"};
+const UNITS = {g:["غ","g"], ml:["مل","ml"], drop:["قطرة","drop"], tsp:["ملعقة صغيرة","tsp"]};
+// المكونات: n الاسم، note ملاحظة الشراء والجودة، sub البدائل، alg تنبيه الحساسية، img مفتاح الصورة
+const ING = {
+ shea:{n:"زبدة الشيا غير المكررة ## Unrefined shea butter",note:"زبدة صلبة مغذّية تعطي القوام الكريمي. اختاري لونها العاجي أو الأصفر الفاتح ورائحتها الخفيفة، وتجنبي المتحجرة أو ذات الرائحة الحادة. ## A rich solid butter that gives a creamy texture. Choose ivory to pale yellow with a mild smell; avoid hard, rancid-smelling blocks.",sub:"زبدة الكاكاو أو زبدة المانجو ## Cocoa butter or mango butter",alg:"قد تتحسس منها حالات نادرة من حساسية اللاتكس ## Rarely a problem for people with latex allergy",img:"shea"},
+ cocoab:{n:"زبدة الكاكاو ## Cocoa butter",note:"تعطي صلابة ولمعاناً ناعماً للشفاه. تُباع غير مكررة برائحة الشوكولاتة. ## Adds firmness and a soft gloss to lip products. Sold unrefined with a chocolate smell.",sub:"زبدة الشيا مع زيادة الشمع قليلاً ## Shea butter with slightly more wax",alg:"",img:"cocoab"},
+ bwax:{n:"شمع العسل (حبيبات) ## Beeswax pellets",note:"يمنح التماسك والثبات. الحبيبات أسهل في الوزن والذوبان من القوالب. ## Gives structure and hold. Pellets are easier to weigh and melt than blocks.",sub:"شمع الكانديليلا بنصف الكمية للنباتيين ## Candelilla wax at about half the amount for vegans",alg:"قد يسبب حساسية لمن لديهم حساسية من منتجات النحل ## May affect people allergic to bee products",img:"bwax"},
+ jojoba:{n:"زيت الجوجوبا ## Jojoba oil",note:"شمعي يشبه زهم الجلد، ثابت ولا يتزنخ بسرعة، ويناسب معظم أنواع البشرة. ## A liquid wax close to skin sebum, stable and slow to go rancid; suits most skin types.",sub:"زيت دوار الشمس أو العنب ## Sunflower or grapeseed oil",alg:"",img:"jojoba"},
+ castor:{n:"زيت الخروع ## Castor oil",note:"ثقيل لزج يعطي لمعاناً عالياً للشفاه والجلوس على الجلد. يُشترى بدرجة تجميلية أو دوائية. ## Thick and sticky; gives high gloss on lips and clings to skin. Buy cosmetic or pharmaceutical grade.",sub:"زيت اللوز مع قليل من الشمع ## Almond oil with a little extra wax",alg:"",img:"castor"},
+ almond:{n:"زيت اللوز الحلو ## Sweet almond oil",note:"خفيف ويمتصه الجلد بسهولة. ## Light and easily absorbed.",sub:"زيت دوار الشمس أو الجوجوبا ## Sunflower or jojoba oil",alg:"لا يناسب من لديهم حساسية المكسرات ## Not for people with nut allergy",img:"almond"},
+ sunfl:{n:"زيت دوار الشمس ## Sunflower oil",note:"بديل اقتصادي وخالٍ من المكسرات. اختاري المعصور على البارد. ## An affordable nut-free option. Choose cold-pressed.",sub:"زيت الجوجوبا ## Jojoba oil",alg:"",img:"sunfl"},
+ vite:{n:"فيتامين E (توكوفيرول) ## Vitamin E (tocopherol)",note:"مضاد أكسدة يبطئ تزنخ الزيوت، لكنه ليس مادة حافظة ضد الجراثيم. ## An antioxidant that slows oil rancidity; it is not a preservative against microbes.",sub:"يمكن الاستغناء عنه ## Can be left out",alg:"",img:"vite"},
+ beet:{n:"مسحوق الشمندر (البنجر) المجفف ## Dried beetroot powder",note:"ملوّن وردي إلى أحمر غامق، ناعم، ويُباع للطبخ. يتأثر لونه بالحرارة، فيُضاف بعد انخفاضها. ## A pink-to-deep-red colorant sold for cooking. Heat dulls it, so add it after the mixture cools a little.",sub:"طين وردي أو أحمر بنسبة أقل ## Pink or red clay in a smaller share",alg:"يصبغ الملابس والمناديل ## Stains clothes and tissues",img:"beet"},
+ arrow:{n:"نشا الأراروت ## Arrowroot starch",note:"أساس البودرة الطبيعية، ناعم وماص للدهون. ## The base of natural powders: silky and oil-absorbing.",sub:"نشا الذرة أو دقيق الأرز ## Cornstarch or rice flour",alg:"",img:"arrow"},
+ cocoa:{n:"الكاكاو الخام غير المحلّى ## Raw unsweetened cocoa",note:"درجات من البني تساعد في ضبط لون البودرة ولون البشرة. ## Shades of brown for matching skin tone and brow colour.",sub:"الكاكاو القلوي الداكن للدرجات العميقة ## Dutched dark cocoa for deep shades",alg:"قد يهيّج الأنف عند الاستنشاق ## May irritate the nose if inhaled",img:"cocoa"},
+ kaolin:{n:"طين الكاولين (أبيض أو وردي أو أصفر) ## Kaolin clay (white, pink or yellow)",note:"يمنح غطاءً وثباتاً وامتصاصاً للدهون، وهو ألطف الطين على البشرة. ## Adds coverage, hold and oil absorption; the gentlest clay for skin.",sub:"نشا الأراروت بنسبة أكبر ## More arrowroot",alg:"",img:"kaolin"},
+ charcoal:{n:"الفحم المنشّط (درجة تجميلية أو دوائية) ## Activated charcoal (cosmetic or pharmaceutical grade)",note:"يعطي السواد. لا تستعملي أبداً سناج الحرق المنزلي أو الكحل التقليدي مجهول المصدر. ## Gives black. Never use home-burnt soot or untraced traditional kohl.",sub:"لا بديل آمناً للأسود الخالص ## No safe substitute for a true black",alg:"يتسخ بسهولة ويضر إن استُنشق ## Messy, and harmful if inhaled",img:"charcoal"},
+ zinc:{n:"أكسيد الزنك (غير نانوي، درجة تجميلية) ## Zinc oxide (non-nano, cosmetic grade)",note:"يعطي غطاءً أبيض ويلطّف البشرة. وجوده لا يجعل المنتج واقياً من الشمس. ## Gives white coverage and soothes skin. Its presence does not make the product a sunscreen.",sub:"كاولين أبيض ## White kaolin",alg:"لا يُستنشق مسحوقه، فاستعملي كمامة ## Do not inhale the powder; wear a mask",img:"zinc"},
+ mica:{n:"ميكا تجميلية ## Cosmetic-grade mica",note:"معدن طبيعي يعطي اللمعة. اشتريه من مورد يعلن مصدره الأخلاقي ودرجته التجميلية. ## A natural mineral that gives shimmer. Buy from a supplier that states ethical sourcing and cosmetic grade.",sub:"من دونها تبقى اللمسة مطفية ## Without it the finish stays matte",alg:"لا يُستنشق مسحوقه ## Do not inhale the powder",img:"mica"},
+ aloe:{n:"جل الصبّار النقي ## Pure aloe vera gel",note:"اختاري جلاً تجارياً شفافاً بنسبة صبار عالية وحافظ مناسب. الجل الطازج يفسد خلال أيام. ## Pick a clear commercial gel with high aloe content and a proper preservative. Fresh gel spoils within days.",sub:"—",alg:"قد يسبب حساسية لبعض الأشخاص ## May cause allergy in some people",img:"aloe"},
+ rosew:{n:"ماء الورد النقي ## Pure rose water",note:"خالٍ من الكحول والعطور الصناعية، ومن عبوة محكمة. ## Free of alcohol and synthetic fragrance, in a sealed bottle.",sub:"ماء مقطّر ## Distilled water",alg:"",img:"rosew"},
+ glyc:{n:"الجلسرين النباتي ## Vegetable glycerin",note:"مرطّب يجذب الماء، ويُستعمل بنسب صغيرة. ## A humectant used in small amounts.",sub:"—",alg:"",img:"glyc"},
+ sugar:{n:"سكر ناعم ## Fine sugar",note:"مقشّر لطيف للشفاه. الحبيبات الخشنة تجرح. ## A gentle lip exfoliant. Coarse grains scratch.",sub:"—",alg:"",img:"sugar"},
+ honey:{n:"عسل طبيعي ## Natural honey",note:"مرطّب ومهدّئ. ## Moisturising and soothing.",sub:"—",alg:"لا يناسب من لديه حساسية العسل أو الرضّع دون السنة ## Not for honey allergy or babies under one year",img:"honey"},
+ oats:{n:"شوفان مطحون ناعماً ## Finely ground oats",note:"يهدّئ البشرة الحساسة. اطحنيه حتى يصير كالدقيق. ## Calms sensitive skin. Grind until flour-fine.",sub:"—",alg:"لا يناسب من لديه حساسية الجلوتين أو الشوفان ## Not for gluten or oat allergy",img:"oats"},
+ flax:{n:"بذور الكتان ## Flax seeds",note:"تعطي جلاً شفافاً لاصقاً بلطف. ## Give a clear, softly sticky gel.",sub:"—",alg:"",img:"flax"},
+ henna:{n:"مسحوق الحناء الطبيعية الخالصة ## Pure natural henna powder",note:"أخضر مائل للبني ورائحته كالعشب، ناعم ومنخول، وحديث الطحن. اللون الأسود الجاهز ممنوع تماماً. ## Green-brown, hay-like smell, finely sieved and freshly milled. Ready-made black henna is never acceptable.",sub:"—",alg:"خطر شديد لدى مرضى نقص G6PD وخاصة الأطفال ## Serious risk for people with G6PD deficiency, especially infants",img:"henna"},
+ tea:{n:"شاي أسود قوي ## Strong black tea",note:"سائل العجن بدل الليمون، لطيف على الجلد. ## A kneading liquid instead of lemon; gentle on skin.",sub:"ماء فاتر ## Lukewarm water",alg:"",img:"tea"},
+ ricef:{n:"دقيق الأرز ## Rice flour",note:"ناعم ومطفٍ ويمتص اللمعان. ## Fine, mattifying, absorbs shine.",sub:"نشا الذرة ## Cornstarch",alg:"",img:"ricef"}
+};
+
+const TL = {
+ scale:"ميزان إلكتروني دقيق (0.01 غ) ## Precision scale (0.01 g)", boiler:"حمّام مائي: وعاء زجاجي مقاوم للحرارة فوق قدر ماء ## Double boiler: heat-proof glass bowl over a pot of water",
+ spat:"ملعقة سيليكون أو عود زجاجي للتحريك ## Silicone spoon or glass rod for stirring", sieve:"منخل ناعم صغير ## Small fine sieve", mortar:"هاون أو وعاء صغير وملعقة للسحق ## Mortar, or a small bowl and spoon, for grinding",
+ tube:"أنابيب أو علب معقّمة ## Sanitised tubes or tins", jar:"برطمانات زجاجية معقّمة ## Sanitised glass jars", mold:"قالب سيليكون لأحمر الشفاه (أو أنبوب فارغ) ## Silicone lipstick mould (or an empty tube)",
+ pip:"قطّارة أو ماصة ## Dropper or pipette", alc:"كحول طبي 70% للتعقيم ## 70% medical alcohol for sanitising", mask:"كمامة ## Face mask", brush:"فرش مكياج نظيفة ## Clean makeup brushes",
+ spray:"زجاجة رذاذ صغيرة معقّمة ## Small sanitised spray bottle", pan:"قدر صغير وصافي ## Small pot and strainer", cloth:"قطعة قماش ناعمة ## Soft cloth", cotton:"قطن وأعواد تنظيف ## Cotton pads and swabs",
+ wrap:"غلاف بلاستيكي للأكل وكأس زجاجي ## Cling film and a glass cup"
+};
+const ST = {
+ san:"عقّمي الأدوات والعبوات بالكحول الطبي 70% واتركيها تجف تماماً، واغسلي يديك جيداً. ## Sanitise tools and containers with 70% medical alcohol, let them dry fully, and wash your hands well.",
+ melt:"ذوّبي الشمع والزبدات في وعاء زجاجي فوق ماء يغلي بهدوء (حمّام مائي)، مع التحريك، حتى تصير سائلاً صافياً. ## Melt the wax and butters in a heat-proof glass bowl over gently simmering water (double boiler), stirring until clear.",
+ oils:"أبعدي الوعاء عن النار وأضيفي الزيوت وفيتامين E وحرّكي. ## Take the bowl off the heat, add the oils and vitamin E, and stir.",
+ paste:"اسحقي المسحوق الملوّن مع قطرات من الزيت الدافئ في وعاء صغير حتى يصير معجوناً ناعماً بلا كتل، ثم اخلطيه بالباقي. ## Grind the colour powder with a few drops of warm oil into a smooth paste, then stir it into the rest.",
+ pour:"صبّي الخليط وهو سائل دافئ في العبوة المعقّمة، واتركيها دون تحريك حتى تتماسك (30 دقيقة، أو 10 دقائق في الثلاجة). ## Pour the warm liquid into the sanitised container and leave it undisturbed until set (30 minutes, or 10 in the fridge).",
+ lab:"اكتبي اسم المنتج وتاريخ التحضير على العبوة. ## Label the container with the product name and the date made.",
+ sift:"اخلطي المساحيق جافة، ثم مرّريها في المنخل مرتين أو ثلاثاً لإزالة الكتل. ## Mix the dry powders, then pass them through the sieve two or three times to break up lumps.",
+ swatch:"جرّبي اللون على ظاهر اليد، وعدّليه بإضافة المسحوق الملوّن بكميات صغيرة جداً. ## Swatch on the back of your hand and adjust by adding colour powder in tiny amounts.",
+ mask:"ارتدي كمامة عند وزن المساحيق وخلطها كي لا تستنشقيها. ## Wear a mask when weighing and mixing powders so you do not inhale them.",
+ jar:"انقلي المسحوق إلى علبة جافة محكمة الإغلاق، ولا تُدخلي فيها أصابع مبللة. ## Transfer the powder to a dry, airtight tin and never dip wet fingers into it."
+};
+// الوصفات: ing = [كمية، وحدة، مفتاح المكوّن، اختياري]
+const REC = [
+// ---------- الشفاه ----------
+{id:"lipbalm",g:"lips",lv:1,min:20,y:"نحو 24 غ (5 أنابيب) ## About 24 g (5 tubes)",risk:1,kind:"dry",keep:"6 إلى 12 شهراً ## 6 to 12 months",img:"lipbalm",skin:["dry","norm","sens"],
+ n:"مرطّب شفاه بزبدة الشيا وشمع العسل ## Shea and beeswax lip balm",
+ d:"القاعدة التي تُبنى عليها بقية منتجات الشفاه والخدود: ثلاثة مكونات بنسبة 1:1:1 بالوزن. ## The base for most lip and cheek products: three ingredients in a 1:1:1 ratio by weight.",
+ ing:[[8,"g","bwax"],[8,"g","shea"],[8,"g","jojoba"],[1,"drop","vite","opt"]],
+ tools:["scale","boiler","spat","tube","alc"],
+ steps:["san","melt","oils","pour","lab"],
+ tip:"للقوام الأصلب لأيام الحر زيدي الشمع غراماً واحداً، وللقوام الأنعم قلّليه. ## For hot weather add 1 g more wax; for a softer feel use 1 g less.",
+ warn:"أبعدي زيت اللوز عمّن لديه حساسية مكسرات، واستبدلي به زيت دوار الشمس. ## Swap almond oil for sunflower if there is any nut allergy."},
+{id:"liptint",g:"lips",lv:1,min:15,y:"نحو 9 غ ## About 9 g",risk:1,kind:"dry",keep:"3 أشهر ## 3 months",img:"liptint",skin:["dry","norm"],
+ n:"لون شفاه وخدود بالشمندر ## Beetroot lip and cheek tint",
+ d:"لمسة وردية شفافة تُبنى بالطبقات، وتصلح للشفاه والخدود معاً. ## A sheer pink wash that builds in layers; works on lips and cheeks.",
+ ing:[[8,"g","lipbalm_base"],[1,"g","beet"]],
+ tools:["scale","spat","mortar","tube","alc"],
+ steps:["san","@أذيبي مرطّب الشفاه (الوصفة السابقة) برفق في حمّام مائي. ## Gently melt the lip balm base (previous recipe) in a double boiler.","paste","@اتركي الخليط يبرد قليلاً ثم قلّبيه جيداً، وصبّيه في علبة صغيرة. ## Let it cool slightly, stir well and pour into a small tin.","swatch","lab"],
+ shade:[["وردي فاتح ## Light pink","0.5 غ شمندر ## 0.5 g beet"],["وردي دافئ ## Warm rose","1 غ شمندر ## 1 g beet"],["توتي عميق ## Deep berry","1.5 غ شمندر + 0.2 غ كاكاو ## 1.5 g beet + 0.2 g cocoa"]],
+ tip:"أضيفي المسحوق على دفعات: اللون يغمق بعد دقائق من وضعه. ## Add powder in stages: the colour deepens a few minutes after you apply it.",
+ warn:"يصبغ الملابس والمناديل، وقد لا يثبت على الشفاه أكثر من ساعتين أو ثلاث. ## It stains fabric and tissues and may last only two or three hours on the lips."},
+{id:"lipstick",g:"lips",lv:3,min:45,y:"نحو 12 غ (3 أنابيب) ## About 12 g (3 tubes)",risk:1,kind:"dry",keep:"6 أشهر ## 6 months",img:"lipstick",skin:["dry","norm"],
+ n:"أحمر شفاه صلب بالكاكاو والشمندر ## Solid cocoa and beetroot lipstick",
+ d:"عود صلب يُصبّ في قالب، بقوام يثبت أكثر من المرطّب. ## A solid bullet poured into a mould, holding better than a balm.",
+ ing:[[3,"g","bwax"],[2.5,"g","cocoab"],[3,"g","castor"],[1.5,"g","almond"],[1.5,"g","beet"],[0.5,"g","cocoa"]],
+ tools:["scale","boiler","spat","mortar","mold","alc"],
+ steps:["san","@ذوّبي الشمع وزبدة الكاكاو في الحمّام المائي، ثم أضيفي زيت الخروع وزيت اللوز. ## Melt the wax and cocoa butter in the double boiler, then add castor and almond oils.","paste","@أبعدي الوعاء عن النار وحرّكي المعجون الملوّن في الخليط حتى يتجانس. ## Off the heat, stir the colour paste in until even.","@صبّيه بسرعة في القالب وضعيه في الثلاجة 20 دقيقة قبل فكّه. ## Pour quickly into the mould and chill for 20 minutes before unmoulding.","lab"],
+ shade:[["وردي ترابي ## Dusty rose","1.5 غ شمندر + 0.5 غ كاكاو ## 1.5 g beet + 0.5 g cocoa"],["نبيذي ## Wine","2 غ شمندر + 0.5 غ كاكاو ## 2 g beet + 0.5 g cocoa"],["نيود ## Nude","0.8 غ شمندر + 1 غ كاكاو ## 0.8 g beet + 1 g cocoa"]],
+ tip:"إن تشقق العود زيدي نصف غرام من زيت الخروع في الدفعة التالية، وإن لان زيدي نصف غرام من الشمع. ## If the stick cracks add 0.5 g castor oil next time; if it is too soft add 0.5 g wax.",
+ warn:"لا يُنصح للشفاه المتشققة النازفة. ولا تضيفي القرفة ولا النعناع القوي لـ«تضخيم الشفاه». ## Not for cracked, bleeding lips. Do not add cinnamon or strong mint to “plump” lips."},
+{id:"lipgloss",g:"lips",lv:2,min:20,y:"نحو 9 غ ## About 9 g",risk:1,kind:"dry",keep:"6 أشهر ## 6 months",img:"lipgloss",skin:["dry","norm"],
+ n:"ملمّع شفاه بالخروع والجوجوبا ## Castor and jojoba lip gloss",
+ d:"لمعة زجاجية بقوام شبه سائل، يُملأ في أنبوب بفرشاة. ## A glassy, semi-liquid shine in a wand tube.",
+ ing:[[6,"ml","castor"],[2,"ml","jojoba"],[1.5,"g","bwax"],[0.3,"g","beet","opt"],[1,"drop","vite","opt"]],
+ tools:["scale","boiler","spat","pip","tube","alc"],
+ steps:["san","@ذوّبي الشمع في زيت الخروع في الحمّام المائي. ## Melt the wax into the castor oil in the double boiler.","oils","@لوّنيه بالشمندر إن أردتِ، ثم اسكبيه في الأنبوب بالقطّارة. ## Colour with beet if you like, then fill the tube with the dropper.","lab"],
+ tip:"زيت الخروع لزج بطبيعته، وقلّة الشمع تجعله أخف. ## Castor oil is naturally tacky; less wax makes it lighter.",
+ warn:"لا تضيفي العسل أو الماء فينفصل الملمّع ويفسد. ## Do not add honey or water: the gloss separates and spoils."},
+{id:"lipscrub",g:"lips",lv:1,min:5,y:"نحو 18 غ ## About 18 g",risk:2,kind:"wet",keep:"أسبوعان في علبة مغلقة ## 2 weeks in a closed jar",img:"sugar",skin:["norm","dry"],
+ n:"مقشّر شفاه بالسكر والعسل ## Sugar and honey lip scrub",
+ d:"يزيل القشور الجافة قبل وضع المرطّب أو أحمر الشفاه. ## Lifts dry flakes before balm or lipstick.",
+ ing:[[10,"g","sugar"],[5,"ml","almond"],[3,"g","honey"]],
+ tools:["spat","jar","alc"],
+ steps:["san","@اخلطي المكونات في وعاء صغير حتى تتماسك كالرمل المبلل. ## Mix everything in a small bowl until it holds like damp sand.","@دلّكي الشفاه بحركات دائرية خفيفة 30 ثانية، ثم امسحيه بقماش مبلل بماء دافئ. ## Massage onto the lips in light circles for 30 seconds, then wipe off with a warm damp cloth.","@استعمليه مرة أو مرتين أسبوعياً ثم ضعي المرطّب. ## Use once or twice a week and follow with balm."],
+ tip:"استعملي ملعقة نظيفة دائماً، فالأصابع المبللة تُفسد العلبة. ## Always use a clean spoon: wet fingers spoil the jar.",
+ warn:"لا تستعمليه على شفاه متشققة أو ملتهبة أو مصابة بالهربس. ## Not for cracked, inflamed or herpes-affected lips."},
+// ---------- العيون ----------
+{id:"kohl",g:"eyes",lv:2,min:30,y:"نحو 5 غ ## About 5 g",risk:3,kind:"dry",keep:"شهران كحد أقصى ## 2 months at most",img:"kohl",skin:["norm","dry","oily"],
+ n:"كحل بالفحم المنشّط (بلا رصاص) ## Activated-charcoal kohl (lead-free)",
+ d:"بديل آمن للكحل التقليدي مجهول المصدر، يوضع على الجفن لا داخل العين. ## A safer alternative to untraced traditional kohl, for the lid line, not inside the eye.",
+ ing:[[1.5,"g","bwax"],[2,"ml","castor"],[1.5,"g","charcoal"]],
+ tools:["scale","boiler","spat","mask","tube","alc"],
+ steps:["san","mask","@ذوّبي الشمع في زيت الخروع في الحمّام المائي. ## Melt the wax into the castor oil in the double boiler.","@أبعديه عن النار وحرّكي الفحم فيه حتى يختفي أي تكتل. ## Take it off the heat and stir in the charcoal until no lumps remain.","@صبّيه في علبة صغيرة معقّمة واتركيه يتماسك، ويُوضع بعود نظيف في كل مرة. ## Pour into a small sanitised pot and let it set; apply with a clean applicator each time.","lab"],
+ tip:"استعملي أعواداً مخصصة لكل مرة ولا تغمسي الإصبع. ## Use a fresh applicator each time; never dip a finger.",
+ warn:"يوضع على الجفن فقط لا على الحافة الداخلية المبللة. لا تستعمليه مع عدسات لاصقة أو التهاب في العين أو للأطفال، وتوقفي فوراً عند أي احمرار أو دمع. لا تصنعيه من السناج أو اللوز المحروق: المنتجات التقليدية قد تحتوي رصاصاً. ## Lid line only, never the wet inner rim. Not with contact lenses, an eye infection, or for children; stop at once if there is redness or tearing. Do not make it from soot or burnt almonds: traditional products can contain lead.",
+ src:["fdaKohl","fdaEye"]},
+{id:"shadow",g:"eyes",lv:1,min:15,y:"نحو 6 غ ## About 6 g",risk:3,kind:"dry",keep:"6 أشهر ## 6 months",img:"eyeshadow",skin:["norm","oily","dry"],
+ n:"ظلال عيون بودرة مطفية ## Matte powder eyeshadow",
+ d:"درجات ترابية من البني والبيج، تُصنع من ثلاثة مساحيق فقط. ## Earthy browns and beiges from just three powders.",
+ ing:[[3,"g","arrow"],[2,"g","cocoa"],[1,"g","kaolin"]],
+ tools:["scale","sieve","mortar","mask","jar","brush"],
+ steps:["mask","sift","swatch","@اضغطي المسحوق برفق في علبة صغيرة أو احفظيه سائباً. ## Press the powder lightly into a small tin, or keep it loose.","lab"],
+ shade:[["بيج ## Beige","3 غ أراروت + 0.5 غ كاكاو + 1 غ كاولين ## 3 g arrowroot + 0.5 g cocoa + 1 g kaolin"],["بني دافئ ## Warm brown","3 غ أراروت + 2 غ كاكاو ## 3 g arrowroot + 2 g cocoa"],["رمادي بني ## Taupe","3 غ أراروت + 1 غ كاكاو + 0.1 غ فحم ## 3 g arrowroot + 1 g cocoa + 0.1 g charcoal"]],
+ tip:"طبّقيه بفرشاة ناعمة على الجفن المتحرك وتجنبي حافة الأهداب. ## Apply with a soft brush on the lid only, away from the lash line.",
+ warn:"ليست كل الملوّنات الغذائية مجازة رسمياً للاستعمال حول العين، فاقتصري على الكاكاو والفحم بنسب صغيرة، ولا تضعيه على الحافة الداخلية. ## Not every food colourant is approved for use around the eye, so stay with cocoa and a little charcoal and never on the inner rim.",
+ src:["fdaEye","fdaEye"]},
+{id:"creamshadow",g:"eyes",lv:2,min:25,y:"نحو 5 غ ## About 5 g",risk:3,kind:"dry",keep:"3 أشهر ## 3 months",img:"creamshadow",skin:["dry","norm"],
+ n:"ظل كريمي بالشمع والجوجوبا ## Cream eyeshadow with wax and jojoba",
+ d:"ظل كريمي يُوضع بالإصبع النظيف أو بفرشاة قصيرة. ## A cream shadow for a clean fingertip or short brush.",
+ ing:[[1,"g","bwax"],[1,"g","shea"],[1.5,"ml","jojoba"],[1.5,"g","cocoa"]],
+ tools:["scale","boiler","spat","mortar","tube","alc"],
+ steps:["san","melt","oils","paste","pour","lab"],
+ tip:"أضيفي ثلث غرام من الكاولين لقوام مطفي وثبات أطول. ## Add 0.3 g kaolin for a matte, longer-lasting finish.",
+ warn:"يتكتل في الطيات إن زاد الزيت، فاستعملي طبقة رقيقة. للحذر نفسه الخاص بمنتجات العين: لا عدسات ولا التهاب. ## Creases if too oily, so keep the layer thin. Same eye-product cautions: no contact lenses, no infection.",
+ src:["fdaEye","fdaEye"]},
+{id:"mascara",g:"eyes",lv:3,min:30,y:"نحو 5 غ ## About 5 g",risk:3,kind:"dry",keep:"4 أسابيع كحد أقصى ## 4 weeks at most",img:"mascara",skin:["norm"],
+ n:"ماسكارا كريمية بالفحم والشمع ## Cream charcoal mascara",
+ d:"ماسكارا خالية من الماء بقوام شمعي، تُحضَّر بكميات صغيرة جداً. ## A water-free, waxy mascara made in very small batches.",
+ ing:[[1,"g","bwax"],[0.5,"g","shea"],[1.5,"ml","castor"],[1.5,"g","charcoal"]],
+ tools:["scale","boiler","spat","mask","tube","alc"],
+ steps:["san","mask","@ذوّبي الشمع والشيا في زيت الخروع في الحمّام المائي. ## Melt the wax and shea into the castor oil in the double boiler.","@حرّكي الفحم فيه بإحكام حتى يتجانس تماماً. ## Stir in the charcoal until fully even.","@املئي به أنبوب ماسكارا قديماً نظّفتِه جيداً بالكحول، أو علبة صغيرة مع فرشاة أهداب نظيفة. ## Fill a thoroughly sanitised old mascara tube, or a small pot with a clean spoolie.","lab"],
+ tip:"حضّري كمية تكفي شهراً واحداً فقط، وتخلّصي منها عند أول تغيّر في الرائحة أو القوام. ## Make only a month's worth and bin it at the first change of smell or texture.",
+ warn:"ماسكارا المنزل غير معقّمة وغير محفوظة، فهي أكثر منتجات الزينة خطراً على العين. حتى الماسكارا التجارية تُستبدل كل 3 أشهر. لا تشاركيها ولا تضعيها لمن لديه التهاب أو عدسات لاصقة. ## Home mascara is unsterile and unpreserved, so it is the riskiest cosmetic for the eye. Even commercial mascara is replaced every 3 months. Do not share it or use it with an eye infection or contact lenses.",
+ src:["fdaEye","fdaShelf"]},
+// ---------- الحواجب ----------
+{id:"browpow",g:"brows",lv:1,min:10,y:"نحو 4 غ ## About 4 g",risk:2,kind:"dry",keep:"6 أشهر ## 6 months",img:"brow",skin:["all"],
+ n:"بودرة حواجب بالكاكاو ## Cocoa brow powder",
+ d:"مسحوق بسيط بدرجات من البني، يُوضع بفرشاة مائلة. ## A simple powder in brown shades, applied with an angled brush.",
+ ing:[[2,"g","arrow"],[1.5,"g","cocoa"],[0.1,"g","charcoal","opt"]],
+ tools:["scale","sieve","mask","jar","brush"],
+ steps:["mask","sift","swatch","jar"],
+ shade:[["شقراء ## Blonde","2 غ أراروت + 0.7 غ كاكاو ## 2 g arrowroot + 0.7 g cocoa"],["بني ## Brown","2 غ أراروت + 1.5 غ كاكاو ## 2 g arrowroot + 1.5 g cocoa"],["بني داكن ## Dark brown","2 غ أراروت + 1.5 غ كاكاو + 0.1 غ فحم ## 2 g arrowroot + 1.5 g cocoa + 0.1 g charcoal"]],
+ tip:"ارسمي بضربات قصيرة باتجاه نمو الشعر. ## Use short strokes in the direction of hair growth.",
+ warn:"أبعديه عن العين، ولا تنفخي به. ## Keep it away from the eye and do not blow on the brush."},
+{id:"browpom",g:"brows",lv:2,min:20,y:"نحو 5 غ ## About 5 g",risk:2,kind:"dry",keep:"4 أشهر ## 4 months",img:"brow",skin:["all"],
+ n:"بوميد حواجب شمعي ## Waxy brow pomade",
+ d:"قوام كريمي يثبّت الشعر ويعطي لوناً أغمق. ## A creamy pomade that holds hairs and gives deeper colour.",
+ ing:[[1,"g","bwax"],[1,"g","shea"],[1.5,"ml","castor"],[0.7,"g","cocoa"],[0.1,"g","charcoal","opt"]],
+ tools:["scale","boiler","spat","mortar","tube","alc"],
+ steps:["san","melt","oils","paste","pour","lab"],
+ tip:"استعمليها بفرشاة حواجب مائلة نظيفة. ## Apply with a clean angled brow brush.",
+ warn:"يلين في الحر، فاحفظيه في مكان بارد. ## Softens in heat; keep it cool."},
+{id:"browgel",g:"brows",lv:2,min:25,y:"نحو 30 مل ## About 30 ml",risk:2,kind:"wet",keep:"5 أيام في الثلاجة ## 5 days in the fridge",img:"flax",skin:["all"],
+ n:"جل حواجب ببذور الكتان ## Flaxseed brow gel",
+ d:"جل شفاف يثبّت شعر الحاجب ويُصنع طازجاً. ## A clear gel that sets the brow hairs, made fresh.",
+ ing:[[1,"tsp","flax"],[100,"ml","ماء مقطّر ## distilled water"]],
+ tools:["pan","spat","jar","alc"],
+ steps:["san","@اغلي البذور في الماء على نار هادئة 6 إلى 8 دقائق مع التحريك حتى يصير الماء كالعسل الخفيف. ## Simmer the seeds in the water for 6 to 8 minutes, stirring, until it turns thickly syrupy.","@صفّيه بينما هو ساخن في قماش نظيف أو منخل ناعم، واتركيه يبرد. ## Strain while hot through a clean cloth or fine sieve and let it cool.","@انقليه إلى علبة معقّمة صغيرة واحفظيه في الثلاجة، وضعيه بفرشاة حواجب نظيفة. ## Move to a small sanitised jar, store in the fridge and apply with a clean brow brush.","lab"],
+ tip:"قلّلي الكمية إلى ما يكفي 3 أيام لتتجنبي الهدر. ## Make just enough for three days to avoid waste.",
+ warn:"يحتوي ماءً بلا مادة حافظة: تخلّصي منه عند تغيّر الرائحة أو ظهور خيوط. ## Contains water without a preservative: discard at any smell or stringiness."},
+// ---------- الوجه ----------
+{id:"powder",g:"face",lv:1,min:15,y:"نحو 12 غ ## About 12 g",risk:2,kind:"dry",keep:"6 أشهر ## 6 months",img:"powder",skin:["oily","norm","acne"],
+ n:"بودرة أساس سائبة تُضبط على لون البشرة ## Tone-matched loose foundation powder",
+ d:"أساس وتثبيت في خطوة واحدة، ويُعدَّل اللون بحسب جدول الدرجات. ## Foundation and setting in one step, adjusted with the shade table.",
+ ing:[[10,"g","arrow"],[2,"g","kaolin"],[0.9,"g","cocoa"]],
+ tools:["scale","sieve","mask","jar","brush"],
+ steps:["mask","sift","swatch","jar"],
+ shade:[["فاتحة جداً ## Very fair","0.2 غ كاكاو لكل 10 غ أراروت ## 0.2 g cocoa per 10 g arrowroot"],["فاتحة ## Light","0.5 غ كاكاو ## 0.5 g cocoa"],["متوسطة ## Medium","0.9 غ كاكاو ## 0.9 g cocoa"],["حنطية ## Tan","1.4 غ كاكاو ## 1.4 g cocoa"],["داكنة ## Deep","2.5 غ كاكاو + 0.05 غ فحم ## 2.5 g cocoa + 0.05 g charcoal"]],
+ tip:"طابقي اللون عند الفك لا على اليد: ضعيه على خط الفك في ضوء النهار. ## Match on the jawline in daylight, not on the hand.",
+ warn:"لا تستنشقي المسحوق، ولا تستعمليه إن كانت لديك حساسية صدر أو بشرة شديدة الحساسية. ## Do not inhale it, and skip it with asthma or very sensitive skin."},
+{id:"creamfound",g:"face",lv:3,min:40,y:"نحو 18 غ ## About 18 g",risk:2,kind:"dry",keep:"4 أشهر ## 4 months",img:"foundation",skin:["dry","norm"],
+ n:"كريم أساس مرطّب خالٍ من الماء ## Water-free tinted foundation cream",
+ d:"أساس كريمي بتغطية خفيفة إلى متوسطة، يُمزج بالأصابع أو بإسفنجة. ## A cream base with light to medium coverage, blended with fingers or a sponge.",
+ ing:[[6,"g","shea"],[4,"ml","jojoba"],[2,"g","bwax"],[2,"g","zinc"],[2,"g","arrow"],[1,"g","cocoa"]],
+ tools:["scale","boiler","spat","mortar","mask","jar","alc"],
+ steps:["san","mask","melt","oils","@اسحقي الزنك والأراروت والكاكاو مع قطرات من الزيت الدافئ حتى يتجانس ثم أضيفيه، وقلّبي حتى يبرد قليلاً. ## Grind the zinc, arrowroot and cocoa with a few drops of warm oil until smooth, add it, and stir while it cools slightly.","pour","swatch","lab"],
+ shade:[["فاتحة ## Light","0.3 غ كاكاو ## 0.3 g cocoa"],["متوسطة ## Medium","1 غ كاكاو ## 1 g cocoa"],["حنطية إلى داكنة ## Tan to deep","1.8 إلى 3 غ كاكاو ## 1.8 to 3 g cocoa"]],
+ tip:"قلّبيه أثناء التبريد كي لا يترسب اللون في القاع. ## Stir as it cools so the colour does not sink.",
+ warn:"ليس واقياً من الشمس رغم وجود الزنك؛ استعملي واقي شمس معتمداً. قد يسدّ المسام لدى البشرة الدهنية. ## Not a sunscreen despite the zinc; use a certified one. May clog pores on oily skin."},
+{id:"concealer",g:"face",lv:2,min:25,y:"نحو 8 غ ## About 8 g",risk:2,kind:"dry",keep:"4 أشهر ## 4 months",img:"concealer",skin:["dry","norm"],
+ n:"كونسيلر كريمي ## Cream concealer",
+ d:"تغطية للهالات والبقع بقوام أكثف من كريم الأساس. ## Covers dark circles and blemishes with a denser texture than the foundation cream.",
+ ing:[[3,"g","shea"],[1.5,"g","bwax"],[1.5,"ml","jojoba"],[1,"g","arrow"],[1,"g","kaolin"],[0.6,"g","cocoa"]],
+ tools:["scale","boiler","spat","mortar","tube","alc"],
+ steps:["san","melt","oils","paste","pour","swatch","lab"],
+ shade:[["فاتح ## Light","0.2 غ كاكاو ## 0.2 g cocoa"],["متوسط ## Medium","0.6 غ كاكاو ## 0.6 g cocoa"],["حنطي ## Tan","1.1 غ كاكاو ## 1.1 g cocoa"]],
+ tip:"اختاري درجة أفتح من الأساس بقليل لتحت العينين. ## Choose a shade slightly lighter than your base for the under-eyes.",
+ warn:"إن وُضع تحت العين فاتبعي احتياطات منتجات العين: يداً نظيفة وعدم الاقتراب من الحافة. ## Under the eyes, follow eye-product precautions: clean hands and keep off the rim."},
+{id:"setpow",g:"face",lv:1,min:10,y:"نحو 10 غ ## About 10 g",risk:2,kind:"dry",keep:"6 أشهر ## 6 months",img:"setpow",skin:["oily","acne","norm"],
+ n:"بودرة تثبيت شفافة ## Translucent setting powder",
+ d:"تقلل اللمعان وتثبّت المكياج دون لون. ## Cuts shine and sets makeup without colour.",
+ ing:[[8,"g","arrow"],[2,"g","ricef"],[1,"g","kaolin"]],
+ tools:["scale","sieve","mask","jar","brush"],
+ steps:["mask","sift","jar"],
+ tip:"للبشرة الداكنة استعملي أراروت أقل مع بعض الكاكاو لتفادي الأثر الأبيض. ## On deeper skin use less arrowroot and a little cocoa to avoid a white cast.",
+ warn:"لا تستنشقيها، وضعيها بفرشاة خفيفة. ## Do not inhale; use a light brush."},
+{id:"primer",g:"face",lv:1,min:5,y:"نحو 20 غ ## About 20 g",risk:2,kind:"wet",keep:"أسبوع في الثلاجة ## 1 week in the fridge",img:"aloe",skin:["oily","norm","sens"],
+ n:"برايمر بجل الصبّار ## Aloe gel primer",
+ d:"قاعدة مرطبة خفيفة تهيئ البشرة قبل المكياج. ## A light moisturising base that preps skin before makeup.",
+ ing:[[15,"g","aloe"],[2,"ml","glyc"],[3,"drop","jojoba"]],
+ tools:["spat","jar","alc"],
+ steps:["san","@اخلطي المكونات بملعقة نظيفة حتى يتجانس. ## Mix with a clean spoon until even.","@ضعي طبقة رقيقة على البشرة النظيفة وانتظري دقيقتين قبل المكياج. ## Apply a thin layer to clean skin and wait two minutes before makeup."],
+ tip:"حضّري كمية تكفي أسبوعاً فقط. ## Make only a week's worth.",
+ warn:"اختبري الصبّار أولاً، وتوقفي عند أي حكة. ## Patch-test the aloe first and stop at any itch."},
+// ---------- الخدود ----------
+{id:"blush",g:"cheeks",lv:1,min:10,y:"نحو 7 غ ## About 7 g",risk:1,kind:"dry",keep:"6 أشهر ## 6 months",img:"blush",skin:["all"],
+ n:"أحمر خدود بودرة بالشمندر ## Beetroot powder blush",
+ d:"وردي طبيعي يُبنى بالطبقات، ويناسب كل الدرجات بتعديل النسبة. ## A natural pink that builds in layers; suits all tones by adjusting the ratio.",
+ ing:[[5,"g","arrow"],[1,"g","kaolin"],[0.8,"g","beet"],[0.2,"g","cocoa"]],
+ tools:["scale","sieve","mask","jar","brush"],
+ steps:["mask","sift","swatch","jar"],
+ shade:[["وردي هادئ ## Soft pink","0.5 غ شمندر ## 0.5 g beet"],["وردي دافئ ## Warm rose","0.8 غ شمندر + 0.2 غ كاكاو ## 0.8 g beet + 0.2 g cocoa"],["توتي ## Berry","1.2 غ شمندر + 0.3 غ كاكاو ## 1.2 g beet + 0.3 g cocoa"]],
+ tip:"اطرقي الفرشاة قبل الوضع لتخلصي من الزائد. ## Tap the brush before applying to shake off excess.",
+ warn:"قد يصبغ الملابس، ويخفّ لونه على البشرة الدهنية بسرعة. ## May stain clothes and fade quickly on oily skin."},
+{id:"creamblush",g:"cheeks",lv:1,min:15,y:"نحو 9 غ ## About 9 g",risk:1,kind:"dry",keep:"3 أشهر ## 3 months",img:"blushpan",skin:["dry","norm"],
+ n:"أحمر خدود كريمي ## Cream blush",
+ d:"طبقة رطبة تعطي نضارة، وهي نفسها لون الشفاه والخدود بتعديل بسيط. ## A dewy layer that gives a fresh look, almost the same as the lip and cheek tint.",
+ ing:[[7,"g","lipbalm_base"],[0.8,"g","beet"],[0.3,"g","arrow"]],
+ tools:["scale","boiler","spat","mortar","tube","alc"],
+ steps:["san","@أذيبي مرطّب الشفاه برفق. ## Gently melt the lip balm base.","paste","pour","swatch","lab"],
+ tip:"ضعيه بأطراف الأصابع على تفاحتي الخدين. ## Dab onto the apples of the cheeks with fingertips.",
+ warn:"إن لم يكن الأراروت ضرورياً للبشرة الدهنية فاحذفيه ولا تكثري الزيت. ## On oily skin keep the oil low."},
+{id:"bronzer",g:"cheeks",lv:1,min:10,y:"نحو 6 غ ## About 6 g",risk:1,kind:"dry",keep:"6 أشهر ## 6 months",img:"bronzer",skin:["all"],
+ n:"برونزر بالكاكاو ## Cocoa bronzer",
+ d:"لمسة دافئة للنحت والتسمير الخفيف. ## A warm touch for contour and a light tan look.",
+ ing:[[3,"g","arrow"],[2,"g","cocoa"],[0.5,"g","kaolin"]],
+ tools:["scale","sieve","mask","jar","brush"],
+ steps:["mask","sift","swatch","jar"],
+ shade:[["فاتحة ## Light","3 غ أراروت + 1 غ كاكاو ## 3 g arrowroot + 1 g cocoa"],["متوسطة ## Medium","3 غ أراروت + 2 غ كاكاو ## 3 g arrowroot + 2 g cocoa"],["داكنة ## Deep","3 غ أراروت + 3 غ كاكاو ## 3 g arrowroot + 3 g cocoa"]],
+ tip:"انحتي بشكل رقم 3 على جانب الوجه بفرشاة كبيرة. ## Sweep a “3” shape on the side of the face with a large brush.",
+ warn:"رائحة الكاكاو قد تزعج بعض الأشخاص. ## The cocoa smell may bother some people."},
+{id:"glow",g:"cheeks",lv:2,min:15,y:"نحو 5 غ ## About 5 g",risk:2,kind:"dry",keep:"6 أشهر ## 6 months",img:"highlighter",skin:["all"],
+ n:"هايلايتر بالميكا ## Mica highlighter",
+ d:"لمعة ناعمة على أعلى الخدين، ومن دون الميكا يصبح مطفياً. ## A soft glow on the cheekbones; without mica it stays matte.",
+ ing:[[3,"g","arrow"],[1,"g","mica"],[0.2,"g","cocoa"]],
+ tools:["scale","sieve","mask","jar","brush"],
+ steps:["mask","sift","swatch","jar"],
+ tip:"للنسخة الكريمية اخلطي 0.5 غ ميكا مع 5 غ من مرطّب الشفاه المذاب. ## For a cream version mix 0.5 g mica into 5 g melted lip balm.",
+ warn:"اشتري ميكا بدرجة تجميلية وبمصدر أخلاقي معلن، ولا تضعيها قرب العين دون فحص نعومة الجسيمات. ## Buy cosmetic-grade, ethically sourced mica and avoid the eye area unless the particles are very fine."},
+// ---------- العناية ----------
+{id:"remover",g:"care",lv:1,min:3,y:"نحو 25 مل ## About 25 ml",risk:1,kind:"dry",keep:"6 أشهر ## 6 months",img:"jojoba",skin:["dry","norm"],
+ n:"مزيل مكياج زيتي ## Oil makeup remover",
+ d:"زيتان يذيبان المكياج الدهني ومقاوم الماء. ## Two oils that dissolve oily and waterproof makeup.",
+ ing:[[20,"ml","sunfl"],[5,"ml","castor"]],
+ tools:["jar","cotton","cloth"],
+ steps:["@اخلطي الزيتين في عبوة زجاجية داكنة. ## Mix the two oils in a dark glass bottle.","@دلّكي البشرة الجافة بالزيت ثم امسحيه بقطعة قماش مبلّلة بماء دافئ. ## Massage onto dry skin, then wipe with a cloth wrung out in warm water.","@اغسلي وجهك بغسول لطيف. ## Follow with a gentle cleanser."],
+ tip:"للبشرة المعرّضة للحبوب استبدلي زيت دوار الشمس بزيت الجوجوبا. ## For acne-prone skin swap sunflower for jojoba.",
+ warn:"أبعديه عن داخل العين، وتجنبي زيت جوز الهند في البشرة الحبّية. ## Keep it out of the eyes and avoid coconut oil on acne-prone skin."},
+{id:"cleanbalm",g:"care",lv:2,min:25,y:"نحو 18 غ ## About 18 g",risk:1,kind:"dry",keep:"6 أشهر ## 6 months",img:"shea",skin:["dry","norm"],
+ n:"بلسم تنظيف المكياج ## Cleansing balm",
+ d:"يتحول إلى زيت عند التدليك فيذيب المكياج، ويُمسح بقماش دافئ. ## Melts into oil on massage to dissolve makeup; wipe off with a warm cloth.",
+ ing:[[12,"ml","almond"],[4,"g","shea"],[2,"g","bwax"],[1,"drop","vite","opt"]],
+ tools:["scale","boiler","spat","jar","cloth","alc"],
+ steps:["san","melt","oils","pour","lab"],
+ tip:"ضعي كمية بحجم حبة الحمص وأذيبيها بين الراحتين أولاً. ## Use a chickpea-sized amount and melt it between your palms first.",
+ warn:"يتطلب مسحاً دقيقاً بقماش دافئ كي لا يترك طبقة دهنية. ## Wipe off thoroughly with a warm cloth so no film remains."},
+{id:"toner",g:"care",lv:1,min:3,y:"نحو 30 مل ## About 30 ml",risk:2,kind:"wet",keep:"أسبوعان في الثلاجة ## 2 weeks in the fridge",img:"rosew",skin:["all"],
+ n:"منعش بماء الورد ## Rose water toner",
+ d:"يُمسح به الوجه بعد التنظيف ويهيئ البشرة. ## Wiped over the face after cleansing to prep the skin.",
+ ing:[[30,"ml","rosew"],[1,"ml","glyc","opt"]],
+ tools:["spray","cotton","alc"],
+ steps:["san","@اسكبي ماء الورد في زجاجة الرذاذ المعقّمة وأضيفي الجلسرين. ## Pour the rose water into the sanitised spray bottle and add the glycerin.","@رشّيه على قطنة أو الوجه مباشرة بعد التنظيف. ## Spray on cotton or straight onto the face after cleansing."],
+ tip:"اشتري ماء الورد التجاري المحفوظ، فماء الورد المنزلي يفسد خلال أيام. ## Buy preserved commercial rose water; home-made spoils within days.",
+ warn:"توقفي عند أي احمرار أو حكة. ## Stop at any redness or itch."},
+{id:"setspray",g:"care",lv:1,min:5,y:"نحو 35 مل ## About 35 ml",risk:2,kind:"wet",keep:"أسبوع في الثلاجة ## 1 week in the fridge",img:"setspray",skin:["all"],
+ n:"بخاخ تثبيت المكياج ## Setting spray",
+ d:"ضباب خفيف يحبس المكياج ويمنحه مظهراً متجانساً. ## A light mist that melds the makeup and softens powder.",
+ ing:[[30,"ml","rosew"],[5,"g","aloe"],[1,"ml","glyc"]],
+ tools:["spray","alc"],
+ steps:["san","@اخلطي المكونات حتى يذوب الجل تماماً. ## Mix until the gel dissolves fully.","@رشّي من مسافة 20 سم مع إغماض العينين. ## Mist from 20 cm away with eyes closed."],
+ tip:"قلّلي الكمية إلى ما يكفي أسبوعاً. ## Make only a week's worth.",
+ warn:"لا يحتوي مادة حافظة قوية، فلا تحتفظي به في الحقيبة الدافئة. ## No strong preservative: do not keep it in a warm bag."},
+{id:"oatmask",g:"care",lv:1,min:5,y:"جلسة واحدة ## One use",risk:2,kind:"wet",keep:"يُحضّر عند الاستعمال ## Make fresh each time",img:"oats",skin:["sens","dry","norm"],
+ n:"قناع العسل والشوفان المهدّئ ## Soothing honey and oat mask",
+ d:"ترطيب وتهدئة بعد يوم مكياج طويل. ## Hydrates and calms after a long day in makeup.",
+ ing:[[10,"g","honey"],[10,"g","oats"],[10,"ml","ماء أو لبن زبادي ## water or plain yoghurt"]],
+ tools:["spat","cloth"],
+ steps:["@اخلطي المكونات حتى تصير عجينة طرية. ## Mix into a soft paste.","@ضعيها على الوجه 10 إلى 15 دقيقة، ثم اغسليها بماء فاتر. ## Leave on for 10 to 15 minutes, then rinse with lukewarm water.","@استعمليه مرة أو مرتين أسبوعياً. ## Use once or twice a week."],
+ tip:"أبعديه عن محيط العين. ## Keep clear of the eye area.",
+ warn:"لا يناسب من لديه حساسية العسل أو الشوفان أو الجلوتين. ## Not for honey, oat or gluten allergy."},
+{id:"claymask",g:"care",lv:1,min:5,y:"جلسة واحدة ## One use",risk:2,kind:"wet",keep:"يُحضّر عند الاستعمال ## Make fresh each time",img:"kaolin",skin:["oily","acne"],
+ n:"قناع الكاولين للبشرة الدهنية ## Kaolin mask for oily skin",
+ d:"ينظّف المسام ويقلل اللمعان، وأخفّ الطين على الجلد. ## Cleans pores and calms shine, the mildest clay for skin.",
+ ing:[[10,"g","kaolin"],[15,"ml","rosew"]],
+ tools:["spat","cloth"],
+ steps:["@اخلطي الطين وماء الورد في وعاء غير معدني حتى يصير معجوناً. ## Mix clay and rose water in a non-metal bowl to a paste.","@ضعيه على الوجه واتركيه 8 إلى 10 دقائق ولا تتركيه يجف تماماً. ## Apply for 8 to 10 minutes and do not let it dry completely.","@اغسليه بماء فاتر وضعي مرطّباً. ## Rinse with lukewarm water and moisturise."],
+ tip:"مرة أسبوعياً تكفي. ## Once a week is enough.",
+ warn:"لا يناسب البشرة الجافة جداً أو المصابة بالأكزيما. ## Not for very dry or eczema-prone skin."},
+// ---------- اليدان والأظافر ----------
+{id:"henna",g:"hands",lv:2,min:30,y:"نحو 70 غ ## About 70 g",risk:2,kind:"wet",keep:"3 أيام في الثلاجة أو 4 أشهر في المجمّد ## 3 days chilled or 4 months frozen",img:"henna",skin:["norm","dry"],
+ n:"حناء طبيعية خالصة لليدين ## Pure natural henna for hands",
+ d:"نقش وصبغ مؤقت بنتيجة بنية محمرّة، وليس أسود أبداً. ## Temporary staining in reddish brown; never black.",
+ ing:[[25,"g","henna"],[40,"ml","tea"],[1,"tsp","sugar"]],
+ tools:["spat","sieve","wrap","cloth"],
+ steps:["@انخلي الحناء ثم اخلطيها بالشاي الدافئ والسكر حتى تصير كالزبادي الثقيل. ## Sieve the henna, then mix with warm tea and sugar to a thick yoghurt texture.","@غطّيها بغلاف واتركيها 6 إلى 12 ساعة في مكان دافئ حتى تتحرر الصبغة. ## Cover and rest 6 to 12 hours somewhere warm so the dye releases.","@ضعيها على الجلد النظيف واتركيها 4 إلى 6 ساعات، ثم اكشطيها ولا تغسليها بالماء الساخن أول 24 ساعة. ## Apply to clean skin for 4 to 6 hours, scrape it off, and avoid hot water for 24 hours."],
+ tip:"زيت جوز الهند أو الجوجوبا على الجلد بعد الكشط يعمّق اللون. ## A little oil on the stain after scraping deepens it.",
+ warn:"لا تستعملي الحناء السوداء أو المضافة للأصباغ أبداً (قد تحوي PPD المسبب لحساسية شديدة). ممنوع على أطفال نقص G6PD، وجرّبيها على الجلد قبل الاستعمال. ## Never use black or additive henna (can contain PPD, a severe allergen). Not for children with G6PD deficiency; patch-test first.",
+ src:["fdaHenna"]},
+{id:"nailoil",g:"hands",lv:1,min:5,y:"نحو 10 مل ## About 10 ml",risk:1,kind:"dry",keep:"12 شهراً ## 12 months",img:"jojoba",skin:["all"],
+ n:"زيت تغذية الأظافر والجلد المحيط ## Nail and cuticle oil",
+ d:"يلين الجلد حول الظفر ويقلل التقشر. ## Softens cuticles and reduces peeling.",
+ ing:[[8,"ml","jojoba"],[2,"ml","almond"],[5,"drop","vite","opt"]],
+ tools:["pip","tube"],
+ steps:["@اخلطي الزيوت في عبوة قطّارة داكنة. ## Mix the oils in a dark dropper bottle.","@ضعي قطرة على كل ظفر ودلّكيها لمدة نصف دقيقة كل ليلة. ## Rub one drop onto each nail for half a minute every night."],
+ tip:"قبل طلاء الأظافر امسحي الزيت جيداً بالكحول. ## Wipe oil off with alcohol before polish.",
+ warn:"أبدلي بزيت دوار الشمس عند حساسية المكسرات. ## Swap almond for sunflower with nut allergy."}
+];
+
+// صور بتراخيص Creative Commons (Openverse): المصدر والمنسوب إليه والترخيص
+const IMGS = {
+"lipbalm": {
+"f": "lipbalm.webp",
+"by": "saiberiac",
+"lic": "CC BY 2.0",
+"u": "https://www.flickr.com/photos/22806462@N03/32472416024",
+"t": "Adventures in making lip balm"
+},
+"lipstick": {
+"f": "lipstick.webp",
+"by": "rawpixel",
+"lic": "CC0",
+"u": "https://www.rawpixel.com/image/5916923/image-background-public-domain-blue",
+"t": "Red lipstick blue background"
+},
+"lipgloss": {
+"f": "lipgloss.webp",
+"by": "rawpixel",
+"lic": "CC0",
+"u": "https://www.rawpixel.com/image/5919201/image-public-domain-pink-makeup",
+"t": "Free pink homemade lip balm"
+},
+"eyeshadow": {
+"f": "eyeshadow.webp",
+"by": "egonzalesmarquez",
+"lic": "CC BY 2.0",
+"u": "https://www.flickr.com/photos/76823879@N00/6720201323",
+"t": "ELF books re-organized"
+},
+"powder": {
+"f": "powder.webp",
+"by": "Jenn Durfey",
+"lic": "CC BY 2.0",
+"u": "https://www.flickr.com/photos/52498245@N03/5365252223",
+"t": "Blush (Object)"
+},
+"blush": {
+"f": "blush.webp",
+"by": "thedabblist",
+"lic": "CC BY 2.0",
+"u": "https://www.flickr.com/photos/64636759@N07/12605850283",
+"t": "Hibiscus Beetroot Blush"
+},
+"bronzer": {
+"f": "bronzer.webp",
+"by": "Emily Jean Cox",
+"lic": "CC BY 2.0",
+"u": "https://www.flickr.com/photos/93105649@N04/18365235875",
+"t": "bronzer"
+},
+"aloe": {
+"f": "aloe.webp",
+"by": "ccnull.de Bilddatenbank",
+"lic": "CC BY 2.0",
+"u": "https://www.flickr.com/photos/115225894@N07/54348789167",
+"t": "Aloe Vera Blatt mit Gel"
+},
+"honey": {
+"f": "honey.webp",
+"by": "Krzysztof Puszczyński",
+"lic": "CC0",
+"u": "https://stocksnap.io/photo/honey-jars-97LJAKWL36",
+"t": "Honey Jars"
+},
+"flax": {
+"f": "flax.webp",
+"by": "rawpixel",
+"lic": "CC0",
+"u": "https://www.rawpixel.com/image/5967633/flax-seeds",
+"t": "Flax Seeds"
+},
+"beet": {
+"f": "beet.webp",
+"by": "seelensturm",
+"lic": "CC BY 2.0",
+"u": "https://www.flickr.com/photos/61404197@N00/4675057717",
+"t": "Sift together all dry ingredients ..."
+},
+"cocoa": {
+"f": "cocoa.webp",
+"by": "rawpixel",
+"lic": "CC0",
+"u": "https://www.rawpixel.com/image/5974861/freshly-made-cocoa-powder",
+"t": "Freshly made cocoa powder"
+},
+"cocoab": {
+"f": "cocoab.webp",
+"by": "thorsonm",
+"lic": "CC BY-SA 2.0",
+"u": "https://www.flickr.com/photos/197476668@N08/52623525444",
+"t": "cocaobutter - 1"
+},
+"bwax": {
+"f": "bwax.webp",
+"by": "shop8447",
+"lic": "CC0",
+"u": "https://www.flickr.com/photos/185514373@N06/49063470778",
+"t": "Howemon Beeswax Pellets"
+},
+"castor": {
+"f": "castor.webp",
+"by": "New Brunswick Drugstore & Milk Bottles",
+"lic": "Public Domain",
+"u": "https://www.flickr.com/photos/111009307@N03/25740150891",
+"t": "The Modern Pharmacy"
+},
+"sunfl": {
+"f": "sunfl.webp",
+"by": "www.tOrange.biz",
+"lic": "CC BY 2.0",
+"u": "https://www.flickr.com/photos/117611265@N05/15335298046",
+"t": "Sunflower-oil"
+},
+"blushpan": {
+"f": "blushpan.webp",
+"by": "grenade",
+"lic": "CC BY 2.0",
+"u": "https://www.flickr.com/photos/54432200@N00/4843134476",
+"t": "makeup"
+},
+"kohl": {
+"f": "kohl.webp",
+"by": "brooklynmuseum",
+"lic": "CC BY 3.0",
+"u": "https://www.brooklynmuseum.org/opencollection/objects/4051",
+"t": "Kohl Tube Inscribed for Amunhotep III and Queen Tiye"
+},
+"mascara": {
+"f": "mascara.webp",
+"by": "Jenn Durfey",
+"lic": "CC BY 2.0",
+"u": "https://www.flickr.com/photos/52498245@N03/5365866358",
+"t": "Mascara (Object)"
+},
+"henna": {
+"f": "henna.webp",
+"by": "nparekhcards",
+"lic": "CC BY-SA 2.0",
+"u": "https://www.flickr.com/photos/125349110@N05/24613232926",
+"t": "15 best Bridal / Dulhan Mehndi / Henna Designs for legs"
+},
+"rosew": {
+"f": "rosew.webp",
+"by": "kdinuraj",
+"lic": "CC BY 2.0",
+"u": "https://www.flickr.com/photos/8263540@N05/5837024186",
+"t": "Rose water"
+}
+};
+
+ING.lipbalm_base = {n:"مرطّب الشفاه (الوصفة الأولى) ## Lip balm base (recipe one)",note:"",sub:"",alg:"",img:"lipbalm",hide:1};
+const LNK = {
+ fdaKohl:MKL.fdaKohl, fdaShelf:MKL.fdaShelf, fdaHenna:MKL.fdaHenna, fdaSafe:MKL.fdaSafe, patch:MKL.patch, nhsDerm:MKL.nhsDerm,
+ fdaEye:{n:"FDA: سلامة مستحضرات العين والملوّنات غير المجازة",u:"https://www.fda.gov/cosmetics/cosmetic-products/eye-cosmetic-safety"}
+};
+const LNK_EN = {fdaKohl:"FDA: Kohl and lead poisoning",fdaShelf:"FDA: Shelf life of cosmetics",fdaHenna:"FDA: Henna and “black henna”",fdaSafe:"FDA: Using cosmetics safely",patch:"Healthline: How to patch-test your skin",nhsDerm:"NHS: Causes of contact dermatitis",fdaEye:"FDA: Eye cosmetic safety and unapproved colour additives"};
+const lnk = k => LNK[k] ? `<a href="${h(LNK[k].u)}" target="_blank" rel="noopener noreferrer">${h(EN?LNK_EN[k]:LNK[k].n)}</a>` : "";
+const ST_UI = {g:"",skin:"",lv:"",kind:"",q:"",batch:1};
+const LV = {1:["سهل ## Easy"],2:["متوسط ## Medium"],3:["متقدم ## Advanced"]};
+const byId = id => REC.find(r=>r.id===id);
+const gname = g => P(GRP[g]);
+const num = v => { const s=(Math.round(v*100)/100).toString(); return s; };
+const qty = (n,u,f) => { let v=n*f; if(u==="drop") v=Math.max(1,Math.round(v)); return `${num(v)} ${P(UNITS[u].join(" ## "))}`; };
+const ingName = k => ING[k] ? P(ING[k].n) : P(k);
+const ingLine = (it,f) => `<li><b>${h(qty(it[0],it[1],f))}</b> ${h(ingName(it[2]))}${it[3]==="opt"?` <span class="mkc-opt">${T("اختياري","optional")}</span>`:""}</li>`;
+const stepText = s => ST[s] ? P(ST[s]) : P(String(s).replace(/^@/,""));
+const imgOf = k => IMGS[k];
+const S_ = (b,x="") => `<svg viewBox="0 0 120 90" aria-hidden="true" focusable="false" fill="none" stroke="var(--pine)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${b}${x}</svg>`;
+const ILLS = {
+ tube:c=>S_(`<rect x="46" y="14" width="28" height="62" rx="6" fill="var(--surface)"/><rect x="46" y="14" width="28" height="18" rx="6" fill="${c}" stroke="none"/><path d="M52 44h16M52 54h16" stroke="var(--copper)"/>`),
+ bullet:c=>S_(`<rect x="44" y="50" width="32" height="28" rx="5" fill="var(--surface)"/><rect x="48" y="40" width="24" height="10" fill="var(--sunk)"/><path d="M50 40V22c0-6 6-12 10-12s10 6 10 12v18z" fill="${c}"/>`),
+ gloss:c=>S_(`<rect x="50" y="46" width="20" height="34" rx="5" fill="${c}" fill-opacity=".35"/><rect x="54" y="26" width="12" height="20" fill="var(--surface)"/><path d="M60 26V12" stroke-width="5"/><ellipse cx="60" cy="10" rx="6" ry="4" fill="${c}"/>`),
+ jar:c=>S_(`<rect x="30" y="38" width="60" height="38" rx="8" fill="var(--surface)"/><rect x="28" y="26" width="64" height="14" rx="5" fill="${c}"/><path d="M42 54h36M46 64h28" stroke="var(--copper)" stroke-opacity=".7"/>`),
+ pencil:c=>S_(`<path d="M20 70L88 18l12 12-68 52z" fill="var(--surface)"/><path d="M20 70l-4 12 12-4z" fill="${c}"/><path d="M82 24l12 12" /><path d="M96 20l4 4"/>`),
+ palette:c=>S_(`<rect x="12" y="16" width="96" height="58" rx="8" fill="var(--surface)"/><rect x="20" y="24" width="24" height="18" rx="3" fill="${c}"/><rect x="48" y="24" width="24" height="18" rx="3" fill="var(--copper)" fill-opacity=".6"/><rect x="76" y="24" width="24" height="18" rx="3" fill="var(--pine)" fill-opacity=".35"/><rect x="20" y="48" width="24" height="18" rx="3" fill="var(--pine)" fill-opacity=".35"/><rect x="48" y="48" width="24" height="18" rx="3" fill="${c}" fill-opacity=".6"/><rect x="76" y="48" width="24" height="18" rx="3" fill="var(--copper)"/>`),
+ wand:c=>S_(`<rect x="52" y="44" width="16" height="38" rx="5" fill="var(--surface)"/><path d="M60 44V22" stroke-width="3"/><rect x="54" y="6" width="12" height="20" rx="5" fill="${c}"/><path d="M54 10h-5M54 15h-5M54 20h-5M66 10h5M66 15h5M66 20h5"/>`),
+ compact:c=>S_(`<circle cx="60" cy="48" r="34" fill="var(--surface)"/><circle cx="60" cy="48" r="24" fill="${c}" fill-opacity=".55"/><path d="M48 40c6-8 18-8 24 0" stroke="var(--surface)" stroke-width="3"/>`),
+ bottle:c=>S_(`<rect x="46" y="34" width="28" height="46" rx="8" fill="var(--surface)"/><rect x="52" y="22" width="16" height="12" fill="var(--sunk)"/><rect x="50" y="10" width="20" height="12" rx="3" fill="${c}"/><rect x="46" y="50" width="28" height="18" fill="${c}" fill-opacity=".35" stroke="none"/>`),
+ spray:c=>S_(`<rect x="44" y="36" width="32" height="44" rx="8" fill="var(--surface)"/><rect x="44" y="52" width="32" height="28" rx="8" fill="${c}" fill-opacity=".35" stroke="none"/><path d="M52 36V22h16v14M68 22h12"/><path d="M88 18l8-4M88 26h10M88 34l8 4" stroke="var(--copper)"/>`),
+ bowl:c=>S_(`<path d="M16 42h88c0 22-16 38-44 38S16 64 16 42z" fill="var(--surface)"/><ellipse cx="60" cy="42" rx="44" ry="8" fill="${c}"/><path d="M80 14l-10 22" stroke="var(--copper)" stroke-width="4"/>`),
+ cone:c=>S_(`<path d="M30 14l60 28-48 40z" fill="${c}" fill-opacity=".5"/><path d="M30 14l24 44" stroke="var(--copper)"/><path d="M82 52c8 2 14 8 16 16" stroke="var(--copper)"/>`),
+ dropper:c=>S_(`<rect x="44" y="38" width="32" height="42" rx="8" fill="var(--surface)"/><rect x="44" y="56" width="32" height="24" rx="8" fill="${c}" fill-opacity=".4" stroke="none"/><rect x="52" y="26" width="16" height="12" fill="var(--sunk)"/><path d="M60 26V14"/><ellipse cx="60" cy="12" rx="8" ry="6" fill="${c}"/>`),
+ pile:c=>S_(`<path d="M14 72c14-6 24-30 46-48 22 18 32 42 46 48z" fill="${c}" fill-opacity=".6"/><path d="M10 74h100" /><circle cx="30" cy="64" r="2" fill="var(--pine)" stroke="none"/><circle cx="88" cy="62" r="2" fill="var(--pine)" stroke="none"/>`),
+ leaf:c=>S_(`<path d="M60 80C40 60 38 34 60 10c22 24 20 50 0 70z" fill="${c}" fill-opacity=".5"/><path d="M60 80V22"/>`)
+};
+const ILLR = {lipbalm:["jar","#D9A441"],liptint:["jar","#B03060"],lipstick:["bullet","#B5233A"],lipgloss:["gloss","#D45A7A"],lipscrub:["jar","#E8C58A"],kohl:["pencil","#222"],shadow:["palette","#8A5A3C"],creamshadow:["jar","#8A5A3C"],mascara:["wand","#222"],browpow:["compact","#6B4A33"],browpom:["jar","#6B4A33"],browgel:["bottle","#C9B08A"],powder:["compact","#C99A73"],creamfound:["bottle","#C99A73"],concealer:["tube","#D8B08C"],setpow:["compact","#E8DCCB"],primer:["tube","#8CC9A8"],blush:["compact","#D86A7A"],creamblush:["jar","#D86A7A"],bronzer:["compact","#9A6A44"],glow:["compact","#F0D9A8"],remover:["bottle","#E0B84A"],cleanbalm:["jar","#E8C58A"],toner:["spray","#E8A0B0"],setspray:["spray","#A0C8D8"],oatmask:["bowl","#D8C49A"],claymask:["bowl","#D8D2C8"],henna:["cone","#8B4A2B"],nailoil:["dropper","#E0B84A"]};
+const ILLI = k => { const pw={beet:"#B0123F",arrow:"#F1EEE6",cocoa:"#5A3A26",kaolin:"#E8E2D6",charcoal:"#2A2A2A",zinc:"#F4F4F0",mica:"#E8D5A8",ricef:"#F1EEE6",sugar:"#F4EEDD",oats:"#D8C49A",flax:"#8A5A3C",henna:"#7A8A4A",lipbalm_base:"#D9A441"}; if(pw[k]) return ["pile",pw[k]]; if(["shea","cocoab","bwax","honey"].includes(k)) return ["jar",{shea:"#EADFB8",cocoab:"#E0C9A0",bwax:"#E8B84A",honey:"#D8962A"}[k]||"#D9A441"]; if(k==="aloe") return ["leaf","#6BAF7A"]; if(k==="tea") return ["bowl","#8A4A2A"]; return ["bottle",{jojoba:"#E0C060",castor:"#D8B050",almond:"#E8C878",sunfl:"#EAC830",vite:"#E8A850",glyc:"#C8E0E8",rosew:"#F0A0B8"}[k]||"#E0B84A"]; };
+const illOf = it => { if(!it) return ""; const f=ILLS[it[0]]; return f?`<span class="mkc-ill">${f(it[1])}</span>`:""; };
+const imgTag = (k,alt,cls,it) => { const m=imgOf(k); return illOf(it)+(m?`<img src="mk/${h(m.f)}" alt="${h(alt)}" loading="lazy" decoding="async"${cls?` class="${cls}"`:""} onerror="this.remove()">`:""); };
+const credit = k => { const m=imgOf(k); if(!m) return ""; return `<figcaption>${T("الصورة","Photo")}: ${h(m.by||T("مجهول","unknown"))} · <a href="${h(m.u)}" target="_blank" rel="noopener noreferrer">${h(m.lic)}</a></figcaption>`; };
+const hay = r => both(r.n+" "+r.d+" "+GRP[r.g]+" "+r.ing.map(i=>ING[i[2]]?ING[i[2]].n:i[2]).join(" "));
+const filtered = () => REC.filter(r=>(!ST_UI.g||r.g===ST_UI.g)&&(!ST_UI.skin||r.skin.includes("all")||r.skin.includes(ST_UI.skin))&&(!ST_UI.lv||r.lv===+ST_UI.lv)&&(!ST_UI.kind||r.kind===ST_UI.kind)&&(!ST_UI.q||(typeof matchQ==="function"?matchQ(hay(r),ST_UI.q):both(hay(r)).toLowerCase().includes(ST_UI.q.toLowerCase()))));
+const lvDots = n => `<span class="mkc-lv" title="${h(P(LV[n][0]))}" aria-label="${h(P(LV[n][0]))}">${[1,2,3].map(i=>`<i class="${i<=n?"on":""}"></i>`).join("")}</span>`;
+const kindTag = r => r.kind==="dry" ? `<span class="tag mkc-dry">${T("خالٍ من الماء","Water-free")}</span>` : `<span class="tag mkc-wet">${T("يحتوي ماءً","Contains water")}</span>`;
+const mins = m => m>=60?T(`${num(m/60)} ساعة`,`${num(m/60)} h`):T(`${m} دقيقة`,`${m} min`);
+const disclaimer = () => `<div class="disclaimer"><b>${T("للاستعمال الشخصي وللمعلومة التثقيفية.","For personal use and education.")}</b> ${T("«طبيعي» لا يعني «آمن» ولا «معقّم». المنتجات المنزلية لا تُختبر ولا تُحفظ كالمنتجات التجارية، ولذلك اختبري أي وصفة على الجلد أولاً، وكوني أشدّ حذراً مع كل ما يلامس العين. محتوى هذا القسم بانتظار مراجعة صيدلانية وجلدية متخصصة.","“Natural” does not mean “safe” or “sterile”. Home-made products are not tested or preserved like commercial ones, so patch-test every recipe and take extra care with anything near the eyes. This section's content awaits specialist pharmacy and dermatology review.")} ${lnk("fdaSafe")}</div>`;
+
+// ---------- بطاقة ----------
+const card = r => `<a class="mkc-card" href="#mkcat" data-mkc-open="${h(r.id)}" role="button" aria-label="${h(P(r.n))}">
+ <figure class="mkc-fig">${imgTag(r.img,P(r.n),"",ILLR[r.id])}${r.risk===3?`<span class="mkc-badge">${T("منتج عين: حذر خاص","Eye product: extra care")}</span>`:""}</figure>
+ <div class="mkc-body"><span class="tag tp">${h(gname(r.g))}</span><h3>${h(P(r.n))}</h3><p>${h(P(r.d))}</p>
+ <div class="mkc-meta"><span>⏱ ${h(mins(r.min))}</span>${lvDots(r.lv)}${kindTag(r)}</div></div></a>`;
+const drawGrid = () => { const g=q("#mkcGrid"); if(!g) return; const l=filtered(); g.innerHTML = l.length?l.map(card).join(""):`<p class="muted">${T("لا توجد وصفات مطابقة. غيّري الفلاتر أو كلمة البحث.","No matching recipes. Change the filters or search.")}</p>`; const c=q("#mkcCount"); if(c) c.textContent=T(`${l.length} من ${REC.length} وصفة`,`${l.length} of ${REC.length} recipes`); qa("[data-mkc-g]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.mkcG===ST_UI.g)); };
+const opt = (cur,list) => list.map(([v,n])=>`<option value="${h(v)}"${String(cur)===String(v)?" selected":""}>${h(n)}</option>`).join("");
+
+// ---------- الواجهة الرئيسية ----------
+const basics = () => {
+ const rules = [
+  T("اغسلي يديك، واربطي شعرك، وابدئي من سطح نظيف جاف.","Wash your hands, tie your hair back and start on a clean, dry surface."),
+  T("عقّمي كل الأدوات والعبوات بالكحول الطبي 70% واتركيها تجف قبل الاستعمال.","Sanitise all tools and containers with 70% medical alcohol and let them dry before use."),
+  T("زني المكونات بميزان دقيق ولا تعتمدي على الملاعق إلا حيث تُذكر.","Weigh ingredients on a precision scale; use spoons only where a recipe says so."),
+  T("اكتبي على كل عبوة اسم المنتج وتاريخ التحضير وتاريخ التخلص.","Label every container with the product, the date made and the discard date."),
+  T("ابدئي بدفعة صغيرة، فالكمية الكبيرة تفسد قبل أن تنتهي.","Start with a small batch: a big one spoils before you finish it."),
+  T("لا تشاركي المنتج مع أحد، ولا تغمسي أصابعك فيه، واستعملي أعواداً أو ملاعق نظيفة.","Never share a product or dip fingers into it; use clean applicators or spoons."),
+  T("تخلّصي منه عند أي تغيّر في اللون أو الرائحة أو القوام أو ظهور بقع أو خيوط.","Discard it at any change of colour, smell or texture, or if spots or threads appear.")
+ ];
+ const pt = [
+  T("اغسلي باطن الساعد بصابون لطيف وجففيه.","Wash the inside of the forearm with mild soap and dry it."),
+  T("ضعي كمية بحجم حبة العدس من المنتج على مساحة 2 سم.","Apply a lentil-sized amount to a 2 cm patch."),
+  T("اتركيه 24 ساعة دون غسل ثم راقبي الاحمرار والحكة والتورم والحويصلات.","Leave it 24 hours without washing and watch for redness, itch, swelling or blisters."),
+  T("إن لم تظهر أعراض فكرري الوضع على المكان نفسه يومين إلى ثلاثة أيام، ثم جرّبيه على الوجه تدريجياً.","If nothing appears, repeat on the same spot for two to three days, then introduce it to the face gradually."),
+  T("عند أي تفاعل اغسلي المكان بماء فاتر، وتوقفي نهائياً، واستشيري الطبيب إن لم يزل خلال يوم أو اشتد.","At any reaction rinse with lukewarm water, stop for good, and see a doctor if it does not clear in a day or worsens.")
+ ];
+ const avoid = [
+  T("مستحضرات العين: ممنوعة مع العدسات اللاصقة، أو التهاب العين، أو بعد جراحة العين، ولضعيفي المناعة، وللأطفال الصغار.","Eye products: not with contact lenses, an eye infection, recent eye surgery, weak immunity, or for small children."),
+  T("أصحاب حساسية المكسرات أو العسل أو منتجات النحل أو الجلوتين: راجعي المكونات وبدائلها في كل وصفة.","Nut, honey, bee-product or gluten allergy: check each recipe's ingredients and substitutes."),
+  T("حالات الأكزيما والصدفية والوردية وحب الشباب الملتهب: استشيري طبيب الجلدية قبل أي منتج جديد.","Eczema, psoriasis, rosacea or inflamed acne: ask a dermatologist before any new product."),
+  T("نقص إنزيم G6PD: لا حناء إطلاقاً، وخصوصاً للأطفال.","G6PD deficiency: no henna at all, especially for children.")
+ ];
+ const sell = T("هذا الكتالوج لصناعة المنتجات للاستعمال الشخصي. بيع مستحضرات التجميل يحتاج تسجيلاً لدى هيئة الدواء أو الغذاء المختصة في بلدك، وتصنيعاً وفق ممارسات التصنيع الجيدة، واختبارات ثبات وسلامة ومقاومة الميكروبات، ومواد حافظة معتمدة. وصفات هذه الصفحة لا تكفي لذلك.","This catalogue is for making products for personal use. Selling cosmetics requires registration with your national drug or food authority, good manufacturing practice, stability, safety and microbial-challenge testing, and approved preservatives. The recipes here are not enough for that.");
+ const dry = T("خالٍ من الماء","Water-free"), wet = T("يحتوي ماءً","Contains water");
+ return `<section class="mkc-sec"><h2>${T("قبل أن تبدئي","Before you start")}</h2>
+ <div class="mkc-acc">
+ <details open><summary>${T("القواعد الذهبية للتصنيع النظيف","Golden rules of clean making")}</summary><ul>${rules.map(x=>`<li>${h(x)}</li>`).join("")}</ul></details>
+ <details><summary>${T("الماء هو العدو: لماذا تختلف مدة الحفظ؟","Water is the enemy: why shelf life differs")}</summary>
+  <div class="table-wrap"><table class="stack"><thead><tr><th></th><th>${dry}</th><th>${wet}</th></tr></thead><tbody>
+  <tr><td data-l="">${T("أمثلة","Examples")}</td><td data-l="${dry}">${T("مرطّب الشفاه، أحمر الشفاه، البودرة، كريم الأساس","Lip balm, lipstick, powders, foundation cream")}</td><td data-l="${wet}">${T("المنعش بماء الورد، جل الحواجب، الأقنعة، البرايمر","Rose toner, brow gel, masks, primer")}</td></tr>
+  <tr><td data-l="">${T("مدة الحفظ","Shelf life")}</td><td data-l="${dry}">${T("من 3 أشهر إلى سنة","3 months to a year")}</td><td data-l="${wet}">${T("من يوم إلى أسبوعين في الثلاجة","A day to two weeks in the fridge")}</td></tr>
+  <tr><td data-l="">${T("الخطر","Risk")}</td><td data-l="${dry}">${T("تزنخ الزيوت وتلوث الأصابع","Oil rancidity and finger contamination")}</td><td data-l="${wet}">${T("نمو البكتيريا والعفن بسرعة","Fast growth of bacteria and mould")}</td></tr>
+  </tbody></table></div>
+  <p class="small muted">${T("فيتامين E يبطئ تزنخ الزيت فقط، ولا يقتل الجراثيم. لا تضيفي ماءً إلى منتج زيتي، ولا تحفظي منتجاً مائياً بلا ثلاجة.","Vitamin E only slows oil rancidity; it does not kill microbes. Never add water to an oily product and never keep a water-based one unchilled.")} ${lnk("fdaShelf")}</p></details>
+ <details><summary>${T("اختبار الحساسية خطوة بخطوة","Patch test, step by step")}</summary><ol>${pt.map(x=>`<li>${h(x)}</li>`).join("")}</ol><p class="small muted">${lnk("patch")} · ${lnk("nhsDerm")}</p></details>
+ <details><summary>${T("من يتجنب المنتجات المنزلية؟","Who should avoid home-made products?")}</summary><ul>${avoid.map(x=>`<li>${h(x)}</li>`).join("")}</ul></details>
+ <details><summary>${T("ما الذي لا نقدّمه عمداً؟","What we deliberately leave out")}</summary><ul>
+  <li>${T("الكحل المصنوع من السناج أو اللوز المحروق، والكحل التقليدي مجهول المصدر: قد يحتوي الرصاص.","Kohl made from soot or burnt almonds, and untraced traditional kohl: it can contain lead.")} ${lnk("fdaKohl")}</li>
+  <li>${T("الحناء السوداء الجاهزة: قد تحتوي PPD المسبب لحساسية شديدة.","Ready-made black henna: may contain PPD, a severe allergen.")} ${lnk("fdaHenna")}</li>
+  <li>${T("القرفة والقرنفل والنعناع القوي لتضخيم الشفاه، وصودا الخبز، والليمون، والزيوت العطرية غير المخففة.","Cinnamon, clove and strong mint “plumpers”, baking soda, lemon and undiluted essential oils.")}</li>
+  <li>${T("أي وصفة تضع طعاماً أو بيضاً أو حليباً طازجاً داخل العين أو قريباً منها.","Any recipe that puts fresh food, egg or milk in or near the eye.")}</li></ul></details>
+ <details><summary>${T("هل يمكن بيع هذه المنتجات؟","Can these products be sold?")}</summary><p>${h(sell)}</p></details>
+ </div></section>`;
+};
+const ingredientsSec = () => {
+ const keys = Object.keys(ING).filter(k=>!ING[k].hide);
+ return `<section class="mkc-sec" id="mkcIngSec"><h2>${T("المكونات: ماذا تشتري ومن أين","Ingredients: what to buy")} <span class="muted small">(${keys.length})</span></h2>
+ <p class="muted">${T("لكل مكوّن صورته وملاحظة الجودة وبديله وتنبيه الحساسية، والوصفات التي يدخل فيها.","Each ingredient shows its photo, a quality note, a substitute, an allergy flag and the recipes that use it.")}</p>
+ <div class="mkc-ings">${keys.map(k=>{ const x=ING[k], used=REC.filter(r=>r.ing.some(i=>i[2]===k)); return `<details class="mkc-ing"><summary><span class="mkc-ithumb">${imgTag(x.img,P(x.n),"",ILLI(k))}</span><span>${h(P(x.n))}</span></summary>
+ <figure class="mkc-fig sm">${imgTag(x.img,P(x.n),"",ILLI(k))}${credit(x.img)}</figure>
+ <p>${h(P(x.note))}</p>${x.sub&&x.sub!=="—"?`<p><b>${T("البديل","Substitute")}:</b> ${h(P(x.sub))}</p>`:""}${x.alg?`<p class="mkc-alg"><b>${T("تنبيه","Caution")}:</b> ${h(P(x.alg))}</p>`:""}
+ <p class="small muted">${T("تدخل في","Used in")}: ${used.map(r=>`<a href="#mkcat" data-mkc-open="${h(r.id)}">${h(P(r.n))}</a>`).join(" · ")||"—"}</p></details>`; }).join("")}</div></section>`;
+};
+const creditsSec = () => { const ks=Object.keys(IMGS); return `<section class="mkc-sec"><details class="mkc-credits"><summary><b>${T("مصادر الصور وتراخيصها","Image sources and licences")}</b> <span class="muted small">(${ks.length})</span></summary><p class="small muted">${T("كل الصور من ويكيميديا كومنز أو Flickr عبر Openverse بتراخيص Creative Commons تسمح بإعادة الاستخدام مع نسب العمل إلى أصحابه، وهي موثقة هنا. وأي تعديل عليها يقتصر على تغيير الحجم والضغط.","All photos come from Wikimedia Commons or Flickr through Openverse under Creative Commons licences that allow reuse with attribution, documented here. Edits are limited to resizing and compression.")}</p>
+ <ul class="small">${ks.map(k=>{const m=IMGS[k];return `<li><b>${h(k)}</b>: ${h(m.t||"")} · ${h(m.by||"")} · <a href="${h(m.u)}" target="_blank" rel="noopener noreferrer">${h(m.lic)}</a></li>`}).join("")}</ul></details></section>`; };
+
+R.mkcat = () => {
+ const chips = [["",T("الكل","All")], ...Object.keys(GRP).map(k=>[k,gname(k)+" ("+REC.filter(r=>r.g===k).length+")"])];
+ return `<div class="view-head"><h1>${T("كتالوج تصنيع المكياج الطبيعي","Natural makeup making catalogue")}</h1><p>${T(`${REC.length} وصفة لصناعة المكياج والعناية في البيت، لكل منها صورة ومقادير بالجرام وأدوات وخطوات ومدة حفظ وتنبيهات سلامة، مع دليل المكونات. وتُطبع كل وصفة أو تُنزّل.`,`${REC.length} recipes to make makeup and skincare at home, each with a photo, gram quantities, tools, steps, shelf life and safety notes, plus an ingredient guide. Print or download any recipe.`)}</p></div>
+${typeof mkNav==="function"?mkNav("mkcat"):""}
+${disclaimer()}
+<div class="mkc-hero"><div class="mkc-tools"><div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="mkcQ" value="${h(ST_UI.q)}" placeholder="${h(T("ابحثي: أحمر شفاه، كحل، شمندر، حناء…","Search: lipstick, kohl, beetroot, henna…"))}" aria-label="${h(T("بحث في الكتالوج","Search the catalogue"))}"></div>
+ <label class="mkc-sel">${T("نوع البشرة","Skin type")}<select id="mkcSkin">${opt(ST_UI.skin,[["",T("كل الأنواع","All types")],...Object.keys(SKINS).map(k=>[k,P(SKINS[k])])])}</select></label>
+ <label class="mkc-sel">${T("الصعوبة","Difficulty")}<select id="mkcLv">${opt(ST_UI.lv,[["",T("الكل","All")],[1,P(LV[1][0])],[2,P(LV[2][0])],[3,P(LV[3][0])]])}</select></label>
+ <label class="mkc-sel">${T("الحفظ","Storage")}<select id="mkcKind">${opt(ST_UI.kind,[["",T("الكل","All")],["dry",T("خالٍ من الماء (يدوم أطول)","Water-free (lasts longer)")],["wet",T("يحتوي ماءً (قصير)","Contains water (short)")]])}</select></label></div>
+ <nav class="mkc-chips" aria-label="${h(T("تصفية حسب الفئة","Filter by category"))}">${chips.map(([k,n])=>`<button type="button" class="chip" data-mkc-g="${h(k)}" aria-pressed="${k===ST_UI.g}">${h(n)}</button>`).join("")}</nav>
+ <div class="mkc-bar"><span id="mkcCount" class="muted small"></span><span class="mkc-acts"><button type="button" class="btn ghost" data-mkc-printall>${T("طباعة الكتالوج كاملاً","Print the whole catalogue")}</button><button type="button" class="btn ghost" data-mkc-dlall>${T("تنزيل الكتالوج (نص)","Download catalogue (text)")}</button></span></div></div>
+<div class="mkc-grid" id="mkcGrid"></div>
+${basics()}${ingredientsSec()}${creditsSec()}
+<p class="small muted">${T("المراجع العامة","General references")}: ${lnk("fdaSafe")} · ${lnk("fdaEye")} · ${lnk("fdaShelf")}</p>`;
+};
+
+// ---------- الوصفة ----------
+const recHTML = (r,f,forPrint) => {
+ const warnBox = r.risk===3
+  ? `<div class="mkc-warn red"><b>${T("منتج للعين: احتياطات إلزامية","Eye product: mandatory precautions")}</b><p>${h(P(r.warn))}</p></div>`
+  : `<div class="mkc-warn"><b>${T("تنبيه","Caution")}</b><p>${h(P(r.warn))}</p></div>`;
+ const storage = r.kind==="dry" ? T("في علبة محكمة الإغلاق بعيداً عن الحرارة وضوء الشمس، ولا تُدخلي أصابع مبللة.","In an airtight container away from heat and sunlight; never dip wet fingers.") : T("في الثلاجة داخل عبوة معقّمة محكمة الإغلاق، ويُتخلّص منه عند أول تغيّر.","In the fridge in a sanitised, sealed container; discard at the first change.");
+ return `<article class="mkc-det"><figure class="mkc-fig big">${imgTag(r.img,P(r.n),"",ILLR[r.id])}${credit(r.img)}</figure>
+ <h2>${h(P(r.n))}</h2><p class="lead">${h(P(r.d))}</p>
+ <div class="mkc-facts"><span class="tag tp">${h(gname(r.g))}</span><span class="tag">⏱ ${h(mins(r.min))}</span><span class="tag">${h(P(LV[r.lv][0]))}</span>${kindTag(r)}<span class="tag">${T("الناتج","Yield")}: ${h(P(r.y))}</span></div>
+ ${forPrint?"":`<div class="mkc-actions"><button type="button" class="btn" data-mkc-print>${T("طباعة","Print")}</button><button type="button" class="btn ghost" data-mkc-dl>${T("تنزيل","Download")}</button><button type="button" class="btn ghost" data-mkc-link>${T("نسخ الرابط","Copy link")}</button></div>`}
+ ${warnBox}
+ <h3>${T("المقادير","Ingredients")}</h3>
+ ${forPrint?"":`<div class="mkc-batch" role="group" aria-label="${h(T("مضاعفة الكمية","Scale the batch"))}"><span>${T("الدفعة","Batch")}:</span>${[1,2,3,5].map(n=>`<button type="button" class="chip" data-mkc-batch="${n}" aria-pressed="${n===f}">×${n}</button>`).join("")}</div>`}
+ <ul class="mkc-ul" id="mkcIng">${r.ing.map(i=>ingLine(i,f)).join("")}</ul>
+ <h3>${T("الأدوات","Tools")}</h3><ul class="mkc-ul">${r.tools.map(t=>`<li>${h(P(TL[t]||t))}</li>`).join("")}</ul>
+ <h3>${T("الخطوات","Steps")}</h3><ol class="mkc-ol">${r.steps.map(s=>`<li>${h(stepText(s))}</li>`).join("")}</ol>
+ ${r.shade?`<h3>${T("درجات اللون","Shades")}</h3><div class="table-wrap"><table class="stack"><thead><tr><th>${T("الدرجة","Shade")}</th><th>${T("التركيب","Mix")}</th></tr></thead><tbody>${r.shade.map(s=>`<tr><td data-l="${h(T("الدرجة","Shade"))}"><b>${h(P(s[0]))}</b></td><td data-l="${h(T("التركيب","Mix"))}">${h(P(s[1]))}</td></tr>`).join("")}</tbody></table></div>`:""}
+ <h3>${T("الحفظ والصلاحية","Storage and shelf life")}</h3><p><b>${T("مدة الحفظ","Shelf life")}:</b> ${h(P(r.keep))}<br>${h(storage)}</p>
+ <p class="mkc-tip"><b>${T("نصيحة","Tip")}:</b> ${h(P(r.tip))}</p>
+ <p class="small muted"><b>${T("تناسب البشرة","Skin types")}:</b> ${r.skin.includes("all")?h(T("كل الأنواع","All types")):r.skin.map(s=>h(P(SKINS[s]))).join("، ")} · ${T("اختبري على الجلد أولاً: ","Patch-test first: ")}${lnk("patch")}</p>
+ ${r.src?`<p class="small muted">${T("المراجع","References")}: ${r.src.map(lnk).join(" · ")}</p>`:""}</article>`;
+};
+const recText = (r,f) => {
+ const L=[]; L.push(P(r.n)); L.push("="+"=".repeat(Math.min(40,P(r.n).length))); L.push(P(r.d)); L.push("");
+ L.push(T("المقادير","Ingredients")+":"); r.ing.forEach(i=>L.push(`- ${qty(i[0],i[1],f)} ${ingName(i[2])}${i[3]==="opt"?" ("+T("اختياري","optional")+")":""}`));
+ L.push(""); L.push(T("الأدوات","Tools")+":"); r.tools.forEach(t=>L.push("- "+P(TL[t]||t)));
+ L.push(""); L.push(T("الخطوات","Steps")+":"); r.steps.forEach((s,i)=>L.push(`${i+1}. ${stepText(s)}`));
+ if(r.shade){ L.push(""); L.push(T("درجات اللون","Shades")+":"); r.shade.forEach(s=>L.push(`- ${P(s[0])}: ${P(s[1])}`)); }
+ L.push(""); L.push(T("مدة الحفظ","Shelf life")+": "+P(r.keep)); L.push(T("نصيحة","Tip")+": "+P(r.tip)); L.push(T("تنبيه","Caution")+": "+P(r.warn));
+ L.push(""); L.push(T("الطيبات — معلومات تثقيفية للاستعمال الشخصي، ولا تغني عن استشارة مختص. اختبري المنتج على الجلد أولاً.","Al-Tayyibat — educational information for personal use; not a substitute for professional advice. Patch-test first."));
+ return L.join("\n");
+};
+const saveFile = (name,text) => { try{ const b=new Blob(["﻿"+text],{type:"text/plain;charset=utf-8"}); const a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove()},500); }catch(e){} };
+const note = m => { if(typeof toast==="function") toast(m); };
+let cur = null;
+function openRec(id){ const r=byId(id); if(!r||typeof openDrawer!=="function") return; cur={r,f:1}; openDrawer(`<div class="mkc-wrap" data-mkc-id="${h(id)}">${recHTML(r,1,false)}
+</div>`); }
+function printHTML(html){ const old=q("#mkcPrint"); if(old) old.remove(); const d=document.createElement("div"); d.id="mkcPrint"; d.innerHTML=html; document.body.appendChild(d); document.body.classList.add("mkc-printing");
+ const imgs=qa("img",d); const ready=Promise.race([Promise.all(imgs.map(i=>i.complete?1:new Promise(r=>{i.onload=i.onerror=r}))),new Promise(r=>setTimeout(r,2500))]);
+ const done=()=>{ document.body.classList.remove("mkc-printing"); d.remove(); window.removeEventListener("afterprint",done); };
+ window.addEventListener("afterprint",done); ready.then(()=>{ try{ window.print(); }catch(e){} setTimeout(()=>{ if(q("#mkcPrint")) done(); },60000); }); }
+const printHead = () => `<header class="mkc-ph"><b>${T("الطيبات — كتالوج المكياج الطبيعي","Al-Tayyibat — Natural makeup catalogue")}</b><span>${T("للاستعمال الشخصي. اختبري على الجلد أولاً.","Personal use. Patch-test first.")}</span></header>`;
+document.addEventListener("click",e=>{
+ const o=e.target.closest("[data-mkc-open]"); if(o){ e.preventDefault(); openRec(o.dataset.mkcOpen); return; }
+ const g=e.target.closest("[data-mkc-g]"); if(g&&q("#mkcGrid")){ ST_UI.g=g.dataset.mkcG; drawGrid(); return; }
+ const b=e.target.closest("[data-mkc-batch]"); if(b&&cur){ cur.f=+b.dataset.mkcBatch; const ul=q("#mkcIng"); if(ul) ul.innerHTML=cur.r.ing.map(i=>ingLine(i,cur.f)).join(""); qa("[data-mkc-batch]").forEach(x=>x.setAttribute("aria-pressed",+x.dataset.mkcBatch===cur.f)); return; }
+ if(e.target.closest("[data-mkc-print]")&&cur){ printHTML(printHead()+recHTML(cur.r,cur.f,true)); return; }
+ if(e.target.closest("[data-mkc-dl]")&&cur){ saveFile(`altayyibat-${cur.r.id}-${EN?"en":"ar"}.txt`,recText(cur.r,cur.f)); return; }
+ if(e.target.closest("[data-mkc-link]")&&cur){ const u=location.origin+location.pathname+"#mkcat"; try{ sessionStorage.setItem("ty_mkc_go",cur.r.id); }catch{} (navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>note(T("تم نسخ رابط الكتالوج","Catalogue link copied")),()=>note(u)); return; }
+ if(e.target.closest("[data-mkc-printall]")){ printHTML(printHead()+REC.map(r=>`<section class="mkc-pg">${recHTML(r,1,true)}</section>`).join("")); return; }
+ if(e.target.closest("[data-mkc-dlall]")){ saveFile(`altayyibat-natural-makeup-catalogue-${EN?"en":"ar"}.txt`,REC.map(r=>recText(r,1)).join("\n\n"+"-".repeat(40)+"\n\n")); return; }
+});
+AFTER.mkcat = () => {
+ const sec=q('#main section[data-view="mkcat"]'); if(!sec) return;
+ drawGrid();
+ sec.addEventListener("input",e=>{ if(e.target.id==="mkcQ"){ ST_UI.q=e.target.value.trim(); drawGrid(); } });
+ sec.addEventListener("change",e=>{ const t=e.target; if(t.id==="mkcSkin") ST_UI.skin=t.value; else if(t.id==="mkcLv") ST_UI.lv=t.value; else if(t.id==="mkcKind") ST_UI.kind=t.value; else return; drawGrid(); });
+ let go=null; try{ go=sessionStorage.getItem("ty_mkc_go"); sessionStorage.removeItem("ty_mkc_go"); }catch{}
+ if(go&&byId(go)) openRec(go);
+};
+
+// ---------- ربط بصفحة «المكياج الطبيعي» ----------
+if(typeof R.mknatural==="function"){ const _m=R.mknatural; R.mknatural=()=>{ const html=_m(); const first=REC.find(r=>r.id==="lipstick");
+ const ban=`<a class="mkc-banner" href="#mkcat"><span class="mkc-bthumb">${imgTag("lipstick","","",ILLR.lipstick)}</span><span><b>${T("جديد: كتالوج تصنيع المكياج الطبيعي","New: the natural makeup making catalogue")}</b><br><span class="muted">${T(`${REC.length} وصفة بالصور والمقادير والخطوات: أحمر شفاه، كحل، أحمر خدود، أساس، ماسكارا والمزيد.`,`${REC.length} recipes with photos, quantities and steps: lipstick, kohl, blush, foundation, mascara and more.`)}</span></span><span class="btn">${T("تصفّحي الكتالوج","Browse")}</span></a>`;
+ const i=html.indexOf("</nav>"); return i>0?html.slice(0,i+6)+ban+html.slice(i+6):ban+html; }; }
+
+// ---------- التسجيل في التنقل ----------
+if(!VIEWS.some(v=>v[0]==="mkcat")){ const i=VIEWS.findIndex(v=>v[0]==="mknatural"); VIEWS.splice(i>=0?i+1:VIEWS.length,0,["mkcat",T("كتالوج تصنيع المكياج","Makeup making catalogue")]); }
+window.TY_NAV_META = Object.assign(window.TY_NAV_META||{}, {mkcat:{g:"beauty",d:[`${REC.length} وصفة مصورة لصناعة المكياج والعناية في البيت بالمقادير والخطوات، مع دليل المكونات وطباعة وتنزيل`,`${REC.length} illustrated recipes to make makeup and skincare at home, with quantities, steps, an ingredient guide, print and download`]}});
+window.TY_MKC = {REC,ING,IMGS,GRP};
+if(typeof renderRail==="function") renderRail();
+if((location.hash==="#mkcat"||location.hash==="#mknatural") && typeof go==="function") go();
 })();
 </script><script src="pwa-install.js" defer></script>
 

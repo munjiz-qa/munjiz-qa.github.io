@@ -16,4 +16,8 @@
   document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-install]');if(!b||!deferred)return;
     deferred.prompt();deferred.userChoice.finally(function(){deferred=null;sync()})});
   document.addEventListener('DOMContentLoaded',sync);
+  // روابط «ثبّت التطبيق» في القائمة والتذييل: تفتح نافذة التثبيت مباشرة إن كانت متاحة، وإلا تنتقل إلى صفحة الشرح
+  document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('[data-pwi-open]');if(!a)return;
+    var pill=document.querySelector('.pwi-pill');if(pill){e.preventDefault();pill.click();return}
+    if(deferred){e.preventDefault();deferred.prompt();deferred.userChoice.finally(function(){deferred=null;sync()})}});
 })();
