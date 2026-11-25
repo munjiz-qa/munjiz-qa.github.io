@@ -221,6 +221,34 @@ input[type=checkbox]{width:20px!important;height:20px;accent-color:var(--acc)}
   .tbl.cards td::before{content:none!important}
   .tbl{overflow:visible;border:1px solid #ccc}
 }
+/* إدارة المحتوى */
+.sec{font-size:22px;margin:34px 0 14px}
+.blk+.blk{margin-top:16px}
+#view>.blk:first-child>.sec:first-child,.page-h+.blk>.sec:first-child{margin-top:8px}
+.hero .art img{display:block;max-width:100%;max-height:340px;border-radius:22px;object-fit:cover}
+.cimg{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px;margin-bottom:10px;display:block}
+figure.fig{margin:0}figure.fig img{width:100%;max-height:520px;object-fit:cover;border-radius:14px;display:block}figure.fig figcaption{color:var(--muted);font-size:14px;margin-top:6px;text-align:center}
+.ptext p+p{margin-top:8px}.card p.sub+p.sub,.card .sub+.clean{margin-top:8px}
+.annc{margin:14px 0 4px}.note.ok{background:var(--ok-soft)}
+.cms-edit{margin-top:18px;text-align:center}
+.cms-bar{margin-bottom:16px}.cms-bar .seg{gap:6px;overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px}
+.slist{display:flex;flex-direction:column;gap:8px}
+.srow{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:10px 12px;min-width:0}
+.srow.off{opacity:.62}
+.srow .hd{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.srow .ttl{flex:1 1 220px;min-width:0;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}
+.srow .ttl b{overflow-wrap:anywhere;flex-basis:100%}.srow .ttl small{color:var(--muted);font-size:13px;overflow-wrap:anywhere}
+.srow .acts{display:flex;gap:6px;flex-wrap:wrap}.srow .ic{min-width:36px;padding:4px 8px}
+.srow .thumb{width:40px;height:30px;object-fit:cover;border-radius:6px}
+.dh{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;width:34px;height:34px;display:grid;place-items:center;border-radius:8px;color:var(--muted);flex:none;border:1px dashed var(--line)}
+.dh:hover{background:var(--acc-soft);color:var(--acc)}
+.srow.drag{outline:2px solid var(--acc);box-shadow:0 10px 28px rgba(0,0,0,.18);position:relative;z-index:5}
+body.dragging,body.dragging *{cursor:grabbing!important;user-select:none}
+.sub-list{margin-top:10px;padding-inline-start:12px;border-inline-start:3px solid var(--acc-soft)}
+.typegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}.typegrid .btn{white-space:normal;justify-content:flex-start;text-align:start}
+.imgp{max-width:100%;max-height:150px;border-radius:10px;margin-top:8px;display:block}.imgf .row{margin-top:6px}
+label.chk{display:flex;gap:8px;align-items:center}label.chk input{width:auto;min-height:0}
+@media (max-width:640px){.srow .acts{width:100%}.srow .acts .btn{flex:1 0 auto}}
 </style>
 </head>
 <body>
@@ -306,7 +334,7 @@ const MSGST={new:['جديدة','warn'],replied:['تم الرد','ok'],closed:['�
 const covered=pl=>pl.status==='active'&&new Date(pl.paidThrough)>=new Date();
 function normDb(){['policies','claims','msgs','fundOut','notes'].forEach(k=>{if(!Array.isArray(db[k]))db[k]=[]});
   if(db.funds.takaful==null)db.funds.takaful=0;if(db.funds.takafulFee==null)db.funds.takafulFee=0;if(db.settings.takafulFee==null)db.settings.takafulFee=20;
-  db.reqs.forEach(r=>{if(!r.owned&&r.offered&&['sale','lease'].includes(PRODUCTS[r.product].kind))r.owned=r.offered})}
+  db.reqs.forEach(r=>{if(!r.owned&&r.offered&&['sale','lease'].includes(PRODUCTS[r.product].kind))r.owned=r.offered});syncSiteFromDb()}
 function contribute(u,pl){const P_=PLANS[pl.plan];need(avail(u)>=P_.fee,`يلزم ${money(P_.fee)} في الحساب الجاري.`);
   addTx(u,'current',-P_.fee,'takaful',`اشتراك ${P_.name} · ${pl.id}`);const w=r2(P_.fee*db.settings.takafulFee/100);
   db.funds.takaful=r2(db.funds.takaful+P_.fee-w);db.funds.takafulFee=r2(db.funds.takafulFee+w);
@@ -402,8 +430,9 @@ const avail=u=>r2(u.bal.current-pendingWithdraw(u));
 /* ---------- routes ---------- */
 const PTABS=[['#/','الرئيسية'],['#/p/accounts','الحسابات والاستثمار'],['#/p/finance','التمويل'],['#/p/takaful','التكافل'],['#/p/zakat','الزكاة والخير'],['#/p/sharia','الضوابط الشرعية'],['#/p/about','عن بركات'],['#/p/faq','الأسئلة الشائعة'],['#/p/contact','تواصل معنا']];
 const CTABS=[['#/c/home','الرئيسية'],['#/c/accounts','حساباتي'],['#/c/transfer','التحويل'],['#/c/cash','الإيداع والسحب'],['#/c/finance','التمويل'],['#/c/invest','الاستثمار'],['#/c/takaful','التكافل'],['#/c/zakat','الزكاة والخير'],['#/c/help','المساعدة','help'],['#/c/profile','ملفي']];
-const ATABS=[['#/a/home','لوحة التحكم'],['#/a/requests','طلبات التمويل','reqs'],['#/a/cash','الإيداع والسحب','cash'],['#/a/users','العملاء','users'],['#/a/profit','توزيع الأرباح'],['#/a/takaful','التكافل','claims'],['#/a/funds','الزكاة والصناديق'],['#/a/messages','الرسائل','msgs'],['#/a/reports','التقارير'],['#/a/settings','الإعدادات'],['#/a/log','سجل العمليات']];
+const ATABS=[['#/a/home','لوحة التحكم'],['#/a/requests','طلبات التمويل','reqs'],['#/a/cash','الإيداع والسحب','cash'],['#/a/users','العملاء','users'],['#/a/profit','توزيع الأرباح'],['#/a/takaful','التكافل','claims'],['#/a/funds','الزكاة والصناديق'],['#/a/messages','الرسائل','msgs'],['#/a/reports','التقارير'],['#/a/site','محتوى الموقع'],['#/a/settings','الإعدادات'],['#/a/log','سجل العمليات']];
 function render(){
+  renderChrome();
   const h=location.hash||'#/';const u=me();const [ ,area,page,arg]=h.split('/');
   // header
   $('#who').textContent=u?`${u.name} · ${u.role==='admin'?'الإدارة':u.acct}`:'';
@@ -415,7 +444,7 @@ function render(){
   else if(area==='a'){if(!u)return go('#/login');if(u.role!=='admin'){toast('هذه الصفحة للإدارة فقط');return go('#/c/home')}tabs=ATABS}
   else if(u&&(area==='login'||area==='register'))return go(u.role==='admin'?'#/a/home':'#/c/home');
   const nav=$('#tabs');const pub=!tabs&&area!=='login'&&area!=='register';
-  if(pub)tabs=PTABS;
+  if(pub)tabs=pubTabs();
   nav.classList.toggle('pub',pub);
   if(tabs){nav.hidden=false;const cnt={reqs:db.reqs.filter(r=>r.status==='pending').length,cash:db.cash.filter(c=>c.status==='pending').length,users:db.users.filter(x=>x.status==='pending').length,
       claims:db.claims.filter(c=>c.status==='pending').length,msgs:db.msgs.filter(m=>m.status==='new').length,help:u?db.msgs.filter(m=>m.uid===u.id&&m.status==='replied'&&!m.seen).length:0};
@@ -428,14 +457,14 @@ function render(){
   let html;
   if(area==='c')html=(C[page]||C.home)(u,arg);
   else if(area==='a')html=(A[page]||A.home)(u,arg);
-  else if(area==='p')html=(P[page]||vHome)(u,arg);
-  else html=(map[area]||vHome)();
+  else if(area==='p')html=sitePage(page||'');
+  else html=area&&map[area]?map[area]():sitePage('');
   V.innerHTML=html;window.scrollTo(0,0);
   if(area==='c'&&page==='notes'){const n=$('#authBtns .bell .n');if(n)n.remove()}
   const t={'':'الخدمات المصرفية الإسلامية',login:'الدخول',register:'فتح حساب'}[area]||(tabs&&(tabs.find(x=>x[0]!=='#/'&&h.startsWith(x[0]))||[])[1])||'';
-  document.title=`بركات · ${t}`;
-  if(page==='zakat'&&(area==='c'||area==='p'))calcZakat();
-  if((area==='c'&&page==='finance'&&arg==='new')||(area==='p'&&page==='finance'))previewFin();
+  document.title=`${S().brand.name} · ${t||(area==='p'&&pageBySlug(page)?pageBySlug(page).title:'')}`;
+  if($('#zk'))calcZakat();
+  if($('#finForm'))previewFin();
 }
 
 /* ---------- visitor ---------- */
@@ -1191,6 +1220,439 @@ Object.assign(ACTS,{
 FORMS.cashreject=f=>{const c=db.cash.find(x=>x.id===f.id&&x.status==='pending');need(c,'الطلب معالج.');c.status='rejected';c.note=f.note;notify(c.uid,`لم يُنفذ طلب ${c.kind==='deposit'?'الإيداع':'السحب'} بمبلغ ${money(c.amt)}: ${f.note}`,'#/c/cash');logA(`رفض طلب ${c.kind==='deposit'?'إيداع':'سحب'} لـ${userById(c.uid).name}`);save();closeDlg();toast('رُفض الطلب');render()};
 function confirmReset(){if(ACTS.reset.armed){ACTS.reset.armed=false;return true}ACTS.reset.armed=true;toast('اضغط مرة أخرى خلال 5 ثوانٍ للتأكيد');setTimeout(()=>ACTS.reset.armed=false,5000);return false}
 
+/* ---------- إدارة محتوى الموقع: كل صفحات الزوار وأقسامها ونصوصها وصورها تُدار من لوحة الإدارة ----------
+   المحتوى محفوظ في هذا الجهاز فور كل تعديل، ويُنشر للزوار في الملف content.json بجوار الموقع. */
+const SITEKEY='barakat_site_v1',PUBKEY='barakat_pub_cfg';
+const FOOT0=(()=>{const e=$('#footNote');return e?e.textContent:''})();
+const HAS_DESK=!!document.querySelector('footer a[href="desktop/"]');
+const PROD0=JSON.parse(JSON.stringify(Object.fromEntries(Object.entries(PRODUCTS).map(([k,p])=>[k,{k:p.k,name:p.name,desc:p.desc}]))));
+const PLAN0=JSON.parse(JSON.stringify(Object.fromEntries(Object.entries(PLANS).map(([k,p])=>[k,{k:p.k,name:p.name,desc:p.desc}]))));
+let SITE=null,SITE_PUB=null;
+const SH={u:[],r:[]};
+const clone=o=>JSON.parse(JSON.stringify(o));
+function siteDefaults(){let n=0;const B=(t,o)=>Object.assign({id:'d'+(++n),t},o||{});
+ const L=s=>s.split('\n').map(x=>x.trim()).filter(Boolean);
+ const ctaReg=(title,text)=>B('cta',{title,text});
+ return {v:1,rev:0,pubRev:0,
+  brand:{name:'بركات',tagline:'نماءٌ في الحلال',email:'munijizqa@gmail.com',phone:'+974 5160 0498',hours:'الأحد إلى الخميس، 8:00 إلى 16:00'},
+  announce:{on:false,text:'',link:'',label:'',tone:''},
+  footer:{about:'نظام مصرفي إسلامي متكامل: لا ربا ولا غرر ولا غرامات تأخير، ومالُك يعمل في الحلال.',note:'{footNote}',verse:'﴿لَفَتَحْنَا عَلَيْهِم بَرَكَاتٍ مِّنَ السَّمَاءِ وَالْأَرْضِ﴾',
+   cols:[{title:'الخدمات',links:[{label:'الحسابات والاستثمار',href:'#/p/accounts'},{label:'التمويل',href:'#/p/finance'},{label:'التكافل',href:'#/p/takaful'},{label:'الزكاة والخير',href:'#/p/zakat'}]},
+    {title:'عن بركات',links:[{label:'من نحن',href:'#/p/about'},{label:'الضوابط الشرعية',href:'#/p/sharia'},{label:'الأسئلة الشائعة',href:'#/p/faq'},{label:'الوثيقة التأسيسية',href:'document/'},{label:'الشروط والخصوصية',href:'#/p/terms'}]},
+    {title:'تواصل معنا',links:[{label:'نموذج التواصل',href:'#/p/contact'},{label:'{email}',href:'mailto:{email}'},{label:'{phone}',href:'https://wa.me/{wa}'},{label:'نسخة الكمبيوتر',href:'desktop/'}]}]},
+  catalog:{products:{},plans:{}},
+  pages:[
+   {id:'home',slug:'',sys:1,title:'الرئيسية',nav:'الرئيسية',desc:'',head:false,inNav:true,hidden:false,blocks:[
+    B('hero',{title:'بركات: مالُك ينمو',hl:'في الحلال',lede:'نظام مصرفي إسلامي متكامل يغنيك عن البنوك الربوية: حسابات وتحويلات بلا رسوم، وتمويل بالمرابحة والإجارة والمشاركة، وقرض حسن بلا زيادة، واستثمار بالمضاربة تشارك فيه في الربح الحقيقي، وتكافل، وزكاة ووقف.',img:'',
+     items:[{label:'افتح حساباً الآن',href:'#/register'},{label:'لدي حساب',href:'#/login',ghost:true},{label:'احسب تمويلك',href:'#/p/finance',ghost:true}]}),
+    B('kpis',{cols:'4',items:[{label:'رسوم التحويل بين العملاء',value:'0.00 {cur}'},{label:'فائدة على أي حساب أو تمويل',value:'لا يوجد'},{label:'غرامة تأخير لصالح المؤسسة',value:'لا يوجد'},{label:'نصاب الزكاة اليوم (85 غراماً ذهباً)',value:'{nisab}'}]}),
+    B('cards',{title:'خدماتنا',cols:'3',style:'feat',items:[
+     {icon:'ح',title:'الحسابات والاستثمار',text:'حساب جارٍ مضمون متاح في أي وقت، وحساب استثمار بالمضاربة يوزَّع ربحه الفعلي.',href:'#/p/accounts'},
+     {icon:'ت',title:'التمويل الإسلامي',text:'مرابحة وإجارة منتهية بالتمليك ومشاركة متناقصة ومضاربة وقرض حسن، مع حاسبة فورية.',href:'#/p/finance'},
+     {icon:'ك',title:'التكافل',text:'حماية تعاونية لصحتك ومركبتك ومنزلك وأسرتك، بالتبرع لا بالمعاوضة.',href:'#/p/takaful'},
+     {icon:'ز',title:'الزكاة والخير',text:'حاسبة زكاة بسعر الذهب، وتوكيل بالتوزيع على المصارف الثمانية، وصدقة ووقف نقدي.',href:'#/p/zakat'},
+     {icon:'ش',title:'الضوابط الشرعية',text:'المبادئ الملزمة لكل عقد، ودور هيئة الرقابة الشرعية، وما نستبعده من المعاملات.',href:'#/p/sharia'},
+     {icon:'ب',title:'عن بركات',text:'معنى الاسم والرؤية والرسالة والقيم التي نعمل بها.',href:'#/p/about'}]}),
+    B('steps',{title:'ابدأ في ثلاث خطوات',items:[{title:'افتح حسابك',text:'ببياناتك الأساسية ورقم هويتك، ويُفتح لك الحساب الجاري وحساب الاستثمار فوراً.'},{title:'نتحقق من هويتك',text:'تراجع الإدارة بياناتك وتفعّل الإيداع والتحويل والتمويل.'},{title:'ابدأ التعامل',text:'أودع وحوّل واستثمر واطلب التمويل وأخرج زكاتك من مكان واحد.'}]}),
+    B('ayah',{text:'﴿وَلَوْ أَنَّ أَهْلَ الْقُرَىٰ آمَنُوا وَاتَّقَوْا لَفَتَحْنَا عَلَيْهِم بَرَكَاتٍ مِّنَ السَّمَاءِ وَالْأَرْضِ﴾',src:'سورة الأعراف، الآية 96'}),
+    ctaReg('جاهز للبدء؟','فتح الحساب مجاني ولا يستغرق أكثر من دقيقتين.')]},
+   {id:'accounts',slug:'accounts',sys:1,title:'الحسابات والاستثمار',nav:'الحسابات والاستثمار',desc:'حسابان لكل عميل: جارٍ مضمون للمعاملات اليومية، واستثماري يشارك في الربح الحقيقي.',head:true,inNav:true,hidden:false,blocks:[
+    B('cards',{cols:'2',style:'acct',items:[
+     {tag:'قرض حسن مضمون',title:'الحساب الجاري',list:L(`رصيدك مضمون كاملاً ومتاح للسحب والتحويل في أي وقت.
+تحويل فوري بلا رسوم إلى أي عميل في بركات برقم حسابه أو جواله.
+لا يُدفع عليه عائد، لأن المال المضمون لا يستحق ربحاً.
+إيداع وسحب بالتحويل البنكي أو نقداً، بعد تحقق الإدارة من المرجع.`)},
+     {tag:'مضاربة',title:'حساب الاستثمار',list:L(`يدخل رصيدك وعاءً استثمارياً مشتركاً يُدار في أنشطة مباحة فقط.
+يُوزَّع الربح الفعلي دورياً: {investors}% للمودعين بنسبة أرصدتهم و{mudarib}% لبركات مضارباً.
+لا ربح مضموناً ولا محدداً مسبقاً، فهذا هو الفرق بين الربح والفائدة.
+إن وقعت خسارة بلا تعدٍّ ولا تقصير تحمّلها رأس المال ولم يأخذ المضارب شيئاً.`)}]}),
+    B('kpis',{cols:'3',items:[{label:'رسوم فتح الحساب',value:'0.00 {cur}'},{label:'رسوم التحويل الداخلي',value:'0.00 {cur}'},{label:'حصة المضارب من الربح',value:'{mudarib}%'}]}),
+    ctaReg('افتح حسابيك الآن','يُفتح الحساب الجاري وحساب الاستثمار معاً.')]},
+   {id:'finance',slug:'finance',sys:1,title:'التمويل الإسلامي',nav:'التمويل',desc:'كل صيغة عقد حقيقي له أصل وملكية وضمان، لا قرض بفائدة متخفٍّ. جرّب الحاسبة أدناه.',head:true,inNav:true,hidden:false,blocks:[
+    B('products',{noteTitle:'طلب، ثم مراجعة وتملّك، ثم عرض، ثم قبولك',noteTag:'مسار كل عقد',noteText:'لا يُبرم عقد بيع قبل أن تتملك بركات السلعة، ولا يسري عقد قبل موافقتك على شروطه المكتوبة، والثمن لا يزيد بالتأخير.'}),
+    B('fincalc',{title:'حاسبة التمويل'}),
+    ctaReg('هل يناسبك العرض؟','قدّم طلبك من حسابك، وتصلك شروط العقد كاملة قبل أي التزام.')]},
+   {id:'takaful',slug:'takaful',sys:1,title:'التكافل',nav:'التكافل',desc:'حماية تعاونية يتبرع فيها المشتركون لصندوق واحد يعوِّض من يصيبه الضرر منهم، وتديره بركات بأجر وكالة معلوم.',head:true,inNav:true,hidden:false,blocks:[
+    B('plans'),
+    B('cards',{cols:'2',style:'plain',items:[
+     {title:'لماذا التكافل لا التأمين التجاري؟',list:L(`الاشتراك تبرع لصندوق المشتركين، لا ثمن لتعويض محتمل، فينتفي الغرر والقمار.
+الصندوق ملك المشتركين، وبركات وكيل عنهم بأجر {takafulFee}% من الاشتراكات.
+يُستثمر الصندوق في المباح، ويعود الفائض بعد التعويضات إلى المشتركين.`)},
+     {title:'كيف تطالب بالتعويض؟',list:L(`اشترك في البرنامج من حسابك وسدّد الاشتراك الشهري.
+قدّم المطالبة بالمبلغ ووصف الضرر من صفحة التكافل في حسابك.
+تراجع الإدارة المطالبة، ويُصرف التعويض المعتمد إلى حسابك الجاري مباشرة.`)}]}),
+    ctaReg('احمِ نفسك وأسرتك','اشترك في برنامج التكافل المناسب من حسابك.')]},
+   {id:'zakat',slug:'zakat',sys:1,title:'الزكاة والخير',nav:'الزكاة والخير',desc:'احسب زكاتك بدقة، ووكّل بركات بتوزيعها على مستحقيها، وتصدّق أو ساهم في الوقف النقدي.',head:true,inNav:true,hidden:false,blocks:[
+    B('zakat',{title:'مصارف الزكاة الثمانية',verse:'﴿إِنَّمَا الصَّدَقَاتُ لِلْفُقَرَاءِ وَالْمَسَاكِينِ وَالْعَامِلِينَ عَلَيْهَا وَالْمُؤَلَّفَةِ قُلُوبُهُمْ وَفِي الرِّقَابِ وَالْغَارِمِينَ وَفِي سَبِيلِ اللَّهِ وَابْنِ السَّبِيلِ﴾ [التوبة: 60]',list:MASARIF.slice(),
+     extraTitle:'الصدقة والوقف',extraText:'صندوق الصدقات يُصرف في الإغاثة والحاجات العاجلة، والوقف النقدي يُستثمر أصله ويُصرف ريعه في وجوه البر دائماً.'}),
+    ctaReg('أخرج زكاتك بضغطة','من صفحة الزكاة في حسابك، مع سجل موثّق لكل ما دفعت.')]},
+   {id:'sharia',slug:'sharia',sys:1,title:'الضوابط الشرعية',nav:'الضوابط الشرعية',desc:'مبادئ ملزمة لكل منتج وعقد في بركات، تراقبها هيئة رقابة شرعية مستقلة.',head:true,inNav:true,hidden:false,blocks:[
+    B('cards',{cols:'2',style:'plain',items:[
+     {title:'ما نلتزم به',list:L(`لا ربا في أي صورة: لا فائدة على حساب ولا تمويل، ولا زيادة على قرض.
+لا بيع قبل التملك والقبض: تشتري بركات السلعة وتتحمل ضمانها قبل بيعها.
+الثمن معلوم وثابت عند العقد، ولا يزيد بالتأخير أو بتغير الأسعار.
+لا غرامة تأخير لصالح المؤسسة، ويُمهل المعسر حتى ميسرة.
+الربح في المضاربة والمشاركة نسبة شائعة من الربح الفعلي، والخسارة على رأس المال.
+استثمار الأموال في المباح فقط، مع استبعاد الأنشطة المحرمة والشركات عالية الاستدانة الربوية.`)},
+     {title:'ما نستبعده',list:L(`القروض والبطاقات الائتمانية بفائدة.
+التورق المنظم، لقرار مجمع الفقه الإسلامي الدولي رقم 179 (19/5).
+بيع الدين بالدين وخصم الكمبيالات.
+التأمين التجاري، ويحل محله التكافل.
+المشتقات والمضاربات قصيرة الأجل على العملات والأسهم.`)}]}),
+    B('cards',{cols:'3',style:'plain',items:[
+     {title:'هيئة الرقابة الشرعية',text:'ثلاثة فقهاء متخصصين في فقه المعاملات على الأقل، مستقلون عن الإدارة، وقراراتهم ملزمة.'},
+     {title:'التدقيق الشرعي',text:'مراجعة دورية لعينة من العقود والعمليات، وتقرير سنوي معلن للمتعاملين.'},
+     {title:'المرجعية',text:'المعايير الشرعية لهيئة المحاسبة والمراجعة للمؤسسات المالية الإسلامية، وقرارات مجمع الفقه الإسلامي الدولي.'}]}),
+    B('text',{plain:true,body:'التفصيل الكامل في [الوثيقة التأسيسية](document/).'})]},
+   {id:'about',slug:'about',sys:1,title:'عن بركات',nav:'عن بركات',desc:'مؤسسة مالية إسلامية تقدم بديلاً كاملاً عن البنوك الربوية، قائماً على العدل والشفافية والمشاركة.',head:true,inNav:true,hidden:false,blocks:[
+    B('text',{w:'half',title:'معنى الاسم',body:'اسم «بركات» مأخوذ من قول الله تعالى:\n{ayah}\nفالبركة ثمرة الإيمان والتقوى، وهي النماء الحقيقي في المال لا مجرد زيادته. ولهذا لا نعِد بفائدة مضمونة، بل بمالٍ يعمل في الحلال فيبارَك فيه.'}),
+    B('text',{w:'half',title:'رؤيتنا',body:'أن يجد كل مسلم مؤسسة مالية تغنيه عن الربا في كل حاجاته، دون أن يتنازل عن الجودة أو السهولة.'}),
+    B('brandcard',{w:'half',title:'الشعار',text:'قطرات من السماء فوق نبتة تخرج من الأرض: بركات السماء والأرض التي وعد الله بها، والمال الذي ينمو بالعمل الحلال.'}),
+    B('text',{w:'half',title:'رسالتنا',body:'تقديم خدمات مصرفية وتمويلية واستثمارية وتكافلية منضبطة بالشريعة، بشفافية كاملة في الشروط والأرباح والرسوم.'}),
+    B('text',{w:'half',title:'قيمنا',list:L(`**الأمانة:** مال العميل وديعة نحفظها.
+**العدل:** الغنم بالغرم، والربح لمن تحمّل المخاطرة.
+**الشفافية:** كل شرط مكتوب، وكل ريال موثّق.
+**الرحمة:** إنظار المعسر وإقراض المحتاج قرضاً حسناً.`)})]},
+   {id:'faq',slug:'faq',sys:1,title:'الأسئلة الشائعة',nav:'الأسئلة الشائعة',desc:'إجابات مختصرة عن أكثر ما يسأل عنه المتعاملون.',head:true,inNav:true,hidden:false,blocks:[
+    B('faq',{items:FAQ.map(([q,a])=>({q,a}))}),
+    B('cta',{title:'لم تجد إجابتك؟',text:'راسلنا وسنرد عليك في أقرب وقت.',label:'تواصل معنا',href:'#/p/contact'})]},
+   {id:'contact',slug:'contact',sys:1,title:'تواصل معنا',nav:'تواصل معنا',desc:'نسعد بأسئلتك واقتراحاتك. تصل رسالتك إلى فريق خدمة العملاء مباشرة.',head:true,inNav:true,hidden:false,blocks:[
+    B('contact',{title:'قنوات التواصل',subjects:L(`استفسار عام
+فتح حساب
+التمويل
+الاستثمار
+التكافل
+الزكاة والصدقات
+شكوى
+اقتراح`)})]},
+   {id:'terms',slug:'terms',sys:1,title:'الشروط والخصوصية',nav:'الشروط والخصوصية',desc:'ملخص الشروط العامة لاستخدام خدمات بركات وسياسة حماية بياناتك.',head:true,inNav:false,hidden:false,blocks:[
+    B('text',{w:'half',title:'الشروط العامة',list:L(`تخضع كل معاملات العميل لأحكام الشريعة الإسلامية كما تقررها هيئة الرقابة الشرعية.
+يلتزم العميل بصحة بياناته، وتُفعَّل العمليات المالية بعد التحقق من الهوية.
+لكل عقد تمويل شروطه المكتوبة التي تُعرض على العميل ولا تسري قبل قبوله.
+يجوز لبركات إيقاف الحساب مؤقتاً عند الاشتباه في استخدام غير مشروع، مع إبلاغ العميل بالسبب.
+تُحل الخلافات بالصلح أولاً، ثم بالتحكيم وفق أحكام الشريعة.`)}),
+    B('text',{w:'half',title:'سياسة الخصوصية',list:L(`نجمع البيانات اللازمة لتقديم الخدمة فقط: الاسم والجوال والبريد ورقم الهوية وسجل المعاملات.
+لا نبيع بياناتك ولا نشاركها مع أي جهة إلا بأمر نظامي.
+كلمات المرور محفوظة مشفّرة ولا يطّلع عليها أحد.
+{dataNote}
+لك أن تطلب تصحيح بياناتك أو إغلاق حسابك عبر [نموذج التواصل](#/p/contact).`)})]}
+  ]};
+}
+/* ---------- المتغيرات والتنسيق الآمن ---------- */
+const isCloud=()=>typeof CLOUD!=='undefined'&&!!CLOUD;
+const VARS={cur:()=>CUR,nisab:()=>money(85*db.settings.goldPrice),gold:()=>money(db.settings.goldPrice),mudarib:()=>db.settings.mudaribShare,investors:()=>100-db.settings.mudaribShare,
+ takafulFee:()=>db.settings.takafulFee,qardMax:()=>money(db.settings.qardMax),email:()=>S().brand.email,phone:()=>fphone(S().brand.phone),wa:()=>phoneDigits(S().brand.phone),name:()=>S().brand.name,year:()=>new Date().getFullYear(),
+ footNote:()=>isCloud()?'© بركات · متصل بقاعدة بيانات سحابية آمنة، وحسابك متاح من أي جهاز':FOOT0,
+ dataNote:()=>isCloud()?'تُحفظ بيانات الحسابات في قاعدة بيانات سحابية محمية، لا يقرأ فيها العميل إلا بياناته، ولا تُنفَّذ أي عملية مالية إلا عبر خادم بركات.':'في هذا النموذج تبقى البيانات على جهازك وحده، في المتصفح أو في ملف نسخة الكمبيوتر.'};
+const tv=s=>String(s??'').replace(/\{(\w+)\}/g,(m,k)=>VARS[k]?String(VARS[k]()):m);
+const safeHref=h=>{h=tv(String(h||'').trim());if(!h||/^\s*(javascript|data|vbscript):/i.test(h))return '#/';return /^(#|https?:\/\/|mailto:|tel:|[\w\-.\/]+\/?(#[\w\-\/]*)?$)/i.test(h)?h:'#/'};
+const safeImg=s=>{s=String(s||'').trim();return /^(https:\/\/[^\s"'<>]+|data:image\/(png|jpe?g|webp|gif);base64,[A-Za-z0-9+\/=]+|[\w\-.\/]+\.(png|jpe?g|webp|gif|svg))$/i.test(s)?s:''};
+function inl(s){let x=esc(tv(s));x=x.replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');
+ return x.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g,(m,t,u)=>`<a href="${esc(safeHref(u.replace(/&amp;/g,'&')))}">${t}</a>`)}
+const ltr=s=>/^[\x20-\x7E]+$/.test(s)?' dir="ltr"':'';
+function body(s,cls){const out=[];let buf=[];const flush=()=>{if(buf.length){out.push(`<p${cls?` class="${cls}"`:''}>${buf.map(inl).join('<br>')}</p>`);buf=[]}};
+ String(s||'').split('\n').forEach(l=>{if(l.trim()==='{ayah}'){flush();out.push(`<div style="margin:10px 0">${AYAH}</div>`)}else if(!l.trim())flush();else buf.push(l)});flush();return out.join('')}
+const ulist=a=>a&&a.length?`<ul class="clean">${a.map(x=>`<li>${inl(x)}</li>`).join('')}</ul>`:'';
+const secT=t=>t?`<h2 class="sec">${inl(t)}</h2>`:'';
+const gcls=c=>({1:'stack',2:'grid g2',3:'grid g3',4:'grid g4'}[c]||'grid g3');
+const cust=()=>me()&&me().role==='customer'?me():null;
+/* ---------- عرض الأقسام ---------- */
+const BR={
+ hero:b=>`<section class="hero"><div><h1>${inl(b.title)}${b.hl?` <span>${inl(b.hl)}</span>`:''}</h1>${b.lede?`<p class="lede">${inl(b.lede)}</p>`:''}
+  ${(b.items||[]).length?`<div class="row">${b.items.map(x=>`<a class="btn ${x.ghost?'ghost':''}" href="${esc(safeHref(x.href))}">${inl(x.label)}</a>`).join('')}</div>`:''}</div>
+  <div class="art">${safeImg(b.img)?`<img src="${esc(safeImg(b.img))}" alt="${esc(b.alt||'')}" loading="lazy">`:`<svg width="210" height="210" viewBox="0 0 64 64" role="img" aria-label="شعار ${esc(S().brand.name)}"><use href="#mark"/></svg>`}</div></section>`,
+ kpis:b=>`${secT(b.title)}<div class="grid g${['2','3','4'].includes(String(b.cols))?b.cols:4}">${(b.items||[]).map(x=>`<div class="card kpi"><span>${inl(x.label)}</span><b>${inl(x.value)}</b></div>`).join('')}</div>`,
+ cards:b=>{const h=+b.cols>=3?'h4':'h3';return `${secT(b.title)}<div class="${gcls(b.cols)}">${(b.items||[]).map(x=>{const img=safeImg(x.img)?`<img class="cimg" src="${esc(safeImg(x.img))}" alt="" loading="lazy">`:'';
+  if(b.style==='feat'&&x.href)return `<a class="card feat" href="${esc(safeHref(x.href))}">${img}${x.icon?`<span class="ico">${esc(x.icon)}</span>`:''}<h4>${inl(x.title)}</h4>${x.text?`<p class="sub">${inl(x.text)}</p>`:''}<span class="more">التفاصيل ←</span></a>`;
+  return `<div class="card${b.style==='acct'?' acct':''}">${img}${x.icon&&b.style==='feat'?`<span class="ico">${esc(x.icon)}</span>`:''}${x.tag?`<span class="tag">${inl(x.tag)}</span>`:''}${x.title?`<${h}${x.tag?' style="margin-top:8px"':''}>${inl(x.title)}</${h}>`:''}${x.text?`<p class="sub">${inl(x.text)}</p>`:''}${ulist(x.list)}${x.href?`<p style="margin-top:8px"><a href="${esc(safeHref(x.href))}">التفاصيل ←</a></p>`:''}</div>`}).join('')}</div>`},
+ steps:b=>`${secT(b.title)}<div class="steps3">${(b.items||[]).map(x=>`<div class="card"><h4>${inl(x.title)}</h4><p class="sub">${inl(x.text)}</p></div>`).join('')}</div>`,
+ text:b=>{const c=`${b.title?`<h3>${inl(b.title)}</h3>`:''}${body(b.body,b.plain?'sub':'sub')}${ulist(b.list)}`;return b.plain?`<div class="ptext">${c}</div>`:`<div class="card">${c}</div>`},
+ note:b=>`<div class="note ${['warn','bad'].includes(b.tone)?b.tone:''}">${body(b.text)}</div>`,
+ image:b=>{const s=safeImg(b.src);if(!s)return '';const im=`<img src="${esc(s)}" alt="${esc(b.alt||'')}" loading="lazy">`;return `<figure class="fig">${b.href?`<a href="${esc(safeHref(b.href))}">${im}</a>`:im}${b.caption?`<figcaption>${inl(b.caption)}</figcaption>`:''}</figure>`},
+ faq:b=>`${secT(b.title)}${(b.items||[]).map(x=>`<details><summary>${inl(x.q)}</summary>${body(x.a)}</details>`).join('')}`,
+ cta:b=>b.label?`<div class="card" style="background:var(--acc-soft);border-color:transparent"><div class="row" style="justify-content:space-between"><div><h3 style="margin:0">${inl(b.title)}</h3><p class="sub">${inl(b.text)}</p></div><div class="row"><a class="btn" href="${esc(safeHref(b.href))}">${inl(b.label)}</a></div></div></div>`
+  :ctaBox(inl(b.title),inl(b.text)).replace('margin-top:24px','margin-top:0'),
+ ayah:b=>`<div class="ayah">${esc(b.text)}${b.src?`<small>${esc(b.src)}</small>`:''}</div>`,
+ brandcard:b=>`<div class="card">${b.title?`<h3>${inl(b.title)}</h3>`:''}<div class="row" style="gap:16px;flex-wrap:nowrap"><svg width="72" height="72" viewBox="0 0 64 64" aria-hidden="true" style="flex:none"><use href="#mark"/></svg><p class="sub">${inl(b.text)}</p></div></div>`,
+ products:b=>`<div class="grid g3">${Object.values(PRODUCTS).map(p=>`<div class="card prod"><span class="k">${esc(p.k)}</span><h4>${esc(p.name)}</h4><p>${esc(p.desc)}</p></div>`).join('')}
+  ${b.noteTitle?`<div class="card prod" style="background:var(--acc-soft);border-color:transparent">${b.noteTag?`<span class="k">${inl(b.noteTag)}</span>`:''}<h4>${inl(b.noteTitle)}</h4><p>${inl(b.noteText)}</p></div>`:''}</div>`,
+ fincalc:b=>`${b.title?`<h3 style="font-size:20px;margin:12px 0">${inl(b.title)}</h3>`:''}${finForm(cust())}`,
+ plans:b=>`<div class="grid g4">${Object.entries(PLANS).map(([k,p])=>`<div class="card prod"><span class="k">${esc(p.k)}</span><h4>${esc(p.name)}</h4><p>${esc(p.desc)}</p><div class="split" style="margin-top:8px"><span>الاشتراك الشهري</span><b>${money(p.fee)}</b></div><div class="split"><span>أقصى تعويض للمطالبة</span><b>${money(p.cap)}</b></div></div>`).join('')}</div>`,
+ zakat:b=>`<div class="grid g2" style="align-items:start">${zakatCard(cust())}
+  <div class="card">${b.title?`<h3>${inl(b.title)}</h3>`:''}${b.verse?`<p class="sub" style="margin-bottom:8px">${esc(b.verse)}</p>`:''}${ulist(b.list)}
+   ${b.extraTitle?`<h3 style="margin-top:16px">${inl(b.extraTitle)}</h3>`:''}${b.extraText?`<p class="sub">${inl(b.extraText)}</p>`:''}</div></div>`,
+ contact:b=>{const u=me(),br=S().brand;return `<div class="grid g2" style="align-items:start">
+  <div class="card"><form data-form="contact"><div class="f">
+   <div class="grid g2"><label>الاسم<input name="name" required minlength="3" value="${u?esc(u.name):''}" autocomplete="name"></label>
+   <label>رقم الجوال<input name="phone" required inputmode="tel" dir="ltr" value="${u?fphone(u.phone):''}" placeholder="+974 5000 0000"></label></div>
+   <label>البريد الإلكتروني<input name="email" type="email" required dir="ltr" value="${u?esc(u.email):''}"></label>
+   <label>الموضوع<select name="subject">${(b.subjects&&b.subjects.length?b.subjects:['استفسار عام']).map(x=>`<option>${esc(x)}</option>`).join('')}</select></label>
+   <label>الرسالة<textarea name="body" required minlength="10" maxlength="1000"></textarea></label>
+   <p class="err" id="err"></p><div><button class="btn">إرسال الرسالة</button></div></div></form></div>
+  <div class="stack"><div class="card"><h3>${inl(b.title||'قنوات التواصل')}</h3>
+   ${br.email?`<div class="split"><span>البريد الإلكتروني</span><b><a href="mailto:${esc(br.email)}" dir="ltr">${esc(br.email)}</a></b></div>`:''}
+   ${br.phone?`<div class="split"><span>الهاتف وواتساب</span><b><a href="https://wa.me/${phoneDigits(br.phone)}" dir="ltr">${fphone(br.phone)}</a></b></div>`:''}
+   ${br.hours?`<div class="split"><span>ساعات العمل</span><b style="direction:rtl">${esc(br.hours)}</b></div>`:''}</div>
+   <div class="note">${u&&u.role==='customer'?'تجد رسائلك وردود فريقنا في صفحة <a href="#/c/help">المساعدة</a> داخل حسابك.':'إن كان لديك حساب فادخل أولاً لتتابع رد فريقنا داخل حسابك.'}</div></div></div>`}
+};
+function renderBlocks(list){let out='',half=[];const flush=()=>{if(half.length){out+=`<div class="grid g2 blk" style="align-items:start">${half.map(h=>`<div class="stack">${h}</div>`).join('')}</div>`;half=[]}};
+ (list||[]).forEach(b=>{if(b.hide||!BR[b.t])return;let h='';try{h=BR[b.t](b)}catch(e){h=''}if(!h)return;if(b.w==='half')half.push(h);else{flush();out+=`<div class="blk">${h}</div>`}});flush();return out}
+/* ---------- الصفحات والقائمة والتذييل ---------- */
+const S=()=>SITE||(SITE=siteDefaults());
+const pageBySlug=sl=>S().pages.find(p=>p.slug===(sl||''));
+const pageHref=p=>p.slug?'#/p/'+p.slug:'#/';
+function pubTabs(){return S().pages.filter(p=>p.inNav&&!p.hidden).map(p=>[pageHref(p),p.nav||p.title])}
+function sitePage(slug){const p=pageBySlug(slug)||(!slug?null:null);const u=me(),adm=u&&u.role==='admin';
+ if(!p)return slug?`${pageH('الصفحة غير موجودة','ربما نُقلت هذه الصفحة أو حُذفت.')}<div class="card"><a class="btn" href="#/">العودة إلى الرئيسية</a></div>`:renderBlocks(siteDefaults().pages[0].blocks);
+ if(p.hidden&&!adm)return `${pageH('الصفحة غير متاحة حالياً','نعمل على تحديث هذه الصفحة، ونعود بها قريباً.')}<div class="card"><a class="btn" href="#/">العودة إلى الرئيسية</a></div>`;
+ return `${p.hidden?`<div class="note warn" style="margin-bottom:14px">هذه الصفحة مخفية عن الزوار، وتظهر لك لأنك في حساب الإدارة. <a href="#/a/site/pg-${esc(p.id)}">تحرير الصفحة</a></div>`:''}${annc()}${p.head!==false?pageH(inl(p.title),p.desc?inl(p.desc):''):''}${renderBlocks(p.blocks)}${adm?`<div class="cms-edit"><a class="btn sm ghost" href="#/a/site/pg-${esc(p.id)}">تحرير محتوى هذه الصفحة</a></div>`:''}`}
+function annc(){const a=S().announce;if(!a||!a.on||!a.text)return '';return `<div class="note ${['warn','bad','ok'].includes(a.tone)?a.tone:''} annc">${inl(a.text)}${a.link?` <a href="${esc(safeHref(a.link))}">${esc(a.label||'التفاصيل')}</a>`:''}</div>`}
+function renderChrome(){const s=S(),br=s.brand;
+ document.querySelectorAll('header .brand b, footer .brand b').forEach(e=>e.textContent=br.name);
+ const sm=$('header .brand small');if(sm)sm.textContent=br.tagline||'';
+ const cols=$('footer .cols');if(!cols)return;
+ const lk=l=>{if(l.href==='desktop/'&&!HAS_DESK)return '';const lab=tv(l.label);return `<li><a href="${esc(safeHref(l.href))}"${ltr(lab)}>${esc(lab)}</a></li>`};
+ cols.innerHTML=`<div><a class="brand" href="#/" aria-label="${esc(br.name)}"><svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><use href="#mark"/></svg><span><b>${esc(br.name)}</b></span></a>
+  <p style="margin-top:8px;max-width:36ch">${inl(s.footer.about)}</p></div>${s.footer.cols.map(c=>`<div><h4>${inl(c.title)}</h4><ul>${(c.links||[]).map(lk).join('')}</ul></div>`).join('')}`;
+ const fn=$('#footNote');if(fn)fn.textContent=tv(s.footer.note);
+ const vs=$('footer .base span:last-child');if(vs&&vs!==fn)vs.textContent=s.footer.verse||'';
+}
+function applyCatalog(){const c=S().catalog||{};
+ Object.keys(PRODUCTS).forEach(k=>Object.assign(PRODUCTS[k],PROD0[k],(c.products||{})[k]||{}));
+ Object.keys(PLANS).forEach(k=>Object.assign(PLANS[k],PLAN0[k],(c.plans||{})[k]||{}))}
+function normSite(s){const d=siteDefaults();if(!s||typeof s!=='object'||!Array.isArray(s.pages))return d;
+ ['brand','announce','footer','catalog'].forEach(k=>{if(!s[k]||typeof s[k]!=='object')s[k]=d[k]});
+ s.brand=Object.assign({},d.brand,s.brand);s.footer=Object.assign({},d.footer,s.footer);if(!Array.isArray(s.footer.cols))s.footer.cols=[];
+ s.catalog.products=s.catalog.products||{};s.catalog.plans=s.catalog.plans||{};
+ if(!s.pages.some(p=>p.slug===''))s.pages.unshift(d.pages[0]);
+ s.pages.forEach(p=>{if(!Array.isArray(p.blocks))p.blocks=[];p.blocks.forEach(b=>{if(!b.id)b.id=uid('b');if(BT[b.t]&&BT[b.t].it&&!Array.isArray(b.items))b.items=[]})});
+ s.rev=+s.rev||0;s.pubRev=+s.pubRev||0;return s}
+function setSite(s,persist){SITE=normSite(s);applyCatalog();if(persist)siteStore()}
+function siteStore(){try{if(SITE.rev)store.set(SITEKEY,JSON.stringify(SITE));else store.del(SITEKEY)}catch(e){toast('تعذّر حفظ المحتوى: حجم الصور كبير جداً. صغّر الصور أو استخدم روابط لها.')}
+ if(db&&typeof SRV!=='undefined'&&SRV){if(SITE.rev)db.site=SITE;else delete db.site;save()}}
+function initSite(){let loc=null;try{loc=JSON.parse(store.get(SITEKEY)||'null')}catch(e){}const best=[loc,db&&db.site].filter(x=>x&&x.rev).sort((a,b)=>b.rev-a.rev)[0];setSite(best?clone(best):null,false)}
+window.addEventListener('storage',e=>{if(e.key===SITEKEY){try{setSite(e.newValue?JSON.parse(e.newValue):null,false);render()}catch(x){}}});
+function syncSiteFromDb(){if(db&&db.site&&db.site.rev&&(!SITE||db.site.rev>(SITE.rev||0)))setSite(clone(db.site),false)}
+const siteDirty=()=>S().rev>0&&S().rev!==S().pubRev;
+async function loadPublished(){if(!/^https?:$/.test(location.protocol))return;
+ try{const r=await fetch('content.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const j=await r.json();if(!j||!Array.isArray(j.pages))return;
+  SITE_PUB=j;const cur=S();if((+j.rev||0)>(cur.rev||0)){if(siteDirty())siteVersion('نسخة محلية قبل تحميل المحتوى المنشور');const n=clone(j);n.pubRev=n.rev;setSite(n,true);return true}}catch(e){}}
+/* ---------- لوحة إدارة المحتوى ---------- */
+const BT={
+ hero:{n:'واجهة رئيسية',f:[['title','العنوان'],['hl','الجزء الملوّن من العنوان'],['lede','النص التعريفي','area'],['img','صورة جانبية بدل الشعار (اختيارية)','img']],it:{n:'زر',f:[['label','نص الزر'],['href','الرابط','href'],['ghost','زر ثانوي بإطار فقط','chk']]}},
+ kpis:{n:'مؤشرات وأرقام',f:[['title','عنوان القسم (اختياري)'],['cols','عدد الأعمدة','sel',{2:'2',3:'3',4:'4'}]],it:{n:'مؤشر',f:[['label','الوصف'],['value','القيمة']]}},
+ cards:{n:'بطاقات',f:[['title','عنوان القسم (اختياري)'],['cols','عدد الأعمدة','sel',{1:'1',2:'2',3:'3',4:'4'}],['style','نمط البطاقات','sel',{plain:'بطاقة نصية',feat:'بطاقة رابط برمز',acct:'بطاقة بوسم'}]],
+  it:{n:'بطاقة',f:[['title','العنوان'],['text','النص','area'],['list','نقاط (كل سطر نقطة)','lines'],['tag','الوسم (للنمط «بطاقة بوسم»)'],['icon','الرمز (حرف واحد للنمط «بطاقة رابط»)'],['img','صورة','img'],['href','الرابط','href']]}},
+ steps:{n:'خطوات',f:[['title','عنوان القسم']],it:{n:'خطوة',f:[['title','العنوان'],['text','الوصف','area']]}},
+ text:{n:'نص',f:[['title','العنوان'],['body','النص (اترك سطراً فارغاً بين الفقرات)','area'],['list','نقاط (كل سطر نقطة)','lines'],['plain','نص بلا إطار بطاقة','chk']]},
+ note:{n:'تنبيه بارز',f:[['text','النص','area'],['tone','اللون','sel',{'':'أخضر هادئ',warn:'ذهبي للتنبيه',bad:'أحمر للتحذير'}]]},
+ image:{n:'صورة',f:[['src','الصورة','img'],['alt','وصف الصورة لقارئات الشاشة'],['caption','تعليق تحت الصورة'],['href','رابط عند الضغط (اختياري)','href']]},
+ faq:{n:'أسئلة شائعة',f:[['title','عنوان القسم (اختياري)']],it:{n:'سؤال',f:[['q','السؤال'],['a','الإجابة','area']]}},
+ cta:{n:'دعوة للتسجيل أو التواصل',f:[['title','العنوان'],['text','النص'],['label','نص الزر (اتركه فارغاً لأزرار فتح الحساب والدخول)'],['href','رابط الزر','href']]},
+ ayah:{n:'آية',f:[['text','نص الآية بين القوسين','area'],['src','السورة ورقم الآية']]},
+ brandcard:{n:'بطاقة الشعار',f:[['title','العنوان'],['text','النص','area']]},
+ products:{n:'صيغ التمويل (تلقائية)',f:[['noteTag','وسم البطاقة المميزة'],['noteTitle','عنوان البطاقة المميزة'],['noteText','نص البطاقة المميزة','area']],auto:'تعرض صيغ التمويل من تبويب «صيغ التمويل والتكافل».'},
+ fincalc:{n:'حاسبة التمويل',f:[['title','العنوان']],auto:'حاسبة تفاعلية تعمل بمعدلات الإعدادات.'},
+ plans:{n:'برامج التكافل (تلقائية)',f:[],auto:'تعرض برامج التكافل واشتراكاتها من تبويب «صيغ التمويل والتكافل».'},
+ zakat:{n:'حاسبة الزكاة ومصارفها',f:[['title','عنوان المصارف'],['verse','الآية'],['list','المصارف (كل سطر مصرف)','lines'],['extraTitle','عنوان إضافي'],['extraText','نص إضافي','area']],auto:'تتضمن حاسبة الزكاة التفاعلية.'},
+ contact:{n:'نموذج التواصل',f:[['title','عنوان قنوات التواصل'],['subjects','مواضيع الرسائل (كل سطر موضوع)','lines']],auto:'البريد والهاتف وساعات العمل من تبويب «الهوية والتواصل».'}
+};
+const WIDTH=['w','العرض','sel',{'':'كامل العرض',half:'نصف العرض (بجوار القسم المجاور)'}];
+const PAGEF=[['title','عنوان الصفحة'],['nav','اسمها في القائمة العلوية'],['desc','وصف مختصر تحت العنوان','area'],['slug','الرابط المختصر (حروف إنجليزية صغيرة وأرقام وشرطة)'],['inNav','تظهر في القائمة العلوية','chk'],['head','إظهار عنوان الصفحة ووصفها','chk'],['hidden','مخفية عن الزوار','chk']];
+const BRANDF=[['name','اسم العلامة'],['tagline','العبارة تحت الاسم'],['email','البريد الإلكتروني'],['phone','الهاتف وواتساب'],['hours','ساعات العمل']];
+const ANNF=[['on','إظهار شريط الإعلان أعلى صفحات الزوار','chk'],['text','نص الإعلان','area'],['label','نص الرابط'],['link','الرابط','href'],['tone','اللون','sel',{'':'أخضر هادئ',warn:'ذهبي للتنبيه',ok:'أخضر للنجاح',bad:'أحمر للتحذير'}]];
+const FOOTF=[['about','نبذة التذييل','area'],['note','سطر الحقوق'],['verse','الآية في التذييل']];
+const CATF=[['k','الوسم المختصر'],['name','الاسم'],['desc','الوصف','area']];
+const sumOf=o=>tv(o.title||o.label||o.q||o.name||o.text||o.body||o.caption||o.alt||(o.list&&o.list[0])||'').replace(/\*\*/g,'').slice(0,90);
+function fld(spec,v){const [k,l,kind,opt]=spec;
+ if(kind==='area')return `<label>${l}<textarea name="${k}" rows="4">${esc(v)}</textarea></label>`;
+ if(kind==='lines')return `<label>${l}<textarea name="${k}" rows="5">${esc((v||[]).join('\n'))}</textarea></label>`;
+ if(kind==='chk')return `<label class="chk"><input type="checkbox" name="${k}" ${v?'checked':''}> ${l}</label>`;
+ if(kind==='sel')return `<label>${l}<select name="${k}">${Object.entries(opt).map(([a,b])=>`<option value="${esc(a)}" ${String(v??'')===a?'selected':''}>${esc(b)}</option>`).join('')}</select></label>`;
+ if(kind==='img')return `<div class="imgf"><label>${l}<input name="${k}" value="${esc(v)}" placeholder="https://… أو ارفع صورة من جهازك" dir="ltr" data-imgurl></label>
+  <div class="row"><label class="btn sm ghost" style="cursor:pointer">رفع صورة<input type="file" accept="image/*" data-imgfile="${k}" hidden></label><button type="button" class="btn sm ghost" data-act="imgClear" data-k="${k}">إزالة الصورة</button></div>
+  <img class="imgp" data-prev="${k}" ${safeImg(v)?`src="${esc(v)}"`:'hidden'} alt=""></div>`;
+ if(kind==='href')return `<label>${l}<input name="${k}" value="${esc(v)}" dir="ltr" list="hrefs" placeholder="#/p/about"></label>`;
+ return `<label>${l}<input name="${k}" value="${esc(v)}" maxlength="400"></label>`}
+const hrefList=()=>`<datalist id="hrefs">${S().pages.map(p=>`<option value="${pageHref(p)}">${esc(p.title)}</option>`).join('')}<option value="#/register">فتح حساب</option><option value="#/login">الدخول</option><option value="document/">الوثيقة التأسيسية</option></datalist>`;
+function formDlg(title,ctx,fields,obj,note){dialog(`<h3>${title}</h3>${note?`<p class="sub" style="margin-bottom:10px">${note}</p>`:''}<form data-form="siteSave" class="cmsf"><input type="hidden" name="_ctx" value="${esc(ctx)}"><div class="f">${fields.map(s=>fld(s,obj[s[0]])).join('')}
+ <p class="sub" style="font-size:13px">يمكنك كتابة <b>**نص عريض**</b> و<b>[نص الرابط](#/p/contact)</b>، والمتغيرات مثل {nisab} و{mudarib} و{email} و{phone} تُستبدل بقيمها الحالية تلقائياً.</p>
+ <p class="err"></p><div class="row"><button class="btn">حفظ</button><button type="button" class="btn ghost" data-act="close">إلغاء</button></div></div></form>${hrefList()}`)}
+function readFields(fields,d,obj){fields.forEach(([k,,kind])=>{const v=d[k];
+ if(kind==='lines')obj[k]=String(v||'').split('\n').map(x=>x.trim()).filter(Boolean);
+ else if(kind==='chk')obj[k]=!!v;else obj[k]=String(v??'').trim();
+ if(kind==='img'&&obj[k]&&!safeImg(obj[k]))throw new Error('رابط الصورة غير صالح. استخدم رابطاً يبدأ بـ https:// أو ارفع صورة من جهازك.')});return obj}
+function listAt(s,path){const [k,a,b]=String(path).split(':');
+ if(k==='pages')return s.pages;if(k==='fcols')return s.footer.cols;if(k==='flinks')return (s.footer.cols[+a]||{}).links;
+ const p=s.pages.find(x=>x.id===a);if(!p)return null;if(k==='blocks')return p.blocks;
+ const bl=p.blocks.find(x=>x.id===b);return bl?(bl.items=bl.items||[]):null}
+function siteEdit(fn,msg){const before=JSON.stringify(S());const s=clone(S());fn(s);s.rev=Date.now();SH.u.push(before);if(SH.u.length>60)SH.u.shift();SH.r=[];setSite(s,true);
+ if(me())logA('تعديل محتوى الموقع: '+(msg||'تحديث'));render();if(msg)toast(msg)}
+function siteVersion(note){if(!db||!SITE)return;db.siteHist=(db.siteHist||[]);const j=JSON.stringify(SITE);db.siteHist.unshift({at:now(),note,site:j});
+ let tot=0;db.siteHist=db.siteHist.filter((h,i)=>i<12&&(tot+=h.site.length)<1.6e6)}
+const fromSlug=t=>String(t||'').toLowerCase().replace(/[^a-z0-9-]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40);
+const RESERVED=['','a','c','p','login','register','document','desktop','site'];
+function checkSlug(s,slug,id){need(/^[a-z0-9][a-z0-9-]{1,39}$/.test(slug),'الرابط المختصر من حرفين إلى 40 حرفاً إنجليزياً صغيراً أو رقماً أو شرطة.');
+ need(!RESERVED.includes(slug),'هذا الرابط محجوز لصفحات النظام. اختر رابطاً آخر.');need(!s.pages.some(p=>p.slug===slug&&p.id!==id),'هذا الرابط مستخدم لصفحة أخرى.')}
+const pubCfg=()=>{let c={};try{c=JSON.parse(store.get(PUBKEY)||'{}')}catch(e){}return Object.assign({repo:'munjiz-qa/munjiz-qa.github.io',branch:'main',path:'barakat/content.json',token:''},c)};
+const ghErr=s=>({401:'رمز النشر غير صحيح أو انتهت صلاحيته.',403:'رمز النشر لا يملك صلاحية الكتابة على المستودع.',404:'المستودع أو الفرع غير موجود، أو الرمز لا يصل إليه.',409:'تغيّر الملف المنشور أثناء النشر. أعد المحاولة.',422:'رفض GitHub الملف. تأكد من اسم الفرع والمسار.'}[s]||`تعذّر النشر (رمز ${s}). أعد المحاولة.`);
+const b64=s=>{const u=new TextEncoder().encode(s);let bin='';for(let i=0;i<u.length;i+=0x8000)bin+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(bin)};
+const pubPayload=()=>{const o=clone(S());delete o.pubRev;return o};
+async function ghPublish(){const c=pubCfg();need(c.token,'أضف رمز النشر أولاً من «إعدادات النشر».');
+ const api=`https://api.github.com/repos/${c.repo}/contents/${c.path}`;const H={Authorization:'Bearer '+c.token,Accept:'application/vnd.github+json'};
+ let sha;const g=await fetch(api+'?ref='+encodeURIComponent(c.branch)+'&t='+Date.now(),{headers:H,cache:'no-store'});
+ if(g.status===200)sha=(await g.json()).sha;else if(g.status!==404)throw new Error(ghErr(g.status));
+ const body={message:`${S().brand.name}: تحديث محتوى الموقع من لوحة الإدارة`,content:b64(JSON.stringify(pubPayload(),null,1)),branch:c.branch};if(sha)body.sha=sha;
+ const r=await fetch(api,{method:'PUT',headers:{...H,'Content-Type':'application/json'},body:JSON.stringify(body)});if(!r.ok)throw new Error(ghErr(r.status))}
+const SITE_TABS=[['pages','الصفحات والأقسام'],['brand','الهوية والتواصل والإعلان'],['footer','التذييل وروابطه'],['catalog','صيغ التمويل والتكافل'],['publish','النشر والنسخ']];
+const mvBtns=(l,i,n)=>`<button class="btn sm ghost ic" data-act="siteMv" data-l="${esc(l)}" data-i="${i}" data-d="-1" ${i===0?'disabled':''} aria-label="نقل للأعلى" title="نقل للأعلى">↑</button><button class="btn sm ghost ic" data-act="siteMv" data-l="${esc(l)}" data-i="${i}" data-d="1" ${i===n-1?'disabled':''} aria-label="نقل للأسفل" title="نقل للأسفل">↓</button>`;
+const DH='<span class="dh" aria-hidden="true" title="اسحب لإعادة الترتيب"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="5" cy="3" r="1.5"/><circle cx="11" cy="3" r="1.5"/><circle cx="5" cy="8" r="1.5"/><circle cx="11" cy="8" r="1.5"/><circle cx="5" cy="13" r="1.5"/><circle cx="11" cy="13" r="1.5"/></svg></span>';
+function siteBar(){const s=S(),d=siteDirty(),c=pubCfg();return `<div class="card cms-bar"><div class="row" style="justify-content:space-between;align-items:center">
+ <div><h3 style="margin:0">إدارة محتوى الموقع</h3><p class="sub">${d?'<span class="tag warn">تعديلات محفوظة على هذا الجهاز ولم تُنشر للزوار بعد</span>':s.rev?'<span class="tag ok">المحتوى منشور للزوار</span>':'<span class="tag">المحتوى الأصلي</span>'} ${s.rev?`آخر تعديل ${fdt(new Date(s.rev).toISOString())}`:''}</p></div>
+ <div class="row"><button class="btn sm ghost" data-act="siteUndo" ${SH.u.length?'':'disabled'}>تراجع${SH.u.length?` (${SH.u.length})`:''}</button><button class="btn sm ghost" data-act="siteRedo" ${SH.r.length?'':'disabled'}>إعادة</button>
+  <a class="btn sm ghost" href="#/" target="_blank" rel="noopener">معاينة الموقع</a><button class="btn sm" data-act="sitePublish">نشر للزوار</button></div></div>
+ <div class="row seg" style="margin-top:12px">${SITE_TABS.map(([k,l])=>`<a class="btn sm ${A.site.tab===k?'':'ghost'}" href="#/a/site/${k}">${l}</a>`).join('')}</div></div>`}
+A.site=(u,arg)=>{arg=arg||'pages';if(arg.startsWith('pg-')){A.site.tab='pages';return siteBar()+sitePageEd(arg.slice(3))}A.site.tab=SITE_TABS.some(t=>t[0]===arg)?arg:'pages';return siteBar()+({pages:siteTabPages,brand:siteTabBrand,footer:siteTabFooter,catalog:siteTabCatalog,publish:siteTabPublish}[A.site.tab])()};
+A.site.tab='pages';
+function siteTabPages(){const s=S(),n=s.pages.length;return `<div class="card"><div class="row" style="justify-content:space-between"><div><h3 style="margin:0">صفحات الموقع</h3><p class="sub">رتّب الصفحات بالسحب من المقبض أو بالأسهم، وترتيبها هنا هو ترتيبها في القائمة العلوية.</p></div><button class="btn" data-act="siteDlg" data-c="newpage">إضافة صفحة</button></div>
+ <div class="slist" style="margin-top:12px">${s.pages.map((p,i)=>`<div class="srow ${p.hidden?'off':''}" data-l="pages" data-i="${i}"><div class="hd">${DH}<div class="ttl"><b>${esc(p.title)}</b><small dir="ltr">${pageHref(p)}</small>
+  ${p.hidden?'<span class="tag bad">مخفية</span>':''} ${p.inNav?'<span class="tag ok">في القائمة</span>':'<span class="tag">خارج القائمة</span>'} <span class="tag">${p.blocks.length} أقسام</span></div>
+  <div class="acts"><a class="btn sm" href="#/a/site/pg-${esc(p.id)}">تحرير المحتوى</a><button class="btn sm ghost" data-act="siteDlg" data-c="page:${esc(p.id)}">الإعدادات</button>${mvBtns('pages',i,n)}
+  <button class="btn sm ghost" data-act="siteHide" data-l="pages" data-i="${i}">${p.hidden?'إظهار':'إخفاء'}</button><button class="btn sm ghost" data-act="siteDup" data-l="pages" data-i="${i}">نسخ</button>${p.slug===''?'':`<button class="btn sm bad" data-act="siteDel" data-l="pages" data-i="${i}">حذف</button>`}</div></div></div>`).join('')}</div></div>`}
+function sitePageEd(id){const s=S(),p=s.pages.find(x=>x.id===id);if(!p)return '<div class="card empty">الصفحة غير موجودة. <a href="#/a/site/pages">العودة إلى الصفحات</a></div>';
+ const L='blocks:'+p.id,n=p.blocks.length;
+ return `<div class="card"><div class="row" style="justify-content:space-between"><div><a href="#/a/site/pages">→ كل الصفحات</a><h3 style="margin:4px 0 0">${esc(p.title)}</h3><p class="sub" dir="ltr" style="text-align:right">${pageHref(p)}</p></div>
+  <div class="row"><button class="btn sm ghost" data-act="siteDlg" data-c="page:${esc(p.id)}">إعدادات الصفحة</button><a class="btn sm ghost" href="${pageHref(p)}" target="_blank" rel="noopener">معاينة</a><button class="btn sm" data-act="siteAddBlk" data-p="${esc(p.id)}">إضافة قسم</button></div></div>
+ <div class="slist" style="margin-top:12px">${n?p.blocks.map((b,i)=>{const T=BT[b.t]||{n:b.t,f:[]},IL=`items:${p.id}:${b.id}`,items=b.items||[];
+  return `<div class="srow ${b.hide?'off':''}" data-l="${L}" data-i="${i}"><div class="hd">${DH}<div class="ttl"><span class="tag">${T.n}</span>${b.w==='half'?' <span class="tag">نصف العرض</span>':''}${b.hide?' <span class="tag bad">مخفي</span>':''}<b>${esc(sumOf(b))||'<span class="sub">بلا عنوان</span>'}</b></div>
+  <div class="acts"><button class="btn sm" data-act="siteDlg" data-c="block:${esc(p.id)}:${esc(b.id)}">تعديل</button>${mvBtns(L,i,n)}<button class="btn sm ghost" data-act="siteHide" data-l="${L}" data-i="${i}">${b.hide?'إظهار':'إخفاء'}</button><button class="btn sm ghost" data-act="siteDup" data-l="${L}" data-i="${i}">نسخ</button><button class="btn sm bad" data-act="siteDel" data-l="${L}" data-i="${i}">حذف</button></div></div>
+  ${T.auto?`<p class="sub" style="margin-top:6px;font-size:13px">${T.auto}</p>`:''}
+  ${T.it?`<div class="sub-list"><div class="slist">${items.map((x,j)=>`<div class="srow" data-l="${IL}" data-i="${j}"><div class="hd">${DH}<div class="ttl">${safeImg(x.img)?`<img src="${esc(x.img)}" alt="" class="thumb">`:''}<b>${esc(sumOf(x))||'—'}</b></div>
+   <div class="acts"><button class="btn sm ghost" data-act="siteDlg" data-c="item:${esc(p.id)}:${esc(b.id)}:${j}">تعديل</button>${mvBtns(IL,j,items.length)}<button class="btn sm ghost" data-act="siteDup" data-l="${IL}" data-i="${j}">نسخ</button><button class="btn sm bad" data-act="siteDel" data-l="${IL}" data-i="${j}">حذف</button></div></div></div>`).join('')}</div>
+   <button class="btn sm ghost" style="margin-top:8px" data-act="siteDlg" data-c="newitem:${esc(p.id)}:${esc(b.id)}">إضافة ${T.it.n}</button></div>`:''}</div>`}).join(''):'<div class="card empty">لا توجد أقسام في هذه الصفحة بعد. اضغط «إضافة قسم».</div>'}</div>
+ <div style="margin-top:12px"><button class="btn ghost" data-act="siteAddBlk" data-p="${esc(p.id)}">إضافة قسم في آخر الصفحة</button></div></div>`}
+function siteTabBrand(){const s=S();return `<div class="grid g2" style="align-items:start"><div class="card"><h3>الهوية وبيانات التواصل</h3><p class="sub" style="margin-bottom:10px">تظهر في الرأس والتذييل وصفحة التواصل. يُوحَّد رقم الهاتف تلقائياً بالصيغة +974 0000 0000.</p>
+ ${BRANDF.map(([k,l])=>`<div class="split"><span>${l}</span><b${k==='email'||k==='phone'?' dir="ltr"':''}>${esc(k==='phone'?fphone(s.brand[k]):s.brand[k])||'—'}</b></div>`).join('')}
+ <div style="margin-top:12px"><button class="btn" data-act="siteDlg" data-c="brand">تعديل الهوية والتواصل</button></div></div>
+ <div class="card"><h3>شريط الإعلان</h3><p class="sub" style="margin-bottom:10px">إعلان قصير يظهر أعلى صفحات الزوار، مثل خدمة جديدة أو موعد إجازة.</p>${s.announce.on&&s.announce.text?annc():'<p class="sub">الشريط غير ظاهر حالياً.</p>'}
+ <div class="row" style="margin-top:12px"><button class="btn" data-act="siteDlg" data-c="announce">تعديل الإعلان</button>${s.announce.on?'<button class="btn ghost" data-act="siteAnn" data-v="0">إخفاء الشريط</button>':s.announce.text?'<button class="btn ghost" data-act="siteAnn" data-v="1">إظهار الشريط</button>':''}</div></div></div>`}
+function siteTabFooter(){const s=S(),cols=s.footer.cols;return `<div class="card"><h3>نصوص التذييل</h3><div class="split"><span>النبذة</span><b>${inl(s.footer.about)}</b></div><div class="split"><span>سطر الحقوق</span><b>${esc(tv(s.footer.note))}</b></div><div class="split"><span>الآية</span><b>${esc(s.footer.verse)}</b></div>
+ <div style="margin-top:12px"><button class="btn" data-act="siteDlg" data-c="foot">تعديل نصوص التذييل</button></div></div>
+ <div class="card" style="margin-top:16px"><div class="row" style="justify-content:space-between"><div><h3 style="margin:0">أعمدة الروابط</h3><p class="sub">رتّب الأعمدة والروابط بالسحب أو بالأسهم.</p></div><button class="btn" data-act="siteDlg" data-c="newcol">إضافة عمود</button></div>
+ <div class="slist" style="margin-top:12px">${cols.map((c,i)=>`<div class="srow" data-l="fcols" data-i="${i}"><div class="hd">${DH}<div class="ttl"><b>${esc(c.title)}</b><small>${(c.links||[]).length} روابط</small></div>
+  <div class="acts"><button class="btn sm ghost" data-act="siteDlg" data-c="fcol:${i}">تعديل</button>${mvBtns('fcols',i,cols.length)}<button class="btn sm bad" data-act="siteDel" data-l="fcols" data-i="${i}">حذف</button></div></div>
+  <div class="sub-list"><div class="slist">${(c.links||[]).map((l,j)=>`<div class="srow" data-l="flinks:${i}" data-i="${j}"><div class="hd">${DH}<div class="ttl"><b>${esc(tv(l.label))}</b><small dir="ltr">${esc(tv(l.href))}</small></div>
+   <div class="acts"><button class="btn sm ghost" data-act="siteDlg" data-c="flink:${i}:${j}">تعديل</button>${mvBtns('flinks:'+i,j,c.links.length)}<button class="btn sm bad" data-act="siteDel" data-l="flinks:${i}" data-i="${j}">حذف</button></div></div></div>`).join('')}</div>
+   <button class="btn sm ghost" style="margin-top:8px" data-act="siteDlg" data-c="newlink:${i}">إضافة رابط</button></div></div>`).join('')}</div></div>`}
+function siteTabCatalog(){const c=S().catalog;const row=(kind,k,o,base)=>`<div class="srow"><div class="hd"><div class="ttl"><span class="tag">${esc(o.k)}</span> <b>${esc(o.name)}</b><small>${esc(o.desc)}</small>${(c[kind]||{})[k]?' <span class="tag warn">معدّل</span>':''}</div>
+ <div class="acts"><button class="btn sm ghost" data-act="siteDlg" data-c="cat:${kind}:${k}">تعديل</button>${(c[kind]||{})[k]?`<button class="btn sm ghost" data-act="siteCatReset" data-k="${kind}:${k}">الأصل</button>`:''}</div></div></div>`;
+ return `<div class="card"><h3>صيغ التمويل</h3><p class="sub" style="margin-bottom:10px">الاسم والوصف المعروضان للزوار والعملاء. المعدلات والنسب تُضبط من <a href="#/a/settings">الإعدادات</a>.</p><div class="slist">${Object.entries(PRODUCTS).map(([k,p])=>row('products',k,p)).join('')}</div></div>
+ <div class="card" style="margin-top:16px"><h3>برامج التكافل</h3><p class="sub" style="margin-bottom:10px">الاسم والوصف. الاشتراك الشهري وحد التعويض قيم مالية ثابتة في النظام.</p><div class="slist">${Object.entries(PLANS).map(([k,p])=>row('plans',k,p)).join('')}</div></div>`}
+function siteTabPublish(){const s=S(),c=pubCfg(),h=(db&&db.siteHist)||[];return `<div class="grid g2" style="align-items:start">
+ <div class="card"><h3>النشر للزوار</h3><p class="sub" style="margin-bottom:10px">كل تعديل يُحفظ فوراً على هذا الجهاز. وبالنشر يصبح المحتوى ظاهراً لكل زوار الموقع على أي جهاز خلال دقيقة إلى دقيقتين تقريباً.</p>
+  <div class="split"><span>الحالة</span><b>${siteDirty()?'<span class="tag warn">تعديلات غير منشورة</span>':s.rev?'<span class="tag ok">منشور</span>':'<span class="tag">المحتوى الأصلي</span>'}</b></div>
+  <div class="split"><span>آخر نشر</span><b>${s.pubRev?fdt(new Date(s.pubRev).toISOString()):'—'}</b></div>
+  <div class="split"><span>رمز النشر</span><b>${c.token?'<span class="tag ok">محفوظ على هذا الجهاز</span>':'<span class="tag bad">غير مضاف</span>'}</b></div>
+  <div class="row" style="margin-top:12px"><button class="btn" data-act="sitePublish">نشر الآن</button><button class="btn ghost" data-act="sitePubCfg">إعدادات النشر</button></div></div>
+ <div class="card"><h3>ملف المحتوى</h3><p class="sub" style="margin-bottom:10px">احفظ المحتوى كاملاً في ملف، أو انقله إلى جهاز آخر أو إلى نسخة الكمبيوتر.</p>
+  <div class="row"><button class="btn ghost" data-act="siteExport">تنزيل ملف المحتوى</button><button class="btn ghost" data-act="siteImport">استيراد ملف محتوى</button></div><input type="file" id="siteFile" accept=".json,application/json" hidden>
+  <h3 style="margin-top:18px">المحتوى الأصلي</h3><p class="sub" style="margin-bottom:10px">يعيد كل الصفحات والنصوص إلى صيغتها الأولى، مع حفظ النسخة الحالية في السجل أدناه.</p><button class="btn bad" data-act="siteDefaults">استعادة المحتوى الأصلي</button></div></div>
+ <div class="card" style="margin-top:16px"><h3>النسخ السابقة</h3><p class="sub" style="margin-bottom:10px">تُحفظ نسخة تلقائياً عند كل نشر واستيراد واستعادة، وآخر 12 نسخة متاحة للاسترجاع.</p>
+  ${h.length?table([{l:'التاريخ'},{l:'المناسبة'},{l:''}],h.map((x,i)=>[fdt(x.at),esc(x.note),`<button class="btn sm ghost" data-act="siteVer" data-i="${i}">استرجاع</button>`])):'<p class="sub">لا توجد نسخ سابقة بعد.</p>'}</div>`}
+/* ---------- حفظ النماذج ---------- */
+FORMS.siteSave=d=>{const [kind,a,b,c]=String(d._ctx).split(':');let msg='تم حفظ التعديل';
+ siteEdit(s=>{
+  if(kind==='page'||kind==='newpage'){const p=kind==='page'?s.pages.find(x=>x.id===a):{id:uid('pg'),blocks:[{id:uid('b'),t:'text',title:'',body:'اكتب محتوى الصفحة هنا.'}],inNav:true,head:true};
+   need(p,'الصفحة غير موجودة.');const slug0=p.slug;readFields(PAGEF,d,p);need(p.title.length>=2,'اكتب عنوان الصفحة.');
+   if(kind==='page'&&(p.sys||slug0===''))p.slug=slug0;else{p.slug=fromSlug(p.slug)||fromSlug(p.nav)||('page-'+Math.random().toString(36).slice(2,6));checkSlug(s,p.slug,p.id)}
+   if(!p.nav)p.nav=p.title;if(kind==='newpage'){s.pages.push(p);msg='أُضيفت الصفحة';setTimeout(()=>go('#/a/site/pg-'+p.id),0)}}
+  else if(kind==='block'||kind==='newblock'){const p=s.pages.find(x=>x.id===a);need(p,'الصفحة غير موجودة.');
+   const bl=kind==='block'?p.blocks.find(x=>x.id===b):{id:uid('b'),t:b,...(BT[b].it?{items:[]}:{})};need(bl&&BT[bl.t],'القسم غير موجود.');
+   readFields([...BT[bl.t].f,WIDTH],d,bl);if(kind==='newblock'){p.blocks.push(bl);msg='أُضيف القسم في آخر الصفحة'}}
+  else if(kind==='item'||kind==='newitem'){const p=s.pages.find(x=>x.id===a),bl=p&&p.blocks.find(x=>x.id===b);need(bl&&BT[bl.t].it,'القسم غير موجود.');bl.items=bl.items||[];
+   const it=kind==='item'?bl.items[+c]:{};need(it,'العنصر غير موجود.');readFields(BT[bl.t].it.f,d,it);need(Object.values(it).some(v=>v&&(v.length||v===true)),'املأ حقلاً واحداً على الأقل.');if(kind==='newitem'){bl.items.push(it);msg='أُضيف العنصر'}}
+  else if(kind==='brand'){const x=readFields(BRANDF,d,{});need(x.name.length>=2,'اكتب اسم العلامة.');if(x.email)need(/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(x.email),'البريد الإلكتروني غير صحيح.');
+   if(x.phone){need(phoneDigits(x.phone).length>=8,'رقم الهاتف غير صحيح.');x.phone=fphone(x.phone)}s.brand=x}
+  else if(kind==='announce'){s.announce=readFields(ANNF,d,{});if(s.announce.on)need(s.announce.text,'اكتب نص الإعلان.')}
+  else if(kind==='foot'){readFields(FOOTF,d,s.footer)}
+  else if(kind==='fcol'||kind==='newcol'){const col=kind==='fcol'?s.footer.cols[+a]:{links:[]};need(col,'العمود غير موجود.');readFields([['title']],d,col);need(col.title,'اكتب عنوان العمود.');if(kind==='newcol')s.footer.cols.push(col)}
+  else if(kind==='flink'||kind==='newlink'){const col=s.footer.cols[+a];need(col,'العمود غير موجود.');const l=kind==='flink'?col.links[+b]:{};need(l,'الرابط غير موجود.');readFields([['label'],['href',,'href']],d,l);need(l.label&&l.href,'اكتب نص الرابط وعنوانه.');if(kind==='newlink')col.links.push(l)}
+  else if(kind==='cat'){const x=readFields(CATF,d,{});need(x.name,'اكتب الاسم.');s.catalog[a]=s.catalog[a]||{};s.catalog[a][b]=x}
+ },msg);closeDlg()};
+/* ---------- الأوامر ---------- */
+function moveIn(l,from,to,msg){siteEdit(s=>{const a=listAt(s,l);need(a&&a[from],'العنصر غير موجود.');to=Math.max(0,Math.min(a.length-1,to));const [x]=a.splice(from,1);a.splice(to,0,x)},msg||'تم تغيير الترتيب')}
+Object.assign(ACTS,{
+ siteDlg(b){const s=S(),[kind,a,x,c]=b.dataset.c.split(':');
+  if(kind==='page')return formDlg('إعدادات الصفحة',b.dataset.c,PAGEF.filter(f=>!(f[0]==='slug'&&(s.pages.find(p=>p.id===a).sys||s.pages.find(p=>p.id===a).slug===''))),s.pages.find(p=>p.id===a));
+  if(kind==='newpage')return formDlg('صفحة جديدة','newpage',PAGEF,{inNav:true,head:true},'تُضاف الصفحة بقسم نصي تستطيع تعديله، ثم تضيف إليها ما تشاء من أقسام.');
+  if(kind==='block'){const bl=s.pages.find(p=>p.id===a).blocks.find(y=>y.id===x);return formDlg('تعديل قسم: '+BT[bl.t].n,b.dataset.c,[...BT[bl.t].f,WIDTH],bl,BT[bl.t].auto)}
+  if(kind==='item'||kind==='newitem'){const bl=s.pages.find(p=>p.id===a).blocks.find(y=>y.id===x);const T=BT[bl.t].it;return formDlg((kind==='item'?'تعديل ':'إضافة ')+T.n,b.dataset.c,T.f,kind==='item'?bl.items[+c]:{})}
+  if(kind==='brand')return formDlg('الهوية والتواصل','brand',BRANDF,s.brand);
+  if(kind==='announce')return formDlg('شريط الإعلان','announce',ANNF,s.announce);
+  if(kind==='foot')return formDlg('نصوص التذييل','foot',FOOTF,s.footer,'سطر الحقوق الافتراضي {footNote} يعرض وصف النسخة تلقائياً.');
+  if(kind==='fcol'||kind==='newcol')return formDlg(kind==='fcol'?'تعديل العمود':'عمود جديد',b.dataset.c,[['title','عنوان العمود']],kind==='fcol'?s.footer.cols[+a]:{});
+  if(kind==='flink'||kind==='newlink')return formDlg(kind==='flink'?'تعديل الرابط':'رابط جديد',b.dataset.c,[['label','نص الرابط'],['href','العنوان','href']],kind==='flink'?s.footer.cols[+a].links[+x]:{});
+  if(kind==='cat'){const o=(a==='products'?PRODUCTS:PLANS)[x];return formDlg('تعديل '+o.name,b.dataset.c,CATF,o)}},
+ siteAddBlk(b){const p=b.dataset.p;dialog(`<h3>إضافة قسم</h3><p class="sub" style="margin-bottom:10px">اختر نوع القسم، ويُضاف في آخر الصفحة ثم ترتّبه كما تشاء.</p><div class="typegrid">${Object.entries(BT).map(([k,t])=>`<button class="btn ghost" data-act="siteNewBlk" data-p="${esc(p)}" data-t="${k}">${t.n}</button>`).join('')}</div><div class="row" style="margin-top:14px"><button class="btn ghost" data-act="close">إلغاء</button></div>`)},
+ siteNewBlk(b){const t=b.dataset.t;if(!BT[t].f.length){siteEdit(s=>{s.pages.find(p=>p.id===b.dataset.p).blocks.push({id:uid('b'),t})},'أُضيف القسم في آخر الصفحة');return closeDlg()}
+  formDlg('قسم جديد: '+BT[t].n,`newblock:${b.dataset.p}:${t}`,[...BT[t].f,WIDTH],t==='cards'?{cols:'3',style:'plain'}:t==='kpis'?{cols:'4'}:(t==='zakat'||t==='contact')?Object.assign({},siteDefaults().pages.flatMap(x=>x.blocks).find(x=>x.t===t),{id:undefined,w:''}):{},BT[t].auto)},
+ siteMv(b){moveIn(b.dataset.l,+b.dataset.i,+b.dataset.i+(+b.dataset.d))},
+ siteHide(b){siteEdit(s=>{const a=listAt(s,b.dataset.l),x=a[+b.dataset.i];if(b.dataset.l==='pages'){need(x.slug!==''||x.hidden,'لا يمكن إخفاء الصفحة الرئيسية.');x.hidden=!x.hidden}else x.hide=!x.hide},'تم تغيير الظهور')},
+ siteDup(b){siteEdit(s=>{const a=listAt(s,b.dataset.l),i=+b.dataset.i,x=clone(a[i]);if(x.id)x.id=uid(b.dataset.l==='pages'?'pg':'b');
+  if(b.dataset.l==='pages'){x.title+=' (نسخة)';x.nav=(x.nav||'')+' (نسخة)';x.slug=fromSlug((x.slug||'home')+'-2');while(s.pages.some(p=>p.slug===x.slug))x.slug+='x';delete x.sys;x.blocks.forEach(y=>y.id=uid('b'))}a.splice(i+1,0,x)},'تم النسخ')},
+ siteDel(b){const s=S(),a=listAt(s,b.dataset.l),x=a&&a[+b.dataset.i];if(!x)return;ACTS.siteDel.pending={l:b.dataset.l,i:+b.dataset.i};
+  dialog(`<h3>تأكيد الحذف</h3><p>هل تريد حذف «${esc(sumOf(x))||'هذا العنصر'}»؟ يمكنك التراجع عن الحذف بزر «تراجع».</p><div class="row" style="margin-top:16px"><button class="btn bad" data-act="siteDelOk">حذف</button><button class="btn ghost" data-act="close">إلغاء</button></div>`)},
+ siteDelOk(){const p=ACTS.siteDel.pending;ACTS.siteDel.pending=null;closeDlg();if(!p)return;siteEdit(s=>{const a=listAt(s,p.l);need(!(p.l==='pages'&&a[p.i].slug===''),'لا يمكن حذف الصفحة الرئيسية.');a.splice(p.i,1)},'تم الحذف');
+  if(p.l==='pages'&&location.hash.includes('/pg-'))go('#/a/site/pages')},
+ siteUndo(){if(!SH.u.length)return;SH.r.push(JSON.stringify(S()));setSite(JSON.parse(SH.u.pop()),true);render();toast('تم التراجع عن آخر تعديل')},
+ siteRedo(){if(!SH.r.length)return;SH.u.push(JSON.stringify(S()));setSite(JSON.parse(SH.r.pop()),true);render();toast('أُعيد التعديل')},
+ siteAnn(b){siteEdit(s=>{s.announce.on=b.dataset.v==='1'},b.dataset.v==='1'?'أصبح شريط الإعلان ظاهراً':'أُخفي شريط الإعلان')},
+ siteCatReset(b){const [k,x]=b.dataset.k.split(':');siteEdit(s=>{delete s.catalog[k][x]},'أُعيد النص الأصلي')},
+ imgClear(b){const f=b.closest('form');f.querySelector(`[name="${b.dataset.k}"]`).value='';const im=f.querySelector(`[data-prev="${b.dataset.k}"]`);im.hidden=true;im.removeAttribute('src')},
+ async sitePublish(b){const c=pubCfg();if(!c.token)return ACTS.sitePubCfg();if(b)b.disabled=true;toast('جارٍ النشر…');
+  try{if(!S().rev)siteEdit(()=>{});await ghPublish();const s=clone(S());s.pubRev=s.rev;setSite(s,true);siteVersion('نشر للزوار');save();logA('نشر محتوى الموقع للزوار');render();
+   dialog(`<h3>تم النشر بنجاح</h3><p>أُرسل المحتوى إلى الموقع المنشور، ويظهر لكل الزوار خلال دقيقة إلى دقيقتين تقريباً.</p><div class="row" style="margin-top:16px"><button class="btn" data-act="close">حسناً</button></div>`)}
+  finally{if(b)b.disabled=false}},
+ sitePubCfg(){const c=pubCfg();dialog(`<h3>إعدادات النشر</h3><p class="sub" style="margin-bottom:10px">يُنشر المحتوى في ملف داخل مستودع الموقع على GitHub. أنشئ رمزاً دقيق الصلاحية (Fine-grained token) لهذا المستودع وحده بصلاحية <b>Contents: Read and write</b> من <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">إعدادات GitHub</a>، ثم الصقه هنا. يُحفظ الرمز على هذا الجهاز فقط، ولا يدخل في ملف المحتوى ولا في النسخ الاحتياطية.</p>
+  <form data-form="sitePubCfg"><div class="f"><label>المستودع<input name="repo" value="${esc(c.repo)}" dir="ltr" required></label><div class="grid g2"><label>الفرع<input name="branch" value="${esc(c.branch)}" dir="ltr" required></label><label>مسار الملف<input name="path" value="${esc(c.path)}" dir="ltr" required></label></div>
+  <label>رمز النشر<input name="token" type="password" value="${esc(c.token)}" dir="ltr" autocomplete="off" placeholder="github_pat_…"></label><p class="err"></p>
+  <div class="row"><button class="btn">حفظ واختبار الاتصال</button>${c.token?'<button type="button" class="btn ghost" data-act="sitePubForget">حذف الرمز من هذا الجهاز</button>':''}<button type="button" class="btn ghost" data-act="close">إغلاق</button></div></div></form>`)},
+ sitePubForget(){const c=pubCfg();c.token='';store.set(PUBKEY,JSON.stringify(c));closeDlg();render();toast('حُذف رمز النشر من هذا الجهاز')},
+ siteExport(){download(`محتوى-${S().brand.name}-${fdate(now())}.json`,JSON.stringify(pubPayload(),null,1),'application/json');toast('تم تنزيل ملف المحتوى')},
+ siteImport(){const i=$('#siteFile');i.value='';i.click()},
+ siteImportOk(){const x=ACTS.siteImport.pending;ACTS.siteImport.pending=null;closeDlg();if(!x)return;siteVersion('قبل الاستيراد');siteEdit(s=>{Object.keys(s).forEach(k=>delete s[k]);Object.assign(s,normSite(x))},'تم استيراد المحتوى. راجعه ثم انشره للزوار')},
+ siteDefaults(){dialog(`<h3>استعادة المحتوى الأصلي</h3><p>ستعود كل الصفحات والنصوص إلى صيغتها الأولى، وتُحفظ النسخة الحالية في سجل النسخ السابقة.</p><div class="row" style="margin-top:16px"><button class="btn bad" data-act="siteDefaultsOk">استعادة</button><button class="btn ghost" data-act="close">إلغاء</button></div>`)},
+ siteDefaultsOk(){closeDlg();siteVersion('قبل استعادة المحتوى الأصلي');siteEdit(s=>{const d=siteDefaults();Object.keys(s).forEach(k=>delete s[k]);Object.assign(s,d)},'عاد المحتوى الأصلي. انشره ليظهر للزوار')},
+ siteVer(b){const h=(db.siteHist||[])[+b.dataset.i];if(!h)return;const x=JSON.parse(h.site);siteVersion('قبل استرجاع نسخة '+fdt(h.at));siteEdit(s=>{Object.keys(s).forEach(k=>delete s[k]);Object.assign(s,normSite(x))},'استُرجعت النسخة. انشرها لتظهر للزوار')}
+});
+FORMS.sitePubCfg=async d=>{const c={repo:d.repo.trim(),branch:d.branch.trim(),path:d.path.trim().replace(/^\/+/,''),token:d.token.trim()};
+ need(/^[\w.-]+\/[\w.-]+$/.test(c.repo),'اكتب المستودع بالصيغة owner/repo.');need(c.token,'الصق رمز النشر.');
+ const r=await fetch(`https://api.github.com/repos/${c.repo}`,{headers:{Authorization:'Bearer '+c.token,Accept:'application/vnd.github+json'}}).catch(()=>null);
+ need(r,'تعذّر الاتصال بـ GitHub. تحقق من الإنترنت.');need(r.ok,ghErr(r.status));const j=await r.json();need(!j.permissions||j.permissions.push,ghErr(403));
+ store.set(PUBKEY,JSON.stringify(c));closeDlg();render();toast('حُفظت إعدادات النشر ونجح الاتصال')};
+document.addEventListener('change',e=>{
+ if(e.target.id==='siteFile'&&e.target.files[0]){const fr=new FileReader();fr.onload=()=>{let x;try{x=JSON.parse(fr.result)}catch(er){return toast('الملف ليس ملف محتوى صالحاً.')}
+  if(!x||!Array.isArray(x.pages))return toast('الملف ليس ملف محتوى صالحاً.');ACTS.siteImport.pending=x;
+  dialog(`<h3>استيراد المحتوى</h3><p>يحتوي الملف على ${x.pages.length} صفحات. سيحل محل المحتوى الحالي، وتُحفظ النسخة الحالية في السجل.</p><div class="row" style="margin-top:16px"><button class="btn" data-act="siteImportOk">استيراد</button><button class="btn ghost" data-act="close">إلغاء</button></div>`)};fr.readAsText(e.target.files[0])}
+ const fi=e.target.closest&&e.target.closest('[data-imgfile]');if(fi&&fi.files[0]){const k=fi.dataset.imgfile,f=fi.closest('form'),file=fi.files[0];
+  if(!/^image\//.test(file.type))return toast('اختر ملف صورة.');const img=new Image(),url=URL.createObjectURL(file);
+  img.onload=()=>{const m=1400,sc=Math.min(1,m/Math.max(img.width,img.height));const cv=document.createElement('canvas');cv.width=Math.round(img.width*sc);cv.height=Math.round(img.height*sc);
+   cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);const png=file.type==='image/png'&&file.size<200000;const data=cv.toDataURL(png?'image/png':'image/jpeg',.84);URL.revokeObjectURL(url);
+   if(data.length>900000)return toast('الصورة كبيرة جداً حتى بعد التصغير. اختر صورة أصغر.');
+   f.querySelector(`[name="${k}"]`).value=data;const p=f.querySelector(`[data-prev="${k}"]`);p.src=data;p.hidden=false;toast('جُهّزت الصورة، اضغط «حفظ»')};
+  img.onerror=()=>{URL.revokeObjectURL(url);toast('تعذّرت قراءة الصورة.')};img.src=url}});
+document.addEventListener('input',e=>{if(e.target.matches('[data-imgurl]')){const p=e.target.closest('form').querySelector(`[data-prev="${e.target.name}"]`);const v=safeImg(e.target.value);if(v){p.src=v;p.hidden=false}else p.hidden=true}});
+/* ---------- السحب والإفلات (فأرة ولمس) ---------- */
+let drag=null;
+document.addEventListener('pointerdown',e=>{const h=e.target.closest('.dh');if(!h)return;const row=h.closest('.srow');if(!row)return;e.preventDefault();
+ drag={row,list:row.parentElement,from:[...row.parentElement.children].indexOf(row),l:row.dataset.l,id:e.pointerId};row.classList.add('drag');document.body.classList.add('dragging')});
+document.addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id)return;e.preventDefault();
+ for(const r of drag.list.children){if(r===drag.row||!r.classList.contains('srow'))continue;const b=r.getBoundingClientRect();
+  if(e.clientY>b.top&&e.clientY<b.bottom){const ref=e.clientY>b.top+b.height/2?r.nextSibling:r;if(ref!==drag.row&&ref!==drag.row.nextSibling)drag.list.insertBefore(drag.row,ref);break}}
+ if(e.clientY<70)scrollBy(0,-14);else if(e.clientY>innerHeight-70)scrollBy(0,14)},{passive:false});
+const endDrag=e=>{if(!drag)return;const d=drag;drag=null;d.row.classList.remove('drag');document.body.classList.remove('dragging');const to=[...d.list.children].indexOf(d.row);if(to!==d.from&&to>=0)moveIn(d.l,d.from,to,'تم تغيير الترتيب بالسحب');};
+document.addEventListener('pointerup',endDrag);document.addEventListener('pointercancel',endDrag);
+
 document.addEventListener('submit',async e=>{
   const f=e.target.closest('form[data-form]');if(!f)return;e.preventDefault();
   const btn=e.submitter&&e.submitter.name==='d'?e.submitter.value:null;
@@ -1212,7 +1674,8 @@ window.addEventListener('storage',e=>{if(e.key===KEY&&e.newValue){db=JSON.parse(
   try{db=JSON.parse(store.get(KEY)||'null')}catch(e){db=null}
   if(!db||db.v!==1)await seed();
   normDb();
-  render();
+  initSite();const lp=loadPublished();await Promise.race([lp,new Promise(r=>setTimeout(r,1500))]);
+  render();lp.then(ch=>{if(ch&&!$('dialog[open]'))render()});
   if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
 })();
 </script>
