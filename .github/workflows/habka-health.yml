@@ -4,6 +4,11 @@ on:
     branches: [main]
     paths: ['habka/**', 'scripts/habka-e2e.mjs', '.github/workflows/habka-health.yml']
   workflow_dispatch:
+    inputs:
+      admin_token:
+        description: "جلسة إدارة مؤقتة لاختبار لوحة الإدارة (اختياري)"
+        required: false
+        default: ""
 permissions:
   contents: read
 concurrency:
@@ -35,7 +40,11 @@ jobs:
           for i in 1 2 3; do npx playwright install --with-deps chromium && exit 0; sleep 20; done
           exit 1
       - name: اختبار الموقع المنشور بكل الأدوار على الكمبيوتر والجوال
-        run: node scripts/habka-e2e.mjs https://munjiz-qa.github.io/habka/ shots
+        env:
+          ADMIN_TOKEN: ${{ github.event.inputs.admin_token }}
+        run: |
+          if [ -n "$ADMIN_TOKEN" ]; then echo "::add-mask::$ADMIN_TOKEN"; fi
+          node scripts/habka-e2e.mjs https://munjiz-qa.github.io/habka/ shots
       - name: حفظ لقطات الشاشة
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
