@@ -119,12 +119,24 @@ async function loadPublic() {
   if (nav && !nav.querySelector('a[href="#prices"]')) { const a = document.createElement("a"); a.href = "#prices"; a.textContent = "الأسعار"; const c = nav.querySelector('a[href="#contact"]'); c ? c.before(a) : nav.append(a); }
 }
 
+// ===== محتوى الموقع من محرر الإدارة (content/cms): يُطبَّق فوق الصفحة الأصلية، وإن فشل تبقى الصفحة كما هي =====
+async function loadCms() {
+  const C = window.BQCMS; if (!C || C.preview) return;
+  const s = await F.getDoc(F.doc(db, "content", "cms"));
+  if (!s.exists()) { if (C.cached()) { try { localStorage.removeItem(C.KEY); } catch (e) {} C.apply({}); } return; }
+  const cfg = s.data(); delete cfg.updatedAt; delete cfg.updatedBy;
+  const ids = new Set(); JSON.stringify(cfg).replace(/"img:(i[a-z0-9]+)"/g, (m, id) => ids.add(id));
+  cfg.imgData = {};
+  await Promise.all([...ids].map(async (id) => { const d = await F.getDoc(F.doc(db, "content", "img_" + id)).catch(() => null); if (d?.exists()) cfg.imgData[id] = d.data().data; }));
+  C.apply(cfg); C.save(cfg);
+}
+
 if (READY) {
   mountPlanButtons();
   mountSolarButtons();
   // المخطط يبني القوائم عند التحميل؛ ننتظره قليلاً ثم نطبق الخطة المطلوبة
   setTimeout(applyPlanParam, 300);
-  loadPublic().catch(() => {});
+  loadPublic().catch(() => {}).then(() => loadCms()).catch(() => {});
   A.onAuthStateChanged(auth, async (u) => {
     USER = u;
     if (navA) navA.textContent = "حسابي";
