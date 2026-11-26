@@ -331,10 +331,14 @@ const KIND={attack:['هجوم أو اشتباك','Attack or clash'],deploy:['ا�
 let MIL=null,WARS=null,MAP=null;
 const follows=()=>store.get('khabar-follow',{});
 const warKey=w=>w&&w.timeline&&w.timeline[0]?w.timeline[0].date+'|'+(w.timeline[0].ar||'').slice(0,60):'';
+// الرئيسية تكفيها نسخة مختصرة من ملفات الحروب (data/wars-home.json، تُشتق من wars.json عند كل مزامنة)،
+// وبقية الصفحات تحمّل الملف الكامل. إن تعذّرت المختصرة يُحمَّل الملف الكامل تلقائياً.
 async function loadMil(){
-  if(MIL&&WARS)return;
-  const [m,w]=await Promise.all([getJSON('data/military.json').catch(()=>null),getJSON('data/wars.json').catch(()=>null)]);
-  MIL=m;WARS=w;
+  const full=VIEW!=='today'&&!VIEW.startsWith('b-');
+  if(MIL&&WARS&&(!WARS.lite||!full))return;
+  const [m,w]=await Promise.all([MIL?MIL:getJSON('data/military.json').catch(()=>null),
+    (full?Promise.reject():getJSON('data/wars-home.json')).catch(()=>getJSON('data/wars.json')).catch(()=>null)]);
+  MIL=m;if(w||!WARS)WARS=w;
 }
 const lvl=l=>{const x=LVL[l]||LVL.calm;return {t:LANG==='en'?x[1]:x[0],c:x[2]}};
 function lvlPill(w){const x=lvl(w.level),s=el('span','lvl');s.style.setProperty('--lc',x.c);s.append(el('i'),x.t);s.title=L(`${w.incidents_3d||0} حادثة موثّقة في آخر 3 أيام`,`${w.incidents_3d||0} documented incidents in the last 3 days`);return s}
