@@ -69,6 +69,33 @@ const get = async (p, tries = 3) => { for (let i = 0; i < tries; i++) { try { co
     check(fe.length === 0, `${name}: لا أخطاء جافاسكربت ${fe.join(" | ").slice(0, 200)}`);
     await ctx.close();
   }
+  // فحص سلامة بيانات المخطط: كل العلامات والطرازات بلا قيم فاسدة وضمن حدود معقولة
+  {
+    const ctx = await br.newContext({ viewport: { width: 1280, height: 800 }, locale: "ar" });
+    await ctx.route(/fonts\.googleapis|fonts\.gstatic/, (r) => r.abort());
+    const pg = await ctx.newPage(); const perr = []; pg.on("pageerror", (e) => perr.push(String(e)));
+    await pg.goto(BASE, { waitUntil: "load", timeout: 45000 });
+    await pg.waitForSelector("#cvBrand option", { state: "attached", timeout: 20000 }).catch(() => {});
+    const r = await pg.evaluate(async () => {
+      const B = document.getElementById("cvBrand"), M = document.getElementById("cvModel"), K = document.getElementById("cvKpi");
+      const names = [...B.options].map((o) => o.textContent.trim()); let models = 0, bad = 0, sample = "";
+      for (let i = 0; i < B.options.length; i++) {
+        B.selectedIndex = i; B.dispatchEvent(new Event("change"));
+        for (let j = 0; j < M.options.length; j++) {
+          M.selectedIndex = j; M.dispatchEvent(new Event("change")); models++;
+          const t = K.innerText;
+          if (/NaN|undefined|Infinity|null|\[object/.test(t)) { bad++; if (!sample) sample = names[i] + "/" + M.options[j].textContent + ": " + t.slice(0, 80); }
+        }
+      }
+      return { brands: B.options.length, dup: names.length - new Set(names).size, models, bad, sample };
+    });
+    check(r.brands >= 130, `بيانات المخطط: عدد العلامات (${r.brands})`);
+    check(r.dup === 0, `بيانات المخطط: لا علامات مكررة (${r.dup})`);
+    check(r.models >= 1400, `بيانات المخطط: عدد الطرازات (${r.models})`);
+    check(r.bad === 0, `بيانات المخطط: لا قيم فاسدة في الخطط ${r.sample}`);
+    check(perr.length === 0, `بيانات المخطط: لا أخطاء جافاسكربت ${perr.join(" | ").slice(0, 150)}`);
+    await ctx.close();
+  }
   // الهواتف الصغيرة (320 و360 بكسل): لا تمرير أفقي في الصفحات الثلاث
   for (const w of [320, 360]) {
     const ctx = await br.newContext({ viewport: { width: w, height: 700 }, isMobile: true, hasTouch: true, locale: "ar" });
