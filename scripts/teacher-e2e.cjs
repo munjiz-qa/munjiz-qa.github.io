@@ -1,4 +1,4 @@
-// اختبار شامل لمنصة معلّم دون أي خادم ودون Claude: زائر، عميل افتراضي، عميل جديد، مدير شامل، على الكمبيوتر والجوال.
+// اختبار شامل لمنصة معلّم دون أي خادم ودون أي خدمة خارجية: زائر، عميل افتراضي، عميل جديد، مدير شامل، على الكمبيوتر والجوال.
 // التشغيل: node scripts/teacher-e2e.cjs <رابط معلّم> <مجلد اللقطات>
 const { chromium, devices } = require('playwright');
 const [base, shots = 'shots'] = process.argv.slice(2); require('fs').mkdirSync(shots, { recursive: true });
@@ -27,7 +27,7 @@ const results = []; const ok = (name, cond, extra = '') => results.push({ name, 
     await p.goto(base, { waitUntil: 'networkidle' });
     ok(`${dev} زائر: الصفحة تعمل`, (await p.textContent('#view')).includes('خطوتك اليوم'));
     ok(`${dev} زائر: لا تبويب إدارة`, !(await tabs()).includes('الإدارة'));
-    ok(`${dev} لا اعتماد على Claude ولا على أي خادم`, await p.evaluate(() => !window.claude && !window.TEACHER_CONFIG.API));
+    ok(`${dev} لا اعتماد على أي خدمة خارجية ولا على أي خادم`, await p.evaluate(() => !window.claude && !window.TEACHER_CONFIG.API));
     await p.goto(base + '#admin'); await p.waitForTimeout(300);
     ok(`${dev} زائر: رابط الإدارة لا يفتح اللوحة`, !(await p.textContent('#view')).includes('لوحة الإدارة'));
     await p.screenshot({ path: `${shots}/${dev}-1-visitor.png` });
@@ -57,7 +57,7 @@ const results = []; const ok = (name, cond, extra = '') => results.push({ name, 
     const stTok = await p.evaluate(() => localStorage.getItem('teacher-token-v1'));
     ok(`${dev} النظام يرفض أوامر الإدارة من العميل`, (await L('listUsers', { token: stTok })).error === 'forbidden');
     await p.goto(base + '#l1'); await p.waitForTimeout(300);
-    await p.fill('textarea', 'أريد من Claude مساعدتي في تنظيم مواعيد العيادة وكتابة رسائل المتابعة.');
+    await p.fill('textarea', 'أريد مساعدة في تنظيم مواعيد العيادة وكتابة رسائل المتابعة.');
     await p.click('#review'); await p.waitForTimeout(1200);
     await p.reload(); await p.waitForTimeout(800);
     ok(`${dev} العميل: الجلسة تبقى بعد إعادة الفتح`, (await tabs()).includes('حسابي'));
@@ -144,7 +144,7 @@ const results = []; const ok = (name, cond, extra = '') => results.push({ name, 
     for (let i = 0; i < 5; i++) await L('login', { username: 'student', password: 'x' + i });
     ok(`${dev} حماية: قفل بعد 5 محاولات خاطئة`, (await L('login', { username: 'student', password: STUDENT[1] })).error === 'locked');
     ok(`${dev} بلا أخطاء في الصفحة`, errs.length === 0, errs.join(' | '));
-    ok(`${dev} لا طلبات إلى Claude أو Anthropic`, ![...hosts].some(h => /claude|anthropic/.test(h)), [...hosts].join(' '));
+    ok(`${dev} لا طلبات إلى أي خدمة خارجية`, ![...hosts].some(h => /claude|anthropic/.test(h)), [...hosts].join(' '));
     await ctx.close();
   }
   await b.close();

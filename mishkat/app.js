@@ -1,5 +1,5 @@
 'use strict';
-/* مشكاة — موسوعة القرآن الذكية. One codebase for the claude.ai build and the installable PWA build. */
+/* مشكاة — موسوعة القرآن الذكية. One codebase for the hosted build and the installable PWA build. */
 const BUILD = window.MISHKAT_BUILD || 'pwa';
 const IS_PWA = BUILD === 'pwa';
 /* iOS < 16.4 لا يدعم lookbehind: تقسيم الجمل بلا lookbehind، وكشف الدعم للتعابير الأخرى */
@@ -3423,7 +3423,7 @@ function surah(sn, focusA) {
   const pb = $('#playSurah'); if (pb) pb.onclick = () => recitePlay(s.first, 'surah');
 }
 
-/* ================= audio (PWA build only: the claude.ai frame does not allow outside media) */
+/* ================= audio (PWA build only: the hosted frame does not allow outside media) */
 let audio = null;
 function audioUrl(i) { const a = Q.ayat[i]; return `https://everyayah.com/data/Alafasy_128kbps/${String(a[0]).padStart(3,'0')}${String(a[1]).padStart(3,'0')}.mp3`; }
 function playFrom(i, end, btn) {
@@ -3665,7 +3665,7 @@ function search(q0) {
   if (q) run();
 }
 
-/* ================= ask (claude.ai build): Claude answers from the app's own verified texts through page tools */
+/* ================= ask (hosted build): the model answers from the app's own verified texts through page tools */
 let pendingAsk = null, chatTurns = [], askCtl = null;
 const BOOKS = () => TF.map(b => `${b.key}: ${b.title} (${b.author})`).join('، ');
 const RULES = () => `أنت «مشكاة»، مساعد بحثي في القرآن الكريم داخل تطبيق يحوي نص مصحف المدينة النبوية (رواية حفص) وثمانية كتب تفسير: ${BOOKS()}، وفهارس موضوعية وإحصاءات صرفية.
@@ -3757,7 +3757,7 @@ async function ask() {
   drawTurns();
   if (IS_PWA) return askOffline();
   const sample = await claude?.use?.('sample').catch(() => null);
-  if (!sample) { $('#astat').textContent = 'المساعد غير متاح في هذا العرض. سجّل الدخول إلى claude.ai وافتح الرابط مباشرة.'; $('#asend').disabled = true; }
+  if (!sample) { $('#astat').textContent = 'المساعد غير متاح في هذا العرض. سجّل الدخول إلى حسابك وافتح الرابط مباشرة.'; $('#asend').disabled = true; }
   $('#asug').onclick = e => { const b = e.target.closest('button'); if (!b) return; $('#aq').value = b.dataset.q; $('#aform').requestSubmit(); };
   $('#aclear').onclick = () => { chatTurns = []; drawTurns(); };
   $('#astop').onclick = () => askCtl?.abort();
@@ -3821,7 +3821,7 @@ function hifz() {
     if (mode === 'quiz') tool = '<div id="hzQuiz"></div>';
     if (mode === 'type') tool = `<textarea class="field" id="hzType" rows="4" placeholder="اكتب المقطع من حفظك، ولا حاجة إلى التشكيل…"></textarea><div class="toolbar"><button class="btn pri" id="hzCheck">صحّح</button><span id="hzScore" class="muted"></span></div>`;
     if (mode === 'voice') tool = voiceOK ? `<div class="toolbar"><button class="mic" id="hzMic" aria-label="ابدأ التسميع"><svg><use href="#i-mic"/></svg></button><div class="stack tight" style="flex:1;min-width:200px"><span id="hzVStat" class="muted">اضغط الميكروفون وابدأ التلاوة. تُعلَّم الكلمات الصحيحة بالأخضر أثناء قراءتك.</span><div class="meter"><i id="hzBar" style="width:0"></i></div></div></div><p class="muted small" style="margin:0">يعتمد التعرف على الصوت على خدمة المتصفح (كروم أو إيدج أو سفاري) ويحتاج إلى اتصال بالإنترنت.</p>`
-      : `<div class="note">${IS_PWA ? 'متصفحك لا يدعم التعرف على الكلام. استعمل كروم أو إيدج أو سفاري الحديث.' : 'التسميع بالصوت يعمل في نسخة التطبيق المثبّت على الجوال أو الكمبيوتر، لأن صفحة claude.ai لا تسمح بالوصول إلى الميكروفون. استعمل الآن «تسميع بالكتابة».'}</div>`;
+      : `<div class="note">${IS_PWA ? 'متصفحك لا يدعم التعرف على الكلام. استعمل كروم أو إيدج أو سفاري الحديث.' : 'التسميع بالصوت يعمل في نسخة التطبيق المثبّت على الجوال أو الكمبيوتر، لأن النسخة المستضافة لا تسمح بالوصول إلى الميكروفون. استعمل الآن «تسميع بالكتابة».'}</div>`;
     $('#hzBox').innerHTML = `<div class="stack tight"><div class="pill-row"><span class="chip">${n(ids.length)} ${plural(ids.length,'آية','آيات','آية')}</span><span class="chip">${n(ids.reduce((x, i) => x + Q.ayat[i][3], 0))} كلمة</span>${rec ? `<span class="chip gold">المراجعة القادمة: ${new Date(rec.due).toLocaleDateString('ar-EG', { day: 'numeric', month: 'long' })}</span>` : ''}</div>
       <div class="ayah" id="hzText">${wordsHTML}</div>${tool}
       <div class="panel stack tight" style="background:var(--bg)"><b>كيف كان حفظك لهذا المقطع؟</b><div class="toolbar"><button class="btn" data-g="1">صعب، أعده غداً</button><button class="btn" data-g="3">متوسط</button><button class="btn pri" data-g="5">سهل، أتقنته</button></div></div></div>`;
@@ -4250,11 +4250,11 @@ function settings() {
       <div class="toolbar"><button class="btn pri" id="dlAll">تنزيل كل التفاسير للعمل دون إنترنت</button><span id="dlStat" class="muted small"></span></div><div class="meter"><i id="dlBar" style="width:0"></i></div>
       <div class="toolbar"><button class="btn" id="instBtn" ${instHidden() ? 'hidden' : ''}>ثبّت ${BRAND} على هذا الجهاز</button></div>
       <p class="muted small" style="margin:0">على آيفون: افتح الرابط في سفاري، ثم «مشاركة» ثم «إضافة إلى الشاشة الرئيسية». على أندرويد والكمبيوتر: زر التثبيت في المتصفح أو الزر أعلاه.</p>`
-      : `<p style="margin:0">هذه نسخة مشكاة على claude.ai. توجد نسخة قابلة للتثبيت على الجوال والكمبيوتر تعمل دون إنترنت وتدعم التسميع بالصوت والاستماع للتلاوة.</p>`}
+      : `<p style="margin:0">هذه هي النسخة المستضافة من التطبيق. توجد نسخة قابلة للتثبيت على الجوال والكمبيوتر تعمل دون إنترنت وتدعم التسميع بالصوت والاستماع للتلاوة.</p>`}
   </section>
   <section class="panel stack tight"><h3>بياناتك</h3><p class="muted small" style="margin:0">${cloud ? 'تقدّمك محفوظ في حسابك (خاص بك ولا يراه غيرك) ونسخة منه على هذا الجهاز.' : 'تقدّمك محفوظ على هذا الجهاز وحده.'} من «وردي وتقدّمي» تجد علامة التوقف وهدف القراءة اليومي.</p><div class="toolbar"><a class="btn" href="#wird">وردي وتقدّمي</a><a class="btn" href="#whatsnew">ما الجديد</a></div></section>
   <div id="dataMount"></div>
-  <section class="panel small muted">الإصدار ${MK_VERSION} · ${IS_PWA ? 'النسخة المستقلة' : 'نسخة claude.ai'}</section></div>`);
+  <section class="panel small muted">الإصدار ${MK_VERSION} · ${IS_PWA ? 'النسخة المستقلة' : 'النسخة المستضافة'}</section></div>`);
   $('#thSeg').onclick = e => { const b = e.target.closest('button'); if (!b) return; ST.prefs.theme = b.dataset.t; applyPrefs(); save(); settings(); };
   $('#szSeg').onclick = e => { const b = e.target.closest('button'); if (!b) return; ST.prefs.size = +b.dataset.s; applyPrefs(); save(); settings(); };
   $('#tfSel').onchange = e => { ST.prefs.tafsir = e.target.value; save(); toast('حُفظ التفسير الافتراضي'); };
@@ -4284,7 +4284,7 @@ function about() {
    <p class="note" style="margin:0">لا يُبنى على هذه الأعداد ما يُسمّى «الإعجاز العددي» دون منهج علمي منضبط، لأن نتائج العدّ تتغير بتغير طريقته.</p></section>
   <section class="panel stack"><h2>المزايا الذكية وحدودها</h2><ul style="margin:0;padding-inline-start:1.2em">
    <li><b>البحث بالمعنى:</b> يعمل على الجهاز نفسه، ويطابق كلماتك مع نص الآيات والتفسير الميسر بعد ردّها إلى أصولها، ويوسّعها بالجذور القرآنية وبقاموس مفاهيم. وهو ترتيب حسابي للقرب لا يغني عن التدبر.</li>
-   <li><b>اسأل مشكاة:</b> ${IS_PWA ? 'مساعد بحث يجمع النصوص من داخل التطبيق ويرتبها، ولا يؤلف جواباً. ولا يُعتمد عليه في الفتوى.' : 'يجيب بنموذج Claude من نصوص التطبيق فقط عبر أدوات بحث داخلية، ويذكر المواضع لتتحقق منها. ولا يُعتمد عليه في الفتوى.'}</li>
+   <li><b>اسأل مشكاة:</b> ${IS_PWA ? 'مساعد بحث يجمع النصوص من داخل التطبيق ويرتبها، ولا يؤلف جواباً. ولا يُعتمد عليه في الفتوى.' : 'يجيب بنموذج لغوي من نصوص التطبيق فقط عبر أدوات بحث داخلية، ويذكر المواضع لتتحقق منها. ولا يُعتمد عليه في الفتوى.'}</li>
    <li><b>التسميع بالصوت:</b> يعتمد على خدمة التعرف على الكلام في المتصفح، وقد يخطئ في بعض الكلمات، فيُستعمل للمراجعة لا للإجازة.</li>
    <li><b>الأطلس والخط الزمني:</b> تعيين الأماكن غير المقطوع بها وترتيب الأنبياء تقريبيان، ونُبّه على ذلك في مواضعه.</li></ul></section>
   <section class="panel stack"><h2>كتب التفسير والمعاني</h2><div class="list">${TF.map(b => `<div class="row" style="cursor:default"><span class="t"><b>${b.title}</b> <span class="muted">· ${b.author}</span></span><span class="n">${n(b.covered)} آية</span></div>`).join('')}</div></section>
@@ -5252,7 +5252,7 @@ function guide() {
     ['الخط الزمني','الأنبياء في عصورهم على ترتيب ابن كثير، وواحد وعشرون حدثاً من السيرة بسنواتها على المشهور مع آياتها.'],
     ['شبكة المعرفة','خريطة علاقات تربط الأنبياء بأقوامهم وديارهم وصلات قرابتهم والسور التي ذُكروا فيها أكثر.'],
     ['بطاقة الآية','صورة مربعة جاهزة للمشاركة بخط المصحف وهوية مشكاة، تُحفظ بضغطة.'],
-    IS_PWA ? ['يعمل دون إنترنت ويُثبَّت','بعد أول فتح يعمل التطبيق دون اتصال، ويُثبَّت على الجوال والكمبيوتر كأي تطبيق. ومعه التسميع بالصوت والاستماع إلى تلاوة الشيخ مشاري العفاسي.'] : ['متابعتك محفوظة في حسابك','العلامات وموضع القراءة وجدول الحفظ تُحفظ في حسابك على claude.ai وتتزامن بين الجوال والكمبيوتر، وهي خاصة بك لا يراها غيرك.'],
+    IS_PWA ? ['يعمل دون إنترنت ويُثبَّت','بعد أول فتح يعمل التطبيق دون اتصال، ويُثبَّت على الجوال والكمبيوتر كأي تطبيق. ومعه التسميع بالصوت والاستماع إلى تلاوة الشيخ مشاري العفاسي.'] : ['متابعتك محفوظة في حسابك','العلامات وموضع القراءة وجدول الحفظ تُحفظ في حسابك على المنصة المستضيفة وتتزامن بين الجوال والكمبيوتر، وهي خاصة بك لا يراها غيرك.'],
     ['الحسابات ولوحة الإدارة', IS_PWA ? 'ثلاثة أدوار: زائر وعميل ومدير شامل. المدير يدير الإعلان العام والآية المختارة والحسابات كلها، ويُحفظ ذلك في ملف config.json يُرفع إلى الموقع فيعمّ كل الأجهزة. والتطبيق كله يعمل في المتصفح دون أي خدمة خارجية.' : 'لمالك الموسوعة وحده: إعلان عام يظهر لكل الزوار، وآية مختارة للصفحة الرئيسية، وتقرير سلامة البيانات.'],
   ];
   const R = IS_PWA ? [
@@ -5260,7 +5260,7 @@ function guide() {
     ['العميل', 'كل الصفحات والمزايا، وحساب باسمه تُحفظ فيه العلامات والحفظ وموضع القراءة، ويغيّر كلمة مروره. لا يرى لوحة الإدارة.'],
     ['الزائر', 'كل الصفحات والمزايا دون تسجيل، ويُحفظ تقدّمه على جهازه وينقله برمز النقل من «الإعدادات».'],
   ] : [
-    ['مالك الموسوعة (أنت)','كل الصفحات، ولوحة الإدارة، وتعديل الإعلان والآية المختارة. الدخول بحسابك في claude.ai نفسه، فلا توجد كلمة مرور منفصلة تُحفظ أو تُسرَّب.'],
+    ['مالك الموسوعة (أنت)','كل الصفحات، ولوحة الإدارة، وتعديل الإعلان والآية المختارة. الدخول بحسابك في المنصة المستضيفة نفسها، فلا توجد كلمة مرور منفصلة تُحفظ أو تُسرَّب.'],
     ['مستخدم مسجّل ممن تشاركه الرابط','كل الصفحات والمساعد الذكي، ومتابعته محفوظة في حسابه. لا يرى لوحة الإدارة ولا يستطيع تعديل الإعلان (تمنع ذلك قاعدة صلاحيات على الخادم).'],
     ['زائر','القراءة والبحث والموسوعة والأطلس والحفظ، ومتابعته محفوظة على جهازه.'],
   ];
@@ -5270,12 +5270,12 @@ function guide() {
     ['متجر Google Play','٢٥ دولاراً مرة واحدة','حساب مطوّر، ثم تحويل هذا التطبيق إلى تطبيق أندرويد بأداة PWABuilder.'],
     ['متجر Apple App Store','٩٩ دولاراً سنوياً','حساب مطوّر أبل وجهاز ماك للبناء ومراجعة أبل. ويمكن الآن تثبيته على آيفون من سفاري دون المتجر.'],
   ] : [
-    ['الاستعمال الحالي على claude.ai','بلا تكلفة إضافية','يكفي اشتراكك الحالي. المساعد الذكي يعمل من رصيد Claude لكل مستخدم، ويُستأذن قبل أول استعمال.'],
+    ['الاستعمال الحالي في النسخة المستضافة','بلا تكلفة إضافية','يكفي اشتراكك الحالي. المساعد الذكي يعمل من رصيد كل مستخدم في المنصة المستضيفة، ويُستأذن قبل أول استعمال.'],
     ['نطاق خاص (مثل mishkat.app)','نحو ١٠ إلى ٢٠ دولاراً سنوياً','اختياري، لو أردت نسخة مستقلة على الإنترنت باسمك.'],
     ['استضافة نسخة مستقلة','مجاناً','عبر GitHub Pages أو Cloudflare Pages. منشورة الآن على موقع منجز: munjiz-qa.github.io/mishkat'],
     ['متجر Google Play','٢٥ دولاراً مرة واحدة','حساب مطوّر، ثم تحويل النسخة المستقلة إلى تطبيق أندرويد بأداة PWABuilder أو Bubblewrap.'],
     ['متجر Apple App Store','٩٩ دولاراً سنوياً','حساب مطوّر أبل، وجهاز ماك للبناء والنشر، ومراجعة أبل.'],
-    ['المساعد الذكي في النسخة المستقلة','حسب الاستعمال','يحتاج مفتاح Anthropic API وخادماً صغيراً يحفظ المفتاح. الكلفة تُحسب بعدد الكلمات المعالجة.'],
+    ['المساعد الذكي في النسخة المستقلة','حسب الاستعمال','يحتاج مفتاح واجهة برمجية لنموذج لغوي وخادماً صغيراً يحفظ المفتاح. الكلفة تُحسب بعدد الكلمات المعالجة.'],
   ];
   const NEXT = [
     'تصحيح التلاوة والتجويد بنموذج صوتي عربي يعمل على الجهاز، يكتشف الخطأ في الحرف والمدّ والغنّة، لا في الكلمة فقط.',
@@ -5292,12 +5292,12 @@ function guide() {
   <section class="panel stack tight"><h2>الأدوار والصلاحيات</h2>${R.map(([t, d]) => `<div class="due" style="align-items:flex-start"><b style="min-width:12em">${t}</b><span class="small" style="flex:1;min-width:220px">${d}</span></div>`).join('')}
     ${IS_PWA ? '' : '<p class="muted small" style="margin:0">الرابط خاص بك الآن. لمشاركته افتح قائمة المشاركة (Share) أعلى الصفحة.</p>'}</section>
   <section class="panel stack tight"><h2>المطلوب والتكاليف</h2><div class="tablebox"><table class="wtable"><thead><tr><th>البند</th><th>التكلفة التقريبية</th><th>التفاصيل</th></tr></thead><tbody>${C.map(r => `<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')}</tbody></table></div>
-    ${IS_PWA ? '<p class="muted small" style="margin:0">أسعار المتاجر هي المعلنة حتى تاريخ هذا الإصدار وقد تتغير.</p>' : `<p class="muted small" style="margin:0">ميزتان تحتاجان إلى النسخة المستقلة: التسميع بالصوت والاستماع إلى التلاوة، لأن صفحة claude.ai لا تسمح بالميكروفون ولا بملفات صوت من مواقع أخرى. والتسميع بالكتابة متاح هنا الآن. أسعار المتاجر هي المعلنة حتى تاريخ هذا الإصدار وقد تتغير.</p>`}</section>
+    ${IS_PWA ? '<p class="muted small" style="margin:0">أسعار المتاجر هي المعلنة حتى تاريخ هذا الإصدار وقد تتغير.</p>' : `<p class="muted small" style="margin:0">ميزتان تحتاجان إلى النسخة المستقلة: التسميع بالصوت والاستماع إلى التلاوة، لأن النسخة المستضافة لا تسمح بالميكروفون ولا بملفات صوت من مواقع أخرى. والتسميع بالكتابة متاح هنا الآن. أسعار المتاجر هي المعلنة حتى تاريخ هذا الإصدار وقد تتغير.</p>`}</section>
   <section class="panel stack tight"><h2>مقترحات للمرحلة القادمة</h2><ul style="margin:0;padding-inline-start:1.2em">${NEXT.map(x => `<li>${x}</li>`).join('')}</ul></section>
   <section class="panel stack tight"><h2>كيف اختُبر</h2><p style="margin:0" class="small">جُرّبت تسع عشرة صفحة على الكمبيوتر والجوال، في الوضعين الفاتح والداكن، دون أي خطأ برمجي ودون خروج عن عرض الشاشة. ${IS_PWA ? 'وجُرّب دور الزائر والمستخدم (حفظ التقدم على الجهاز ونقله برمز)، ودور المدير (رفض كلمة المرور الخاطئة، وقبول الصحيحة، وتطبيق الإعلان والآية المختارة)، والعمل دون إنترنت بعد أول فتح.' : 'وجُرّبت الأدوار الثلاثة: الزائر لا يرى لوحة الإدارة، والمستخدم المسجّل تُحفظ متابعته في حسابه، والمالك يحفظ الإعلان والآية المختارة فتظهران فوراً.'} وجُرّب التسميع بالكتابة على الفاتحة فصحّح ٢٩ كلمة من ٢٩، والبحث بالمعنى عن «بر الوالدين» فجاءت في أول النتائج الأنعام ١٥١ والنساء ٣٦ والبقرة ٨٣.</p></section>${CONTACT}</div>`);
 }
 
-/* ================= admin (owner of the claude.ai artifact) */
+/* ================= admin (owner of the hosted build) */
 async function sha(t) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join(''); }
 const ROLE = { client: 'عميل', admin: 'مدير شامل' };
 const isAdmin = () => SESSION?.role === 'admin';

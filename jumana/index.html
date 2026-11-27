@@ -2192,12 +2192,12 @@ function renderSearch(){
 function renderAbout(){
   const f=$("#rtopic");if(f&&!f.options.length){f.innerHTML=`<option value="عام">ملاحظة عامة</option>`+[...TOPICS.map(t=>t.t),...ORIGINS.map(o=>"الجذور "+o.n+": "+o.t),...SCI.map(x=>x.t),...PROPHETS.map(x=>x.n)].map(x=>`<option>${esc(x)}</option>`).join("")}
   const p=sessionStorage.getItem("sifr:rtopic");if(p&&f){f.value=p;sessionStorage.removeItem("sifr:rtopic")}
-  $("#rstate").textContent=S.db&&S.uid?"":"يتطلب الإرسال تسجيل الدخول إلى claude.ai.";
+  $("#rstate").textContent=S.db&&S.uid?"":"يتطلب الإرسال تسجيل الدخول إلى حسابك.";
 }
 async function sendReport(){
   const text=$("#rtext").value.trim(),topic=$("#rtopic").value,src=$("#rsrc").value.trim();
   if(text.length<10){toast("اكتب وصفاً للخطأ لا يقل عن 10 أحرف");return}
-  if(!S.db||!S.uid){toast("يتطلب الإرسال تسجيل الدخول إلى claude.ai");return}
+  if(!S.db||!S.uid){toast("يتطلب الإرسال تسجيل الدخول إلى حسابك");return}
   try{const ref=S.db.doc("reports/"+S.uid);const old=await ref.get();const items=(old.exists&&old.data().items)||[];
     items.push({topic,text:text.slice(0,1500),src:src.slice(0,300),at:new Date().toISOString()});
     await ref.set({items:items.slice(-10),nick:(me.nick||"").slice(0,40),updatedAt:new Date().toISOString()});

@@ -1,6 +1,6 @@
 /* سند | Sanad — المساعد المدمج
-   يجيب من بيانات النشاط والحجوزات مباشرة، دون أي اتصال بـ Claude أو بالإنترنت.
-   يعمل في الخادم (Node) وفي المتصفح، ويُستخدم تلقائياً عند غياب مفتاح Claude أو تعذّر الوصول إليه. */
+   يجيب من بيانات النشاط والحجوزات مباشرة، دون أي اتصال خارجي أو بالإنترنت.
+   يعمل في الخادم (Node) وفي المتصفح، ويُستخدم تلقائياً عند غياب مفتاح المحرّك الذكي أو تعذّر الوصول إليه. */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory();
   else root.SanadAssistant = factory();
@@ -63,7 +63,7 @@
     if (role === 'admin' && ctx.note) out.push(ctx.note);
     return out.join('\n\n');
   }
-  /* بصيغة رسالة Claude، فيعرضها التطبيق كما يعرض أي رد */
+  /* بصيغة رسالة المحرّك الذكي، فيعرضها التطبيق كما يعرض أي رد */
   const asMessage = text => ({ id: 'local-' + Date.now().toString(36), type: 'message', role: 'assistant', model: 'sanad-local', content: [{ type: 'text', text }], stop_reason: 'end_turn' });
   return { reply, asMessage, lastUserText, today };
 });
