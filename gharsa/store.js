@@ -35,11 +35,17 @@ window.GharsaStore={
     email=String(email||'').trim().toLowerCase();
     if(REMOTE){const r=await fetch(URL_+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});
       const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error('البريد أو كلمة المرور غير صحيحة.');
-      const s={email,token:j.access_token,exp:Date.now()+(j.expires_in||3600)*1000-60000};ls.set(SKEY,JSON.stringify(s));
+      const s={email,token:j.access_token,exp:Date.now()+(j.expires_in||3600)*1000-60000,mustChange:!!(j.user&&j.user.user_metadata&&j.user.user_metadata.must_change_password)};ls.set(SKEY,JSON.stringify(s));
       const ok=await rest('/rest/v1/rpc/gharsa_is_admin',{method:'POST',body:'{}'}).catch(()=>false);
       if(!ok){ls.del(SKEY);throw new Error('هذا الحساب لا يملك صلاحية الإدارة.');}return s;}
     if(email!==LOCAL_ADMIN.email||await sha(LOCAL_ADMIN.salt+pass)!==LOCAL_ADMIN.hash)throw new Error('البريد أو كلمة المرور غير صحيحة.');
     const s={email,token:'local',exp:Date.now()+8*3600*1000};ls.set(SKEY,JSON.stringify(s));return s;
+  },
+  async changePassword(pass){
+    if(!REMOTE)throw new Error('تغيير كلمة المرور متاح بعد ربط قاعدة البيانات.');
+    if(String(pass).length<10)throw new Error('كلمة المرور يجب ألا تقل عن 10 أحرف.');
+    await rest('/auth/v1/user',{method:'PUT',body:JSON.stringify({password:pass,data:{must_change_password:false}})});
+    const s=session();if(s){s.mustChange=false;ls.set(SKEY,JSON.stringify(s));}
   },
   session, logout(){ls.del(SKEY);}
 };

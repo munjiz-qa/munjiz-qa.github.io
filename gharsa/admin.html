@@ -121,6 +121,18 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   </form>
 </div>
 
+<div class="login pad" id="pwView" hidden>
+  <form id="pwForm" novalidate>
+    <h1>تعيين كلمة مرور جديدة</h1>
+    <p style="color:var(--muted)" id="pwNote">لحماية حسابك، اختر كلمة مرور خاصة بك لا تقل عن 10 أحرف.</p>
+    <label class="f">كلمة المرور الجديدة<input id="pw1" type="password" autocomplete="new-password" dir="ltr" required></label>
+    <label class="f">تأكيد كلمة المرور<input id="pw2" type="password" autocomplete="new-password" dir="ltr" required></label>
+    <button class="btn" type="submit" id="pwBtn">حفظ كلمة المرور</button>
+    <button class="btn ghost" type="button" id="pwCancel" hidden>إلغاء</button>
+    <div id="pwStatus" role="status" hidden></div>
+  </form>
+</div>
+
 <div id="app" hidden>
   <header class="top"><div class="in pad">
     <div class="brand"><svg width="30" height="30" viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="10" fill="var(--leaf)"/><path d="M17 27V15M11 27h12" stroke="var(--leaf-ink)" stroke-width="2.4" stroke-linecap="round"/><path d="M17 17c0-5 3.5-8.5 8.5-8.5 0 5-3.5 8.5-8.5 8.5Z" fill="var(--leaf-ink)"/></svg><div><h1 style="font-size:1.1rem">إدارة غَرسة</h1><small class="who" id="who"></small></div></div>
@@ -128,6 +140,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
     <span class="dirty" id="dirty" hidden></span>
     <button class="btn" type="button" id="saveBtn" disabled>حفظ ونشر</button>
     <a class="btn ghost" href="./" target="_blank" rel="noopener">عرض الموقع</a>
+    <button class="btn ghost" type="button" id="pwOpen" hidden>كلمة المرور</button>
     <button class="btn ghost" type="button" id="logoutBtn">خروج</button>
   </div></header>
   <div class="pad"><div class="shell">
@@ -193,7 +206,16 @@ $('#loginForm').addEventListener('submit',async e=>{e.preventDefault();const b=$
 $('#logoutBtn').addEventListener('click',()=>{if(dirty&&$('#logoutBtn').dataset.sure!=='1'){$('#logoutBtn').dataset.sure='1';$('#logoutBtn').textContent='خروج دون حفظ؟';return;}
   Store.logout();location.reload();});
 
+function showPw(forced){$('#loginView').hidden=true;$('#app').hidden=true;$('#pwView').hidden=false;$('#pwCancel').hidden=forced;$('#pw1').focus();}
+$('#pwForm').addEventListener('submit',async e=>{e.preventDefault();const a=$('#pw1').value,b=$('#pw2').value,st=$('#pwStatus');
+  if(a!==b)return showStatus(st,'err','كلمتا المرور غير متطابقتين.');
+  $('#pwBtn').disabled=true;try{await Store.changePassword(a);$('#pwForm').reset();st.hidden=true;$('#pwView').hidden=true;toast('تم حفظ كلمة المرور الجديدة.');start();}
+  catch(err){showStatus(st,'err',err.message);}finally{$('#pwBtn').disabled=false;}});
+$('#pwCancel').addEventListener('click',()=>{$('#pwView').hidden=true;$('#app').hidden=false;});
+$('#pwOpen').addEventListener('click',()=>showPw(false));
 async function start(){
+  const ss=Store.session();if(ss&&ss.mustChange)return showPw(true);
+  $('#pwOpen').hidden=!Store.remote;
   $('#loginView').hidden=true;$('#app').hidden=false;
   const s=Store.session();$('#who').textContent=(s?s.email:'')+(Store.remote?' · قاعدة البيانات متصلة':' · وضع هذا الجهاز');
   try{C=clone(await Store.load());}catch(e){C=clone(window.GHARSA_DEFAULT);toast('تعذّر تحميل المحتوى المحفوظ، عُرض المحتوى الأصلي.');}
