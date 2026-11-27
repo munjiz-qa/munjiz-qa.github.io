@@ -14,12 +14,16 @@ try{LAYER=localStorage.getItem('khabar-cmap-layer')||'status'}catch(e){}
 const getJSON=u=>fetch(u,{cache:'no-cache'}).then(r=>{if(!r.ok)throw new Error(u+' '+r.status);return r.json()});
 // الصفحة الرئيسية تحمّل ملخص الدول (data/countries-home.json، نحو عُشر الحجم)، وصفحات الدول تحمّل الملف الكامل.
 // الملخص منسوخ من الملف الكامل بعد بوابة التحقق، وإن تعذّر يُحمَّل الكامل كما كان.
+// وطبقة التوقعات (data/forecast.json) لا تعرضها الرئيسية، فتُحمَّل مع أول زيارة لصفحات الدول فقط.
+let FCT=false;
 async function load(){
   const full=has(location.hash.slice(1)||'today');
-  if(D&&(!D.lite||!full))return;
+  if(D&&(!D.lite||!full)&&(FCT||!full))return;
+  const needD=!D||(D.lite&&full);
   const [d,e,f]=await Promise.all([
-    (full?Promise.reject():getJSON('data/countries-home.json')).catch(()=>getJSON('data/countries.json')).catch(()=>null),
-    ED?ED:getJSON('data/countries-editorial.json').catch(()=>null),FC?FC:getJSON('data/forecast.json').catch(()=>null)]);
+    needD?(full?Promise.reject():getJSON('data/countries-home.json')).catch(()=>getJSON('data/countries.json')).catch(()=>null):Promise.resolve(D),
+    ED?ED:getJSON('data/countries-editorial.json').catch(()=>null),
+    full&&!FCT?(FCT=true,getJSON('data/forecast.json').catch(()=>null)):Promise.resolve(FC)]);
   if(d||!D)D=d;ED=e||{countries:{},sources:{}};FC=f;
 }
 const off=()=>new Set(K.ADMIN.countries_off||[]);
