@@ -1,4 +1,4 @@
-// براق · اختبار دخان للموقع المنشور (دون Claude): صفحات وملفات وتحميل المخطط والأسئلة الشائعة وصفحتا الحساب والإدارة،
+// براق · اختبار دخان للموقع المنشور (دون أي خدمة خارجية): صفحات وملفات وتحميل المخطط والأسئلة الشائعة وصفحتا الحساب والإدارة،
 // على الكمبيوتر والجوال. لا ينشئ حسابات ولا يكتب في Firebase. الاستخدام: BURAQ_URL=https://munjiz-qa.github.io/buraq/ node scripts/buraq-live-check.cjs
 const { chromium } = require("playwright");
 const BASE = (process.env.BURAQ_URL || "https://munjiz-qa.github.io/buraq/").replace(/\/?$/, "/");
@@ -11,6 +11,14 @@ const get = async (p, tries = 3) => { for (let i = 0; i < tries; i++) { try { co
   for (const p of ["", "account.html", "admin.html", "manifest.webmanifest", "sw.js", "app/icon-192.png", "acct/vendor/firebase-app.js", "acct/vendor/firebase-auth.js", "acct/vendor/firebase-firestore.js", "fonts/fonts.css", "fonts/noto-sans-arabic-arabic-wght-normal.woff2", "fonts/noto-sans-arabic-latin-wght-normal.woff2", "vendor/three/three.module.min.js", "vendor/three/addons/loaders/GLTFLoader.js", "vendor/three/addons/controls/OrbitControls.js", "vendor/three/addons/environments/RoomEnvironment.js", "vendor/three/addons/utils/BufferGeometryUtils.js",
     "data/fx.json", "files/BURAQ_BQ10_v3_BOM.xlsx", "files/BURAQ_car_conversion_plans.xlsx", "files/BURAQ_workshop_equipment.xlsx", "files/BURAQ_MADAD_Egypt.xlsx", "files/BURAQ_Business_Development.xlsx", "files/BURAQ_BQ10_v3.glb"]) {
     const r = await get(p); check(r.s === 200 && r.b.length > (p.endsWith(".json") ? 20 : 200), `${p || "index"}: ${r.s} (${r.b.length} bytes)`);
+  }
+  // الصور المذكورة في الصفحات الثلاث: كلها تُحمَّل فعلاً وليست صفحة خطأ
+  { const refs = new Set();
+    for (const pg of ["", "account.html", "admin.html"]) { const h = (await get(pg)).b.toString("utf8"); for (const x of h.matchAll(/img\/[A-Za-z0-9_-]+\.(?:jpg|png|webp|svg)/g)) refs.add(x[0]); }
+    check(refs.size >= 6, `الصور المذكورة في الصفحات (${refs.size})`);
+    let badImg = [];
+    for (const f of refs) { const r = await get(f); if (!(r.s === 200 && r.b.length > 2000)) badImg.push(`${f}:${r.s}`); }
+    check(badImg.length === 0, `كل الصور تُحمَّل (${refs.size}) ${badImg.join(" ")}`);
   }
   // ملفات Excel: كل معادلة لها قيمة محفوظة، فتظهر الأرقام في معاينة الجوال وGoogle Drive وQuick Look دون إعادة حساب
   { const zlib = require("zlib");
@@ -69,6 +77,33 @@ const get = async (p, tries = 3) => { for (let i = 0; i < tries; i++) { try { co
     check(fe.length === 0, `${name}: لا أخطاء جافاسكربت ${fe.join(" | ").slice(0, 200)}`);
     await ctx.close();
   }
+  // فحص سلامة بيانات المخطط: كل العلامات والطرازات بلا قيم فاسدة وضمن حدود معقولة
+  {
+    const ctx = await br.newContext({ viewport: { width: 1280, height: 800 }, locale: "ar" });
+    await ctx.route(/fonts\.googleapis|fonts\.gstatic/, (r) => r.abort());
+    const pg = await ctx.newPage(); const perr = []; pg.on("pageerror", (e) => perr.push(String(e)));
+    await pg.goto(BASE, { waitUntil: "load", timeout: 45000 });
+    await pg.waitForSelector("#cvBrand option", { state: "attached", timeout: 20000 }).catch(() => {});
+    const r = await pg.evaluate(async () => {
+      const B = document.getElementById("cvBrand"), M = document.getElementById("cvModel"), K = document.getElementById("cvKpi");
+      const names = [...B.options].map((o) => o.textContent.trim()); let models = 0, bad = 0, sample = "";
+      for (let i = 0; i < B.options.length; i++) {
+        B.selectedIndex = i; B.dispatchEvent(new Event("change"));
+        for (let j = 0; j < M.options.length; j++) {
+          M.selectedIndex = j; M.dispatchEvent(new Event("change")); models++;
+          const t = K.innerText;
+          if (/NaN|undefined|Infinity|null|\[object/.test(t)) { bad++; if (!sample) sample = names[i] + "/" + M.options[j].textContent + ": " + t.slice(0, 80); }
+        }
+      }
+      return { brands: B.options.length, dup: names.length - new Set(names).size, models, bad, sample };
+    });
+    check(r.brands >= 130, `بيانات المخطط: عدد العلامات (${r.brands})`);
+    check(r.dup === 0, `بيانات المخطط: لا علامات مكررة (${r.dup})`);
+    check(r.models >= 1400, `بيانات المخطط: عدد الطرازات (${r.models})`);
+    check(r.bad === 0, `بيانات المخطط: لا قيم فاسدة في الخطط ${r.sample}`);
+    check(perr.length === 0, `بيانات المخطط: لا أخطاء جافاسكربت ${perr.join(" | ").slice(0, 150)}`);
+    await ctx.close();
+  }
   // الهواتف الصغيرة (320 و360 بكسل): لا تمرير أفقي في الصفحات الثلاث
   for (const w of [320, 360]) {
     const ctx = await br.newContext({ viewport: { width: w, height: 700 }, isMobile: true, hasTouch: true, locale: "ar" });
@@ -78,6 +113,19 @@ const get = async (p, tries = 3) => { for (let i = 0; i < tries; i++) { try { co
       await pg.goto(BASE + path + (process.env.BURAQ_EMU ? "?emu" : ""), { waitUntil: "load", timeout: 45000 }); await pg.waitForTimeout(1500);
       const ov = await pg.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
       check(ov <= 0, `هاتف ${w}px: لا تمرير أفقي في ${label} (${ov})`);
+    }
+    await ctx.close();
+  }
+  // من يكبّر الخط في نظامه (150% و200%): لا تمرير أفقي في الصفحات الثلاث
+  for (const [w, z] of [[390, 1.5], [390, 2]]) {
+    const ctx = await br.newContext({ viewport: { width: w, height: 800 }, isMobile: true, hasTouch: true, locale: "ar" });
+    await ctx.route(/fonts\.googleapis|fonts\.gstatic/, (r) => r.abort());
+    const pg = await ctx.newPage();
+    for (const [label, path] of [["الرئيسية", ""], ["العميل", "account.html"], ["الإدارة", "admin.html"]]) {
+      await pg.goto(BASE + path + (process.env.BURAQ_EMU ? "?emu" : ""), { waitUntil: "load", timeout: 45000 });
+      await pg.addStyleTag({ content: `html{font-size:${z * 100}% !important}` }); await pg.waitForTimeout(1500);
+      const ov = await pg.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      check(ov <= 0, `خط مكبّر ${z * 100}%: لا تمرير أفقي في ${label} (${ov})`);
     }
     await ctx.close();
   }

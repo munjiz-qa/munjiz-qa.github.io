@@ -63,7 +63,7 @@ table.users .acts{display:flex;flex-wrap:wrap;gap:6px}
       <span class="brand-word">عبدو نيوز</span>
     </a>
     <div class="top-meta"><span>لوحة الإدارة</span><span class="mute" id="who"></span></div>
-    <div class="top-actions"><button class="icon-btn" id="logout" type="button" hidden>خروج</button></div>
+    <div class="top-actions"><a class="icon-btn" href="content/" id="to-cms" hidden>إدارة المحتوى</a><button class="icon-btn" id="logout" type="button" hidden>خروج</button></div>
   </div>
 </header>
 
@@ -80,7 +80,7 @@ table.users .acts{display:flex;flex-wrap:wrap;gap:6px}
     <section class="panel">
       <h2>نظرة عامة</h2>
       <div class="kpis" id="kpis"></div>
-      <div class="btns"><a class="btn ghost" href="../" target="_blank" rel="noopener">فتح التطبيق</a><a class="btn ghost" href="../account/" target="_blank" rel="noopener">صفحة حساب العميل</a><a class="btn ghost" href="../#roadmap" target="_blank" rel="noopener">خريطة الطريق</a></div>
+      <div class="btns"><a class="btn" href="content/">إدارة المحتوى: إضافة وتعديل وحذف وترتيب</a><a class="btn ghost" href="../" target="_blank" rel="noopener">فتح التطبيق</a><a class="btn ghost" href="../account/" target="_blank" rel="noopener">صفحة حساب العميل</a><a class="btn ghost" href="../#roadmap" target="_blank" rel="noopener">خريطة الطريق</a></div>
     </section>
 
     <section class="panel">
@@ -128,7 +128,7 @@ table.users .acts{display:flex;flex-wrap:wrap;gap:6px}
         <button class="btn ghost" type="button" data-run="verify">افحص الخلاصة الحالية</button>
       </div>
       <p class="msg" id="run-msg" hidden></p>
-      <small class="mute">التشغيل يستخدم مفتاح النشر أدناه، ويحتاج صلاحية Actions: Read and write إضافة إلى Contents. الكتابة الذاتية تعمل بعد إضافة مفتاح Claude API باسم ANTHROPIC_API_KEY في أسرار المستودع.</small>
+      <small class="mute">التشغيل يستخدم مفتاح النشر أدناه، ويحتاج صلاحية Actions: Read and write إضافة إلى Contents. الكتابة الذاتية تعمل بعد إضافة مفتاح محرّك الكتابة باسم ANTHROPIC_API_KEY في أسرار المستودع.</small>
     </section>
 
     <section class="panel">

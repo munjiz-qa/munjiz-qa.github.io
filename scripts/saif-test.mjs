@@ -56,6 +56,26 @@ ok(call("home", { token: N.token }).code === "auth", "الحساب الموقو�
 ok(call("saveUser", { token: A.token, id: A.user.id, user: "t-admin", role: "client" }).code === "main", "المدير لا يسحب صلاحياته بنفسه");
 ok(call("delUser", { token: A.token, id: nid }).ok, "المدير يحذف الحساب");
 
+
+// ---- محتوى الموقع ----
+const pc = call("content");
+ok(pc.ok && !pc.custom && pc.content.blocks[0].items.length === 4, "الزائر بلا جلسة يقرأ المحتوى الأصلي للصفحة العامة");
+ok(call("saveContent", { token: Cl.token, content: pc.content }).code === "perm", "العميل لا يعدّل محتوى الموقع");
+ok(call("saveContent", { content: pc.content }).code === "auth", "الزائر لا يعدّل محتوى الموقع");
+const edit = JSON.parse(JSON.stringify(pc.content));
+edit.hero.title = "عنوان جديد <b>x</b>"; edit.contact.phone = "51600498"; edit.contact.email = "bad";
+edit.blocks[0].items.reverse(); edit.blocks[0].items.splice(1, 1);
+edit.blocks.push({ type: "text", title: "من نحن", items: [{ title: "رسالتنا", text: "سطر 1\nسطر 2" }, { title: "مخفي", text: "x", visible: false }] });
+const sc = call("saveContent", { token: A.token, content: edit });
+ok(sc.ok && sc.custom && sc.content.blocks.length === 2 && sc.content.blocks[0].items.length === 3 && sc.content.blocks[0].items[0].title === "صلاحيات واضحة", "المدير يعدّل ويحذف ويعيد ترتيب العناصر ويضيف قسماً");
+ok(sc.content.contact.phone === "+974 5160 0498" && sc.content.contact.email === "munijizqa@gmail.com", "توحيد الهاتف ورفض بريد غير صالح");
+ok(sc.content.blocks[1].items.every(i => i.id) && new Set(sc.content.blocks.flatMap(b => [b.id, ...b.items.map(i => i.id)])).size === 2 + 3 + 2, "معرّفات فريدة للعناصر الجديدة");
+const pc2 = call("content");
+ok(pc2.custom && pc2.content.hero.title.startsWith("عنوان جديد") && pc2.content.blocks[1].items[1].visible === false, "الزائر يرى المحتوى المحفوظ");
+ok(call("saveContent", { token: A.token, content: { hero: { title: "" } } }).code === "bad", "عنوان فارغ يُرفض");
+ok(call("audit", { token: A.token }).items.some(i => i.act === "تعديل محتوى الموقع"), "التعديل مسجّل في سجل التدقيق");
+ok(call("saveContent", { token: A.token, reset: true }).ok && !call("content").custom, "إعادة الأصل");
+
 const bk = call("backup", { token: A.token });
 ok(bk.ok && bk.backup.data["sys/users"].length === 2, "النسخة الاحتياطية");
 ok(call("restore", { token: A.token, backup: bk.backup }).ok, "الاستعادة");

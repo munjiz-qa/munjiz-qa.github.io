@@ -11,12 +11,17 @@
 <meta property="og:description" content="صُنع في البيت، بإتقان. تسوّق من الأسر المنتجة في قطر أو افتح متجرك المنزلي مجانًا.">
 <meta property="og:image" content="https://munjiz-qa.github.io/habka/assets/og.png">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="حبكة">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Readex+Pro:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/app.css?v=2">
+<link rel="stylesheet" href="assets/app.css?v=3">
 </head>
 <body>
+<div class="ann" id="ann" role="note"></div>
 <header class="top">
   <div class="wrap">
     <a class="brand" href="#/" aria-label="حبكة، الصفحة الرئيسية"><img src="assets/logo.svg" alt=""><div>حَبْكة<small>صُنع في البيت، بإتقان</small></div></a>
@@ -30,18 +35,20 @@
     <div class="cols">
       <div>
         <a class="brand" href="#/" style="color:#fff"><img src="assets/logo.svg" alt=""><div>حَبْكة</div></a>
-        <p style="margin-top:12px;max-width:340px">منصة قطرية تحتضن الصناعات المنزلية والأسر المنتجة، وتصل إتقانهم إلى كل بيت.</p>
+        <p id="fabout" style="margin-top:12px;max-width:340px">منصة قطرية تحتضن الصناعات المنزلية والأسر المنتجة، وتصل إتقانهم إلى كل بيت.</p>
       </div>
       <div><h4>تسوّق</h4><a href="#/browse">كل المنتجات</a><a href="#/shops">المتاجر المنزلية</a><a href="#/cart">السلة</a></div>
       <div><h4>للمنتجين</h4><a href="#/register?role=producer">افتح متجرك</a><a href="#/guide">دليل البداية</a><a href="#/guide#calc">حاسبة التسعير</a></div>
-      <div><h4>حبكة</h4><a href="#/about">من نحن</a><a href="#/contact">تواصل معنا</a><a href="#/terms">الشروط والأحكام</a><a href="#/privacy">سياسة الخصوصية</a></div>
+      <div><h4>حبكة</h4><a href="#/about">من نحن</a><a href="#/faq">الأسئلة الشائعة</a><a href="#/contact">تواصل معنا</a><a href="#/terms">الشروط والأحكام</a><a href="#/privacy">سياسة الخصوصية</a></div>
     </div>
-    <div class="copy"><span>© <span class="num" id="yr"></span> حبكة. جميع الحقوق محفوظة.</span><span>دولة قطر</span></div>
+    <div class="copy"><span>© <span class="num" id="yr"></span> حبكة. جميع الحقوق محفوظة.</span><span id="fregion">دولة قطر</span></div>
   </div>
 </footer>
 <nav class="bbar" id="bbar"></nav>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<script src="assets/config.js?v=2"></script>
-<script src="assets/app.js?v=2"></script>
+<script src="assets/config.js?v=3"></script>
+<script src="assets/app.js?v=3"></script>
+<script src="pwa-install.js" defer></script>
+<script>if ("serviceWorker" in navigator && location.protocol === "https:") addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));</script>
 </body>
 </html>
