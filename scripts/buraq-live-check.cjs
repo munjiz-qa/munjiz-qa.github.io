@@ -12,6 +12,14 @@ const get = async (p, tries = 3) => { for (let i = 0; i < tries; i++) { try { co
     "data/fx.json", "files/BURAQ_BQ10_v3_BOM.xlsx", "files/BURAQ_car_conversion_plans.xlsx", "files/BURAQ_workshop_equipment.xlsx", "files/BURAQ_MADAD_Egypt.xlsx", "files/BURAQ_Business_Development.xlsx", "files/BURAQ_BQ10_v3.glb"]) {
     const r = await get(p); check(r.s === 200 && r.b.length > (p.endsWith(".json") ? 20 : 200), `${p || "index"}: ${r.s} (${r.b.length} bytes)`);
   }
+  // الصور المذكورة في الصفحات الثلاث: كلها تُحمَّل فعلاً وليست صفحة خطأ
+  { const refs = new Set();
+    for (const pg of ["", "account.html", "admin.html"]) { const h = (await get(pg)).b.toString("utf8"); for (const x of h.matchAll(/img\/[A-Za-z0-9_-]+\.(?:jpg|png|webp|svg)/g)) refs.add(x[0]); }
+    check(refs.size >= 6, `الصور المذكورة في الصفحات (${refs.size})`);
+    let badImg = [];
+    for (const f of refs) { const r = await get(f); if (!(r.s === 200 && r.b.length > 2000)) badImg.push(`${f}:${r.s}`); }
+    check(badImg.length === 0, `كل الصور تُحمَّل (${refs.size}) ${badImg.join(" ")}`);
+  }
   // ملفات Excel: كل معادلة لها قيمة محفوظة، فتظهر الأرقام في معاينة الجوال وGoogle Drive وQuick Look دون إعادة حساب
   { const zlib = require("zlib");
     const sheets = (buf) => { const out = []; let e = buf.lastIndexOf(Buffer.from([0x50, 0x4b, 5, 6])); let o = buf.readUInt32LE(e + 16), n = buf.readUInt16LE(e + 10);
