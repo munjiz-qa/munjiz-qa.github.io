@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-27T12:45:27.796Z",
+ "updated": "2026-11-27T14:25:30.151Z",
  "rule": "two_independent_outlets",
  "window_h": 48,
  "feeds": {
@@ -7,8 +7,8 @@
   "reliefweb:en": 0,
   "guardian:en": "error",
   "bbc:en": 4,
-  "aljazeera:en": 1,
-  "icn:en": 4,
+  "aljazeera:en": 0,
+  "icn:en": 3,
   "grist:en": 0,
   "chn:en": "error",
   "yale:en": 1,
@@ -16,18 +16,18 @@
   "sciam:en": 0,
   "france24:en": 4,
   "dw:en": 1,
-  "google:en": 0,
+  "google:en": 200,
   "un:ar": 0,
   "bbc:ar": 0,
   "aljazeera:ar": 0,
   "dw:ar": 1,
-  "france24:ar": 0,
+  "france24:ar": 1,
   "aawsat:ar": 2,
-  "annahar:ar": 2,
-  "alquds:ar": 0,
+  "annahar:ar": 0,
+  "alquds:ar": 1,
   "youm7:ar": 0,
   "skynews:ar": 0,
-  "google:ar": 0
+  "google:ar": 75
  },
  "ar": [
   {
@@ -55,10 +55,10 @@
      "official": false
     },
     {
-     "name": "المعلومة",
-     "title": "دراسة : الاحتباس الحراري أوقف \"عصراً جليدياً\" كان قد بدأ على الأرض",
-     "url": "https://almaalomah.me/news/151257/misc-news/%D8%AF%D8%B1%D8%A7%D8%B3%D8%A9-:-%D8%A7%D9%84%D8%A7%D8%AD%D8%AA%D8%A8%D8%A7%D8%B3-%D8%A7%D9%84%D8%AD%D8%B1%D8%A7%D8%B1%D9%8A-%D8%A3%D9%88%D9%82%D9%81-%D8%B9%D8%B5%D8%B1%D8%A7-%D8%AC%D9%84%D9%8A%D8%AF%D9%8A%D8%A7-%D9%83%D8%A7%D9%86-%D9%82%D8%AF-%D8%A8%D8%AF%D8%A3-%D8%B9%D9%84%D9%89-%D8%A7%D9%84%D8%A3",
-     "date": "2026-11-26",
+     "name": "i24NEWS",
+     "title": "هل أنقذ الاحتباس الحراري الأرض من عصر جليدي جديد؟ دراسة تكشف مفاجأة مناخية",
+     "url": "https://www.i24news.tv/ar/%D8%A3%D8%AE%D8%A8%D8%A7%D8%B1/%D8%A7%D9%84%D8%AA%D9%83%D9%86%D9%88%D9%84%D9%88%D8%AC%D9%8A%D8%A7/artc-ac715c64",
+     "date": "2026-11-27",
      "official": false
     }
    ],
@@ -135,54 +135,75 @@
    "data": null
   },
   {
-   "id": "en-2026112615-obrb6t",
-   "title": "New Met Office analysis highlights how climate change is affecting Britain’s wildlife",
-   "date": "2026-11-26T15:38:28.000Z",
-   "outlets": 2,
-   "grade": "confirmed",
+   "id": "en-2026112514-l5kjxc",
+   "title": "Nine dead, 17 trapped after illegal gold mine floods in Indonesia",
+   "date": "2026-11-25T14:56:48.000Z",
+   "outlets": 4,
+   "grade": "strong",
    "methods": [
-    "outlets"
+    "outlets",
+    "data"
    ],
    "sources": [
     {
-     "name": "Inside Ecology",
-     "title": "New Met Office analysis highlights how climate change is affecting Britain’s wildlife",
-     "url": "https://insideecology.com/2026/11/26/new-met-office-analysis-highlights-how-climate-change-is-affecting-britains-wildlife/",
+     "name": "Mining.com",
+     "title": "Nine dead, 17 trapped after illegal gold mine floods in Indonesia",
+     "url": "https://www.mining.com/nine-dead-18-trapped-after-illegal-gold-mine-floods-in-indonesia/",
+     "date": "2026-11-25",
+     "official": false
+    },
+    {
+     "name": "The Singleton Argus",
+     "title": "Eight dead, 18 trapped after Indonesia gold mine floods",
+     "url": "https://www.singletonargus.com.au/story/9398439/eight-dead-18-trapped-after-indonesia-gold-mine-floods/",
+     "date": "2026-11-25",
+     "official": false
+    },
+    {
+     "name": "AsiaOne.com",
+     "title": "8 dead, 18 trapped after Indonesia mine floods, agency says, Asia News",
+     "url": "https://www.asiaone.com/asia/8-dead-18-trapped-after-indonesia-mine-floods-agency-says",
      "date": "2026-11-26",
      "official": false
     },
     {
-     "name": "Sky News",
-     "title": "Britain's weather could be about to feel very different, Met Office warns",
-     "url": "https://news.sky.com/story/uk-weather-met-office-warns-of-fewer-frosts-and-more-hot-days-because-of-climate-change-13616621",
-     "date": "2026-11-27",
+     "name": "Nine.com.au",
+     "title": "Nine dead, 17 trapped after unauthorised gold mine floods in Indonesia",
+     "url": "https://www.nine.com.au/world-news/indonesia-mine-tragedy-flooding-bogor-regency-20261126-p61hh7.html",
+     "date": "2026-11-26",
      "official": false
     }
    ],
-   "data": null
+   "data": {
+    "name": "GDACS",
+    "title": "Flood in Indonesia",
+    "alert": "Green",
+    "url": "https://www.gdacs.org/report.aspx?eventid=1104253&episodeid=6&eventtype=FL",
+    "date": "2026-11-27"
+   }
   },
   {
-   "id": "en-2026112518-nf3wpr",
-   "title": "Alaska, Hawaiian Air Cargo teams help transport 200+ Kauaʻi pets displaced by Hurricane Lowell",
-   "date": "2026-11-25T18:00:00.000Z",
+   "id": "en-2026112523-qxka6t",
+   "title": "Alaska, Hawaiian Airlines help transport over 200 pets displaced by Hurricane Lowell",
+   "date": "2026-11-25T23:06:07.000Z",
    "outlets": 2,
    "grade": "confirmed",
    "methods": [
     "outlets"
    ],
    "sources": [
-    {
-     "name": "Kauai Now",
-     "title": "Alaska, Hawaiian Air Cargo teams help transport 200+ Kauaʻi pets displaced by Hurricane Lowell",
-     "url": "https://kauainownews.com/2026/11/25/alaska-hawaiian-air-cargo-teams-help-transport-200-kaua%CA%BBi-pets-displaced-by-hurricane-lowell/",
-     "date": "2026-11-25",
-     "official": false
-    },
     {
      "name": "Hawaii News Now",
      "title": "Alaska, Hawaiian Airlines help transport over 200 pets displaced by Hurricane Lowell",
      "url": "https://www.hawaiinewsnow.com/video/2026/11/25/alaska-hawaiian-airlines-help-transport-over-200-pets-displaced-by-hurricane-lowell/",
      "date": "2026-11-25",
+     "official": false
+    },
+    {
+     "name": "Maui Now",
+     "title": "200+ Kauaʻi pets displaced by Hurricane Lowell transported with help of Alaska, Hawaiian Air Cargo teams",
+     "url": "https://mauinow.com/2026/11/26/200-kaua%CA%BBi-pets-displaced-by-hurricane-lowell-transported-with-help-of-alaska-hawaiian-air-cargo-teams/",
+     "date": "2026-11-27",
      "official": false
     }
    ],
@@ -190,9 +211,7 @@
   }
  ],
  "dropped": {
-  "ar": 5,
-  "en": 13
- },
- "kept_ar": "2026-11-27T09:11:29.160Z",
- "kept_en": "2026-11-27T09:11:29.160Z"
+  "ar": 35,
+  "en": 138
+ }
 }
