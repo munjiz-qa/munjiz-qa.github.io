@@ -11,6 +11,10 @@
 <meta property="og:description" content="صُنع في البيت، بإتقان. تسوّق من الأسر المنتجة في قطر أو افتح متجرك المنزلي مجانًا.">
 <meta property="og:image" content="https://munjiz-qa.github.io/habka/assets/og.png">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="حبكة">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Readex+Pro:wght@500;600;700&display=swap" rel="stylesheet">
@@ -44,5 +48,7 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script src="assets/config.js?v=3"></script>
 <script src="assets/app.js?v=3"></script>
+<script src="pwa-install.js" defer></script>
+<script>if ("serviceWorker" in navigator && location.protocol === "https:") addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));</script>
 </body>
 </html>
