@@ -69,7 +69,7 @@ for (const [name, o] of [['الكمبيوتر', { viewport: { width: 1366, heigh
   ok(/^#pa\d+$/.test(href || '') && cur === 201, `${name}: «أكمل القراءة» يعود إلى الصفحة المحفوظة (${cur})`);
   ok(!errs.length, `${name}: لا أخطاء برمجية ${errs.slice(0, 2)}`);
   ok(![...ext].length, `${name}: لا اتصال بأي خدمة خارجية ${[...ext]}`);
-  ok(!/claude|anthropic/i.test(await p.content()), `${name}: لا اعتماد على Claude`);
+  ok(!/claude|anthropic/i.test(await p.content()), `${name}: لا اعتماد على أي خدمة خارجية`);
   await ctx.close();
 }
 await b.close();

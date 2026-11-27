@@ -1,4 +1,4 @@
-// براق · اختبار دخان للموقع المنشور (دون Claude): صفحات وملفات وتحميل المخطط والأسئلة الشائعة وصفحتا الحساب والإدارة،
+// براق · اختبار دخان للموقع المنشور (دون أي خدمة خارجية): صفحات وملفات وتحميل المخطط والأسئلة الشائعة وصفحتا الحساب والإدارة،
 // على الكمبيوتر والجوال. لا ينشئ حسابات ولا يكتب في Firebase. الاستخدام: BURAQ_URL=https://munjiz-qa.github.io/buraq/ node scripts/buraq-live-check.cjs
 const { chromium } = require("playwright");
 const BASE = (process.env.BURAQ_URL || "https://munjiz-qa.github.io/buraq/").replace(/\/?$/, "/");

@@ -618,7 +618,7 @@ html[dir=rtl] .trk-nav .flip{transform:scaleX(-1)}
 <div id="drawer"></div>
 
 <script>
-// ===== النسخة المستقلة: حسابات وصلاحيات وقاعدة بيانات داخل الموقع نفسه، دون أي اعتماد على Claude =====
+// ===== النسخة المستقلة: حسابات وصلاحيات وقاعدة بيانات داخل الموقع نفسه، دون أي اعتماد على خدمة خارجية =====
 window.TY_SA=true;
 (()=>{
 const K={db:"ty_db",del:"ty_del",ses:"ty_session",acc:"ty_accounts",pw:"ty_pw"};
@@ -2600,7 +2600,7 @@ AFTER.consult = () => {
   if(!$("#chatF")){ drawDr(); return; }
   chatRender();
   const d = store.get("draft",""); if(d){$("#chatQ").value=d; store.set("draft","")}
-  if(S.sample===null && S.ready){$("#chatSend").disabled=true;$("#chatNote").innerHTML=`المساعد الذكي يعمل على <a href="https://claude.ai/artifact/JDt74iQucA38WTJd1eGdKY" target="_blank" rel="noopener">نسخة الطيبات على Claude</a> بعد تسجيل الدخول. ويمكنك أيضاً مراسلة فريق الطيبات أدناه.`}
+  if(S.sample===null && S.ready){$("#chatSend").disabled=true;$("#chatNote").innerHTML=`المساعد الذكي يعمل في <a href="https://claude.ai/artifact/JDt74iQucA38WTJd1eGdKY" target="_blank" rel="noopener">النسخة المستضافة من الطيبات</a> بعد تسجيل الدخول. ويمكنك أيضاً مراسلة فريق الطيبات أدناه.`}
   $("#chatF").addEventListener("submit", async e=>{
     e.preventDefault(); const q=$("#chatQ").value.trim(); if(!q||S.chatBusy) return;
     if(!S.sample){toast("المساعد الذكي غير متاح الآن"); return}

@@ -1,4 +1,4 @@
-// فحص ركن «التفاسير وأسباب النزول» في مشكاة: جوال وكمبيوتر، تصفح وبحث ودون إنترنت. يعمل مستقلاً دون أي اتصال بـ Claude.
+// فحص ركن «التفاسير وأسباب النزول» في مشكاة: جوال وكمبيوتر، تصفح وبحث ودون إنترنت. يعمل مستقلاً دون أي اتصال خارجي.
 import pw from 'playwright';
 // انتظار بالاستطلاع عبر evaluate: waitForFunction تُنشئ دالة بـ eval فتمنعها سياسة أمان المحتوى
 async function until(p, fn, ms = 30000) { const t = Date.now(); for (;;) { if (await p.evaluate(fn).catch(() => false)) return; if (Date.now() - t > ms) throw new Error('until: انتهت المهلة'); await p.waitForTimeout(250); } }
@@ -76,5 +76,5 @@ for (const [dev, vp] of [['جوال', { width: 390, height: 844 }], ['كمبيو
   ok(await p.evaluate(() => /عائشة/.test(document.body.innerText)), 'دون إنترنت: آية الإفك بسبب نزولها تُفتح في وضع الطيران');
   await ctx.close();
 }
-ok(!bad.length, 'لا طلبات إلى Claude أو Anthropic'); ok(!errs.length, 'لا أخطاء برمجية ' + errs.slice(0, 3).join(' | '));
+ok(!bad.length, 'لا طلبات إلى أي خدمة خارجية'); ok(!errs.length, 'لا أخطاء برمجية ' + errs.slice(0, 3).join(' | '));
 await b.close(); process.exit(fail ? 1 : 0);

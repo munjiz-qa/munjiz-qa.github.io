@@ -1,6 +1,6 @@
 /* يتيح فتح جُمانة بعد تثبيته حتى عند انقطاع الاتصال. الشبكة أولاً دائماً لتبقى المنصة محدّثة، والنسخة المحفوظة احتياط فقط.
    لا يتدخل في أي طلب لجهة خارجية، ولا يحفظ إلا ملفات الصفحة نفسها التي فُتحت. */
-const CACHE = "jumana-202611150215", CORE = ["./", "index.html", "manifest.webmanifest", "pwa-install.js", "assets/icon.svg", "assets/icon-192.png", "assets/icon-180.png"];
+const CACHE = "jumana-202611272130", CORE = ["./", "index.html", "manifest.webmanifest", "pwa-install.js", "assets/icon.svg", "assets/icon-192.png", "assets/icon-180.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith("jumana-") && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener("fetch", e => {
