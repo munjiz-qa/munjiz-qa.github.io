@@ -5,6 +5,6 @@ self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(k=>Promise.a
 self.addEventListener("fetch",e=>{
   const u=new URL(e.request.url); if(e.request.method!=="GET"||u.origin!==location.origin) return;
   const net=()=>fetch(e.request).then(r=>{if(r.ok){const c=r.clone(); caches.open(V).then(x=>x.put(e.request,c))} return r});
-  if(e.request.mode==="navigate"||u.pathname.endsWith("content.json")) e.respondWith(net().catch(()=>caches.match(e.request,{ignoreSearch:true}).then(r=>r||caches.match("index.html"))));
+  if(e.request.mode==="navigate"||(u.pathname.endsWith("content.json")||u.pathname.endsWith("cms.json"))) e.respondWith(net().catch(()=>caches.match(e.request,{ignoreSearch:true}).then(r=>r||caches.match("index.html"))));
   else e.respondWith(caches.match(e.request).then(r=>r||net()));
 });
