@@ -146,6 +146,15 @@ main:focus{outline:none}
 @media (max-width:420px){
   .brand small{display:none}
 }
+.sec{margin-top:26px}.sec-h{font-size:20px;color:var(--brand);margin:0 0 12px}
+.sec-text{margin-top:22px}.sec-text h2{margin:0 0 10px;color:var(--brand)}.sec-text .tx+.tx{margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}.sec-text h3{margin:0 0 4px;font-size:16px}.sec-text p{margin:0;color:var(--mute);font-size:15px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;position:sticky;top:96px;z-index:15;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(8px);padding:8px 0;margin-bottom:8px}
+.ctl{display:inline-flex;gap:4px;margin-inline-start:auto}.ctl button{min-width:36px}
+.blk{margin-top:14px}.blk.hid,.itm.hid{opacity:.6}
+.itm{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;background:var(--bg)}.itm .row{margin-bottom:8px}
+.pv{max-height:560px;overflow:auto;border:1px dashed var(--line);border-radius:12px;padding:6px 12px}
+textarea{resize:vertical}
+@media (max-width:820px){.bar{top:92px}}
 .printarea{display:none}
 @media print{body.printing>*:not(.printarea){display:none!important}body.printing .printarea{display:block}.top,nav,.noprint{display:none!important}.card{box-shadow:none;break-inside:avoid}body{background:#fff;color:#000}}
 </style>

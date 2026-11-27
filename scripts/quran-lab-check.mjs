@@ -1,4 +1,4 @@
-// فحص «مختبر الأبحاث القرآنية» المنشور: يعمل مستقلاً دون Claude ودون أي جهة خارجية، وصفحات العميل والمدير تعمل، والبحث يخرّج الأحاديث بأرقامها وأحكامها.
+// فحص «مختبر الأبحاث القرآنية» المنشور: يعمل مستقلاً دون أي خدمة خارجية ودون أي جهة خارجية، وصفحات العميل والمدير تعمل، والبحث يخرّج الأحاديث بأرقامها وأحكامها.
 import pw from 'playwright';
 const { chromium } = pw;
 const B = process.env.LAB_URL || 'https://munjiz-qa.github.io/quran-lab/';
@@ -16,7 +16,7 @@ ok(['client', 'admin'].every(u => cfg.users?.some(x => x.u === u && !x.off)), '�
 ok(cfg.users.every(x => /^pbkdf2\$\d{6,}\$/.test(x.h || '')), 'كلمات المرور محفوظة بتجزئة PBKDF2 مملّحة، لا نص صريح ولا تجزئة سريعة');
 await p.goto(B); await p.waitForSelector('#rform', { timeout: 60000 });
 ok(!!(await p.$('meta[http-equiv="Content-Security-Policy"]')) && await p.evaluate(async () => (await fetch('https://example.com/').then(() => 'open', () => 'blocked')) === 'blocked'), 'سياسة أمان المحتوى (CSP) مفعّلة وتمنع الاتصال بمواقع غريبة');
-ok(/مختبر الأبحاث القرآنية/.test(await p.title()) && await p.evaluate(() => typeof window.claude === 'undefined'), 'يفتح على المختبر باسمه، دون أي مكوّن من Claude');
+ok(/مختبر الأبحاث القرآنية/.test(await p.title()) && await p.evaluate(() => typeof window.claude === 'undefined'), 'يفتح على المختبر باسمه، دون أي مكوّن خارجي');
 await p.fill('#rq', 'اسم الله الأعظم من الكتاب والسنة'); await p.click('#rgo');
 // انتظار اكتمال البحث بالاستطلاع عبر evaluate: waitForFunction في بعض إصدارات Playwright يُنشئ دالة بـ eval فتمنعه سياسة أمان المحتوى
 for (const t0 = Date.now(); Date.now() - t0 < 900000;) { if (/اكتمل/.test(await p.evaluate(() => document.querySelector('#rstat')?.textContent || ''))) break; await p.waitForTimeout(1000); }
@@ -26,7 +26,7 @@ ok(/أبو داود \(١٤٩٦\)/.test(doc) && /الترمذي \(٣٤٧٨\)/.tes
 ok(/الترمذي \(٣٤٧٥\)/.test(doc) && /الترمذي \(٣٥٤٤\)/.test(doc) && /ابن ماجه \(٣٨٥٦\)/.test(doc), 'ويخرّج حديث بريدة وحديث أنس وحديث أبي أمامة');
 ok(/أقوال العلماء في المسألة/.test(doc) && /البقرة ١٦٣/.test(doc) && /المراجع/.test(doc), 'وينقل أقوال العلماء والآيات المنصوص عليها والمراجع');
 for (const v of ['mine', 'guide', 'account', 'admin']) { await p.evaluate(v => location.hash = v, v); await p.waitForTimeout(700);
-  const t = await p.evaluate(() => document.body.innerText); ok(!/claude|anthropic/i.test(t) && t.length > 150, `صفحة ${v} تعمل ولا تذكر Claude`); }
+  const t = await p.evaluate(() => document.body.innerText); ok(!/claude|anthropic/i.test(t) && t.length > 150, `صفحة ${v} تعمل ولا تذكر أي أداة خارجية`); }
 await p.evaluate(() => location.hash = 'account'); await p.waitForTimeout(700);
 ok(!!(await p.$('#uform')) && !!(await p.$('#rform')), 'صفحة الدخول للعميل والمدير وإنشاء الحساب تعمل');
 { // اللغات ومواقيت الصلاة: الإنجليزية مضمّنة، ومعاني الآيات بالترجمة المعتمدة، والمواقيت تُحسب على الجهاز
@@ -40,7 +40,7 @@ ok(!!(await p.$('#uform')) && !!(await p.$('#rform')), 'صفحة الدخول ل
   await q.evaluate(() => setLang('ar')); await q.waitForTimeout(5000); await q.evaluate(() => location.hash = 'prayer'); await q.waitForTimeout(1200);
   ok(await q.evaluate(() => document.documentElement.dir === 'rtl') && /الصلاة القادمة/.test(await q.textContent('#view')), 'العودة إلى العربية، ومواقيت الصلاة تعمل');
   ok(!e2.length, 'لا أخطاء برمجية في اللغات والمواقيت ' + e2.join(' | ')); await c2.close(); }
-ok(!bad.length, 'لا طلبات إلى Claude أو Anthropic ' + bad.join(' '));
+ok(!bad.length, 'لا طلبات إلى أي خدمة خارجية ' + bad.join(' '));
 ok(!ext.size, 'لا اتصال بأي جهة خارجية ' + [...ext].join(' '));
 ok(!errs.length, 'لا أخطاء برمجية ' + errs.join(' | '));
 await b.close(); process.exit(fail ? 1 : 0);

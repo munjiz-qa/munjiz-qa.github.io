@@ -12,10 +12,15 @@ const ar=()=>K.LANG!=='en';
 let D=null,ED=null,FC=null,MAP=null,LAYER='status';
 try{LAYER=localStorage.getItem('khabar-cmap-layer')||'status'}catch(e){}
 const getJSON=u=>fetch(u,{cache:'no-cache'}).then(r=>{if(!r.ok)throw new Error(u+' '+r.status);return r.json()});
+// الصفحة الرئيسية تحمّل ملخص الدول (data/countries-home.json، نحو عُشر الحجم)، وصفحات الدول تحمّل الملف الكامل.
+// الملخص منسوخ من الملف الكامل بعد بوابة التحقق، وإن تعذّر يُحمَّل الكامل كما كان.
 async function load(){
-  if(D)return;
-  const [d,e,f]=await Promise.all([getJSON('data/countries.json').catch(()=>null),getJSON('data/countries-editorial.json').catch(()=>null),getJSON('data/forecast.json').catch(()=>null)]);
-  D=d;ED=e||{countries:{},sources:{}};FC=f;
+  const full=has(location.hash.slice(1)||'today');
+  if(D&&(!D.lite||!full))return;
+  const [d,e,f]=await Promise.all([
+    (full?Promise.reject():getJSON('data/countries-home.json')).catch(()=>getJSON('data/countries.json')).catch(()=>null),
+    ED?ED:getJSON('data/countries-editorial.json').catch(()=>null),FC?FC:getJSON('data/forecast.json').catch(()=>null)]);
+  if(d||!D)D=d;ED=e||{countries:{},sources:{}};FC=f;
 }
 const off=()=>new Set(K.ADMIN.countries_off||[]);
 const hid=()=>new Set(K.ADMIN.countries_hidden||[]);

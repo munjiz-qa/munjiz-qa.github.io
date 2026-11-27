@@ -1,10 +1,11 @@
 // براق · عامل الخدمة: يجعل الموقع قابلاً للتثبيت كتطبيق ويفتح دون اتصال بعد أول زيارة.
 // الشبكة أولاً للصفحات والسكربتات (لا تظهر نسخة قديمة وأنت متصل)، والنسخة المحفوظة عند انقطاع الإنترنت فقط.
 // لا يلمس Firebase ولا واجهات الصرف والموقع الجغرافي إطلاقاً.
-const CACHE = 'buraq-v20261118a';
+const CACHE = 'buraq-v20261125a';
 const CORE = ['./', 'index.html', 'account.html', 'admin.html', 'manifest.webmanifest',
   'app/icon.svg', 'app/icon-192.png', 'app/icon-512.png', 'app/maskable-512.png', 'app/apple-touch-icon.png', 'app/pwa.js?v=1',
-  'ux/ux.css?v=20261118b', 'ux/ux.js?v=3', 'ux/share.js?v=1', 'ux/printplan.js?v=2', 'ux/compare.js?v=4', 'acct/cur.js?v=3', 'acct/acct.css?v=4', 'acct/hook.js?v=6',
+  'ux/ux.css?v=20261125a', 'ux/ux.js?v=3', 'ux/share.js?v=1', 'ux/printplan.js?v=2', 'ux/compare.js?v=4', 'acct/cur.js?v=3', 'acct/acct.css?v=4', 'acct/hook.js?v=6',
+  'fonts/fonts.css?v=1', 'fonts/noto-sans-arabic-arabic-wght-normal.woff2', 'fonts/noto-sans-arabic-latin-wght-normal.woff2',
   'img/bq10_chassis_exploded.jpg', 'img/bq10_chassis_hero.jpg', 'pwa-install.js'];
 const BASE = new URL('./', self.location).pathname;
 self.addEventListener('install', e => {
@@ -20,7 +21,7 @@ self.addEventListener('fetch', e => {
   const u = new URL(req.url);
   const mine = u.origin === self.location.origin && u.pathname.startsWith(BASE);
   if (!mine && !stable(u)) return;            // Firebase وواجهات الصرف تمر مباشرة دون أي تخزين
-  if (stable(u) || (mine && /\/(img|app)\//.test(u.pathname))) {   // ملفات ثابتة: المحفوظ أولاً ثم تحديث في الخلفية
+  if (stable(u) || (mine && /\/(img|app|vendor|fonts)\//.test(u.pathname))) {   // ملفات ثابتة: المحفوظ أولاً ثم تحديث في الخلفية
     e.respondWith(caches.open(CACHE).then(async c => {
       const hit = await c.match(req);
       const net = fetch(req).then(r => { if (r && (r.ok || r.type === 'opaque')) c.put(req, r.clone()).catch(() => {}); return r; }).catch(() => hit);

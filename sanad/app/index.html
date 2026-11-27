@@ -327,10 +327,10 @@ const errText = e => {
   if(c==='invalid_argument') return 'لا تملك صلاحية تنفيذ هذا الإجراء.';
   if(c==='quota_exceeded') return 'امتلأت سعة البيانات. احذف سجلات قديمة ثم أعد المحاولة.';
   if(c==='resource_exhausted' || c==='rate_limited') return 'طلبات كثيرة في وقت قصير. انتظر لحظات ثم أعد المحاولة.';
-  if(c==='not_configured' || c==='bad_key') return (e && e.message) || 'لم يُضبط مفتاح Claude بعد.';
+  if(c==='not_configured' || c==='bad_key') return (e && e.message) || 'لم يُضبط مفتاح المحرّك الذكي بعد.';
   if(c==='offline') return 'لا يوجد اتصال بخادم سند. تحقق من الشبكة.';
-  if(c==='not_granted') return 'لم يُسمح لسند باستخدام Claude في هذا العرض. فعّل الإذن من قائمة الصلاحيات.';
-  if(c==='sampling_disabled') return 'استخدام Claude متوقف لهذا الحساب حالياً.';
+  if(c==='not_granted') return 'لم يُسمح لسند باستخدام المحرّك الذكي في هذا العرض. فعّل الإذن من قائمة الصلاحيات.';
+  if(c==='sampling_disabled') return 'استخدام المحرّك الذكي متوقف لهذا الحساب حالياً.';
   if(c==='cancelled') return 'أُوقف التنفيذ.';
   return (e && e.message) ? String(e.message) : 'تعذّر إتمام العملية. أعد المحاولة.';
 };
@@ -911,7 +911,7 @@ function vSettings(){
   + `<div class="sec"><h2>معاينة الأدوار</h2><div class="card grid" style="gap:10px"><div class="small">اعرض التطبيق كما يراه العميل أو الزائر لتتأكد من التجربة. طلبات الحجز التي ترسلها في وضع العميل تصلك هنا للاختبار.</div>
      <div class="toolbar"><button class="btn" data-act="preview" data-r="client">${ic('user')} اعرض كعميل</button><button class="btn" data-act="preview" data-r="visitor">${ic('home')} اعرض كزائر</button></div></div></div>`
   + `<div class="sec"><h2>الاتصالات</h2><div class="list">
-      <div class="row"><div class="body"><h3>Claude</h3><div class="small muted">العقل المشغّل لسند، بأدوات تنفّذ داخل التطبيق.</div></div><div class="acts">${S.sample?'<span class="pill ok">متصل</span>':'<span class="pill bad">غير متاح في هذا العرض</span>'}</div></div>
+      <div class="row"><div class="body"><h3>المحرّك الذكي</h3><div class="small muted">العقل المشغّل لسند، بأدوات تنفّذ داخل التطبيق.</div></div><div class="acts">${S.sample?'<span class="pill ok">متصل</span>':'<span class="pill bad">غير متاح في هذا العرض</span>'}</div></div>
       <div class="row"><div class="body"><h3>Google Drive (MCP)</h3><div class="small muted">يبحث سند في ملفاتك ويقرأها ليجيب من مستنداتك. للمالك فقط.</div></div><div class="acts">${S.mcp&&S.owner?'<span class="pill ok">مفعّل</span>':'<span class="pill">غير مفعّل</span>'}</div></div>
       <div class="row"><div class="body"><h3>قراءة الصور</h3><div class="small muted">يستخرج بيانات العميل من صورة بطاقة عمل أو لقطة شاشة.</div></div><div class="acts">${S.canImages?'<span class="pill ok">متاح</span>':'<span class="pill">غير متاح</span>'}</div></div>
       <div class="row"><div class="body"><h3>خادم n8n (اختياري)</h3><div class="small muted">لتشغيل الروتينات في الخلفية، والإرسال الآلي للرسائل المعتمدة عبر Gmail وواتساب وتيليجرام. ملفاته جاهزة في مجلد المشروع.</div></div><div class="acts"><span class="pill warn">بانتظار الخادم</span></div></div>

@@ -1,0 +1,56 @@
+name: Khabar CMS
+# «عبدو نيوز»: بوابة ما يُنشر من شاشة «إدارة المحتوى» (khabar/admin/content/).
+# كل نشر من الشاشة إيداع واحد في رسالته الوسم [cms]. تفحصه scripts/cms_gate.py بقواعد التوثيق (جهتان مستقلتان لكل خبر)
+# ودليل الأسلوب (agent/style.py)، فإن خالف أُلغي الإيداع وكُتب السبب في data/cms-status.json فتعرضه الشاشة للمدير.
+# وإن سلم أُعيد بناء فهرس البحث وخلاصات RSS وصفحات المشاركة.
+on:
+  push:
+    branches: [main]
+    paths: ['khabar/data/**']
+permissions:
+  contents: write
+concurrency:
+  group: khabar-cms
+  cancel-in-progress: false
+jobs:
+  gate:
+    if: contains(github.event.head_commit.message, '[cms]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 30
+          ref: main
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 20
+      - name: gate
+        id: g
+        run: |
+          if python3 khabar/scripts/cms_gate.py "${{ github.sha }}"; then echo "ok=true" >> "$GITHUB_OUTPUT"; else echo "ok=false" >> "$GITHUB_OUTPUT"; fi
+          cp khabar/data/cms-status.json "$RUNNER_TEMP/cms-status.json"
+      - name: revert
+        if: steps.g.outputs.ok == 'false'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -- khabar/data/cms-status.json 2>/dev/null || true
+          # يعيد كل ملف غيّره الإيداع إلى ما كان عليه قبله (ولا يمس ما أودعه غيره بعده في ملفات أخرى)
+          for f in $(git diff --name-only "${{ github.sha }}^" "${{ github.sha }}" -- khabar/data); do
+            if git cat-file -e "${{ github.sha }}^:$f" 2>/dev/null; then git checkout "${{ github.sha }}^" -- "$f"; else git rm -q --ignore-unmatch "$f"; fi
+          done
+          cp "$RUNNER_TEMP/cms-status.json" khabar/data/cms-status.json
+          git add -A khabar/data
+          git commit -q -m "عبدو نيوز: إلغاء نشر من إدارة المحتوى خالف قواعد التوثيق أو الأسلوب"
+      - name: build
+        if: steps.g.outputs.ok == 'true'
+        continue-on-error: true
+        run: node khabar/scripts/build.mjs
+      - name: push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp "$RUNNER_TEMP/cms-status.json" khabar/data/cms-status.json
+          git add -A khabar
+          git diff --cached --quiet || git commit -q -m "عبدو نيوز: فحص إدارة المحتوى وتحديث الفهرس"
+          for i in 1 2 3 4; do git pull --rebase -q -X theirs origin main && git push && exit 0; sleep $((i*5)); done; exit 1

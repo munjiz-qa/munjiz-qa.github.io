@@ -846,7 +846,7 @@ async function reviewExercise(n){
     fb.textContent = r.text; S.reviewed[n] = true; touch(); persist(); st.textContent = "راجعها Claude";
   }catch(e){
     if(e && e.code==="not_granted"){ sample = null; }
-    fb.textContent = offlineReview(text); st.textContent = "تعذّر الوصول إلى Claude، فعرضنا مراجعة سريعة على الجهاز";
+    fb.textContent = offlineReview(text); st.textContent = "تعذّر الوصول إلى المحرّك الذكي، فعرضنا مراجعة سريعة على الجهاز";
   }
 }
 

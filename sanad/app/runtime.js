@@ -1,6 +1,6 @@
 /* سند | Sanad — طبقة التشغيل المستقلة
    توفّر للتطبيق نفس الواجهات (user, db, sample) لكن عبر خادم سند الخاص بك،
-   فيعمل التطبيق نفسه على أي جهاز دون حساب Claude لكل مستخدم. */
+   فيعمل التطبيق نفسه على أي جهاز دون حساب منفصل لكل مستخدم. */
 (() => {
 'use strict';
 const err = (code, message) => Object.assign(new Error(message || code), { code });
@@ -85,7 +85,7 @@ const user = {
   me: async () => { const u = (await mePromise).user; return u ? { name: u.name, email: u.email } : {}; }
 };
 
-/* ---------- sample (Claude via the Sanad server) ---------- */
+/* ---------- sample (model via the Sanad server) ---------- */
 function fileToBlock(f) {
   return new Promise((resolve, reject) => {
     const r = new FileReader();
