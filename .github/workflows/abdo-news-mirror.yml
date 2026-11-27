@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths: ['khabar/**']
   workflow_run:
-    workflows: ['Khabar agent', 'Khabar autopilot', 'Khabar headlines']
+    workflows: ['Khabar agent', 'Khabar autopilot', 'Khabar headlines', 'Khabar CMS']
     types: [completed]
   schedule:
     - cron: '*/15 * * * *'

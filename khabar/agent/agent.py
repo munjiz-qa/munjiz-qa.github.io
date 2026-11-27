@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """«عبدو نيوز»: الوكيل المحرر المستقل.
 
-يكتب خلاصة الصباح والمساء ويرصد العاجل بنفسه، دون تدخل بشري، على Claude API.
+يكتب خلاصة الصباح والمساء ويرصد العاجل بنفسه، دون تدخل بشري، عبر محرّك الكتابة.
 
   python3 khabar/agent/agent.py brief      # خلاصة جديدة (الصباح قبل 12:00 بتوقيت الدوحة، والمساء بعدها)
   python3 khabar/agent/agent.py breaking   # رصد العاجل (كل 20 دقيقة من GitHub Actions)
@@ -97,8 +97,8 @@ SUBMIT_ZONE = {
         'required': ['items', 'analysis', 'technical', 'outlook', 'markets', 'roadmap'],
         'properties': {
             'items': {'type': 'array', 'description': 'من 5 إلى 9 أخبار، الأهم أولاً', 'items': {
-                'type': 'object', 'additionalProperties': False, 'required': ['cat', 'ar', 'en', 'sources'],
-                'properties': {'cat': BI, 'ar': {'type': 'string'}, 'en': {'type': 'string'},
+                'type': 'object', 'additionalProperties': False, 'required': ['cat', 'h', 'ar', 'en', 'sources'],
+                'properties': {'cat': BI, 'h': {**BI, 'description': 'عنوان الخبر من 5 إلى 12 كلمة، جملة خبرية بلا استفهام ولا إثارة (STYLE.md)'}, 'ar': {'type': 'string'}, 'en': {'type': 'string'},
                                'sources': {'type': 'array', 'items': SOURCE}}}},
             'analysis': WITH_SRC('قراءة تحليلية للدائرة، رأي تحريري مبني على الأخبار المذكورة'),
             'technical': WITH_SRC('قراءة فنية مبسطة لأرقام السوق إن وُجدت، وإلا فاترك ar و en فارغين و src فارغة'),
@@ -116,6 +116,8 @@ SUBMIT_ZONE = {
     },
 }
 
+STYLE_GUIDE = (Path(__file__).resolve().parent.parent / 'STYLE.md').read_text(encoding='utf-8') if (Path(__file__).resolve().parent.parent / 'STYLE.md').exists() else ''
+
 REPORTER_SYSTEM = """أنت مراسل في «عبدو نيوز»، خلاصة أخبار يومية للقارئ في قطر. تكتب دائرة واحدة من دوائر الخلاصة.
 
 قاعدة «عبدو نيوز» التي لا استثناء لها: لا خبر ولا عنوان ولا رقم ولا معلومة دون مصدر موثّق ورابطه الأصلي. ما لم تقرأه بنفسك في مقال فتحته لا يُكتب.
@@ -131,7 +133,10 @@ REPORTER_SYSTEM = """أنت مراسل في «عبدو نيوز»، خلاصة �
 - لا تكرر خبراً نُشر في الخلاصة السابقة إلا إن جدّ فيه جديد، وحينها اكتب الجديد.
 - إن لم تجد مصدراً لمعلومة فاحذفها. خمسة أخبار موثّقة خير من تسعة فيها خبر واحد بلا سند.
 
-حين تنتهي، استدعِ أداة submit_zone مرة واحدة بالنتيجة كاملة."""
+حين تنتهي، استدعِ أداة submit_zone مرة واحدة بالنتيجة كاملة.
+
+دليل الأسلوب الملزم (khabar/STYLE.md):
+""" + STYLE_GUIDE
 
 CHECK_SYSTEM = """أنت مدقق حقائق مستقل في «عبدو نيوز». لكل خبر تُعطى نصه واقتباسات حرفية من مصادره.
 احكم: supported إن كانت الاقتباسات تسند كل ادعاء ورقم في النص، partial إن أسندت جوهره وفيه تفصيل ثانوي غير مسنود، unsupported إن كان الجوهر أو أي رقم غير مسنود أو مخالف.
@@ -291,7 +296,7 @@ def write_thread(brief):
               'properties': {'ar': {'type': 'string'}, 'en': {'type': 'string'}, 'ids': {'type': 'array', 'items': {'type': 'string'}}}}
     resp = client.beta.messages.create(
         model=MODEL, max_tokens=16000,
-        system='أنت رئيس تحرير «عبدو نيوز». اكتب «خيط اليوم»: فقرة واحدة من 3 إلى 5 جمل تربط أهم ما في الخلاصة من قطر إلى العالم، مبنية على الأخبار المعطاة وحدها دون أي معلومة أو رقم من خارجها، مع ترجمتها الإنجليزية، وأرقام الأخبار التي استندت إليها (مثل q1).',
+        system='أنت رئيس تحرير «عبدو نيوز». اكتب «خيط اليوم»: من 3 إلى 4 جمل قصيرة (45 إلى 80 كلمة)، جملة لكل دائرة بالترتيب: قطر ثم الخليج ثم مصر ثم العالم، تبدأ بالحدث لا بالتاريخ، بلا استعارات إنشائية وبالصيغ الموحدة للأرقام في STYLE.md، مبنية على الأخبار المعطاة وحدها دون أي معلومة أو رقم من خارجها، مع ترجمتها الإنجليزية، وأرقام الأخبار التي استندت إليها (مثل q1).',
         messages=[{'role': 'user', 'content': '\n'.join(lines)}],
         output_config={'format': {'type': 'json_schema', 'schema': schema}, 'effort': 'medium'}, **FALLBACK,
     )
@@ -324,7 +329,7 @@ def assemble(ctx, results, kept, dropped):
             iid = f"{Z['k']}{len(z['items']) + 1}"
             num_to_id[c['n']] = iid
             src = [add_source(s, f"{iid}-{j + 1}") for j, s in enumerate(c['sources'])]
-            z['items'].append({'id': iid, 'cat': c['item']['cat'], 'ar': c['item']['ar'].strip(), 'en': c['item']['en'].strip(),
+            z['items'].append({'id': iid, 'cat': c['item']['cat'], **({'h': c['item']['h']} if c['item'].get('h') else {}), 'ar': c['item']['ar'].strip(), 'en': c['item']['en'].strip(),
                                'src': list(dict.fromkeys(src)), 'check': c['check']['verdict']})
         if r and z['items']:
             d = r['data']

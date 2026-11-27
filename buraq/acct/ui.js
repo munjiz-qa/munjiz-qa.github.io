@@ -12,16 +12,22 @@ export function fmtDate(v, time = false) {
 }
 // الهاتف دائماً بصيغة دولية: ‎+974 5160 0498
 export function normPhone(raw) {
-  let d = String(raw || "").replace(/[^\d+]/g, "").replace(/^00/, "+");
+  // الأرقام العربية والفارسية تُحوَّل إلى لاتينية أولاً (لوحة المفاتيح العربية تكتبها)، وتُحذف علامات الاتجاه والفواصل
+  let d = String(raw || "").replace(/[\u0660-\u0669]/g, (c) => c.charCodeAt(0) - 0x660).replace(/[\u06F0-\u06F9]/g, (c) => c.charCodeAt(0) - 0x6F0)
+    .replace(/[^\d+]/g, "").replace(/^00/, "+");
   if (!d) return "";
-  if (!d.startsWith("+")) d = (d.length === 8 ? "+974" : "+") + d;
+  // رقم مصري محلي (01012345678): يُحوَّل إلى الصيغة الدولية
+  if (/^01[0125]\d{8}$/.test(d)) d = "+20" + d.slice(1);
+  else if (!d.startsWith("+")) { if (d.startsWith("0")) return null; d = (d.length === 8 ? "+974" : "+") + d; }
   const digits = d.slice(1);
   if (digits.length < 8 || digits.length > 15) return null;
   const cc = digits.startsWith("974") ? "974" : digits.startsWith("20") ? "20" : digits.startsWith("966") ? "966" : digits.startsWith("971") ? "971" : digits.slice(0, digits.length > 11 ? 3 : 2);
-  const rest = digits.slice(cc.length).replace(/(\d{4})(?=\d)/g, "$1 ");
+  const nat = digits.slice(cc.length);
+  // مصر: ‎+20 10 1234 5678 ، وغيرها مجموعات من 4 أرقام
+  const rest = cc === "20" && nat.length === 10 ? `${nat.slice(0, 2)} ${nat.slice(2, 6)} ${nat.slice(6)}` : nat.replace(/(\d{4})(?=\d)/g, "$1 ");
   return `+${cc} ${rest}`;
 }
-export const phoneHtml = (p) => (p ? `<bdi dir="ltr">${esc(p)}</bdi>` : "—");
+export const phoneHtml = (p) => (p ? `<bdi dir="ltr">${esc(normPhone(p) || p)}</bdi>` : "—");
 export const money = (n, cur = "USD") => (n == null || n === "" || isNaN(n) ? "—" : `${cur === "USD" ? "$" : ""}${Number(n).toLocaleString("en-US", { maximumFractionDigits: 2 })}${cur !== "USD" ? " " + cur : ""}`);
 
 export const STATUS = {

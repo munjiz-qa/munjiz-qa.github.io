@@ -119,7 +119,8 @@ function viewHub(main){
   const o=off();
   const extra=[['agenda',L('أجندة الأسبوع','The week ahead'),'#3A5FB0'],['explain',L('اشرح لي','Explain it'),'#1D7A70'],['search',L('البحث في الأرشيف','Search the archive'),'#14212E'],['listen',L('الملخص الصوتي','Audio brief'),'#E39A2D'],['quiz',L('اختبار الأسبوع','Weekly quiz'),'#7A3FB0'],['method',L('منهجيتنا','Our method'),'#1D7A70'],['corrections',L('سجل التصحيحات','Corrections'),'#C4392F'],['outlets',L('موثوقية المصادر','Source reliability'),'#566270'],['ask',L('اسأل عبدو نيوز','Ask Abdo News'),'#E39A2D'],['opinion',L('رأي وتحليل','Opinion'),'#566270'],['newsletter',L('النشرة اليومية','Daily newsletter'),'#1D7A70'],['partners',L('انشر عبدو نيوز عندك','Share Abdo News'),'#3A5FB0']];
   GROUPS.forEach(([g,a,e])=>{
-    const list=D.meta.filter(m=>m.group===g&&!o.has(m.id));if(!list.length&&g!=='trust')return;
+    const ord=K.ADMIN.desks_order||[],rk=id=>{const i=ord.indexOf(id);return i<0?999:i};
+    const list=D.meta.filter(m=>m.group===g&&!o.has(m.id)).map((m,i)=>[m,i]).sort((a,b)=>rk(a[0].id)-rk(b[0].id)||a[1]-b[1]).map(x=>x[0]);if(!list.length&&g!=='trust')return;
     const s=el('section','zone');const h=el('div','zone-head');h.append(el('h2',null,ar()?a:e));s.append(h);
     const grid=el('div','dk-grid');
     list.forEach(m=>{const its=items(m.id);const c=el('a','dk-card');c.href='#d-'+m.id;c.style.setProperty('--zc',m.color);

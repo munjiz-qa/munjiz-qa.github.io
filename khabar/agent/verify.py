@@ -270,6 +270,14 @@ def main():
     for k, v in rep['items'].items():
         if v['status'] == 'review':
             print('  ?', k, 'أرقام لم تظهر في صفحات المصادر:', ', '.join(v['numbers']['unseen']))
+    # الفحص الأسلوبي (STYLE.md): يُطبع هنا للتنبيه، ويُفرض بـ agent/style.py --enforce قبل نشر الخلاصة التحريرية
+    try:
+        import style as ST
+        st = ST.check_brief(brief)
+        if st:
+            print(f"الأسلوب (STYLE.md): {sum(1 for x in st if x[0] == 'error')} خطأ، {sum(1 for x in st if x[0] != 'error')} تنبيه. التفاصيل: python3 khabar/agent/style.py {a.brief}")
+    except Exception as e:  # noqa: BLE001
+        print('تعذّر الفحص الأسلوبي:', e)
     sys.exit(1 if rep['problems'] and not a.enforce else 0)
 
 

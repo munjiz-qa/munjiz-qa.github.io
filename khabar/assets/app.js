@@ -93,7 +93,11 @@ function header(){
   $('#theme-btn').setAttribute('aria-label',dark?t('theme_light'):t('theme_dark'));
   document.title=LANG==='en'?'Abdo News | Your daily brief from Doha to the world':'عبدو نيوز | خلاصة يومك من الدوحة إلى العالم';
   const tabs=$('#tabs');tabs.textContent='';
-  [['today'],['marsad'],...ZONES.map(z=>[z,ZC[z]]),['military','#8A3A2E'],['wars','#C4392F'],['countries','#1F3A93'],['forecast','#D9A21A'],['desks','#7A3FB0'],['special','#0F6E8C'],['weather'],['roadmap'],['ledger'],['saved'],['about']].forEach(([id,c])=>{
+  // ترتيب الأقسام وإخفاؤها من شاشة «إدارة المحتوى» (admin.json: tabs_order وtabs_off)؛ «اليوم» يبقى ظاهراً دائماً
+  let NAV=[['today'],['marsad'],...ZONES.map(z=>[z,ZC[z]]),['military','#8A3A2E'],['wars','#C4392F'],['countries','#1F3A93'],['forecast','#D9A21A'],['desks','#7A3FB0'],['special','#0F6E8C'],['weather'],['roadmap'],['ledger'],['saved'],['about']];
+  {const ord=ADMIN.tabs_order||[],off=new Set(ADMIN.tabs_off||[]);const r=id=>{const i=ord.indexOf(id);return i<0?999:i};
+   if(ord.length)NAV=NAV.map((x,i)=>[x,i]).sort((a,b)=>r(a[0][0])-r(b[0][0])||a[1]-b[1]).map(x=>x[0]);NAV=NAV.filter(([id])=>id==='today'||!off.has(id))}
+  NAV.forEach(([id,c])=>{
     const a=el('a','tab');a.href=id==='weather'?'weather/':id==='forecast'?'forecast/':id==='special'?'special/':'#'+id;if(c){const i=el('i');i.style.background=c==='var(--ink)'?'var(--deep-ink)':c;a.append(i)}a.append(t(id));
     if(id===VIEW||(id==='today'&&VIEW.startsWith('b-'))||(id==='wars'&&VIEW.startsWith('war-'))||(id==='countries'&&window.KC&&KC.has(VIEW))||(id==='desks'&&window.KD&&KD.has(VIEW)))a.setAttribute('aria-current','page');tabs.append(a)});
   if(window.KD)KD.a11y();
@@ -133,13 +137,13 @@ const ICON={
  stop:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>',
  copy:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3" fill="none" stroke="currentColor" stroke-width="2"/></svg>'
 };
-function shareText(it){const S=BRIEF.sources;return `${it[LANG]}\n\n${t('sources')}: ${it.src.map(id=>`${S[id][LANG]} (${fmtDate(S[id].date)}) ${S[id].url}`).join('\n')}\n\n${t('brand')}: ${(CFG.SITE||location.href.split('#')[0])+'s/'+BRIEF.id+'-'+it.id+'.html'}`}
+function shareText(it){const S=BRIEF.sources;return `${it.h&&it.h[LANG]?it.h[LANG]+'\n\n':''}${it[LANG]}\n\n${t('sources')}: ${it.src.map(id=>`${S[id][LANG]} (${fmtDate(S[id].date)}) ${S[id].url}`).join('\n')}\n\n${t('brand')}: ${(CFG.SITE||location.href.split('#')[0])+'s/'+BRIEF.id+'-'+it.id+'.html'}`}
 function toast(m){const n=$('#toast');n.textContent=m;n.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>n.hidden=true,2200)}
 function copyText(s){const done=()=>toast(t('copied'));try{navigator.clipboard.writeText(s).then(done,()=>fallback(s,done))}catch(e){fallback(s,done)}}
 function fallback(s,done){const ta=el('textarea');ta.value=s;ta.style.position='fixed';ta.style.opacity='0';document.body.append(ta);ta.select();try{document.execCommand('copy')}catch(e){}ta.remove();done()}
 function itemCard(it,zone){
   const li=el('li','item');li.style.setProperty('--zc',ZC[zone]);li.dataset.zone=zone;li.id='i-'+it.id;
-  li.append(el('span','cat',it.cat[LANG]));const p=el('p');hl(p,it[LANG]);li.append(p);
+  li.append(el('span','cat',it.cat[LANG]));if(it.h&&it.h[LANG]){const h3=el('h3','it-h');hl(h3,it.h[LANG]);li.append(h3)}const p=el('p');hl(p,it[LANG]);li.append(p);
   const tr=trust(it);if(tr)li.append(tr);
   const f=el('div','item-foot');f.append(srcLine(it.src));
   const acts=el('div','acts'),sv=saved(),isS=!!sv[it.id];
@@ -148,7 +152,7 @@ function itemCard(it,zone){
   const bw=el('a','act');bw.innerHTML=ICON.wa;bw.append(el('span',null,t('share')));bw.href='https://wa.me/?text='+encodeURIComponent(shareText(it));bw.target='_blank';bw.rel='noopener';
   const bc=el('button','act');bc.type='button';bc.innerHTML=ICON.copy;bc.setAttribute('aria-label',t('copy'));bc.onclick=()=>copyText(shareText(it));
   acts.append(bs,bw,bc);
-  if(window.KD)acts.append(KD.shareBtn({text:it[LANG],tag:it.cat[LANG],link:(CFG.SITE||location.href.split('#')[0])+'s/'+BRIEF.id+'-'+it.id+'.html',sources:it.src.map(id=>({name:BRIEF.sources[id][LANG],date:BRIEF.sources[id].date,url:BRIEF.sources[id].url}))}),KD.reportBtn(it.id,it[LANG]));
+  if(window.KD)acts.append(KD.shareBtn({text:(it.h&&it.h[LANG]?it.h[LANG]+'. ':'')+it[LANG],tag:it.cat[LANG],link:(CFG.SITE||location.href.split('#')[0])+'s/'+BRIEF.id+'-'+it.id+'.html',sources:it.src.map(id=>({name:BRIEF.sources[id][LANG],date:BRIEF.sources[id].date,url:BRIEF.sources[id].url}))}),KD.reportBtn(it.id,it[LANG]));
   f.append(acts);li.append(f);return li;
 }
 function outletsLabel(n){if(LANG==='en')return n===1?'1 outlet':`${n} independent outlets`;return n===1?'جهة واحدة':n===2?'جهتان مستقلتان':`${n} جهات مستقلة`}
@@ -182,7 +186,7 @@ function zoneSection(z,full){
   const hidden=new Set(ADMIN.hidden||[]);
   let items=z.items.filter(i=>!hidden.has(i.id));
   const f=FILTER[z.id];if(full&&f)items=items.filter(i=>i.cat[LANG]===f);
-  if(QUERY)items=items.filter(i=>i[LANG].toLowerCase().includes(QUERY.toLowerCase())||i.cat[LANG].toLowerCase().includes(QUERY.toLowerCase()));
+  if(QUERY)items=items.filter(i=>(i[LANG]+' '+(i.h&&i.h[LANG]||'')).toLowerCase().includes(QUERY.toLowerCase())||i.cat[LANG].toLowerCase().includes(QUERY.toLowerCase()));
   if(QUERY&&!items.length)return null;
   const sec=el('section','zone');sec.id=z.id;
   const h=el('div','zone-head'),dot=el('span','dot');dot.style.background=ZC[z.id];
@@ -327,10 +331,14 @@ const KIND={attack:['هجوم أو اشتباك','Attack or clash'],deploy:['ا�
 let MIL=null,WARS=null,MAP=null;
 const follows=()=>store.get('khabar-follow',{});
 const warKey=w=>w&&w.timeline&&w.timeline[0]?w.timeline[0].date+'|'+(w.timeline[0].ar||'').slice(0,60):'';
+// الرئيسية تكفيها نسخة مختصرة من ملفات الحروب (data/wars-home.json، تُشتق من wars.json عند كل مزامنة)،
+// وبقية الصفحات تحمّل الملف الكامل. إن تعذّرت المختصرة يُحمَّل الملف الكامل تلقائياً.
 async function loadMil(){
-  if(MIL&&WARS)return;
-  const [m,w]=await Promise.all([getJSON('data/military.json').catch(()=>null),getJSON('data/wars.json').catch(()=>null)]);
-  MIL=m;WARS=w;
+  const full=VIEW!=='today'&&!VIEW.startsWith('b-');
+  if(MIL&&WARS&&(!WARS.lite||!full))return;
+  const [m,w]=await Promise.all([MIL?MIL:getJSON('data/military.json').catch(()=>null),
+    (full?Promise.reject():getJSON('data/wars-home.json')).catch(()=>getJSON('data/wars.json')).catch(()=>null)]);
+  MIL=m;if(w||!WARS)WARS=w;
 }
 const lvl=l=>{const x=LVL[l]||LVL.calm;return {t:LANG==='en'?x[1]:x[0],c:x[2]}};
 function lvlPill(w){const x=lvl(w.level),s=el('span','lvl');s.style.setProperty('--lc',x.c);s.append(el('i'),x.t);s.title=L(`${w.incidents_3d||0} حادثة موثّقة في آخر 3 أيام`,`${w.incidents_3d||0} documented incidents in the last 3 days`);return s}

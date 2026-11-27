@@ -247,6 +247,35 @@ html[lang="en"] body{direction:ltr}html[lang="en"] :is(p,li,dd,dt,td,th,h1,h2,h3
  body{background:#fff}.report{border:0;padding:0} details.ig{border:0} details.ig>*{display:block} details.ig summary{font-weight:700}}
 
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* ana-css */
+.ana-fig{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:grid;align-content:start}
+.ana-zoom{all:unset;display:block;cursor:zoom-in;background:#fff;text-align:center}
+.ana-zoom:focus-visible{outline:3px solid var(--copper);outline-offset:-3px}
+.ana-zoom img{display:block;width:100%;height:auto;max-height:420px;object-fit:contain;margin:0 auto}
+.ana-fig figcaption{padding:10px 12px;display:grid;gap:4px;font-size:.92rem}
+.ana-fig figcaption span{color:var(--muted)}
+.ana-fig figcaption small{color:var(--muted);font-size:.78rem;line-height:1.5}
+.ana-fig figcaption a{color:var(--pine)}
+.ana-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));margin:14px 0}
+.ana-spec{margin:14px 0}
+.atl-info .ana-fig{margin:8px 0 12px}
+.atl-info .ana-zoom img{max-height:300px}
+@media (min-width:760px){.ana-spec{grid-template-columns:minmax(0,360px) 1fr;align-items:stretch}.ana-spec figcaption{align-content:center}.ana-spec .ana-zoom{display:grid;place-items:center}}
+.ana-lb{position:fixed;inset:0;z-index:1000;background:rgba(10,18,16,.82);display:grid;place-items:center;padding:14px}
+.ana-lb-in{background:var(--surface);border-radius:14px;max-width:min(96vw,980px);max-height:94vh;overflow:auto;position:relative;display:grid}
+.ana-lb-in img{background:#fff;width:100%;max-height:72vh;object-fit:contain}
+.ana-lb-cap{padding:12px 16px;display:grid;gap:4px}
+.ana-lb-cap small{color:var(--muted);font-size:.8rem}
+.ana-lb-cap a{color:var(--pine)}
+.ana-lb-x{position:absolute;top:8px;inset-inline-end:8px;width:38px;height:38px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:1.5rem;line-height:1;cursor:pointer;z-index:2}
+.spx-tile.spx-img{padding:0;overflow:hidden;background:#fff;border:1px solid var(--line)}
+.spx-tile.spx-img img{width:100%;height:100%;object-fit:cover;display:block}
+.ana-lbl{max-width:560px;margin:14px auto}
+.ana-lblbox{background:var(--surface);padding:8px}
+.atl-svg.lbl{max-height:78vh}
+.atl-svg.lbl .lb text{font:600 8.6px var(--f-body,inherit);fill:var(--ink)}
+.orgx{pointer-events:none}
+/* /ana-css */
 /* atlas-css */
 :root{--atl-body:#EAD7C7;--atl-line:#C9AE97}
 :root[data-theme="dark"]{--atl-body:#4A3D35;--atl-line:#6E5B4E}
@@ -391,7 +420,7 @@ html[dir=rtl] .trk-nav .flip{transform:scaleX(-1)}
 @media print{body.trk-printing>*:not(#trkPrint){display:none!important}body.trk-printing #trkPrint{display:block!important;color:#000}#trkPrint table{font-size:11pt}#trkPrint h1{font-size:18pt}#trkPrint .trk-chart text{fill:#444}}
 </style>
 <style id="auc-css">
-/* المزاد العلاجي (auction) */
+/* سعر العافية (auction) */
 .auc-tabs{position:sticky;top:calc(env(safe-area-inset-top,0px) + 108px);z-index:5;background:var(--bg);padding-block:6px;margin-block:-6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
 .auc-tabs::-webkit-scrollbar{display:none}
 .auc-tabs .chip{flex-shrink:0;white-space:nowrap}
@@ -485,6 +514,73 @@ html[dir=rtl] .trk-nav .flip{transform:scaleX(-1)}
 .spx-offer s{color:var(--muted)}
 @media (max-width:560px){.spx-card{padding:12px}.spx-tile{width:40px;height:40px}}
 </style>
+<style id="mkc-css">
+/* كتالوج المكياج الطبيعي (mkc) */
+.mkc-hero{background:linear-gradient(135deg,var(--pine-soft),var(--copper-soft));border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:grid;gap:12px;margin-block:14px}
+.mkc-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.mkc-tools .search{flex:1 1 240px;min-width:0}
+.mkc-sel{display:grid;gap:3px;font-size:.82rem;color:var(--muted);flex:0 1 150px;min-width:120px}
+.mkc-sel select{width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font:inherit}
+.mkc-chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-block:2px}
+.mkc-chips::-webkit-scrollbar{display:none}
+.mkc-chips .chip{flex-shrink:0;white-space:nowrap}
+.mkc-chips .chip[aria-pressed=true],.mkc-batch .chip[aria-pressed=true]{background:var(--pine);color:var(--pine-ink);border-color:var(--pine)}
+.mkc-bar{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:center}
+.mkc-acts{display:flex;flex-wrap:wrap;gap:8px}
+.mkc-acts .btn{padding:6px 12px;font-size:.88rem}
+.mkc-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));margin-bottom:22px}
+.mkc-card{display:grid;grid-template-rows:auto 1fr;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;text-decoration:none;color:var(--ink);min-width:0}
+.mkc-card:hover,.mkc-card:focus-visible{border-color:var(--pine);box-shadow:var(--shadow)}
+.mkc-fig{margin:0;position:relative;background:linear-gradient(135deg,var(--pine-soft),var(--copper-soft));aspect-ratio:4/3;overflow:hidden}
+.mkc-ill{position:absolute;inset:0;display:grid;place-items:center}.mkc-ill svg{width:62%;max-height:84%}.mkc-ithumb{position:relative}.mkc-fig img,.mkc-ithumb img{position:absolute;inset:0}
+.mkc-fig img{width:100%;height:100%;object-fit:cover;display:block}
+.mkc-fig.big{aspect-ratio:16/10;border-radius:var(--r);margin-bottom:6px}
+.mkc-fig.sm{aspect-ratio:16/10;border-radius:8px;margin-bottom:8px}
+.mkc-fig figcaption{position:absolute;inset-inline:0;bottom:0;background:rgba(10,20,18,.62);color:#fff;font-size:.7rem;padding:2px 8px}
+.mkc-fig figcaption a{color:#fff;text-decoration:underline}
+.mkc-badge{position:absolute;top:8px;inset-inline-start:8px;background:var(--bad);color:#fff;font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:6px}
+.mkc-body{padding:12px 14px;display:grid;gap:6px;align-content:start}
+.mkc-body h3{margin:0;font-size:1rem}
+.mkc-body p{margin:0;color:var(--muted);font-size:.86rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mkc-meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.8rem;color:var(--muted)}
+.mkc-lv{display:inline-flex;gap:3px}.mkc-lv i{width:8px;height:8px;border-radius:50%;background:var(--line)}.mkc-lv i.on{background:var(--copper)}
+.mkc-dry{background:var(--ok-soft);color:var(--ok)}.mkc-wet{background:var(--warn-soft);color:var(--warn)}
+.mkc-sec{margin-block:22px;display:grid;gap:10px}.mkc-sec h2{margin:0}
+.mkc-acc{display:grid;gap:8px}
+.mkc-acc details,.mkc-credits{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px 14px}
+.mkc-acc summary,.mkc-credits summary{cursor:pointer;font-weight:600}
+.mkc-acc details[open]>summary{margin-bottom:8px}
+.mkc-acc ul,.mkc-acc ol{margin:0;padding-inline-start:1.3em;display:grid;gap:5px}
+.mkc-ings{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.mkc-ing{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:8px 12px}
+.mkc-ing summary{cursor:pointer;display:flex;gap:10px;align-items:center;font-weight:600;font-size:.92rem}
+.mkc-ithumb{width:44px;height:44px;border-radius:8px;overflow:hidden;flex-shrink:0;background:var(--pine-soft)}
+.mkc-ithumb img{width:100%;height:100%;object-fit:cover}
+.mkc-ing p{margin:6px 0;font-size:.88rem}.mkc-alg{color:var(--bad)}
+.mkc-opt{font-size:.72rem;background:var(--sunk);padding:0 6px;border-radius:5px;color:var(--muted)}
+.mkc-det h2{margin:.2em 0}.mkc-det h3{margin:1.1em 0 .4em;color:var(--pine)}
+.mkc-det .lead{color:var(--muted);margin:0 0 8px}
+.mkc-facts{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}.mkc-facts .tag{background:var(--sunk)}
+.mkc-ul,.mkc-ol{margin:0;padding-inline-start:1.3em;display:grid;gap:6px}
+.mkc-ul li::marker{color:var(--copper)}
+.mkc-warn{background:var(--warn-soft);border:1px solid var(--warn);border-radius:var(--r);padding:10px 14px;margin-block:10px}
+.mkc-warn.red{background:var(--bad-soft);border-color:var(--bad)}.mkc-warn.red b{color:var(--bad)}
+.mkc-warn p{margin:4px 0 0;font-size:.92rem}
+.mkc-batch{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.mkc-tip{background:var(--pine-soft);border-radius:var(--r);padding:10px 14px}
+.mkc-actions .btn{flex:1 1 auto;padding:9px 12px;font-size:.88rem;text-align:center}.mkc-actions{display:flex;flex-wrap:nowrap;flex-wrap:wrap;gap:8px;margin-top:16px;margin-block:10px}
+.mkc-banner{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;text-decoration:none;color:var(--ink);background:linear-gradient(135deg,var(--pine-soft),var(--copper-soft));border:1px solid var(--copper);border-radius:var(--r);padding:12px 14px;margin-block:14px}
+.mkc-bthumb{width:64px;height:64px;border-radius:10px;overflow:hidden;background:var(--surface)}.mkc-bthumb img{width:100%;height:100%;object-fit:cover}
+@media(max-width:560px){.mkc-banner{grid-template-columns:auto 1fr}.mkc-banner .btn{grid-column:1/-1;text-align:center}.mkc-grid{grid-template-columns:1fr 1fr;gap:10px}.mkc-body{padding:10px}.mkc-body p{display:none}.mkc-body h3{font-size:.92rem}.mkc-sel{flex:1 1 40%}}
+@media(max-width:360px){.mkc-grid{grid-template-columns:1fr}}
+#mkcPrint{display:none}
+@media print{body.mkc-printing>*:not(#mkcPrint){display:none!important}body.mkc-printing #mkcPrint{display:block!important;color:#000;background:#fff;padding:0}
+ #mkcPrint .mkc-ph{display:flex;justify-content:space-between;border-bottom:2px solid #1D6455;padding-bottom:6px;margin-bottom:10px;font-size:10pt}
+ #mkcPrint .mkc-pg{break-after:page;page-break-after:always}#mkcPrint .mkc-fig{max-height:6cm;aspect-ratio:auto}#mkcPrint .mkc-ill{position:absolute;inset:0;display:grid;place-items:center}.mkc-ill svg{width:62%;max-height:84%}.mkc-ithumb{position:relative}.mkc-fig img,.mkc-ithumb img{position:absolute;inset:0}
+.mkc-fig img{max-height:6cm;width:auto;max-width:100%}
+ #mkcPrint .mkc-fig figcaption{position:static;background:none;color:#444}#mkcPrint .mkc-fig figcaption a{color:#444}
+ #mkcPrint .mkc-warn,#mkcPrint .mkc-tip{background:none;border:1px solid #444}#mkcPrint h3{color:#000;break-after:avoid}#mkcPrint table{font-size:10pt}}
+</style>
 
 <header class="top">
   <div class="wrap">
@@ -522,7 +618,7 @@ html[dir=rtl] .trk-nav .flip{transform:scaleX(-1)}
 <div id="drawer"></div>
 
 <script>
-// ===== النسخة المستقلة: حسابات وصلاحيات وقاعدة بيانات داخل الموقع نفسه، دون أي اعتماد على Claude =====
+// ===== النسخة المستقلة: حسابات وصلاحيات وقاعدة بيانات داخل الموقع نفسه، دون أي اعتماد على خدمة خارجية =====
 window.TY_SA=true;
 (()=>{
 const K={db:"ty_db",del:"ty_del",ses:"ty_session",acc:"ty_accounts",pw:"ty_pw"};
@@ -2504,7 +2600,7 @@ AFTER.consult = () => {
   if(!$("#chatF")){ drawDr(); return; }
   chatRender();
   const d = store.get("draft",""); if(d){$("#chatQ").value=d; store.set("draft","")}
-  if(S.sample===null && S.ready){$("#chatSend").disabled=true;$("#chatNote").innerHTML=`المساعد الذكي يعمل على <a href="https://claude.ai/artifact/JDt74iQucA38WTJd1eGdKY" target="_blank" rel="noopener">نسخة الطيبات على Claude</a> بعد تسجيل الدخول. ويمكنك أيضاً مراسلة فريق الطيبات أدناه.`}
+  if(S.sample===null && S.ready){$("#chatSend").disabled=true;$("#chatNote").innerHTML=`المساعد الذكي يعمل في <a href="https://claude.ai/artifact/JDt74iQucA38WTJd1eGdKY" target="_blank" rel="noopener">النسخة المستضافة من الطيبات</a> بعد تسجيل الدخول. ويمكنك أيضاً مراسلة فريق الطيبات أدناه.`}
   $("#chatF").addEventListener("submit", async e=>{
     e.preventDefault(); const q=$("#chatQ").value.trim(); if(!q||S.chatBusy) return;
     if(!S.sample){toast("المساعد الذكي غير متاح الآن"); return}
@@ -3675,7 +3771,7 @@ window.TY_NAV_META = Object.assign(window.TY_NAV_META||{}, {
 });
 
 // ===== المكياج الإسلامي والمكياج الطبيعي =====
-const mkNav = cur => `<nav class="chips" aria-label="أقسام الجمال">${[["mkislam","المكياج الإسلامي"],["mknatural","المكياج الطبيعي"]].map(([h,n])=>`<a class="chip" href="#${h}" aria-pressed="${h===cur}" style="text-decoration:none;color:inherit">${n}</a>`).join("")}</nav>`;
+const mkNav = cur => `<nav class="chips" aria-label="أقسام الجمال">${[["mkislam","المكياج الإسلامي"],["mknatural","المكياج الطبيعي"],["mkcat",window.TY_LANG==="en"?"Making catalogue":"كتالوج التصنيع"]].map(([h,n])=>`<a class="chip" href="#${h}" aria-pressed="${h===cur}" style="text-decoration:none;color:inherit">${n}</a>`).join("")}</nav>`;
 const mkEv = e => { const q=/^سورة/.test(e.r); return `<blockquote class="hadith"><p>${q?"﴿":"«"}${esc(e.t)}${q?"﴾":"»"}</p><div class="hsrc small">${esc(e.r)} · <a href="${esc(e.u)}" target="_blank" rel="noopener">المصدر</a></div></blockquote>`; };
 function mkIslamCard(x, open){
   return `<details class="ig" ${open?"open":""} data-q="${esc(x.n+" "+x.rule+" "+x.med)}"><summary><span>${esc(x.n)}</span></summary>
@@ -3710,6 +3806,237 @@ ${integSearch("mknQ","ابحثي، مثل: شفاه أو بودرة أو حوا�
 </ul><p class="small muted">المراجع: ${srcList([MKL.fdaSafe,MKL.fdaShelf,MKL.nhsDerm])}</p></div>`;
 AFTER.mknatural = () => igFilter("mknQ","mknList");
 
+// ===== رسوم الأعضاء لخريطة الجسم: بداية
+// رسوم تشريحية أصلية (SVG) للأعضاء: كل رسم داخل صندوق 100×100
+const ANA = (()=>{
+const G = id => `url(#an-${id})`;
+const DEFS = `<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<radialGradient id="an-heart" cx=".38" cy=".3" r=".85"><stop offset="0" stop-color="#E8625F"/><stop offset=".55" stop-color="#B7313A"/><stop offset="1" stop-color="#6B1A26"/></radialGradient>
+<radialGradient id="an-atria" cx=".4" cy=".3" r=".9"><stop offset="0" stop-color="#C2566A"/><stop offset="1" stop-color="#7C2440"/></radialGradient>
+<linearGradient id="an-lung" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F6BFC2"/><stop offset=".6" stop-color="#E2929B"/><stop offset="1" stop-color="#C46C7B"/></linearGradient>
+<radialGradient id="an-liver" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#C46A52"/><stop offset=".6" stop-color="#8A3A2E"/><stop offset="1" stop-color="#55231F"/></radialGradient>
+<radialGradient id="an-kid" cx=".35" cy=".3" r=".95"><stop offset="0" stop-color="#CB5E52"/><stop offset=".6" stop-color="#91302F"/><stop offset="1" stop-color="#5E1B1F"/></radialGradient>
+<linearGradient id="an-stom" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F6B9A2"/><stop offset=".6" stop-color="#E08C76"/><stop offset="1" stop-color="#B8604F"/></linearGradient>
+<linearGradient id="an-int" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F8C2AC"/><stop offset="1" stop-color="#DB8F78"/></linearGradient>
+<linearGradient id="an-colon" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E5967E"/><stop offset="1" stop-color="#B96A55"/></linearGradient>
+<radialGradient id="an-brain" cx=".4" cy=".3" r=".9"><stop offset="0" stop-color="#F7CBCB"/><stop offset=".7" stop-color="#E3A0A6"/><stop offset="1" stop-color="#C47A86"/></radialGradient>
+<linearGradient id="an-bone" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#D6C7A6"/><stop offset=".45" stop-color="#F8F1DF"/><stop offset="1" stop-color="#CDBD9A"/></linearGradient>
+<linearGradient id="an-boneV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F8F1DF"/><stop offset="1" stop-color="#D2C29F"/></linearGradient>
+<linearGradient id="an-art" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9E2630"/><stop offset=".5" stop-color="#E04A4A"/><stop offset="1" stop-color="#A3282F"/></linearGradient>
+<linearGradient id="an-vein" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2D4B8E"/><stop offset=".5" stop-color="#5E8BD0"/><stop offset="1" stop-color="#2F4F94"/></linearGradient>
+<radialGradient id="an-spl" cx=".4" cy=".3" r=".9"><stop offset="0" stop-color="#9B5C9E"/><stop offset="1" stop-color="#5B2E66"/></radialGradient>
+<radialGradient id="an-pan" cx=".4" cy=".3" r=".9"><stop offset="0" stop-color="#F6DDA0"/><stop offset="1" stop-color="#D5A24F"/></radialGradient>
+<radialGradient id="an-blad" cx=".4" cy=".3" r=".9"><stop offset="0" stop-color="#F5D9A0"/><stop offset="1" stop-color="#D4A24C"/></radialGradient>
+<radialGradient id="an-uter" cx=".4" cy=".3" r=".9"><stop offset="0" stop-color="#EBA3B8"/><stop offset="1" stop-color="#B8566F"/></radialGradient>
+<radialGradient id="an-thy" cx=".4" cy=".3" r=".9"><stop offset="0" stop-color="#E9A25C"/><stop offset="1" stop-color="#B8672A"/></radialGradient>
+<linearGradient id="an-sheen" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".45" stop-color="#fff" stop-opacity=".45"/><stop offset="1" stop-color="#000" stop-opacity=".12"/></linearGradient>
+<radialGradient id="an-eyeb" cx=".35" cy=".35" r=".8"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E6DCD0"/></radialGradient>
+<radialGradient id="an-iris" cx=".5" cy=".5" r=".5"><stop offset=".3" stop-color="#14202B"/><stop offset=".4" stop-color="#2F7F9E"/><stop offset="1" stop-color="#1D4E6B"/></radialGradient>
+<linearGradient id="an-bile" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#A9D05A"/><stop offset="1" stop-color="#5E8A2E"/></linearGradient>
+<linearGradient id="an-skinL" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#E9C6AE"/><stop offset=".5" stop-color="#F6DCC8"/><stop offset="1" stop-color="#E4BFA6"/></linearGradient>
+<radialGradient id="an-rbc" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#E84A4A"/><stop offset="1" stop-color="#9A1F2B"/></radialGradient>
+<linearGradient id="an-tooth" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#E8E2D2"/><stop offset=".5" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E1DACA"/></linearGradient>
+</defs></svg>`;
+const sv = (inner,vb="0 0 100 100",cls="ana-svg",aria="") => `<svg class="${cls}" viewBox="${vb}" ${aria?`role="img" aria-label="${aria}"`:`aria-hidden="true"`} focusable="false">${inner}</svg>`;
+const st = (c,w,extra="") => `fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" ${extra}`;
+
+const O = {};
+O.heart = () => `
+<path d="M31 46 C27 32 30 18 33 6" ${st(G("vein"),9)}/>
+<path d="M50 42 C45 22 60 6 75 12 C86 17 88 30 86 46" ${st(G("art"),11)}/>
+<path d="M60 14 L58 3 M67 11 L69 2 M75 13 L83 6" ${st("#B5333A",4)}/>
+<path d="M58 46 C60 34 72 31 88 34" ${st("#7B8FD0",8)}/>
+<path d="M30 45 C21 58 25 80 41 93 C50 99 60 95 67 83 C80 64 82 47 71 38 C61 33 51 35 45 39 C39 37 33 39 30 45Z" fill="${G("heart")}"/>
+<path d="M30 45 C23 56 26 67 34 71 C40 62 42 50 45 40 C39 37 33 39 30 45Z" fill="${G("atria")}" opacity=".85"/>
+<path d="M62 40 C72 42 78 38 80 48 C76 40 66 36 58 40Z" fill="${G("atria")}" opacity=".8"/>
+<path d="M52 44 C53 60 51 76 45 91" ${st("#5E1520",1.4,'opacity=".7"')}/>
+<path d="M54 45 C57 60 54 75 49 86" ${st("#F1C568",1.8)}/>
+<path d="M36 56 C42 60 44 70 42 80" ${st("#F1C568",1.6)}/>
+<path d="M60 48 C72 52 74 64 66 76" ${st("#fff",3,'opacity=".22"')}/>`;
+
+O.lungs = () => `
+<path d="M44 27 C30 23 14 38 11 64 C9 86 22 95 37 91 C45 89 46 78 45 66 C45 52 46 38 44 27Z" fill="${G("lung")}"/>
+<path d="M56 27 C72 23 87 38 89 64 C91 86 79 95 64 91 C57 89 55 82 56 74 C51 68 51 54 54 44 C55 36 55 31 56 27Z" fill="${G("lung")}"/>
+<path d="M13 54 C25 58 36 70 44 86 M12 56 C24 50 34 50 45 54" ${st("#B65A6A",1.3,'opacity=".6"')}/>
+<path d="M88 52 C76 58 66 70 58 82" ${st("#B65A6A",1.3,'opacity=".6"')}/>
+<path d="M18 44 C24 40 30 40 36 44 M16 72 C24 66 32 66 38 72 M82 44 C76 40 70 40 64 44 M84 72 C76 66 70 66 64 72" ${st("#fff",2.2,'opacity=".25"')}/>
+<path d="M46 2 H54 V36 H46Z" fill="#C7DFE8" stroke="#8FB4C4" stroke-width=".8"/>
+<path d="M46 8 H54 M46 13 H54 M46 18 H54 M46 23 H54 M46 28 H54 M46 33 H54" ${st("#8FB4C4",1)}/>
+<path d="M46 35 L37 47 L41 50 L50 41 L59 50 L63 47 L54 35Z" fill="#C7DFE8" stroke="#8FB4C4" stroke-width=".8"/>
+<path d="M39 48 C32 54 27 62 22 72 M31 57 L22 55 M27 64 L19 66 M24 70 L24 80 M61 48 C68 54 73 62 78 72 M69 57 L78 55 M73 64 L81 66 M76 70 L76 80" ${st("#E9F4F8",2)}/>`;
+
+O.liver = () => `
+<path d="M6 40 C16 24 42 18 68 24 C88 29 96 40 92 49 C82 57 66 62 56 72 C44 84 24 80 14 66 C7 58 4 48 6 40Z" fill="${G("liver")}"/>
+<path d="M63 23 C61 38 59 52 55 64" ${st("#4A1C18",1.6,'opacity=".7"')}/>
+<path d="M30 34 C40 32 52 34 58 40 M22 52 C34 56 46 58 54 54" ${st("#E28A70",2.4,'opacity=".28"')}/>
+<path d="M54 60 C48 62 44 66 40 72" ${st("#3E5FAE",3)}/>
+<path d="M58 56 C54 62 50 66 48 72" ${st("#C93A3A",2.2)}/>
+<path d="M50 70 C43 72 41 83 47 88 C54 91 59 82 57 73Z" fill="${G("bile")}"/>
+<path d="M54 70 C60 66 64 62 70 58" ${st("#7BAE3A",2)}/>`;
+
+O.kidney = () => `
+<path d="M36 6 C60 2 82 14 84 40 C86 66 70 92 48 94 C34 95 34 82 42 74 C50 66 48 52 40 44 C28 34 20 14 36 6Z" fill="${G("kid")}"/>
+<path d="M40 14 C58 10 74 22 76 42 C78 62 66 84 50 86 C46 76 52 68 56 62 C62 52 58 40 50 32 C44 26 38 20 40 14Z" fill="#B24A40" opacity=".55"/>
+<g fill="#7A2325" opacity=".9"><path d="M64 24 L52 38 L68 36Z"/><path d="M72 42 L54 46 L72 56Z"/><path d="M68 66 L54 54 L66 78Z"/><path d="M52 22 L46 36 L58 30Z"/></g>
+<path d="M30 50 C38 48 46 44 54 40 M32 58 C42 56 50 52 56 48 M36 66 C44 62 52 58 58 54" ${st("#F2D5A8",3.4)}/>
+<path d="M30 54 C22 58 18 70 24 96" ${st("#E9D6B0",3.6)}/>
+<path d="M24 34 C14 40 12 52 22 56" ${st("#C93A3A",2.6)}/>
+<path d="M22 44 C12 46 10 58 20 62" ${st("#3E5FAE",2.6)}/>
+<path d="M46 3 C56 -2 74 2 78 10 C68 10 58 12 46 12Z" fill="#E7BF86" stroke="#C9965A" stroke-width=".8"/>
+<path d="M58 22 C72 28 76 40 74 52" ${st("#fff",3,'opacity=".18"')}/>`;
+
+O.stomach = () => `
+<path d="M34 2 V20" ${st("#E7A590",9)}/>
+<path d="M32 18 C18 22 9 42 14 64 C19 84 40 94 62 87 C76 83 82 74 80 66 C72 69 63 66 58 58 C54 50 52 40 47 26 C43 18 38 16 32 18Z" fill="${G("stom")}"/>
+<path d="M24 34 C30 44 32 56 36 66 M34 30 C40 42 40 54 46 64 M18 52 C26 60 32 72 42 78 M24 70 C34 76 46 78 58 76" ${st("#B35E4C",1.6,'opacity=".5"')}/>
+<path d="M78 68 C86 70 92 64 94 56 C90 50 92 42 96 38" ${st("#EFB07C",8)}/>
+<path d="M62 86 C72 84 80 76 80 66" ${st("#7A3A30",1.4,'opacity=".5"')}/>
+<path d="M20 30 C14 42 14 54 20 64" ${st("#fff",3.2,'opacity=".22"')}/>`;
+
+O.intestine = () => `
+<path d="M18 86 V32 Q18 14 36 14 H64 Q82 14 82 32 V86" ${st(G("colon"),13)}/>
+<path d="M18 86 V32 Q18 14 36 14 H64 Q82 14 82 32 V86" ${st("#F2B7A0",13,'stroke-dasharray="3 5" opacity=".55"')}/>
+<path d="M82 86 Q82 94 70 92 Q64 86 56 90" ${st(G("colon"),12)}/>
+<path d="M34 30 H66 Q74 30 74 38 Q74 46 66 46 H34 Q26 46 26 54 Q26 62 34 62 H66 Q74 62 74 70 Q74 78 66 78 H40 Q34 78 34 72" ${st(G("int"),8)}/>
+<path d="M36 34 H64 M36 50 H64 M36 66 H64" ${st("#fff",1.6,'opacity=".35"')}/>
+<path d="M30 86 C30 80 24 82 24 88" ${st("#C9857A",5)}/>
+<path d="M18 98 C16 92 24 90 26 98" ${st("#D79A83",5)}/>`;
+
+O.pancreas = () => `
+<path d="M6 60 C18 40 40 32 60 36 C78 38 92 30 96 22 C98 32 92 46 76 52 C58 58 38 58 22 74 C12 82 4 74 6 60Z" fill="${G("pan")}"/>
+<path d="M14 66 C34 52 58 48 82 38" ${st("#FFF3C8",1.8)}/>
+<path d="M14 62 C20 58 24 60 28 58 M40 48 C44 52 48 50 52 52 M60 44 C64 48 70 46 74 46" ${st("#C98A3A",1.6)}/>
+<path d="M90 24 C94 16 98 14 100 10" ${st("#EFB07C",6)}/>`;
+
+O.bladder = () => `
+<path d="M30 4 C32 20 38 28 44 36 M70 4 C68 20 62 28 56 36" ${st("#E9D2A0",4.5)}/>
+<path d="M50 24 C28 24 18 44 22 62 C26 80 40 88 50 88 C60 88 74 80 78 62 C82 44 72 24 50 24Z" fill="${G("blad")}"/>
+<path d="M50 26 C34 30 28 46 32 60" ${st("#fff",3.2,'opacity=".3"')}/>
+<path d="M50 86 V98" ${st("#E9D2A0",7)}/>
+<path d="M36 40 C44 46 56 46 64 40" ${st("#B98A38",1.2,'opacity=".6"')}/>`;
+
+
+O.uterus = () => `
+<path d="M50 20 C34 20 28 38 34 54 C38 66 44 76 46 86 C47 90 53 90 54 86 C56 76 62 66 66 54 C72 38 66 20 50 20Z" fill="${G("uter")}"/>
+<path d="M50 40 C42 40 40 52 46 62 L50 72 L54 62 C60 52 58 40 50 40Z" fill="#7C2440" opacity=".55"/>
+<path d="M36 28 C24 24 14 30 10 40 C8 46 12 50 14 46" ${st("#E39AB0",4)}/>
+<path d="M64 28 C76 24 86 30 90 40 C92 46 88 50 86 46" ${st("#E39AB0",4)}/>
+<ellipse cx="12" cy="52" rx="8" ry="6" fill="#F2C28A" stroke="#C99456" stroke-width="1"/>
+<ellipse cx="88" cy="52" rx="8" ry="6" fill="#F2C28A" stroke="#C99456" stroke-width="1"/>
+<path d="M46 88 V98 M54 88 V98" ${st("#E39AB0",2)}/>
+<path d="M40 32 C38 42 42 52 46 60" ${st("#fff",2.6,'opacity=".28"')}/>`;
+
+O.male = () => `
+<path d="M26 4 C16 8 14 30 26 42 C38 54 62 54 74 42 C86 30 84 8 74 4 C64 2 56 6 50 14 C44 6 36 2 26 4Z" fill="${G("blad")}" opacity=".0"/>
+<path d="M50 6 C34 6 26 20 28 34 C30 46 40 52 50 52 C60 52 70 46 72 34 C74 20 66 6 50 6Z" fill="${G("blad")}"/>
+<path d="M42 56 C42 52 58 52 58 56 L58 66 C58 70 42 70 42 66Z" fill="#C98A5C" stroke="#9A6338" stroke-width=".8"/>
+<path d="M50 66 V78 C50 86 58 88 60 94" ${st("#E9C08E",5)}/>
+<path d="M26 60 C20 60 14 68 16 78 C18 88 28 92 32 82 C36 72 34 62 26 60Z" fill="#E6BE96" stroke="#B88A5E" stroke-width="1"/>
+<path d="M74 60 C80 60 86 68 84 78 C82 88 72 92 68 82 C64 72 66 62 74 60Z" fill="#E6BE96" stroke="#B88A5E" stroke-width="1"/>
+<path d="M30 62 C34 56 44 56 50 66 M70 62 C66 56 56 56 50 66" ${st("#D9A56A",3.2)}/>
+<path d="M36 20 C32 28 34 38 40 44" ${st("#fff",3,'opacity=".3"')}/>`;
+
+O.thyroid = () => `
+<path d="M42 2 H58 V98 H42Z" fill="#C7DFE8" stroke="#8FB4C4" stroke-width=".8"/>
+<path d="M42 10 H58 M42 20 H58 M42 30 H58 M42 40 H58 M42 50 H58 M42 60 H58 M42 70 H58 M42 80 H58 M42 90 H58" ${st("#8FB4C4",1)}/>
+<path d="M44 36 C30 28 12 32 10 46 C10 58 26 64 40 60 C46 56 46 44 44 36Z" fill="${G("thy")}"/>
+<path d="M56 36 C70 28 88 32 90 46 C90 58 74 64 60 60 C54 56 54 44 56 36Z" fill="${G("thy")}"/>
+<path d="M44 40 C50 36 56 40 56 40 V50 C50 46 48 46 44 50Z" fill="#B8672A"/>
+<path d="M24 36 C16 38 14 46 18 52" ${st("#fff",2.6,'opacity=".35"')}/>
+<ellipse cx="22" cy="72" rx="4" ry="2.6" fill="#E9C37E"/><ellipse cx="78" cy="72" rx="4" ry="2.6" fill="#E9C37E"/>
+<ellipse cx="20" cy="22" rx="4" ry="2.6" fill="#E9C37E"/><ellipse cx="80" cy="22" rx="4" ry="2.6" fill="#E9C37E"/>`;
+
+
+
+
+
+
+
+
+// ---------- هيكل عظمي كامل (وجه أمامي) داخل 100×200 ----------
+
+if(document.body) document.body.insertAdjacentHTML("afterbegin", DEFS); else document.addEventListener("DOMContentLoaded",()=>document.body.insertAdjacentHTML("afterbegin", DEFS));
+return { O };
+})();
+// ===== رسوم الأعضاء لخريطة الجسم: نهاية
+// ===== الصور التشريحية الواقعية: بداية
+(function(){
+const EN0 = (()=>{ try{ return localStorage.getItem("tbk_lang")==="en"; }catch(e){ return false; } })();
+const L = (a,e) => EN0 ? e : a;
+const esc0 = s => String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const BY3 = "CC BY 3.0", SA4 = "CC BY-SA 4.0", SA3 = "CC BY-SA 3.0";
+// f: اسم الملف المحلي. c: عنوان الملف على ويكيميديا كومنز. ca: النسخة العربية (إن وُجدت) مع ترخيصها la
+const IM = [
+ {k:"digestive", s:"gi", n:["الجهاز الهضمي","Digestive system"], d:["من الفم والمريء إلى المعدة والكبد والبنكرياس والأمعاء الدقيقة والغليظة.","From the mouth and oesophagus to the stomach, liver, pancreas and the small and large intestines."], f:"digestive", c:"Blausen 0316 DigestiveSystem.png", lic:BY3, ca:"Blausen 0316 DigestiveSystem-ar.png", la:SA3},
+ {k:"liver", s:"gi", n:["الكبد والمرارة","Liver and gallbladder"], d:["الكبد أكبر غدة في الجسم، وتحته المرارة التي تخزن الصفراء.","The liver is the body's largest gland; the gallbladder under it stores bile."], f:"liver", c:"Liver (organ).png", lic:SA4, ca:"Liver (organ)-ar.png", la:SA4},
+ {k:"gallpan", s:"gi", n:["الكبد والمرارة والبنكرياس: الموقع","Liver, gallbladder and pancreas: location"], d:["موقع الكبد والمرارة والبنكرياس والأثنى عشر داخل البطن.","Where the liver, gallbladder, pancreas and duodenum sit in the abdomen."], f:"gallpan", c:"Blausen 0428 Gallbladder-Liver-Pancreas Location.png", lic:BY3},
+ {k:"pancreas", s:"endo", n:["البنكرياس","Pancreas"], d:["غدة تفرز الإنسولين والجلوكاجون، وتصب عصاراتها الهاضمة في الأثنى عشر.","A gland that makes insulin and glucagon and sends digestive juices into the duodenum."], f:"pancreas", c:"Blausen 0698 PancreasAnatomy.png", lic:BY3},
+ {k:"small_int", s:"gi", n:["الأمعاء الدقيقة","Small intestine"], d:["الاثنا عشر والصائم واللفائفي: هنا يتم معظم امتصاص الغذاء.","Duodenum, jejunum and ileum, where most nutrient absorption happens."], f:"small_int", c:"Blausen 0817 SmallIntestine Anatomy.png", lic:BY3},
+ {k:"large_int", s:"gi", n:["الأمعاء الغليظة (القولون)","Large intestine (colon)"], d:["الأعور والقولون الصاعد والمستعرض والنازل والسيني والمستقيم.","Caecum, ascending, transverse, descending and sigmoid colon, and the rectum."], f:"large_int", c:"Blausen 0603 LargeIntestine Anatomy.png", lic:BY3, ca:"Blausen 0603 LargeIntestine Anatomy-ar.png", la:BY3},
+ {k:"heart", s:"cardio", n:["القلب: منظر أمامي","Heart: front view"], d:["حجرات القلب والأوعية الكبرى والشرايين التاجية.","The heart's chambers, great vessels and coronary arteries."], f:"heart", c:"Blausen 0451 Heart Anterior.png", lic:BY3},
+ {k:"heart_sec", s:"cardio", n:["القلب: مقطع داخلي","Heart: sectional anatomy"], d:["الأذينان والبطينان والصمامات وجدار القلب من الداخل.","Atria, ventricles, valves and the inner wall of the heart."], f:"heart_sec", c:"Blausen 0457 Heart SectionalAnatomy.png", lic:BY3},
+ {k:"heart_thor", s:"cardio", n:["القلب داخل الصدر","Heart in the chest"], d:["موضع القلب بين الرئتين خلف عظمة القص.","Where the heart sits between the lungs, behind the breastbone."], f:"heart_thor", c:"Blausen 0458 Heart ThoracicCavity.png", lic:BY3},
+ {k:"resp", s:"pulm", n:["الجهاز التنفسي","Respiratory system"], d:["القصبة الهوائية والشعب والرئتان والحجاب الحاجز.","Trachea, bronchi, lungs and the diaphragm."], f:"resp", c:"Blausen 0770 RespiratorySystem 02.png", lic:BY3},
+ {k:"upper_resp", s:"pulm", n:["الجهاز التنفسي العلوي","Upper respiratory tract"], d:["الأنف والجيوب والبلعوم والحنجرة وبداية القصبة الهوائية.","Nose, sinuses, pharynx, larynx and the start of the trachea."], f:"upper_resp", c:"Blausen 0872 UpperRespiratorySystem.png", lic:BY3},
+ {k:"kidney", s:"neph", n:["الكلية","The kidney"], d:["قشرة الكلية ونخاعها وحوضها والشريان والوريد الكلويان والحالب.","The kidney's cortex, medulla and pelvis, with its artery, vein and ureter."], f:"kidney", c:"Blausen 0592 KidneyAnatomy 01.png", lic:BY3, ca:"Blausen 0592 KidneyAnatomy 01 ar.png", la:SA4},
+ {k:"urinary_m", s:"uro", n:["الجهاز البولي عند الرجل","Male urinary system"], d:["الكليتان والحالبان والمثانة والإحليل مع الأبهر والأجوف السفلي.","Kidneys, ureters, bladder and urethra with the aorta and inferior vena cava."], f:"urinary_m", c:"Urinary System (Male).png", lic:SA4},
+ {k:"urinary_f", s:"uro", n:["الجهاز البولي عند المرأة","Female urinary system"], d:["الكليتان والحالبان والمثانة والإحليل عند المرأة.","Kidneys, ureters, bladder and urethra in women."], f:"urinary_f", c:"Urinary System (Female).png", lic:SA4},
+ {k:"brain", s:"neuro", n:["الدماغ: منظر جانبي","Brain: lateral view"], d:["الفصوص الجبهي والجداري والصدغي والقذالي والمخيخ وجذع الدماغ.","Frontal, parietal, temporal and occipital lobes, cerebellum and brainstem."], f:"brain", c:"Blausen 0101 Brain LateralView.png", lic:BY3},
+ {k:"brain_planes", s:"neuro", n:["الدماغ: مقاطع الأشعة","Brain: sectional planes"], d:["مقاطع الدماغ كما تظهر في الرنين المغناطيسي (التسميات بالعربية).","Brain sections as seen on MRI (labels are in Arabic)."], f:"brain_planes", c:"Blausen 0104 Brain x-secs SectionalPlanes-ar.jpg", lic:BY3, onlyAr:1},
+ {k:"eye", s:"eye", n:["العين: مقطع","The eye: cross-section"], d:["القرنية والقزحية والحدقة والعدسة والشبكية والعصب البصري.","Cornea, iris, pupil, lens, retina and the optic nerve."], f:"eye", c:"Blausen 0390 EyeAnatomy Sectional.png", lic:BY3, ca:"Blausen 0390 EyeAnatomy Sectional-ar.png", la:SA3},
+ {k:"ear_inner", s:"ent", n:["الأذن الداخلية","The inner ear"], d:["القوقعة والقنوات الهلالية والعصب السمعي.","The cochlea, semicircular canals and the auditory nerve."], f:"ear_inner", c:"Blausen 0329 EarAnatomy InternalEar.png", lic:BY3},
+ {k:"ear_middle", s:"ent", n:["الأذن الوسطى","The middle ear"], d:["طبلة الأذن والعظيمات الثلاث وقناة أستاكيوس (التسميات بالعربية).","Eardrum, the three ossicles and the Eustachian tube (labels are in Arabic)."], f:"ear_middle", c:"Blausen 0330 EarAnatomy MiddleEar-ar.png", lic:BY3, onlyAr:1},
+ {k:"tooth", s:"dental", n:["تشريح السن","Tooth anatomy"], d:["المينا والعاج واللب والجذر واللثة وعظم الفك.","Enamel, dentin, pulp, root, gum and jawbone."], f:"tooth", c:"Blausen 0863 ToothAnatomy 02.png", lic:BY3},
+ {k:"skin", s:"derm", n:["طبقات الجلد","Layers of the skin"], d:["البشرة والأدمة وتحت الجلد والغدد العرقية وبصيلات الشعر.","Epidermis, dermis, hypodermis, sweat glands and hair follicles."], f:"skin", c:"Blausen 0810 SkinAnatomy 01.png", lic:BY3},
+ {k:"female_repro", s:"obgyn", n:["الجهاز التناسلي الأنثوي","Female reproductive system"], d:["الرحم وقناتا فالوب والمبيضان والمهبل.","Uterus, fallopian tubes, ovaries and vagina."], f:"female_repro", c:"Blausen 0399 FemaleReproSystem 01.png", lic:BY3, ca:"Blausen 0399 FemaleReproSystem 01-ar.png", la:BY3},
+ {k:"thyroid", s:"endo", n:["الغدة الدرقية (مع تضخمها)","The thyroid (with goitre)"], d:["موضع الغدة الدرقية أمام القصبة الهوائية، وشكل التضخم (الدراق).","Where the thyroid sits in front of the trachea, and how a goitre looks."], f:"thyroid", c:"Blausen 0534 Goiter.png", lic:BY3},
+ {k:"skeleton", s:"ortho", n:["الهيكل العظمي المحوري والعمود الفقري","The axial skeleton and spine"], d:["الجمجمة والعمود الفقري والقفص الصدري.","The skull, spine and rib cage."], f:"skeleton", c:"Axial Skeleton.png", lic:BY3},
+ {k:"knee", s:"rheum", n:["مفصل الركبة","The knee joint"], d:["عظم الفخذ والظنبوب والرضفة والغضروف الهلالي والأربطة.","Femur, tibia, kneecap, meniscus and ligaments."], f:"knee", c:"Blausen 0597 KneeAnatomy Side.png", lic:BY3, ca:"Blausen 0597 KneeAnatomy Side-ar.png", la:BY3}
+];
+const SYS = {gi:["الهضم والكبد","Digestion and liver"], cardio:["القلب","Heart"], pulm:["التنفس","Breathing"], neph:["الكلى","Kidneys"], uro:["المسالك البولية","Urinary tract"], neuro:["الدماغ والأعصاب","Brain and nerves"], eye:["العين","Eye"], ent:["الأذن","Ear"], dental:["الأسنان","Teeth"], derm:["الجلد","Skin"], obgyn:["المرأة","Women"], endo:["الغدد","Glands"], ortho:["العظام والمفاصل","Bones and joints"], rheum:["العظام والمفاصل","Bones and joints"]};
+const REG = {brain:"brain", eyes:"eye", ent:"ear_inner", mouth:"tooth", thyroid:"thyroid", heart:"heart", lungs:"resp", stomach:"digestive", liver:"liver", pancreas:"pancreas", intestine:"small_int", kidney:"kidney", bladder:"urinary_m", spine:"skeleton", joints:"knee", skin:"skin"};
+const SPEC = {cardio:"heart", vasc:"heart_thor", gi:"digestive", gensurg:"digestive", pulm:"pulm_", neph:"kidney", uro:"urinary_m", neuro:"brain", neurosurg:"brain", eye:"eye", ent:"ear_inner", derm:"skin", obgyn:"female_repro", ortho:"skeleton", rheum:"knee", endo:"pancreas", dental:"tooth"};
+SPEC.pulm = "resp";
+const byK = k => IM.find(x=>x.k===k);
+const D_ = "anatomy/";
+const srcFor = im => D_ + im.f + (!EN0 && im.ca ? "-ar" : "") + ".webp";
+const comm = t => "https://commons.wikimedia.org/wiki/File:" + encodeURIComponent(t.replace(/ /g,"_"));
+function credit(im){
+  const ar = !EN0 && im.ca, t = ar ? im.ca : im.c, lic = ar ? im.la : im.lic;
+  const by = "BruceBlaus / Blausen Medical";
+  const note = (!EN0 && !im.ca && !im.onlyAr) || (EN0 && im.onlyAr) ? " · " + L("التسميات داخل الصورة بالإنجليزية","labels inside the image are in English") : "";
+  return `${L("المصدر","Source")}: <a href="${comm(t)}" target="_blank" rel="noopener">${L("ويكيميديا كومنز","Wikimedia Commons")}</a> · ${esc0(by)} · ${esc0(lic)}${note}`;
+}
+function fig(k, opt){
+  const im = byK(k); if(!im) return "";
+  opt = opt||{};
+  return `<figure class="ana-fig${opt.cls?" "+opt.cls:""}"><button type="button" class="ana-zoom" data-anak="${esc0(k)}" aria-label="${esc0(L("تكبير الصورة","Enlarge the image"))}: ${esc0(L(im.n[0],im.n[1]))}"><img src="${srcFor(im)}" alt="${esc0(L(im.n[0],im.n[1]))}" loading="lazy" decoding="async"></button><figcaption><b>${esc0(L(im.n[0],im.n[1]))}</b><span>${esc0(L(im.d[0],im.d[1]))}</span><small>${credit(im)}</small></figcaption></figure>`;
+}
+const thumbFor = key => { const k = SPEC[key]; const im = k && byK(k); return im ? D_ + "t-" + im.f + ".webp" : ""; };
+function gallery(sys){
+  const chips = [["",["الكل","All"]], ...Object.entries(SYS).filter(([k])=>k!=="rheum").map(([k,v])=>[k==="ortho"?"bones":k,v])];
+  const inSys = im => !sys || (sys==="bones" ? (im.s==="ortho"||im.s==="rheum") : im.s===sys);
+  const list = IM.filter(inSys);
+  return `<div class="panel"><h2>${L("صور تشريحية واقعية","Realistic anatomy images")}</h2><p class="small muted">${L("رسوم ثلاثية الأبعاد واقعية لأجهزة الجسم من مكتبة Blausen Medical المفتوحة. اضغط أي صورة لتكبيرها. الصور للتثقيف الصحي ولا تغني عن الفحص الطبي.","Realistic 3D renders of the body systems from the open Blausen Medical library. Tap any image to enlarge. For health education only; they do not replace a medical examination.")}</p>
+  <div class="chips" role="group" aria-label="${L("تصفية حسب الجهاز","Filter by system")}">${chips.map(([k,v])=>`<button type="button" class="chip" data-anasys="${k}" aria-pressed="${(sys||"")===k}">${esc0(L(v[0],v[1]))}</button>`).join("")}</div></div>
+  ${(!sys && window.TY_BODYLBL)?`<figure class="ana-fig ana-lbl"><div class="ana-lblbox">${TY_BODYLBL()}</div><figcaption><b>${esc0(L("مخطط الجسم بأعضائه المسمّاة","The body with its organs labelled"))}</b><span>${esc0(L("رسم أصلي من «الطيبات» يبيّن موضع كل عضو رئيسي: الدماغ والغدة الدرقية والرئتان والقلب والكبد والمرارة والمعدة والبنكرياس والأمعاء والمثانة والحوض والفخذ والركبة.","An original Al-Tayyibat drawing showing where each main organ sits: brain, thyroid, lungs, heart, liver, gallbladder, stomach, pancreas, intestines, bladder, pelvis, femur and knee."))}</span></figcaption></figure>`:""}<div class="ana-grid">${list.map(im=>fig(im.k)).join("")}</div>
+  <div class="panel"><p class="small muted">${L("الأعمال الفنية من إنتاج Blausen Medical Communications والفنان BruceBlaus، ومرخّصة بموجب CC BY 3.0 أو CC BY-SA حسب كل صورة، وقد جرى تصغير حجمها فقط. لكل صورة رابط مصدرها وترخيصها تحتها.","Artwork by Blausen Medical Communications and the artist BruceBlaus, licensed under CC BY 3.0 or CC BY-SA depending on the image; only resized. Each image links to its source and licence below it.")}</p></div>`;
+}
+function lightbox(k){
+  const im = byK(k); if(!im) return;
+  let o = document.getElementById("anaLb"); if(o) o.remove();
+  o = document.createElement("div"); o.id="anaLb"; o.className="ana-lb"; o.setAttribute("role","dialog"); o.setAttribute("aria-modal","true"); o.setAttribute("aria-label", L(im.n[0],im.n[1]));
+  o.innerHTML = `<div class="ana-lb-in"><button type="button" class="ana-lb-x" aria-label="${L("إغلاق","Close")}">×</button><img src="${srcFor(im)}" alt="${esc0(L(im.n[0],im.n[1]))}"><div class="ana-lb-cap"><b>${esc0(L(im.n[0],im.n[1]))}</b> <span>${esc0(L(im.d[0],im.d[1]))}</span><small>${credit(im)}</small></div></div>`;
+  const close = () => { o.remove(); document.removeEventListener("keydown", kd); };
+  const kd = e => { if(e.key==="Escape") close(); };
+  o.addEventListener("click", e=>{ if(e.target===o || e.target.classList.contains("ana-lb-x")) close(); });
+  document.addEventListener("keydown", kd);
+  document.body.appendChild(o); o.querySelector(".ana-lb-x").focus();
+}
+document.addEventListener("click", e=>{ const b = e.target.closest && e.target.closest("[data-anak]"); if(b){ e.preventDefault(); lightbox(b.dataset.anak); } });
+window.TY_ANA = { IM, fig, gallery, thumbFor, regFig: (reg,sex)=>{ const k = reg==="bladder" && sex==="f" ? "urinary_f" : reg==="repro" ? (sex==="f" ? "female_repro" : "") : REG[reg]; return k ? fig(k) : ""; }, specFig: id => { const k = SPEC[id]; return k ? fig(k,{cls:"ana-spec"}) : ""; }, specKey: id => SPEC[id]||"" };
+})();
+// ===== الصور التشريحية الواقعية: نهاية
 // ===== الأطلس والاستشفاء: بداية
 (()=>{
 // ===== أطلس الجسم والأمراض: البيانات =====
@@ -4112,49 +4439,93 @@ const KID_DIS = {lungs:["bronchiolitis","croup","asthma","pneu"], ent:["otitis",
 function regionsFor(sex){ return ATLAS.filter(r=>!r.sex || (r.sex==="f" && sex==="f")); }
 function bodySVG(){
   const sex=ATL.sex, kid=sex==="c", back=ATL.side==="b";
-  const W = sex==="f" ? {sw:35,ww:25,hw:37} : {sw:40,ww:30,hw:33};
-  const torso = `M${100-W.sw} 92 Q100 82 ${100+W.sw} 92 L${100+W.sw-3} 150 Q${100+W.ww} 195 ${100+W.hw} 252 L${100-W.hw} 252 Q${100-W.ww} 195 ${100-W.sw+3} 150 Z`;
-  const arm = s => { const x0=100+s*(W.sw-4), x1=100+s*(W.sw+12), x2=100+s*(W.sw+17); return `<path d="M${x0} 98 L${x1} 172 L${x2} 244" class="limb" stroke-width="15"/><circle cx="${x2}" cy="252" r="9" class="bodyf"/>`; };
-  const leg = s => { const x0=100+s*16, x1=100+s*19, x2=100+s*21; return `<path d="M${x0} 246 L${x1} 332" class="limb" stroke-width="26"/><path d="M${x1} 332 L${x2} 418" class="limb" stroke-width="19"/><ellipse cx="${x2+s*4}" cy="424" rx="12" ry="6" class="bodyf"/>`; };
+  const W = sex==="f" ? {sw:35,ww:24,hw:36} : {sw:40,ww:30,hw:32};
   const sel = id => ATL.sel===id ? " on" : "";
   const o = (id, inner) => `<g class="org${sel(id)}" data-reg="${id}" tabindex="0" role="button" aria-label="${esc(aT((ATLAS.find(r=>r.id===id)||{}).n||""))}">${inner}</g>`;
-  let head = `<ellipse cx="100" cy="42" rx="27" ry="33" class="bodyf"/><rect x="89" y="70" width="22" height="20" rx="6" class="bodyf"/>`;
-  head += o("brain", back ? `<path d="M76 34 Q100 4 124 34 Q126 52 112 56 Q100 50 88 56 Q74 52 76 34Z" fill="#E7A3AC"/><path d="M86 52 Q100 64 114 52 Q112 62 100 64 Q88 62 86 52Z" fill="#C97F8C"/>` : `<path d="M77 36 Q78 10 100 9 Q122 10 123 36 Q112 30 100 33 Q88 30 77 36Z" fill="#E7A3AC"/><path d="M84 22 q6 4 12 0 M104 22 q6 4 12 0 M88 30 q5 -4 10 0 M102 30 q5 -4 10 0" stroke="#C97F8C" stroke-width="1.4" fill="none"/>`);
+  const f1 = n => (+n).toFixed(1);
+  const smooth = pts => { const n=pts.length; let d=`M${f1(pts[0][0])} ${f1(pts[0][1])}`;
+    for(let i=0;i<n;i++){ const p0=pts[(i-1+n)%n],p1=pts[i],p2=pts[(i+1)%n],p3=pts[(i+2)%n];
+      d+=`C${f1(p1[0]+(p2[0]-p0[0])/6)} ${f1(p1[1]+(p2[1]-p0[1])/6)} ${f1(p2[0]-(p3[0]-p1[0])/6)} ${f1(p2[1]-(p3[1]-p1[1])/6)} ${f1(p2[0])} ${f1(p2[1])}`; }
+    return d+"Z"; };
+  const full = half => half.concat(half.slice(1,-1).reverse().map(([x,y])=>[200-x,y]));
+  const mir = inner => `<g>${inner}</g><g transform="translate(200 0) scale(-1 1)">${inner}</g>`;
+  const sw=W.sw, ww=W.ww, hw=W.hw;
+  const bodyHalf = [[100,66],[110,69],[111,83],[100+sw*.6,90],[100+sw,96],[100+sw+1,108],[100+sw-4,126],[100+sw-6,150],[100+ww+3,178],[100+ww,202],[100+hw+3,236],[100+hw+6,262],[100+hw+5,296],[100+hw+1,334],[100+hw-4,354],[100+hw-6,388],[100+hw-9,420],[100+hw-5,431],[100+hw-18,433],[100+hw-19,421],[100+hw-20,388],[100+hw-23,356],[100+hw-26,334],[100+hw-28,298],[103,268],[100,262]];
+  const headHalf = [[100,8],[114,11],[124,26],[126,44],[122,58],[114,70],[106,76],[100,78]];
+  const limb = (pts,w,cls) => `<path d="M${pts.map(p=>p.join(" ")).join(" L")}" class="${cls}" stroke-width="${w}"/>`;
+  const armR = [[100+sw-3,100],[100+sw+6,172],[100+sw+11,246]];
+  const arm = s => { const q = armR.map(([x,y])=>[s>0?x:200-x,y]); return `<path d="M${q[0].join(" ")} Q${q[1][0]} ${q[1][1]-6} ${q[2].join(" ")}" class="limb" stroke-width="17"/><ellipse cx="${q[2][0]+(s>0?2:-2)}" cy="256" rx="7.5" ry="11" class="bodyf"/>`; };
+  const bone = (x1,y1,x2,y2,w=4) => `<path d="M${x1} ${y1} L${x2} ${y2}" stroke="#B9AB88" stroke-width="${w+1.4}" stroke-linecap="round" fill="none"/><path d="M${x1} ${y1} L${x2} ${y2}" stroke="#F4ECD6" stroke-width="${w}" stroke-linecap="round" fill="none"/>`;
+  const knob = (x,y,r=5) => `<circle cx="${x}" cy="${y}" r="${r}" fill="url(#an-bone)" stroke="#B9AB88" stroke-width=".8"/>`;
+  // محاور العظام
+  const sx=100+sw-3, ex=100+sw+6, wx=100+sw+10;
+  const armBones = mir(bone(sx,100,ex,170,4.6)+bone(ex,172,wx,240,3.6)+knob(sx,98,6)+knob(ex,171,4.6)+knob(wx,242,3.6));
+  const legBones = mir(bone(116,262,119,336,6.4)+bone(119,340,121,416,4.6)+knob(116,258,7)+knob(119,338,6)+knob(121,420,4));
+  const pelvis = mir(`<path d="M99 262 C82 262 68 252 68 238 C68 230 74 224 82 228 C90 234 94 240 99 246Z" fill="url(#an-bone)" stroke="#B9AB88" stroke-width=".9"/><ellipse cx="86" cy="244" rx="3.4" ry="4.6" fill="#3a352c" opacity=".35"/>`);
+  const clav = mir(`<path d="M99 97 C112 90 126 90 ${100+sw-1} 98" fill="none" stroke="#B9AB88" stroke-width="5.4" stroke-linecap="round"/><path d="M99 97 C112 90 126 90 ${100+sw-1} 98" fill="none" stroke="#F4ECD6" stroke-width="4" stroke-linecap="round"/>`);
+  let ribs=""; for(let i=0;i<10;i++){ const y=102+i*7.6, r=(i<6?25+i*1.5:34-(i-5)*3.6)-(sex==="f"?2:0), e=y+(back?10:13); ribs+=`<path d="M100 ${y} C${100+r*.45} ${y-6} ${100+r} ${y-2} ${100+r} ${e}" fill="none" stroke="#B9AB88" stroke-width="3.6" stroke-linecap="round"/><path d="M100 ${y} C${100+r*.45} ${y-6} ${100+r} ${y-2} ${100+r} ${e}" fill="none" stroke="#F1E8CF" stroke-width="2.4" stroke-linecap="round"/>`; }
+  ribs = `<g opacity="${back?".95":".7"}">${mir(ribs)}</g>`;
+  let v=""; for(let y=88,i=0;y<256;y+=7.4,i++){ const w=y<150?9:y<215?11:13; v+=`<rect x="${100-w/2}" y="${y}" width="${w}" height="5.4" rx="2" fill="url(#an-bone)" stroke="#B9AB88" stroke-width=".7"/>`+(back?`<path d="M100 ${y} v-2.4" stroke="#B9AB88" stroke-width="2.2" stroke-linecap="round"/>`:""); }
+  v += `<path d="M91 258 L100 252 L109 258 L103 276 L97 276Z" fill="url(#an-bone)" stroke="#B9AB88" stroke-width=".8"/>`;
+  const sternum = back?"":`<path d="M96.5 98 H103.5 L102.5 148 Q100 154 97.5 148Z" fill="url(#an-bone)" stroke="#B9AB88" stroke-width=".8" opacity=".85"/>`;
+  const scap = back ? mir(`<path d="M${100+sw-12} 104 C${100+sw-20} 106 ${100+sw-30} 112 ${100+sw-30} 128 C${100+sw-26} 140 ${100+sw-16} 140 ${100+sw-12} 128Z" fill="url(#an-bone)" stroke="#B9AB88" stroke-width=".9" opacity=".95"/>`) : "";
+  const place = (id,x,y,sx2,sy2) => `<g transform="translate(${x} ${y}) scale(${sx2} ${sy2})">${ANA.O[id]()}</g>`;
+  // الرأس
+  let head = `<path d="${smooth(full(headHalf))}" class="bodyf"/><rect x="90" y="68" width="20" height="18" rx="7" class="bodyf"/>`;
+  head += o("brain", `<path d="M76 38 Q76 11 100 10 Q124 11 124 38 Q124 44 118 42 Q109 36 100 38 Q91 36 82 42 Q76 44 76 38Z" fill="url(#an-brain)"/><path d="M82 30 Q88 22 94 26 Q99 18 106 24 Q112 20 118 30 M84 38 Q90 33 96 36 M104 36 Q110 32 117 37 M100 14 V32" fill="none" stroke="#B9707C" stroke-width="1.5" stroke-linecap="round" opacity=".85"/>`);
   if(!back){
-    head += o("eyes", `<ellipse cx="90" cy="45" rx="5" ry="3.2" fill="#fff" stroke="#5B7C77"/><circle cx="90" cy="45" r="1.8" fill="#2F5D55"/><ellipse cx="110" cy="45" rx="5" ry="3.2" fill="#fff" stroke="#5B7C77"/><circle cx="110" cy="45" r="1.8" fill="#2F5D55"/>`);
-    head += o("ent", `<path d="M100 47 L96 58 Q100 60 104 58Z" fill="#E2A887"/><ellipse cx="73" cy="46" rx="4" ry="8" fill="#E2A887"/><ellipse cx="127" cy="46" rx="4" ry="8" fill="#E2A887"/>`);
-    head += o("mouth", `<path d="M92 64 Q100 69 108 64 Q100 66 92 64Z" fill="#C24E4A" stroke="#C24E4A" stroke-width="2"/>`);
-    head += o("thyroid", `<path d="M92 80 Q96 74 100 80 Q104 74 108 80 Q104 87 100 83 Q96 87 92 80Z" fill="#C7772F"/>`);
+    const eye = x => `<ellipse cx="${x}" cy="47" rx="6" ry="3.6" fill="#fff" stroke="#8F7A6A" stroke-width=".9"/><circle cx="${x}" cy="47" r="2.9" fill="url(#an-iris)"/><circle cx="${x+.9}" cy="46" r=".8" fill="#fff"/>`;
+    head += o("eyes", eye(89)+eye(111));
+    head += o("ent", `<path d="M100 48 C97 54 95 58 97 60 Q100 62 103 60 C105 58 103 54 100 48Z" fill="#D9A387" opacity=".9"/><path d="M75 44 C70 44 69 56 75 60 C77 56 77 48 75 44Z" fill="#E2A887" stroke="#B9806A" stroke-width=".7"/><path d="M125 44 C130 44 131 56 125 60 C123 56 123 48 125 44Z" fill="#E2A887" stroke="#B9806A" stroke-width=".7"/>`);
+    head += o("mouth", `<path d="M91 66 Q96 63 100 65 Q104 63 109 66 Q104 71 100 71 Q96 71 91 66Z" fill="#C9514F"/><path d="M91 66 Q100 68 109 66" fill="none" stroke="#8F2E31" stroke-width=".8"/>`);
+    head += o("thyroid", place("thyroid",87,72,.26,.17));
   } else {
-    head += o("ent", `<ellipse cx="73" cy="46" rx="4" ry="8" fill="#E2A887"/><ellipse cx="127" cy="46" rx="4" ry="8" fill="#E2A887"/>`);
+    head += o("ent", `<path d="M75 44 C70 44 69 56 75 60 C77 56 77 48 75 44Z" fill="#E2A887" stroke="#B9806A" stroke-width=".7"/><path d="M125 44 C130 44 131 56 125 60 C123 56 123 48 125 44Z" fill="#E2A887" stroke="#B9806A" stroke-width=".7"/>`);
   }
-  let body = `<path d="${torso}" class="bodyf"/>${arm(-1)}${arm(1)}${leg(-1)}${leg(1)}`;
-  body += o("skin", `<path d="${torso}" fill="transparent" class="skinhit"/>`);
+  let body = `<path d="${smooth(full(bodyHalf))}" class="bodyf"/>${arm(-1)}${arm(1)}`;
+  body += `<path d="${smooth(full(bodyHalf))}" fill="url(#an-sheen)" opacity=".55" pointer-events="none"/>`;
+  body += o("skin", `<path d="${smooth(full(bodyHalf))}" fill="transparent" class="skinhit"/>`);
+  body += `<g pointer-events="none">${ribs}${sternum}</g>`;
+  body += o("spine", v);
+  body += o("joints", clav+pelvis+armBones+legBones);
   if(!back){
-    if(sex==="f") body += o("breast", `<path d="M66 128 Q78 150 96 132" fill="none" stroke="#C98A78" stroke-width="2.4"/><path d="M104 132 Q122 150 134 128" fill="none" stroke="#C98A78" stroke-width="2.4"/><ellipse cx="81" cy="138" rx="15" ry="12" fill="#F0C3B3" opacity=".55"/><ellipse cx="119" cy="138" rx="15" ry="12" fill="#F0C3B3" opacity=".55"/>`);
-    body += o("lungs", `<path d="M96 104 Q78 100 70 122 Q64 150 70 168 Q84 166 96 160Z" fill="#EFA6A6"/><path d="M104 104 Q122 100 130 122 Q136 150 130 168 Q118 164 112 158 L104 150Z" fill="#EFA6A6"/><path d="M100 92 V108 M100 108 L92 118 M100 108 L108 118" stroke="#B9817F" stroke-width="3" fill="none"/>`);
-    body += o("heart", `<path d="M100 128 Q106 120 114 126 Q124 132 118 146 Q112 156 104 160 Q98 150 96 140 Q94 130 100 128Z" fill="#C62F2F"/><path d="M104 128 V116" stroke="#C62F2F" stroke-width="4"/>`);
-    body += o("liver", `<path d="M68 170 Q86 162 112 168 Q114 178 104 184 Q86 196 72 192 Q66 182 68 170Z" fill="#8D3B2F"/><ellipse cx="94" cy="190" rx="4" ry="5" fill="#7A9A2E"/>`);
-    body += o("stomach", `<path d="M112 168 Q132 164 134 182 Q134 198 118 200 Q108 198 110 190 Q120 190 120 182 Q118 174 112 174Z" fill="#E68D6E"/>`);
-    body += o("pancreas", `<path d="M90 200 Q104 194 124 198 Q126 204 118 205 Q102 204 92 206Z" fill="#EBC46A"/>`);
-    body += o("intestine", `<path d="M76 210 H124 V246 H112 V220 H88 V246 H76Z" fill="#D9886A" opacity=".95"/><path d="M90 224 q5 -4 10 0 t10 0 M90 232 q5 4 10 0 t10 0 M90 240 q5 -4 10 0 t10 0" stroke="#B7684D" stroke-width="3" fill="none"/>`);
-    body += o("bladder", `<ellipse cx="100" cy="262" rx="9" ry="7" fill="#E3C25E"/>`);
-    body += o("repro", sex==="f" ? `<path d="M93 248 Q100 244 107 248 L104 256 H96Z" fill="#D58AA0"/><path d="M93 249 Q86 246 84 250 M107 249 Q114 246 116 250" stroke="#D58AA0" stroke-width="2" fill="none"/><circle cx="83" cy="251" r="2.6" fill="#D58AA0"/><circle cx="117" cy="251" r="2.6" fill="#D58AA0"/>` : `<circle cx="100" cy="271" r="4" fill="#C9849A"/><ellipse cx="95" cy="283" rx="4" ry="5" fill="#D9A0B0"/><ellipse cx="105" cy="283" rx="4" ry="5" fill="#D9A0B0"/>`);
+    if(sex==="f") body += o("breast", `<path d="M64 124 Q64 152 88 152 Q99 148 99 134 Q98 118 84 116 Q68 114 64 124Z" fill="#F4CFBA" stroke="#D3A58B" stroke-width=".9" opacity=".92"/><path d="M136 124 Q136 152 112 152 Q101 148 101 134 Q102 118 116 116 Q132 114 136 124Z" fill="#F4CFBA" stroke="#D3A58B" stroke-width=".9" opacity=".92"/><circle cx="82" cy="136" r="3.4" fill="#C9805E"/><circle cx="118" cy="136" r="3.4" fill="#C9805E"/>`);
+    body += o("lungs", place("lungs",55,94,.9,.8));
+    body += o("heart", place("heart",80,112,.55,.55));
+    body += o("liver", place("liver",48,162,.7,.46));
+    body += o("stomach", place("stomach",98,158,.44,.46));
+    body += o("pancreas", place("pancreas",78,192,.5,.24));
+    body += o("intestine", place("intestine",58,204,.84,.48));
+    body += o("bladder", place("bladder",87,242,.26,.26));
+    body += o("repro", sex==="f" ? place("uterus",84,228,.32,.3) : sex==="m" ? place("male",84,262,.32,.3) : place("uterus",91,236,.18,.16));
   } else {
-    body += o("lungs", `<path d="M96 104 Q78 100 70 122 Q64 150 70 172 Q84 172 96 166Z" fill="#EFA6A6" opacity=".9"/><path d="M104 104 Q122 100 130 122 Q136 150 130 172 Q116 172 104 166Z" fill="#EFA6A6" opacity=".9"/>`);
-    body += o("blood", `<path d="M66 178 Q70 168 78 172 Q82 184 74 192 Q66 190 66 178Z" fill="#7B1F4B"/>`);
-    body += o("kidney", `<path d="M82 200 Q72 206 76 222 Q80 232 88 226 Q84 214 90 208 Q88 200 82 200Z" fill="#8E2A2A"/><path d="M118 200 Q128 206 124 222 Q120 232 112 226 Q116 214 110 208 Q112 200 118 200Z" fill="#8E2A2A"/>`);
-    let v=""; for(let y=90;y<256;y+=8.5) v+=`<rect x="95" y="${y}" width="10" height="6.5" rx="2" fill="#EDE6D6" stroke="#B9AE95" stroke-width=".8"/>`;
-    body += o("spine", v);
+    body += o("lungs", `<g opacity=".92">${place("lungs",55,94,.9,.8)}</g>`);
+    body += o("blood", `<ellipse cx="127" cy="182" rx="9" ry="13" fill="url(#an-spl)" transform="rotate(14 127 182)"/><path d="M119 178 q4 6 0 12" fill="none" stroke="#C9A0CE" stroke-width="1.2" opacity=".7"/>`);
+    body += o("kidney", place("kidney",104,188,.42,.44)+`<g transform="translate(200 0) scale(-1 1)">${place("kidney",104,188,.42,.44)}</g>`);
+    body += scap;
   }
-  let joints = [[100-W.sw+2,96],[100+W.sw-2,96],[100-W.sw-12,172],[100+W.sw+12,172],[100-16,250],[100+16,250],[100-19,332],[100+19,332]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="6" fill="#EDE6D6" stroke="#B9AE95"/>`).join("");
-  body += o("joints", joints);
   let marks = "";
   const headT = kid ? ` transform="translate(100 88) scale(1.22) translate(-100 -88)"` : "";
   const bodyT = kid ? ` transform="translate(100 88) scale(.92 .8) translate(-100 -88)"` : "";
   if(ATL.kayy) marks = HEAL.kayy.sites.map((s,i)=> (!!s.back)===back ? `<g class="kmark" data-ks="${i}" tabindex="0" role="button" aria-label="${esc(aT(s.n))}"${s.y<88?headT:bodyT}><circle cx="${s.x}" cy="${s.y}" r="6.5"/><text x="${s.x}" y="${s.y+3}" text-anchor="middle">${i+1}</text></g>` : "").join("");
   return `<svg class="atl-svg" viewBox="20 0 160 ${kid?400:436}" role="group" aria-label="${tx("خريطة الجسم التفاعلية","Interactive body map")}"><g${bodyT}>${body}</g><g${headT}>${head}</g>${marks}</svg>`;
 }
+// مخطط الجسم بأعضائه المسمّاة (رسم أصلي)
+function labeledBodyHTML(){
+  const keep = {sex:ATL.sex, side:ATL.side, sel:ATL.sel, kayy:ATL.kayy};
+  ATL.sex="m"; ATL.side="f"; ATL.sel=""; ATL.kayy=false;
+  let s; try{ s = bodySVG(); } finally { Object.assign(ATL, keep); }
+  s = s.replace(/class="org( on)?"/g,'class="orgx"').replace(/ tabindex="0" role="button" aria-label="[^"]*"/g,"").replace('class="atl-svg" viewBox="20 0 160 436" role="group"','class="atl-svg lbl" viewBox="-34 0 268 436" role="img"').replace(/aria-label="[^"]*"><g/,`aria-label="${tx("مخطط الجسم بأعضائه الرئيسية مسمّاة","The human body with its main organs labelled")}"><g`);
+  // [الاسم، الإنجليزية، هدفx، هدفy، الجهة، y النص]
+  const L = [
+   ["الدماغ","Brain",100,22,"l",24],["الرئة اليمنى","Right lung",78,140,"l",118],["الكبد","Liver",70,184,"l",160],["المرارة","Gallbladder",83,198,"l",190],["الأمعاء الدقيقة","Small intestine",90,232,"l",222],["المثانة","Bladder",101,256,"l",258],["عظم الحوض","Pelvis",76,238,"l",290],["عظم الفخذ","Femur",116,300,"l",326],
+   ["الغدة الدرقية","Thyroid",100,82,"r",72],["القلب","Heart",112,146,"r",112],["الرئة اليسرى","Left lung",126,134,"r",142],["الأضلاع","Ribs",132,160,"r",172],["المعدة","Stomach",120,182,"r",204],["البنكرياس","Pancreas",104,205,"r",232],["القولون","Colon",128,236,"r",260],["الركبة","Knee",119,338,"r",340]
+  ];
+  const lab = L.map(([a,e,x,y,side,ty])=>{ const tx0 = side==="l" ? 22 : 178; const anchor = side==="l" ? "end" : "start"; const nm = tx(a,e);
+    return `<g class="lb"><path d="M${tx0+(side==="l"?2:-2)} ${ty-3} L${x} ${y}" fill="none" stroke="var(--copper)" stroke-width=".7"/><circle cx="${x}" cy="${y}" r="1.7" fill="var(--copper)"/><text x="${tx0}" y="${ty}" text-anchor="${anchor}">${esc(nm)}</text></g>`; }).join("");
+  return s.replace("</svg>", `<g class="lbls">${lab}</g></svg>`);
+}
+window.TY_BODYLBL = labeledBodyHTML;
 function regionPanel(id){
   const r = ATLAS.find(x=>x.id===id); if(!r) return "";
   const sex = ATL.sex;
@@ -4167,6 +4538,7 @@ function regionPanel(id){
   return `<div class="atl-info" id="atlInfo">
   <div class="row" style="justify-content:space-between;align-items:center"><h2>${esc(aT(r.n))}</h2><span class="tag tp">${r.v==="b"?tx("في المنظر الخلفي","On the back view"):r.v==="f"?tx("في المنظر الأمامي","On the front view"):tx("أمامي وخلفي","Front and back")}</span></div>
   ${sex==="c"&&r.id==="repro"?`<p class="small muted">${tx("يُراجع طبيب الأطفال عند أي تورم أو ألم في المنطقة التناسلية للطفل، أو تأخر أو تبكير في البلوغ.","See a paediatrician for any genital swelling or pain in a child, or for early or late puberty.")}</p>`:""}
+  ${window.TY_ANA?TY_ANA.regFig(r.id,sex):""}
   <dl class="kv"><dt>${tx("التشريح","Anatomy")}</dt><dd>${esc(aT(an))}</dd><dt>${tx("الوظيفة","Function")}</dt><dd>${esc(aT(r.fn))}</dd></dl>
   ${r.facts.length?`<ul class="clean small">${r.facts.map(f=>`<li>${esc(aT(f))}</li>`).join("")}</ul>`:""}
   ${dis.length?`<h3>${tx("أمراض هذا الجزء في الموسوعة","Conditions of this part in the encyclopedia")}</h3><div class="chips">${dis.map(d=>`<button class="chip" type="button" data-dis="${esc(d.id)}">${esc(disName(d))}</button>`).join("")}</div><p class="small muted">${tx("اضغط اسم المرض لقراءة الأسباب والأعراض والعلاج الكامل.","Tap a condition to read its causes, symptoms and full treatment.")}</p>`:""}
@@ -4298,15 +4670,16 @@ function growthChart(sex, key, months, val){
 }
 
 // ---------- صفحة الأطلس ----------
-const ATL_TABS = [["map",["خريطة الجسم","Body map"]],["signs",["علامات الأمراض","Disease signs"]],["healthy",["مؤشرات الجسم الصحي","Healthy-body indicators"]],["growth",["نمو الطفل","Child growth"]]];
+const ATL_TABS = [["map",["خريطة الجسم","Body map"]],["signs",["علامات الأمراض","Disease signs"]],["healthy",["مؤشرات الجسم الصحي","Healthy-body indicators"]],["growth",["نمو الطفل","Child growth"]],["photos",["صور تشريحية واقعية","Realistic anatomy images"]]];
 R.atlas = () => `<div class="view-head"><h1>${tx("أطلس الجسم والأمراض","Body and disease atlas")}</h1><p>${tx("استكشف الجسم عضواً عضواً: التشريح والوظيفة، وأمراض كل جزء وعلاجها، وعلامات الخطر، مع عرض ثلاثي الأبعاد، وعلامات الأمراض الظاهرة، ومؤشرات الصحة حسب الفئة والعمر.","Explore the body organ by organ: anatomy and function, the diseases of each part and their treatment, and red flags, with a 3D view, visible disease signs, and health indicators by group and age.")}</p></div>
 <nav class="chips atl-tabs" aria-label="${tx("أقسام الأطلس","Atlas sections")}">${ATL_TABS.map(([k,l])=>`<button type="button" class="chip" data-atab="${k}" aria-pressed="${ATL.tab===k}">${esc(aT(l))}</button>`).join("")}</nav>
 <div id="atlBody">${atlTab()}</div>
-<div class="disclaimer">${tx("الأطلس للتثقيف الصحي ولا يغني عن الفحص الطبي. الرسوم توضيحية أصلية مبسطة وليست بمقاييس تشريحية دقيقة.","The atlas is for health education and does not replace a medical examination. The drawings are original simplified illustrations, not exact anatomical scale.")}</div>`;
+<div class="disclaimer">${tx("الأطلس للتثقيف الصحي ولا يغني عن الفحص الطبي. خريطة الجسم رسم توضيحي مبسط، أما الصور في لوحة كل عضو وفي تبويب «صور تشريحية واقعية» فهي تصاميم ثلاثية الأبعاد واقعية من Blausen Medical بترخيص مفتوح.","The atlas is for health education and does not replace a medical examination. The body map is a simplified illustration; the images in each organ panel and in the «Realistic anatomy images» tab are realistic 3D renders from Blausen Medical under an open licence.")}</div>`;
 function atlTab(){
   if(ATL.tab==="signs") return signsHTML();
   if(ATL.tab==="healthy") return healthyHTML();
   if(ATL.tab==="growth") return growthHTML();
+  if(ATL.tab==="photos") return window.TY_ANA ? TY_ANA.gallery(ATL.asys||"") : "";
   const regs = regionsFor(ATL.sex==="c"?"c":ATL.sex);
   if(!regs.some(r=>r.id===ATL.sel)) ATL.sel="heart";
   return `<div class="panel atl-ctl"><div class="row" style="gap:10px;flex-wrap:wrap;align-items:center">
@@ -4357,11 +4730,12 @@ function runGrowth(){
 }
 document.addEventListener("click", e=>{
     if(currentView()!=="atlas" || !e.target.closest("#main")) return;
-    const t=e.target.closest("[data-atab],[data-asex],[data-aside],[data-regchip],[data-reg],[data-ks],[data-ahp],[data-gsex],[data-goreg],#a3auto,#a3reset");
+    const t=e.target.closest("[data-atab],[data-asex],[data-aside],[data-regchip],[data-reg],[data-ks],[data-ahp],[data-gsex],[data-goreg],[data-anasys],#a3auto,#a3reset");
     if(!t) return;
     if(t.dataset.atab){ ATL.tab=t.dataset.atab; atlSave(); stop3D(); go(); return; }
     if(t.dataset.asex){ ATL.sex=t.dataset.asex; atlSave(); stop3D(); go(); return; }
     if(t.dataset.aside){ ATL.side=t.dataset.aside; stop3D(); go(); return; }
+    if(t.dataset.anasys!==undefined){ ATL.asys=t.dataset.anasys; go(); return; }
     if(t.dataset.ahp){ ATL.hp=t.dataset.ahp; atlSave(); go(); return; }
     if(t.dataset.gsex){ ATL.gsex=t.dataset.gsex; $$("[data-gsex]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.gsex===ATL.gsex)); if($("#grOut").innerHTML) runGrowth(); return; }
     if(t.dataset.goreg){ ATL.tab="map"; ATL.sel=t.dataset.goreg; atlSave(); go(); return; }
@@ -4421,7 +4795,7 @@ const NAV_GROUPS = [
  ["spec",["التخصصات الطبية","Medical specialties"],["specs","dental"]],
  ["heal",["الاستشفاء والطب التكميلي","Healing and complementary medicine"],["heal","pt","herbs","prophetic","tcm"]],
  ["mind",["الصحة النفسية","Mental health"],["mind","therapy","psydx","psyassess","iq"]],
- ["beauty",["الجمال","Beauty"],["mkislam","mknatural"]],
+ ["beauty",["الجمال","Beauty"],["mkislam","mknatural","mkcat"]],
  ["svc",["الخدمات","Services"],["auction","consult","calendar","admin"]],
 ];
 const NAV_DESC = {
@@ -5339,7 +5713,7 @@ if(linked || ["","#","#track","#home","#admin"].includes(location.hash)) { if(ty
 })();
 </script>
 <script id="auc-js">
-// ===== المزاد العلاجي: عروض العيادات الشريكة، طلب عروض، اقتراحات، انضمام العيادات، وإدارة (الإصدار 2.0) =====
+// ===== سعر العافية: عروض العيادات الشريكة، طلب عروض، اقتراحات، انضمام العيادات، وإدارة (الإصدار 2.1) =====
 (()=>{
 if(typeof VIEWS==="undefined"||typeof R==="undefined") return;
 const EN = window.TY_LANG==="en";
@@ -5432,25 +5806,25 @@ const sendBtns = (subject,text) => `<div class="auc-act">
   <button class="btn ghost" type="button" data-aucCopy="${h(text)}">${T("انسخ النص","Copy text")}</button></div>
   <p class="small muted">${T("تُرسَل الرسالة إلى إدارة المنصة من تطبيق الواتساب أو البريد لديك، وتتولى الإدارة التنسيق مع العيادة. لا يُرسَل شيء قبل أن تضغط «إرسال» في ذلك التطبيق.","The message goes to the platform team from your WhatsApp or email app, and the team coordinates with the clinic. Nothing is sent until you press “Send” in that app.")}</p>`;
 const L = (a,e,v) => v ? `${T(a,e)}: ${v}\n` : "";
-const msgInq = i => `${T("طلب حجز عبر «المزاد العلاجي» — الطيبات","Booking request via “Therapeutic Auction” — Al-Tayyibat")}\n${L("العرض","Offer",i.offer)}${L("العيادة","Clinic",i.clinic)}${L("السعر","Price",i.price)}${L("الاسم","Name",i.name)}${L("الهاتف","Phone",i.phone)}${L("الموعد المفضل","Preferred date",i.date?fdate(i.date):"")}${L("ملاحظات","Notes",i.note)}${i.demo?T("(ملاحظة: عرض تجريبي)\n","(Note: demo offer)\n"):""}`;
-const msgReq = r => `${T("طلب عروض علاجية عبر «المزاد العلاجي» — الطيبات","Treatment offers request via “Therapeutic Auction” — Al-Tayyibat")}\n${L("التخصص","Specialty",spN(r.spec))}${L("الحاجة العلاجية","Treatment needed",r.need)}${L("المدينة","City",cyN(r.city))}${L("الميزانية القصوى","Maximum budget",r.budget?money(r.budget,r.cur):"")}${L("التوقيت","Timing",tmN(r.when))}${L("الاسم","Name",r.name)}${L("الهاتف","Phone",r.phone)}${L("ملاحظات","Notes",r.note)}`;
+const msgInq = i => `${T("طلب حجز عبر «سعر العافية» — الطيبات","Booking request via “Wellness Price” — Al-Tayyibat")}\n${L("العرض","Offer",i.offer)}${L("العيادة","Clinic",i.clinic)}${L("السعر","Price",i.price)}${L("الاسم","Name",i.name)}${L("الهاتف","Phone",i.phone)}${L("الموعد المفضل","Preferred date",i.date?fdate(i.date):"")}${L("ملاحظات","Notes",i.note)}${i.demo?T("(ملاحظة: عرض تجريبي)\n","(Note: demo offer)\n"):""}`;
+const msgReq = r => `${T("طلب عروض علاجية عبر «سعر العافية» — الطيبات","Treatment offers request via “Wellness Price” — Al-Tayyibat")}\n${L("التخصص","Specialty",spN(r.spec))}${L("الحاجة العلاجية","Treatment needed",r.need)}${L("المدينة","City",cyN(r.city))}${L("الميزانية القصوى","Maximum budget",r.budget?money(r.budget,r.cur):"")}${L("التوقيت","Timing",tmN(r.when))}${L("الاسم","Name",r.name)}${L("الهاتف","Phone",r.phone)}${L("ملاحظات","Notes",r.note)}`;
 const TM = [["urgent","عاجل خلال أيام","Urgent, within days"],["month","خلال شهر","Within a month"],["flex","مرن","Flexible"]];
 const tmN = id => { const x=TM.find(t=>t[0]===id)||TM[2]; return EN?x[2]:x[1]; };
 const code = o => "AUC1:"+btoa(unescape(encodeURIComponent(JSON.stringify(o))));
 const decode = s => { try{ const m=String(s).match(/AUC1:[A-Za-z0-9+/=]+/); return m ? JSON.parse(decodeURIComponent(escape(atob(m[0].slice(5))))) : null; }catch{ return null; } };
-const msgApp = a => `${T("طلب انضمام عيادة شريكة — المزاد العلاجي، الطيبات","Partner clinic application — Therapeutic Auction, Al-Tayyibat")}\n${L("العيادة","Clinic",a.n)}${L("التخصصات","Specialties",a.specs.map(spN).join("، "))}${L("المدينة","City",cyN(a.city))}${L("رقم الترخيص","Licence no.",a.lic)}${L("المسؤول","Contact person",a.person)}${L("الهاتف","Phone",a.phone)}${L("البريد","Email",a.email)}${L("العرض المقترح","Proposed offer",a.offer?`${a.offer} — ${money(a.price,a.cur)}`:"")}\n${T("رمز الطلب (للإدارة):","Application code (for admin):")}\n${code(a)}\n`;
+const msgApp = a => `${T("طلب انضمام عيادة شريكة — سعر العافية، الطيبات","Partner clinic application — Wellness Price, Al-Tayyibat")}\n${L("العيادة","Clinic",a.n)}${L("التخصصات","Specialties",a.specs.map(spN).join("، "))}${L("المدينة","City",cyN(a.city))}${L("رقم الترخيص","Licence no.",a.lic)}${L("المسؤول","Contact person",a.person)}${L("الهاتف","Phone",a.phone)}${L("البريد","Email",a.email)}${L("العرض المقترح","Proposed offer",a.offer?`${a.offer} — ${money(a.price,a.cur)}`:"")}\n${T("رمز الطلب (للإدارة):","Application code (for admin):")}\n${code(a)}\n`;
 
 // ---------- الأيقونات ----------
 const ic = p => `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
 const TABS = [
- ["offers",T("العروض","Offers"),ic('<path d="M20 12v8H4v-8M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7z"/>')],
- ["request",T("اطلب عروضاً","Request offers"),ic('<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>')],
- ["tips",T("اقتراحات ونصائح","Suggestions & tips"),ic('<path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2V17h6v-.3c0-.8.4-1.5 1-2A7 7 0 0 0 12 2z"/>')],
+ ["offers",T("عروض العيادات","Clinic offers"),ic('<path d="M20 12v8H4v-8M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7z"/>')],
+ ["request",T("اطلب طبيبك","Find your doctor"),ic('<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>')],
+ ["tips",T("وفّر صحتك","Save on care"),ic('<path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2V17h6v-.3c0-.8.4-1.5 1-2A7 7 0 0 0 12 2z"/>')],
  ["clinic",T("للعيادات","For clinics"),ic('<path d="M3 21V8l9-5 9 5v13M9 21v-6h6v6M12 9v4M10 11h4"/>')],
  ["mine",T("طلباتي","My requests"),ic('<path d="M9 11l3 3 8-8M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/>')]
 ];
 
-const DISC = `<div class="disclaimer" style="margin-top:16px"><b>${T("تنبيه مهم:","Important:")}</b> ${T("«المزاد العلاجي» وسيط تعريفي لعرض عروض العيادات الشريكة ومقارنتها، وليس مقدّم رعاية طبية ولا يضمن نتيجة علاج. الأسعار استرشادية وتُؤكَّد مع العيادة قبل الحجز، وتحقق دائماً من ترخيص العيادة والطبيب. العروض المعلَّمة «تجريبي» أمثلة لتوضيح الخدمة وليست لعيادات حقيقية. في الحالات الطارئة اتصل بالإسعاف فوراً ولا تنتظر عرضاً.","“Therapeutic Auction” is an introduction service that lists and compares partner-clinic offers. It is not a care provider and does not guarantee any treatment result. Prices are indicative and confirmed with the clinic before booking; always verify the clinic and doctor licence. Offers marked “Demo” are examples that illustrate the service, not real clinics. In an emergency call the ambulance at once and do not wait for an offer.")}</div>`;
+const DISC = `<div class="disclaimer" style="margin-top:16px"><b>${T("تنبيه مهم:","Important:")}</b> ${T("«سعر العافية» وسيط تعريفي لعرض عروض العيادات الشريكة ومقارنتها، وليس مقدّم رعاية طبية ولا يضمن نتيجة علاج. الأسعار استرشادية وتُؤكَّد مع العيادة قبل الحجز، وتحقق دائماً من ترخيص العيادة والطبيب. العروض المعلَّمة «تجريبي» أمثلة لتوضيح الخدمة وليست لعيادات حقيقية. في الحالات الطارئة اتصل بالإسعاف فوراً ولا تنتظر عرضاً.","“Wellness Price” is an introduction service that lists and compares partner-clinic offers. It is not a care provider and does not guarantee any treatment result. Prices are indicative and confirmed with the clinic before booking; always verify the clinic and doctor licence. Offers marked “Demo” are examples that illustrate the service, not real clinics. In an emergency call the ambulance at once and do not wait for an offer.")}</div>`;
 
 // ---------- العرض: بطاقة عرض ----------
 function card(o, all, opt={}){
@@ -5482,8 +5856,8 @@ function vOffers(){
   const all=offers(), cities=[...new Set(all.map(o=>o.city))].map(c=>cy(c));
   const specs=SPEC.filter(s=>all.some(o=>o.spec===s[0]));
   const list=filtered();
-  return `<div class="auc-hero"><b>${T("كيف يعمل المزاد العلاجي؟","How does the Therapeutic Auction work?")}</b>
-  <ol class="auc-steps"><li>${T("تصفّح عروض العيادات الشريكة وقارن الأسعار والمزايا.","Browse partner-clinic offers and compare prices and what is included.")}</li><li>${T("أو اطلب عروضاً: اكتب حاجتك العلاجية وتتنافس العيادات على خدمتك.","Or request offers: describe your need and clinics compete to serve you.")}</li><li>${T("اختر الأفضل لك سعراً وقرباً وجودة، واحجز عبر المنصة.","Pick what suits you in price, distance and quality, and book through the platform.")}</li></ol></div>
+  return `<div class="auc-hero"><div class="chips auc-tag"><span class="tag tp">${T("تنافس طبي","Medical competition")}</span><span class="tag tp">${T("عروض العيادات","Clinic offers")}</span><span class="tag tp">${T("وفّر صحتك","Save on your health")}</span><span class="tag tp">${T("اطلب طبيبك","Find your doctor")}</span></div><b>${T("كيف تعمل «سعر العافية»؟","How does Wellness Price work?")}</b>
+  <ol class="auc-steps"><li>${T("تصفّح عروض العيادات الشريكة وقارن الأسعار والمزايا.","Browse partner-clinic offers and compare prices and what is included.")}</li><li>${T("أو اطلب طبيبك: اكتب حاجتك العلاجية وتتنافس العيادات على خدمتك.","Or request offers: describe your need and clinics compete to serve you.")}</li><li>${T("اختر الأفضل لك سعراً وقرباً وجودة، واحجز عبر المنصة.","Pick what suits you in price, distance and quality, and book through the platform.")}</li></ol></div>
   <div class="card" style="cursor:default;margin-top:14px"><div class="auc-fil">
    <div class="field"><label for="aucQ">${T("بحث","Search")}</label><input type="search" id="aucQ" value="${h(St.q)}" placeholder="${T("عرض، عيادة، تخصص…","Offer, clinic, specialty…")}"></div>
    <div class="field"><label for="aucSp">${T("التخصص","Specialty")}</label><select id="aucSp">${opts(specs,St.spec,T("كل التخصصات","All specialties"))}</select></div>
@@ -5523,7 +5897,7 @@ document.addEventListener("submit", e=>{
     if(!o) return q("#iE",f).textContent=T("انتهى هذا العرض","This offer has ended");
     const i={id:uid("i"),ts:Date.now(),oid:o.id,offer:loc(o,"t"),clinic:loc(o.c,"n"),price:money(o.price,o.cur),name:q("#iN",f).value.trim(),phone:ph,date:q("#iD",f).value,note:q("#iT",f).value.trim(),demo:!!o.demo};
     D.inq.unshift(i); save();
-    f.outerHTML=`<div class="auc-ok" style="margin-top:12px"><b>✓ ${T("تم حفظ طلبك في «طلباتي» على جهازك","Your request was saved in “My requests” on your device")}</b>${sendBtns(T("حجز عرض — المزاد العلاجي","Offer booking — Therapeutic Auction"),msgInq(i))}</div>`;
+    f.outerHTML=`<div class="auc-ok" style="margin-top:12px"><b>✓ ${T("تم حفظ طلبك في «طلباتي» على جهازك","Your request was saved in “My requests” on your device")}</b>${sendBtns(T("حجز عرض — سعر العافية","Offer booking — Wellness Price"),msgInq(i))}</div>`;
   }
   if(f.id==="aucReqF"){ e.preventDefault(); submitReq(f); }
   if(f.id==="aucAppF"){ e.preventDefault(); submitApp(f); }
@@ -5565,7 +5939,7 @@ function vRequest(){
    <p class="small wide" id="rE" role="alert" style="color:var(--bad);margin:0"></p>
    <div class="wide"><button class="btn" type="submit">${T("اعرض أنسب العروض وجهّز طلبي","Show best offers and prepare my request")}</button></div>
   </form></div>
-  <div id="aucRes" style="margin-top:14px">${St.lastReq?`<div class="auc-ok"><b>✓ ${T("آخر طلب لك","Your latest request")}</b>${sendBtns(T("طلب عروض — المزاد العلاجي","Offers request — Therapeutic Auction"),msgReq(St.lastReq))}</div>${matchHTML(St.lastReq)}`:""}</div>${DISC}`;
+  <div id="aucRes" style="margin-top:14px">${St.lastReq?`<div class="auc-ok"><b>✓ ${T("آخر طلب لك","Your latest request")}</b>${sendBtns(T("طلب عروض — سعر العافية","Offers request — Wellness Price"),msgReq(St.lastReq))}</div>${matchHTML(St.lastReq)}`:""}</div>${DISC}`;
 }
 function submitReq(f){
   const err=q("#rE",f), ph=normPhone(q("#rP",f).value), need=q("#rN",f).value.trim(), b=parseFloat(toLat(q("#rB",f).value));
@@ -5576,7 +5950,7 @@ function submitReq(f){
   err.textContent="";
   const r={id:uid("r"),ts:Date.now(),spec:q("#rS",f).value,city:q("#rC",f).value,need,budget:b>0?b:0,cur:q("#rU",f).value,when:q("#rW",f).value,name:q("#rNm",f).value.trim(),phone:ph,note:q("#rT",f).value.trim()};
   D.req.unshift(r); save(); St.lastReq=r;
-  q("#aucRes").innerHTML=`<div class="auc-ok"><b>✓ ${T("تم حفظ طلبك في «طلباتي» على جهازك. أرسله الآن للمنصة ليصل إلى العيادات:","Your request is saved in “My requests” on your device. Send it now so it reaches the clinics:")}</b>${sendBtns(T("طلب عروض — المزاد العلاجي","Offers request — Therapeutic Auction"),msgReq(r))}</div>${matchHTML(r)}`;
+  q("#aucRes").innerHTML=`<div class="auc-ok"><b>✓ ${T("تم حفظ طلبك في «طلباتي» على جهازك. أرسله الآن للمنصة ليصل إلى العيادات:","Your request is saved in “My requests” on your device. Send it now so it reaches the clinics:")}</b>${sendBtns(T("طلب عروض — سعر العافية","Offers request — Wellness Price"),msgReq(r))}</div>${matchHTML(r)}`;
   q("#aucRes").scrollIntoView({behavior:"smooth",block:"start"});
 }
 
@@ -5649,7 +6023,7 @@ function vTips(){
 const aSel = new Set();
 function vClinic(){
   aSel.clear();
-  return `<div class="card" style="cursor:default"><h2 style="margin:0">${T("انضمّ شريكاً في المزاد العلاجي","Join as a partner clinic")}</h2>
+  return `<div class="card" style="cursor:default"><h2 style="margin:0">${T("انضمّ شريكاً في سعر العافية","Join as a partner clinic")}</h2>
   <p class="muted">${T("اعرض عروض عيادتك على مرضى يبحثون عن أفضل خدمة علاجية، وتنافس بعروضك على طلباتهم. تراجع الإدارة بيانات الترخيص قبل النشر.","Show your clinic's offers to patients looking for the best treatment service, and compete for their requests. The team reviews licence details before publishing.")}</p>
   <ul class="clean"><li>${T("يلزم ترخيص ساري للعيادة من الجهة الصحية الرسمية.","A valid clinic licence from the official health authority is required.")}</li><li>${T("يجب أن تكون العروض صادقة وواضحة التفاصيل والمدة، دون وعود بنتائج مضمونة.","Offers must be honest, clear on content and validity, with no guaranteed-result promises.")}</li><li>${T("شروط الشراكة وأي عمولة تُتفق عليها كتابةً مع الإدارة قبل النشر.","Partnership terms and any commission are agreed in writing with the team before publishing.")}</li></ul></div>
   <form id="aucAppF" class="card auc-f" style="cursor:default;margin-top:14px" novalidate>
@@ -5680,7 +6054,7 @@ function submitApp(f){
   err.textContent="";
   const a={id:uid("a"),ts:Date.now(),n,lic:q("#aL",f).value.trim(),city:q("#aC",f).value,specs:[...aSel],person:q("#aPn",f).value.trim(),phone:ph,email:mail,offer:q("#aO",f).value.trim(),price:pr,cur:q("#aU",f).value};
   D.apps.unshift(a); save();
-  q("#aucAppRes").innerHTML=`<div class="auc-ok"><b>✓ ${T("تم حفظ طلب الانضمام على جهازك. أرسله للإدارة لمراجعته:","The application is saved on your device. Send it to the team for review:")}</b>${sendBtns(T("طلب انضمام عيادة — المزاد العلاجي","Clinic application — Therapeutic Auction"),msgApp(a))}</div>`;
+  q("#aucAppRes").innerHTML=`<div class="auc-ok"><b>✓ ${T("تم حفظ طلب الانضمام على جهازك. أرسله للإدارة لمراجعته:","The application is saved on your device. Send it to the team for review:")}</b>${sendBtns(T("طلب انضمام عيادة — سعر العافية","Clinic application — Wellness Price"),msgApp(a))}</div>`;
   q("#aucAppRes").scrollIntoView({behavior:"smooth",block:"start"});
 }
 
@@ -5699,12 +6073,11 @@ function vMine(){
 }
 
 // ---------- الواجهة والأحداث ----------
-R.auction = () => `<div class="view-head"><h1>${T("المزاد العلاجي","Therapeutic Auction")}</h1><p>${T("أفضل خدمة علاجية بأفضل سعر: عروض عيادات شريكة تتنافس لخدمتك. قارن، أو اطلب عروضاً مخصصة لحاجتك، واحجز عبر المنصة.","The best treatment service at the best price: partner clinics compete to serve you. Compare, or request offers tailored to your need, and book through the platform.")}</p></div>
-<nav class="chips auc-tabs" aria-label="${T("أقسام المزاد العلاجي","Therapeutic Auction sections")}">${TABS.map(([id,n,i])=>`<button type="button" class="chip" data-atab="${id}" aria-pressed="${St.tab===id}" style="display:inline-flex;align-items:center;gap:6px">${i}${n}${id==="mine"&&(D.req.length+D.inq.length)?` <small>(${D.req.length+D.inq.length})</small>`:""}</button>`).join("")}</nav>
+R.auction = () => `<div class="view-head"><h1>${T("سعر العافية","Wellness Price")}</h1><p>${T("سعر العافية: تنافس طبي يوفّر صحتك. عروض عيادات شريكة تتنافس لخدمتك بأفضل سعر؛ قارن، أو اطلب طبيبك بعرض مخصص لحاجتك، واحجز عبر المنصة.","Wellness Price: medical competition that saves your health. Partner clinics compete to serve you at the best price. Compare, or request offers tailored to your need, and book through the platform.")}</p></div>
+<nav class="chips auc-tabs" aria-label="${T("أقسام سعر العافية","Wellness Price sections")}">${TABS.map(([id,n,i])=>`<button type="button" class="chip" data-atab="${id}" aria-pressed="${St.tab===id}" style="display:inline-flex;align-items:center;gap:6px">${i}${n}${id==="mine"&&(D.req.length+D.inq.length)?` <small>(${D.req.length+D.inq.length})</small>`:""}</button>`).join("")}</nav>
 <div id="aucBody" style="margin-top:14px"></div>`;
 AFTER.auction = () => {
   D = load();
-  try{ const g=JSON.parse(sessionStorage.getItem("ty_auc_go")||"null"); if(g){ sessionStorage.removeItem("ty_auc_go"); St.spec=g.spec||""; St.tab=g.tab||"offers"; if(typeof keepUI==="function") keepUI(); } }catch(e){}
   const sec=q('#main section[data-view="auction"]'); if(!sec) return;
   sec.addEventListener("click",onClick); sec.addEventListener("input",onInput); sec.addEventListener("change",onChange);
   draw();
@@ -5754,7 +6127,7 @@ function adminHTML(){
   const itemClinic = c => `<li><div class="m"><b>${h(c.n)}</b><span class="small muted">${h(cyN(c.city))} · ${(c.specs||[]).map(x=>h(sp(x)[1])).join("، ")}${c.ver?" · ✓ موثّق":""}</span></div><div class="auc-act" style="margin:0"><button class="btn ghost" type="button" data-aucEdC="${h(c.id)}">تعديل</button><button class="btn ghost" type="button" data-aucDelE="${h(c.id)}">حذف</button></div></li>`;
   const itemOffer = o => `<li><div class="m"><b>${h(o.t)}</b><span class="small muted">${h((clinicById(o.clinic)||{}).n||"—")} · ${h(money(o.price,o.cur))} · حتى ${fdate(offerUntil(o))}${left(offerUntil(o))<0?" (منتهٍ)":""}</span></div><div class="auc-act" style="margin:0"><button class="btn ghost" type="button" data-aucEdO="${h(o.id)}">تعديل</button><button class="btn ghost" type="button" data-aucDelE="${h(o.id)}">حذف</button></div></li>`;
   const demoRow = d => `<li><div class="m"><b>${h(d.n||d.t)}</b><span class="small muted">تجريبي</span></div><button class="btn ghost" type="button" data-aucHide="${h(d.id)}">${hidden(d.id)?"إظهار":"إخفاء"}</button></li>`;
-  return `<div class="panel" id="aucAdm"><h2>المزاد العلاجي: العيادات والعروض</h2>
+  return `<div class="panel" id="aucAdm"><h2>سعر العافية: العيادات والعروض</h2>
   <p class="small muted">أضف العيادات الشريكة وعروضها هنا، ثم صدّر ملف المحتوى (زر «نشر المحتوى لكل الزوار» أعلاه) وارفعه ليراها كل الزوار. العيادات والعروض المعلَّمة «تجريبي» أمثلة يمكنك إخفاؤها أو الإبقاء عليها حتى تنشر عروضاً حقيقية. طلبات المرضى وطلبات انضمام العيادات تصلك بالواتساب أو البريد؛ الصق «رمز الطلب» أدناه لتعبئة بيانات العيادة تلقائياً.</p>
   <div id="aucAdStats"><div class="grid-3" style="margin-bottom:12px"><div class="card" style="cursor:default"><span class="muted small">عيادات منشورة</span><b style="font-size:1.4rem">${clinics().length}</b></div><div class="card" style="cursor:default"><span class="muted small">عروض سارية</span><b style="font-size:1.4rem">${offers().length}</b></div><div class="card" style="cursor:default"><span class="muted small">مضافة من الإدارة</span><b style="font-size:1.4rem">${cl.length+of.length}</b></div></div></div>
   <form id="aucAdI" class="field" style="margin-bottom:14px"><label for="aiC">استيراد رمز طلب انضمام عيادة</label><div class="row"><input type="text" id="aiC" dir="ltr" placeholder="AUC1:…" style="flex:1 1 240px"><button class="btn ghost" type="submit">تعبئة النموذج</button></div></form>
@@ -5844,9 +6217,9 @@ function importCode(f){
 if(typeof applyEntries==="function"){ const _ap=applyEntries; applyEntries = function(docs){ _ap(docs); try{ const v=currentView(); if(v==="auction"&&q("#aucBody")&&!q("#drawer .drawer")) draw(); if(v==="admin"&&q("#aucAdm")) refreshAdmin(); }catch(e){} }; }
 
 // ---------- التسجيل في التنقل ----------
-if(!VIEWS.some(v=>v[0]==="auction")){ const i=VIEWS.findIndex(v=>v[0]==="consult"); VIEWS.splice(i>=0?i:VIEWS.length-3, 0, ["auction", T("المزاد العلاجي","Therapeutic Auction")]); }
+if(!VIEWS.some(v=>v[0]==="auction")){ const i=VIEWS.findIndex(v=>v[0]==="consult"); VIEWS.splice(i>=0?i:VIEWS.length-3, 0, ["auction", T("سعر العافية","Wellness Price")]); }
 window.TY_NAV_META = Object.assign(window.TY_NAV_META||{}, {auction:{g:"svc", d:["أفضل خدمة علاجية: عروض عيادات شريكة تتنافس لخدمتك، قارن واحجز أو اطلب عروضاً","The best treatment service: partner clinics compete for you. Compare and book, or request offers"]}});
-if(EN && typeof I18N_EN!=="undefined") I18N_EN["المزاد العلاجي"]="Therapeutic Auction";
+if(EN && typeof I18N_EN!=="undefined") I18N_EN["سعر العافية"]="Wellness Price";
 window.TY_AUCTION = {offers, clinics, matches, discount};
 if(typeof renderRail==="function") renderRail();
 if(["#auction"].includes(location.hash) && typeof go==="function") go();
@@ -6315,7 +6688,7 @@ const ids = SP.map(s=>"sp-"+s.id);
 const byId = id => SP.find(s=>s.id===id);
 const gname = g => P(GRP[g]);
 const tileLetter = s => { let n=P(s.n).replace(/^(طب |ال)/,"").replace(/^ال/,""); return (n[0]||"•").toUpperCase(); };
-const tile = (s,i) => `<span class="spx-tile ${["surg","wc","crit"].includes(s.g)?"c2":""}" aria-hidden="true">${h(tileLetter(s))}</span>`;
+const tile = (s,i) => { const th = window.TY_ANA && TY_ANA.thumbFor(s.id); return th ? `<span class="spx-tile spx-img" aria-hidden="true"><img src="${th}" alt="" loading="lazy" decoding="async"></span>` : `<span class="spx-tile ${["surg","wc","crit"].includes(s.g)?"c2":""}" aria-hidden="true">${h(tileLetter(s))}</span>` };
 const first = s => { const t=P(s.ov); const m=t.match(/^.*?[.。](\s|$)/); return m?m[0].trim():t; };
 const url = id => "#"+id;
 const disc = () => `<div class="disclaimer" style="margin-top:14px">${T("معلومات تثقيفية عامة تساعدك على فهم التخصص ولا تغني عن فحص الطبيب. محتوى هذا القسم بانتظار مراجعة طبية متخصصة. في الحالات الطارئة اتصل برقم الإسعاف المحلي.","General educational information to help you understand the specialty; it does not replace a medical examination. This section's content awaits specialist medical review. In an emergency call your local ambulance number.")}</div>`;
@@ -6335,7 +6708,7 @@ function offersHTML(spec, max){
 // ---------- مركز التخصصات ----------
 R.specs = () => {
   const grpChips = [["",T("الكل","All")], ...Object.keys(GRP).map(k=>[k,gname(k)])];
-  return `<div class="view-head"><h1>${T("التخصصات الطبية","Medical specialties")}</h1><p>${T("دليلك إلى فروع الطب: لكل تخصص صفحة تشرح ما يعالجه وأشهر حالاته ومتى تراجع الطبيب وعلامات الخطر والوقاية والفحوص، مع روابط إلى أقسام المنصة وعروض المزاد.","Your guide to the branches of medicine: each specialty has a page explaining what it treats, its common conditions, when to see a doctor, warning signs, prevention and tests, with links to platform sections and Auction offers.")}</p></div>
+  return `<div class="view-head"><h1>${T("التخصصات الطبية","Medical specialties")}</h1><p>${T("دليلك إلى فروع الطب: لكل تخصص صفحة تشرح ما يعالجه وأشهر حالاته ومتى تراجع الطبيب وعلامات الخطر والوقاية والفحوص، مع روابط إلى أقسام المنصة وعروض سعر العافية.","Your guide to the branches of medicine: each specialty has a page explaining what it treats, its common conditions, when to see a doctor, warning signs, prevention and tests, with links to platform sections and Auction offers.")}</p></div>
 <div class="spx-hero"><b>${T("اعرف التخصص الأنسب لحالتك","Find the right specialty for your problem")}</b>
 <div class="spx-tools"><input type="search" id="spxQ" placeholder="${T("ابحث باسم تخصص أو مرض أو عَرَض…","Search a specialty, condition or symptom…")}" aria-label="${T("بحث في التخصصات","Search specialties")}"><a class="btn" href="#check">${T("فحص الأعراض","Symptom checker")}</a></div></div>
 <nav class="spx-chips" aria-label="${T("تصفية حسب المجموعة","Filter by group")}">${grpChips.map(([k,n])=>`<button type="button" class="chip" data-spxg="${k}" aria-pressed="${St.grp===k}">${h(n)}</button>`).join("")}</nav>
@@ -6352,7 +6725,7 @@ function gridHTML(){
   let list = SP.filter(s=>(!St.grp||s.g===St.grp)&&(!nq||norm([s.n,s.ov,...s.sub,...s.cond,...s.see].join(" ")).includes(nq)));
   const den = {id:"dental"};
   const showDen = !St.grp && (!nq || norm("طب الاسنان اسنان لثه ضرس dentistry dental teeth tooth gum").includes(nq) || norm(P(DEN.branches.map(b=>b[0]).join(" ## "))).includes(nq));
-  const cards = (showDen?[`<a class="card spx-card featured" href="#dental"><span class="spx-tile c2" aria-hidden="true">${EN?"D":"ط"}</span><h3>${T("طب الأسنان","Dentistry")}</h3><p>${T("القسم الأعمق: المشكلات والعلاجات وأسنان الأطفال والعناية اليومية والطوارئ وتقييم خطر التسوس.","The deepest section: problems, treatments, children's teeth, daily care, emergencies and a decay-risk check.")}</p><span class="tag" style="background:var(--copper-soft);color:var(--copper)">${T("قسم موسّع","In-depth")}</span></a>`]:[]).concat(list.map(s=>`<a class="card spx-card" href="#sp-${s.id}">${tile(s)}<h3>${h(P(s.n))}</h3><p>${h(first(s))}</p><span class="tag" style="background:var(--pine-soft);color:var(--pine)">${h(gname(s.g))}</span></a>`));
+  const cards = (showDen?[`<a class="card spx-card featured" href="#dental"><span class="spx-tile spx-img" aria-hidden="true"><img src="anatomy/t-tooth.webp" alt="" loading="lazy" decoding="async"></span><h3>${T("طب الأسنان","Dentistry")}</h3><p>${T("القسم الأعمق: المشكلات والعلاجات وأسنان الأطفال والعناية اليومية والطوارئ وتقييم خطر التسوس.","The deepest section: problems, treatments, children's teeth, daily care, emergencies and a decay-risk check.")}</p><span class="tag" style="background:var(--copper-soft);color:var(--copper)">${T("قسم موسّع","In-depth")}</span></a>`]:[]).concat(list.map(s=>`<a class="card spx-card" href="#sp-${s.id}">${tile(s)}<h3>${h(P(s.n))}</h3><p>${h(first(s))}</p><span class="tag" style="background:var(--pine-soft);color:var(--pine)">${h(gname(s.g))}</span></a>`));
   return cards.length?cards.join(""):`<p style="grid-column:1/-1">${T("لا نتائج. جرّب كلمة أخرى أو تصفح المجموعات.","No results. Try another word or browse the groups.")}</p>`;
 }
 AFTER.specs = () => {
@@ -6370,6 +6743,7 @@ function spView(id){
   const aucLbl = s.auc&&s.auc!=="other";
   return `<p class="spx-crumb"><a href="#specs">${T("التخصصات الطبية","Medical specialties")}</a> › ${h(gname(s.g))}</p>
 <div class="view-head"><h1>${h(P(s.n))}</h1><p>${h(P(s.ov))}</p><p><b>${T("من يعالجك؟","Who treats you?")}</b> ${h(P(s.who))}</p></div>
+${window.TY_ANA?TY_ANA.specFig(s.id):""}
 <div class="spx-cols">
  <div class="spx-box"><h3>${T("الفروع الدقيقة","Sub-specialties")}</h3>${ul(s.sub)}</div>
  <div class="spx-box"><h3>${T("أشهر الحالات","Common conditions")}</h3>${ul(s.cond)}</div>
@@ -6380,7 +6754,7 @@ function spView(id){
 </div>
 ${dl.length?`<section class="spx-sec" style="margin-top:20px"><h2>${T("اقرأ في الموسوعة","Read in the encyclopedia")}</h2><div class="chips">${dl.map(d=>`<button class="chip" type="button" data-dis="${h(d.id)}">${h(EN&&d.en?d.en:d.n)}</button>`).join("")}</div></section>`:""}
 ${rel.length?`<section class="spx-sec" style="margin-top:20px"><h2>${T("أقسام وأدوات ذات صلة","Related sections and tools")}</h2><div class="chips">${rel.map(v=>`<a class="chip" href="#${v[0]}" style="text-decoration:none">${h(typeof viewLabel==="function"?viewLabel(v):v[1])}</a>`).join("")}${s.id==="gensurg"||s.id==="ent"||s.id==="plastic"||s.id==="ortho"||s.id==="derm"?"":""}</div></section>`:""}
-${aucLbl?`<section class="spx-sec" style="margin-top:20px"><h2>${T("عروض المزاد العلاجي","Therapeutic Auction offers")}</h2>${offersHTML(s.auc,3)}</section>`:`<section class="spx-sec" style="margin-top:20px"><h2>${T("هل تحتاج رأياً أو عرضاً؟","Need an opinion or an offer?")}</h2><div class="row"><a class="btn" href="#consult">${T("اسأل فريق الطيبات","Ask the Al-Tayyibat team")}</a><a class="btn ghost" href="#auction">${T("المزاد العلاجي","Therapeutic Auction")}</a></div></section>`}
+${aucLbl?`<section class="spx-sec" style="margin-top:20px"><h2>${T("عروض سعر العافية","Wellness Price offers")}</h2>${offersHTML(s.auc,3)}</section>`:`<section class="spx-sec" style="margin-top:20px"><h2>${T("هل تحتاج رأياً أو عرضاً؟","Need an opinion or an offer?")}</h2><div class="row"><a class="btn" href="#consult">${T("اسأل فريق الطيبات","Ask the Al-Tayyibat team")}</a><a class="btn ghost" href="#auction">${T("المزاد العلاجي","Wellness Price")}</a></div></section>`}
 <nav class="spx-nav" style="margin-top:22px" aria-label="${T("التنقل بين التخصصات","Between specialties")}">${prev?`<a class="card" href="#sp-${prev.id}">‹ ${h(P(prev.n))}</a>`:`<a class="card" href="#specs">‹ ${T("كل التخصصات","All specialties")}</a>`}${next?`<a class="card" href="#sp-${next.id}" style="text-align:end">${h(P(next.n))} ›</a>`:`<a class="card" href="#dental" style="text-align:end">${T("طب الأسنان","Dentistry")} ›</a>`}</nav>
 ${disc()}`;
 }
@@ -6390,6 +6764,7 @@ SP.forEach(s=>{ R["sp-"+s.id] = ()=>spView(s.id); });
 const DTABS = [["over",T("نظرة عامة","Overview")],["prob",T("مشكلات الأسنان","Problems")],["treat",T("العلاجات","Treatments")],["kids",T("أسنان الأطفال","Children")],["care",T("العناية اليومية","Daily care")],["emerg",T("الطوارئ","Emergencies")],["spec",T("حالات خاصة","Special cases")],["svc",T("العروض والعيادات","Offers and clinics")]];
 R.dental = () => `<p class="spx-crumb"><a href="#specs">${T("التخصصات الطبية","Medical specialties")}</a> › ${T("طب الأسنان","Dentistry")}</p>
 <div class="view-head"><h1>${T("طب الأسنان","Dentistry")}</h1><p>${T("دليل شامل لصحة الفم والأسنان: افهم مشكلتك، وتعرّف على العلاج المناسب، وعلى كيف تعتني بأسنانك وأسنان أطفالك، وماذا تفعل في الطوارئ، ثم قارن العروض واحجز.","A full guide to oral and dental health: understand your problem, learn the right treatment, how to care for your and your children's teeth, what to do in an emergency, then compare offers and book.")}</p></div>
+${window.TY_ANA?TY_ANA.fig("tooth",{cls:"ana-spec"}):""}
 <nav class="spx-tabs" aria-label="${T("أقسام طب الأسنان","Dentistry sections")}">${DTABS.map(([k,n])=>`<button type="button" class="chip" data-dtab="${k}" aria-pressed="${St.dtab===k}">${h(n)}</button>`).join("")}</nav>
 <div id="denBody" style="margin-top:14px"></div>`;
 
@@ -6409,7 +6784,7 @@ const dv = {
  },
  treat(){
   return `<div class="spx-acc">${DEN.treat.map(p=>`<details><summary>${h(P(p[0]))}</summary><dl><dt>${T("متى يُستعمل؟","When it is used")}</dt><dd>${h(P(p[1]))}</dd><dt>${T("ماذا يحدث؟","What happens")}</dt><dd>${h(P(p[2]))}</dd><dt>${T("ملاحظات","Notes")}</dt><dd>${h(P(p[3]))}</dd></dl></details>`).join("")}</div>
-  <div class="disclaimer" style="margin-top:12px">${T("الأسعار والمدد تختلف بين العيادات والحالات، ولا نضع أرقاماً ثابتة هنا. اطلب خطة علاج مكتوبة وقارن العروض في «المزاد العلاجي».","Prices and durations vary between clinics and cases, so we give no fixed figures here. Ask for a written plan and compare offers in the Therapeutic Auction.")}</div>`;
+  <div class="disclaimer" style="margin-top:12px">${T("الأسعار والمدد تختلف بين العيادات والحالات، ولا نضع أرقاماً ثابتة هنا. اطلب خطة علاج مكتوبة وقارن العروض في «سعر العافية».","Prices and durations vary between clinics and cases, so we give no fixed figures here. Ask for a written plan and compare offers in the Wellness Price.")}</div>`;
  },
  kids(){
   const tbl=(title,rows)=>`<div class="spx-box"><h3>${title}</h3><div class="spx-scroll"><table><thead><tr><th>${T("السن","Tooth")}</th><th>${T("البزوغ التقريبي","Approximate eruption")}</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${h(P(r[0]))}</td><td>${h(P(r[1]))}</td></tr>`).join("")}</tbody></table></div></div>`;
@@ -6451,7 +6826,7 @@ AFTER.dental = () => {
   sec.addEventListener("change",e=>{ const r=e.target.dataset&&e.target.dataset.risk; if(r===undefined) return; St.risk[r]=e.target.checked; const n=DEN.risk.reduce((a,x,i)=>a+(St.risk[i]?x[1]:0),0), tot=DEN.risk.reduce((a,x)=>a+x[1],0); drawDen(); const el=q(`[data-risk="${r}"]`); el&&el.focus(); });
 };
 
-// ---------- من التخصصات إلى المزاد (تفعيل التصفية) ----------
+// ---------- من التخصصات إلى سعر العافية (تفعيل التصفية) ----------
 document.addEventListener("click",e=>{ const a=e.target.closest("[data-aucgo]"); if(!a) return; try{ sessionStorage.setItem("ty_auc_go",JSON.stringify({spec:a.dataset.aucgo,tab:a.dataset.auctab||"offers"})); }catch{} },true);
 
 // ---------- الصفحة الرئيسية: لا نُغرق الرئيسية بـ 30 بطاقة ----------
@@ -6466,6 +6841,683 @@ window.TY_NAV_META = Object.assign(window.TY_NAV_META||{}, M);
 window.TY_SPECS = {list:SP, dental:DEN};
 if(typeof renderRail==="function") renderRail();
 if((location.hash==="#specs"||location.hash==="#dental"||/^#sp-/.test(location.hash)) && typeof go==="function") go();
+})();
+</script>
+<script id="mkc-js">
+// ===== كتالوج تصنيع المكياج الطبيعي: بطاقات وفلاتر ووصفات كاملة وطباعة وتنزيل =====
+(()=>{
+if(typeof VIEWS==="undefined"||typeof R==="undefined"||typeof AFTER==="undefined") return;
+const EN = window.TY_LANG==="en";
+const T = (a,e) => EN ? e : a;
+const P = s => { s=String(s??""); const i=s.indexOf(" ## "); if(i<0) return s; return EN ? s.slice(i+4).trim() : s.slice(0,i).trim(); };
+const both = s => String(s??"").replace(/ ## /g," ");
+const h = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const q = (s,r=document)=>r.querySelector(s), qa=(s,r=document)=>[...r.querySelectorAll(s)];
+// ===== كتالوج المكياج الطبيعي: البيانات =====
+const GRP = {
+ lips:"الشفاه ## Lips", eyes:"العيون ## Eyes", brows:"الحواجب ## Brows", face:"الوجه والتغطية ## Face and coverage",
+ cheeks:"الخدود والإضاءة ## Cheeks and glow", care:"العناية والتنظيف ## Care and cleansing", hands:"اليدان والأظافر ## Hands and nails"
+};
+const SKINS = {dry:"جافة ## Dry", oily:"دهنية ## Oily", sens:"حساسة ## Sensitive", acne:"معرّضة للحبوب ## Acne-prone", norm:"عادية ## Normal"};
+const UNITS = {g:["غ","g"], ml:["مل","ml"], drop:["قطرة","drop"], tsp:["ملعقة صغيرة","tsp"]};
+// المكونات: n الاسم، note ملاحظة الشراء والجودة، sub البدائل، alg تنبيه الحساسية، img مفتاح الصورة
+const ING = {
+ shea:{n:"زبدة الشيا غير المكررة ## Unrefined shea butter",note:"زبدة صلبة مغذّية تعطي القوام الكريمي. اختاري لونها العاجي أو الأصفر الفاتح ورائحتها الخفيفة، وتجنبي المتحجرة أو ذات الرائحة الحادة. ## A rich solid butter that gives a creamy texture. Choose ivory to pale yellow with a mild smell; avoid hard, rancid-smelling blocks.",sub:"زبدة الكاكاو أو زبدة المانجو ## Cocoa butter or mango butter",alg:"قد تتحسس منها حالات نادرة من حساسية اللاتكس ## Rarely a problem for people with latex allergy",img:"shea"},
+ cocoab:{n:"زبدة الكاكاو ## Cocoa butter",note:"تعطي صلابة ولمعاناً ناعماً للشفاه. تُباع غير مكررة برائحة الشوكولاتة. ## Adds firmness and a soft gloss to lip products. Sold unrefined with a chocolate smell.",sub:"زبدة الشيا مع زيادة الشمع قليلاً ## Shea butter with slightly more wax",alg:"",img:"cocoab"},
+ bwax:{n:"شمع العسل (حبيبات) ## Beeswax pellets",note:"يمنح التماسك والثبات. الحبيبات أسهل في الوزن والذوبان من القوالب. ## Gives structure and hold. Pellets are easier to weigh and melt than blocks.",sub:"شمع الكانديليلا بنصف الكمية للنباتيين ## Candelilla wax at about half the amount for vegans",alg:"قد يسبب حساسية لمن لديهم حساسية من منتجات النحل ## May affect people allergic to bee products",img:"bwax"},
+ jojoba:{n:"زيت الجوجوبا ## Jojoba oil",note:"شمعي يشبه زهم الجلد، ثابت ولا يتزنخ بسرعة، ويناسب معظم أنواع البشرة. ## A liquid wax close to skin sebum, stable and slow to go rancid; suits most skin types.",sub:"زيت دوار الشمس أو العنب ## Sunflower or grapeseed oil",alg:"",img:"jojoba"},
+ castor:{n:"زيت الخروع ## Castor oil",note:"ثقيل لزج يعطي لمعاناً عالياً للشفاه والجلوس على الجلد. يُشترى بدرجة تجميلية أو دوائية. ## Thick and sticky; gives high gloss on lips and clings to skin. Buy cosmetic or pharmaceutical grade.",sub:"زيت اللوز مع قليل من الشمع ## Almond oil with a little extra wax",alg:"",img:"castor"},
+ almond:{n:"زيت اللوز الحلو ## Sweet almond oil",note:"خفيف ويمتصه الجلد بسهولة. ## Light and easily absorbed.",sub:"زيت دوار الشمس أو الجوجوبا ## Sunflower or jojoba oil",alg:"لا يناسب من لديهم حساسية المكسرات ## Not for people with nut allergy",img:"almond"},
+ sunfl:{n:"زيت دوار الشمس ## Sunflower oil",note:"بديل اقتصادي وخالٍ من المكسرات. اختاري المعصور على البارد. ## An affordable nut-free option. Choose cold-pressed.",sub:"زيت الجوجوبا ## Jojoba oil",alg:"",img:"sunfl"},
+ vite:{n:"فيتامين E (توكوفيرول) ## Vitamin E (tocopherol)",note:"مضاد أكسدة يبطئ تزنخ الزيوت، لكنه ليس مادة حافظة ضد الجراثيم. ## An antioxidant that slows oil rancidity; it is not a preservative against microbes.",sub:"يمكن الاستغناء عنه ## Can be left out",alg:"",img:"vite"},
+ beet:{n:"مسحوق الشمندر (البنجر) المجفف ## Dried beetroot powder",note:"ملوّن وردي إلى أحمر غامق، ناعم، ويُباع للطبخ. يتأثر لونه بالحرارة، فيُضاف بعد انخفاضها. ## A pink-to-deep-red colorant sold for cooking. Heat dulls it, so add it after the mixture cools a little.",sub:"طين وردي أو أحمر بنسبة أقل ## Pink or red clay in a smaller share",alg:"يصبغ الملابس والمناديل ## Stains clothes and tissues",img:"beet"},
+ arrow:{n:"نشا الأراروت ## Arrowroot starch",note:"أساس البودرة الطبيعية، ناعم وماص للدهون. ## The base of natural powders: silky and oil-absorbing.",sub:"نشا الذرة أو دقيق الأرز ## Cornstarch or rice flour",alg:"",img:"arrow"},
+ cocoa:{n:"الكاكاو الخام غير المحلّى ## Raw unsweetened cocoa",note:"درجات من البني تساعد في ضبط لون البودرة ولون البشرة. ## Shades of brown for matching skin tone and brow colour.",sub:"الكاكاو القلوي الداكن للدرجات العميقة ## Dutched dark cocoa for deep shades",alg:"قد يهيّج الأنف عند الاستنشاق ## May irritate the nose if inhaled",img:"cocoa"},
+ kaolin:{n:"طين الكاولين (أبيض أو وردي أو أصفر) ## Kaolin clay (white, pink or yellow)",note:"يمنح غطاءً وثباتاً وامتصاصاً للدهون، وهو ألطف الطين على البشرة. ## Adds coverage, hold and oil absorption; the gentlest clay for skin.",sub:"نشا الأراروت بنسبة أكبر ## More arrowroot",alg:"",img:"kaolin"},
+ charcoal:{n:"الفحم المنشّط (درجة تجميلية أو دوائية) ## Activated charcoal (cosmetic or pharmaceutical grade)",note:"يعطي السواد. لا تستعملي أبداً سناج الحرق المنزلي أو الكحل التقليدي مجهول المصدر. ## Gives black. Never use home-burnt soot or untraced traditional kohl.",sub:"لا بديل آمناً للأسود الخالص ## No safe substitute for a true black",alg:"يتسخ بسهولة ويضر إن استُنشق ## Messy, and harmful if inhaled",img:"charcoal"},
+ zinc:{n:"أكسيد الزنك (غير نانوي، درجة تجميلية) ## Zinc oxide (non-nano, cosmetic grade)",note:"يعطي غطاءً أبيض ويلطّف البشرة. وجوده لا يجعل المنتج واقياً من الشمس. ## Gives white coverage and soothes skin. Its presence does not make the product a sunscreen.",sub:"كاولين أبيض ## White kaolin",alg:"لا يُستنشق مسحوقه، فاستعملي كمامة ## Do not inhale the powder; wear a mask",img:"zinc"},
+ mica:{n:"ميكا تجميلية ## Cosmetic-grade mica",note:"معدن طبيعي يعطي اللمعة. اشتريه من مورد يعلن مصدره الأخلاقي ودرجته التجميلية. ## A natural mineral that gives shimmer. Buy from a supplier that states ethical sourcing and cosmetic grade.",sub:"من دونها تبقى اللمسة مطفية ## Without it the finish stays matte",alg:"لا يُستنشق مسحوقه ## Do not inhale the powder",img:"mica"},
+ aloe:{n:"جل الصبّار النقي ## Pure aloe vera gel",note:"اختاري جلاً تجارياً شفافاً بنسبة صبار عالية وحافظ مناسب. الجل الطازج يفسد خلال أيام. ## Pick a clear commercial gel with high aloe content and a proper preservative. Fresh gel spoils within days.",sub:"—",alg:"قد يسبب حساسية لبعض الأشخاص ## May cause allergy in some people",img:"aloe"},
+ rosew:{n:"ماء الورد النقي ## Pure rose water",note:"خالٍ من الكحول والعطور الصناعية، ومن عبوة محكمة. ## Free of alcohol and synthetic fragrance, in a sealed bottle.",sub:"ماء مقطّر ## Distilled water",alg:"",img:"rosew"},
+ glyc:{n:"الجلسرين النباتي ## Vegetable glycerin",note:"مرطّب يجذب الماء، ويُستعمل بنسب صغيرة. ## A humectant used in small amounts.",sub:"—",alg:"",img:"glyc"},
+ sugar:{n:"سكر ناعم ## Fine sugar",note:"مقشّر لطيف للشفاه. الحبيبات الخشنة تجرح. ## A gentle lip exfoliant. Coarse grains scratch.",sub:"—",alg:"",img:"sugar"},
+ honey:{n:"عسل طبيعي ## Natural honey",note:"مرطّب ومهدّئ. ## Moisturising and soothing.",sub:"—",alg:"لا يناسب من لديه حساسية العسل أو الرضّع دون السنة ## Not for honey allergy or babies under one year",img:"honey"},
+ oats:{n:"شوفان مطحون ناعماً ## Finely ground oats",note:"يهدّئ البشرة الحساسة. اطحنيه حتى يصير كالدقيق. ## Calms sensitive skin. Grind until flour-fine.",sub:"—",alg:"لا يناسب من لديه حساسية الجلوتين أو الشوفان ## Not for gluten or oat allergy",img:"oats"},
+ flax:{n:"بذور الكتان ## Flax seeds",note:"تعطي جلاً شفافاً لاصقاً بلطف. ## Give a clear, softly sticky gel.",sub:"—",alg:"",img:"flax"},
+ henna:{n:"مسحوق الحناء الطبيعية الخالصة ## Pure natural henna powder",note:"أخضر مائل للبني ورائحته كالعشب، ناعم ومنخول، وحديث الطحن. اللون الأسود الجاهز ممنوع تماماً. ## Green-brown, hay-like smell, finely sieved and freshly milled. Ready-made black henna is never acceptable.",sub:"—",alg:"خطر شديد لدى مرضى نقص G6PD وخاصة الأطفال ## Serious risk for people with G6PD deficiency, especially infants",img:"henna"},
+ tea:{n:"شاي أسود قوي ## Strong black tea",note:"سائل العجن بدل الليمون، لطيف على الجلد. ## A kneading liquid instead of lemon; gentle on skin.",sub:"ماء فاتر ## Lukewarm water",alg:"",img:"tea"},
+ ricef:{n:"دقيق الأرز ## Rice flour",note:"ناعم ومطفٍ ويمتص اللمعان. ## Fine, mattifying, absorbs shine.",sub:"نشا الذرة ## Cornstarch",alg:"",img:"ricef"}
+};
+
+const TL = {
+ scale:"ميزان إلكتروني دقيق (0.01 غ) ## Precision scale (0.01 g)", boiler:"حمّام مائي: وعاء زجاجي مقاوم للحرارة فوق قدر ماء ## Double boiler: heat-proof glass bowl over a pot of water",
+ spat:"ملعقة سيليكون أو عود زجاجي للتحريك ## Silicone spoon or glass rod for stirring", sieve:"منخل ناعم صغير ## Small fine sieve", mortar:"هاون أو وعاء صغير وملعقة للسحق ## Mortar, or a small bowl and spoon, for grinding",
+ tube:"أنابيب أو علب معقّمة ## Sanitised tubes or tins", jar:"برطمانات زجاجية معقّمة ## Sanitised glass jars", mold:"قالب سيليكون لأحمر الشفاه (أو أنبوب فارغ) ## Silicone lipstick mould (or an empty tube)",
+ pip:"قطّارة أو ماصة ## Dropper or pipette", alc:"كحول طبي 70% للتعقيم ## 70% medical alcohol for sanitising", mask:"كمامة ## Face mask", brush:"فرش مكياج نظيفة ## Clean makeup brushes",
+ spray:"زجاجة رذاذ صغيرة معقّمة ## Small sanitised spray bottle", pan:"قدر صغير وصافي ## Small pot and strainer", cloth:"قطعة قماش ناعمة ## Soft cloth", cotton:"قطن وأعواد تنظيف ## Cotton pads and swabs",
+ wrap:"غلاف بلاستيكي للأكل وكأس زجاجي ## Cling film and a glass cup"
+};
+const ST = {
+ san:"عقّمي الأدوات والعبوات بالكحول الطبي 70% واتركيها تجف تماماً، واغسلي يديك جيداً. ## Sanitise tools and containers with 70% medical alcohol, let them dry fully, and wash your hands well.",
+ melt:"ذوّبي الشمع والزبدات في وعاء زجاجي فوق ماء يغلي بهدوء (حمّام مائي)، مع التحريك، حتى تصير سائلاً صافياً. ## Melt the wax and butters in a heat-proof glass bowl over gently simmering water (double boiler), stirring until clear.",
+ oils:"أبعدي الوعاء عن النار وأضيفي الزيوت وفيتامين E وحرّكي. ## Take the bowl off the heat, add the oils and vitamin E, and stir.",
+ paste:"اسحقي المسحوق الملوّن مع قطرات من الزيت الدافئ في وعاء صغير حتى يصير معجوناً ناعماً بلا كتل، ثم اخلطيه بالباقي. ## Grind the colour powder with a few drops of warm oil into a smooth paste, then stir it into the rest.",
+ pour:"صبّي الخليط وهو سائل دافئ في العبوة المعقّمة، واتركيها دون تحريك حتى تتماسك (30 دقيقة، أو 10 دقائق في الثلاجة). ## Pour the warm liquid into the sanitised container and leave it undisturbed until set (30 minutes, or 10 in the fridge).",
+ lab:"اكتبي اسم المنتج وتاريخ التحضير على العبوة. ## Label the container with the product name and the date made.",
+ sift:"اخلطي المساحيق جافة، ثم مرّريها في المنخل مرتين أو ثلاثاً لإزالة الكتل. ## Mix the dry powders, then pass them through the sieve two or three times to break up lumps.",
+ swatch:"جرّبي اللون على ظاهر اليد، وعدّليه بإضافة المسحوق الملوّن بكميات صغيرة جداً. ## Swatch on the back of your hand and adjust by adding colour powder in tiny amounts.",
+ mask:"ارتدي كمامة عند وزن المساحيق وخلطها كي لا تستنشقيها. ## Wear a mask when weighing and mixing powders so you do not inhale them.",
+ jar:"انقلي المسحوق إلى علبة جافة محكمة الإغلاق، ولا تُدخلي فيها أصابع مبللة. ## Transfer the powder to a dry, airtight tin and never dip wet fingers into it."
+};
+// الوصفات: ing = [كمية، وحدة، مفتاح المكوّن، اختياري]
+const REC = [
+// ---------- الشفاه ----------
+{id:"lipbalm",g:"lips",lv:1,min:20,y:"نحو 24 غ (5 أنابيب) ## About 24 g (5 tubes)",risk:1,kind:"dry",keep:"6 إلى 12 شهراً ## 6 to 12 months",img:"lipbalm",skin:["dry","norm","sens"],
+ n:"مرطّب شفاه بزبدة الشيا وشمع العسل ## Shea and beeswax lip balm",
+ d:"القاعدة التي تُبنى عليها بقية منتجات الشفاه والخدود: ثلاثة مكونات بنسبة 1:1:1 بالوزن. ## The base for most lip and cheek products: three ingredients in a 1:1:1 ratio by weight.",
+ ing:[[8,"g","bwax"],[8,"g","shea"],[8,"g","jojoba"],[1,"drop","vite","opt"]],
+ tools:["scale","boiler","spat","tube","alc"],
+ steps:["san","melt","oils","pour","lab"],
+ tip:"للقوام الأصلب لأيام الحر زيدي الشمع غراماً واحداً، وللقوام الأنعم قلّليه. ## For hot weather add 1 g more wax; for a softer feel use 1 g less.",
+ warn:"أبعدي زيت اللوز عمّن لديه حساسية مكسرات، واستبدلي به زيت دوار الشمس. ## Swap almond oil for sunflower if there is any nut allergy."},
+{id:"liptint",g:"lips",lv:1,min:15,y:"نحو 9 غ ## About 9 g",risk:1,kind:"dry",keep:"3 أشهر ## 3 months",img:"liptint",skin:["dry","norm"],
+ n:"لون شفاه وخدود بالشمندر ## Beetroot lip and cheek tint",
+ d:"لمسة وردية شفافة تُبنى بالطبقات، وتصلح للشفاه والخدود معاً. ## A sheer pink wash that builds in layers; works on lips and cheeks.",
+ ing:[[8,"g","lipbalm_base"],[1,"g","beet"]],
+ tools:["scale","spat","mortar","tube","alc"],
+ steps:["san","@أذيبي مرطّب الشفاه (الوصفة السابقة) برفق في حمّام مائي. ## Gently melt the lip balm base (previous recipe) in a double boiler.","paste","@اتركي الخليط يبرد قليلاً ثم قلّبيه جيداً، وصبّيه في علبة صغيرة. ## Let it cool slightly, stir well and pour into a small tin.","swatch","lab"],
+ shade:[["وردي فاتح ## Light pink","0.5 غ شمندر ## 0.5 g beet"],["وردي دافئ ## Warm rose","1 غ شمندر ## 1 g beet"],["توتي عميق ## Deep berry","1.5 غ شمندر + 0.2 غ كاكاو ## 1.5 g beet + 0.2 g cocoa"]],
+ tip:"أضيفي المسحوق على دفعات: اللون يغمق بعد دقائق من وضعه. ## Add powder in stages: the colour deepens a few minutes after you apply it.",
+ warn:"يصبغ الملابس والمناديل، وقد لا يثبت على الشفاه أكثر من ساعتين أو ثلاث. ## It stains fabric and tissues and may last only two or three hours on the lips."},
+{id:"lipstick",g:"lips",lv:3,min:45,y:"نحو 12 غ (3 أنابيب) ## About 12 g (3 tubes)",risk:1,kind:"dry",keep:"6 أشهر ## 6 months",img:"lipstick",skin:["dry","norm"],
+ n:"أحمر شفاه صلب بالكاكاو والشمندر ## Solid cocoa and beetroot lipstick",
+ d:"عود صلب يُصبّ في قالب، بقوام يثبت أكثر من المرطّب. ## A solid bullet poured into a mould, holding better than a balm.",
+ ing:[[3,"g","bwax"],[2.5,"g","cocoab"],[3,"g","castor"],[1.5,"g","almond"],[1.5,"g","beet"],[0.5,"g","cocoa"]],
+ tools:["scale","boiler","spat","mortar","mold","alc"],
+ steps:["san","@ذوّبي الشمع وزبدة الكاكاو في الحمّام المائي، ثم أضيفي زيت الخروع وزيت اللوز. ## Melt the wax and cocoa butter in the double boiler, then add castor and almond oils.","paste","@أبعدي الوعاء عن النار وحرّكي المعجون الملوّن في الخليط حتى يتجانس. ## Off the heat, stir the colour paste in until even.","@صبّيه بسرعة في القالب وضعيه في الثلاجة 20 دقيقة قبل فكّه. ## Pour quickly into the mould and chill for 20 minutes before unmoulding.","lab"],
+ shade:[["وردي ترابي ## Dusty rose","1.5 غ شمندر + 0.5 غ كاكاو ## 1.5 g beet + 0.5 g cocoa"],["نبيذي ## Wine","2 غ شمندر + 0.5 غ كاكاو ## 2 g beet + 0.5 g cocoa"],["نيود ## Nude","0.8 غ شمندر + 1 غ كاكاو ## 0.8 g beet + 1 g cocoa"]],
+ tip:"إن تشقق العود زيدي نصف غرام من زيت الخروع في الدفعة التالية، وإن لان زيدي نصف غرام من الشمع. ## If the stick cracks add 0.5 g castor oil next time; if it is too soft add 0.5 g wax.",
+ warn:"لا يُنصح للشفاه المتشققة النازفة. ولا تضيفي القرفة ولا النعناع القوي لـ«تضخيم الشفاه». ## Not for cracked, bleeding lips. Do not add cinnamon or strong mint to “plump” lips."},
+{id:"lipgloss",g:"lips",lv:2,min:20,y:"نحو 9 غ ## About 9 g",risk:1,kind:"dry",keep:"6 أشهر ## 6 months",img:"lipgloss",skin:["dry","norm"],
+ n:"ملمّع شفاه بالخروع والجوجوبا ## Castor and jojoba lip gloss",
+ d:"لمعة زجاجية بقوام شبه سائل، يُملأ في أنبوب بفرشاة. ## A glassy, semi-liquid shine in a wand tube.",
+ ing:[[6,"ml","castor"],[2,"ml","jojoba"],[1.5,"g","bwax"],[0.3,"g","beet","opt"],[1,"drop","vite","opt"]],
+ tools:["scale","boiler","spat","pip","tube","alc"],
+ steps:["san","@ذوّبي الشمع في زيت الخروع في الحمّام المائي. ## Melt the wax into the castor oil in the double boiler.","oils","@لوّنيه بالشمندر إن أردتِ، ثم اسكبيه في الأنبوب بالقطّارة. ## Colour with beet if you like, then fill the tube with the dropper.","lab"],
+ tip:"زيت الخروع لزج بطبيعته، وقلّة الشمع تجعله أخف. ## Castor oil is naturally tacky; less wax makes it lighter.",
+ warn:"لا تضيفي العسل أو الماء فينفصل الملمّع ويفسد. ## Do not add honey or water: the gloss separates and spoils."},
+{id:"lipscrub",g:"lips",lv:1,min:5,y:"نحو 18 غ ## About 18 g",risk:2,kind:"wet",keep:"أسبوعان في علبة مغلقة ## 2 weeks in a closed jar",img:"sugar",skin:["norm","dry"],
+ n:"مقشّر شفاه بالسكر والعسل ## Sugar and honey lip scrub",
+ d:"يزيل القشور الجافة قبل وضع المرطّب أو أحمر الشفاه. ## Lifts dry flakes before balm or lipstick.",
+ ing:[[10,"g","sugar"],[5,"ml","almond"],[3,"g","honey"]],
+ tools:["spat","jar","alc"],
+ steps:["san","@اخلطي المكونات في وعاء صغير حتى تتماسك كالرمل المبلل. ## Mix everything in a small bowl until it holds like damp sand.","@دلّكي الشفاه بحركات دائرية خفيفة 30 ثانية، ثم امسحيه بقماش مبلل بماء دافئ. ## Massage onto the lips in light circles for 30 seconds, then wipe off with a warm damp cloth.","@استعمليه مرة أو مرتين أسبوعياً ثم ضعي المرطّب. ## Use once or twice a week and follow with balm."],
+ tip:"استعملي ملعقة نظيفة دائماً، فالأصابع المبللة تُفسد العلبة. ## Always use a clean spoon: wet fingers spoil the jar.",
+ warn:"لا تستعمليه على شفاه متشققة أو ملتهبة أو مصابة بالهربس. ## Not for cracked, inflamed or herpes-affected lips."},
+// ---------- العيون ----------
+{id:"kohl",g:"eyes",lv:2,min:30,y:"نحو 5 غ ## About 5 g",risk:3,kind:"dry",keep:"شهران كحد أقصى ## 2 months at most",img:"kohl",skin:["norm","dry","oily"],
+ n:"كحل بالفحم المنشّط (بلا رصاص) ## Activated-charcoal kohl (lead-free)",
+ d:"بديل آمن للكحل التقليدي مجهول المصدر، يوضع على الجفن لا داخل العين. ## A safer alternative to untraced traditional kohl, for the lid line, not inside the eye.",
+ ing:[[1.5,"g","bwax"],[2,"ml","castor"],[1.5,"g","charcoal"]],
+ tools:["scale","boiler","spat","mask","tube","alc"],
+ steps:["san","mask","@ذوّبي الشمع في زيت الخروع في الحمّام المائي. ## Melt the wax into the castor oil in the double boiler.","@أبعديه عن النار وحرّكي الفحم فيه حتى يختفي أي تكتل. ## Take it off the heat and stir in the charcoal until no lumps remain.","@صبّيه في علبة صغيرة معقّمة واتركيه يتماسك، ويُوضع بعود نظيف في كل مرة. ## Pour into a small sanitised pot and let it set; apply with a clean applicator each time.","lab"],
+ tip:"استعملي أعواداً مخصصة لكل مرة ولا تغمسي الإصبع. ## Use a fresh applicator each time; never dip a finger.",
+ warn:"يوضع على الجفن فقط لا على الحافة الداخلية المبللة. لا تستعمليه مع عدسات لاصقة أو التهاب في العين أو للأطفال، وتوقفي فوراً عند أي احمرار أو دمع. لا تصنعيه من السناج أو اللوز المحروق: المنتجات التقليدية قد تحتوي رصاصاً. ## Lid line only, never the wet inner rim. Not with contact lenses, an eye infection, or for children; stop at once if there is redness or tearing. Do not make it from soot or burnt almonds: traditional products can contain lead.",
+ src:["fdaKohl","fdaEye"]},
+{id:"shadow",g:"eyes",lv:1,min:15,y:"نحو 6 غ ## About 6 g",risk:3,kind:"dry",keep:"6 أشهر ## 6 months",img:"eyeshadow",skin:["norm","oily","dry"],
+ n:"ظلال عيون بودرة مطفية ## Matte powder eyeshadow",
+ d:"درجات ترابية من البني والبيج، تُصنع من ثلاثة مساحيق فقط. ## Earthy browns and beiges from just three powders.",
+ ing:[[3,"g","arrow"],[2,"g","cocoa"],[1,"g","kaolin"]],
+ tools:["scale","sieve","mortar","mask","jar","brush"],
+ steps:["mask","sift","swatch","@اضغطي المسحوق برفق في علبة صغيرة أو احفظيه سائباً. ## Press the powder lightly into a small tin, or keep it loose.","lab"],
+ shade:[["بيج ## Beige","3 غ أراروت + 0.5 غ كاكاو + 1 غ كاولين ## 3 g arrowroot + 0.5 g cocoa + 1 g kaolin"],["بني دافئ ## Warm brown","3 غ أراروت + 2 غ كاكاو ## 3 g arrowroot + 2 g cocoa"],["رمادي بني ## Taupe","3 غ أراروت + 1 غ كاكاو + 0.1 غ فحم ## 3 g arrowroot + 1 g cocoa + 0.1 g charcoal"]],
+ tip:"طبّقيه بفرشاة ناعمة على الجفن المتحرك وتجنبي حافة الأهداب. ## Apply with a soft brush on the lid only, away from the lash line.",
+ warn:"ليست كل الملوّنات الغذائية مجازة رسمياً للاستعمال حول العين، فاقتصري على الكاكاو والفحم بنسب صغيرة، ولا تضعيه على الحافة الداخلية. ## Not every food colourant is approved for use around the eye, so stay with cocoa and a little charcoal and never on the inner rim.",
+ src:["fdaEye","fdaEye"]},
+{id:"creamshadow",g:"eyes",lv:2,min:25,y:"نحو 5 غ ## About 5 g",risk:3,kind:"dry",keep:"3 أشهر ## 3 months",img:"creamshadow",skin:["dry","norm"],
+ n:"ظل كريمي بالشمع والجوجوبا ## Cream eyeshadow with wax and jojoba",
+ d:"ظل كريمي يُوضع بالإصبع النظيف أو بفرشاة قصيرة. ## A cream shadow for a clean fingertip or short brush.",
+ ing:[[1,"g","bwax"],[1,"g","shea"],[1.5,"ml","jojoba"],[1.5,"g","cocoa"]],
+ tools:["scale","boiler","spat","mortar","tube","alc"],
+ steps:["san","melt","oils","paste","pour","lab"],
+ tip:"أضيفي ثلث غرام من الكاولين لقوام مطفي وثبات أطول. ## Add 0.3 g kaolin for a matte, longer-lasting finish.",
+ warn:"يتكتل في الطيات إن زاد الزيت، فاستعملي طبقة رقيقة. للحذر نفسه الخاص بمنتجات العين: لا عدسات ولا التهاب. ## Creases if too oily, so keep the layer thin. Same eye-product cautions: no contact lenses, no infection.",
+ src:["fdaEye","fdaEye"]},
+{id:"mascara",g:"eyes",lv:3,min:30,y:"نحو 5 غ ## About 5 g",risk:3,kind:"dry",keep:"4 أسابيع كحد أقصى ## 4 weeks at most",img:"mascara",skin:["norm"],
+ n:"ماسكارا كريمية بالفحم والشمع ## Cream charcoal mascara",
+ d:"ماسكارا خالية من الماء بقوام شمعي، تُحضَّر بكميات صغيرة جداً. ## A water-free, waxy mascara made in very small batches.",
+ ing:[[1,"g","bwax"],[0.5,"g","shea"],[1.5,"ml","castor"],[1.5,"g","charcoal"]],
+ tools:["scale","boiler","spat","mask","tube","alc"],
+ steps:["san","mask","@ذوّبي الشمع والشيا في زيت الخروع في الحمّام المائي. ## Melt the wax and shea into the castor oil in the double boiler.","@حرّكي الفحم فيه بإحكام حتى يتجانس تماماً. ## Stir in the charcoal until fully even.","@املئي به أنبوب ماسكارا قديماً نظّفتِه جيداً بالكحول، أو علبة صغيرة مع فرشاة أهداب نظيفة. ## Fill a thoroughly sanitised old mascara tube, or a small pot with a clean spoolie.","lab"],
+ tip:"حضّري كمية تكفي شهراً واحداً فقط، وتخلّصي منها عند أول تغيّر في الرائحة أو القوام. ## Make only a month's worth and bin it at the first change of smell or texture.",
+ warn:"ماسكارا المنزل غير معقّمة وغير محفوظة، فهي أكثر منتجات الزينة خطراً على العين. حتى الماسكارا التجارية تُستبدل كل 3 أشهر. لا تشاركيها ولا تضعيها لمن لديه التهاب أو عدسات لاصقة. ## Home mascara is unsterile and unpreserved, so it is the riskiest cosmetic for the eye. Even commercial mascara is replaced every 3 months. Do not share it or use it with an eye infection or contact lenses.",
+ src:["fdaEye","fdaShelf"]},
+// ---------- الحواجب ----------
+{id:"browpow",g:"brows",lv:1,min:10,y:"نحو 4 غ ## About 4 g",risk:2,kind:"dry",keep:"6 أشهر ## 6 months",img:"brow",skin:["all"],
+ n:"بودرة حواجب بالكاكاو ## Cocoa brow powder",
+ d:"مسحوق بسيط بدرجات من البني، يُوضع بفرشاة مائلة. ## A simple powder in brown shades, applied with an angled brush.",
+ ing:[[2,"g","arrow"],[1.5,"g","cocoa"],[0.1,"g","charcoal","opt"]],
+ tools:["scale","sieve","mask","jar","brush"],
+ steps:["mask","sift","swatch","jar"],
+ shade:[["شقراء ## Blonde","2 غ أراروت + 0.7 غ كاكاو ## 2 g arrowroot + 0.7 g cocoa"],["بني ## Brown","2 غ أراروت + 1.5 غ كاكاو ## 2 g arrowroot + 1.5 g cocoa"],["بني داكن ## Dark brown","2 غ أراروت + 1.5 غ كاكاو + 0.1 غ فحم ## 2 g arrowroot + 1.5 g cocoa + 0.1 g charcoal"]],
+ tip:"ارسمي بضربات قصيرة باتجاه نمو الشعر. ## Use short strokes in the direction of hair growth.",
+ warn:"أبعديه عن العين، ولا تنفخي به. ## Keep it away from the eye and do not blow on the brush."},
+{id:"browpom",g:"brows",lv:2,min:20,y:"نحو 5 غ ## About 5 g",risk:2,kind:"dry",keep:"4 أشهر ## 4 months",img:"brow",skin:["all"],
+ n:"بوميد حواجب شمعي ## Waxy brow pomade",
+ d:"قوام كريمي يثبّت الشعر ويعطي لوناً أغمق. ## A creamy pomade that holds hairs and gives deeper colour.",
+ ing:[[1,"g","bwax"],[1,"g","shea"],[1.5,"ml","castor"],[0.7,"g","cocoa"],[0.1,"g","charcoal","opt"]],
+ tools:["scale","boiler","spat","mortar","tube","alc"],
+ steps:["san","melt","oils","paste","pour","lab"],
+ tip:"استعمليها بفرشاة حواجب مائلة نظيفة. ## Apply with a clean angled brow brush.",
+ warn:"يلين في الحر، فاحفظيه في مكان بارد. ## Softens in heat; keep it cool."},
+{id:"browgel",g:"brows",lv:2,min:25,y:"نحو 30 مل ## About 30 ml",risk:2,kind:"wet",keep:"5 أيام في الثلاجة ## 5 days in the fridge",img:"flax",skin:["all"],
+ n:"جل حواجب ببذور الكتان ## Flaxseed brow gel",
+ d:"جل شفاف يثبّت شعر الحاجب ويُصنع طازجاً. ## A clear gel that sets the brow hairs, made fresh.",
+ ing:[[1,"tsp","flax"],[100,"ml","ماء مقطّر ## distilled water"]],
+ tools:["pan","spat","jar","alc"],
+ steps:["san","@اغلي البذور في الماء على نار هادئة 6 إلى 8 دقائق مع التحريك حتى يصير الماء كالعسل الخفيف. ## Simmer the seeds in the water for 6 to 8 minutes, stirring, until it turns thickly syrupy.","@صفّيه بينما هو ساخن في قماش نظيف أو منخل ناعم، واتركيه يبرد. ## Strain while hot through a clean cloth or fine sieve and let it cool.","@انقليه إلى علبة معقّمة صغيرة واحفظيه في الثلاجة، وضعيه بفرشاة حواجب نظيفة. ## Move to a small sanitised jar, store in the fridge and apply with a clean brow brush.","lab"],
+ tip:"قلّلي الكمية إلى ما يكفي 3 أيام لتتجنبي الهدر. ## Make just enough for three days to avoid waste.",
+ warn:"يحتوي ماءً بلا مادة حافظة: تخلّصي منه عند تغيّر الرائحة أو ظهور خيوط. ## Contains water without a preservative: discard at any smell or stringiness."},
+// ---------- الوجه ----------
+{id:"powder",g:"face",lv:1,min:15,y:"نحو 12 غ ## About 12 g",risk:2,kind:"dry",keep:"6 أشهر ## 6 months",img:"powder",skin:["oily","norm","acne"],
+ n:"بودرة أساس سائبة تُضبط على لون البشرة ## Tone-matched loose foundation powder",
+ d:"أساس وتثبيت في خطوة واحدة، ويُعدَّل اللون بحسب جدول الدرجات. ## Foundation and setting in one step, adjusted with the shade table.",
+ ing:[[10,"g","arrow"],[2,"g","kaolin"],[0.9,"g","cocoa"]],
+ tools:["scale","sieve","mask","jar","brush"],
+ steps:["mask","sift","swatch","jar"],
+ shade:[["فاتحة جداً ## Very fair","0.2 غ كاكاو لكل 10 غ أراروت ## 0.2 g cocoa per 10 g arrowroot"],["فاتحة ## Light","0.5 غ كاكاو ## 0.5 g cocoa"],["متوسطة ## Medium","0.9 غ كاكاو ## 0.9 g cocoa"],["حنطية ## Tan","1.4 غ كاكاو ## 1.4 g cocoa"],["داكنة ## Deep","2.5 غ كاكاو + 0.05 غ فحم ## 2.5 g cocoa + 0.05 g charcoal"]],
+ tip:"طابقي اللون عند الفك لا على اليد: ضعيه على خط الفك في ضوء النهار. ## Match on the jawline in daylight, not on the hand.",
+ warn:"لا تستنشقي المسحوق، ولا تستعمليه إن كانت لديك حساسية صدر أو بشرة شديدة الحساسية. ## Do not inhale it, and skip it with asthma or very sensitive skin."},
+{id:"creamfound",g:"face",lv:3,min:40,y:"نحو 18 غ ## About 18 g",risk:2,kind:"dry",keep:"4 أشهر ## 4 months",img:"foundation",skin:["dry","norm"],
+ n:"كريم أساس مرطّب خالٍ من الماء ## Water-free tinted foundation cream",
+ d:"أساس كريمي بتغطية خفيفة إلى متوسطة، يُمزج بالأصابع أو بإسفنجة. ## A cream base with light to medium coverage, blended with fingers or a sponge.",
+ ing:[[6,"g","shea"],[4,"ml","jojoba"],[2,"g","bwax"],[2,"g","zinc"],[2,"g","arrow"],[1,"g","cocoa"]],
+ tools:["scale","boiler","spat","mortar","mask","jar","alc"],
+ steps:["san","mask","melt","oils","@اسحقي الزنك والأراروت والكاكاو مع قطرات من الزيت الدافئ حتى يتجانس ثم أضيفيه، وقلّبي حتى يبرد قليلاً. ## Grind the zinc, arrowroot and cocoa with a few drops of warm oil until smooth, add it, and stir while it cools slightly.","pour","swatch","lab"],
+ shade:[["فاتحة ## Light","0.3 غ كاكاو ## 0.3 g cocoa"],["متوسطة ## Medium","1 غ كاكاو ## 1 g cocoa"],["حنطية إلى داكنة ## Tan to deep","1.8 إلى 3 غ كاكاو ## 1.8 to 3 g cocoa"]],
+ tip:"قلّبيه أثناء التبريد كي لا يترسب اللون في القاع. ## Stir as it cools so the colour does not sink.",
+ warn:"ليس واقياً من الشمس رغم وجود الزنك؛ استعملي واقي شمس معتمداً. قد يسدّ المسام لدى البشرة الدهنية. ## Not a sunscreen despite the zinc; use a certified one. May clog pores on oily skin."},
+{id:"concealer",g:"face",lv:2,min:25,y:"نحو 8 غ ## About 8 g",risk:2,kind:"dry",keep:"4 أشهر ## 4 months",img:"concealer",skin:["dry","norm"],
+ n:"كونسيلر كريمي ## Cream concealer",
+ d:"تغطية للهالات والبقع بقوام أكثف من كريم الأساس. ## Covers dark circles and blemishes with a denser texture than the foundation cream.",
+ ing:[[3,"g","shea"],[1.5,"g","bwax"],[1.5,"ml","jojoba"],[1,"g","arrow"],[1,"g","kaolin"],[0.6,"g","cocoa"]],
+ tools:["scale","boiler","spat","mortar","tube","alc"],
+ steps:["san","melt","oils","paste","pour","swatch","lab"],
+ shade:[["فاتح ## Light","0.2 غ كاكاو ## 0.2 g cocoa"],["متوسط ## Medium","0.6 غ كاكاو ## 0.6 g cocoa"],["حنطي ## Tan","1.1 غ كاكاو ## 1.1 g cocoa"]],
+ tip:"اختاري درجة أفتح من الأساس بقليل لتحت العينين. ## Choose a shade slightly lighter than your base for the under-eyes.",
+ warn:"إن وُضع تحت العين فاتبعي احتياطات منتجات العين: يداً نظيفة وعدم الاقتراب من الحافة. ## Under the eyes, follow eye-product precautions: clean hands and keep off the rim."},
+{id:"setpow",g:"face",lv:1,min:10,y:"نحو 10 غ ## About 10 g",risk:2,kind:"dry",keep:"6 أشهر ## 6 months",img:"setpow",skin:["oily","acne","norm"],
+ n:"بودرة تثبيت شفافة ## Translucent setting powder",
+ d:"تقلل اللمعان وتثبّت المكياج دون لون. ## Cuts shine and sets makeup without colour.",
+ ing:[[8,"g","arrow"],[2,"g","ricef"],[1,"g","kaolin"]],
+ tools:["scale","sieve","mask","jar","brush"],
+ steps:["mask","sift","jar"],
+ tip:"للبشرة الداكنة استعملي أراروت أقل مع بعض الكاكاو لتفادي الأثر الأبيض. ## On deeper skin use less arrowroot and a little cocoa to avoid a white cast.",
+ warn:"لا تستنشقيها، وضعيها بفرشاة خفيفة. ## Do not inhale; use a light brush."},
+{id:"primer",g:"face",lv:1,min:5,y:"نحو 20 غ ## About 20 g",risk:2,kind:"wet",keep:"أسبوع في الثلاجة ## 1 week in the fridge",img:"aloe",skin:["oily","norm","sens"],
+ n:"برايمر بجل الصبّار ## Aloe gel primer",
+ d:"قاعدة مرطبة خفيفة تهيئ البشرة قبل المكياج. ## A light moisturising base that preps skin before makeup.",
+ ing:[[15,"g","aloe"],[2,"ml","glyc"],[3,"drop","jojoba"]],
+ tools:["spat","jar","alc"],
+ steps:["san","@اخلطي المكونات بملعقة نظيفة حتى يتجانس. ## Mix with a clean spoon until even.","@ضعي طبقة رقيقة على البشرة النظيفة وانتظري دقيقتين قبل المكياج. ## Apply a thin layer to clean skin and wait two minutes before makeup."],
+ tip:"حضّري كمية تكفي أسبوعاً فقط. ## Make only a week's worth.",
+ warn:"اختبري الصبّار أولاً، وتوقفي عند أي حكة. ## Patch-test the aloe first and stop at any itch."},
+// ---------- الخدود ----------
+{id:"blush",g:"cheeks",lv:1,min:10,y:"نحو 7 غ ## About 7 g",risk:1,kind:"dry",keep:"6 أشهر ## 6 months",img:"blush",skin:["all"],
+ n:"أحمر خدود بودرة بالشمندر ## Beetroot powder blush",
+ d:"وردي طبيعي يُبنى بالطبقات، ويناسب كل الدرجات بتعديل النسبة. ## A natural pink that builds in layers; suits all tones by adjusting the ratio.",
+ ing:[[5,"g","arrow"],[1,"g","kaolin"],[0.8,"g","beet"],[0.2,"g","cocoa"]],
+ tools:["scale","sieve","mask","jar","brush"],
+ steps:["mask","sift","swatch","jar"],
+ shade:[["وردي هادئ ## Soft pink","0.5 غ شمندر ## 0.5 g beet"],["وردي دافئ ## Warm rose","0.8 غ شمندر + 0.2 غ كاكاو ## 0.8 g beet + 0.2 g cocoa"],["توتي ## Berry","1.2 غ شمندر + 0.3 غ كاكاو ## 1.2 g beet + 0.3 g cocoa"]],
+ tip:"اطرقي الفرشاة قبل الوضع لتخلصي من الزائد. ## Tap the brush before applying to shake off excess.",
+ warn:"قد يصبغ الملابس، ويخفّ لونه على البشرة الدهنية بسرعة. ## May stain clothes and fade quickly on oily skin."},
+{id:"creamblush",g:"cheeks",lv:1,min:15,y:"نحو 9 غ ## About 9 g",risk:1,kind:"dry",keep:"3 أشهر ## 3 months",img:"blushpan",skin:["dry","norm"],
+ n:"أحمر خدود كريمي ## Cream blush",
+ d:"طبقة رطبة تعطي نضارة، وهي نفسها لون الشفاه والخدود بتعديل بسيط. ## A dewy layer that gives a fresh look, almost the same as the lip and cheek tint.",
+ ing:[[7,"g","lipbalm_base"],[0.8,"g","beet"],[0.3,"g","arrow"]],
+ tools:["scale","boiler","spat","mortar","tube","alc"],
+ steps:["san","@أذيبي مرطّب الشفاه برفق. ## Gently melt the lip balm base.","paste","pour","swatch","lab"],
+ tip:"ضعيه بأطراف الأصابع على تفاحتي الخدين. ## Dab onto the apples of the cheeks with fingertips.",
+ warn:"إن لم يكن الأراروت ضرورياً للبشرة الدهنية فاحذفيه ولا تكثري الزيت. ## On oily skin keep the oil low."},
+{id:"bronzer",g:"cheeks",lv:1,min:10,y:"نحو 6 غ ## About 6 g",risk:1,kind:"dry",keep:"6 أشهر ## 6 months",img:"bronzer",skin:["all"],
+ n:"برونزر بالكاكاو ## Cocoa bronzer",
+ d:"لمسة دافئة للنحت والتسمير الخفيف. ## A warm touch for contour and a light tan look.",
+ ing:[[3,"g","arrow"],[2,"g","cocoa"],[0.5,"g","kaolin"]],
+ tools:["scale","sieve","mask","jar","brush"],
+ steps:["mask","sift","swatch","jar"],
+ shade:[["فاتحة ## Light","3 غ أراروت + 1 غ كاكاو ## 3 g arrowroot + 1 g cocoa"],["متوسطة ## Medium","3 غ أراروت + 2 غ كاكاو ## 3 g arrowroot + 2 g cocoa"],["داكنة ## Deep","3 غ أراروت + 3 غ كاكاو ## 3 g arrowroot + 3 g cocoa"]],
+ tip:"انحتي بشكل رقم 3 على جانب الوجه بفرشاة كبيرة. ## Sweep a “3” shape on the side of the face with a large brush.",
+ warn:"رائحة الكاكاو قد تزعج بعض الأشخاص. ## The cocoa smell may bother some people."},
+{id:"glow",g:"cheeks",lv:2,min:15,y:"نحو 5 غ ## About 5 g",risk:2,kind:"dry",keep:"6 أشهر ## 6 months",img:"highlighter",skin:["all"],
+ n:"هايلايتر بالميكا ## Mica highlighter",
+ d:"لمعة ناعمة على أعلى الخدين، ومن دون الميكا يصبح مطفياً. ## A soft glow on the cheekbones; without mica it stays matte.",
+ ing:[[3,"g","arrow"],[1,"g","mica"],[0.2,"g","cocoa"]],
+ tools:["scale","sieve","mask","jar","brush"],
+ steps:["mask","sift","swatch","jar"],
+ tip:"للنسخة الكريمية اخلطي 0.5 غ ميكا مع 5 غ من مرطّب الشفاه المذاب. ## For a cream version mix 0.5 g mica into 5 g melted lip balm.",
+ warn:"اشتري ميكا بدرجة تجميلية وبمصدر أخلاقي معلن، ولا تضعيها قرب العين دون فحص نعومة الجسيمات. ## Buy cosmetic-grade, ethically sourced mica and avoid the eye area unless the particles are very fine."},
+// ---------- العناية ----------
+{id:"remover",g:"care",lv:1,min:3,y:"نحو 25 مل ## About 25 ml",risk:1,kind:"dry",keep:"6 أشهر ## 6 months",img:"jojoba",skin:["dry","norm"],
+ n:"مزيل مكياج زيتي ## Oil makeup remover",
+ d:"زيتان يذيبان المكياج الدهني ومقاوم الماء. ## Two oils that dissolve oily and waterproof makeup.",
+ ing:[[20,"ml","sunfl"],[5,"ml","castor"]],
+ tools:["jar","cotton","cloth"],
+ steps:["@اخلطي الزيتين في عبوة زجاجية داكنة. ## Mix the two oils in a dark glass bottle.","@دلّكي البشرة الجافة بالزيت ثم امسحيه بقطعة قماش مبلّلة بماء دافئ. ## Massage onto dry skin, then wipe with a cloth wrung out in warm water.","@اغسلي وجهك بغسول لطيف. ## Follow with a gentle cleanser."],
+ tip:"للبشرة المعرّضة للحبوب استبدلي زيت دوار الشمس بزيت الجوجوبا. ## For acne-prone skin swap sunflower for jojoba.",
+ warn:"أبعديه عن داخل العين، وتجنبي زيت جوز الهند في البشرة الحبّية. ## Keep it out of the eyes and avoid coconut oil on acne-prone skin."},
+{id:"cleanbalm",g:"care",lv:2,min:25,y:"نحو 18 غ ## About 18 g",risk:1,kind:"dry",keep:"6 أشهر ## 6 months",img:"shea",skin:["dry","norm"],
+ n:"بلسم تنظيف المكياج ## Cleansing balm",
+ d:"يتحول إلى زيت عند التدليك فيذيب المكياج، ويُمسح بقماش دافئ. ## Melts into oil on massage to dissolve makeup; wipe off with a warm cloth.",
+ ing:[[12,"ml","almond"],[4,"g","shea"],[2,"g","bwax"],[1,"drop","vite","opt"]],
+ tools:["scale","boiler","spat","jar","cloth","alc"],
+ steps:["san","melt","oils","pour","lab"],
+ tip:"ضعي كمية بحجم حبة الحمص وأذيبيها بين الراحتين أولاً. ## Use a chickpea-sized amount and melt it between your palms first.",
+ warn:"يتطلب مسحاً دقيقاً بقماش دافئ كي لا يترك طبقة دهنية. ## Wipe off thoroughly with a warm cloth so no film remains."},
+{id:"toner",g:"care",lv:1,min:3,y:"نحو 30 مل ## About 30 ml",risk:2,kind:"wet",keep:"أسبوعان في الثلاجة ## 2 weeks in the fridge",img:"rosew",skin:["all"],
+ n:"منعش بماء الورد ## Rose water toner",
+ d:"يُمسح به الوجه بعد التنظيف ويهيئ البشرة. ## Wiped over the face after cleansing to prep the skin.",
+ ing:[[30,"ml","rosew"],[1,"ml","glyc","opt"]],
+ tools:["spray","cotton","alc"],
+ steps:["san","@اسكبي ماء الورد في زجاجة الرذاذ المعقّمة وأضيفي الجلسرين. ## Pour the rose water into the sanitised spray bottle and add the glycerin.","@رشّيه على قطنة أو الوجه مباشرة بعد التنظيف. ## Spray on cotton or straight onto the face after cleansing."],
+ tip:"اشتري ماء الورد التجاري المحفوظ، فماء الورد المنزلي يفسد خلال أيام. ## Buy preserved commercial rose water; home-made spoils within days.",
+ warn:"توقفي عند أي احمرار أو حكة. ## Stop at any redness or itch."},
+{id:"setspray",g:"care",lv:1,min:5,y:"نحو 35 مل ## About 35 ml",risk:2,kind:"wet",keep:"أسبوع في الثلاجة ## 1 week in the fridge",img:"setspray",skin:["all"],
+ n:"بخاخ تثبيت المكياج ## Setting spray",
+ d:"ضباب خفيف يحبس المكياج ويمنحه مظهراً متجانساً. ## A light mist that melds the makeup and softens powder.",
+ ing:[[30,"ml","rosew"],[5,"g","aloe"],[1,"ml","glyc"]],
+ tools:["spray","alc"],
+ steps:["san","@اخلطي المكونات حتى يذوب الجل تماماً. ## Mix until the gel dissolves fully.","@رشّي من مسافة 20 سم مع إغماض العينين. ## Mist from 20 cm away with eyes closed."],
+ tip:"قلّلي الكمية إلى ما يكفي أسبوعاً. ## Make only a week's worth.",
+ warn:"لا يحتوي مادة حافظة قوية، فلا تحتفظي به في الحقيبة الدافئة. ## No strong preservative: do not keep it in a warm bag."},
+{id:"oatmask",g:"care",lv:1,min:5,y:"جلسة واحدة ## One use",risk:2,kind:"wet",keep:"يُحضّر عند الاستعمال ## Make fresh each time",img:"oats",skin:["sens","dry","norm"],
+ n:"قناع العسل والشوفان المهدّئ ## Soothing honey and oat mask",
+ d:"ترطيب وتهدئة بعد يوم مكياج طويل. ## Hydrates and calms after a long day in makeup.",
+ ing:[[10,"g","honey"],[10,"g","oats"],[10,"ml","ماء أو لبن زبادي ## water or plain yoghurt"]],
+ tools:["spat","cloth"],
+ steps:["@اخلطي المكونات حتى تصير عجينة طرية. ## Mix into a soft paste.","@ضعيها على الوجه 10 إلى 15 دقيقة، ثم اغسليها بماء فاتر. ## Leave on for 10 to 15 minutes, then rinse with lukewarm water.","@استعمليه مرة أو مرتين أسبوعياً. ## Use once or twice a week."],
+ tip:"أبعديه عن محيط العين. ## Keep clear of the eye area.",
+ warn:"لا يناسب من لديه حساسية العسل أو الشوفان أو الجلوتين. ## Not for honey, oat or gluten allergy."},
+{id:"claymask",g:"care",lv:1,min:5,y:"جلسة واحدة ## One use",risk:2,kind:"wet",keep:"يُحضّر عند الاستعمال ## Make fresh each time",img:"kaolin",skin:["oily","acne"],
+ n:"قناع الكاولين للبشرة الدهنية ## Kaolin mask for oily skin",
+ d:"ينظّف المسام ويقلل اللمعان، وأخفّ الطين على الجلد. ## Cleans pores and calms shine, the mildest clay for skin.",
+ ing:[[10,"g","kaolin"],[15,"ml","rosew"]],
+ tools:["spat","cloth"],
+ steps:["@اخلطي الطين وماء الورد في وعاء غير معدني حتى يصير معجوناً. ## Mix clay and rose water in a non-metal bowl to a paste.","@ضعيه على الوجه واتركيه 8 إلى 10 دقائق ولا تتركيه يجف تماماً. ## Apply for 8 to 10 minutes and do not let it dry completely.","@اغسليه بماء فاتر وضعي مرطّباً. ## Rinse with lukewarm water and moisturise."],
+ tip:"مرة أسبوعياً تكفي. ## Once a week is enough.",
+ warn:"لا يناسب البشرة الجافة جداً أو المصابة بالأكزيما. ## Not for very dry or eczema-prone skin."},
+// ---------- اليدان والأظافر ----------
+{id:"henna",g:"hands",lv:2,min:30,y:"نحو 70 غ ## About 70 g",risk:2,kind:"wet",keep:"3 أيام في الثلاجة أو 4 أشهر في المجمّد ## 3 days chilled or 4 months frozen",img:"henna",skin:["norm","dry"],
+ n:"حناء طبيعية خالصة لليدين ## Pure natural henna for hands",
+ d:"نقش وصبغ مؤقت بنتيجة بنية محمرّة، وليس أسود أبداً. ## Temporary staining in reddish brown; never black.",
+ ing:[[25,"g","henna"],[40,"ml","tea"],[1,"tsp","sugar"]],
+ tools:["spat","sieve","wrap","cloth"],
+ steps:["@انخلي الحناء ثم اخلطيها بالشاي الدافئ والسكر حتى تصير كالزبادي الثقيل. ## Sieve the henna, then mix with warm tea and sugar to a thick yoghurt texture.","@غطّيها بغلاف واتركيها 6 إلى 12 ساعة في مكان دافئ حتى تتحرر الصبغة. ## Cover and rest 6 to 12 hours somewhere warm so the dye releases.","@ضعيها على الجلد النظيف واتركيها 4 إلى 6 ساعات، ثم اكشطيها ولا تغسليها بالماء الساخن أول 24 ساعة. ## Apply to clean skin for 4 to 6 hours, scrape it off, and avoid hot water for 24 hours."],
+ tip:"زيت جوز الهند أو الجوجوبا على الجلد بعد الكشط يعمّق اللون. ## A little oil on the stain after scraping deepens it.",
+ warn:"لا تستعملي الحناء السوداء أو المضافة للأصباغ أبداً (قد تحوي PPD المسبب لحساسية شديدة). ممنوع على أطفال نقص G6PD، وجرّبيها على الجلد قبل الاستعمال. ## Never use black or additive henna (can contain PPD, a severe allergen). Not for children with G6PD deficiency; patch-test first.",
+ src:["fdaHenna"]},
+{id:"nailoil",g:"hands",lv:1,min:5,y:"نحو 10 مل ## About 10 ml",risk:1,kind:"dry",keep:"12 شهراً ## 12 months",img:"jojoba",skin:["all"],
+ n:"زيت تغذية الأظافر والجلد المحيط ## Nail and cuticle oil",
+ d:"يلين الجلد حول الظفر ويقلل التقشر. ## Softens cuticles and reduces peeling.",
+ ing:[[8,"ml","jojoba"],[2,"ml","almond"],[5,"drop","vite","opt"]],
+ tools:["pip","tube"],
+ steps:["@اخلطي الزيوت في عبوة قطّارة داكنة. ## Mix the oils in a dark dropper bottle.","@ضعي قطرة على كل ظفر ودلّكيها لمدة نصف دقيقة كل ليلة. ## Rub one drop onto each nail for half a minute every night."],
+ tip:"قبل طلاء الأظافر امسحي الزيت جيداً بالكحول. ## Wipe oil off with alcohol before polish.",
+ warn:"أبدلي بزيت دوار الشمس عند حساسية المكسرات. ## Swap almond for sunflower with nut allergy."}
+];
+
+// صور بتراخيص Creative Commons (Openverse): المصدر والمنسوب إليه والترخيص
+const IMGS = {
+"lipbalm": {
+"f": "lipbalm.webp",
+"by": "saiberiac",
+"lic": "CC BY 2.0",
+"u": "https://www.flickr.com/photos/22806462@N03/32472416024",
+"t": "Adventures in making lip balm"
+},
+"lipstick": {
+"f": "lipstick.webp",
+"by": "rawpixel",
+"lic": "CC0",
+"u": "https://www.rawpixel.com/image/5916923/image-background-public-domain-blue",
+"t": "Red lipstick blue background"
+},
+"lipgloss": {
+"f": "lipgloss.webp",
+"by": "rawpixel",
+"lic": "CC0",
+"u": "https://www.rawpixel.com/image/5919201/image-public-domain-pink-makeup",
+"t": "Free pink homemade lip balm"
+},
+"eyeshadow": {
+"f": "eyeshadow.webp",
+"by": "egonzalesmarquez",
+"lic": "CC BY 2.0",
+"u": "https://www.flickr.com/photos/76823879@N00/6720201323",
+"t": "ELF books re-organized"
+},
+"powder": {
+"f": "powder.webp",
+"by": "Jenn Durfey",
+"lic": "CC BY 2.0",
+"u": "https://www.flickr.com/photos/52498245@N03/5365252223",
+"t": "Blush (Object)"
+},
+"blush": {
+"f": "blush.webp",
+"by": "thedabblist",
+"lic": "CC BY 2.0",
+"u": "https://www.flickr.com/photos/64636759@N07/12605850283",
+"t": "Hibiscus Beetroot Blush"
+},
+"bronzer": {
+"f": "bronzer.webp",
+"by": "Emily Jean Cox",
+"lic": "CC BY 2.0",
+"u": "https://www.flickr.com/photos/93105649@N04/18365235875",
+"t": "bronzer"
+},
+"aloe": {
+"f": "aloe.webp",
+"by": "ccnull.de Bilddatenbank",
+"lic": "CC BY 2.0",
+"u": "https://www.flickr.com/photos/115225894@N07/54348789167",
+"t": "Aloe Vera Blatt mit Gel"
+},
+"honey": {
+"f": "honey.webp",
+"by": "Krzysztof Puszczyński",
+"lic": "CC0",
+"u": "https://stocksnap.io/photo/honey-jars-97LJAKWL36",
+"t": "Honey Jars"
+},
+"flax": {
+"f": "flax.webp",
+"by": "rawpixel",
+"lic": "CC0",
+"u": "https://www.rawpixel.com/image/5967633/flax-seeds",
+"t": "Flax Seeds"
+},
+"beet": {
+"f": "beet.webp",
+"by": "seelensturm",
+"lic": "CC BY 2.0",
+"u": "https://www.flickr.com/photos/61404197@N00/4675057717",
+"t": "Sift together all dry ingredients ..."
+},
+"cocoa": {
+"f": "cocoa.webp",
+"by": "rawpixel",
+"lic": "CC0",
+"u": "https://www.rawpixel.com/image/5974861/freshly-made-cocoa-powder",
+"t": "Freshly made cocoa powder"
+},
+"cocoab": {
+"f": "cocoab.webp",
+"by": "thorsonm",
+"lic": "CC BY-SA 2.0",
+"u": "https://www.flickr.com/photos/197476668@N08/52623525444",
+"t": "cocaobutter - 1"
+},
+"bwax": {
+"f": "bwax.webp",
+"by": "shop8447",
+"lic": "CC0",
+"u": "https://www.flickr.com/photos/185514373@N06/49063470778",
+"t": "Howemon Beeswax Pellets"
+},
+"castor": {
+"f": "castor.webp",
+"by": "New Brunswick Drugstore & Milk Bottles",
+"lic": "Public Domain",
+"u": "https://www.flickr.com/photos/111009307@N03/25740150891",
+"t": "The Modern Pharmacy"
+},
+"sunfl": {
+"f": "sunfl.webp",
+"by": "www.tOrange.biz",
+"lic": "CC BY 2.0",
+"u": "https://www.flickr.com/photos/117611265@N05/15335298046",
+"t": "Sunflower-oil"
+},
+"blushpan": {
+"f": "blushpan.webp",
+"by": "grenade",
+"lic": "CC BY 2.0",
+"u": "https://www.flickr.com/photos/54432200@N00/4843134476",
+"t": "makeup"
+},
+"kohl": {
+"f": "kohl.webp",
+"by": "brooklynmuseum",
+"lic": "CC BY 3.0",
+"u": "https://www.brooklynmuseum.org/opencollection/objects/4051",
+"t": "Kohl Tube Inscribed for Amunhotep III and Queen Tiye"
+},
+"mascara": {
+"f": "mascara.webp",
+"by": "Jenn Durfey",
+"lic": "CC BY 2.0",
+"u": "https://www.flickr.com/photos/52498245@N03/5365866358",
+"t": "Mascara (Object)"
+},
+"henna": {
+"f": "henna.webp",
+"by": "nparekhcards",
+"lic": "CC BY-SA 2.0",
+"u": "https://www.flickr.com/photos/125349110@N05/24613232926",
+"t": "15 best Bridal / Dulhan Mehndi / Henna Designs for legs"
+},
+"rosew": {
+"f": "rosew.webp",
+"by": "kdinuraj",
+"lic": "CC BY 2.0",
+"u": "https://www.flickr.com/photos/8263540@N05/5837024186",
+"t": "Rose water"
+}
+};
+
+ING.lipbalm_base = {n:"مرطّب الشفاه (الوصفة الأولى) ## Lip balm base (recipe one)",note:"",sub:"",alg:"",img:"lipbalm",hide:1};
+const LNK = {
+ fdaKohl:MKL.fdaKohl, fdaShelf:MKL.fdaShelf, fdaHenna:MKL.fdaHenna, fdaSafe:MKL.fdaSafe, patch:MKL.patch, nhsDerm:MKL.nhsDerm,
+ fdaEye:{n:"FDA: سلامة مستحضرات العين والملوّنات غير المجازة",u:"https://www.fda.gov/cosmetics/cosmetic-products/eye-cosmetic-safety"}
+};
+const LNK_EN = {fdaKohl:"FDA: Kohl and lead poisoning",fdaShelf:"FDA: Shelf life of cosmetics",fdaHenna:"FDA: Henna and “black henna”",fdaSafe:"FDA: Using cosmetics safely",patch:"Healthline: How to patch-test your skin",nhsDerm:"NHS: Causes of contact dermatitis",fdaEye:"FDA: Eye cosmetic safety and unapproved colour additives"};
+const lnk = k => LNK[k] ? `<a href="${h(LNK[k].u)}" target="_blank" rel="noopener noreferrer">${h(EN?LNK_EN[k]:LNK[k].n)}</a>` : "";
+const ST_UI = {g:"",skin:"",lv:"",kind:"",q:"",batch:1};
+const LV = {1:["سهل ## Easy"],2:["متوسط ## Medium"],3:["متقدم ## Advanced"]};
+const byId = id => REC.find(r=>r.id===id);
+const gname = g => P(GRP[g]);
+const num = v => { const s=(Math.round(v*100)/100).toString(); return s; };
+const qty = (n,u,f) => { let v=n*f; if(u==="drop") v=Math.max(1,Math.round(v)); return `${num(v)} ${P(UNITS[u].join(" ## "))}`; };
+const ingName = k => ING[k] ? P(ING[k].n) : P(k);
+const ingLine = (it,f) => `<li><b>${h(qty(it[0],it[1],f))}</b> ${h(ingName(it[2]))}${it[3]==="opt"?` <span class="mkc-opt">${T("اختياري","optional")}</span>`:""}</li>`;
+const stepText = s => ST[s] ? P(ST[s]) : P(String(s).replace(/^@/,""));
+const imgOf = k => IMGS[k];
+const S_ = (b,x="") => `<svg viewBox="0 0 120 90" aria-hidden="true" focusable="false" fill="none" stroke="var(--pine)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${b}${x}</svg>`;
+const ILLS = {
+ tube:c=>S_(`<rect x="46" y="14" width="28" height="62" rx="6" fill="var(--surface)"/><rect x="46" y="14" width="28" height="18" rx="6" fill="${c}" stroke="none"/><path d="M52 44h16M52 54h16" stroke="var(--copper)"/>`),
+ bullet:c=>S_(`<rect x="44" y="50" width="32" height="28" rx="5" fill="var(--surface)"/><rect x="48" y="40" width="24" height="10" fill="var(--sunk)"/><path d="M50 40V22c0-6 6-12 10-12s10 6 10 12v18z" fill="${c}"/>`),
+ gloss:c=>S_(`<rect x="50" y="46" width="20" height="34" rx="5" fill="${c}" fill-opacity=".35"/><rect x="54" y="26" width="12" height="20" fill="var(--surface)"/><path d="M60 26V12" stroke-width="5"/><ellipse cx="60" cy="10" rx="6" ry="4" fill="${c}"/>`),
+ jar:c=>S_(`<rect x="30" y="38" width="60" height="38" rx="8" fill="var(--surface)"/><rect x="28" y="26" width="64" height="14" rx="5" fill="${c}"/><path d="M42 54h36M46 64h28" stroke="var(--copper)" stroke-opacity=".7"/>`),
+ pencil:c=>S_(`<path d="M20 70L88 18l12 12-68 52z" fill="var(--surface)"/><path d="M20 70l-4 12 12-4z" fill="${c}"/><path d="M82 24l12 12" /><path d="M96 20l4 4"/>`),
+ palette:c=>S_(`<rect x="12" y="16" width="96" height="58" rx="8" fill="var(--surface)"/><rect x="20" y="24" width="24" height="18" rx="3" fill="${c}"/><rect x="48" y="24" width="24" height="18" rx="3" fill="var(--copper)" fill-opacity=".6"/><rect x="76" y="24" width="24" height="18" rx="3" fill="var(--pine)" fill-opacity=".35"/><rect x="20" y="48" width="24" height="18" rx="3" fill="var(--pine)" fill-opacity=".35"/><rect x="48" y="48" width="24" height="18" rx="3" fill="${c}" fill-opacity=".6"/><rect x="76" y="48" width="24" height="18" rx="3" fill="var(--copper)"/>`),
+ wand:c=>S_(`<rect x="52" y="44" width="16" height="38" rx="5" fill="var(--surface)"/><path d="M60 44V22" stroke-width="3"/><rect x="54" y="6" width="12" height="20" rx="5" fill="${c}"/><path d="M54 10h-5M54 15h-5M54 20h-5M66 10h5M66 15h5M66 20h5"/>`),
+ compact:c=>S_(`<circle cx="60" cy="48" r="34" fill="var(--surface)"/><circle cx="60" cy="48" r="24" fill="${c}" fill-opacity=".55"/><path d="M48 40c6-8 18-8 24 0" stroke="var(--surface)" stroke-width="3"/>`),
+ bottle:c=>S_(`<rect x="46" y="34" width="28" height="46" rx="8" fill="var(--surface)"/><rect x="52" y="22" width="16" height="12" fill="var(--sunk)"/><rect x="50" y="10" width="20" height="12" rx="3" fill="${c}"/><rect x="46" y="50" width="28" height="18" fill="${c}" fill-opacity=".35" stroke="none"/>`),
+ spray:c=>S_(`<rect x="44" y="36" width="32" height="44" rx="8" fill="var(--surface)"/><rect x="44" y="52" width="32" height="28" rx="8" fill="${c}" fill-opacity=".35" stroke="none"/><path d="M52 36V22h16v14M68 22h12"/><path d="M88 18l8-4M88 26h10M88 34l8 4" stroke="var(--copper)"/>`),
+ bowl:c=>S_(`<path d="M16 42h88c0 22-16 38-44 38S16 64 16 42z" fill="var(--surface)"/><ellipse cx="60" cy="42" rx="44" ry="8" fill="${c}"/><path d="M80 14l-10 22" stroke="var(--copper)" stroke-width="4"/>`),
+ cone:c=>S_(`<path d="M30 14l60 28-48 40z" fill="${c}" fill-opacity=".5"/><path d="M30 14l24 44" stroke="var(--copper)"/><path d="M82 52c8 2 14 8 16 16" stroke="var(--copper)"/>`),
+ dropper:c=>S_(`<rect x="44" y="38" width="32" height="42" rx="8" fill="var(--surface)"/><rect x="44" y="56" width="32" height="24" rx="8" fill="${c}" fill-opacity=".4" stroke="none"/><rect x="52" y="26" width="16" height="12" fill="var(--sunk)"/><path d="M60 26V14"/><ellipse cx="60" cy="12" rx="8" ry="6" fill="${c}"/>`),
+ pile:c=>S_(`<path d="M14 72c14-6 24-30 46-48 22 18 32 42 46 48z" fill="${c}" fill-opacity=".6"/><path d="M10 74h100" /><circle cx="30" cy="64" r="2" fill="var(--pine)" stroke="none"/><circle cx="88" cy="62" r="2" fill="var(--pine)" stroke="none"/>`),
+ leaf:c=>S_(`<path d="M60 80C40 60 38 34 60 10c22 24 20 50 0 70z" fill="${c}" fill-opacity=".5"/><path d="M60 80V22"/>`)
+};
+const ILLR = {lipbalm:["jar","#D9A441"],liptint:["jar","#B03060"],lipstick:["bullet","#B5233A"],lipgloss:["gloss","#D45A7A"],lipscrub:["jar","#E8C58A"],kohl:["pencil","#222"],shadow:["palette","#8A5A3C"],creamshadow:["jar","#8A5A3C"],mascara:["wand","#222"],browpow:["compact","#6B4A33"],browpom:["jar","#6B4A33"],browgel:["bottle","#C9B08A"],powder:["compact","#C99A73"],creamfound:["bottle","#C99A73"],concealer:["tube","#D8B08C"],setpow:["compact","#E8DCCB"],primer:["tube","#8CC9A8"],blush:["compact","#D86A7A"],creamblush:["jar","#D86A7A"],bronzer:["compact","#9A6A44"],glow:["compact","#F0D9A8"],remover:["bottle","#E0B84A"],cleanbalm:["jar","#E8C58A"],toner:["spray","#E8A0B0"],setspray:["spray","#A0C8D8"],oatmask:["bowl","#D8C49A"],claymask:["bowl","#D8D2C8"],henna:["cone","#8B4A2B"],nailoil:["dropper","#E0B84A"]};
+const ILLI = k => { const pw={beet:"#B0123F",arrow:"#F1EEE6",cocoa:"#5A3A26",kaolin:"#E8E2D6",charcoal:"#2A2A2A",zinc:"#F4F4F0",mica:"#E8D5A8",ricef:"#F1EEE6",sugar:"#F4EEDD",oats:"#D8C49A",flax:"#8A5A3C",henna:"#7A8A4A",lipbalm_base:"#D9A441"}; if(pw[k]) return ["pile",pw[k]]; if(["shea","cocoab","bwax","honey"].includes(k)) return ["jar",{shea:"#EADFB8",cocoab:"#E0C9A0",bwax:"#E8B84A",honey:"#D8962A"}[k]||"#D9A441"]; if(k==="aloe") return ["leaf","#6BAF7A"]; if(k==="tea") return ["bowl","#8A4A2A"]; return ["bottle",{jojoba:"#E0C060",castor:"#D8B050",almond:"#E8C878",sunfl:"#EAC830",vite:"#E8A850",glyc:"#C8E0E8",rosew:"#F0A0B8"}[k]||"#E0B84A"]; };
+const illOf = it => { if(!it) return ""; const f=ILLS[it[0]]; return f?`<span class="mkc-ill">${f(it[1])}</span>`:""; };
+const imgTag = (k,alt,cls,it) => { const m=imgOf(k); return illOf(it)+(m?`<img src="mk/${h(m.f)}" alt="${h(alt)}" loading="lazy" decoding="async"${cls?` class="${cls}"`:""} onerror="this.remove()">`:""); };
+const credit = k => { const m=imgOf(k); if(!m) return ""; return `<figcaption>${T("الصورة","Photo")}: ${h(m.by||T("مجهول","unknown"))} · <a href="${h(m.u)}" target="_blank" rel="noopener noreferrer">${h(m.lic)}</a></figcaption>`; };
+const hay = r => both(r.n+" "+r.d+" "+GRP[r.g]+" "+r.ing.map(i=>ING[i[2]]?ING[i[2]].n:i[2]).join(" "));
+const filtered = () => REC.filter(r=>(!ST_UI.g||r.g===ST_UI.g)&&(!ST_UI.skin||r.skin.includes("all")||r.skin.includes(ST_UI.skin))&&(!ST_UI.lv||r.lv===+ST_UI.lv)&&(!ST_UI.kind||r.kind===ST_UI.kind)&&(!ST_UI.q||(typeof matchQ==="function"?matchQ(hay(r),ST_UI.q):both(hay(r)).toLowerCase().includes(ST_UI.q.toLowerCase()))));
+const lvDots = n => `<span class="mkc-lv" title="${h(P(LV[n][0]))}" aria-label="${h(P(LV[n][0]))}">${[1,2,3].map(i=>`<i class="${i<=n?"on":""}"></i>`).join("")}</span>`;
+const kindTag = r => r.kind==="dry" ? `<span class="tag mkc-dry">${T("خالٍ من الماء","Water-free")}</span>` : `<span class="tag mkc-wet">${T("يحتوي ماءً","Contains water")}</span>`;
+const mins = m => m>=60?T(`${num(m/60)} ساعة`,`${num(m/60)} h`):T(`${m} دقيقة`,`${m} min`);
+const disclaimer = () => `<div class="disclaimer"><b>${T("للاستعمال الشخصي وللمعلومة التثقيفية.","For personal use and education.")}</b> ${T("«طبيعي» لا يعني «آمن» ولا «معقّم». المنتجات المنزلية لا تُختبر ولا تُحفظ كالمنتجات التجارية، ولذلك اختبري أي وصفة على الجلد أولاً، وكوني أشدّ حذراً مع كل ما يلامس العين. محتوى هذا القسم بانتظار مراجعة صيدلانية وجلدية متخصصة.","“Natural” does not mean “safe” or “sterile”. Home-made products are not tested or preserved like commercial ones, so patch-test every recipe and take extra care with anything near the eyes. This section's content awaits specialist pharmacy and dermatology review.")} ${lnk("fdaSafe")}</div>`;
+
+// ---------- بطاقة ----------
+const card = r => `<a class="mkc-card" href="#mkcat" data-mkc-open="${h(r.id)}" role="button" aria-label="${h(P(r.n))}">
+ <figure class="mkc-fig">${imgTag(r.img,P(r.n),"",ILLR[r.id])}${r.risk===3?`<span class="mkc-badge">${T("منتج عين: حذر خاص","Eye product: extra care")}</span>`:""}</figure>
+ <div class="mkc-body"><span class="tag tp">${h(gname(r.g))}</span><h3>${h(P(r.n))}</h3><p>${h(P(r.d))}</p>
+ <div class="mkc-meta"><span>⏱ ${h(mins(r.min))}</span>${lvDots(r.lv)}${kindTag(r)}</div></div></a>`;
+const drawGrid = () => { const g=q("#mkcGrid"); if(!g) return; const l=filtered(); g.innerHTML = l.length?l.map(card).join(""):`<p class="muted">${T("لا توجد وصفات مطابقة. غيّري الفلاتر أو كلمة البحث.","No matching recipes. Change the filters or search.")}</p>`; const c=q("#mkcCount"); if(c) c.textContent=T(`${l.length} من ${REC.length} وصفة`,`${l.length} of ${REC.length} recipes`); qa("[data-mkc-g]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.mkcG===ST_UI.g)); };
+const opt = (cur,list) => list.map(([v,n])=>`<option value="${h(v)}"${String(cur)===String(v)?" selected":""}>${h(n)}</option>`).join("");
+
+// ---------- الواجهة الرئيسية ----------
+const basics = () => {
+ const rules = [
+  T("اغسلي يديك، واربطي شعرك، وابدئي من سطح نظيف جاف.","Wash your hands, tie your hair back and start on a clean, dry surface."),
+  T("عقّمي كل الأدوات والعبوات بالكحول الطبي 70% واتركيها تجف قبل الاستعمال.","Sanitise all tools and containers with 70% medical alcohol and let them dry before use."),
+  T("زني المكونات بميزان دقيق ولا تعتمدي على الملاعق إلا حيث تُذكر.","Weigh ingredients on a precision scale; use spoons only where a recipe says so."),
+  T("اكتبي على كل عبوة اسم المنتج وتاريخ التحضير وتاريخ التخلص.","Label every container with the product, the date made and the discard date."),
+  T("ابدئي بدفعة صغيرة، فالكمية الكبيرة تفسد قبل أن تنتهي.","Start with a small batch: a big one spoils before you finish it."),
+  T("لا تشاركي المنتج مع أحد، ولا تغمسي أصابعك فيه، واستعملي أعواداً أو ملاعق نظيفة.","Never share a product or dip fingers into it; use clean applicators or spoons."),
+  T("تخلّصي منه عند أي تغيّر في اللون أو الرائحة أو القوام أو ظهور بقع أو خيوط.","Discard it at any change of colour, smell or texture, or if spots or threads appear.")
+ ];
+ const pt = [
+  T("اغسلي باطن الساعد بصابون لطيف وجففيه.","Wash the inside of the forearm with mild soap and dry it."),
+  T("ضعي كمية بحجم حبة العدس من المنتج على مساحة 2 سم.","Apply a lentil-sized amount to a 2 cm patch."),
+  T("اتركيه 24 ساعة دون غسل ثم راقبي الاحمرار والحكة والتورم والحويصلات.","Leave it 24 hours without washing and watch for redness, itch, swelling or blisters."),
+  T("إن لم تظهر أعراض فكرري الوضع على المكان نفسه يومين إلى ثلاثة أيام، ثم جرّبيه على الوجه تدريجياً.","If nothing appears, repeat on the same spot for two to three days, then introduce it to the face gradually."),
+  T("عند أي تفاعل اغسلي المكان بماء فاتر، وتوقفي نهائياً، واستشيري الطبيب إن لم يزل خلال يوم أو اشتد.","At any reaction rinse with lukewarm water, stop for good, and see a doctor if it does not clear in a day or worsens.")
+ ];
+ const avoid = [
+  T("مستحضرات العين: ممنوعة مع العدسات اللاصقة، أو التهاب العين، أو بعد جراحة العين، ولضعيفي المناعة، وللأطفال الصغار.","Eye products: not with contact lenses, an eye infection, recent eye surgery, weak immunity, or for small children."),
+  T("أصحاب حساسية المكسرات أو العسل أو منتجات النحل أو الجلوتين: راجعي المكونات وبدائلها في كل وصفة.","Nut, honey, bee-product or gluten allergy: check each recipe's ingredients and substitutes."),
+  T("حالات الأكزيما والصدفية والوردية وحب الشباب الملتهب: استشيري طبيب الجلدية قبل أي منتج جديد.","Eczema, psoriasis, rosacea or inflamed acne: ask a dermatologist before any new product."),
+  T("نقص إنزيم G6PD: لا حناء إطلاقاً، وخصوصاً للأطفال.","G6PD deficiency: no henna at all, especially for children.")
+ ];
+ const sell = T("هذا الكتالوج لصناعة المنتجات للاستعمال الشخصي. بيع مستحضرات التجميل يحتاج تسجيلاً لدى هيئة الدواء أو الغذاء المختصة في بلدك، وتصنيعاً وفق ممارسات التصنيع الجيدة، واختبارات ثبات وسلامة ومقاومة الميكروبات، ومواد حافظة معتمدة. وصفات هذه الصفحة لا تكفي لذلك.","This catalogue is for making products for personal use. Selling cosmetics requires registration with your national drug or food authority, good manufacturing practice, stability, safety and microbial-challenge testing, and approved preservatives. The recipes here are not enough for that.");
+ const dry = T("خالٍ من الماء","Water-free"), wet = T("يحتوي ماءً","Contains water");
+ return `<section class="mkc-sec"><h2>${T("قبل أن تبدئي","Before you start")}</h2>
+ <div class="mkc-acc">
+ <details open><summary>${T("القواعد الذهبية للتصنيع النظيف","Golden rules of clean making")}</summary><ul>${rules.map(x=>`<li>${h(x)}</li>`).join("")}</ul></details>
+ <details><summary>${T("الماء هو العدو: لماذا تختلف مدة الحفظ؟","Water is the enemy: why shelf life differs")}</summary>
+  <div class="table-wrap"><table class="stack"><thead><tr><th></th><th>${dry}</th><th>${wet}</th></tr></thead><tbody>
+  <tr><td data-l="">${T("أمثلة","Examples")}</td><td data-l="${dry}">${T("مرطّب الشفاه، أحمر الشفاه، البودرة، كريم الأساس","Lip balm, lipstick, powders, foundation cream")}</td><td data-l="${wet}">${T("المنعش بماء الورد، جل الحواجب، الأقنعة، البرايمر","Rose toner, brow gel, masks, primer")}</td></tr>
+  <tr><td data-l="">${T("مدة الحفظ","Shelf life")}</td><td data-l="${dry}">${T("من 3 أشهر إلى سنة","3 months to a year")}</td><td data-l="${wet}">${T("من يوم إلى أسبوعين في الثلاجة","A day to two weeks in the fridge")}</td></tr>
+  <tr><td data-l="">${T("الخطر","Risk")}</td><td data-l="${dry}">${T("تزنخ الزيوت وتلوث الأصابع","Oil rancidity and finger contamination")}</td><td data-l="${wet}">${T("نمو البكتيريا والعفن بسرعة","Fast growth of bacteria and mould")}</td></tr>
+  </tbody></table></div>
+  <p class="small muted">${T("فيتامين E يبطئ تزنخ الزيت فقط، ولا يقتل الجراثيم. لا تضيفي ماءً إلى منتج زيتي، ولا تحفظي منتجاً مائياً بلا ثلاجة.","Vitamin E only slows oil rancidity; it does not kill microbes. Never add water to an oily product and never keep a water-based one unchilled.")} ${lnk("fdaShelf")}</p></details>
+ <details><summary>${T("اختبار الحساسية خطوة بخطوة","Patch test, step by step")}</summary><ol>${pt.map(x=>`<li>${h(x)}</li>`).join("")}</ol><p class="small muted">${lnk("patch")} · ${lnk("nhsDerm")}</p></details>
+ <details><summary>${T("من يتجنب المنتجات المنزلية؟","Who should avoid home-made products?")}</summary><ul>${avoid.map(x=>`<li>${h(x)}</li>`).join("")}</ul></details>
+ <details><summary>${T("ما الذي لا نقدّمه عمداً؟","What we deliberately leave out")}</summary><ul>
+  <li>${T("الكحل المصنوع من السناج أو اللوز المحروق، والكحل التقليدي مجهول المصدر: قد يحتوي الرصاص.","Kohl made from soot or burnt almonds, and untraced traditional kohl: it can contain lead.")} ${lnk("fdaKohl")}</li>
+  <li>${T("الحناء السوداء الجاهزة: قد تحتوي PPD المسبب لحساسية شديدة.","Ready-made black henna: may contain PPD, a severe allergen.")} ${lnk("fdaHenna")}</li>
+  <li>${T("القرفة والقرنفل والنعناع القوي لتضخيم الشفاه، وصودا الخبز، والليمون، والزيوت العطرية غير المخففة.","Cinnamon, clove and strong mint “plumpers”, baking soda, lemon and undiluted essential oils.")}</li>
+  <li>${T("أي وصفة تضع طعاماً أو بيضاً أو حليباً طازجاً داخل العين أو قريباً منها.","Any recipe that puts fresh food, egg or milk in or near the eye.")}</li></ul></details>
+ <details><summary>${T("هل يمكن بيع هذه المنتجات؟","Can these products be sold?")}</summary><p>${h(sell)}</p></details>
+ </div></section>`;
+};
+const ingredientsSec = () => {
+ const keys = Object.keys(ING).filter(k=>!ING[k].hide);
+ return `<section class="mkc-sec" id="mkcIngSec"><h2>${T("المكونات: ماذا تشتري ومن أين","Ingredients: what to buy")} <span class="muted small">(${keys.length})</span></h2>
+ <p class="muted">${T("لكل مكوّن صورته وملاحظة الجودة وبديله وتنبيه الحساسية، والوصفات التي يدخل فيها.","Each ingredient shows its photo, a quality note, a substitute, an allergy flag and the recipes that use it.")}</p>
+ <div class="mkc-ings">${keys.map(k=>{ const x=ING[k], used=REC.filter(r=>r.ing.some(i=>i[2]===k)); return `<details class="mkc-ing"><summary><span class="mkc-ithumb">${imgTag(x.img,P(x.n),"",ILLI(k))}</span><span>${h(P(x.n))}</span></summary>
+ <figure class="mkc-fig sm">${imgTag(x.img,P(x.n),"",ILLI(k))}${credit(x.img)}</figure>
+ <p>${h(P(x.note))}</p>${x.sub&&x.sub!=="—"?`<p><b>${T("البديل","Substitute")}:</b> ${h(P(x.sub))}</p>`:""}${x.alg?`<p class="mkc-alg"><b>${T("تنبيه","Caution")}:</b> ${h(P(x.alg))}</p>`:""}
+ <p class="small muted">${T("تدخل في","Used in")}: ${used.map(r=>`<a href="#mkcat" data-mkc-open="${h(r.id)}">${h(P(r.n))}</a>`).join(" · ")||"—"}</p></details>`; }).join("")}</div></section>`;
+};
+const creditsSec = () => { const ks=Object.keys(IMGS); return `<section class="mkc-sec"><details class="mkc-credits"><summary><b>${T("مصادر الصور وتراخيصها","Image sources and licences")}</b> <span class="muted small">(${ks.length})</span></summary><p class="small muted">${T("كل الصور من ويكيميديا كومنز أو Flickr عبر Openverse بتراخيص Creative Commons تسمح بإعادة الاستخدام مع نسب العمل إلى أصحابه، وهي موثقة هنا. وأي تعديل عليها يقتصر على تغيير الحجم والضغط.","All photos come from Wikimedia Commons or Flickr through Openverse under Creative Commons licences that allow reuse with attribution, documented here. Edits are limited to resizing and compression.")}</p>
+ <ul class="small">${ks.map(k=>{const m=IMGS[k];return `<li><b>${h(k)}</b>: ${h(m.t||"")} · ${h(m.by||"")} · <a href="${h(m.u)}" target="_blank" rel="noopener noreferrer">${h(m.lic)}</a></li>`}).join("")}</ul></details></section>`; };
+
+R.mkcat = () => {
+ const chips = [["",T("الكل","All")], ...Object.keys(GRP).map(k=>[k,gname(k)+" ("+REC.filter(r=>r.g===k).length+")"])];
+ return `<div class="view-head"><h1>${T("كتالوج تصنيع المكياج الطبيعي","Natural makeup making catalogue")}</h1><p>${T(`${REC.length} وصفة لصناعة المكياج والعناية في البيت، لكل منها صورة ومقادير بالجرام وأدوات وخطوات ومدة حفظ وتنبيهات سلامة، مع دليل المكونات. وتُطبع كل وصفة أو تُنزّل.`,`${REC.length} recipes to make makeup and skincare at home, each with a photo, gram quantities, tools, steps, shelf life and safety notes, plus an ingredient guide. Print or download any recipe.`)}</p></div>
+${typeof mkNav==="function"?mkNav("mkcat"):""}
+${disclaimer()}
+<div class="mkc-hero"><div class="mkc-tools"><div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="mkcQ" value="${h(ST_UI.q)}" placeholder="${h(T("ابحثي: أحمر شفاه، كحل، شمندر، حناء…","Search: lipstick, kohl, beetroot, henna…"))}" aria-label="${h(T("بحث في الكتالوج","Search the catalogue"))}"></div>
+ <label class="mkc-sel">${T("نوع البشرة","Skin type")}<select id="mkcSkin">${opt(ST_UI.skin,[["",T("كل الأنواع","All types")],...Object.keys(SKINS).map(k=>[k,P(SKINS[k])])])}</select></label>
+ <label class="mkc-sel">${T("الصعوبة","Difficulty")}<select id="mkcLv">${opt(ST_UI.lv,[["",T("الكل","All")],[1,P(LV[1][0])],[2,P(LV[2][0])],[3,P(LV[3][0])]])}</select></label>
+ <label class="mkc-sel">${T("الحفظ","Storage")}<select id="mkcKind">${opt(ST_UI.kind,[["",T("الكل","All")],["dry",T("خالٍ من الماء (يدوم أطول)","Water-free (lasts longer)")],["wet",T("يحتوي ماءً (قصير)","Contains water (short)")]])}</select></label></div>
+ <nav class="mkc-chips" aria-label="${h(T("تصفية حسب الفئة","Filter by category"))}">${chips.map(([k,n])=>`<button type="button" class="chip" data-mkc-g="${h(k)}" aria-pressed="${k===ST_UI.g}">${h(n)}</button>`).join("")}</nav>
+ <div class="mkc-bar"><span id="mkcCount" class="muted small"></span><span class="mkc-acts"><button type="button" class="btn ghost" data-mkc-printall>${T("طباعة الكتالوج كاملاً","Print the whole catalogue")}</button><button type="button" class="btn ghost" data-mkc-dlall>${T("تنزيل الكتالوج (نص)","Download catalogue (text)")}</button></span></div></div>
+<div class="mkc-grid" id="mkcGrid"></div>
+${basics()}${ingredientsSec()}${creditsSec()}
+<p class="small muted">${T("المراجع العامة","General references")}: ${lnk("fdaSafe")} · ${lnk("fdaEye")} · ${lnk("fdaShelf")}</p>`;
+};
+
+// ---------- الوصفة ----------
+const recHTML = (r,f,forPrint) => {
+ const warnBox = r.risk===3
+  ? `<div class="mkc-warn red"><b>${T("منتج للعين: احتياطات إلزامية","Eye product: mandatory precautions")}</b><p>${h(P(r.warn))}</p></div>`
+  : `<div class="mkc-warn"><b>${T("تنبيه","Caution")}</b><p>${h(P(r.warn))}</p></div>`;
+ const storage = r.kind==="dry" ? T("في علبة محكمة الإغلاق بعيداً عن الحرارة وضوء الشمس، ولا تُدخلي أصابع مبللة.","In an airtight container away from heat and sunlight; never dip wet fingers.") : T("في الثلاجة داخل عبوة معقّمة محكمة الإغلاق، ويُتخلّص منه عند أول تغيّر.","In the fridge in a sanitised, sealed container; discard at the first change.");
+ return `<article class="mkc-det"><figure class="mkc-fig big">${imgTag(r.img,P(r.n),"",ILLR[r.id])}${credit(r.img)}</figure>
+ <h2>${h(P(r.n))}</h2><p class="lead">${h(P(r.d))}</p>
+ <div class="mkc-facts"><span class="tag tp">${h(gname(r.g))}</span><span class="tag">⏱ ${h(mins(r.min))}</span><span class="tag">${h(P(LV[r.lv][0]))}</span>${kindTag(r)}<span class="tag">${T("الناتج","Yield")}: ${h(P(r.y))}</span></div>
+ ${forPrint?"":`<div class="mkc-actions"><button type="button" class="btn" data-mkc-print>${T("طباعة","Print")}</button><button type="button" class="btn ghost" data-mkc-dl>${T("تنزيل","Download")}</button><button type="button" class="btn ghost" data-mkc-link>${T("نسخ الرابط","Copy link")}</button></div>`}
+ ${warnBox}
+ <h3>${T("المقادير","Ingredients")}</h3>
+ ${forPrint?"":`<div class="mkc-batch" role="group" aria-label="${h(T("مضاعفة الكمية","Scale the batch"))}"><span>${T("الدفعة","Batch")}:</span>${[1,2,3,5].map(n=>`<button type="button" class="chip" data-mkc-batch="${n}" aria-pressed="${n===f}">×${n}</button>`).join("")}</div>`}
+ <ul class="mkc-ul" id="mkcIng">${r.ing.map(i=>ingLine(i,f)).join("")}</ul>
+ <h3>${T("الأدوات","Tools")}</h3><ul class="mkc-ul">${r.tools.map(t=>`<li>${h(P(TL[t]||t))}</li>`).join("")}</ul>
+ <h3>${T("الخطوات","Steps")}</h3><ol class="mkc-ol">${r.steps.map(s=>`<li>${h(stepText(s))}</li>`).join("")}</ol>
+ ${r.shade?`<h3>${T("درجات اللون","Shades")}</h3><div class="table-wrap"><table class="stack"><thead><tr><th>${T("الدرجة","Shade")}</th><th>${T("التركيب","Mix")}</th></tr></thead><tbody>${r.shade.map(s=>`<tr><td data-l="${h(T("الدرجة","Shade"))}"><b>${h(P(s[0]))}</b></td><td data-l="${h(T("التركيب","Mix"))}">${h(P(s[1]))}</td></tr>`).join("")}</tbody></table></div>`:""}
+ <h3>${T("الحفظ والصلاحية","Storage and shelf life")}</h3><p><b>${T("مدة الحفظ","Shelf life")}:</b> ${h(P(r.keep))}<br>${h(storage)}</p>
+ <p class="mkc-tip"><b>${T("نصيحة","Tip")}:</b> ${h(P(r.tip))}</p>
+ <p class="small muted"><b>${T("تناسب البشرة","Skin types")}:</b> ${r.skin.includes("all")?h(T("كل الأنواع","All types")):r.skin.map(s=>h(P(SKINS[s]))).join("، ")} · ${T("اختبري على الجلد أولاً: ","Patch-test first: ")}${lnk("patch")}</p>
+ ${r.src?`<p class="small muted">${T("المراجع","References")}: ${r.src.map(lnk).join(" · ")}</p>`:""}</article>`;
+};
+const recText = (r,f) => {
+ const L=[]; L.push(P(r.n)); L.push("="+"=".repeat(Math.min(40,P(r.n).length))); L.push(P(r.d)); L.push("");
+ L.push(T("المقادير","Ingredients")+":"); r.ing.forEach(i=>L.push(`- ${qty(i[0],i[1],f)} ${ingName(i[2])}${i[3]==="opt"?" ("+T("اختياري","optional")+")":""}`));
+ L.push(""); L.push(T("الأدوات","Tools")+":"); r.tools.forEach(t=>L.push("- "+P(TL[t]||t)));
+ L.push(""); L.push(T("الخطوات","Steps")+":"); r.steps.forEach((s,i)=>L.push(`${i+1}. ${stepText(s)}`));
+ if(r.shade){ L.push(""); L.push(T("درجات اللون","Shades")+":"); r.shade.forEach(s=>L.push(`- ${P(s[0])}: ${P(s[1])}`)); }
+ L.push(""); L.push(T("مدة الحفظ","Shelf life")+": "+P(r.keep)); L.push(T("نصيحة","Tip")+": "+P(r.tip)); L.push(T("تنبيه","Caution")+": "+P(r.warn));
+ L.push(""); L.push(T("الطيبات — معلومات تثقيفية للاستعمال الشخصي، ولا تغني عن استشارة مختص. اختبري المنتج على الجلد أولاً.","Al-Tayyibat — educational information for personal use; not a substitute for professional advice. Patch-test first."));
+ return L.join("\n");
+};
+const saveFile = (name,text) => { try{ const b=new Blob(["﻿"+text],{type:"text/plain;charset=utf-8"}); const a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove()},500); }catch(e){} };
+const note = m => { if(typeof toast==="function") toast(m); };
+let cur = null;
+function openRec(id){ const r=byId(id); if(!r||typeof openDrawer!=="function") return; cur={r,f:1}; openDrawer(`<div class="mkc-wrap" data-mkc-id="${h(id)}">${recHTML(r,1,false)}
+</div>`); }
+function printHTML(html){ const old=q("#mkcPrint"); if(old) old.remove(); const d=document.createElement("div"); d.id="mkcPrint"; d.innerHTML=html; document.body.appendChild(d); document.body.classList.add("mkc-printing");
+ const imgs=qa("img",d); const ready=Promise.race([Promise.all(imgs.map(i=>i.complete?1:new Promise(r=>{i.onload=i.onerror=r}))),new Promise(r=>setTimeout(r,2500))]);
+ const done=()=>{ document.body.classList.remove("mkc-printing"); d.remove(); window.removeEventListener("afterprint",done); };
+ window.addEventListener("afterprint",done); ready.then(()=>{ try{ window.print(); }catch(e){} setTimeout(()=>{ if(q("#mkcPrint")) done(); },60000); }); }
+const printHead = () => `<header class="mkc-ph"><b>${T("الطيبات — كتالوج المكياج الطبيعي","Al-Tayyibat — Natural makeup catalogue")}</b><span>${T("للاستعمال الشخصي. اختبري على الجلد أولاً.","Personal use. Patch-test first.")}</span></header>`;
+document.addEventListener("click",e=>{
+ const o=e.target.closest("[data-mkc-open]"); if(o){ e.preventDefault(); openRec(o.dataset.mkcOpen); return; }
+ const g=e.target.closest("[data-mkc-g]"); if(g&&q("#mkcGrid")){ ST_UI.g=g.dataset.mkcG; drawGrid(); return; }
+ const b=e.target.closest("[data-mkc-batch]"); if(b&&cur){ cur.f=+b.dataset.mkcBatch; const ul=q("#mkcIng"); if(ul) ul.innerHTML=cur.r.ing.map(i=>ingLine(i,cur.f)).join(""); qa("[data-mkc-batch]").forEach(x=>x.setAttribute("aria-pressed",+x.dataset.mkcBatch===cur.f)); return; }
+ if(e.target.closest("[data-mkc-print]")&&cur){ printHTML(printHead()+recHTML(cur.r,cur.f,true)); return; }
+ if(e.target.closest("[data-mkc-dl]")&&cur){ saveFile(`altayyibat-${cur.r.id}-${EN?"en":"ar"}.txt`,recText(cur.r,cur.f)); return; }
+ if(e.target.closest("[data-mkc-link]")&&cur){ const u=location.origin+location.pathname+"#mkcat"; try{ sessionStorage.setItem("ty_mkc_go",cur.r.id); }catch{} (navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>note(T("تم نسخ رابط الكتالوج","Catalogue link copied")),()=>note(u)); return; }
+ if(e.target.closest("[data-mkc-printall]")){ printHTML(printHead()+REC.map(r=>`<section class="mkc-pg">${recHTML(r,1,true)}</section>`).join("")); return; }
+ if(e.target.closest("[data-mkc-dlall]")){ saveFile(`altayyibat-natural-makeup-catalogue-${EN?"en":"ar"}.txt`,REC.map(r=>recText(r,1)).join("\n\n"+"-".repeat(40)+"\n\n")); return; }
+});
+AFTER.mkcat = () => {
+ const sec=q('#main section[data-view="mkcat"]'); if(!sec) return;
+ drawGrid();
+ sec.addEventListener("input",e=>{ if(e.target.id==="mkcQ"){ ST_UI.q=e.target.value.trim(); drawGrid(); } });
+ sec.addEventListener("change",e=>{ const t=e.target; if(t.id==="mkcSkin") ST_UI.skin=t.value; else if(t.id==="mkcLv") ST_UI.lv=t.value; else if(t.id==="mkcKind") ST_UI.kind=t.value; else return; drawGrid(); });
+ let go=null; try{ go=sessionStorage.getItem("ty_mkc_go"); sessionStorage.removeItem("ty_mkc_go"); }catch{}
+ if(go&&byId(go)) openRec(go);
+};
+
+// ---------- ربط بصفحة «المكياج الطبيعي» ----------
+if(typeof R.mknatural==="function"){ const _m=R.mknatural; R.mknatural=()=>{ const html=_m(); const first=REC.find(r=>r.id==="lipstick");
+ const ban=`<a class="mkc-banner" href="#mkcat"><span class="mkc-bthumb">${imgTag("lipstick","","",ILLR.lipstick)}</span><span><b>${T("جديد: كتالوج تصنيع المكياج الطبيعي","New: the natural makeup making catalogue")}</b><br><span class="muted">${T(`${REC.length} وصفة بالصور والمقادير والخطوات: أحمر شفاه، كحل، أحمر خدود، أساس، ماسكارا والمزيد.`,`${REC.length} recipes with photos, quantities and steps: lipstick, kohl, blush, foundation, mascara and more.`)}</span></span><span class="btn">${T("تصفّحي الكتالوج","Browse")}</span></a>`;
+ const i=html.indexOf("</nav>"); return i>0?html.slice(0,i+6)+ban+html.slice(i+6):ban+html; }; }
+
+// ---------- التسجيل في التنقل ----------
+if(!VIEWS.some(v=>v[0]==="mkcat")){ const i=VIEWS.findIndex(v=>v[0]==="mknatural"); VIEWS.splice(i>=0?i+1:VIEWS.length,0,["mkcat",T("كتالوج تصنيع المكياج","Makeup making catalogue")]); }
+window.TY_NAV_META = Object.assign(window.TY_NAV_META||{}, {mkcat:{g:"beauty",d:[`${REC.length} وصفة مصورة لصناعة المكياج والعناية في البيت بالمقادير والخطوات، مع دليل المكونات وطباعة وتنزيل`,`${REC.length} illustrated recipes to make makeup and skincare at home, with quantities, steps, an ingredient guide, print and download`]}});
+window.TY_MKC = {REC,ING,IMGS,GRP};
+if(typeof renderRail==="function") renderRail();
+if((location.hash==="#mkcat"||location.hash==="#mknatural") && typeof go==="function") go();
 })();
 </script><script src="pwa-install.js" defer></script>
 
