@@ -8,7 +8,7 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
 <style>
 /* Layout: sticky bar + hash-routed views; desert-night bands frame sand-paper content. */
 :root{
-  --night:#1E1B2E; --night-2:#2A2640; --sand:#F6EFE3; --sand-2:#EDE2CF; --gold:#C8913A; --gold-ink:#9A6A22; --wabar:#7A4A26;
+  --night:#1E1B2E; --night-2:#2A2640; --sand:#F6EFE3; --sand-2:#EDE2CF; --gold:#C8913A; --gold-ink:#855A1A; --wabar:#7A4A26;
   --bg:#FBF7F0; --surface:#FFFFFF; --fg:#231F2E; --muted:#6B6372; --line:#E4D9C6; --chip:#F3EADB;
   --ok:#2F7D4F; --ok-bg:#E3F2E8; --warn:#9A6A10; --warn-bg:#FBF0D9; --bad:#A3362B; --bad-bg:#F8E3E0; --info:#3A4F8A; --info-bg:#E6EAF6;
   --display:"Amiri","Noto Naskh Arabic","Times New Roman",serif;
@@ -374,6 +374,7 @@ body{background:var(--bg) radial-gradient(1200px 500px at 100% -10%,#c8913a14,tr
 .mood small{opacity:.9;font-size:.9rem}
 .mood-ic{width:44px;height:44px;border-radius:14px;background:#ffffff26;display:grid;place-items:center;margin-bottom:auto}.mood-ic svg{width:26px;height:26px}
 .mood-go{font-weight:800;font-size:.85rem;margin-top:6px}
+.mood{background:linear-gradient(150deg,var(--mc),color-mix(in srgb,var(--mc) 45%,#0E0C1D))}
 .m-family{background:linear-gradient(150deg,#E2A04E,#9B4A2C)}
 .m-adventure{background:linear-gradient(150deg,#C47A3A,#5E3B22)}
 .m-stars{background:linear-gradient(150deg,#3A3360,#0E0C1D)}
@@ -465,6 +466,60 @@ body{background:var(--bg) radial-gradient(1200px 500px at 100% -10%,#c8913a14,tr
 footer .brandline{color:#a99c84}
 footer .brandline a{display:inline;color:#E0B26A}
 @media (max-width:760px){footer .wrap{grid-template-columns:1fr}}
+
+/* ============ content management screen ============ */
+.announce{background:var(--gold);color:var(--night);text-align:center;font-weight:700;padding:8px 16px;font-size:.92rem}
+.art-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+.xcard .art .art-ic,.xcard .art .art-badge{z-index:2}
+.card-img{width:calc(100% + 40px);margin:-20px -20px 4px;height:150px;object-fit:cover;border-radius:var(--r) var(--r) 0 0;display:block}
+.cms-saved{background:#ffffff14;border:1px solid #ffffff2a;color:#e8dcc6;border-radius:999px;padding:6px 14px;font-size:.85rem;white-space:nowrap}
+.cms-grid{display:grid;grid-template-columns:260px 1fr;gap:22px;align-items:start}
+.cms-grid>*{min-width:0}
+.cms-nav{position:sticky;top:84px;display:flex;flex-direction:column;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:8px}
+.cms-nav button{display:flex;align-items:center;gap:10px;border:none;background:none;color:var(--fg);font:inherit;font-weight:600;font-size:.93rem;padding:10px 12px;border-radius:12px;cursor:pointer;text-align:start}
+.cms-nav button svg{width:20px;height:20px;color:var(--gold-ink);flex:none}
+.cms-nav button span{flex:1}
+.cms-nav button b{font-size:.78rem;background:var(--chip);border-radius:999px;padding:1px 8px;color:var(--muted)}
+.cms-nav button:hover{background:var(--chip)}
+.cms-nav button[aria-current="true"]{background:var(--night);color:#fff}
+.cms-nav button[aria-current="true"] svg{color:var(--gold)}
+.cms-nav button[aria-current="true"] b{background:var(--gold);color:var(--night)}
+@media (max-width:900px){.cms-grid{grid-template-columns:1fr}.cms-nav{position:static;flex-direction:row;overflow-x:auto;scrollbar-width:thin}.cms-nav button{flex:0 0 auto;white-space:nowrap}}
+.cms-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.cms-head h2{font-size:1.8rem}
+.cms-tools{margin:14px 0}
+.cms-tools input{width:100%;max-width:420px}
+.cms-list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.cms-row{display:grid;grid-template-columns:auto 52px 1fr auto;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 12px;transition:box-shadow .15s,border-color .15s}
+.cms-row.is-hidden{opacity:.62;border-style:dashed}
+.cms-row.drag{opacity:.4}.cms-row.over{border-color:var(--gold);box-shadow:0 0 0 3px #c8913a33}
+.grip{cursor:grab;color:var(--muted);letter-spacing:-3px;font-weight:800;user-select:none}
+.cms-row[draggable=false] .grip{visibility:hidden}
+.cms-th{width:52px;height:52px;border-radius:12px;background:var(--chip);display:grid;place-items:center;overflow:hidden;color:var(--gold-ink)}
+.cms-th svg{width:26px;height:26px}.cms-th img{width:100%;height:100%;object-fit:cover}
+.cms-tx{min-width:0;display:flex;flex-direction:column;gap:2px}
+.cms-tx b{font-size:1.02rem}
+.cms-tx small{color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cms-tx .pill{align-self:flex-start;font-size:.72rem}
+.cms-act{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.ib{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;font-weight:800}
+.ib[disabled]{opacity:.35;cursor:default}
+@media (max-width:760px){.cms-row{grid-template-columns:44px 1fr;gap:10px}.grip{display:none}.cms-th{width:44px;height:44px}.cms-act{grid-column:1/-1;justify-content:flex-start}}
+.cms-fs{border:1px solid var(--line);border-radius:16px;padding:14px 16px 18px;margin:0 0 14px}
+.cms-fs legend{font-weight:800;padding:0 8px;color:var(--gold-ink)}
+#modalBody.wide{width:min(860px,100%);max-height:88vh;overflow:auto}
+.lbl{display:block;font-weight:600;font-size:.92rem;margin-bottom:6px}
+.req{color:var(--bad)}
+.check{display:flex;align-items:center;gap:8px;font-weight:600}
+.check input{width:20px;height:20px}
+.icon-pick{display:flex;flex-wrap:wrap;gap:6px}
+.icon-pick button{width:42px;height:42px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--gold-ink);display:grid;place-items:center;cursor:pointer}
+.icon-pick button svg{width:22px;height:22px}
+.icon-pick button[aria-pressed="true"]{background:var(--night);color:var(--gold);border-color:var(--night)}
+.img-pick{display:grid;gap:10px}
+.img-prev{min-height:90px;border:1px dashed var(--line);border-radius:14px;display:grid;place-items:center;overflow:hidden;background:var(--chip)}
+.img-prev img{width:100%;max-height:220px;object-fit:cover;display:block}
+.img-url{flex:1;min-width:200px}
 </style>
 
 <header class="bar">
@@ -491,14 +546,15 @@ footer .brandline a{display:inline;color:#E0B26A}
   </div>
 </header>
 
+<div class="announce" id="announce" role="status" hidden></div>
 <main id="view" tabindex="-1"></main>
 
 <footer>
   <div class="wrap">
     <div>
       <h4>مطايا الشحانية</h4>
-      <p>نحمل الموروث إلى العالم. وجهة تراثية وعائلية في الشحانية بدولة قطر، مفتوحة يومياً من <span class="num">8:00 ص</span> إلى <span class="num">10:00 م</span>.</p>
-      <p class="mt">الهاتف: <span class="placeholder num">+974 0000 0000</span> (يُعتمد لاحقاً)</p>
+      <p id="ftAbout">نحمل الموروث إلى العالم.</p>
+      <p class="mt">الهاتف: <span class="num" dir="ltr" id="ftPhone">+974 0000 0000</span></p><p id="ftEmailRow" hidden>البريد: <span dir="ltr" id="ftEmail"></span></p><p>العنوان: <span id="ftAddr"></span></p>
     </div>
     <div>
       <h4>زيارتك</h4>
@@ -506,11 +562,11 @@ footer .brandline a{display:inline;color:#E0B26A}
     </div>
     <div>
       <h4>المزيد</h4>
-      <a href="#membership">العضويات</a><a href="#sponsor">ناقتي والرعاية</a><a href="#weddings">الأعراس والمناسبات</a><a href="#shop">متجر مطايا</a><a href="#reviews">آراء الزوار</a><a href="#en" lang="en">English</a><a href="#contact">تواصل معنا</a><a href="#admin">لوحة الإدارة</a>
+      <a href="#membership">العضويات</a><a href="#sponsor">ناقتي والرعاية</a><a href="#weddings">الأعراس والمناسبات</a><a href="#shop">متجر مطايا</a><a href="#reviews">آراء الزوار</a><a href="#en" lang="en">English</a><a href="#contact">تواصل معنا</a><a href="#admin">لوحة الإدارة</a><a href="#cms">إدارة المحتوى</a>
     </div>
     <div class="legal">
       <span>© <span class="num">2026</span> مطايا الشحانية. جميع الحقوق محفوظة.</span>
-      <span class="brandline">نسخة تشغيلية قبل الافتتاح · تصميم وتطوير <a href="https://munjiz-qa.github.io/">منجز</a></span>
+      <span class="brandline"><span id="ftLegal">نسخة تشغيلية قبل الافتتاح</span> · تصميم وتطوير <a href="https://munjiz-qa.github.io/">منجز</a></span>
     </div>
   </div>
 </footer>
@@ -575,6 +631,8 @@ const Remote={
  message:p=>rpc("mty_message",{p}),
  reviews:()=>rpc("mty_reviews"),
  addReview:p=>rpc("mty_review_add",{p}),
+ content:()=>rpc("mty_content"),
+ saveContent:doc=>rpc("mty_content_save",{p_token:tok.a,p_doc:doc}),
  adminLogin:(u,pw)=>rpc("mty_admin_login",{p_user:u,p_pass:pw}),
  admin:(action,p)=>rpc("mty_admin",{p_token:tok.a,p_action:action,p:p||{}})
 };
@@ -592,11 +650,13 @@ const Local={
  _sess(u){const t=uid("TOK")+uid("X");const s=Store.read("sessions",{});s[t]=u.id;Store.write("sessions",s);return {token:t,user:{id:u.id,name:u.name,phone:u.phone,email:u.email}}},
  async logout(){const s=Store.read("sessions",{});delete s[tok.u];Store.write("sessions",s)},
  async me(){const u=sessUser();if(!u)return null;return {user:{id:u.id,name:u.name,phone:u.phone,email:u.email},membership:localMembership(u.id),bookings:Store.list("bookings").filter(b=>b.userId===u.id),orders:Store.list("orders").filter(o=>o.userId===u.id)}},
- async member(tier,pay){const u=sessUser();if(!u)fail("login_required");const t=TIERS.find(x=>x.id===tier);const until=new Date();until.setFullYear(until.getFullYear()+1);return Store.add("memberships",{id:uid("MBR"),userId:u.id,name:u.name,phone:u.phone,tierId:t.id,tierName:t.name,price:t.price,since:isoDate(new Date()),until:isoDate(until),status:pay==="card"?"confirmed":"pending",pay,createdAt:Date.now()})},
- async order(p){const ph=normPhone(p.phone);if(!ph)fail("bad_phone");const lines=p.lines.map(l=>{const pr=PRODUCTS.find(x=>x.id===l.id);return {id:l.id,name:pr.name,price:pr.price,qty:l.qty}});const sub=lines.reduce((a,l)=>a+l.price*l.qty,0);if(!sub)fail("empty_cart");return Store.add("orders",{id:uid("ORD"),userId:sessUser()?.id||null,name:p.name,phone:ph,address:p.address,pay:p.pay,lines,total:sub+(sub<200?20:0),status:"pending",createdAt:Date.now()})},
+ async member(tier,pay){const u=sessUser();if(!u)fail("login_required");const t=TIERS.find(x=>x.id===tier);if(!t)fail("tier_not_found");const until=new Date();until.setFullYear(until.getFullYear()+1);return Store.add("memberships",{id:uid("MBR"),userId:u.id,name:u.name,phone:u.phone,tierId:t.id,tierName:t.name,price:t.price,since:isoDate(new Date()),until:isoDate(until),status:pay==="card"?"confirmed":"pending",pay,createdAt:Date.now()})},
+ async order(p){const ph=normPhone(p.phone);if(!ph)fail("bad_phone");const lines=p.lines.map(l=>{const pr=PRODUCTS.find(x=>x.id===l.id);return pr?{id:l.id,name:pr.name,price:pr.price,qty:l.qty}:null}).filter(Boolean);const sub=lines.reduce((a,l)=>a+l.price*l.qty,0);if(!sub)fail("empty_cart");return Store.add("orders",{id:uid("ORD"),userId:sessUser()?.id||null,name:p.name,phone:ph,address:p.address,pay:p.pay,lines,total:sub+(sub<200?20:0),status:"pending",createdAt:Date.now()})},
  async message(p){const ph=normPhone(p.phone);if(!ph)fail("bad_phone");return Store.add("messages",{id:uid(p.type==="event"?"EVT":"MSG"),type:p.type,name:p.name,phone:ph,email:p.email||"",subject:p.subject,body:p.body,status:"new",createdAt:Date.now()})},
  async reviews(){return Store.list("reviews").filter(r=>r.status==="approved")},
  async addReview(p){const r=Math.round(Number(p.rating));if(!(r>=1&&r<=5))fail("bad_count");if((p.name||"").trim().length<2)fail("bad_name");return Store.add("reviews",{id:uid("REV"),rating:r,about:String(p.about).slice(0,80),name:p.name.trim().slice(0,40),text:String(p.text).trim().slice(0,600),status:"pending",createdAt:Date.now()})},
+ async content(){const d=Store.read("content",null);return d?{doc:d,updatedAt:Store.read("contentAt",0)}:{}},
+ async saveContent(doc){if(tok.a!=="local-admin")fail("admin_required");const txt=JSON.stringify(doc);try{localStorage.setItem(Store.key("content"),txt)}catch(e){if(/quota/i.test(String(e&&e.name)+String(e&&e.message)))fail("QuotaExceeded");}mem.content=doc;const at=Date.now();Store.write("contentAt",at);const o={};doc.catalog.forEach(x=>o[x.id]={price:Number(x.price)||0,cap:Number(x.cap)||1});Store.write("catalogOverrides",o);return {ok:true,updatedAt:at}},
  async adminLogin(u,pw){const a=Store.read("admin");if(u.trim()!==a.user||await sha("matayaa|"+pw)!==a.hash)fail("bad_login");return {token:"local-admin"}},
  async admin(action,p){if(tok.a!=="local-admin")fail("admin_required");p=p||{};
   if(action==="data")return {bookings:Store.list("bookings"),messages:Store.list("messages"),orders:Store.list("orders"),memberships:Store.list("memberships"),reviews:Store.list("reviews"),today:isoDate(new Date())};
@@ -725,7 +785,7 @@ function updateCartCount(){document.getElementById("cartCount").textContent=S.ca
 function currentUser(){return S.me?.user||null}
 function isAdmin(){return !!tok.a}
 function activeMembership(u){if(!u||!S.me?.membership)return null;const m=S.me.membership;return m.status!=="cancelled"&&m.until>=isoDate(new Date())?m:null}
-async function loadPublic(){try{const p=await API.init();S.over=p.items;S.blocked=p.blocked||[]}catch(e){S.over=S.over||{}}}
+async function loadPublic(){try{const p=await API.init();S.over=p.items;S.blocked=p.blocked||[]}catch(e){S.over=S.over||{}}try{CONTENT.catalog.forEach(x=>{const o=S.over[x.id];if(o){x.price=Number(o.price);x.cap=Number(o.cap)}})}catch(e){}}
 async function loadMe(){try{S.me=await API.me()}catch(e){S.me=null}if(!S.me&&tok.u&&LIVE)keepUserToken(null)}
 function busy(btn,on){if(!btn)return;btn.disabled=on;if(on){btn.dataset.l=btn.textContent;btn.textContent="جارٍ التنفيذ…"}else if(btn.dataset.l)btn.textContent=btn.dataset.l}
 
@@ -767,7 +827,7 @@ window.addEventListener("hashchange",()=>render());
 
 /* ============ ui helpers ============ */
 function toast(m){const t=document.getElementById("toast");document.getElementById("toastMsg").textContent=m;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,3200)}
-function modal(html){const m=document.getElementById("modal");document.getElementById("modalBody").innerHTML=html;m.hidden=false}
+function modal(html){const m=document.getElementById("modal");const b=document.getElementById("modalBody");b.className="panel";b.innerHTML=html;m.hidden=false}
 function closeModal(){document.getElementById("modal").hidden=true}
 document.getElementById("modal").addEventListener("click",e=>{if(e.target.id==="modal"||e.target.dataset.close!==undefined)closeModal()});
 function pageHead(title,lead,crumb){return `<div class="page-head"><div class="wrap"><div class="crumbs"><a href="#home">الرئيسية</a> / ${esc(crumb||title)}</div><h1>${title}</h1>${lead?`<p>${lead}</p>`:""}</div></div>`}
@@ -808,7 +868,7 @@ route("zoo",()=>pageHead("حديقة الحيوان الصغيرة","حديقة 
 
 route("dining",()=>pageHead("شارع المطاعم التراثية","شارع مظلل للمذاق القطري والخليجي، تختلف فيه كل واجهة عن الأخرى، وتتوحد في معايير الجودة ودليل الهوية. الحجز مجاني ويُدفع الحساب في المطعم.")+`<section class="block"><div class="wrap"><div class="grid">${catalog().filter(x=>x.cat==="dine").map(itemCard).join("")}</div><div class="card mt"><div class="ic">${ic("market")}</div><h3>ساحة الطعام الشعبية</h3><p>أكشاك للأسر المنتجة وعربات وجبات خفيفة بأسعار مناسبة للأطفال والعائلات. لا تحتاج إلى حجز.</p></div></div></section>`);
 
-route("markets",()=>pageHead("سوق المطايا والأسواق العامة","سوق مسقوف بطراز عمراني قطري قديم من الطين وخشب الدنجل والمشربيات، بهوية خاصة بالشحانية، تتفرع منه أسواق عامة مفتوحة طوال العام.")+`<section class="block"><div class="wrap"><div class="grid">${MARKETS.map(m=>`<div class="card"><div class="ic">${ic("market")}</div><h3>${m[0]}</h3><p>${m[1]}</p></div>`).join("")}</div><div class="row mt2"><button class="btn btn-gold" data-book="ev-nightmarket" type="button">احجز دخول السوق الليلي</button><a class="btn btn-ghost" href="#contact">طلب محل أو بسطة في السوق</a></div></div></section>`);
+route("markets",()=>pageHead("سوق المطايا والأسواق العامة","سوق مسقوف بطراز عمراني قطري قديم من الطين وخشب الدنجل والمشربيات، بهوية خاصة بالشحانية، تتفرع منه أسواق عامة مفتوحة طوال العام.")+`<section class="block"><div class="wrap"><div class="grid">${MARKETS.map(m=>`<div class="card">${m[2]?`<img class="card-img" src="${esc(m[2])}" alt="" loading="lazy">`:""}<div class="ic">${ic("market")}</div><h3>${m[0]}</h3><p>${m[1]}</p></div>`).join("")}</div><div class="row mt2"><button class="btn btn-gold" data-book="ev-nightmarket" type="button">احجز دخول السوق الليلي</button><a class="btn btn-ghost" href="#contact">طلب محل أو بسطة في السوق</a></div></div></section>`);
 
 route("meera",()=>pageHead("ميرة مطايا","«الميرة» في لهجة أهل البادية هي المؤونة التي يُتزوَّد بها، ومن هنا جاء اسم السوبرماركت. يخدم أهالي الشحانية والعزب المحيطة، ويمنح زائر نهاية الأسبوع سبباً إضافياً للمجيء.")+`<section class="block"><div class="wrap"><div class="grid">${[["cart","مساحة بيع 6,000 م²","بمدخل ومواقف مستقلين يعملان حتى بعد إغلاق الوجهة السياحية."],["milk","ركن منتجات مطايا","حليب الإبل ومشتقاته، التمور، العسل، والصابون، ومنتجات المزارع القطرية."],["leaf","قسم الأعلاف والتخييم","أعلاف الحيوانات ومستلزمات العزب والكشتات والتخييم."]].map(x=>`<div class="card"><div class="ic">${ic(x[0])}</div><h3>${x[1]}</h3><p>${x[2]}</p></div>`).join("")}</div>
  <div class="panel mt2"><div class="row"><div><h3>ساعات العمل المقترحة</h3><p class="muted">يومياً من <span class="num">7:00</span> صباحاً إلى <span class="num">11:00</span> مساءً. افتتاح ميرة مطايا ضمن المرحلة الثالثة.</p></div><a class="btn btn-gold right" href="#shop">تسوّق منتجات مطايا أونلاين</a></div></div></div></section>`);
@@ -831,7 +891,7 @@ route("academy",()=>pageHead("أكاديمية مطايا للتدريب وال�
 route("membership",async()=>{if(tok.u)await loadMe();const u=currentUser();const m=activeMembership(u);return pageHead("العضويات وبرنامج الولاء","عضوية سنوية بمزايا للزوار الدائمين، وتُجمع نقاط «جواز مطايا» مع كل زيارة وشراء.")+`<section class="block"><div class="wrap">${m?`<div class="notice ok">عضويتك «${esc(m.tierName)}» سارية حتى ${fmtDate(m.until)}. <a href="#account">عرض بطاقة العضوية</a></div>`:""}<div class="grid mt">${TIERS.map(t=>`<div class="card tier ${t.feat?"feat":""}">${t.feat?`<span class="pill st-confirmed" style="align-self:flex-start">الأنسب للعائلات</span>`:""}<h3>${t.name}</h3><p>${t.people}</p><ul>${t.perks.map(p=>`<li>${p}</li>`).join("")}</ul><div class="foot"><span class="price"><span class="num">${money(t.price)}</span> <small>سنوياً</small></span><button class="btn btn-gold btn-sm" type="button" data-tier="${t.id}">اشترك</button></div></div>`).join("")}</div><p class="hint mt">تُختم كل محطة في التطبيق ضمن «جواز مطايا»، ويُكافأ من يكمل الرحلة كاملة. الأسعار تقديرية قبل الافتتاح.</p></div></section>`});
 after.membership=()=>{document.querySelectorAll("[data-tier]").forEach(b=>b.addEventListener("click",()=>{const u=currentUser();if(!u){Store.session.set("next","membership");toast("سجّل الدخول أو أنشئ حساباً لإتمام الاشتراك.");return go("account")}const t=TIERS.find(x=>x.id===b.dataset.tier);modal(`<h3>تأكيد الاشتراك في «${t.name}»</h3><div class="sum-row mt"><span>المدة</span><span>سنة من اليوم</span></div><div class="sum-row"><span>المبلغ</span><span class="num sum-total">${money(t.price)}</span></div><div class="field mt"><label for="mPay">طريقة الدفع</label><select id="mPay"><option value="card">بطاقة (دفع تجريبي)</option><option value="onsite">عند الزيارة الأولى</option></select></div><div class="row mt"><button class="btn btn-gold" id="mOk">تأكيد الاشتراك</button><button class="btn btn-ghost" data-close>إلغاء</button></div>`);document.getElementById("mOk").onclick=async e=>{const pay=document.getElementById("mPay").value;busy(e.currentTarget,true);try{const rec=await API.member(t.id,pay);await loadMe();closeModal();toast("تم الاشتراك. رقم العضوية "+rec.id);go("account")}catch(x){busy(e.currentTarget,false);toast(errMsg(x))}}}))};
 
-route("shop",()=>pageHead("متجر مطايا","منتجات «مطايا» داخل قطر وخارجها: حليب الإبل ومشتقاته، الصابون، السدو والجلود، التذكارات، وبطاقات الهدايا.")+`<section class="block"><div class="wrap"><div class="grid">${PRODUCTS.map(p=>`<div class="card"><div class="ic">${ic(p.cat==="ألبان"?"milk":p.cat==="حرف"?"market":p.cat==="هدايا"?"card":"leaf")}</div><span class="tag" style="align-self:flex-start">${p.cat}</span><h3>${p.name}</h3><p>${p.desc}</p><div class="foot"><span class="price num">${money(p.price)}</span><button class="btn btn-gold btn-sm" type="button" data-add="${p.id}">أضف إلى السلة</button></div></div>`).join("")}</div></div></section>`);
+route("shop",()=>pageHead("متجر مطايا","منتجات «مطايا» داخل قطر وخارجها: حليب الإبل ومشتقاته، الصابون، السدو والجلود، التذكارات، وبطاقات الهدايا.")+`<section class="block"><div class="wrap"><div class="grid">${PRODUCTS.map(p=>`<div class="card">${p.img?`<img class="card-img" src="${esc(p.img)}" alt="" loading="lazy">`:""}<div class="ic">${ic(p.cat==="ألبان"?"milk":p.cat==="حرف"?"market":p.cat==="هدايا"?"card":"leaf")}</div><span class="tag" style="align-self:flex-start">${p.cat}</span><h3>${p.name}</h3><p>${p.desc}</p><div class="foot"><span class="price num">${money(p.price)}</span><button class="btn btn-gold btn-sm" type="button" data-add="${p.id}">أضف إلى السلة</button></div></div>`).join("")}</div></div></section>`);
 after.shop=()=>document.querySelectorAll("[data-add]").forEach(b=>b.addEventListener("click",()=>{const c=[...S.cart];const f=c.find(x=>x.id===b.dataset.add);if(f)f.qty++;else c.push({id:b.dataset.add,qty:1});setCart(c);toast("أُضيف إلى السلة.")}));
 
 route("cart",()=>{const lines=S.cart.map(l=>({...l,p:PRODUCTS.find(p=>p.id===l.id)})).filter(l=>l.p);const sub=lines.reduce((a,l)=>a+l.p.price*l.qty,0);const ship=sub>0&&sub<200?20:0;
@@ -952,7 +1012,7 @@ after.sponsor=()=>{document.querySelectorAll("[data-adopt]").forEach(b=>b.onclic
 
 /* ---- weddings ---- */
 const WEDDINGS=[["ring","عرس البادية","بيت شَعر فاخر، ضيافة كاملة بالقهوة والتمر والعشاء، فرقة شعبية، تصوير تراثي، وتنسيق كامل لليلة.","من 150 إلى 1,500 ضيف"],["star","الملكة والخطوبة","جلسة عائلية في الفريج أو المخيم مع الضيافة والتصوير وتنسيق الزهور بالهوية التراثية.","من 30 إلى 300 ضيف"],["museum","فعاليات الشركات","قاعة متعددة الأغراض لنحو 800 ضيف، ومؤتمرات صغيرة، واحتفالات نهاية العام، واستقبال الوفود الرسمية.","حتى 800 ضيف داخلياً"],["camel","«تحدي القافلة»","برنامج بناء فرق: سباقات تتابع مع الهجن، ألغاز الصحراء، وإعداد القهوة على الحطب، ثم عشاء في المخيم.","من 20 إلى 200 مشارك"],["sun","المناسبات الخاصة","أعياد الميلاد والتخرج بأجواء البادية، مع تجارب الحيوانات للأطفال.","من 20 إلى 300 ضيف"]];
-route("weddings",()=>pageHead("الأعراس والمناسبات","ساحة متكاملة للأعراس والملكات وفعاليات الشركات: بيوت شَعر فاخرة، قاعة متعددة الأغراض لنحو 800 ضيف، وساحة مفتوحة لنحو 3,000 ضيف.","الأعراس والمناسبات")+`<section class="block"><div class="wrap"><div class="grid">${WEDDINGS.map(w=>`<div class="card"><div class="ic">${ic(w[0])}</div><h3>${w[1]}</h3><p>${w[2]}</p><div class="foot"><span class="tag">${w[3]}</span><a class="btn btn-gold btn-sm" href="#events" data-wed="${w[1]}">اطلب عرض سعر</a></div></div>`).join("")}</div><p class="hint mt">الأسعار حسب عدد الضيوف والخدمات، ويصلك عرض السعر خلال يومي عمل.</p></div></section>`);
+route("weddings",()=>pageHead("الأعراس والمناسبات","ساحة متكاملة للأعراس والملكات وفعاليات الشركات: بيوت شَعر فاخرة، قاعة متعددة الأغراض لنحو 800 ضيف، وساحة مفتوحة لنحو 3,000 ضيف.","الأعراس والمناسبات")+`<section class="block"><div class="wrap"><div class="grid">${WEDDINGS.map(w=>`<div class="card">${w[4]?`<img class="card-img" src="${esc(w[4])}" alt="" loading="lazy">`:""}<div class="ic">${ic(w[0])}</div><h3>${w[1]}</h3><p>${w[2]}</p><div class="foot"><span class="tag">${w[3]}</span><a class="btn btn-gold btn-sm" href="#events" data-wed="${w[1]}">اطلب عرض سعر</a></div></div>`).join("")}</div><p class="hint mt">الأسعار حسب عدد الضيوف والخدمات، ويصلك عرض السعر خلال يومي عمل.</p></div></section>`);
 after.weddings=()=>document.querySelectorAll("[data-wed]").forEach(a=>a.onclick=()=>{Store.session.set("wedType",a.dataset.wed)});
 
 /* ---- reviews ---- */
@@ -976,7 +1036,7 @@ function openSearch(){modal(`<div class="row"><h3>ابحث في مطايا</h3><
  const i=document.getElementById("sq");i.focus();i.oninput=()=>{const r=doSearch(i.value);document.getElementById("sres").innerHTML=r.length?r.map((x,n)=>`<button type="button" class="sres-row" data-r="${n}"><span class="tag">${esc(x.k)}</span><span>${esc(x.t)}</span></button>`).join(""):(i.value.trim().length<2?'<p class="hint">اكتب حرفين على الأقل.</p>':'<p class="hint">لا توجد نتائج. جرّب كلمة أخرى.</p>');document.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{const x=r[Number(b.dataset.r)];closeModal();if(x.book)startBooking(x.book);else if(x.zone){mapSel=x.zone;go("map")}else go(x.href.slice(1))})}}
 
 /* ---- English guide ---- */
-route("en",()=>{const pick=["pkg-family","pkg-intl","pkg-night","camel-ride","horse-ride","horse-carriage","camel-milking","falcon-show","zoo-entry","ev-stars","ev-majlis","ev-cup"].map(item);
+route("en",()=>{const pick=["pkg-family","pkg-intl","pkg-night","camel-ride","horse-ride","horse-carriage","camel-milking","falcon-show","zoo-entry","ev-stars","ev-majlis","ev-cup"].map(item).filter(Boolean);
  return `<div lang="en" dir="ltr" class="en"><div class="page-head"><div class="wrap"><div class="crumbs"><a href="#home">العربية</a> / English</div><h1>Matayaa Al Shahaniya</h1><p>Carrying our heritage to the world. A heritage and family destination in Al Shahaniya, Qatar, built around camels, horses and Bedouin life. Opening phase one in November 2028.</p></div></div>
  <section class="block"><div class="wrap"><div class="grid">${[["camel","Animal experiences","Camel and horse rides, pony rides, donkey carts, camel milking and falcon shows, supervised by certified trainers."],["museum","“Do they not look?” museum","An Islamic and science museum about the camel, with an audio tour in six languages on site."],["paw","Small zoo","Qatari wildlife, a petting farm, an aviary and a feeding yard for children."],["food","Heritage restaurants","Five Qatari and Gulf restaurants on a shaded street, plus a family food court."],["tent","Desert nights","Stay in a Bedouin tent, watch the sunset from a camel and explore the night sky."],["track","Matayaa Cup","An annual camel racing and beauty championship every February."]].map(x=>`<div class="card"><div class="ic">${ic(x[0])}</div><h3>${x[1]}</h3><p>${x[2]}</p></div>`).join("")}</div>
  <div class="sec-head mt2"><div><h2>Book your visit</h2><p>Prices are indicative and in Qatari riyals (QAR) per person. Children aged 3 to 12 pay half price. The booking form is in Arabic; enter your name and an 8-digit Qatari mobile number.</p></div></div>
@@ -992,7 +1052,7 @@ function minutesOf(t){const [h,m]=t.split(":").map(Number);return h*60+m}
 function hhmm(m){return pad(Math.floor(m/60))+":"+pad(m%60)}
 function phaseOf(d){const f=new URLSearchParams(location.search).get("sky");if(f&&PHASE[f])return f;const h=d.getHours()+d.getMinutes()/60;if(h<5)return "night";if(h<7)return "dawn";if(h<11)return "morning";if(h<15)return "noon";if(h<17)return "asr";if(h<18.75)return "sunset";return "night"}
 const PHASE={dawn:["الفجر","صباح الخير"],morning:["الضحى","صباح الخير"],noon:["الظهيرة","نهارك سعيد"],asr:["العصر","مساء الخير"],sunset:["الغروب","مساء الخير"],night:["الليل","مساء الخير"]};
-function openState(d){const m=d.getHours()*60+d.getMinutes();if(m>=OPEN_H[0]*60&&m<OPEN_H[1]*60)return {open:true,txt:`مفتوح الآن حتى <span class="num">${fmtTime(hhmm(OPEN_H[1]*60))}</span>`};return {open:false,txt:`مغلق الآن · يفتح <span class="num">${fmtTime(hhmm(OPEN_H[0]*60))}</span>`}}
+function openState(d){const m=d.getHours()*60+d.getMinutes();const a=Math.round(OPEN_H[0]*60),b=Math.round(OPEN_H[1]*60);if(m>=a&&m<b)return {open:true,txt:`مفتوح الآن حتى <span class="num">${fmtTime(hhmm(b))}</span>`};return {open:false,txt:`مغلق الآن · يفتح <span class="num">${fmtTime(hhmm(a))}</span>`}}
 function relMin(m){if(m<1)return "الآن";if(m<60)return `بعد <span class="num">${m}</span> دقيقة`;const h=Math.floor(m/60),r=m%60;return `بعد <span class="num">${h}</span> ${h===1?"ساعة":h===2?"ساعتين":"ساعات"}${r?` و<span class="num">${r}</span> دقيقة`:""}`}
 
 /* original illustration: a caravan crossing the dunes under a sky that follows the hour */
@@ -1131,7 +1191,7 @@ after.discover=()=>{const draw=()=>{const c=Store.session.get("dcat")||"all";con
 /* new card with original scene art */
 const ART={exp:["#F2C27B","#C8742F"],zoo:["#BFD8B0","#5E8A55"],pkg:["#F3D9A4","#B98A3A"],event:["#3A3360","#16132A"],academy:["#C9C3E6","#4B4380"],dine:["#F1B48A","#9B4A2C"]};
 function artFor(it){const a=ART[it.cat]||ART.pkg;const dark=it.cat==="event";return `<svg viewBox="0 0 320 120" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="g-${it.id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a[0]}"/><stop offset="1" stop-color="${a[1]}"/></linearGradient></defs><rect width="320" height="120" fill="url(#g-${it.id})"/>${dark?[30,80,140,200,260,300,60,230].map((x,i)=>`<circle cx="${x}" cy="${12+(i*23)%60}" r="1.4" fill="#F6EFE3" opacity=".8"/>`).join(""):`<circle cx="${60+(it.id.length*17)%200}" cy="34" r="16" fill="#FFF4DD" opacity=".75"/>`}<path d="M0 92 C60 74 110 80 170 92 S270 78 320 88 V120 H0Z" fill="#000" opacity=".14"/><path d="M0 104 C70 92 140 98 200 106 S290 98 320 102 V120 H0Z" fill="#000" opacity=".18"/></svg><span class="art-ic">${ic(it.icon)}</span>`}
-function itemCard(it){return `<article class="card xcard c-${it.cat}"><div class="art">${artFor(it)}<span class="art-badge">${CAT_LABEL[it.cat]}</span></div><div class="cbody"><h3>${esc(it.name)}</h3><p>${esc(it.desc)}</p><div class="meta">${it.dur?`<span class="tag">${esc(it.dur)}</span>`:""}${it.age?`<span class="tag">${esc(it.age)}</span>`:""}</div><div class="foot">${priceLabel(it)}<button class="btn btn-gold btn-sm" type="button" data-book="${it.id}">${it.cat==="dine"?"احجز طاولة":it.cat==="academy"?"سجّل الآن":"احجز الآن"}</button></div></div></article>`}
+function itemCard(it){return `<article class="card xcard c-${it.cat}"><div class="art">${it.img?`<img class="art-img" src="${esc(it.img)}" alt="" loading="lazy">`:""}${artFor(it)}<span class="art-badge">${CAT_LABEL[it.cat]}</span></div><div class="cbody"><h3>${esc(it.name)}</h3><p>${esc(it.desc)}</p><div class="meta">${it.dur?`<span class="tag">${esc(it.dur)}</span>`:""}${it.age?`<span class="tag">${esc(it.age)}</span>`:""}</div><div class="foot">${priceLabel(it)}<button class="btn btn-gold btn-sm" type="button" data-book="${it.id}">${it.cat==="dine"?"احجز طاولة":it.cat==="academy"?"سجّل الآن":"احجز الآن"}</button></div></div></article>`}
 
 /* "now at Matayaa": the next sessions today */
 function nextSessions(){const now=new Date();const nm=now.getHours()*60+now.getMinutes();let date=isoDate(now);let list=[];
@@ -1140,23 +1200,187 @@ function nextSessions(){const now=new Date();const nm=now.getHours()*60+now.getM
  const seen=new Set();return list.filter(x=>{if(seen.has(x.it.id))return false;seen.add(x.it.id);return true}).slice(0,8).map(x=>({...x,nm}))}
 
 route("home",()=>{const now=new Date();const ph=phaseOf(now);const os=openState(now);const ns=nextSessions();
- const moods=[["family","احتفال العائلة","حيوانات، ركوب، وغداء في الفريج",["camel","animals","food"],"family","morning","paw"],["adventure","مغامرة البر","الجمال والخيل والصقور حتى الغروب",["camel","horse","animals"],"friends","afternoon","camel"],["stars","ليلة النجوم","عشاء على الجمر ثم مرصد سهيل",["stars","food","culture"],"couple","evening","star"],["heritage","أصالة وحكاية","المتحف، السوق، ومجلس القصيد",["culture","shop","food"],"guests","evening","book"]];
- return `<section class="hero sky ph-${ph}"><div class="sky-bg"></div>${skyScene(ph)}<div class="wrap hero-in"><div class="live"><span class="dot ${os.open?"on":""}"></span>${os.txt} · <span>${PHASE[ph][0]} في الشحانية</span></div><span class="greet">${PHASE[ph][1]}</span><h1>يومك في البادية<br><em>يبدأ من هنا</em></h1><p class="lead">اختر مَن معك وما تحبون، ونرتّب لكم يوماً كاملاً بين الإبل والخيل والمائدة القطرية، بمواعيد حقيقية وتذكرة واحدة على جوالك.</p><div class="cta"><a class="btn btn-gold btn-lg" href="#plan">صمّم يومك في <span class="num">30</span> ثانية</a><a class="btn btn-glass" href="#discover">تصفّح كل التجارب</a></div></div></section>
- <section class="block now-block"><div class="wrap"><div class="sec-head"><div><span class="eyebrow">الآن في مطايا</span><h2>المواعيد القادمة</h2></div><a class="btn btn-ghost btn-sm" href="#discover">الكل</a></div>
-  <div class="hscroll">${ns.map(x=>`<button type="button" class="now-card" data-book="${x.it.id}"><span class="now-ic">${ic(x.it.icon)}</span><span class="now-t num">${fmtTime(hhmm(x.t))}</span><b>${esc(x.it.name)}</b><small>${x.tm?"غداً":relMin(x.t-x.nm)}</small></button>`).join("")}</div></div></section>
- <section class="block"><div class="wrap"><div class="sec-head"><div><span class="eyebrow">مزاج اليوم</span><h2>ابدأ بفكرة جاهزة</h2></div></div>
-  <div class="moods">${moods.map(m=>`<button type="button" class="mood m-${m[0]}" data-mood="${m[0]}"><span class="mood-ic">${ic(m[6])}</span><b>${m[1]}</b><small>${m[2]}</small><span class="mood-go">رتّب اليوم ←</span></button>`).join("")}</div></div></section>
- <section class="block band-sand"><div class="wrap"><div class="sec-head"><div><span class="eyebrow">لا تجدها إلا هنا</span><h2>تجارب تُروى بعد الزيارة</h2></div><a class="btn btn-ghost btn-sm" href="#discover">كل التجارب</a></div><div class="grid">${["camel-milking","horse-carriage","falcon-show","ev-stars"].map(item).filter(Boolean).map(itemCard).join("")}</div></div></section>
- <section class="block"><div class="wrap split-2"><div><span class="eyebrow">13 منطقة · 500,000 م²</span><h2>«درب القوافل» يصل كل شيء</h2><p class="mt muted">من البوابة إلى السوق والمطاعم، ثم الحيوانات والمتحف، وصولاً إلى المخيم والمضمار والمراعي. اضغط أي منطقة لتعرف ما فيها.</p><div class="row mt2"><a class="btn btn-gold" href="#map">افتح الخريطة</a><a class="btn btn-ghost" href="#tour">الجولة الصوتية</a></div></div><a class="map-teaser" href="#map" aria-label="افتح الخريطة التفاعلية">${mapSVG(0,true)}</a></div></section>
- <section class="block band-night"><div class="wrap split-2"><div><span class="eyebrow" style="color:#E0B26A">عضوية القافلة</span><h2>زوروا كأنكم من أهل المكان</h2><p class="mt">دخول مجاني للحديقة والمتحف، خصم <span class="num">10%</span> على التجارب والمطاعم، وأولوية في الفعاليات، للأسرة حتى <span class="num">6</span> أفراد.</p><div class="row mt2"><a class="btn btn-gold" href="#membership">العضويات</a><a class="btn btn-glass" href="#sponsor">تبنَّ ناقة</a></div></div><div class="stats"><div><b class="num">13</b><small>منطقة</small></div><div><b class="num">33</b><small>تجربة وبرنامجاً</small></div><div><b class="num">5</b><small>مطاعم تراثية</small></div><div><b class="num">8</b><small>محطات صوتية</small></div></div></div></section>`});
-after.home=()=>{document.querySelectorAll("[data-mood]").forEach(b=>b.onclick=()=>{const m={family:[["camel","animals","food"],"family","morning"],adventure:[["camel","horse","animals"],"friends","afternoon"],stars:[["stars","food","culture"],"couple","evening"],heritage:[["culture","shop","food"],"guests","evening"]}[b.dataset.mood];const w=WHO.find(x=>x[0]===m[1]);const h=new Date().getHours();S.plan={...defaultPlan(),likes:m[0],who:m[1],adults:w[2],children:w[3],when:m[2]};if(m[2]==="morning"&&h>=11||m[2]==="afternoon"&&h>=17)S.plan.date=isoDate(new Date(Date.now()+864e5));savePlan();go("plan")})};
+ const feat=(Array.isArray(TXT.featIds)?TXT.featIds:String(TXT.featIds||"").split(/[,،\s]+/)).filter(Boolean).map(item).filter(Boolean);const cnt=c=>catalog().filter(x=>!c||x.cat===c).length;
+ return `<section class="hero sky ph-${ph}"><div class="sky-bg"></div>${skyScene(ph)}<div class="wrap hero-in"><div class="live"><span class="dot ${os.open?"on":""}"></span>${os.txt} · <span>${PHASE[ph][0]} في الشحانية</span></div><span class="greet">${PHASE[ph][1]}</span><h1>${esc(TXT.heroTitle1)}<br><em>${esc(TXT.heroTitle2)}</em></h1><p class="lead">${esc(TXT.heroLead)}</p><div class="cta"><a class="btn btn-gold btn-lg" href="#plan">${esc(TXT.heroCta)}</a><a class="btn btn-glass" href="#discover">${esc(TXT.heroCta2)}</a></div></div></section>
+ ${ns.length?`<section class="block now-block"><div class="wrap"><div class="sec-head"><div><span class="eyebrow">الآن في مطايا</span><h2>${esc(TXT.nowTitle)}</h2></div><a class="btn btn-ghost btn-sm" href="#discover">الكل</a></div>
+  <div class="hscroll">${ns.map(x=>`<button type="button" class="now-card" data-book="${x.it.id}"><span class="now-ic">${ic(x.it.icon)}</span><span class="now-t num">${fmtTime(hhmm(x.t))}</span><b>${esc(x.it.name)}</b><small>${x.tm?"غداً":relMin(x.t-x.nm)}</small></button>`).join("")}</div></div></section>`:""}
+ ${MOODS.length?`<section class="block"><div class="wrap"><div class="sec-head"><div><span class="eyebrow">مزاج اليوم</span><h2>${esc(TXT.moodsTitle)}</h2></div></div>
+  <div class="moods">${MOODS.map(m=>`<button type="button" class="mood" style="--mc:${esc(m.color||"#C8913A")}" data-mood="${esc(m.id)}"><span class="mood-ic">${ic(m.icon||"star")}</span><b>${esc(m.name)}</b><small>${esc(m.sub||"")}</small><span class="mood-go">رتّب اليوم ←</span></button>`).join("")}</div></div></section>`:""}
+ ${feat.length?`<section class="block band-sand"><div class="wrap"><div class="sec-head"><div><span class="eyebrow">${esc(TXT.featEyebrow)}</span><h2>${esc(TXT.featTitle)}</h2></div><a class="btn btn-ghost btn-sm" href="#discover">كل التجارب</a></div><div class="grid">${feat.map(itemCard).join("")}</div></div></section>`:""}
+ <section class="block"><div class="wrap split-2"><div><span class="eyebrow">${esc(TXT.mapEyebrow)}</span><h2>${esc(TXT.mapTitle)}</h2><p class="mt muted">${esc(TXT.mapText)}</p><div class="row mt2"><a class="btn btn-gold" href="#map">افتح الخريطة</a><a class="btn btn-ghost" href="#tour">الجولة الصوتية</a></div></div><a class="map-teaser" href="#map" aria-label="افتح الخريطة التفاعلية">${mapSVG(0,true)}</a></div></section>
+ <section class="block band-night"><div class="wrap split-2"><div><span class="eyebrow" style="color:#E0B26A">${esc(TXT.memberEyebrow)}</span><h2>${esc(TXT.memberTitle)}</h2><p class="mt">${esc(TXT.memberText)}</p><div class="row mt2"><a class="btn btn-gold" href="#membership">العضويات</a><a class="btn btn-glass" href="#sponsor">تبنَّ ناقة</a></div></div><div class="stats"><div><b class="num">${ZONES.length}</b><small>منطقة</small></div><div><b class="num">${cnt()}</b><small>تجربة وبرنامجاً</small></div><div><b class="num">${cnt("dine")}</b><small>مطاعم تراثية</small></div><div><b class="num">${STATIONS.length}</b><small>محطات صوتية</small></div></div></div></section>`});
+after.home=()=>{document.querySelectorAll("[data-mood]").forEach(b=>b.onclick=()=>{const m=MOODS.find(x=>x.id===b.dataset.mood);if(!m)return;const w=WHO.find(x=>x[0]===m.who)||WHO[0];const h=new Date().getHours();S.plan={...defaultPlan(),likes:[...(m.likes||[])],who:w[0],adults:w[2],children:w[3],when:m.when||"morning"};if(S.plan.when==="morning"&&h>=11||S.plan.when==="afternoon"&&h>=17)S.plan.date=isoDate(new Date(Date.now()+864e5));savePlan();go("plan")})};
 
 /* "more" sheet */
-const MORE=[["#map","الخريطة التفاعلية","gate"],["#tour","المتحف والجولة الصوتية","museum"],["#membership","العضويات","card"],["#sponsor","ناقتي والرعاية","camel"],["#weddings","الأعراس والمناسبات","ring"],["#events","الفعاليات","star"],["#markets","الأسواق","market"],["#meera","ميرة مطايا","cart"],["#shop","متجر مطايا","cart"],["#academy","الأكاديمية","cap"],["#reviews","آراء الزوار","book"],["#zones","المخطط العام","track"],["#en","English","leaf"],["#account","حسابي","paw"],["#contact","تواصل معنا","milk"],["#admin","لوحة الإدارة","vet"]];
+const MORE=[["#map","الخريطة التفاعلية","gate"],["#tour","المتحف والجولة الصوتية","museum"],["#membership","العضويات","card"],["#sponsor","ناقتي والرعاية","camel"],["#weddings","الأعراس والمناسبات","ring"],["#events","الفعاليات","star"],["#markets","الأسواق","market"],["#meera","ميرة مطايا","cart"],["#shop","متجر مطايا","cart"],["#academy","الأكاديمية","cap"],["#reviews","آراء الزوار","book"],["#zones","المخطط العام","track"],["#en","English","leaf"],["#account","حسابي","paw"],["#contact","تواصل معنا","milk"],["#admin","لوحة الإدارة","vet"],["#cms","إدارة المحتوى","book"]];
 function openMore(){const s=document.getElementById("sheet");s.innerHTML=`<div class="sheet-panel" role="dialog" aria-modal="true" aria-label="كل الأقسام"><div class="row"><h3>كل الأقسام</h3><button class="btn btn-ghost btn-sm right" type="button" data-sclose>إغلاق</button></div><div class="tiles mt">${MORE.map(m=>`<a href="${m[0]}" class="tile" ${m[0]==="#en"?'lang="en"':""}>${ic(m[2])}<span>${m[1]}</span></a>`).join("")}</div></div>`;s.hidden=false;s.querySelector("a").focus()}
 function closeMore(){document.getElementById("sheet").hidden=true}
 document.getElementById("sheet").addEventListener("click",e=>{if(e.target.id==="sheet"||e.target.closest("[data-sclose]")||e.target.closest(".tile"))closeMore()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeMore();closeModal()}});
+
+/* ============ content management: one editable document drives every public list and text ============ */
+const TXT_DEFAULT={
+ heroTitle1:"يومك في البادية",heroTitle2:"يبدأ من هنا",
+ heroLead:"اختر مَن معك وما تحبون، ونرتّب لكم يوماً كاملاً بين الإبل والخيل والمائدة القطرية، بمواعيد حقيقية وتذكرة واحدة على جوالك.",
+ heroCta:"صمّم يومك في 30 ثانية",heroCta2:"تصفّح كل التجارب",
+ nowTitle:"المواعيد القادمة",moodsTitle:"ابدأ بفكرة جاهزة",featEyebrow:"لا تجدها إلا هنا",featTitle:"تجارب تُروى بعد الزيارة",featIds:"camel-milking, horse-carriage, falcon-show, ev-stars",
+ mapEyebrow:"13 منطقة · 500,000 م²",mapTitle:"«درب القوافل» يصل كل شيء",mapText:"من البوابة إلى السوق والمطاعم، ثم الحيوانات والمتحف، وصولاً إلى المخيم والمضمار والمراعي. اضغط أي منطقة لتعرف ما فيها.",
+ memberEyebrow:"عضوية القافلة",memberTitle:"زوروا كأنكم من أهل المكان",memberText:"دخول مجاني للحديقة والمتحف، خصم 10% على التجارب والمطاعم، وأولوية في الفعاليات، للأسرة حتى 6 أفراد.",
+ openFrom:"08:00",openTo:"22:00",
+ about:"نحمل الموروث إلى العالم. وجهة تراثية وعائلية في الشحانية بدولة قطر.",
+ phone:"+974 0000 0000",email:"",address:"الشحانية، دولة قطر",
+ announce:"",legal:"نسخة تشغيلية قبل الافتتاح"
+};
+const TXT={...TXT_DEFAULT};
+const MOODS=[
+ {id:"family",name:"احتفال العائلة",sub:"حيوانات، ركوب، وغداء في الفريج",likes:["camel","animals","food"],who:"family",when:"morning",icon:"paw",color:"#E2A04E"},
+ {id:"adventure",name:"مغامرة البر",sub:"الجمال والخيل والصقور حتى الغروب",likes:["camel","horse","animals"],who:"friends",when:"afternoon",icon:"camel",color:"#C47A3A"},
+ {id:"stars",name:"ليلة النجوم",sub:"عشاء على الجمر ثم مرصد سهيل",likes:["stars","food","culture"],who:"couple",when:"evening",icon:"star",color:"#3A3360"},
+ {id:"heritage",name:"أصالة وحكاية",sub:"المتحف، السوق، ومجلس القصيد",likes:["culture","shop","food"],who:"guests",when:"evening",icon:"book",color:"#5E8A55"}
+];
+const clone=o=>JSON.parse(JSON.stringify(o));
+const CATS=[["exp","تجربة مع الحيوانات"],["zoo","حديقة الحيوان"],["pkg","باقة زيارة"],["event","فعالية"],["dine","مطعم"],["academy","برنامج أكاديمي"]];
+const ICONS=Object.keys(I);
+const WD=[[0,"الأحد"],[1,"الاثنين"],[2,"الثلاثاء"],[3,"الأربعاء"],[4,"الخميس"],[5,"الجمعة"],[6,"السبت"]];
+
+/* collections as editable objects (the site keeps its original array shapes) */
+function snapshot(){return {
+ catalog:DEFAULT_CATALOG.map(x=>({...clone(x),en:(EN[x.id]||[])[0]||"",enDesc:(EN[x.id]||[])[1]||"",tags:x.tags||TAGS[x.id]||[]})),
+ products:clone(PRODUCTS),tiers:clone(TIERS),adopt:clone(ADOPT),
+ sponsors:SPONSORS.map((s,i)=>({id:"sp-"+i,name:s[0],price:s[1],perks:s[2]})),
+ weddings:WEDDINGS.map((w,i)=>({id:"wd-"+i,icon:w[0],name:w[1],desc:w[2],guests:w[3]})),
+ markets:MARKETS.map((m,i)=>({id:"mk-"+i,name:m[0],desc:m[1]})),
+ stations:STATIONS.map((s,i)=>({id:"st-"+i,...clone(s)})),
+ zones:ZONES.map(z=>({id:"z-"+z[0],n:z[0],name:z[1],area:z[2],short:ZSHORT[z[0]],desc:ZONE_INFO[z[0]].d})),
+ moods:clone(MOODS),texts:{...TXT_DEFAULT}}}
+const ORIGINAL=snapshot();
+let CONTENT=clone(ORIGINAL);let contentMeta={updatedAt:0,source:"default"};
+const put=(arr,list)=>{arr.splice(0,arr.length,...list)};
+function applyContent(){const C=CONTENT,vis=l=>l.filter(x=>!x.hidden);
+ put(DEFAULT_CATALOG,vis(C.catalog).map(x=>{const o={...x};if(x.en)EN[x.id]=[x.en,x.enDesc||""];delete o.en;delete o.enDesc;if(!o.weekday||!o.weekday.length)delete o.weekday;if(!o.dates||!o.dates.length)delete o.dates;return o}));
+ C.catalog.forEach(x=>{if(x.tags&&x.tags.length)TAGS[x.id]=x.tags;else delete TAGS[x.id]});
+ put(PRODUCTS,vis(C.products));put(TIERS,vis(C.tiers));put(ADOPT,vis(C.adopt));
+ put(SPONSORS,vis(C.sponsors).map(s=>[s.name,Number(s.price)||0,s.perks]));
+ put(WEDDINGS,vis(C.weddings).map(w=>[w.icon||"ring",w.name,w.desc,w.guests,w.img]));
+ put(MARKETS,vis(C.markets).map(m=>[m.name,m.desc,m.img]));
+ put(STATIONS,vis(C.stations));
+ C.zones.forEach(z=>{const r=ZONES[z.n-1];if(r){r[1]=z.name;r[2]=Number(z.area)||r[2]}ZSHORT[z.n]=z.short||ZSHORT[z.n];if(ZONE_INFO[z.n])ZONE_INFO[z.n].d=z.desc});
+ put(MOODS,vis(C.moods));
+ Object.assign(TXT,TXT_DEFAULT,C.texts||{});
+ const h=s=>{const m=/^(\d{1,2}):(\d{2})$/.exec(String(s||""));return m?Number(m[1])+Number(m[2])/60:null};OPEN_H[0]=h(TXT.openFrom)??8;OPEN_H[1]=h(TXT.openTo)??22;
+ paintShell()}
+function paintShell(){const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};
+ set("ftAbout",TXT.about+" مفتوح يومياً من "+fmtTime(TXT.openFrom)+" إلى "+fmtTime(TXT.openTo)+".");set("ftPhone",TXT.phone);set("ftLegal",TXT.legal);
+ const em=document.getElementById("ftEmailRow");if(em){em.hidden=!TXT.email;set("ftEmail",TXT.email)}set("ftAddr",TXT.address);
+ const an=document.getElementById("announce");if(an){an.hidden=!TXT.announce.trim();an.textContent=TXT.announce}}
+function mergeDoc(doc){const C=clone(ORIGINAL);if(!doc||typeof doc!=="object")return C;for(const k of Object.keys(C)){if(k==="texts")C.texts={...TXT_DEFAULT,...(doc.texts||{})};else if(Array.isArray(doc[k]))C[k]=doc[k]}return C}
+async function loadContent(){try{const r=await API.content();if(r&&r.doc){CONTENT=mergeDoc(r.doc);contentMeta={updatedAt:r.updatedAt||0,source:LIVE?"db":"local"}}}catch(e){}applyContent()}
+async function saveContent(){const r=await API.saveContent(CONTENT);contentMeta={updatedAt:r.updatedAt||Date.now(),source:LIVE?"db":"local"};applyContent();await loadPublic();S.cap={};return r}
+
+/* field schema for each collection */
+const F={
+ text:(k,l,o={})=>({k,l,t:"text",...o}),area:(k,l,o={})=>({k,l,t:"area",...o}),num:(k,l,o={})=>({k,l,t:"num",...o}),
+ sel:(k,l,opts,o={})=>({k,l,t:"sel",opts,...o}),lines:(k,l,o={})=>({k,l,t:"lines",...o}),img:(k="img",l="الصورة")=>({k,l,t:"img"}),
+ icon:(k="icon",l="الأيقونة")=>({k,l,t:"icon"}),bool:(k,l)=>({k,l,t:"bool"}),multi:(k,l,opts)=>({k,l,t:"multi",opts}),times:(k,l)=>({k,l,t:"times"})};
+const CMS=[
+ {key:"catalog",label:"التجارب والحجوزات",icon:"camel",pre:"it",title:x=>x.name,sub:x=>(CATS.find(c=>c[0]===x.cat)||[,""])[1]+" · "+(x.cat==="dine"?"حجز طاولة":x.price?money(x.price):"مجاني")+" · سعة "+x.cap,link:x=>"#discover",
+  blank:()=>({cat:"exp",name:"",desc:"",price:50,cap:12,slots:["09:00","16:30"],dur:"",age:"لكل الأعمار",icon:"star",tags:[]}),
+  fields:[F.text("name","الاسم",{req:1}),F.sel("cat","القسم",CATS),F.area("desc","الوصف",{req:1}),F.num("price","السعر بالريال القطري"),F.text("unit","وحدة السعر",{ph:"للشخص"}),F.num("cap","السعة لكل موعد",{req:1}),F.times("slots","المواعيد"),F.multi("weekday","أيام الفعالية (اتركها فارغة لكل الأيام)",WD),F.text("dur","المدة",{ph:"30 دقيقة"}),F.text("age","الفئة العمرية"),F.multi("tags","الاهتمامات في مخطط اليوم",LIKES.map(l=>[l[0],l[1]]).concat([["kids","مناسب للأطفال"],["couple","للأزواج"],["guests","لضيوف الخارج"]])),F.icon(),F.img(),F.text("en","الاسم بالإنجليزية",{dir:"ltr"}),F.text("enDesc","الوصف بالإنجليزية",{dir:"ltr"})]},
+ {key:"products",label:"منتجات المتجر",icon:"cart",pre:"p",title:x=>x.name,sub:x=>x.cat+" · "+money(x.price),link:()=>"#shop",blank:()=>({name:"",desc:"",price:50,cat:"تذكارات"}),
+  fields:[F.text("name","اسم المنتج",{req:1}),F.text("cat","التصنيف",{req:1}),F.area("desc","الوصف"),F.num("price","السعر بالريال القطري",{req:1}),F.img()]},
+ {key:"tiers",label:"العضويات",icon:"card",pre:"m",title:x=>x.name,sub:x=>money(x.price)+" · "+x.people,link:()=>"#membership",blank:()=>({name:"",price:500,people:"فرد واحد",perks:[]}),
+  fields:[F.text("name","اسم العضوية",{req:1}),F.num("price","السعر السنوي",{req:1}),F.text("people","لمن"),F.lines("perks","المزايا (ميزة في كل سطر)"),F.bool("feat","إبرازها كالأنسب")]},
+ {key:"weddings",label:"الأعراس والمناسبات",icon:"ring",pre:"wd",title:x=>x.name,sub:x=>x.guests,link:()=>"#weddings",blank:()=>({icon:"ring",name:"",desc:"",guests:""}),
+  fields:[F.text("name","اسم الباقة",{req:1}),F.area("desc","الوصف",{req:1}),F.text("guests","عدد الضيوف"),F.icon(),F.img()]},
+ {key:"adopt",label:"برنامج ناقتي",icon:"camel",pre:"ad",title:x=>x.name,sub:x=>money(x.price)+" · "+x.who,link:()=>"#sponsor",blank:()=>({name:"",price:1000,who:"للأفراد والأسر",perks:[]}),
+  fields:[F.text("name","الاسم",{req:1}),F.num("price","المبلغ السنوي",{req:1}),F.text("who","لمن"),F.lines("perks","المزايا (ميزة في كل سطر)"),F.bool("feat","إبرازها")]},
+ {key:"sponsors",label:"باقات الرعاية",icon:"star",pre:"sp",title:x=>x.name,sub:x=>money(x.price),link:()=>"#sponsor",blank:()=>({name:"",price:100000,perks:""}),
+  fields:[F.text("name","الباقة",{req:1}),F.num("price","المبلغ السنوي",{req:1}),F.area("perks","أبرز المزايا")]},
+ {key:"markets",label:"الأسواق",icon:"market",pre:"mk",title:x=>x.name,sub:x=>x.desc,link:()=>"#markets",blank:()=>({name:"",desc:""}),
+  fields:[F.text("name","اسم السوق",{req:1}),F.area("desc","الوصف",{req:1}),F.img()]},
+ {key:"stations",label:"محطات الجولة الصوتية",icon:"museum",pre:"st",title:x=>x.t,sub:x=>x.te,link:()=>"#tour",blank:()=>({t:"",te:"",a:"",e:""}),
+  fields:[F.text("t","عنوان المحطة",{req:1}),F.area("a","النص العربي المسموع",{req:1}),F.text("te","العنوان بالإنجليزية",{dir:"ltr"}),F.area("e","النص الإنجليزي",{dir:"ltr"})]},
+ {key:"moods",label:"أفكار اليوم الجاهزة",icon:"sun",pre:"md",title:x=>x.name,sub:x=>x.sub,link:()=>"#home",blank:()=>({name:"",sub:"",likes:["camel"],who:"family",when:"morning",icon:"star",color:"#C8913A"}),
+  fields:[F.text("name","العنوان",{req:1}),F.text("sub","الوصف القصير"),F.multi("likes","الاهتمامات",LIKES.map(l=>[l[0],l[1]])),F.sel("who","مَن معك",WHO.map(w=>[w[0],w[1]])),F.sel("when","الفترة",WHEN.map(w=>[w[0],w[1]])),F.icon(),F.text("color","اللون",{t:"color"})]},
+ {key:"zones",label:"مناطق الخريطة",icon:"gate",fixed:true,title:x=>x.n+". "+x.name,sub:x=>nf.format(x.area)+" م²",link:()=>"#map",
+  fields:[F.text("name","اسم المنطقة",{req:1}),F.text("short","الاسم المختصر على الخريطة",{req:1}),F.num("area","المساحة بالمتر المربع"),F.area("desc","الوصف")]},
+ {key:"texts",label:"نصوص الموقع وبيانات التواصل",icon:"book",single:true},
+ {key:"backup",label:"النسخ الاحتياطي",icon:"vet",single:true}
+];
+const TEXT_FIELDS=[["الواجهة الرئيسية",[F.text("heroTitle1","العنوان، السطر الأول"),F.text("heroTitle2","العنوان، السطر الثاني (ذهبي)"),F.area("heroLead","الفقرة التعريفية"),F.text("heroCta","زر الإجراء الرئيسي"),F.text("heroCta2","الزر الثاني")]],
+ ["أقسام الرئيسية",[F.text("nowTitle","عنوان المواعيد القادمة"),F.text("moodsTitle","عنوان الأفكار الجاهزة"),F.text("featEyebrow","تمهيد التجارب المميزة"),F.text("featTitle","عنوان التجارب المميزة"),F.multi("featIds","التجارب المميزة في الرئيسية",()=>CONTENT.catalog.filter(x=>!x.hidden).map(x=>[x.id,x.name])),F.text("mapEyebrow","تمهيد الخريطة"),F.text("mapTitle","عنوان الخريطة"),F.area("mapText","نص الخريطة"),F.text("memberEyebrow","تمهيد العضوية"),F.text("memberTitle","عنوان العضوية"),F.area("memberText","نص العضوية")]],
+ ["التشغيل والتواصل",[F.text("openFrom","يفتح الساعة (24 ساعة)",{t:"time"}),F.text("openTo","يغلق الساعة (24 ساعة)",{t:"time"}),F.text("phone","الهاتف",{dir:"ltr"}),F.text("email","البريد الإلكتروني",{dir:"ltr"}),F.text("address","العنوان"),F.area("about","نبذة التذييل"),F.text("announce","شريط إعلان أعلى الموقع (اتركه فارغاً لإخفائه)"),F.text("legal","سطر الحقوق")]]];
+
+let cmsSec="catalog",cmsQ="";
+function cmsList(sec){return CONTENT[sec.key]}
+function thumb(x,sec){return x.img?`<img src="${esc(x.img)}" alt="">`:ic(x.icon||sec.icon)}
+route("cms",()=>{if(!isAdmin())return pageHead("إدارة المحتوى","هذه الشاشة لفريق الإدارة. سجّل الدخول أولاً.","إدارة المحتوى")+`<section class="block"><div class="wrap"><a class="btn btn-night" href="#admin">تسجيل دخول المدير</a></div></section>`;
+ const sec=CMS.find(s=>s.key===cmsSec)||CMS[0];
+ return `<div class="page-head"><div class="wrap"><div class="row"><div><div class="crumbs"><a href="#admin">لوحة الإدارة</a> / إدارة المحتوى</div><h1>إدارة المحتوى</h1><p>أضف وعدّل واحذف وأعد ترتيب كل ما يظهر للزوار. يُحفظ كل تغيير فوراً ${LIVE?"في قاعدة البيانات ويظهر لكل الزوار":"في هذا المتصفح (وضع المعاينة)"}.</p></div><span class="cms-saved right" id="cmsSaved">${contentMeta.updatedAt?"آخر حفظ "+fmtDateTime(contentMeta.updatedAt):"المحتوى الأصلي"}</span></div></div></div>
+ <section class="block cms"><div class="wrap cms-grid"><nav class="cms-nav" aria-label="أقسام المحتوى">${CMS.map(s=>`<button type="button" data-sec="${s.key}" aria-current="${s.key===sec.key}">${ic(s.icon)}<span>${s.label}</span>${s.single?"":`<b class="num">${cmsList(s).length}</b>`}</button>`).join("")}</nav>
+ <div class="cms-main" id="cmsMain">${cmsBody(sec)}</div></div></section>`});
+function cmsBody(sec){
+ if(sec.key==="texts")return `<div class="panel"><div class="row"><h2>${sec.label}</h2><a class="btn btn-ghost btn-sm right" href="#home" target="_blank" rel="noopener">معاينة الرئيسية</a></div><form id="txtForm" class="mt" novalidate>${TEXT_FIELDS.map(g=>`<fieldset class="cms-fs"><legend>${g[0]}</legend><div class="form-grid">${g[1].map(f=>fieldHTML(f,CONTENT.texts[f.k])).join("")}</div></fieldset>`).join("")}<div class="row mt2"><button class="btn btn-gold" type="submit" id="txtSave">حفظ النصوص</button><button class="btn btn-ghost" type="button" id="txtReset">استعادة النصوص الأصلية</button><span class="err" id="txtErr"></span></div></form></div>`;
+ if(sec.key==="backup")return `<div class="panel"><h2>النسخ الاحتياطي</h2><p class="hint mt">نزّل نسخة كاملة من المحتوى قبل أي تعديل كبير، واستعدها في أي وقت.</p><div class="row mt2"><button class="btn btn-gold" type="button" id="bkDown">تنزيل نسخة احتياطية</button><label class="btn btn-ghost" for="bkFile">استعادة من ملف</label><input type="file" id="bkFile" accept="application/json,.json" hidden></div><hr class="mt2"><h3 class="mt2">إعادة الضبط</h3><p class="hint mt">يعيد كل الأقسام إلى المحتوى الأصلي المعتمد في وثيقة المفهوم. لا يمس الحجوزات أو الطلبات.</p><button class="btn btn-bad mt" type="button" id="bkReset">إعادة كل المحتوى إلى الأصل</button></div>`;
+ const all=cmsList(sec);const q=norm(cmsQ.trim());const list=all.map((x,i)=>({x,i})).filter(o=>!q||norm(sec.title(o.x)+" "+(sec.sub(o.x)||"")).includes(q));
+ return `<div class="cms-head"><div><h2>${sec.label}</h2><p class="hint"><span class="num">${all.length}</span> عنصراً${all.filter(x=>x.hidden).length?` · <span class="num">${all.filter(x=>x.hidden).length}</span> مخفي`:""}. ${sec.fixed?"المناطق ثابتة على المخطط، ويمكن تعديل بياناتها.":"اسحب لإعادة الترتيب، أو استخدم الأسهم."}</p></div><div class="row">${sec.fixed?"":`<button class="btn btn-gold" type="button" id="cmsAdd">+ إضافة جديد</button>`}<a class="btn btn-ghost" href="${sec.link({})}" target="_blank" rel="noopener">عرض في الموقع</a></div></div>
+ <div class="cms-tools"><input type="search" id="cmsQ" placeholder="ابحث في ${sec.label}" value="${esc(cmsQ)}" aria-label="بحث"></div>
+ <ol class="cms-list" id="cmsList">${list.map(({x,i})=>`<li class="cms-row${x.hidden?" is-hidden":""}" data-i="${i}" draggable="${!sec.fixed&&!q}"><span class="grip" aria-hidden="true">⋮⋮</span><span class="cms-th">${thumb(x,sec)}</span><div class="cms-tx"><b>${esc(sec.title(x))}</b><small>${esc(sec.sub(x)||"")}</small>${x.hidden?'<span class="pill st-cancelled">مخفي عن الزوار</span>':""}</div><div class="cms-act">${sec.fixed?"":`<button type="button" class="ib" data-up="${i}" aria-label="تحريك لأعلى" ${i===0?"disabled":""}>↑</button><button type="button" class="ib" data-down="${i}" aria-label="تحريك لأسفل" ${i===all.length-1?"disabled":""}>↓</button>`}<button type="button" class="btn btn-ghost btn-sm" data-edit="${i}">تعديل</button>${sec.fixed?"":`<button type="button" class="btn btn-ghost btn-sm" data-dup="${i}">نسخ</button><button type="button" class="btn btn-ghost btn-sm" data-vis="${i}">${x.hidden?"إظهار":"إخفاء"}</button><button type="button" class="btn btn-bad btn-sm" data-del="${i}">حذف</button>`}</div></li>`).join("")||`<li class="panel empty">لا نتائج.</li>`}</ol>
+ ${sec.fixed?"":`<p class="hint mt"><button type="button" class="linkish" id="secReset">استعادة «${sec.label}» إلى المحتوى الأصلي</button></p>`}`}
+function fieldHTML(f,v){const id="f_"+f.k;const req=f.req?' <span class="req">*</span>':"";const dir=f.dir?` dir="${f.dir}"`:"";
+ if(f.t==="area")return `<div class="field full"><label for="${id}">${f.l}${req}</label><textarea id="${id}" data-k="${f.k}"${dir} rows="3">${esc(v??"")}</textarea></div>`;
+ if(f.t==="num")return `<div class="field"><label for="${id}">${f.l}${req}</label><input id="${id}" data-k="${f.k}" type="number" min="0" step="any" inputmode="decimal" value="${esc(v??"")}"></div>`;
+ if(f.t==="sel")return `<div class="field"><label for="${id}">${f.l}</label><select id="${id}" data-k="${f.k}">${f.opts.map(o=>`<option value="${o[0]}" ${String(v)===String(o[0])?"selected":""}>${o[1]}</option>`).join("")}</select></div>`;
+ if(f.t==="lines")return `<div class="field full"><label for="${id}">${f.l}</label><textarea id="${id}" data-k="${f.k}" data-lines rows="4">${esc((v||[]).join("\n"))}</textarea></div>`;
+ if(f.t==="times")return `<div class="field full"><label for="${id}">${f.l}${req}</label><input id="${id}" data-k="${f.k}" data-times dir="ltr" value="${esc((v||[]).join(", "))}" placeholder="09:00, 16:30"><span class="hint">بصيغة 24 ساعة، مفصولة بفاصلة. مثال: 08:00, 15:30</span></div>`;
+ if(f.t==="bool")return `<div class="field full"><label class="check"><input type="checkbox" data-k="${f.k}" data-bool ${v?"checked":""}> ${f.l}</label></div>`;
+ if(f.t==="multi"){const vv=Array.isArray(v)?v:String(v||"").split(/[,،\s]+/).filter(Boolean);v=vv;return `<div class="field full"><span class="lbl">${f.l}</span><div class="pchips" data-multi="${f.k}">${(typeof f.opts==="function"?f.opts():f.opts).map(o=>`<button type="button" class="pchip" data-mv="${o[0]}" aria-pressed="${(v||[]).map(String).includes(String(o[0]))}">${o[1]}</button>`).join("")}</div></div>`}
+ if(f.t==="icon")return `<div class="field full"><span class="lbl">${f.l}</span><div class="icon-pick" data-icon="${f.k}">${ICONS.map(n=>`<button type="button" data-iv="${n}" aria-pressed="${v===n}" aria-label="${n}">${ic(n)}</button>`).join("")}</div></div>`;
+ if(f.t==="img")return `<div class="field full"><span class="lbl">${f.l}</span><div class="img-pick" data-img="${f.k}"><div class="img-prev">${v?`<img src="${esc(v)}" alt="">`:'<span class="hint">لا توجد صورة. يظهر الرسم الافتراضي.</span>'}</div><div class="row"><label class="btn btn-ghost btn-sm">رفع صورة<input type="file" accept="image/*" data-imgfile hidden></label><input class="img-url" data-imgurl dir="ltr" placeholder="أو الصق رابط صورة https://" value="${v&&!String(v).startsWith("data:")?esc(v):""}"><button type="button" class="btn btn-ghost btn-sm" data-imgclear>إزالة</button></div><input type="hidden" data-k="${f.k}" value="${esc(v||"")}"></div></div>`;
+ return `<div class="field"><label for="${id}">${f.l}${req}</label><input id="${id}" data-k="${f.k}" type="${f.t==="time"?"time":f.t==="color"?"color":"text"}"${dir} value="${esc(v??"")}" ${f.ph?`placeholder="${esc(f.ph)}"`:""}></div>`}
+function readForm(root,fields,base){const o={...base};for(const f of fields){const el=root.querySelector(`[data-k="${f.k}"]`);
+  if(f.t==="multi"){o[f.k]=[...root.querySelectorAll(`[data-multi="${f.k}"] [aria-pressed="true"]`)].map(b=>/^\d+$/.test(b.dataset.mv)?Number(b.dataset.mv):b.dataset.mv);continue}
+  if(f.t==="icon"){const b=root.querySelector(`[data-icon="${f.k}"] [aria-pressed="true"]`);o[f.k]=b?b.dataset.iv:o[f.k];continue}
+  if(!el)continue;if(f.t==="num")o[f.k]=el.value===""?0:Number(el.value);else if(f.t==="lines")o[f.k]=el.value.split("\n").map(s=>s.trim()).filter(Boolean);else if(f.t==="times")o[f.k]=el.value.split(/[,،\s]+/).map(s=>s.trim()).filter(Boolean).map(s=>{const m=/^(\d{1,2}):?(\d{2})$/.exec(s);return m?pad(Number(m[1]))+":"+m[2]:s});else if(f.t==="bool")o[f.k]=el.checked;else o[f.k]=el.value.trim()}
+ return o}
+function validate(o,fields){for(const f of fields){if(f.req&&(o[f.k]===""||o[f.k]==null))return "أكمل حقل «"+f.l+"».";if(f.t==="num"&&(isNaN(o[f.k])||o[f.k]<0))return "قيمة «"+f.l+"» غير صحيحة.";if(f.t==="times"){if(!o[f.k].length)return "أضف موعداً واحداً على الأقل.";const bad=o[f.k].find(t=>!/^([01]\d|2[0-3]):[0-5]\d$/.test(t));if(bad)return "الموعد «"+bad+"» غير صحيح. استخدم صيغة 24 ساعة مثل 16:30."}}if(o.cap!==undefined&&o.cap<1)return "السعة يجب أن تكون 1 على الأقل.";return ""}
+function bindPickers(root){
+ root.querySelectorAll("[data-multi] [data-mv]").forEach(b=>b.onclick=()=>b.setAttribute("aria-pressed",b.getAttribute("aria-pressed")!=="true"));
+ root.querySelectorAll("[data-icon] [data-iv]").forEach(b=>b.onclick=()=>{b.parentElement.querySelectorAll("[data-iv]").forEach(x=>x.setAttribute("aria-pressed",x===b))});
+ root.querySelectorAll("[data-img]").forEach(w=>{const hid=w.querySelector("input[type=hidden]"),prev=w.querySelector(".img-prev");const show=v=>{hid.value=v;prev.innerHTML=v?`<img src="${esc(v)}" alt="">`:'<span class="hint">لا توجد صورة. يظهر الرسم الافتراضي.</span>'};
+  w.querySelector("[data-imgfile]").onchange=async e=>{const f=e.target.files[0];if(!f)return;if(!/^image\//.test(f.type))return toast("اختر ملف صورة.");try{show(await shrinkImage(f));toast("جُهّزت الصورة. اضغط حفظ.")}catch(x){toast("تعذر قراءة الصورة.")}};
+  w.querySelector("[data-imgurl]").onchange=e=>{const v=e.target.value.trim();if(v&&!/^https:\/\//.test(v))return toast("الرابط يجب أن يبدأ بـ https://");show(v)};
+  w.querySelector("[data-imgclear]").onclick=()=>{w.querySelector("[data-imgurl]").value="";show("")}})}
+function shrinkImage(file){return new Promise((res,rej)=>{const fr=new FileReader();fr.onerror=rej;fr.onload=()=>{const im=new Image();im.onerror=rej;im.onload=()=>{const M=900;const s=Math.min(1,M/Math.max(im.width,im.height));const c=document.createElement("canvas");c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext("2d").drawImage(im,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",.78))};im.src=fr.result};fr.readAsDataURL(file)})}
+function newId(sec,name){const base=sec.pre+"-"+(Date.now().toString(36).slice(-5));let id=base,n=1;while(cmsList(sec).some(x=>x.id===id))id=base+"-"+(n++);return id}
+function openEditor(sec,idx){const isNew=idx==null;const x=isNew?{...sec.blank(),id:newId(sec)}:clone(cmsList(sec)[idx]);
+ modal(`<div class="row"><h3>${isNew?"إضافة إلى «"+sec.label+"»":"تعديل: "+esc(sec.title(x))}</h3><button class="btn btn-ghost btn-sm right" data-close type="button">إغلاق</button></div><form id="edForm" class="form-grid mt" novalidate>${sec.fields.map(f=>fieldHTML(f,x[f.k])).join("")}<div class="full row mt"><button class="btn btn-gold" type="submit" id="edSave">${isNew?"إضافة":"حفظ التعديل"}</button><button class="btn btn-ghost" type="button" data-close>إلغاء</button><span class="err" id="edErr"></span></div><p class="hint full">المعرّف: <span class="code num" dir="ltr">${esc(x.id)}</span></p></form>`);
+ document.getElementById("modalBody").classList.add("wide");const f=document.getElementById("edForm");bindPickers(f);
+ f.onsubmit=async e=>{e.preventDefault();const o=readForm(f,sec.fields,x);const er=validate(o,sec.fields);if(er){document.getElementById("edErr").textContent=er;return}
+  const list=cmsList(sec);const before=clone(list);if(isNew)list.push(o);else list[idx]=o;const btn=document.getElementById("edSave");busy(btn,true);
+  try{await saveContent();closeModal();toast(isNew?"أُضيف «"+sec.title(o)+"».":"حُفظ التعديل.");drawCms()}catch(x2){CONTENT[sec.key]=before;busy(btn,false);document.getElementById("edErr").textContent=cmsErr(x2)}}}
+function cmsErr(x){const k=String(x&&x.message||x);if(/quota|QuotaExceeded/i.test(k))return "مساحة التخزين في المتصفح امتلأت. استخدم صوراً أصغر أو روابط صور.";if(k.includes("admin_required"))return "انتهت جلسة المدير. سجّل الدخول مجدداً.";if(k.includes("content_too_large"))return "حجم المحتوى كبير جداً. استخدم روابط صور بدل رفعها.";return errMsg(x)}
+async function commit(sec,mutate,msg){const before=clone(CONTENT[sec.key]);mutate(cmsList(sec));try{await saveContent();if(msg)toast(msg);drawCms()}catch(x){CONTENT[sec.key]=before;applyContent();toast(cmsErr(x));drawCms()}}
+function drawCms(){const m=document.getElementById("cmsMain");if(!m){render(true);return}const sec=CMS.find(s=>s.key===cmsSec);m.innerHTML=cmsBody(sec);document.querySelectorAll("[data-sec]").forEach(b=>{const s=CMS.find(z=>z.key===b.dataset.sec);b.setAttribute("aria-current",s.key===cmsSec);const n=b.querySelector("b");if(n&&!s.single)n.textContent=cmsList(s).length});const sv=document.getElementById("cmsSaved");if(sv&&contentMeta.updatedAt)sv.textContent="آخر حفظ "+fmtDateTime(contentMeta.updatedAt);bindCms()}
+function bindCms(){const sec=CMS.find(s=>s.key===cmsSec);const $=id=>document.getElementById(id);
+ if(sec.key==="texts"){const f=$("txtForm");const flat=TEXT_FIELDS.flatMap(g=>g[1]);f.onsubmit=async e=>{e.preventDefault();const o=readForm(f,flat,CONTENT.texts);for(const k of ["openFrom","openTo"])if(!/^([01]\d|2[0-3]):[0-5]\d$/.test(o[k]))return $("txtErr").textContent="أوقات التشغيل بصيغة 24 ساعة مثل 08:00.";if(o.email&&!/^\S+@\S+\.\S+$/.test(o.email))return $("txtErr").textContent="صيغة البريد الإلكتروني غير صحيحة.";const before=CONTENT.texts;CONTENT.texts=o;busy($("txtSave"),true);try{await saveContent();toast("حُفظت النصوص وظهرت في الموقع.");drawCms()}catch(x){CONTENT.texts=before;busy($("txtSave"),false);$("txtErr").textContent=cmsErr(x)}};
+  $("txtReset").onclick=()=>confirmBox("استعادة النصوص الأصلية؟ ستُستبدل كل النصوص المعدّلة.","استعادة",async()=>{CONTENT.texts={...TXT_DEFAULT};await saveContent();toast("استُعيدت النصوص الأصلية.");drawCms()});return}
+ if(sec.key==="backup"){$("bkDown").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify({app:"matayaa",v:1,savedAt:new Date().toISOString(),content:CONTENT},null,1)],{type:"application/json"}));a.download="matayaa-content-"+isoDate(new Date())+".json";document.body.appendChild(a);a.click();a.remove();toast("نُزّلت النسخة الاحتياطية.")};
+  $("bkFile").onchange=async e=>{const f=e.target.files[0];if(!f)return;let j;try{j=JSON.parse(await f.text())}catch(x){return toast("الملف ليس نسخة احتياطية صالحة.")}if(!j||j.app!=="matayaa"||!j.content)return toast("الملف ليس نسخة احتياطية من مطايا.");confirmBox("استعادة المحتوى من هذا الملف؟ سيُستبدل المحتوى الحالي.","استعادة",async()=>{const before=CONTENT;CONTENT=mergeDoc(j.content);try{await saveContent();toast("استُعيد المحتوى من النسخة الاحتياطية.");render(true)}catch(x){CONTENT=before;applyContent();toast(cmsErr(x))}})};
+  $("bkReset").onclick=()=>confirmBox("إعادة كل المحتوى إلى الأصل؟ تُحذف كل الإضافات والتعديلات على المحتوى.","إعادة الضبط",async()=>{CONTENT=clone(ORIGINAL);await saveContent();toast("أُعيد المحتوى إلى الأصل.");render(true)});return}
+ const q=$("cmsQ");q.oninput=e=>{cmsQ=e.target.value;const p=q.selectionStart;drawCms();const n=$("cmsQ");n.focus();n.setSelectionRange(p,p)};
+ const add=$("cmsAdd");if(add)add.onclick=()=>openEditor(sec,null);
+ const rs=$("secReset");if(rs)rs.onclick=()=>confirmBox(`استعادة «${sec.label}» إلى المحتوى الأصلي؟`,"استعادة",()=>commit(sec,l=>{l.splice(0,l.length,...clone(ORIGINAL[sec.key]))},"استُعيد القسم."));
+ const L=$("cmsList");
+ L.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>openEditor(sec,Number(b.dataset.edit)));
+ L.querySelectorAll("[data-up]").forEach(b=>b.onclick=()=>{const i=Number(b.dataset.up);commit(sec,l=>{[l[i-1],l[i]]=[l[i],l[i-1]]},"تغيّر الترتيب.")});
+ L.querySelectorAll("[data-down]").forEach(b=>b.onclick=()=>{const i=Number(b.dataset.down);commit(sec,l=>{[l[i+1],l[i]]=[l[i],l[i+1]]},"تغيّر الترتيب.")});
+ L.querySelectorAll("[data-dup]").forEach(b=>b.onclick=()=>{const i=Number(b.dataset.dup);commit(sec,l=>{const c={...clone(l[i]),id:newId(sec),hidden:true};c[sec.key==="stations"?"t":"name"]=(sec.title(l[i])||"")+" (نسخة)";l.splice(i+1,0,c)},"أُنشئت نسخة مخفية. عدّلها ثم أظهرها.")});
+ L.querySelectorAll("[data-vis]").forEach(b=>b.onclick=()=>{const i=Number(b.dataset.vis);const h=!cmsList(sec)[i].hidden;commit(sec,l=>{l[i]={...l[i],hidden:h}},h?"أُخفي عن الزوار.":"أصبح ظاهراً للزوار.")});
+ L.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{const i=Number(b.dataset.del);const x=cmsList(sec)[i];confirmBox(`حذف «${esc(sec.title(x))}» نهائياً؟${sec.key==="catalog"?" الحجوزات السابقة تبقى محفوظة، ولن يُقبل حجز جديد عليه.":""}`,"حذف",()=>commit(sec,l=>{l.splice(i,1)},"حُذف «"+sec.title(x)+"»."))});
+ let from=null;L.querySelectorAll(".cms-row[draggable=true]").forEach(r=>{r.ondragstart=e=>{from=Number(r.dataset.i);r.classList.add("drag");e.dataTransfer.effectAllowed="move";try{e.dataTransfer.setData("text/plain",String(from))}catch(x){}};r.ondragend=()=>r.classList.remove("drag");r.ondragover=e=>{e.preventDefault();r.classList.add("over")};r.ondragleave=()=>r.classList.remove("over");r.ondrop=e=>{e.preventDefault();r.classList.remove("over");const to=Number(r.dataset.i);if(from==null||from===to)return;commit(sec,l=>{const [m]=l.splice(from,1);l.splice(to,0,m)},"تغيّر الترتيب.");from=null}})}
+function confirmBox(msg,label,fn){modal(`<h3>تأكيد</h3><p class="mt">${msg}</p><div class="row mt2"><button class="btn btn-bad" id="cfOk" type="button">${label}</button><button class="btn btn-ghost" data-close type="button">تراجع</button></div>`);document.getElementById("cfOk").onclick=async e=>{busy(e.currentTarget,true);try{await fn();closeModal()}catch(x){closeModal();toast(cmsErr(x))}}}
+after.cms=()=>{if(!isAdmin())return;document.querySelectorAll("[data-sec]").forEach(b=>b.onclick=()=>{cmsSec=b.dataset.sec;cmsQ="";drawCms();if(innerWidth<900)document.getElementById("cmsMain").scrollIntoView({behavior:"smooth",block:"start"})});bindCms()};
 
 /* ============ booking ============ */
 function eventDates(it,from,days){const out=[];const d=new Date(from);for(let i=0;i<days;i++){const s=isoDate(d);const md=s.slice(5);if(it.dates?it.dates.includes(md):it.weekday?it.weekday.includes(d.getDay()):true)out.push(s);d.setDate(d.getDate()+1)}return out}
@@ -1256,7 +1480,7 @@ let adminTab="overview";
 route("admin",async()=>{
  if(isAdmin()){try{S.adm=await API.admin("data")}catch(e){tok.a=null;S.adm=null}}
  if(!isAdmin())return pageHead("لوحة الإدارة","دخول مخصص لفريق تشغيل مطايا.","الإدارة")+`<section class="block"><div class="wrap"><div class="panel" style="max-width:440px;margin-inline:auto"><h3>تسجيل دخول المدير</h3><form id="admForm" class="mt" novalidate><div class="field"><label for="aUser">اسم المستخدم</label><input id="aUser" autocomplete="username" dir="ltr"></div><div class="field mt"><label for="aPass">كلمة المرور</label><input id="aPass" type="password" autocomplete="current-password" dir="ltr"></div><div class="row mt"><button class="btn btn-night" type="submit">دخول</button><span class="err" id="aErr"></span></div></form></div></div></section>`;
- const tabs=[["overview","نظرة عامة"],["bookings","الحجوزات"],["verify","التحقق من التذاكر"],["messages","الرسائل والطلبات"],["reviews","التقييمات"],["orders","طلبات المتجر"],["members","العضويات"],["catalog","الأسعار والسعة"],["settings","الإعدادات"]];
+ const tabs=[["cms","إدارة المحتوى ✎"],["overview","نظرة عامة"],["bookings","الحجوزات"],["verify","التحقق من التذاكر"],["messages","الرسائل والطلبات"],["reviews","التقييمات"],["orders","طلبات المتجر"],["members","العضويات"],["catalog","الأسعار والسعة"],["settings","الإعدادات"]];
  const msgsNew=S.adm.messages.filter(m=>m.status==="new").length;
  return `<div class="page-head"><div class="wrap"><div class="row"><div><div class="crumbs">لوحة الإدارة</div><h1>تشغيل مطايا</h1></div><button class="btn btn-ghost btn-sm right" id="admOut" type="button" style="color:var(--sand);border-color:#5a5374">خروج المدير</button></div></div></div><section class="block" style="padding-top:20px"><div class="wrap"><div class="tabs" role="tablist">${tabs.map(t=>`<button role="tab" type="button" data-tab="${t[0]}" aria-selected="${adminTab===t[0]}">${t[1]}${t[0]==="messages"&&msgsNew?` <span class="cart-count">${msgsNew}</span>`:""}</button>`).join("")}</div><div id="admBody">${adminBody()}</div></div></section>`;
 });
@@ -1294,7 +1518,7 @@ function verify(raw){const code=String(raw||"").trim().toUpperCase().replace(/^M
 after.admin=()=>{
  const af=document.getElementById("admForm");if(af){af.addEventListener("submit",async e=>{e.preventDefault();const btn=af.querySelector("[type=submit]");busy(btn,true);try{const r=await API.adminLogin(af.aUser.value.trim(),af.aPass.value);tok.a=r.token;toast("مرحباً بفريق التشغيل.");render()}catch(x){busy(btn,false);document.getElementById("aErr").textContent=String(x.message).includes("bad_login")?"بيانات الدخول غير صحيحة.":errMsg(x)}});return}
  document.getElementById("admOut").onclick=()=>{tok.a=null;S.adm=null;adminTab="overview";render()};
- document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{adminTab=b.dataset.tab;render(true)});
+ document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{if(b.dataset.tab==="cms")return go("cms");adminTab=b.dataset.tab;render(true)});
  const rerender=()=>{document.getElementById("admBody").innerHTML=adminBody();bindAdmin()};
  const act=async(action,p,msg,reloadPublic)=>{try{await API.admin(action,p);S.adm=await API.admin("data");if(reloadPublic){await loadPublic();S.cap={}}if(msg)toast(msg);rerender()}catch(x){toast(errMsg(x));if(String(x.message).includes("admin_required")){tok.a=null;render()}}};
  function bindAdmin(){
@@ -1320,6 +1544,6 @@ document.getElementById("searchBtn").onclick=openSearch;["menuBtn","moreBtn","do
 document.getElementById("themeBtn").onclick=()=>{const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;r.dataset.theme=dark?"light":"dark";try{localStorage.setItem("matayaa.theme",r.dataset.theme)}catch(e){}};
 try{const th=localStorage.getItem("matayaa.theme");if(th)document.documentElement.dataset.theme=th}catch(e){}
 updateCartCount();
-(async()=>{await seed();await Promise.all([loadPublic(),tok.u?loadMe():null]);render()})();
+(async()=>{await seed();await loadContent();await Promise.all([loadPublic(),tok.u?loadMe():null]);render()})();
 </script>
 </body></html>

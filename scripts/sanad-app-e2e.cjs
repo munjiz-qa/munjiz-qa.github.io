@@ -1,4 +1,4 @@
-// «سند» — اختبار الاستقلال الكامل عن Claude بكل الأدوار على الجوال والكمبيوتر
+// «سند» — اختبار الاستقلال الكامل عن أي خدمة خارجية بكل الأدوار على الجوال والكمبيوتر
 // محلياً: node scripts/sanad-app-e2e.cjs web sanad/app shots   |   المنشور: SANAD_URL=https://munjiz-qa.github.io/sanad/app node scripts/sanad-app-e2e.cjs web sanad/app shots
 const { chromium, devices } = require('playwright');
 const { spawn } = require('child_process'); const fs = require('fs'); const path = require('path'); const http = require('http');
@@ -52,7 +52,7 @@ function startStatic() { // يحاكي GitHub Pages: ملفات ثابتة فق�
   const VC = await newCtx(); const V = await page(VC, DESK);
   await home(V);
   const vt = await V.textContent('.main');
-  ok('visitor: site opens with business + services (no setup, no Claude)', vt.includes('سند من منجز') && vt.includes('استشارة أولية'), vt.slice(0, 200));
+  ok('visitor: site opens with business + services (no setup, no external service)', vt.includes('سند من منجز') && vt.includes('استشارة أولية'), vt.slice(0, 200));
   ok('visitor: Qatar contact unified', vt.includes('+974 5160 0498') || (await V.textContent('body')).includes('+974 5160 0498'));
   ok('visitor: no empty notification bar', !(await V.isVisible('#toast')));
   ok('visitor: no admin tabs', !(await V.textContent('.rail')).includes('العملاء'));
@@ -142,7 +142,7 @@ function startStatic() { // يحاكي GitHub Pages: ملفات ثابتة فق�
   await tab(A, 'appts'); await A.waitForTimeout(400);
   ok('admin: confirmed request became appointment', (await A.textContent('.main')).includes('عميل سند'));
   await tab(A, 'chat'); await ask(A, 'ما ملخص يومي؟');
-  ok('admin: assistant gives daily summary without Claude', (await A.textContent('.thread')).includes('ملخص اليوم'), (await A.textContent('.thread')).slice(-300));
+  ok('admin: assistant gives daily summary without external services', (await A.textContent('.thread')).includes('ملخص اليوم'), (await A.textContent('.thread')).slice(-300));
   await A.screenshot({ path: `${shots}/06-admin-chat-desktop.png` });
   await tab(A, 'today'); await A.waitForTimeout(400);
   await A.screenshot({ path: `${shots}/07-admin-today-desktop.png` });
@@ -203,11 +203,11 @@ function startStatic() { // يحاكي GitHub Pages: ملفات ثابتة فق�
 
   // ---------- 4. resilience ----------
   if (MODE === 'server' && !LIVE) {
-    // Claude configured but unreachable: chat still answers
+    // model service configured but unreachable: chat still answers
     const AK = await page(AC, DESK); await AK.goto(B + '/admin.html'); await AK.waitForSelector('#key');
     await AK.fill('#key', 'sk-ant-unreachable'); await AK.click('#f-ai button[type=submit]'); await AK.waitForTimeout(500);
     await home(AK); await tab(AK, 'chat'); await ask(AK, 'ما الخدمات؟');
-    ok('fallback: Claude unreachable → built-in assistant answers', (await AK.textContent('.thread')).includes('تعذّر الوصول إلى Claude') && (await AK.textContent('.thread')).includes('استشارة أولية'), (await AK.textContent('.thread')).slice(-300));
+    ok('fallback: model service unreachable → built-in assistant answers', (await AK.textContent('.thread')).includes('تعذّر الوصول إلى المحرّك الذكي') && (await AK.textContent('.thread')).includes('استشارة أولية'), (await AK.textContent('.thread')).slice(-300));
     await stopServer(); await startServer();
     await home(AK);
     ok('restart: session + accounts persist', (await AK.textContent('.rail')).includes('المدير'));
@@ -229,7 +229,7 @@ function startStatic() { // يحاكي GitHub Pages: ملفات ثابتة فق�
   }
   const DC = await newCtx({ colorScheme: 'dark' }); const Dp = await page(DC, DESK); await home(Dp);
   await Dp.screenshot({ path: `${shots}/12-visitor-dark.png` });
-  ok('zero requests to Claude / Anthropic from the browser', claudeCalls.length === 0, claudeCalls.join(' '));
+  ok('zero requests to external model services from the browser', claudeCalls.length === 0, claudeCalls.join(' '));
   ok('no JS errors in any role', errors.length === 0, errors.join(' | '));
 
   console.log(results.map(r => r.join('  ')).join('\n'));

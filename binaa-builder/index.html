@@ -1719,7 +1719,7 @@ async function connect(){
 }
 
 /* ================= v3: APP SHELL, IDEA-TO-SITE, LOGO STUDIO, QUALITY SCORE, SHARING ================= */
-const APP = !!window.MDK_APP; // installable build (PWA) served from its own host, without the claude.ai runtime
+const APP = !!window.MDK_APP; // installable build (PWA) served from its own host, without the hosted runtime
 const isStandalone = () => { try { return matchMedia("(display-mode: standalone)").matches || navigator.standalone === true; } catch { return false; } };
 const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 const inFrame = (() => { try { return window.top !== window; } catch { return true; } })();
