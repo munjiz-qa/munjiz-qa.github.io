@@ -1,11 +1,11 @@
 /* يتيح فتح جُمانة بعد تثبيته حتى عند انقطاع الاتصال. الشبكة أولاً دائماً لتبقى المنصة محدّثة، والنسخة المحفوظة احتياط فقط.
    لا يتدخل في أي طلب لجهة خارجية، ولا يحفظ إلا ملفات الصفحة نفسها التي فُتحت. */
-const CACHE = "jumana-202611150215", CORE = ["./", "index.html", "manifest.webmanifest", "pwa-install.js", "assets/icon.svg", "assets/icon-192.png", "assets/icon-180.png"];
+const CACHE = "jumana-202611271545", CORE = ["./", "index.html", "manifest.webmanifest", "pwa-install.js", "assets/icon.svg", "assets/icon-192.png", "assets/icon-180.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith("jumana-") && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener("fetch", e => {
   const r = e.request, u = new URL(r.url);
-  if (r.method !== "GET" || u.origin !== location.origin || !u.pathname.startsWith(new URL("./", location.href).pathname) || r.headers.has("range")) return;
+  if (r.method !== "GET" || u.pathname.endsWith("/content.json") || u.origin !== location.origin || !u.pathname.startsWith(new URL("./", location.href).pathname) || r.headers.has("range")) return;
   e.respondWith(fetch(r).then(res => { if (res.ok && res.status === 200 && +(res.headers.get("content-length") || 0) < 5e6) { const c = res.clone(); caches.open(CACHE).then(x => x.put(r, c)); } return res; })
     .catch(() => caches.match(r, { ignoreSearch: true }).then(m => m || (r.mode === "navigate" ? caches.match("index.html") : Response.error()))));
 });

@@ -282,6 +282,21 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer nav a{color:var(--mut
 .pap{scroll-margin-top:90px}.paph{display:flex;gap:12px;align-items:flex-start}.papn{flex:none;background:var(--lapis);color:var(--onaccent);border-radius:10px;padding:4px 10px;font-weight:700;font-size:.95rem}.papd summary{cursor:pointer;font-weight:700;color:var(--lapis)}.papd[open]{display:grid;gap:10px}.papd ul{margin:6px 0 0;padding-inline-start:20px}.papq{margin:0;border-inline-start:4px solid var(--gold);background:var(--goldsoft);padding:10px 14px;border-radius:8px;font-size:1.02rem}.papq small{display:block;color:var(--muted);font-size:.78rem;margin-top:6px}.ppindex{columns:2 260px;margin:10px 0 0;padding:0;list-style:none}.ppindex li{break-inside:avoid;margin:2px 0}.linkbtn{background:none;border:0;padding:4px 0;color:var(--ink);cursor:pointer;text-align:start;font:inherit}.linkbtn:hover{color:var(--lapis);text-decoration:underline}#ppq{flex:1;min-width:0}#v-papyri .wdl dd{overflow-wrap:anywhere}
 .wdl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:6px 0}.wdl dt{color:var(--muted);font-size:.86rem}.wdl dd{margin:0}
 .city h3{margin:0;color:var(--lapis)}#wbody{display:grid;gap:14px}#wbody h3{margin:6px 0 0}
+.tag.m{border-color:var(--gold);color:var(--gold)}
+.cmsbar .cmsrow1{display:grid;grid-template-columns:1.4fr 1fr .8fr;gap:10px}.cmsbar label{display:grid;gap:4px;font-size:.88rem;color:var(--muted)}
+@media (max-width:760px){.cmsbar .cmsrow1{grid-template-columns:1fr}}
+.cmslist{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.cmsli{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;flex-wrap:wrap}
+.cmsli.off{opacity:.62}.cmsli.drag{border-color:var(--gold);box-shadow:0 8px 22px #0003;position:relative;z-index:2}
+.cmsh{flex:none;width:34px;height:40px;border:1px dashed var(--line);border-radius:8px;background:var(--surface2);cursor:grab;touch-action:none;font-size:1.15rem;color:var(--muted);padding:0}
+.cmsh:active{cursor:grabbing}.cmsn{flex:none;min-width:30px;text-align:center;color:var(--muted);font-size:.85rem}
+.cmsb{flex:1 1 220px;min-width:0;display:grid}.cmsb b{overflow-wrap:anywhere}.cmsb small{color:var(--muted);font-size:.82rem;overflow-wrap:anywhere}
+.cmsli .tools{gap:6px}.cmsli .btn.sm{padding:5px 11px}
+.modal-c.wide{max-width:860px}.cedfields{display:grid;gap:10px}.cedf label{display:grid;gap:4px;font-size:.88rem;color:var(--muted)}.cedf .field{width:100%}
+.cfs{border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:grid;gap:8px}.cfs legend{color:var(--gold);font-weight:700;padding:0 6px}
+.cchk{display:flex!important;align-items:center;gap:8px;color:var(--ink)!important}.cjson{font-family:ui-monospace,Consolas,monospace;font-size:.82rem;direction:ltr;text-align:left}
+.cadv summary{color:var(--lapis);font-weight:700;cursor:pointer}.cadv{display:grid;gap:8px}
+.cghbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-color:var(--faience)}.cghbar.dirty{border-color:var(--gold);background:var(--goldsoft)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
@@ -468,11 +483,12 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer nav a{color:var(--mut
   <p class="lede" id="adminLede">تظهر هذه اللوحة لمالك المنصة ومحرريها فقط.</p></div>
   <div class="atabs" id="atabs">
     <button data-t="overview" class="on">نظرة عامة</button>
-    <button data-t="questions">الأسئلة</button>
-    <button data-t="kings">الملوك</button>
+    <button data-t="content">إدارة المحتوى</button>
+    <button data-t="pages">نصوص الصفحات</button>
     <button data-t="notice">الإعلان</button>
     <button data-t="learners">المتعلمون</button>
     <button data-t="reports">البلاغات</button>
+    <button data-t="backup">النسخ الاحتياطي</button>
   </div>
   <div id="apane"></div>
 </section>
@@ -625,7 +641,7 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer nav a{color:var(--mut
 </section>
 </main>
 
-<footer><div class="wrap"><span>جُمانة مصر القديمة: منصة تعليمية تفاعلية للحضارة المصرية القديمة</span><nav aria-label="روابط المنصة"><a href="#explore">المحاور</a><a href="#gods">الديانة</a><a href="#about">المنهج والمصادر</a><a href="#about">الخصوصية</a><a href="#about" data-report="عام">أبلغ عن خطأ</a></nav><span>التواريخ تقريبية وفق التأريخ الأكاديمي الشائع</span></div></footer>
+<footer><div class="wrap"><span>جُمانة مصر القديمة: منصة تعليمية تفاعلية للحضارة المصرية القديمة</span><nav aria-label="روابط المنصة"><a href="#explore">المحاور</a><a href="#gods">الديانة</a><a href="#about">المنهج والمصادر</a><a href="#about">الخصوصية</a><a href="#about" data-report="عام">أبلغ عن خطأ</a><a href="#admin">الإدارة</a></nav><span>التواريخ تقريبية وفق التأريخ الأكاديمي الشائع</span></div></footer>
 <div id="modalRoot"></div>
 
 <script>
@@ -2970,7 +2986,7 @@ document.addEventListener("keydown",ev=>{if(ev.target.id==="aq"&&ev.key==="Enter
 function renderChip(){$("#xpchip").textContent=`${me.xp} نقطة · ${level(me.xp).name}`}
 function mergeOv(base,ov){const m=new Map(base.map(x=>[x.id,{...x}]));for(const [id,o] of Object.entries(ov)){if(m.has(id))Object.assign(m.get(id),o);else m.set(id,{...o,id,custom:true})}return [...m.values()]}
 function kingsAll(){return mergeOv(BASE_KINGS,S.kOv)}
-function kingsVisible(){return kingsAll().filter(k=>!k.hidden).sort((a,b)=>(b.from||0)-(a.from||0))}
+function kingsVisible(){const v=kingsAll().filter(k=>!k.hidden);return CMS.order.kings?v:v.sort((a,b)=>(b.from||0)-(a.from||0))}
 function qAll(){return mergeOv(BASE_Q,S.qOv)}
 function qVisible(){return qAll().filter(q=>!q.hidden&&q.q&&Array.isArray(q.a)&&q.a.length>=2)}
 function eraOf(id){return ERAS.find(e=>e.id===id)}
@@ -3284,6 +3300,371 @@ document.addEventListener("click",ev=>{
   else if(t.dataset.rdel){const d=(S.reports||[]).find(x=>x.id===t.dataset.rdel);if(!d)return;const items=(d.items||[]).filter((_,i)=>i!==+t.dataset.ri);dbWrite("reports/"+d.id,items.length?{items,nick:d.nick||"",updatedAt:d.updatedAt||""}:null,items.length?"set":"delete","حُذف البلاغ")}
 });
 
+/* ================= إدارة المحتوى الشاملة: إضافة وتعديل وحذف وإخفاء وترتيب لكل أقسام المنصة ================= */
+const CMSL={id:"المعرّف (بالحروف اللاتينية)",ar:"الاسم بالعربية",en:"الاسم بالإنجليزية",t:"العنوان",sub:"العنوان الفرعي",d:"الوصف",n:"الاسم",era:"العصر",dyn:"الأسرة",from:"بداية الحكم (ق.م)",to:"نهاية الحكم (ق.م)",title:"اللقب",bio:"السيرة",works:"أبرز الآثار",q:"السؤال",a:"الإجابات (الأولى هي الصحيحة)",x:"الشرح",g:"رمز العلامة الهيروغليفية (يونيكود)",r:"الوصف",c:"المركز أو اللون",lat:"خط العرض",lon:"خط الطول",src:"المصادر",ref:"المراجع",ev:"الأدلة والأحداث",cat:"التصنيف",when:"التاريخ",sum:"الخلاصة",pts:"أهم ما جاء فيه",inv:"الرقم المتحفي",at:"مكان الحفظ",sc:"الخط",why:"الأهمية",l:"الرابط",u:"الموقع الرسمي",h:"أبرز المقتنيات",y:"السنة",o:"العنوان الأصلي",au:"المؤلف",pub:"النشر والطبعات",vol:"المجلدات",secs:"الأقسام",links:"روابط مرتبطة",name:"الاسم",cap:"العاصمة",side:"جهة التسمية على الخريطة",dy:"إزاحة الاسم على الخريطة",lab:"التسمية المختصرة",ago:"منذ كم سنة",bc:"التاريخ قبل الميلاد",who:"الشخصية",role:"الدور",k:"الملك",vs:"الخصم",res:"النتيجة",pl:"المكان",sides:"الأطراف",ctx:"السياق",tl:"الخط الزمني",deb:"نقاط الخلاف العلمي",p:"موضع الكاميرا",e:"الارتفاع",items:"العناصر",rel:"ما تذكره المصادر الدينية",arch:"الدليل الأثري",img:"الصورة"};
+const CMS_DEF=[
+ {k:"kings",n:"الملوك والملكات",g:"الدولة والملوك",ref:BASE_KINGS,lab:{a:"الإجابات"}},
+ {k:"kd",n:"الملفات العلمية للملوك",g:"الدولة والملوك",ref:KD,map:1},
+ {k:"eras",n:"العصور",g:"الدولة والملوك",ref:ERAS},
+ {k:"battles",n:"المعارك (المقارنة)",g:"الدولة والملوك",ref:BATTLES},
+ {k:"wars",n:"الحروب والمعاهدات",g:"الدولة والملوك",ref:WARS},
+ {k:"army",n:"الجيش والأسلحة",g:"الدولة والملوك",ref:ARMY,tl:["العنوان","الشرح"]},
+ {k:"origins",n:"حلقات الجذور",g:"الجذور والزمن",ref:ORIGINS},
+ {k:"stations",n:"المحطات الزمنية",g:"الجذور والزمن",ref:STATIONS},
+ {k:"chrono",n:"أحداث الخطوط الزمنية",g:"الجذور والزمن",ref:CHRONO,tl:["السنة (بالسالب قبل الميلاد)","رمز الخط (g عام، k ملوك، r دين، s علوم، w حروب، a عمارة، l كتابة، e مصريات)","الحدث","ربط بموضوع أو ملك (اختياري)"]},
+ {k:"sites",n:"المواقع الأثرية (الخريطة)",g:"المكان والمتاحف",ref:SITES},
+ {k:"sd",n:"الملفات العلمية للمواقع",g:"المكان والمتاحف",ref:SD,map:1},
+ {k:"cities",n:"المدن والبلدان",g:"المكان والمتاحف",ref:CITIES,tl:["الاسم المتداول","الاسم المصري القديم","الاسم الإغريقي أو الإنجليزي","الاسم الحالي أو الموقع","البلد","الإقليم","خط العرض","خط الطول","الوصف"]},
+ {k:"musin",n:"متاحف داخل مصر",g:"المكان والمتاحف",ref:MUS_IN,lab:{n:"اسم المتحف",c:"المدينة",y:"سنة التأسيس"}},
+ {k:"musout",n:"آثار مصر حول العالم",g:"المكان والمتاحف",ref:MUS_OUT,lab:{n:"اسم المتحف",c:"المدينة والدولة",y:"سنة التأسيس"}},
+ {k:"gods",n:"المعبودات",g:"الدين والمعتقد",ref:GODS,lab:{r:"الدور والصفة",c:"مركز العبادة"}},
+ {k:"gd",n:"الملفات العلمية للمعبودات",g:"الدين والمعتقد",ref:GD,map:1},
+ {k:"rel",n:"تاريخ الدين (الحلقات)",g:"الدين والمعتقد",ref:REL},
+ {k:"prophets",n:"الأنبياء في مصر عليهم السلام",g:"الدين والمعتقد",ref:PROPHETS},
+ {k:"tawhid",n:"التوحيد في مصر القديمة",g:"الدين والمعتقد",ref:TAWHID,map:1},
+ {k:"topics",n:"الموضوعات المعمّقة",g:"العلوم والموضوعات",ref:TOPICS},
+ {k:"sci",n:"علوم مصر القديمة",g:"العلوم والموضوعات",ref:SCI},
+ {k:"unique",n:"ما يميز الحضارة المصرية",g:"العلوم والموضوعات",ref:UNIQUE,tl:["السمة","الشرح","الدليل"]},
+ {k:"pap",n:"موسوعة البرديات",g:"المكتبة والمراجع",ref:PAP},
+ {k:"books",n:"الكتب وخلاصاتها",g:"المكتبة والمراجع",ref:BOOKS,lab:{a:"المؤلف",y:"سنة النشر"}},
+ {k:"enc",n:"الموسوعات عن مصر",g:"المكتبة والمراجع",ref:ENC},
+ {k:"gal",n:"معرض متحف المتروبوليتان",g:"المكتبة والمراجع",ref:GAL,tl:["رقم القطعة","العنوان","التاريخ","العصر","رقم الاقتناء","الشرح"]},
+ {k:"pix",n:"الصور ومصادرها ورخصها",g:"المكتبة والمراجع",ref:PIX,map:1,tl:["اسم ملف الصورة","العنوان","التاريخ","العصر أو النوع","المصدر","الرخصة","اسم الملف في المصدر","الشرح","صاحب الصورة"]},
+ {k:"egyhist",n:"تاريخ علم المصريات",g:"علم المصريات",ref:EGY_HIST,tl:["الفترة","الحدث"]},
+ {k:"egypeople",n:"أعلام علم المصريات",g:"علم المصريات",ref:EGY_PEOPLE,tl:["الاسم","الأعوام","البلد","الإسهام"]},
+ {k:"egyinst",n:"المعاهد والمؤسسات",g:"علم المصريات",ref:EGY_INST,tl:["الفئة","المؤسسة","الدور","الموقع الرسمي"]},
+ {k:"egymeth",n:"مناهج البحث",g:"علم المصريات",ref:EGY_METH,tl:["المنهج","الشرح"]},
+ {k:"egyfinds",n:"الاكتشافات الكبرى",g:"علم المصريات",ref:EGY_FINDS,tl:["السنة","الاكتشاف","المكان"]},
+ {k:"egybranch",n:"فروع علم المصريات",g:"علم المصريات",ref:EGY_BRANCH,tl:["الفرع","الشرح"]},
+ {k:"sisi",n:"د. وسيم السيسي",g:"علم المصريات",ref:SISI,map:1},
+ {k:"school",n:"مشروع بيت العلوم المصرية",g:"علم المصريات",ref:SCHOOL,map:1},
+ {k:"lessons",n:"دروس الهيروغليفية",g:"اللغة والكتابة",ref:LESSONS},
+ {k:"hvocab",n:"معجم الكلمات الهيروغليفية",g:"اللغة والكتابة",ref:HVOCAB,tl:["النقحرة","المعنى","أرقام العلامات (يونيكود)","الشرح","رموز غاردنر"]},
+ {k:"htexts",n:"النصوص الهيروغليفية",g:"اللغة والكتابة",ref:HTEXTS,tl:["النقحرة","المعنى","أرقام العلامات (يونيكود)","الشرح"]},
+ {k:"lang",n:"مراحل اللغة المصرية",g:"اللغة والكتابة",ref:LANG,tl:["المرحلة","الفترة","الوصف"]},
+ {k:"scripts",n:"الخطوط المصرية",g:"اللغة والكتابة",ref:SCRIPTS,tl:["الخط","الوصف"]},
+ {k:"questions",n:"بنك الأسئلة",g:"التعلّم والألعاب",ref:BASE_Q},
+ {k:"stories",n:"يوم في حياة",g:"التعلّم والألعاب",ref:STORIES},
+ {k:"match",n:"لعبة التوصيل",g:"التعلّم والألعاب",ref:MATCH,tl:["الملك","الأثر"]},
+ {k:"mummy",n:"خطوات التحنيط (اللعبة)",g:"التعلّم والألعاب",ref:MUMMY_STEPS},
+ {k:"t3",n:"محطات الجولة ثلاثية الأبعاد",g:"التعلّم والألعاب",ref:T3STOPS},
+ {k:"levels",n:"مستويات المتعلمين",g:"التعلّم والألعاب",ref:LEVELS,tl:["النقاط المطلوبة","اسم المستوى"]},
+ {k:"badges",n:"الأوسمة",g:"التعلّم والألعاب",ref:BADGES},
+ {k:"axes",n:"المحاور العشرة",g:"هيكل المنصة",ref:AXES},
+ {k:"pages",n:"نصوص الصفحات والقوائم",g:"هيكل المنصة",pages:1}
+];
+const CMSD=Object.fromEntries(CMS_DEF.map(d=>[d.k,d]));
+const cclone=v=>v==null?v:JSON.parse(JSON.stringify(v));
+const chash=s=>{let h=5381;s=String(s);for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return h.toString(36)};
+function cKeyOf(it){
+  if(it&&typeof it==="object"&&!Array.isArray(it)&&it.id!=null&&/^[A-Za-z0-9_-]{1,60}$/.test(String(it.id)))return "i-"+it.id;
+  let s=Array.isArray(it)?it[0]:(it&&typeof it==="object")?(it.id??it.t??it.n??it.ar??it.q??it.lab??it.who??JSON.stringify(it).slice(0,80)):it;
+  return "h"+chash(typeof s==="string"?s:JSON.stringify(s));
+}
+const PAGE_HTML=new Set();
+function collectPages(){
+  const out=[];const add=(key,el,label,html)=>{if(!el)return;out.push({key,el,label});if(html)PAGE_HTML.add(key)};
+  const navName={};document.querySelectorAll("#nav a").forEach(a=>{const h=a.getAttribute("href").slice(1);navName[h]=a.textContent.trim();if(a.id!=="navAdmin")add("nav-"+h,a,"القائمة الرئيسية: "+a.textContent.trim())});
+  add("brand-name",$(".brand b"),"اسم المنصة في الترويسة");add("brand-tag",$(".brand small"),"شعار المنصة تحت الاسم");
+  add("hero-eyebrow",$("#v-home .hero .eyebrow"),"الرئيسية: السطر التمهيدي");add("hero-h1",$("#v-home .hero h1"),"الرئيسية: العنوان الكبير",1);add("hero-p",$("#v-home .hero p"),"الرئيسية: الفقرة التعريفية");
+  document.querySelectorAll("#v-home .hero-cta a").forEach((a,i)=>add("hero-btn"+i,a,"الرئيسية: الزر "+(i+1)));
+  document.querySelectorAll("#v-home .tile").forEach(t=>{const h=t.getAttribute("href").slice(1);add("tile-"+h+"-t",t.querySelector("h3"),"بطاقة الرئيسية: عنوان «"+t.querySelector("h3").textContent.trim()+"»");add("tile-"+h+"-p",t.querySelector("p"),"بطاقة الرئيسية: وصف «"+t.querySelector("h3").textContent.trim()+"»")});
+  document.querySelectorAll("section.view").forEach(v=>{const id=v.id.slice(2);if(id==="home"||id==="admin")return;const hd=v.firstElementChild;if(!hd)return;const nm=navName[id]||(hd.querySelector("h2")||{}).textContent||id;
+    add("v-"+id+"-e",hd.querySelector(":scope>.eyebrow"),"صفحة «"+nm+"»: السطر التمهيدي");add("v-"+id+"-h",hd.querySelector(":scope>h2"),"صفحة «"+nm+"»: العنوان");add("v-"+id+"-l",hd.querySelector(":scope>.lede"),"صفحة «"+nm+"»: الفقرة التعريفية",1)});
+  const fs=document.querySelectorAll("footer .wrap>span");fs.forEach((s,i)=>add("footer-"+i,s,"التذييل: النص "+(i+1)));
+  out.forEach(p=>{p.base=PAGE_HTML.has(p.key)||p.el.children.length?p.el.innerHTML:p.el.textContent;if(p.el.children.length)PAGE_HTML.add(p.key)});
+  return out;
+}
+const CPAGES=collectPages();
+function cSanitize(html){
+  const t=document.createElement("template");t.innerHTML=String(html||"");const OK=new Set(["A","B","STRONG","I","EM","SPAN","BR","SMALL"]);
+  const walk=n=>{[...n.childNodes].forEach(c=>{if(c.nodeType===1){if(!OK.has(c.tagName)){c.replaceWith(document.createTextNode(c.textContent));return}
+    [...c.attributes].forEach(a=>{const keep=c.tagName==="A"&&a.name==="href"&&/^(#|https:\/\/)/.test(a.value);if(!keep&&a.name!=="dir"&&a.name!=="lang")c.removeAttribute(a.name)});walk(c)}else if(c.nodeType!==3)c.remove()})};
+  walk(t.content);return t.innerHTML;
+}
+const CBASE={};
+CMS_DEF.forEach(d=>{
+  if(d.pages){CBASE.pages={map:1,entries:CPAGES.map(p=>({key:p.key,item:p.base,label:p.label}))};return}
+  if(d.map){CBASE[d.k]={map:1,entries:Object.keys(d.ref).map(k=>({key:k,item:cclone(d.ref[k])}))};return}
+  const seen={};CBASE[d.k]={entries:d.ref.map(it=>{let key=cKeyOf(it);if(seen[key]){seen[key]++;key+="-"+seen[key]}else seen[key]=1;return {key,item:cclone(it)}})};
+});
+const CMS={mode:null,ov:{},order:{},pub:null,ready:false,dirty:false,gh:null};
+function cRec(s,k){return (CMS.ov[s]||{})[k]}
+function cEntries(s){
+  const B=CBASE[s];if(!B)return [];const ov=CMS.ov[s]||{};const baseKeys=new Set(B.entries.map(e=>e.key));
+  let list=B.entries.map(e=>{const r=ov[e.key];let item=e.item;if(r&&r.j!=null){try{item=JSON.parse(r.j)}catch(x){}}
+    return {key:e.key,item,base:e.item,label:e.label,custom:false,mod:!!(r&&r.j!=null),hidden:!!(r&&r.h),deleted:!!(r&&r.d),at:r&&r.at}});
+  Object.entries(ov).forEach(([k,r])=>{if(baseKeys.has(k)||!r||!r.c||r.j==null)return;let item;try{item=JSON.parse(r.j)}catch(x){return}
+    list.push({key:k,item,base:null,custom:true,mod:false,hidden:!!r.h,deleted:!!r.d,at:r.at,label:r.lb})});
+  const ord=CMS.order[s];
+  if(ord&&ord.length&&!B.map){const pos=new Map(ord.map((k,i)=>[k,i]));const nat=new Map(list.map((e,i)=>[e.key,i]));
+    list.sort((a,b)=>{const pa=pos.has(a.key)?pos.get(a.key):1e6+nat.get(a.key),pb=pos.has(b.key)?pos.get(b.key):1e6+nat.get(b.key);return pa-pb})}
+  return list;
+}
+function cmsApply(){
+  CMS_DEF.forEach(d=>{
+    const L=cEntries(d.k).filter(e=>!e.deleted&&!e.hidden);
+    if(d.pages){const m=new Map(L.map(e=>[e.key,e.item]));const hid=new Set(cEntries("pages").filter(e=>e.hidden||e.deleted).map(e=>e.key));
+      CPAGES.forEach(p=>{if(hid.has(p.key)){p.el.hidden=true;return}p.el.hidden=false;const v=m.has(p.key)?m.get(p.key):p.base;if(PAGE_HTML.has(p.key))p.el.innerHTML=cSanitize(v);else p.el.textContent=v});return}
+    if(d.map){Object.keys(d.ref).forEach(k=>delete d.ref[k]);L.forEach(e=>{d.ref[e.key]=cclone(e.item)});return}
+    d.ref.splice(0,d.ref.length,...L.map(e=>cclone(e.item)));
+  });
+  PAP.forEach((p,i)=>p.n="ب-"+String(i+1).padStart(2,"0"));BOOKS.forEach((b,i)=>b.n="ك-"+String(i+1).padStart(2,"0"));
+  PAPCAT.splice(0,PAPCAT.length,...new Set(PAP.map(p=>p.cat)));BKCAT.splice(0,BKCAT.length,...new Set(BOOKS.map(b=>b.cat)));
+  PIDX=null;S.kings=BASE_KINGS.slice();S.questions=BASE_Q.slice();
+}
+function cTitle(s,e){const it=e.item;if(e.label)return e.label;if(typeof it==="string")return it;if(Array.isArray(it))return String(it[s==="chrono"?2:(s==="gal"||s==="pix")?1:0]??"");
+  return String(it.ar||it.t||it.n||it.q||it.who||it.lab||it.name||it.title||e.key)}
+function cSub(s,e){const it=e.item;if(s==="pages")return typeof it==="string"?it.replace(/<[^>]+>/g,"").slice(0,90):"";if(typeof it!=="object"||it==null)return "";
+  if(Array.isArray(it)){const o=it.filter((v,i)=>typeof v==="string"&&v!==cTitle(s,e)).slice(0,1)[0]||it.filter(v=>typeof v==="number").join(" · ");return String(o||"").slice(0,90)}
+  const parts=[it.en,it.dyn,it.when||it.y,it.cat,it.inv,it.sub,it.d].filter(v=>typeof v==="string"&&v).slice(0,2);if(s==="kings"&&it.from)parts.push(reign(it));if(it.n&&/^[بك]-/.test(it.n))parts.unshift(it.n);return parts.join(" · ").slice(0,110)}
+/* ---------- storage adapters ---------- */
+const CGH={on:false,repo:"",path:"",branch:"main"};
+(function(){const h=location.hostname;if(/\.github\.io$/i.test(h)){CGH.repo=h.split(".")[0]+"/"+h;const dir=location.pathname.replace(/[^/]*$/,"").replace(/^\//,"");CGH.path=dir+"content.json"}})();
+const ghTok=()=>{try{return sessionStorage.getItem("sifr:ghtok")||localStorage.getItem("sifr:ghtok")||""}catch(e){return ""}};
+function cDocId(s,k){const id=s+"~"+k;return /^[A-Za-z0-9_\-.~]{1,180}$/.test(id)?id:s+"~h"+chash(k)}
+function cSnapshot(){const ov={};Object.entries(CMS.ov).forEach(([s,m])=>{const o={};Object.entries(m).forEach(([k,r])=>{if(r)o[k]=r});if(Object.keys(o).length)ov[s]=o});
+  const order={};Object.entries(CMS.order).forEach(([s,a])=>{if(a&&a.length)order[s]=a.slice()});return {v:1,app:"jumana",updatedAt:new Date().toISOString(),ov,order,notice:(S.site&&S.site.notice)||""}}
+function cDraftSave(){store.set("cmsdraft",{...cSnapshot(),base:(CMS.pub&&CMS.pub.updatedAt)||""});CMS.dirty=JSON.stringify(cSnapshotCore(cSnapshot()))!==JSON.stringify(cSnapshotCore(CMS.pub||{}))}
+function cSnapshotCore(x){return {ov:x.ov||{},order:x.order||{},notice:x.notice||""}}
+function cLoadState(x){CMS.ov={};CMS.order={};Object.entries((x&&x.ov)||{}).forEach(([s,m])=>{if(CBASE[s]&&m&&typeof m==="object")CMS.ov[s]={...m}});Object.entries((x&&x.order)||{}).forEach(([s,a])=>{if(CBASE[s]&&Array.isArray(a))CMS.order[s]=a.map(String)});
+  if(CMS.mode==="gh"){S.site={...(S.site||{}),notice:(x&&x.notice)||""};const n=(S.site.notice||"").trim();$("#notice").hidden=!n;$("#noticeText").textContent=n}}
+async function cPut(s,k,rec){
+  rec={...rec,s,k,at:new Date().toISOString()};
+  if(CMS.mode==="db"){try{await S.db.doc("cms/"+cDocId(s,k)).set(rec);return true}catch(e){toast("تعذّر الحفظ: "+(e&&e.message?e.message:"حاول مرة أخرى"));return false}}
+  (CMS.ov[s]=CMS.ov[s]||{})[k]=rec;cDraftSave();cmsApply();rerender();return true;
+}
+async function cDel(s,k){
+  if(CMS.mode==="db"){try{await S.db.doc("cms/"+cDocId(s,k)).delete();return true}catch(e){toast("تعذّر الحذف: "+(e&&e.message?e.message:"حاول مرة أخرى"));return false}}
+  if(CMS.ov[s])delete CMS.ov[s][k];cDraftSave();cmsApply();rerender();return true;
+}
+async function cPutOrder(s,keys){
+  if(CMS.mode==="db"){try{if(keys)await S.db.doc("cmsorder/"+s).set({keys,at:new Date().toISOString()});else await S.db.doc("cmsorder/"+s).delete();return true}catch(e){toast("تعذّر حفظ الترتيب: "+(e&&e.message?e.message:""));return false}}
+  if(keys)CMS.order[s]=keys;else delete CMS.order[s];cDraftSave();cmsApply();rerender();return true;
+}
+function cmsStartDb(db){
+  CMS.mode="db";let got=0;const done=()=>{if(++got>=2||CMS.ready){CMS.ready=true;cmsApply();rerender()}};
+  db.collection("cms").onSnapshot(snap=>{const ov={};snap.docs.filter(d=>d.exists).forEach(d=>{const r=d.data();if(r&&r.s&&r.k&&CBASE[r.s])(ov[r.s]=ov[r.s]||{})[r.k]=r});CMS.ov=ov;done()},()=>done());
+  db.collection("cmsorder").onSnapshot(snap=>{const o={};snap.docs.filter(d=>d.exists).forEach(d=>{const r=d.data();if(CBASE[d.id]&&r&&Array.isArray(r.keys))o[d.id]=r.keys});CMS.order=o;done()},()=>done());
+}
+async function cmsStartStatic(){
+  CMS.mode="gh";CGH.on=!!CGH.repo;
+  try{const r=await fetch("content.json?t="+Date.now(),{cache:"no-store"});if(r.ok){CMS.pub=await r.json()}}catch(e){}
+  CMS.pub=CMS.pub&&CMS.pub.v===1?CMS.pub:{v:1,ov:{},order:{},notice:""};
+  cLoadState(CMS.pub);
+  if(ghTok()){const ok=await ghVerify(ghTok(),true);if(ok){const d=store.get("cmsdraft",null);if(d&&d.v===1&&(d.base||"")===(CMS.pub.updatedAt||"")){cLoadState(d)}cDraftSave()}}
+  CMS.ready=true;cmsApply();rerender();
+}
+async function ghApi(path,opt={},tok=ghTok()){return fetch("https://api.github.com/"+path,{...opt,headers:{"Accept":"application/vnd.github+json","Authorization":"Bearer "+tok,...(opt.body?{"Content-Type":"application/json"}:{})}})}
+async function ghVerify(tok,silent){
+  if(!CGH.repo){if(!silent)toast("النشر عبر GitHub متاح في النسخة المستضافة على GitHub Pages");return false}
+  try{const r=await ghApi("repos/"+CGH.repo,{},tok);if(!r.ok){if(!silent)toast(r.status===401?"رمز الدخول غير صحيح أو منتهي الصلاحية":"تعذّر التحقق من الحساب ("+r.status+")");return false}
+    const j=await r.json();if(!j.permissions||!j.permissions.push){if(!silent)toast("هذا الحساب لا يملك صلاحية التعديل على مستودع الموقع");return false}
+    CGH.branch=j.default_branch||"main";S.canEdit=true;S.ghUser=(j.owner&&j.owner.login)||"";$("#navAdmin").hidden=false;
+    try{const u=await ghApi("user",{},tok);if(u.ok){const uj=await u.json();S.ghUser=uj.login}}catch(e){}
+    return true}catch(e){if(!silent)toast("تعذّر الاتصال بخدمة GitHub");return false}
+}
+function b64u(s){const b=new TextEncoder().encode(s);let o="";for(let i=0;i<b.length;i+=8192)o+=String.fromCharCode.apply(null,b.subarray(i,i+8192));return btoa(o)}
+async function ghPublish(){
+  const snap=cSnapshot();const body=JSON.stringify(snap,null,1);const P="repos/"+CGH.repo+"/contents/"+CGH.path;
+  try{let sha;const g=await ghApi(P+"?ref="+encodeURIComponent(CGH.branch));if(g.ok)sha=(await g.json()).sha;
+    const r=await ghApi(P,{method:"PUT",body:JSON.stringify({message:"جُمانة: تحديث المحتوى من لوحة الإدارة "+fmtDate(snap.updatedAt),content:b64u(body),branch:CGH.branch,...(sha?{sha}:{})})});
+    if(!r.ok){const j=await r.json().catch(()=>({}));toast("تعذّر النشر: "+(j.message||r.status));return false}
+    CMS.pub=snap;store.set("cmsdraft",{...snap,base:snap.updatedAt});CMS.dirty=false;toast("نُشرت التعديلات لجميع الزوار، وتظهر خلال دقيقة تقريباً");renderAdmin();return true}
+  catch(e){toast("تعذّر الاتصال بخدمة GitHub");return false}
+}
+/* ---------- admin UI ---------- */
+let cSec="kings",cQ="",cF="all";
+function cStats(){let mod=0,add=0,hid=0,del=0,last=[];CMS_DEF.forEach(d=>cEntries(d.k).forEach(e=>{if(e.mod)mod++;if(e.custom)add++;if(e.hidden)hid++;if(e.deleted)del++;if(e.at)last.push({s:d.k,e})}));
+  last.sort((a,b)=>String(b.e.at).localeCompare(String(a.e.at)));return {mod,add,hid,del,last:last.slice(0,8)}}
+function cBadge(e){return `${e.custom?'<span class="tag c">مضاف</span>':""}${e.mod?'<span class="tag m">معدّل</span>':""}${e.hidden?'<span class="tag h">مخفي</span>':""}${e.deleted?'<span class="tag h">محذوف</span>':""}`}
+function cmsPane(){
+  const d=CMSD[cSec],all=cEntries(cSec);const q=cQ.trim().toLowerCase();
+  let L=all.filter(e=>cF==="deleted"?e.deleted:!e.deleted);
+  if(cF==="mod")L=L.filter(e=>e.mod);else if(cF==="add")L=L.filter(e=>e.custom);else if(cF==="hid")L=L.filter(e=>e.hidden);
+  if(q)L=L.filter(e=>(cTitle(cSec,e)+" "+JSON.stringify(e.item)).toLowerCase().includes(q));
+  const canOrder=!CBASE[cSec].map&&!q&&cF==="all";
+  const groups=[...new Set(CMS_DEF.map(x=>x.g))];
+  const cnt=k=>cEntries(k).filter(e=>!e.deleted).length;
+  return `<div class="box cmsbar"><div class="cmsrow1"><label>القسم<select class="field" id="cmsSec">${groups.map(g=>`<optgroup label="${esc(g)}">${CMS_DEF.filter(x=>x.g===g).map(x=>`<option value="${x.k}"${x.k===cSec?" selected":""}>${esc(x.n)} (${cnt(x.k)})</option>`).join("")}</optgroup>`).join("")}</select></label>
+    <label>بحث داخل القسم<input class="field" id="cmsQ" type="search" value="${esc(cQ)}" placeholder="اكتب كلمة…"></label>
+    <label>عرض<select class="field" id="cmsF">${[["all","كل العناصر"],["mod","المعدّلة"],["add","المضافة"],["hid","المخفية"],["deleted","المحذوفة (للاستعادة)"]].map(([v,t])=>`<option value="${v}"${v===cF?" selected":""}>${t}</option>`).join("")}</select></label></div>
+    <div class="tools">${d.pages?"":`<button class="btn sm" data-cadd="1">＋ إضافة عنصر جديد</button>`}${CMS.order[cSec]?`<button class="btn sm ghost" data-cordreset="1">استرجاع الترتيب الأصلي</button>`:""}<span class="meta num" style="color:var(--muted)">${L.length} عنصراً معروضاً من ${all.filter(e=>!e.deleted).length}</span></div>
+    <p class="meta" style="color:var(--muted);margin:0">${canOrder?"لإعادة الترتيب: اسحب المقبض ⠿ وأفلته في المكان الجديد، أو استخدم السهمين. يُحفظ الترتيب فوراً.":CBASE[cSec].map?"عناصر هذا القسم مفهرسة بمفاتيح ثابتة، فلا ترتيب لها.":"أوقف البحث والتصفية لتفعيل إعادة الترتيب."}${cSec==="kings"&&!CMS.order.kings?" الملوك يُعرضون زمنياً تلقائياً حتى تعيد ترتيبهم يدوياً.":""}</p></div>
+  ${L.length?`<ol class="cmslist" id="cmslist">${L.map((e,i)=>`<li class="cmsli${e.hidden?" off":""}" data-ck="${esc(e.key)}">${canOrder?`<button class="cmsh" type="button" aria-label="اسحب لإعادة الترتيب" title="اسحب لإعادة الترتيب">⠿</button>`:""}<span class="cmsn num">${i+1}</span><div class="cmsb"><b>${esc(cTitle(cSec,e))}</b><small>${esc(cSub(cSec,e))}</small></div><div class="tools">${cBadge(e)}
+    ${canOrder?`<button class="btn sm ghost" data-cup="${esc(e.key)}" aria-label="تحريك للأعلى"${i===0?" disabled":""}>▲</button><button class="btn sm ghost" data-cdown="${esc(e.key)}" aria-label="تحريك للأسفل"${i===L.length-1?" disabled":""}>▼</button>`:""}
+    ${e.deleted?`<button class="btn sm" data-crestore="${esc(e.key)}">استعادة</button>`:`<button class="btn sm ghost" data-cedit="${esc(e.key)}">تعديل</button><button class="btn sm ghost" data-chide="${esc(e.key)}">${e.hidden?"إظهار":"إخفاء"}</button>${e.mod?`<button class="btn sm ghost" data-crevert="${esc(e.key)}">استرجاع الأصل</button>`:""}${d.pages?"":`<button class="btn sm danger" data-cdel="${esc(e.key)}">حذف</button>`}`}</div></li>`).join("")}</ol>`:`<div class="empty">لا توجد عناصر مطابقة.</div>`}`;
+}
+function cBlank(v){if(typeof v==="string")return "";if(typeof v==="number")return null;if(typeof v==="boolean")return false;if(Array.isArray(v))return v.length&&v.every(x=>typeof x!=="object")?[]:v.map(cBlank);if(v&&typeof v==="object"){const o={};Object.keys(v).forEach(k=>o[k]=cBlank(v[k]));return o}return v}
+function cLab(d,k,i){if(k==null&&i==null)return "النص";if(i!=null&&d.tl&&d.tl[i])return d.tl[i];if(d.lab&&d.lab[k])return d.lab[k];if(i!=null)return "الحقل "+(i+1);return CMSL[k]||k}
+function cField(d,path,k,v,i,depth){
+  const lab=depth>0&&k!=null&&i==null?(CMSL[k]||k):cLab(d,k,i);const P=esc(JSON.stringify(path));
+  if(typeof v==="number"||(v===null&&/^(from|to|lat|lon|ago|g|dy)$/.test(String(k))&&d.k!=="pages")){
+    const glyph=k==="g"&&v?`<span class="hg" style="font-size:1.6rem">${G(v)}</span>`:"";
+    return `<label>${esc(lab)} ${glyph}<input class="field num" data-p="${P}" data-ty="n" inputmode="decimal" dir="ltr" value="${v==null?"":esc(k==="g"&&v?"0x"+v.toString(16).toUpperCase():v)}"></label>`}
+  if(typeof v==="boolean")return `<label class="cchk"><input type="checkbox" data-p="${P}" data-ty="b"${v?" checked":""}> ${esc(lab)}</label>`;
+  if(k==="era"&&typeof v==="string"&&d.k!=="origins")return `<label>${esc(lab)}<select class="field" data-p="${P}" data-ty="s">${ERAS.map(e=>`<option value="${e.id}"${e.id===v?" selected":""}>${esc(e.name)}</option>`).join("")}${v&&!ERAS.some(e=>e.id===v)?`<option value="${esc(v)}" selected>${esc(v)}</option>`:""}</select></label>`;
+  if(k==="cat"&&typeof v==="string"&&(d.k==="pap"||d.k==="books"||d.k==="topics")){const opts=[...new Set(CBASE[d.k].entries.map(e=>e.item.cat))];return `<label>${esc(lab)}<input class="field" data-p="${P}" data-ty="s" list="cdl-cat" value="${esc(v)}"><datalist id="cdl-cat">${opts.map(o=>`<option value="${esc(o)}">`).join("")}</datalist></label>`}
+  if(typeof v==="string"||v==null){const long=(v||"").length>70||/\n/.test(v||"")||/^(bio|d|r|x|sum|why|rel|arch|ctx|deb|q)$/.test(String(k))||d.k==="pages";
+    return `<label>${esc(lab)}${long?`<textarea class="field" data-p="${P}" data-ty="s" rows="${Math.min(10,Math.max(2,Math.ceil((v||"").length/70)))}">${esc(v||"")}</textarea>`:`<input class="field" data-p="${P}" data-ty="s" value="${esc(v||"")}"${/^(en|id|l|u|o)$/.test(String(k))?' dir="ltr"':""}>`}</label>`}
+  if(Array.isArray(v)&&v.every(x=>typeof x==="string"))return `<label>${esc(lab)} <small>(سطر لكل عنصر)</small><textarea class="field" data-p="${P}" data-ty="lines" rows="${Math.min(10,Math.max(3,v.length+1))}">${esc(v.join("\n"))}</textarea></label>`;
+  if(Array.isArray(v)&&v.length&&v.every(x=>typeof x==="number"))return `<label>${esc(lab)} <small>(أرقام مفصولة بفواصل)</small><input class="field" data-p="${P}" data-ty="nums" dir="ltr" value="${esc(v.join(", "))}"></label>`;
+  if(v&&typeof v==="object"&&!Array.isArray(v)&&depth<1)return `<fieldset class="cfs"><legend>${esc(lab)}</legend>${Object.keys(v).map(kk=>cField(d,path.concat(kk),kk,v[kk],null,depth+1)).join("")}</fieldset>`;
+  return `<label>${esc(lab)} <small>(بنية متقدمة بصيغة JSON)</small><textarea class="field cjson" data-p="${P}" data-ty="json" dir="ltr" rows="${Math.min(14,Math.max(4,JSON.stringify(v,null,1).split("\n").length))}">${esc(JSON.stringify(v,null,1))}</textarea></label>`;
+}
+let cEd=null;
+function cOpenEditor(key,isNew){
+  const d=CMSD[cSec];const all=cEntries(cSec);let e=all.find(x=>x.key===key);let item;
+  if(isNew){const tpl=(CBASE[cSec].entries[0]||{}).item;item=Array.isArray(tpl)?tpl.map(cBlank):cBlank(cclone(tpl));if(item&&typeof item==="object"&&!Array.isArray(item)&&"id" in item)item.id="c"+Date.now().toString(36);e={key:null,item,custom:true}}
+  item=cclone(e.item);cEd={key:e.key,isNew,item,mapKey:CBASE[cSec].map?(isNew?"":e.key):null};
+  let body;
+  if(typeof item==="string")body=cField(d,[],null,item,null,0);
+  else if(Array.isArray(item))body=item.map((v,i)=>cField(d,[i],null,v,i,0)).join("");
+  else body=Object.keys(item).map(k=>cField(d,[k],k,item[k],null,0)).join("");
+  if(d.pages)body=`<label>${esc(e.label||"")}${PAGE_HTML.has(e.key)?' <small>(يُسمح بروابط وتنسيق بسيط)</small>':""}<textarea class="field" data-p="[]" data-ty="s" rows="5">${esc(item)}</textarea></label><p class="meta" style="color:var(--muted)">النص الأصلي: ${esc(String(e.base||"").replace(/<[^>]+>/g,""))}</p>`;
+  modal(`<div class="modal-h"><h3>${isNew?"إضافة عنصر إلى «"+esc(d.n)+"»":"تعديل: "+esc(cTitle(cSec,e)).slice(0,80)}</h3><button class="x" data-close aria-label="إغلاق">✕</button></div>
+   <form class="f cedf" id="cedf">${cEd.mapKey!=null?`<label>مفتاح العنصر (حروف لاتينية وأرقام)<input class="field" id="cmk" dir="ltr" required pattern="[A-Za-z0-9_\\-]{1,60}" value="${esc(cEd.mapKey)}"${isNew?"":" readonly"}></label>`:""}
+   <div id="cedFields" class="cedfields">${body}</div>
+   <details class="cadv"><summary>تحرير متقدم بصيغة JSON</summary><textarea class="field cjson" id="cedJson" dir="ltr" rows="12">${esc(JSON.stringify(item,null,1))}</textarea><label class="cchk"><input type="checkbox" id="cedUseJson"> اعتمد نص JSON عند الحفظ بدلاً من الحقول</label></details>
+   <div class="tools"><button class="btn" type="submit">${CMS.mode==="gh"?(isNew?"إضافة":"حفظ"):(isNew?"إضافة ونشر":"حفظ ونشر")}</button><button class="btn ghost sm" type="button" data-close>إلغاء</button></div></form>`);
+  const m=$("#modalRoot .modal-c");m&&m.classList.add("wide");
+}
+function cSetPath(o,p,v){if(!p.length)return v;let t=o;for(let i=0;i<p.length-1;i++)t=t[p[i]];t[p[p.length-1]]=v;return o}
+function cReadForm(){
+  if($("#cedUseJson")&&$("#cedUseJson").checked){return JSON.parse($("#cedJson").value)}
+  let item=cclone(cEd.item);
+  for(const el of document.querySelectorAll("#cedFields [data-p]")){const p=JSON.parse(el.dataset.p),ty=el.dataset.ty;let v;
+    if(ty==="s")v=el.value.replace(/\r/g,"").trim();else if(ty==="b")v=el.checked;
+    else if(ty==="n"){const t=el.value.trim();v=t===""?null:/^0x[0-9a-f]+$/i.test(t)?parseInt(t,16):Number(t.replace(/[٠-٩]/g,c=>"٠١٢٣٤٥٦٧٨٩".indexOf(c)));if(v!==null&&!isFinite(v))throw new Error("قيمة رقمية غير صحيحة في: "+el.closest("label").firstChild.textContent.trim())}
+    else if(ty==="lines")v=el.value.split("\n").map(x=>x.trim()).filter(Boolean);
+    else if(ty==="nums")v=el.value.split(/[,،\s]+/).filter(Boolean).map(Number).filter(isFinite);
+    else if(ty==="json"){try{v=JSON.parse(el.value)}catch(x){throw new Error("صيغة JSON غير صحيحة في: "+el.closest("label").firstChild.textContent.trim())}}
+    item=cSetPath(item,p,v)}
+  return item;
+}
+function cValidate(item){
+  const all=cEntries(cSec);
+  if(item&&typeof item==="object"&&!Array.isArray(item)&&"id" in item){if(!item.id||!/^[A-Za-z0-9_-]{1,60}$/.test(String(item.id)))return "المعرّف مطلوب بحروف لاتينية وأرقام فقط";
+    if(all.some(e=>e.key!==cEd.key&&!e.deleted&&e.item&&e.item.id===item.id))return "هذا المعرّف مستخدم لعنصر آخر في القسم نفسه"}
+  if(cSec==="questions"){if(!item.q)return "نص السؤال مطلوب";if(!Array.isArray(item.a)||item.a.filter(Boolean).length<2)return "أدخل إجابتين على الأقل، والأولى هي الصحيحة"}
+  if(cSec==="kings"&&item.to!=null&&item.from!=null&&item.to>item.from)return "نهاية الحكم يجب أن تكون أصغر رقماً من بدايته في التقويم قبل الميلاد";
+  const t=typeof item==="string"?item:cTitle(cSec,{item});if(!String(t||"").trim())return "العنوان أو الاسم الرئيسي مطلوب";
+  return "";
+}
+async function cSubmit(ev){
+  ev.preventDefault();let item;try{item=cReadForm()}catch(x){toast(x.message);return}
+  const err=cValidate(item);if(err){toast(err);return}
+  const all=cEntries(cSec);let key=cEd.key,rec;
+  if(cEd.isNew){if(CBASE[cSec].map){key=$("#cmk").value.trim();if(!/^[A-Za-z0-9_-]{1,60}$/.test(key)){toast("مفتاح العنصر بحروف لاتينية وأرقام فقط");return}if(all.some(e=>e.key===key&&!e.deleted)){toast("هذا المفتاح مستخدم");return}}
+    else key="c"+Date.now().toString(36)+Math.random().toString(36).slice(2,5);rec={j:JSON.stringify(item),c:true,h:false}}
+  else{const e=all.find(x=>x.key===key);const r=cRec(cSec,key)||{};if(!e.custom&&JSON.stringify(item)===JSON.stringify(e.base)){closeModal();if(r.j!=null){await cPut(cSec,key,{...r,j:null});toast("لا اختلاف عن الأصل، فأُعيد العنصر كما كان")}return}
+    rec={...r,j:JSON.stringify(item),c:e.custom}}
+  if(await cPut(cSec,key,rec)){
+    if(cEd.isNew&&!CBASE[cSec].map&&CMS.order[cSec])await cPutOrder(cSec,[...CMS.order[cSec],key]);
+    closeModal();toast(CMS.mode==="gh"?(cEd.isNew?"أُضيف العنصر. اضغط «نشر للجميع» لاعتماده":"حُفظ التعديل. اضغط «نشر للجميع» لاعتماده"):(cEd.isNew?"أُضيف العنصر ونُشر":"حُفظت التعديلات ونُشرت"))}
+}
+function cConfirm(msg,yes,fn,danger=true){
+  modal(`<div class="modal-h"><h3>تأكيد الإجراء</h3><button class="x" data-close aria-label="إغلاق">✕</button></div><p>${msg}</p><div class="tools"><button class="btn ${danger?"danger":""}" id="cyes">${yes}</button><button class="btn ghost sm" data-close>تراجع</button></div>`);
+  $("#cyes").onclick=async()=>{closeModal();await fn()};
+}
+async function cMove(key,dir){const L=cEntries(cSec).map(e=>e.key);const i=L.indexOf(key),j=i+dir;if(i<0||j<0||j>=L.length)return;[L[i],L[j]]=[L[j],L[i]];await cPutOrder(cSec,L);toast("حُفظ الترتيب الجديد")}
+function cExport(){
+  const snap=cSnapshot();const data=JSON.stringify(snap,null,1);const name="jumana-content-"+fmtDate(snap.updatedAt).split("/").reverse().join("-")+".json";
+  (async()=>{let dl=null;try{dl=window.claude&&window.claude.use?await window.claude.use("downloads"):null}catch(e){}
+    if(dl){try{await dl.save({filename:name,data:new Blob([data],{type:"application/json"})});toast("جُهّزت النسخة الاحتياطية للتنزيل");return}catch(e){}}
+    const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([data],{type:"application/json"}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);toast("نُزّلت النسخة الاحتياطية")})();
+}
+async function cImport(x){
+  if(!x||x.v!==1||typeof x.ov!=="object"){toast("الملف ليس نسخة احتياطية صالحة من جُمانة");return}
+  let n=0;Object.values(x.ov).forEach(m=>n+=Object.keys(m||{}).length);
+  cConfirm(`سيستبدل الاستيراد كل تعديلات المحتوى الحالية بمحتوى الملف: <b class="num">${n}</b> تعديلاً في <b class="num">${Object.keys(x.ov).length}</b> قسماً، و<b class="num">${Object.keys(x.order||{}).length}</b> ترتيباً مخصصاً. هل تريد المتابعة؟`,"استيراد واستبدال",async()=>{
+    if(CMS.mode==="db"){toast("جارٍ الاستيراد…");
+      const want=new Set();for(const [s,m] of Object.entries(x.ov)){if(!CBASE[s])continue;for(const [k,r] of Object.entries(m||{})){want.add(cDocId(s,k));await S.db.doc("cms/"+cDocId(s,k)).set({...r,s,k})}}
+      for(const [s,m] of Object.entries(CMS.ov))for(const k of Object.keys(m))if(!want.has(cDocId(s,k)))await S.db.doc("cms/"+cDocId(s,k)).delete();
+      for(const s of Object.keys(CBASE)){const a=(x.order||{})[s];if(a)await S.db.doc("cmsorder/"+s).set({keys:a,at:new Date().toISOString()});else if(CMS.order[s])await S.db.doc("cmsorder/"+s).delete()}
+      if(typeof x.notice==="string")await S.db.doc("site/settings").set({notice:x.notice,updatedAt:new Date().toISOString()});
+      toast("اكتمل الاستيراد ونُشر المحتوى")}
+    else{cLoadState(x);cDraftSave();cmsApply();rerender();toast("اكتمل الاستيراد. اضغط «نشر للجميع» لاعتماده")}
+  },false);
+}
+async function cResetAll(){
+  if(CMS.mode==="db"){toast("جارٍ المسح…");for(const [s,m] of Object.entries(CMS.ov))for(const k of Object.keys(m))await S.db.doc("cms/"+cDocId(s,k)).delete();for(const s of Object.keys(CMS.order))await S.db.doc("cmsorder/"+s).delete();toast("أُعيد المحتوى كله إلى أصله")}
+  else{cLoadState({ov:{},order:{},notice:S.site.notice||""});cDraftSave();cmsApply();rerender();toast("أُعيد المحتوى إلى أصله. اضغط «نشر للجميع» لاعتماده")}
+}
+function cGhBar(){
+  if(CMS.mode!=="gh")return "";
+  return `<div class="box cghbar${CMS.dirty?" dirty":""}"><div><b>${CMS.dirty?"لديك تعديلات لم تُنشر بعد":"كل التعديلات منشورة"}</b><div class="meta" style="color:var(--muted)">مسجّل باسم <span dir="ltr">${esc(S.ghUser||"")}</span> · آخر نشر: <span class="num">${CMS.pub&&CMS.pub.updatedAt?fmtDate(CMS.pub.updatedAt):"لم يُنشر بعد"}</span>. التعديلات تظهر لك فوراً، وتظهر للزوار بعد النشر.</div></div>
+   <div class="tools">${CMS.dirty?`<button class="btn gold" data-cpub="1">نشر للجميع</button><button class="btn ghost sm" data-cdiscard="1">تجاهل التعديلات غير المنشورة</button>`:""}<button class="btn ghost sm" data-clogout="1">تسجيل الخروج</button></div></div>`;
+}
+function cLoginPane(){
+  return `<form class="box f" id="ghlogin" style="max-width:620px"><h3>دخول الإدارة</h3>
+   <p style="color:var(--muted)">تُدار هذه النسخة المستضافة من حساب GitHub المالك لمستودع الموقع. أدخل رمز الدخول الشخصي (Personal Access Token) مرة واحدة على جهازك، ولا يُرسل إلا إلى GitHub مباشرة.</p>
+   <label>رمز الدخول<input class="field" id="ghtok" type="password" dir="ltr" autocomplete="off" required placeholder="ghp_… أو github_pat_…"></label>
+   <label class="cchk"><input type="checkbox" id="ghremember" checked> تذكّرني على هذا الجهاز</label>
+   <div class="tools"><button class="btn" type="submit">دخول</button><a class="btn ghost sm" href="https://github.com/settings/tokens/new?scopes=repo&description=Jumana%20Admin" target="_blank" rel="noopener">إنشاء رمز جديد</a></div>
+   <details><summary>كيف أحصل على الرمز؟</summary><ol style="color:var(--muted);margin:8px 0 0;padding-inline-start:20px"><li>سجّل الدخول إلى GitHub بالحساب الذي يملك صلاحية التعديل على مستودع الموقع.</li><li>اضغط «إنشاء رمز جديد»، واترك صلاحية <span dir="ltr">repo</span> محددة، واختر مدة الصلاحية.</li><li>انسخ الرمز والصقه هنا. يمكنك إلغاؤه في أي وقت من إعدادات GitHub.</li></ol></details></form>`;
+}
+const _renderAdminBase=renderAdmin;
+renderAdmin=function(){
+  const gh=CMS.mode==="gh";
+  document.querySelectorAll('#atabs [data-t="learners"],#atabs [data-t="reports"]').forEach(b=>b.hidden=gh);
+  if(gh&&!S.canEdit){$("#atabs").hidden=true;$("#adminLede").textContent="سجّل الدخول لإدارة محتوى المنصة.";$("#apane").innerHTML=cLoginPane();
+    $("#ghlogin").onsubmit=async ev=>{ev.preventDefault();const t=$("#ghtok").value.trim();if(!t)return;const btn=ev.target.querySelector("button[type=submit]");btn.disabled=true;
+      if(await ghVerify(t)){try{($("#ghremember").checked?localStorage:sessionStorage).setItem("sifr:ghtok",t)}catch(e){}const d=store.get("cmsdraft",null);if(d&&d.v===1&&CMS.pub&&(d.base||"")===(CMS.pub.updatedAt||""))cLoadState(d);cDraftSave();cmsApply();toast("مرحباً، تم الدخول بصفة مدير");renderAdmin()}else btn.disabled=false};return}
+  if(["content","pages","backup"].includes(atab)||(gh&&atab==="notice")){
+    if(!S.canEdit){_renderAdminBase();return}
+    $("#atabs").hidden=false;document.querySelectorAll("#atabs button").forEach(b=>b.classList.toggle("on",b.dataset.t===atab));
+    $("#adminLede").textContent=gh?"أنت مسجّل بصفة مدير. راجع تعديلاتك ثم اضغط «نشر للجميع».":"أنت مسجّل بصفة مدير. أي تعديل هنا يظهر فوراً لجميع زوار المنصة.";
+    const P=$("#apane");
+    if(atab==="content"||atab==="pages"){if(atab==="pages")cSec="pages";else if(cSec==="pages")cSec="kings";P.innerHTML=cGhBar()+cmsPane()}
+    if(atab==="notice"){P.innerHTML=cGhBar()+`<form class="box f" id="nform2"><h3>شريط الإعلان</h3><p style="color:var(--muted)">يظهر أعلى جميع الصفحات لكل الزوار. اتركه فارغاً لإخفائه.</p><label>نص الإعلان<textarea class="field" id="ntext2" rows="2" maxlength="200">${esc(S.site.notice||"")}</textarea></label><div class="tools"><button class="btn" type="submit">حفظ الإعلان</button></div></form>`;
+      $("#nform2").onsubmit=ev=>{ev.preventDefault();S.site={...S.site,notice:$("#ntext2").value.trim()};const n=S.site.notice;$("#notice").hidden=!n;$("#noticeText").textContent=n;cDraftSave();toast("حُفظ الإعلان");renderAdmin()}}
+    if(atab==="backup"){const st=cStats();P.innerHTML=cGhBar()+`<div class="two"><div class="box"><h3>النسخ الاحتياطي والتصدير</h3><p style="color:var(--muted)">ينزّل ملفاً واحداً بصيغة JSON يضم كل الإضافات والتعديلات والحذف والإخفاء والترتيب وشريط الإعلان. احتفظ به نسخةً احتياطية، أو انقله بين نسخة claude.ai ونسخة GitHub.</p>
+      <div class="stats"><div class="stat"><b class="num">${st.mod}</b><span>معدّل</span></div><div class="stat"><b class="num">${st.add}</b><span>مضاف</span></div><div class="stat"><b class="num">${st.hid}</b><span>مخفي</span></div><div class="stat"><b class="num">${st.del}</b><span>محذوف</span></div></div>
+      <div class="tools"><button class="btn" data-cexport="1">تنزيل نسخة احتياطية</button></div></div>
+      <div class="box"><h3>الاستيراد والاسترجاع</h3><p style="color:var(--muted)">اختر ملف نسخة احتياطية سابقة لاستبدال المحتوى الحالي به. يُطلب منك التأكيد قبل التنفيذ.</p><label class="btn ghost sm" style="justify-self:start">اختيار ملف للاستيراد<input type="file" id="cimp" accept="application/json,.json" hidden></label>
+      <hr style="border:0;border-top:1px solid var(--line);width:100%"><h3>إعادة المحتوى إلى أصله</h3><p style="color:var(--muted)">يلغي كل التعديلات والإضافات والترتيب المخصص، ويعيد المنصة إلى محتواها الأصلي. نزّل نسخة احتياطية أولاً.</p><div><button class="btn danger sm" data-creset="1">إعادة الكل إلى الأصل</button></div></div></div>`;
+      $("#cimp").onchange=async ev=>{const f=ev.target.files[0];if(!f)return;try{cImport(JSON.parse(await f.text()))}catch(e){toast("تعذّرت قراءة الملف: صيغة غير صالحة")}ev.target.value=""}}
+    return;
+  }
+  _renderAdminBase();
+  if(S.canEdit&&atab==="overview"){const st=cStats();const box=document.createElement("div");box.className="box";box.style.marginTop="14px";
+    box.innerHTML=`<h3>إدارة المحتوى الشاملة</h3><p style="color:var(--muted)">${CMS_DEF.length} قسماً قابلاً للتحرير: الإضافة والتعديل والحذف والإخفاء وإعادة الترتيب. معدّل <b class="num">${st.mod}</b> · مضاف <b class="num">${st.add}</b> · مخفي <b class="num">${st.hid}</b> · محذوف <b class="num">${st.del}</b></p>
+     ${st.last.length?`<div class="list">${st.last.map(x=>`<div class="li"><div><b>${esc(cTitle(x.s,x.e))}</b><div style="color:var(--muted);font-size:.85rem">${esc(CMSD[x.s].n)} · <span class="num">${fmtDate(x.e.at)}</span></div></div><div class="tools">${cBadge(x.e)}<button class="btn sm ghost" data-cgo="${x.s}">فتح القسم</button></div></div>`).join("")}</div>`:`<div class="empty">لم تُجرَ تعديلات على المحتوى بعد.</div>`}
+     <div class="tools"><button class="btn sm" data-cgo="kings">ابدأ إدارة المحتوى</button></div>`;
+    $("#apane").prepend(...(gh?[document.createRange().createContextualFragment(cGhBar())]:[]));$("#apane").appendChild(box)}
+};
+document.addEventListener("submit",ev=>{if(ev.target.id==="cedf")cSubmit(ev)});
+document.addEventListener("change",ev=>{const id=ev.target.id;if(id==="cmsSec"){cSec=ev.target.value;cQ="";cF="all";renderAdmin()}else if(id==="cmsF"){cF=ev.target.value;renderAdmin()}});
+let cQT=null;document.addEventListener("input",ev=>{if(ev.target.id==="cmsQ"){clearTimeout(cQT);cQT=setTimeout(()=>{cQ=ev.target.value;renderAdmin();const q=$("#cmsQ");if(q){q.focus();q.setSelectionRange(q.value.length,q.value.length)}},250)}});
+document.addEventListener("click",async ev=>{
+  const t=ev.target.closest("[data-cadd],[data-cedit],[data-chide],[data-cdel],[data-crestore],[data-crevert],[data-cup],[data-cdown],[data-cordreset],[data-cexport],[data-creset],[data-cpub],[data-cdiscard],[data-clogout],[data-cgo]");if(!t)return;
+  const D=t.dataset,r=k=>cRec(cSec,k)||{};
+  if(D.cadd)cOpenEditor(null,true);
+  else if(D.cedit)cOpenEditor(D.cedit,false);
+  else if(D.chide){const e=cEntries(cSec).find(x=>x.key===D.chide);await cPut(cSec,D.chide,{...r(D.chide),h:!e.hidden,c:e.custom});toast(e.hidden?"أصبح العنصر ظاهراً للزوار":"أُخفي العنصر عن الزوار")}
+  else if(D.cdel){const e=cEntries(cSec).find(x=>x.key===D.cdel);cConfirm(`هل تريد حذف «${esc(cTitle(cSec,e))}»؟ ${e.custom?"سيُحذف هذا العنصر المضاف نهائياً.":"يمكنك استعادته لاحقاً من عرض «المحذوفة»."}`,"حذف",async()=>{if(e.custom)await cDel(cSec,D.cdel);else await cPut(cSec,D.cdel,{...r(D.cdel),d:true});toast("حُذف العنصر")})}
+  else if(D.crestore){await cPut(cSec,D.crestore,{...r(D.crestore),d:false});toast("استُعيد العنصر")}
+  else if(D.crevert){const e=cEntries(cSec).find(x=>x.key===D.crevert);cConfirm(`إعادة «${esc(cTitle(cSec,e))}» إلى نصه الأصلي وإلغاء تعديلاتك عليه؟`,"استرجاع الأصل",async()=>{const x=r(D.crevert);if(x.h||x.d)await cPut(cSec,D.crevert,{...x,j:null});else await cDel(cSec,D.crevert);toast("أُعيد العنصر إلى أصله")},false)}
+  else if(D.cup)cMove(D.cup,-1);else if(D.cdown)cMove(D.cdown,1);
+  else if(D.cordreset)cConfirm("إلغاء الترتيب المخصص لهذا القسم والعودة إلى الترتيب الأصلي؟","استرجاع الترتيب",async()=>{await cPutOrder(cSec,null);toast("أُعيد الترتيب الأصلي")},false);
+  else if(D.cexport)cExport();
+  else if(D.creset)cConfirm("سيُلغى كل تعديل وإضافة وحذف وترتيب مخصص في كل الأقسام. هل أنت متأكد؟","إعادة الكل إلى الأصل",cResetAll);
+  else if(D.cpub){t.disabled=true;await ghPublish();t.disabled=false}
+  else if(D.cdiscard)cConfirm("تجاهل كل التعديلات غير المنشورة والعودة إلى آخر نسخة منشورة؟","تجاهل التعديلات",async()=>{store.set("cmsdraft",null);cLoadState(CMS.pub);cDraftSave();cmsApply();rerender();toast("أُعيدت آخر نسخة منشورة")});
+  else if(D.clogout){try{localStorage.removeItem("sifr:ghtok");sessionStorage.removeItem("sifr:ghtok")}catch(e){}S.canEdit=false;$("#navAdmin").hidden=true;cLoadState(CMS.pub);cmsApply();toast("تم تسجيل الخروج");rerender()}
+  else if(D.cgo){cSec=D.cgo;cQ="";cF="all";atab=cSec==="pages"?"pages":"content";renderAdmin()}
+});
+/* drag and drop reorder (mouse and touch) */
+let cdrag=null;
+document.addEventListener("pointerdown",ev=>{const h=ev.target.closest(".cmsh");if(!h)return;ev.preventDefault();const li=h.closest("li");cdrag={li,list:li.parentNode,start:[...li.parentNode.children].indexOf(li)};li.classList.add("drag");try{h.setPointerCapture(ev.pointerId)}catch(e){}});
+document.addEventListener("pointermove",ev=>{if(!cdrag)return;ev.preventDefault();const y=ev.clientY;const sib=[...cdrag.list.children].filter(x=>x!==cdrag.li);let before=null;for(const s of sib){const b=s.getBoundingClientRect();if(y<b.top+b.height/2){before=s;break}}
+  if(before!==cdrag.li.nextSibling)cdrag.list.insertBefore(cdrag.li,before);if(y<60)window.scrollBy(0,-14);else if(y>innerHeight-60)window.scrollBy(0,14)},{passive:false});
+const cDrop=async()=>{if(!cdrag)return;const {li,list,start}=cdrag;cdrag=null;li.classList.remove("drag");const keys=[...list.children].map(x=>x.dataset.ck);
+  if(keys.indexOf(li.dataset.ck)===start)return;[...list.children].forEach((x,i)=>{const n=x.querySelector(".cmsn");if(n)n.textContent=i+1});await cPutOrder(cSec,keys);toast("حُفظ الترتيب الجديد")};
+document.addEventListener("pointerup",cDrop);document.addEventListener("pointercancel",cDrop);
+if(!window.claude||!window.claude.use)cmsStartStatic();
+
 /* ---------------- router ---------------- */
 const VIEWS=["home","explore","unique","tawhid","library","papyri","books","story","compare","teacher","gallery","tour3d","en","egyptology","chrono","sciences","religion","world","origins","timeline","kings","map","gods","topics","glyphs","quiz","search","about","admin"];
 const R={home:renderHome,unique:renderUnique,tawhid:renderTawhid,library:renderLibrary,papyri:()=>{renderPapyri();renderHall()},books:renderBooks,story:renderStory,compare:renderCompare,teacher:renderTeacher,gallery:renderGallery,tour3d:renderTour3d,en:renderEn,egyptology:renderEgyptology,explore:renderAxes,chrono:renderChrono,sciences:renderSciences,religion:renderReligion,world:renderWorld,search:renderSearch,about:renderAbout,origins:()=>{renderOrigins();renderStations()},timeline:renderTimeline,kings:renderKings,map:renderMap,gods:renderGods,topics:renderTopics,glyphs:()=>{renderGlyphs();renderLearn();renderHEditor();renderHDict();renderName()},quiz:()=>{renderQuiz();renderProfile();renderBoard();renderDaily()},admin:renderAdmin};
@@ -3310,7 +3691,7 @@ renderChip();route();
   if(user){try{S.canEdit=await user.canEdit();S.uid=await user.id()}catch(e){}}
   if(S.canEdit){$("#navAdmin").hidden=false}
   if(!db){rerender();return}
-  S.db=db;
+  S.db=db;cmsStartDb(db);
   const sub=(col,fn)=>db.collection(col).onSnapshot(snap=>{fn(snap.docs.filter(d=>d.exists).map(d=>({id:d.id,...d.data()})));rerender()},()=>{});
   sub("kings",rows=>{S.kOv={};rows.forEach(r=>{const {id,...rest}=r;S.kOv[id]=rest})});
   sub("questions",rows=>{S.qOv={};rows.forEach(r=>{const {id,...rest}=r;S.qOv[id]=rest})});
