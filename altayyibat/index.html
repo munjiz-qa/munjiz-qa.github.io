@@ -581,6 +581,62 @@ html[dir=rtl] .trk-nav .flip{transform:scaleX(-1)}
  #mkcPrint .mkc-fig figcaption{position:static;background:none;color:#444}#mkcPrint .mkc-fig figcaption a{color:#444}
  #mkcPrint .mkc-warn,#mkcPrint .mkc-tip{background:none;border:1px solid #444}#mkcPrint h3{color:#000;break-after:avoid}#mkcPrint table{font-size:10pt}}
 </style>
+<style id="cms-css">
+.cms-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 14px}
+.cms-tabs button{flex:0 0 auto}
+.cms-split{display:grid;grid-template-columns:230px 1fr;gap:16px;align-items:start}
+.cms-side{position:sticky;top:12px;display:flex;flex-direction:column;gap:4px;max-height:78vh;overflow:auto;padding:8px;background:var(--sunk);border:1px solid var(--line);border-radius:14px}
+.cms-side button{display:flex;justify-content:space-between;align-items:center;gap:8px;text-align:start;background:transparent;border:0;border-radius:9px;padding:8px 10px;cursor:pointer;color:var(--ink);font:500 14px var(--f-body,inherit)}
+.cms-side button:hover{background:var(--paper,#fff)}
+.cms-side button[aria-current="true"]{background:var(--pine,#1f5a4a);color:#fff}
+.cms-side .n{font:500 12px var(--f-mono,monospace);opacity:.75}
+.cms-side .dot{width:8px;height:8px;border-radius:50%;background:var(--copper,#b8622c);display:inline-block;margin-inline-start:6px}
+.cms-selbox{display:none}
+.cms-bar2{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.cms-bar2 input[type=search]{flex:1 1 180px;min-width:0}
+.cms-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.cms-row{display:flex;align-items:center;gap:8px;background:var(--paper,#fff);border:1px solid var(--line);border-radius:12px;padding:8px 10px}
+.cms-row.drag{opacity:.45}.cms-row.over{outline:2px dashed var(--copper,#b8622c)}
+.cms-row.edited{border-inline-start:4px solid var(--copper,#b8622c)}.cms-row.added{border-inline-start:4px solid var(--good,#2e7d5b)}
+.cms-grip{cursor:grab;color:var(--muted,#888);user-select:none;padding:0 4px;font-size:18px;touch-action:none}
+.cms-t{flex:1;min-width:0}.cms-t b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cms-t small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted,#777)}
+.cms-act{display:flex;gap:4px;flex:none}
+.cms-act button{min-width:34px;height:34px;border:1px solid var(--line);background:var(--sunk);border-radius:9px;cursor:pointer;color:var(--ink);font-size:15px;padding:0 6px}
+.cms-act button:hover{border-color:var(--pine,#1f5a4a)}.cms-act .del:hover{border-color:var(--bad,#b3261e);color:var(--bad,#b3261e)}
+.cms-dlg{position:fixed;inset:0;z-index:120;background:rgba(0,0,0,.5);display:grid;place-items:center;padding:12px}
+.cms-card{background:var(--paper,#fff);color:var(--ink);border:1px solid var(--line);border-radius:18px;width:100%;max-width:520px;max-height:94vh;overflow:auto;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.cms-card.wide{max-width:820px}
+.cms-card h2{margin:0 0 10px;font-family:var(--f-display)}
+.cms-f{margin:0 0 12px;position:relative}
+.cms-f label{display:flex;justify-content:space-between;gap:8px;font-weight:600;font-size:13px;margin-bottom:4px}
+.cms-f label code{font:500 11px var(--f-mono,monospace);opacity:.6;direction:ltr}
+.cms-f input:not([type=checkbox]),.cms-f textarea,.cms-f select{width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px 11px;color:var(--ink);font:inherit}
+.cms-f textarea{resize:vertical;line-height:1.7}.cms-f .json{font:12px/1.5 var(--f-mono,monospace);direction:ltr;text-align:left}
+.cms-f .ltr{direction:ltr;text-align:left}
+.cms-f .rm{border:0;background:none;color:var(--bad,#b3261e);cursor:pointer;font-size:13px}
+.cms-foot{position:sticky;bottom:-18px;background:var(--paper,#fff);padding:10px 0 4px;display:flex;gap:8px;flex-wrap:wrap;border-top:1px solid var(--line);margin-top:8px}
+.cms-nav-g{border:1px solid var(--line);border-radius:14px;padding:10px;margin-bottom:12px;background:var(--paper,#fff)}
+.cms-nav-g header{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.cms-nav-g header input{flex:1 1 140px;min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:7px 9px;color:var(--ink);font:inherit}
+.cms-nav-i{display:grid;grid-template-columns:1fr 1fr minmax(120px,180px) auto;gap:6px;align-items:center;border-top:1px solid var(--line);padding:6px 0}.cms-nav-i>*{min-width:0}.cms-nav-g header .cms-act{margin-inline-start:auto}
+.cms-nav-i input,.cms-nav-i select{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 8px;color:var(--ink);font:inherit;min-width:0}
+.cms-nav-i .lab{width:100%;box-sizing:border-box}.cms-nav-i select{width:100%}.cms-nav-i.hid{opacity:.55}
+.cms-rule{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;margin-bottom:8px}
+.cms-rule textarea{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:7px 9px;color:var(--ink);font:inherit;min-height:42px}
+.cms-pill{position:fixed;inset-inline-start:14px;bottom:14px;z-index:60;background:var(--copper,#b8622c);color:#fff;border-radius:999px;padding:9px 16px;font:600 13px var(--f-body,inherit);text-decoration:none;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.cms-editbar{position:fixed;top:0;inset-inline:0;z-index:110;background:var(--copper,#b8622c);color:#fff;padding:8px 14px;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:14px}
+.cms-editbar button{background:#fff;color:#222;border:0;border-radius:8px;padding:5px 12px;cursor:pointer;font:600 13px var(--f-body,inherit)}
+body.cms-editing #main *:not(script):hover{outline:1px dashed var(--copper,#b8622c);outline-offset:1px;cursor:text}
+.cms-stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:12px}
+.cms-stat div{background:var(--sunk);border:1px solid var(--line);border-radius:12px;padding:10px}
+.cms-stat b{display:block;font:600 20px var(--f-mono,monospace)}
+.cms-hist{display:flex;justify-content:space-between;gap:8px;align-items:center;border-top:1px solid var(--line);padding:6px 0;flex-wrap:wrap}
+.cms-ok{color:var(--good,#2e7d5b)}.cms-bad{color:var(--bad,#b3261e)}
+@media(max-width:760px){.cms-split{grid-template-columns:1fr}.cms-side{display:none}.cms-selbox{display:block;margin-bottom:10px}.cms-selbox select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit}.cms-rule{grid-template-columns:1fr}.cms-act button{min-width:32px}.cms-card{padding:14px;border-radius:16px}.cms-dlg{padding:6px}}
+.cms-split>*,#cmsRoot,.cms-list,.cms-row{min-width:0}#cmsRoot{max-width:100%}.cms-bar2 .btn{white-space:nowrap}
+@media(max-width:760px){.cms-nav-i{grid-template-columns:1fr 1fr}.cms-nav-i select,.cms-nav-i .cms-act{grid-column:1/-1}.cms-nav-g header input{flex:1 1 100%}.cms-tabs{overflow-x:auto;flex-wrap:nowrap}.cms-tabs button{white-space:nowrap}}
+</style>
 
 <header class="top">
   <div class="wrap">
@@ -4043,7 +4099,7 @@ window.TY_ANA = { IM, fig, gallery, thumbFor, regFig: (reg,sex)=>{ const k = reg
 const MP = p => ({n:"MedlinePlus", u:"https://medlineplus.gov/"+p});
 const PUBQ = (q,n) => ({n:n||"PubMed", u:"https://pubmed.ncbi.nlm.nih.gov/?term="+encodeURIComponent(q)});
 // كل نص: [عربي، إنجليزي]
-const ATLAS = [
+const ATLAS = window.TY_ATLAS = [
  {id:"brain", n:["الدماغ والجهاز العصبي","Brain and nervous system"], v:"fb", sys:"neuro",
   an:["الدماغ نحو 1.4 كغ، ويتكوّن من المخ (نصفان كرويان وفصوص جبهية وجدارية وصدغية وقذالية)، والمخيخ للتوازن، وجذع الدماغ الذي يتحكم في التنفس ونبض القلب. يحيط به السائل الدماغي الشوكي والسحايا والجمجمة.","The brain weighs about 1.4 kg and has the cerebrum (two hemispheres with frontal, parietal, temporal and occipital lobes), the cerebellum for balance, and the brainstem, which controls breathing and heart rate. It is protected by cerebrospinal fluid, the meninges and the skull."],
   fn:["مركز التفكير والذاكرة والحركة والإحساس والكلام والنوم وتنظيم الهرمونات عبر الوطاء والغدة النخامية.","The centre of thought, memory, movement, sensation, speech and sleep, and of hormone control through the hypothalamus and pituitary."],
@@ -4789,7 +4845,7 @@ document.addEventListener("click", e=>{
 document.addEventListener("click", e=>{ const a=e.target.closest('a[data-healtab]'); if(a){ ATL.healTab=a.dataset.healtab; atlSave(); } });
 
 // ---------- التنقل المجمّع والصفحة الرئيسية ----------
-const NAV_GROUPS = [
+const NAV_GROUPS = window.TY_NAV_GROUPS = [
  ["check",["الفحص والمتابعة","Check and track"],["track","check","assess","tools"]],
  ["know",["المعرفة الطبية","Medical knowledge"],["atlas","diseases","drugs","care","learn","library","news"]],
  ["spec",["التخصصات الطبية","Medical specialties"],["specs","dental"]],
@@ -7518,6 +7574,486 @@ window.TY_NAV_META = Object.assign(window.TY_NAV_META||{}, {mkcat:{g:"beauty",d:
 window.TY_MKC = {REC,ING,IMGS,GRP};
 if(typeof renderRail==="function") renderRail();
 if((location.hash==="#mkcat"||location.hash==="#mknatural") && typeof go==="function") go();
+})();
+</script>
+<script id="cms-js">
+// ===== محرر المحتوى الشامل (#cms): إضافة وتعديل وحذف وترتيب كل محتوى المنصة، والنشر لكل الزوار (الإصدار 2.2) =====
+(()=>{
+if(typeof VIEWS==="undefined"||typeof R==="undefined"||window.__tyCms) return; window.__tyCms=1;
+const EN = window.TY_LANG==="en";
+const T = (a,e) => EN ? e : a;
+const q = (s,r=document)=>r.querySelector(s), qa=(s,r=document)=>[...r.querySelectorAll(s)];
+const h = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const say = m => { try{ if(typeof toast==="function") return toast(m); }catch{} const t=document.createElement("div"); t.setAttribute("data-cms-skip",""); t.textContent=m; t.style.cssText="position:fixed;bottom:70px;inset-inline:16px;margin:auto;max-width:420px;z-index:200;background:#222;color:#fff;padding:10px 14px;border-radius:10px;text-align:center"; document.body.appendChild(t); setTimeout(()=>t.remove(),3200); };
+const LS = {draft:"ty_cms_draft", pub:"ty_cms_pub", hist:"ty_cms_hist", gh:"ty_cms_gh", ui:"ty_cms_ui"};
+const jr = (k,d)=>{ try{ const v=JSON.parse(localStorage.getItem(k)); return v==null?d:v }catch{ return d } };
+const jw = (k,v)=>{ try{ localStorage.setItem(k,JSON.stringify(v)); return true }catch{ return false } };
+const jc = v => v===undefined?undefined:JSON.parse(JSON.stringify(v));
+const same = (a,b) => JSON.stringify(a)===JSON.stringify(b);
+const ses = () => jr("ty_session",null);
+const isAdm = () => ses()?.role==="admin";
+const safe = f => { try{ return f() }catch{ return null } };
+
+// ---------- المجموعات القابلة للتحرير ----------
+const REG = [
+ ["DIS","الأمراض","Diseases",()=>DIS],["DRUGS","الأدوية","Drugs",()=>DRUGS],["NEWS","الأخبار والمستجدات","News",()=>NEWS],["INNOV","الابتكارات الطبية","Innovations",()=>INNOV],
+ ["LIB","المكتبة والمراجع","Library",()=>LIB],["CRS","الكورسات المجانية","Free courses",()=>CRS],["CASES","الحالات السريرية","Clinical cases",()=>CASES],["QUIZ","الاختبار الذاتي","Quiz",()=>QUIZ],
+ ["EMERG","أرقام الطوارئ","Emergency numbers",()=>EMERG],["FIRSTAID","الإسعافات الأولية","First aid",()=>FIRSTAID],["VACC","اللقاحات","Vaccines",()=>VACC],["NUTR","التغذية","Nutrition",()=>NUTR],
+ ["PT","العلاج الطبيعي","Physiotherapy",()=>PT],["HERBS","العلاج بالأعشاب","Herbs",()=>HERBS],["PROPH","الطب النبوي","Prophetic medicine",()=>PROPH],["TCM","الطب الصيني","Chinese medicine",()=>TCM],
+ ["THER","العلاجات النفسية","Psychotherapies",()=>THER],["PSYDX","التشخيص النفسي","Psychiatric diagnosis",()=>PSYDX],["IQ_TESTS","اختبارات الذكاء","IQ tests",()=>IQ_TESTS],["HOTLINES","خطوط المساندة","Hotlines",()=>HOTLINES],
+ ["SELFCARE","الرعاية الذاتية","Self-care",()=>SELFCARE],["WARN_SIGNS","علامات الخطر النفسية","Mental-health warning signs",()=>WARN_SIGNS],
+ ["CHRONIC","الأمراض المزمنة","Chronic diseases",()=>CHRONIC],["MEDS","أدوية التقييم الصحي","Assessment medicines",()=>MEDS],["LABS","التحاليل المخبرية","Lab tests",()=>LABS],
+ ["MK_ISLAM","الزينة في الإسلام","Adornment in Islam",()=>MK_ISLAM],["MK_NAT","وصفات طبيعية","Natural recipes",()=>MK_NAT],["MK_AVOID","مواد يُنصح بتجنبها","Ingredients to avoid",()=>MK_AVOID],["MK_SKIN","العناية بالبشرة","Skin care",()=>MK_SKIN],
+ ["ATLAS","أطلس الجسم","Body atlas",()=>window.TY_ATLAS],["SPECS","التخصصات الطبية","Medical specialties",()=>window.TY_SPECS&&window.TY_SPECS.list],["CITIES","مدن مواقيت الصلاة","Prayer-time cities",()=>CITIES]
+];
+const TK = ["n","t","ar","title","name","q","en","id"], SK = ["en","icd","cls","cat","c","p","s","d","m","ar","id"];
+const txt = v => Array.isArray(v) ? String(v[EN&&v[1]?1:0]??"") : (typeof v==="string"||typeof v==="number") ? String(v) : "";
+const titleOf = (it,i) => { if(Array.isArray(it)){ for(const x of it){ const s=txt(x); if(s) return s } return "#"+((i||0)+1); } for(const k of TK){ const s=txt(it[k]); if(s) return s } for(const k in it){ const s=txt(it[k]); if(s) return s } return "#"+(i+1); };
+const subOf = it => { if(Array.isArray(it)){ const t=titleOf(it); for(const x of it){ const s=txt(x); if(s&&s!==t) return s } return ""; } for(const k of SK){ const s=txt(it[k]); if(s && s!==titleOf(it)) return s } return ""; };
+const hash = s => { let x=2166136261; for(let i=0;i<s.length;i++){ x^=s.charCodeAt(i); x=Math.imul(x,16777619) } return (x>>>0).toString(36); };
+
+// ---------- لقطة الأصل ----------
+const COLL = {};
+REG.forEach(([k,ar,en,get])=>{
+  const arr = safe(get);
+  if(!Array.isArray(arr)||!arr.length||arr.some(x=>!x||typeof x!=="object")) return;
+  const used=new Set(), keys=[], live={}, clone={};
+  arr.forEach((it,i)=>{
+    let key = (!Array.isArray(it)&&it.id!=null&&typeof it.id!=="object") ? "i:"+it.id : "h:"+hash(titleOf(it,i)+"|"+txt(it.d)+txt(it.u));
+    while(used.has(key)) key += "~";
+    used.add(key); keys.push(key); live[key]=it; clone[key]=jc(it);
+  });
+  COLL[k] = {k,ar,en,arr,keys,live,clone};
+});
+const COLLS = REG.filter(r=>COLL[r[0]]).map(r=>COLL[r[0]]);
+
+// ---------- الوثيقة ----------
+const blankDoc = () => ({v:1, updated:null, c:{}, nav:null, text:[], code:{css:"",js:"",html:""}});
+const norm = d => { const o=jc(d)||blankDoc(); o.v=1; o.c=o.c||{}; o.text=o.text||[]; if(o.nav===undefined) o.nav=null; o.code=Object.assign({css:"",js:"",html:""},o.code||{}); return o; };
+const core = d => { const o=norm(d); delete o.updated; delete o.base; for(const k in o.c){ const c=o.c[k]; if(!c) {delete o.c[k]; continue} if(!Object.keys(c.edit||{}).length) delete c.edit; if(!Object.keys(c.add||{}).length) delete c.add; if(!(c.del||[]).length) delete c.del; if(!c.order) delete c.order; if(!Object.keys(c).length) delete o.c[k]; } if(!o.text.length) o.text=[]; if(!o.code.css&&!o.code.js&&!o.code.html) delete o.code; return o; };
+let PUB = norm(jr(LS.pub,null));
+let D = isAdm() ? norm(jr(LS.draft,null)||PUB) : PUB;
+const dirty = () => !same(core(D),core(PUB));
+const ccfg = k => (D.c[k] = D.c[k] || {});
+
+// ---------- تطبيق الوثيقة على بيانات المنصة ----------
+const restore = (obj,src) => { if(Array.isArray(obj)){ obj.length=0; obj.push(...jc(src)); return; } for(const k of Object.keys(obj)) if(typeof obj[k]!=="function") delete obj[k]; const c=jc(src); for(const k in c) obj[k]=c[k]; };
+const orderOf = (co,cfg) => {
+  cfg=cfg||{}; const del=new Set(cfg.del||[]), add=cfg.add||{};
+  const all=[...co.keys,...Object.keys(add)]; const seen=new Set(), out=[];
+  const push = k => { if(!seen.has(k)&&!del.has(k)&&(co.live[k]||add[k])){ seen.add(k); out.push(k) } };
+  (cfg.order||[]).forEach(push); all.forEach(push); return out;
+};
+function applyColl(co,cfg){
+  cfg=cfg||{}; const edit=cfg.edit||{}, add=cfg.add||{};
+  const keys=orderOf(co,cfg), res=[];
+  co.keys.forEach(k=>restore(co.live[k],co.clone[k]));
+  keys.forEach(k=>{ if(co.live[k]){ if(edit[k]) restore(co.live[k],edit[k]); res.push(co.live[k]); } else if(add[k]){ res.push(jc(add[k])); } });
+  co.arr.length=0; res.forEach(x=>co.arr.push(x));
+}
+// التنقل
+const NG = window.TY_NAV_GROUPS, BASEV = VIEWS.map(v=>[...v]), BASEG = NG?jc(NG):null;
+const META0 = {}; BASEV.forEach(([id])=>{ META0[id]=((window.TY_NAV_META||{})[id]||{}).g; });
+const PROT = ["home","admin","privacy","cms"];
+function applyNav(nav){
+  if(!NG) return;
+  VIEWS.length=0; BASEV.forEach(v=>VIEWS.push([...v]));
+  NG.length=0; BASEG.forEach(g=>NG.push(jc(g)));
+  window.TY_NAV_META = window.TY_NAV_META||{};
+  for(const id in META0){ const m=(window.TY_NAV_META[id]=window.TY_NAV_META[id]||{}); if(META0[id]) m.g=META0[id]; else delete m.g; }
+  if(!nav) return;
+  const have=new Set(); const out=(nav.groups||[]).map(g=>[g.k,g.n,g.ids.slice()]);
+  out.forEach(g=>g[2].forEach(id=>have.add(id)));
+  BASEG.forEach(bg=>bg[2].forEach(id=>{ if(!have.has(id)){ const t=out.find(g=>g[0]===bg[0]); if(t) t[2].push(id); } }));
+  if(out.length){ NG.length=0; out.forEach(g=>NG.push(g)); out.forEach(g=>g[2].forEach(id=>{ (window.TY_NAV_META[id]=window.TY_NAV_META[id]||{}).g=g[0]; })); }
+  const lab=nav.labels||{}, hide=new Set((nav.hide||[]).filter(id=>!PROT.includes(id)));
+  for(let i=VIEWS.length-1;i>=0;i--){ const id=VIEWS[i][0]; if(lab[id]&&lab[id][0]){ VIEWS[i][1]=lab[id][0]; if(lab[id][1]&&typeof I18N_EN!=="undefined") I18N_EN[lab[id][0]]=lab[id][1]; } if(hide.has(id)) VIEWS.splice(i,1); }
+}
+let RULES = [];
+const NOCODE = /[?&#]nocode\b/.test(location.href) || (()=>{ try{ return localStorage.getItem("ty_cms_nocode")==="1" }catch{ return false } })();
+function applyCode(doc){
+  const c=(doc.code)||{}; const set=(id,tag,txt,parent)=>{ let e=document.getElementById(id); if(!txt||NOCODE){ e&&e.remove(); return } if(!e){ e=document.createElement(tag); e.id=id; if(tag==="div") e.setAttribute("data-cms-user",""); (parent||document.body).appendChild(e); } if(tag==="style") e.textContent=txt; else e.innerHTML=txt; };
+  set("cms-user-css","style",c.css,document.head); set("cms-user-html","div",c.html);
+}
+let jsRan=false; const jsErr=[];
+function runUserJs(doc){ const js=(doc.code||{}).js; if(jsRan||!js||NOCODE) return; jsRan=true; try{ new Function(js)(); }catch(e){ jsErr.push(String(e&&e.message||e)); console.error("cms user js:",e); } }
+const applyAll = doc => { applyCode(doc); COLLS.forEach(co=>applyColl(co,(doc.c||{})[co.k])); applyNav(doc.nav); RULES=(doc.text||[]).filter(r=>r&&r.f&&r.t&&r.t.trim()); };
+const refreshView = () => { try{ if(typeof go==="function") go(); }catch{} };
+
+// ---------- النصوص: استبدال نصوص الموقع ----------
+const SKIP = 'script,style,textarea,noscript,[data-view="cms"],.cms-dlg,.cms-editbar,.cms-pill,[data-cms-skip]';
+const REPL = new WeakMap(); let touched=false;
+function applyText(root){
+  if((!RULES.length&&!touched)||!root) return;
+  const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>(n.nodeValue.trim()&&n.parentElement&&!n.parentElement.closest(SKIP))?1:2});
+  const ns=[]; for(let n=w.nextNode();n;n=w.nextNode()) ns.push(n);
+  ns.forEach(n=>{ const base=REPL.has(n)?REPL.get(n):n.nodeValue; let v=base; for(const r of RULES){ if(v.includes(r.f)) v=v.split(r.f).join(r.t); } if(v!==base){ REPL.set(n,base); touched=true; } else REPL.delete(n); if(n.nodeValue!==v) n.nodeValue=v; });
+}
+let tq=false; const pend=new Set();
+new MutationObserver(ms=>{
+  ms.forEach(m=>m.addedNodes.forEach(n=>{ if(n.nodeType===1&&n.classList.contains("acc-dlg")) addAcctLink(n); pend.add(n.nodeType===3?n.parentNode:n) }));
+  if(!tq&&(RULES.length||pend.size)){ tq=true; requestAnimationFrame(()=>{ tq=false; const l=[...pend]; pend.clear(); l.forEach(n=>{ if(n&&n.isConnected&&n.nodeType===1) applyText(n) }); }); }
+}).observe(document.body,{childList:true,subtree:true});
+function addAcctLink(d){ if(!isAdm()) return; const a=q("#accAdm",d); if(a&&!q("#accCms",d)) a.insertAdjacentHTML("afterend",`<a class="btn" href="#cms" id="accCms" data-x>${T("محرر المحتوى","Content editor")}</a>`); }
+
+// ---------- نوافذ ----------
+function modal(html,wide){ const d=document.createElement("div"); d.className="cms-dlg"; d.setAttribute("data-cms-skip",""); d.innerHTML=`<div class="cms-card${wide?" wide":""}" role="dialog" aria-modal="true">${html}</div>`; document.body.appendChild(d); document.body.style.overflow="hidden"; return d; }
+function shut(d){ d.remove(); if(!q(".cms-dlg")) document.body.style.overflow=""; }
+function ask(msg,ok){ return new Promise(res=>{ const d=modal(`<h2>${h(msg)}</h2><div class="row" style="gap:8px"><button class="btn" data-y>${h(ok||T("تأكيد","Confirm"))}</button><button class="btn ghost" data-n>${T("إلغاء","Cancel")}</button></div>`); d.addEventListener("click",e=>{ if(e.target.closest("[data-y]")){ shut(d); res(true) } else if(e.target.closest("[data-n]")||e.target===d){ shut(d); res(false) } }); setTimeout(()=>q("[data-y]",d)?.focus(),20); }); }
+
+// ---------- الحفظ والتاريخ ----------
+function commit(label){
+  const hist=jr(LS.hist,[]); hist.unshift({t:Date.now(),l:label||"",d:jr(LS.draft,null)||core(PUB)}); hist.length=Math.min(hist.length,15);
+  D.base = PUB.updated||null; jw(LS.hist,hist);
+  if(!jw(LS.draft,D)) say(T("مساحة التخزين ممتلئة: انشر التعديلات الآن","Storage is full: publish your changes now"));
+  applyAll(D); if(RULES.length) applyText(document.body);
+}
+const sum = () => { let ed=0,ad=0,dl=0,or=0; for(const k in D.c){ const c=D.c[k]; ed+=Object.keys(c.edit||{}).length; ad+=Object.keys(c.add||{}).length; dl+=(c.del||[]).length; if(c.order) or++; } return {ed,ad,dl,or,nav:D.nav?1:0,tx:(D.text||[]).length}; };
+
+// ---------- واجهة المحرر ----------
+const UI = Object.assign({tab:"content",coll:COLLS[0]?.k||"",qs:""}, jr(LS.ui,{}));
+const saveUI = () => jw(LS.ui,{tab:UI.tab,coll:UI.coll});
+const TABS = [["content",T("المحتوى","Content")],["nav",T("التنقل والأقسام","Navigation")],["text",T("نصوص الموقع","Site texts")],["code",T("الكود والملفات","Code & files")],["publish",T("النشر والنسخ","Publish")]];
+R.cms = () => `<div class="view-head"><h1>${T("محرر المحتوى","Content editor")}</h1><p>${T("أضف أو عدّل أو احذف أو رتّب أي محتوى في المنصة: الأمراض، الأدوية، الأخبار، المراجع، الأقسام والنصوص. تظهر تعديلاتك لك فوراً، وتُنشر لكل الزوار بزر «نشر».","Add, edit, delete or reorder any content on the platform: diseases, drugs, news, references, sections and texts. Your changes show to you at once and go to all visitors when you press Publish.")}</p></div><div id="cmsRoot"></div>`;
+AFTER.cms = () => { if(!isAdm()){ q("#cmsRoot").innerHTML=`<div class="panel"><h2>${T("هذه الصفحة للمدير فقط","This page is for the admin only")}</h2><p class="muted">${T("سجّل الدخول بحساب الإدارة لفتح المحرر.","Sign in with the admin account to open the editor.")}</p><button class="btn" type="button" id="cmsLogin">${T("تسجيل الدخول","Sign in")}</button></div>`; q("#cmsLogin").onclick=()=>window.tyAccount&&window.tyAccount(); return; } draw(); };
+function draw(){
+  const root=q("#cmsRoot"); if(!root) return; const sy=window.scrollY;
+  const s=sum();
+  root.innerHTML = `${dirty()?`<div class="alert" style="margin-bottom:12px"><b>${T("لديك تعديلات غير منشورة","You have unpublished changes")}</b> · ${T("تظهر لك فقط حتى تنشرها.","Only you see them until you publish.")} <button class="btn" type="button" data-go="publish" style="margin-inline-start:8px">${T("انتقل إلى النشر","Go to Publish")}</button></div>`:""}
+  <div class="cms-tabs" role="tablist">${TABS.map(([k,n])=>`<button type="button" role="tab" class="btn ${UI.tab===k?"":"ghost"}" data-tab="${k}" aria-selected="${UI.tab===k}">${n}</button>`).join("")}</div>
+  <div id="cmsBody">${UI.tab==="content"?vContent():UI.tab==="nav"?vNav():UI.tab==="text"?vText():UI.tab==="code"?vCode():vPublish()}</div>`;
+  wire(root); window.scrollTo(0,sy);
+}
+function wire(root){
+  root.onclick = e => {
+    const t=e.target.closest("[data-tab],[data-go]"); if(t){ UI.tab=t.dataset.tab||t.dataset.go; saveUI(); draw(); return; }
+    const c=e.target.closest("[data-coll]"); if(c){ UI.coll=c.dataset.coll; UI.qs=""; saveUI(); draw(); return; }
+    const a=e.target.closest("[data-a]"); if(a) act(a.dataset.a,a.dataset.k,a);
+  };
+  root.onchange = e => { if(e.target.id==="cmsSel"){ UI.coll=e.target.value; UI.qs=""; saveUI(); draw(); } const n=e.target.closest("[data-nav]"); if(n) navEdit(n); const r=e.target.closest("[data-rule]"); if(r) ruleEdit(r); };
+  root.oninput = e => { if(e.target.id==="cmsQ"){ UI.qs=e.target.value; const p=e.target.selectionStart; const l=q("#cmsList"); if(l){ l.innerHTML=rows(); } } };
+  if(UI.tab==="content") dnd(root);
+}
+
+// ===== تبويب المحتوى =====
+function stateOf(co,k){ const c=D.c[co.k]||{}; return (c.add||{})[k]?"added":(c.edit||{})[k]?"edited":""; }
+function itemOf(co,k){ const c=D.c[co.k]||{}; if((c.add||{})[k]) return c.add[k]; if((c.edit||{})[k]) return c.edit[k]; return co.clone[k]; }
+function rows(){
+  const co=COLL[UI.coll]; if(!co) return ""; const keys=orderOf(co,D.c[co.k]); const f=UI.qs.trim().toLowerCase();
+  const list=keys.map((k,i)=>({k,i,it:itemOf(co,k)})).filter(x=>!f||JSON.stringify(x.it).toLowerCase().includes(f));
+  if(!list.length) return `<li class="muted" style="padding:14px">${T("لا توجد عناصر مطابقة.","No matching items.")}</li>`;
+  return list.map(({k,i,it})=>{ const st=stateOf(co,k); return `<li class="cms-row ${st}" draggable="${f?"false":"true"}" data-k="${h(k)}"><span class="cms-grip" aria-hidden="true" title="${T("اسحب لإعادة الترتيب","Drag to reorder")}">⋮⋮</span><div class="cms-t"><b>${h(titleOf(it,i))}</b><small>${st==="added"?`<span class="tag tp">${T("جديد","New")}</span> `:st==="edited"?`<span class="tag t2">${T("معدّل","Edited")}</span> `:""}${h(subOf(it))}</small></div><div class="cms-act"><button type="button" data-a="up" data-k="${h(k)}" aria-label="${T("أعلى","Up")}">↑</button><button type="button" data-a="down" data-k="${h(k)}" aria-label="${T("أسفل","Down")}">↓</button><button type="button" data-a="edit" data-k="${h(k)}" aria-label="${T("تعديل","Edit")}">✎</button><button type="button" data-a="dup" data-k="${h(k)}" aria-label="${T("نسخ","Duplicate")}">⧉</button><button type="button" class="del" data-a="del" data-k="${h(k)}" aria-label="${T("حذف","Delete")}">✕</button></div></li>`; }).join("");
+}
+function vContent(){
+  if(!COLLS.length) return `<p class="muted">${T("لا توجد مجموعات قابلة للتحرير.","No editable collections.")}</p>`;
+  const co=COLL[UI.coll]||COLLS[0]; UI.coll=co.k; const c=D.c[co.k]||{}; const nd=(c.del||[]).length;
+  const changed = k => { const x=D.c[k]; return x&&(Object.keys(x.edit||{}).length||Object.keys(x.add||{}).length||(x.del||[]).length||x.order); };
+  return `<div class="cms-selbox"><select id="cmsSel" aria-label="${T("المجموعة","Collection")}">${COLLS.map(x=>`<option value="${x.k}" ${x.k===co.k?"selected":""}>${h(EN?x.en:x.ar)} (${orderOf(x,D.c[x.k]).length})</option>`).join("")}</select></div>
+  <div class="cms-split"><aside class="cms-side" aria-label="${T("المجموعات","Collections")}">${COLLS.map(x=>`<button type="button" data-coll="${x.k}" aria-current="${x.k===co.k}"><span>${h(EN?x.en:x.ar)}${changed(x.k)?'<i class="dot"></i>':""}</span><span class="n">${orderOf(x,D.c[x.k]).length}</span></button>`).join("")}</aside>
+  <section><h2 style="margin:0 0 10px">${h(EN?co.en:co.ar)} <span class="muted small">(${orderOf(co,c).length})</span></h2>
+  <div class="cms-bar2"><button class="btn" type="button" data-a="new">＋ ${T("عنصر جديد","New item")}</button><input type="search" id="cmsQ" value="${h(UI.qs)}" placeholder="${T("ابحث داخل المجموعة…","Search this collection…")}" aria-label="${T("بحث","Search")}">${nd?`<button class="btn ghost" type="button" data-a="trash">${T("المحذوفات","Deleted")} (${nd})</button>`:""}${c.order?`<button class="btn ghost" type="button" data-a="resetorder">${T("الترتيب الأصلي","Original order")}</button>`:""}</div>
+  <ul class="cms-list" id="cmsList">${rows()}</ul><p class="small muted" style="margin-top:10px">${T("اسحب ⋮⋮ أو استخدم الأسهم لإعادة الترتيب. العناصر الأصلية المحذوفة يمكن استرجاعها من «المحذوفات».","Drag ⋮⋮ or use the arrows to reorder. Deleted original items can be restored from “Deleted”.")}</p></section></div>`;
+}
+function move(k,delta){
+  const co=COLL[UI.coll], c=ccfg(co.k), ks=orderOf(co,c), i=ks.indexOf(k), j=i+delta; if(i<0||j<0||j>=ks.length) return;
+  ks.splice(j,0,ks.splice(i,1)[0]); c.order=ks; commit(T("ترتيب","Reorder")); draw();
+}
+function dnd(root){
+  let drag=null; const co=COLL[UI.coll]; const list=q("#cmsList",root); if(!list) return;
+  list.ondragstart=e=>{ const r=e.target.closest(".cms-row"); if(!r) return; drag=r.dataset.k; r.classList.add("drag"); e.dataTransfer.effectAllowed="move"; try{ e.dataTransfer.setData("text/plain",drag) }catch{} };
+  list.ondragend=()=>{ qa(".cms-row",list).forEach(r=>r.classList.remove("drag","over")); drag=null; };
+  list.ondragover=e=>{ if(!drag) return; e.preventDefault(); qa(".cms-row",list).forEach(r=>r.classList.remove("over")); e.target.closest(".cms-row")?.classList.add("over"); };
+  list.ondrop=e=>{ if(!drag) return; e.preventDefault(); const r=e.target.closest(".cms-row"); if(!r||r.dataset.k===drag) return; const c=ccfg(co.k), ks=orderOf(co,c), i=ks.indexOf(drag), j=ks.indexOf(r.dataset.k); ks.splice(j,0,ks.splice(i,1)[0]); c.order=ks; commit(T("ترتيب","Reorder")); draw(); };
+}
+const LBL = {n:["الاسم","Name"],en:["الاسم بالإنجليزية","English name"],t:["العنوان","Title"],u:["الرابط","Link"],id:["المعرّف (لا يتكرر)","ID (unique)"],icd:["رمز ICD-11","ICD-11 code"],cat:["الفئة","Category"],about:["نبذة","Overview"],uses:["الاستخدامات","Uses"],dose:["الجرعة","Dose"],se:["الآثار الجانبية","Side effects"],warn:["تحذيرات","Warnings"],ar:["العنوان بالعربية","Arabic title"]};
+function kind(v){ return v===null||v===undefined?"s":typeof v==="string"?"s":typeof v==="number"?"n":typeof v==="boolean"?"b":(Array.isArray(v)&&v.every(x=>typeof x==="string"))?"l":"j"; }
+function fieldHTML(k,v,t){
+  t=t||kind(v); const lb=LBL[k]||(/^\d+$/.test(k)?[`العمود ${+k+1}`,`Column ${+k+1}`]:null); const lab=`<label for="cf-${h(k)}"><span>${lb?h(lb[EN?1:0]):h(k)}</span><span><code>${h(k)}</code> <button type="button" class="rm" data-rm aria-label="${T("حذف الحقل","Remove field")}">✕</button></span></label>`;
+  const a=`id="cf-${h(k)}" data-f="${h(k)}" data-t="${t}"`;
+  if(t==="b") return `<div class="cms-f"><label><span><input type="checkbox" ${a} ${v?"checked":""}> ${lb?h(lb[EN?1:0]):h(k)}</span><span><code>${h(k)}</code> <button type="button" class="rm" data-rm>✕</button></span></label></div>`;
+  if(t==="n") return `<div class="cms-f">${lab}<input type="number" step="any" class="ltr" ${a} value="${v==null?"":h(v)}"></div>`;
+  if(t==="l") return `<div class="cms-f">${lab}<textarea rows="${Math.min(10,Math.max(3,v.length+1))}" ${a}>${h(v.join("\n"))}</textarea><div class="small muted">${T("سطر لكل عنصر","One item per line")}</div></div>`;
+  if(t==="j") return `<div class="cms-f">${lab}<textarea class="json" rows="${Math.min(14,Math.max(4,JSON.stringify(v,null,1).split("\n").length))}" spellcheck="false" ${a}>${h(JSON.stringify(v,null,1))}</textarea><div class="small muted">${T("بنية متقدمة بصيغة JSON","Advanced structure (JSON)")}</div></div>`;
+  const s=String(v??""); const url=k==="u"||/url|link/i.test(k);
+  if(!url&&(s.length>70||s.includes("\n"))) return `<div class="cms-f">${lab}<textarea rows="${Math.min(10,Math.max(3,Math.ceil(s.length/65)))}" ${a}>${h(s)}</textarea></div>`;
+  return `<div class="cms-f">${lab}<input type="text" ${url?'class="ltr" inputmode="url"':""} ${a} value="${h(s)}"></div>`;
+}
+function collectFields(root){
+  const out={}; let err=""; qa(".cms-f [data-f]",root).forEach(el=>{
+    const k=el.dataset.f,t=el.dataset.t; let v;
+    if(t==="b") v=el.checked; else if(t==="n"){ v=el.value===""?null:Number(el.value); if(v!==null&&isNaN(v)) err=k+": "+T("رقم غير صالح","invalid number"); }
+    else if(t==="l") v=el.value.split("\n").map(x=>x.trim()).filter(Boolean);
+    else if(t==="j"){ try{ v=JSON.parse(el.value||"null") }catch(e){ err=k+": JSON "+T("غير صالح","invalid"); el.style.borderColor="var(--bad)"; } }
+    else v=el.value;
+    out[k]=v;
+  });
+  return {out,err};
+}
+const isArrCo = co => Array.isArray(co.clone[co.keys[0]]);
+const toWork = (co,v) => isArrCo(co) ? Object.fromEntries(v.map((x,i)=>[String(i),x])) : jc(v);
+const fromWork = (co,w) => isArrCo(co) ? Object.keys(w).sort((a,b)=>a-b).map(k=>w[k]) : w;
+function schemaBlank(co){
+  if(isArrCo(co)){ return co.clone[co.keys[0]].map(v=>typeof v==="number"?0:typeof v==="boolean"?false:Array.isArray(v)?[]:(v&&typeof v==="object")?{}:""); }
+  const o={}; co.keys.forEach(k=>{ const it=co.clone[k]; for(const f in it) if(!(f in o)){ const v=it[f]; o[f]=typeof v==="number"?0:typeof v==="boolean"?false:Array.isArray(v)?[]:(v&&typeof v==="object")?{}:""; } });
+  return o;
+}
+function editor(co,key,obj,isNew){
+  let raw=false, work=toWork(co,obj); const AR=isArrCo(co);
+  const d=modal("",true); const card=q(".cms-card",d);
+  const render=()=>{
+    card.innerHTML=`<h2>${isNew?T("عنصر جديد","New item"):T("تعديل","Edit")} · ${h(EN?co.en:co.ar)}</h2>
+    <div class="row" style="gap:8px;margin-bottom:10px"><button type="button" class="btn ghost" data-m="raw">${raw?T("عرض النموذج","Form view"):T("عرض JSON الكامل","Full JSON view")}</button>${isNew&&(co.k==="NEWS"||true)?`<label class="small" style="display:flex;gap:6px;align-items:center">${T("الموضع","Position")}: <select id="cmsPos"><option value="s" ${(co.k==="NEWS"||co.k==="INNOV")?"selected":""}>${T("في البداية","At the start")}</option><option value="e" ${(co.k==="NEWS"||co.k==="INNOV")?"":"selected"}>${T("في النهاية","At the end")}</option></select></label>`:""}</div>
+    <div id="cmsFields">${raw?`<div class="cms-f"><textarea class="json" id="cmsRaw" rows="18" spellcheck="false">${h(JSON.stringify(fromWork(co,work),null,1))}</textarea></div>`:Object.keys(work).map(k=>fieldHTML(k,work[k])).join("")}</div>
+    ${(raw||AR)?"":`<details style="margin:6px 0 10px"><summary class="small">${T("إضافة حقل جديد","Add a field")}</summary><div class="row" style="gap:6px;margin-top:8px"><input id="cmsNF" dir="ltr" placeholder="field" style="flex:1;min-width:0"><select id="cmsNT"><option value="s">${T("نص","Text")}</option><option value="n">${T("رقم","Number")}</option><option value="l">${T("قائمة","List")}</option><option value="b">${T("نعم/لا","Yes/No")}</option><option value="j">JSON</option></select><button type="button" class="btn ghost" data-m="addf">${T("إضافة","Add")}</button></div></details>`}
+    <p class="acc-err cms-bad" id="cmsErr" role="alert"></p>
+    <div class="cms-foot"><button type="button" class="btn" data-m="save">${T("حفظ","Save")}</button><button type="button" class="btn ghost" data-m="x">${T("إغلاق","Close")}</button></div>`;
+  };
+  const grab=()=>{ if(raw){ try{ const v=JSON.parse(q("#cmsRaw",card).value); if(!v||typeof v!=="object"||Array.isArray(v)!==AR) throw 0; work=toWork(co,v); return ""; }catch{ return T("JSON غير صالح","Invalid JSON"); } } const {out,err}=collectFields(card); if(!err) work=out; return err; };
+  render();
+  card.addEventListener("input",e=>{ if(e.target.tagName==="TEXTAREA"&&!e.target.classList.contains("json")){ e.target.style.height="auto"; e.target.style.height=Math.min(e.target.scrollHeight+4,420)+"px"; } });
+  card.addEventListener("click",e=>{
+    const rm=e.target.closest("[data-rm]"); if(rm){ rm.closest(".cms-f").remove(); return; }
+    const m=e.target.closest("[data-m]")?.dataset.m; if(!m) return;
+    if(m==="x") return shut(d);
+    if(m==="raw"){ const er=grab(); if(er){ q("#cmsErr",card).textContent=er; return } raw=!raw; render(); return; }
+    if(m==="addf"){ const n=q("#cmsNF",card).value.trim(); if(!/^[A-Za-z_][\w]*$/.test(n)){ q("#cmsErr",card).textContent=T("اسم الحقل بحروف لاتينية وأرقام فقط.","Field name: Latin letters and digits only."); return } if(qa("[data-f]",card).some(x=>x.dataset.f===n)){ q("#cmsErr",card).textContent=T("الحقل موجود.","Field exists."); return } const t=q("#cmsNT",card).value; q("#cmsFields",card).insertAdjacentHTML("beforeend",fieldHTML(n,t==="n"?null:t==="l"?[]:t==="b"?false:t==="j"?{}:"",t)); q("#cmsNF",card).value=""; return; }
+    if(m==="save"){
+      const er=grab(); if(er){ q("#cmsErr",card).textContent=er; return }
+      const fin=fromWork(co,work); if(!titleOf(fin,0)||/^#\d+$/.test(titleOf(fin,0))){ q("#cmsErr",card).textContent=T("أدخل اسماً أو عنواناً للعنصر.","Enter a name or title for the item."); return }
+      if(!AR&&work.id!=null&&typeof work.id!=="object"){ const clash=orderOf(co,D.c[co.k]).some(k=>k!==key&&itemOf(co,k).id===work.id); if(clash){ q("#cmsErr",card).textContent=T("المعرّف مستخدم في عنصر آخر.","This ID is used by another item."); return } }
+      const c=ccfg(co.k);
+      if(isNew){ c.add=c.add||{}; c.add[key]=fin; const ks=orderOf(co,c).filter(k=>k!==key); const pos=q("#cmsPos",card)?.value||"e"; if(pos==="s") ks.unshift(key); else ks.push(key); c.order=ks; }
+      else if((c.add||{})[key]) c.add[key]=fin;
+      else { c.edit=c.edit||{}; if(same(fin,co.clone[key])) delete c.edit[key]; else c.edit[key]=fin; }
+      commit(isNew?T("إضافة","Add"):T("تعديل","Edit")); shut(d); draw(); say(T("تم الحفظ على هذا الجهاز. اضغط «نشر» ليراه الزوار.","Saved on this device. Press Publish so visitors see it."));
+    }
+  });
+  setTimeout(()=>q("input:not([type=checkbox]),textarea",card)?.focus(),30);
+}
+async function act(a,k,btn){
+  if(a==="x") return;
+  if(UI.tab==="content"){
+    const co=COLL[UI.coll], c=ccfg(co.k);
+    if(a==="up") return move(k,-1); if(a==="down") return move(k,1);
+    if(a==="edit") return editor(co,k,itemOf(co,k),false);
+    if(a==="new"){ const nk="n:"+Date.now().toString(36); const o=schemaBlank(co); if(!Array.isArray(o)&&"id" in o) o.id="x"+Date.now().toString(36); return editor(co,nk,o,true); }
+    if(a==="dup"){ const o=jc(itemOf(co,k)); if(Array.isArray(o)){ const ix=o.findIndex(x=>typeof x==="string"&&x); if(ix>=0) o[ix]+=" "+T("(نسخة)","(copy)"); } else { if("id" in o) o.id=String(o.id)+"-"+Date.now().toString(36).slice(-3); } for(const f of Array.isArray(o)?[]:TK){ if(typeof o[f]==="string"){ o[f]=o[f]+" "+T("(نسخة)","(copy)"); break } if(Array.isArray(o[f])&&typeof o[f][0]==="string"){ o[f][0]+=" "+T("(نسخة)","(copy)"); break } } const nk="n:"+Date.now().toString(36); const ks=orderOf(co,c); const i=ks.indexOf(k); c.add=c.add||{}; c.add[nk]=o; ks.splice(i+1,0,nk); c.order=ks; commit(T("نسخ","Duplicate")); draw(); return editor(co,nk,o,false); }
+    if(a==="del"){ if(!await ask(T("حذف هذا العنصر؟","Delete this item?"),T("حذف","Delete"))) return; if((c.add||{})[k]){ delete c.add[k]; if(c.order) c.order=c.order.filter(x=>x!==k); } else { c.del=[...new Set([...(c.del||[]),k])]; if(c.edit) delete c.edit[k]; } commit(T("حذف","Delete")); draw(); return; }
+    if(a==="resetorder"){ delete c.order; commit(T("ترتيب","Reorder")); draw(); return; }
+    if(a==="trash"){ const d=modal(`<h2>${T("المحذوفات","Deleted items")}</h2>${(c.del||[]).map(x=>`<div class="cms-hist"><span>${h(titleOf(co.clone[x]||{},0))}</span><button class="btn ghost" type="button" data-rs="${h(x)}">${T("استرجاع","Restore")}</button></div>`).join("")||`<p class="muted">${T("لا شيء.","Nothing.")}</p>`}<div class="cms-foot"><button class="btn ghost" data-x>${T("إغلاق","Close")}</button></div>`);
+      d.addEventListener("click",e=>{ const r=e.target.closest("[data-rs]"); if(r){ c.del=(c.del||[]).filter(x=>x!==r.dataset.rs); commit(T("استرجاع","Restore")); shut(d); draw(); } else if(e.target.closest("[data-x]")||e.target===d) shut(d); }); return; }
+  }
+  if(UI.tab==="nav") return navAct(a,k);
+  if(UI.tab==="text") return textAct(a,k);
+  if(UI.tab==="code") return codeAct(a,k);
+  if(UI.tab==="publish") return pubAct(a,k);
+}
+
+// ===== تبويب التنقل =====
+function navBuild(){
+  if(D.nav) return D.nav;
+  const ids=VIEWS.map(v=>v[0]).filter(id=>id!=="home"&&id!=="privacy");
+  const groups=(BASEG||[]).map(g=>({k:g[0],n:jc(g[1]),ids:[]}));
+  const more={k:"more",n:["المزيد","More"],ids:[]};
+  ids.forEach(id=>{ const k=META0[id]||(BASEG||[]).find(g=>g[2].includes(id))?.[0]; const g=groups.find(x=>x.k===k)||more; g.ids.push(id); });
+  groups.forEach(g=>{ const o=(BASEG.find(x=>x[0]===g.k)||[0,0,[]])[2]; g.ids.sort((a,b)=>{ const x=o.indexOf(a),y=o.indexOf(b); return (x<0?99:x)-(y<0?99:y) }); });
+  if(more.ids.length) groups.push(more);
+  return {groups,hide:[],labels:{}};
+}
+const vlabel = id => (BASEV.find(v=>v[0]===id)||[id,id])[1];
+function vNav(){
+  if(!NG) return `<div class="alert">${T("هذه النسخة لا تدعم تحرير التنقل. حدّث المنصة.","This build does not support navigation editing. Please update the platform.")}</div>`;
+  const nav=navBuild(); const lab=nav.labels||{}, hide=new Set(nav.hide||[]);
+  return `<p class="muted small">${T("رتّب مجموعات التنقل وأقسامها، وانقل قسماً إلى مجموعة أخرى، وغيّر اسمه، أو أخفِه عن الزوار. الصفحة الرئيسية والإدارة ومحرر المحتوى لا تُخفى.","Order navigation groups and their sections, move a section to another group, rename it, or hide it from visitors. Home, Admin and the editor cannot be hidden.")}</p>
+  ${nav.groups.map((g,gi)=>`<div class="cms-nav-g" data-g="${gi}"><header><input data-nav="gn-ar" data-g="${gi}" value="${h(g.n[0])}" aria-label="${T("اسم المجموعة بالعربية","Group name (Arabic)")}"><input data-nav="gn-en" data-g="${gi}" dir="ltr" value="${h(g.n[1]||"")}" aria-label="${T("اسم المجموعة بالإنجليزية","Group name (English)")}"><div class="cms-act"><button type="button" data-a="gup" data-k="${gi}">↑</button><button type="button" data-a="gdown" data-k="${gi}">↓</button>${g.ids.length?"":`<button type="button" class="del" data-a="gdel" data-k="${gi}">✕</button>`}</div></header>
+   ${g.ids.map((id,ii)=>{ const l=lab[id]||[]; const prot=PROT.includes(id); return `<div class="cms-nav-i ${hide.has(id)?"hid":""}"><input class="lab" data-nav="lb-ar" data-id="${h(id)}" value="${h(l[0]||vlabel(id))}" aria-label="${T("اسم القسم","Section name")}"><input class="lab" data-nav="lb-en" data-id="${h(id)}" dir="ltr" placeholder="English" value="${h(l[1]||"")}"><select data-nav="mv" data-id="${h(id)}" aria-label="${T("نقل إلى مجموعة","Move to group")}">${nav.groups.map((x,xi)=>`<option value="${xi}" ${xi===gi?"selected":""}>${h(x.n[EN?1:0]||x.n[0])}</option>`).join("")}</select><div class="cms-act"><button type="button" data-a="iup" data-k="${h(id)}">↑</button><button type="button" data-a="idown" data-k="${h(id)}">↓</button>${prot?"":`<button type="button" data-a="ihide" data-k="${h(id)}" aria-pressed="${hide.has(id)}">${hide.has(id)?T("إظهار","Show"):T("إخفاء","Hide")}</button>`}</div></div>`; }).join("")||`<p class="small muted" style="margin:0">${T("مجموعة فارغة.","Empty group.")}</p>`}</div>`).join("")}
+  <div class="row" style="gap:8px"><button class="btn" type="button" data-a="gadd">＋ ${T("مجموعة جديدة","New group")}</button>${D.nav?`<button class="btn ghost" type="button" data-a="nreset">${T("استعادة التنقل الأصلي","Restore original navigation")}</button>`:""}</div>`;
+}
+function navAct(a,k){
+  const nav=navBuild(); const G=nav.groups;
+  const find=id=>{ for(let gi=0;gi<G.length;gi++){ const ii=G[gi].ids.indexOf(id); if(ii>=0) return [gi,ii] } return null };
+  if(a==="gadd"){ G.splice(G.length-(G[G.length-1]?.k==="more"?1:0),0,{k:"g"+Date.now().toString(36),n:[T("مجموعة جديدة","New group"),"New group"],ids:[]}); }
+  else if(a==="gup"||a==="gdown"){ const i=+k,j=i+(a==="gup"?-1:1); if(j<0||j>=G.length) return; G.splice(j,0,G.splice(i,1)[0]); }
+  else if(a==="gdel"){ G.splice(+k,1); }
+  else if(a==="iup"||a==="idown"){ const p=find(k); if(!p) return; const [gi,ii]=p, jj=ii+(a==="iup"?-1:1); const ids=G[gi].ids; if(jj<0||jj>=ids.length) return; ids.splice(jj,0,ids.splice(ii,1)[0]); }
+  else if(a==="ihide"){ const s=new Set(nav.hide||[]); s.has(k)?s.delete(k):s.add(k); nav.hide=[...s]; }
+  else if(a==="nreset"){ D.nav=null; commit(T("التنقل","Navigation")); return draw(); }
+  else return;
+  D.nav=nav; commit(T("التنقل","Navigation")); draw();
+}
+function navEdit(el){
+  const nav=navBuild(), t=el.dataset.nav; nav.labels=nav.labels||{};
+  if(t==="gn-ar"||t==="gn-en"){ const g=nav.groups[+el.dataset.g]; g.n[t==="gn-ar"?0:1]=el.value.trim()||g.n[t==="gn-ar"?0:1]; }
+  else if(t==="lb-ar"||t==="lb-en"){ const id=el.dataset.id; const l=nav.labels[id]=nav.labels[id]||[vlabel(id),""]; l[t==="lb-ar"?0:1]=el.value.trim(); if(!l[0]) l[0]=vlabel(id); if(l[0]===vlabel(id)&&!l[1]) delete nav.labels[id]; }
+  else if(t==="mv"){ const id=el.dataset.id; nav.groups.forEach(g=>{ g.ids=g.ids.filter(x=>x!==id) }); nav.groups[+el.value].ids.push(id); }
+  D.nav=nav; commit(T("التنقل","Navigation")); draw();
+}
+
+// ===== تبويب النصوص =====
+function vText(){
+  const on=document.body.classList.contains("cms-editing");
+  return `<div class="panel"><h2>${T("تحرير أي نص بالنقر عليه","Edit any text by clicking it")}</h2><p class="muted small">${T("فعّل الوضع ثم تنقّل في الموقع وانقر على أي عنوان أو فقرة أو زر لتغيير نصه في كل مكان يظهر فيه. تُحفظ التغييرات كقواعد استبدال أدناه.","Turn it on, browse the site and click any heading, paragraph or button to change its text wherever it appears. Changes are saved as replacement rules below.")}</p><button class="btn" type="button" data-a="editmode">${on?T("إيقاف وضع التحرير","Turn editing off"):T("تفعيل وضع تحرير النصوص","Turn on text editing")}</button></div>
+  <div class="panel"><h2>${T("قواعد الاستبدال","Replacement rules")} (${(D.text||[]).length})</h2>
+  ${(D.text||[]).map((r,i)=>`<div class="cms-rule"><textarea data-rule="f" data-i="${i}" aria-label="${T("النص الأصلي","Original text")}">${h(r.f)}</textarea><textarea data-rule="t" data-i="${i}" aria-label="${T("النص الجديد","New text")}">${h(r.t)}</textarea><button class="btn ghost" type="button" data-a="rdel" data-k="${i}">✕</button></div>`).join("")||`<p class="muted">${T("لا توجد قواعد بعد.","No rules yet.")}</p>`}
+  <button class="btn ghost" type="button" data-a="radd">＋ ${T("قاعدة جديدة","New rule")}</button></div>`;
+}
+function ruleEdit(el){ const r=(D.text||[])[+el.dataset.i]; if(!r) return; r[el.dataset.rule]=el.value; commit(T("نصوص","Texts")); }
+function textAct(a,k){
+  if(a==="editmode"){ document.body.classList.contains("cms-editing")?stopEdit():startEdit(); return draw(); }
+  if(a==="radd"){ D.text=D.text||[]; D.text.push({f:"",t:""}); return draw(); }
+  if(a==="rdel"){ D.text.splice(+k,1); commit(T("نصوص","Texts")); refreshView(); return draw(); }
+}
+function startEdit(){
+  document.body.classList.add("cms-editing");
+  if(!q(".cms-editbar")) document.body.insertAdjacentHTML("afterbegin",`<div class="cms-editbar" data-cms-skip>${T("وضع تحرير النصوص: انقر على أي نص في الصفحة لتعديله.","Text editing: click any text on the page to edit it.")} <button type="button" id="cmsEditOff">${T("إيقاف","Stop")}</button> <button type="button" id="cmsEditBack">${T("العودة للمحرر","Back to editor")}</button></div>`);
+  q("#cmsEditOff").onclick=()=>{ stopEdit(); if(UI.tab==="text"&&q("#cmsRoot")) draw(); };
+  q("#cmsEditBack").onclick=()=>{ UI.tab="text"; saveUI(); stopEdit(); if(location.hash==="#cms") draw(); else location.hash="#cms"; };
+}
+function stopEdit(){ document.body.classList.remove("cms-editing"); q(".cms-editbar")?.remove(); }
+document.addEventListener("click",e=>{
+  if(!document.body.classList.contains("cms-editing")||!isAdm()) return;
+  if(e.target.closest(".cms-editbar,.cms-dlg,.cms-pill")||e.target.closest('[data-view="cms"]')) return;
+  let node=null;
+  try{ const r=document.caretRangeFromPoint?.(e.clientX,e.clientY); if(r&&r.startContainer.nodeType===3&&r.startContainer.nodeValue.trim()) node=r.startContainer; }catch{}
+  if(!node){ const el=e.target; node=[...el.childNodes].find(n=>n.nodeType===3&&n.nodeValue.trim())||null; }
+  if(!node||node.parentElement.closest(SKIP)) return;
+  e.preventDefault(); e.stopPropagation();
+  const cur=node.nodeValue.trim(); const rules=(D.text=D.text||[]); const ex=rules.find(r=>r.t&&r.t.trim()===cur);
+  const d=modal(`<h2>${T("تعديل النص","Edit text")}</h2><div class="cms-f"><label for="cmsTxt">${T("النص","Text")}</label><textarea id="cmsTxt" rows="5">${h(cur)}</textarea><p class="small muted">${T("يُستبدل هذا النص في كل مكان يظهر فيه.","This text is replaced everywhere it appears.")}</p></div><div class="cms-foot"><button class="btn" data-s>${T("حفظ","Save")}</button>${ex?`<button class="btn ghost" data-r>${T("إلغاء التعديل","Revert")}</button>`:""}<button class="btn ghost" data-x>${T("إغلاق","Close")}</button></div>`);
+  d.addEventListener("click",ev=>{
+    if(ev.target.closest("[data-x]")||ev.target===d) return shut(d);
+    if(ev.target.closest("[data-s]")){ const v=q("#cmsTxt",d).value.trim(); if(!v) return; if(v!==cur){ if(ex) ex.t=v; else rules.push({f:cur,t:v}); commit(T("نصوص","Texts")); refreshView(); } shut(d); }
+    if(ev.target.closest("[data-r]")){ D.text=rules.filter(r=>r!==ex); commit(T("نصوص","Texts")); refreshView(); shut(d); }
+  });
+},true);
+
+
+// ===== تبويب الكود والملفات =====
+const FS = {list:null, file:null, text:"", sha:null, orig:"", hist:null, msg:""};
+const TXT_EXT = /\.(html?|css|js|json|txt|md|webmanifest|svg|xml)$/i;
+const ghc = () => Object.assign({},GH0,jr(LS.gh,{}));
+const ghh = (g,extra) => Object.assign({Authorization:"Bearer "+g.t,Accept:"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"},extra||{});
+const ghapi = g => `https://api.github.com/repos/${g.o}/${g.r}`;
+function vCode(){
+  const c=D.code||{}, g=ghc();
+  return `<div class="panel"><h2>${T("كود مخصّص (CSS / JavaScript / HTML)","Custom code (CSS / JavaScript / HTML)")}</h2>
+  <p class="muted small">${T("يُنشر مع cms.json ويُطبَّق على كل الصفحات. الـ CSS يُطبَّق فوراً، وJavaScript يُنفَّذ عند تحميل الصفحة (جرّبه بزر «تجربة»). للطوارئ إن عطّل كودٌ الموقع: افتح الموقع بإضافة ‎?nocode=1‎ للرابط لتعطيل كل الكود المخصّص.","Published with cms.json and applied on every page. CSS applies at once; JavaScript runs on page load (try it with “Run”). Emergency: if code breaks the site, open it with ?nocode=1 added to the URL to disable all custom code.")}</p>
+  ${NOCODE?`<div class="alert">${T("الكود المخصّص معطّل في هذه الجلسة (nocode).","Custom code is disabled in this session (nocode).")}</div>`:""}
+  <div class="cms-f"><label for="ccCss"><span>CSS</span></label><textarea id="ccCss" class="json" rows="8" spellcheck="false">${h(c.css||"")}</textarea></div>
+  <div class="cms-f"><label for="ccJs"><span>JavaScript</span></label><textarea id="ccJs" class="json" rows="8" spellcheck="false">${h(c.js||"")}</textarea></div>
+  <div class="cms-f"><label for="ccHtml"><span>HTML (${T("يُضاف في نهاية الصفحة","appended at the end of the page")})</span></label><textarea id="ccHtml" class="json" rows="6" spellcheck="false">${h(c.html||"")}</textarea></div>
+  <div class="row" style="gap:8px"><button class="btn" type="button" data-a="ccsave">${T("حفظ الكود (مسودة)","Save code (draft)")}</button><button class="btn ghost" type="button" data-a="ccrun">${T("تجربة JavaScript الآن","Run JavaScript now")}</button></div><p id="ccMsg" class="small" role="status"></p></div>
+  <div class="panel"><h2>${T("تحرير ملفات الموقع مباشرة (GitHub)","Edit site files directly (GitHub)")}</h2>
+  <p class="muted small">${T("وصول كامل لملفات مجلد altayyibat في المستودع. كل حفظ يصبح commit فيمكن الرجوع لأي نسخة سابقة من «سجل الملف». يتطلب رمز GitHub المحفوظ في تبويب النشر.","Full access to the files in the altayyibat folder of the repository. Every save is a commit, so any earlier version can be restored from the file history. Needs the GitHub token saved in the Publish tab.")}</p>
+  ${g.t?"":`<div class="alert">${T("احفظ رمز GitHub أولاً من تبويب «النشر».","Save the GitHub token first in the Publish tab.")}</div>`}
+  <div class="row" style="gap:8px;margin-bottom:10px"><button class="btn ghost" type="button" data-a="flist">${T("تحميل قائمة الملفات","Load file list")}</button>${FS.list?`<select id="fsSel" style="flex:1;min-width:0;padding:9px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--ink)" dir="ltr">${FS.list.map(f=>`<option value="${h(f.path)}" ${f.path===FS.file?"selected":""}>${h(f.path)} (${Math.round(f.size/1024)} KB)</option>`).join("")}</select><button class="btn" type="button" data-a="fopen">${T("فتح","Open")}</button>`:""}</div>
+  <p id="fsMsg" class="small" role="status"></p>
+  ${FS.file?`<div class="cms-f"><label for="fsTxt"><span dir="ltr">${h(FS.file)}</span></label><textarea id="fsTxt" class="json" rows="22" spellcheck="false" wrap="off">${h(FS.text)}</textarea></div>
+  <div class="cms-f"><label for="fsMsgIn">${T("رسالة الحفظ","Commit message")}</label><input id="fsMsgIn" value="${h(FS.msg||"تعديل "+FS.file+" من محرر المحتوى")}"></div>
+  <div class="row" style="gap:8px"><button class="btn" type="button" data-a="fsave">${T("حفظ في المستودع (commit)","Save to repository (commit)")}</button><button class="btn ghost" type="button" data-a="fhist">${T("سجل الملف والتراجع","File history and rollback")}</button><button class="btn ghost" type="button" data-a="freload">${T("تجاهل وإعادة التحميل","Discard and reload")}</button></div>
+  ${FS.hist?`<div style="margin-top:10px">${FS.hist.map(x=>`<div class="cms-hist"><span dir="auto">${h(new Date(x.date).toLocaleString(EN?"en-GB":"ar-EG-u-nu-latn"))} · ${h(x.msg.slice(0,80))}</span><button class="btn ghost" type="button" data-a="frestore" data-k="${h(x.sha)}">${T("تحميل هذه النسخة في المحرر","Load this version into the editor")}</button></div>`).join("")||`<p class="muted">—</p>`}</div>`:""}`:""}</div>`;
+}
+const codeMsg = (id,m,bad) => { const e=q(id); if(e){ e.textContent=m; e.className="small "+(bad?"cms-bad":"cms-ok"); } };
+async function codeAct(a,k){
+  if(["ccsave","ccrun"].includes(a)){
+    D.code={css:q("#ccCss").value,js:q("#ccJs").value,html:q("#ccHtml").value};
+    if(a==="ccsave"){ commit(T("كود","Code")); codeMsg("#ccMsg",T("حُفظ كمسودة. اذهب إلى «النشر» لنشره للزوار.","Saved as a draft. Go to Publish to release it to visitors.")); return; }
+    try{ new Function(D.code.js)(); codeMsg("#ccMsg",T("نُفِّذ بلا أخطاء.","Ran without errors.")); }catch(e){ codeMsg("#ccMsg",T("خطأ: ","Error: ")+e.message,1); } return;
+  }
+  const g=ghc(); const msg="#fsMsg";
+  if(!g.t){ codeMsg(msg,T("لا يوجد رمز GitHub.","No GitHub token."),1); return; }
+  try{
+    if(a==="flist"){ codeMsg(msg,T("جارٍ التحميل…","Loading…")); const r=await fetch(`${ghapi(g)}/git/trees/${encodeURIComponent(g.b)}?recursive=1`,{headers:ghh(g),cache:"no-store"}); if(!r.ok) throw new Error("HTTP "+r.status); const j=await r.json(); const base=g.p.replace(/[^/]*$/,""); FS.list=j.tree.filter(f=>f.type==="blob"&&f.path.startsWith(base)&&TXT_EXT.test(f.path)).sort((x,y)=>x.path.localeCompare(y.path)); return draw(); }
+    if(a==="fopen"||a==="freload"){ const path=a==="fopen"?q("#fsSel").value:FS.file; codeMsg(msg,T("جارٍ فتح الملف…","Opening…")); const [rt,rm]=await Promise.all([fetch(`${ghapi(g)}/contents/${path}?ref=${encodeURIComponent(g.b)}`,{headers:ghh(g,{Accept:"application/vnd.github.raw+json"}),cache:"no-store"}),fetch(`${ghapi(g)}/contents/${path}?ref=${encodeURIComponent(g.b)}`,{headers:ghh(g),cache:"no-store"})]); if(!rt.ok||!rm.ok) throw new Error("HTTP "+rt.status); FS.file=path; FS.text=await rt.text(); FS.sha=(await rm.json()).sha; FS.orig=FS.text; FS.hist=null; FS.msg=""; return draw(); }
+    if(a==="fhist"){ const r=await fetch(`${ghapi(g)}/commits?path=${encodeURIComponent(FS.file)}&sha=${encodeURIComponent(g.b)}&per_page=15`,{headers:ghh(g),cache:"no-store"}); if(!r.ok) throw new Error("HTTP "+r.status); FS.text=q("#fsTxt").value; FS.msg=q("#fsMsgIn").value; FS.hist=(await r.json()).map(x=>({sha:x.sha,date:x.commit.author.date,msg:x.commit.message})); return draw(); }
+    if(a==="frestore"){ const r=await fetch(`${ghapi(g)}/contents/${FS.file}?ref=${k}`,{headers:ghh(g,{Accept:"application/vnd.github.raw+json"}),cache:"no-store"}); if(!r.ok) throw new Error("HTTP "+r.status); FS.text=await r.text(); FS.msg=T("استرجاع نسخة سابقة من ","Restore an earlier version of ")+FS.file; FS.hist=null; draw(); codeMsg("#fsMsg",T("حُمّلت النسخة في المحرر. اضغط «حفظ» لتثبيتها.","Version loaded into the editor. Press Save to commit it.")); return; }
+    if(a==="fsave"){
+      const text=q("#fsTxt").value, m=q("#fsMsgIn").value.trim()||"تعديل من محرر المحتوى";
+      if(FS.file.endsWith(".json")){ try{ JSON.parse(text) }catch(e){ return codeMsg(msg,T("JSON غير صالح: ","Invalid JSON: ")+e.message,1) } }
+      if(FS.file.endsWith("index.html")&&!text.includes('id="cms-js"')&&!await ask(T("هذا الملف لا يحتوي كتلة محرر المحتوى. حفظه سيعطّل المحرر. متأكد؟","This file lacks the content-editor block. Saving will disable the editor. Sure?"),T("حفظ رغم ذلك","Save anyway"))) return;
+      if(!await ask(T("حفظ التغييرات في المستودع؟ يظهر الملف المعدّل للزوار خلال دقائق.","Commit changes to the repository? Visitors see the edited file within minutes."),T("حفظ","Save"))) return;
+      codeMsg(msg,T("جارٍ الحفظ…","Saving…"));
+      const rm=await fetch(`${ghapi(g)}/contents/${FS.file}?ref=${encodeURIComponent(g.b)}`,{headers:ghh(g),cache:"no-store"}); const cur=rm.ok?(await rm.json()).sha:undefined;
+      if(cur&&cur!==FS.sha&&!await ask(T("تغيّر الملف في المستودع بعد فتحه. الحفظ سيستبدل النسخة الأحدث. متابعة؟","The file changed in the repository after you opened it. Saving will overwrite the newer version. Continue?"),T("استبدال","Overwrite"))) return;
+      const r=await fetch(`${ghapi(g)}/contents/${FS.file}`,{method:"PUT",headers:ghh(g,{"Content-Type":"application/json"}),body:JSON.stringify({message:m,content:b64(text),sha:cur,branch:g.b})});
+      if(!r.ok){ let mm=""; try{ mm=(await r.json()).message }catch{} throw new Error("HTTP "+r.status+(mm?" · "+mm:"")); }
+      const j=await r.json(); FS.sha=j.content&&j.content.sha; FS.orig=text; FS.text=text; FS.hist=null; draw(); codeMsg("#fsMsg",T("تم الحفظ ✓ (commit). يمكنك التراجع من «سجل الملف».","Saved ✓ (commit). You can roll back from the file history.")); return;
+    }
+  }catch(e){ codeMsg(msg,T("تعذّر: ","Failed: ")+(e.message||e),1); }
+}
+
+// ===== تبويب النشر =====
+const GH0 = {o:"munjiz-qa",r:"munjiz-qa.github.io",b:"main",p:"altayyibat/cms.json",t:""};
+function vPublish(){
+  const s=sum(), g=Object.assign({},GH0,jr(LS.gh,{})), hist=jr(LS.hist,[]);
+  const stale = PUB.updated && D.base!==undefined && D.base!==null && D.base!==PUB.updated && dirty();
+  return `<div class="cms-stat"><div><b>${s.ed}</b>${T("عناصر معدّلة","Edited items")}</div><div><b>${s.ad}</b>${T("عناصر جديدة","New items")}</div><div><b>${s.dl}</b>${T("عناصر محذوفة","Deleted items")}</div><div><b>${s.or}</b>${T("مجموعات أُعيد ترتيبها","Reordered collections")}</div><div><b>${s.nav?"✓":"–"}</b>${T("التنقل","Navigation")}</div><div><b>${s.tx}</b>${T("قواعد نصوص","Text rules")}</div></div>
+  <div class="panel"><h2>${T("نشر التعديلات لكل الزوار","Publish changes to all visitors")}</h2>
+   <p class="muted small">${PUB.updated?T("آخر نشر: ","Last published: ")+new Date(PUB.updated).toLocaleString(EN?"en-GB":"ar-EG-u-nu-latn"):T("لم يُنشر شيء بعد.","Nothing published yet.")} · ${dirty()?`<b class="cms-bad">${T("توجد تعديلات غير منشورة","Unpublished changes")}</b>`:`<b class="cms-ok">${T("كل شيء منشور","Everything is published")}</b>`}</p>
+   ${stale?`<div class="alert">${T("تنبيه: نُشرت نسخة أحدث من جهاز آخر بعد بدء مسودتك. النشر سيحلّ محلها.","Note: a newer version was published from another device after your draft began. Publishing will replace it.")}</div>`:""}
+   <button class="btn" type="button" data-a="publish" id="cmsPub" ${dirty()||!PUB.updated?"":""}>${T("نشر الآن على الموقع","Publish to the live site")}</button> <button class="btn ghost" type="button" data-a="verify">${T("التحقق من النسخة الحية","Check the live copy")}</button> <span id="cmsPubMsg" class="small" role="status"></span>
+   <details style="margin-top:12px" ${g.t?"":"open"}><summary><b>${T("إعداد النشر عبر GitHub (مرة واحدة)","GitHub publishing setup (once)")}</b></summary>
+    <p class="small muted">${T("أنشئ رمز وصول (Fine-grained token) من GitHub ← Settings ← Developer settings، بصلاحية Contents: Read and write لمستودع الموقع فقط، والصقه هنا. يُحفظ في هذا المتصفح فقط ولا يُرسل لأي جهة سوى GitHub.","Create a fine-grained token in GitHub → Settings → Developer settings with Contents: Read and write on the site repository only, and paste it here. It is kept in this browser only and sent only to GitHub.")}</p>
+    <div class="cms-f"><label>${T("المستودع","Repository")}</label><div class="row" style="gap:6px"><input id="ghO" dir="ltr" value="${h(g.o)}" style="flex:1;min-width:0"><input id="ghR" dir="ltr" value="${h(g.r)}" style="flex:2;min-width:0"></div></div>
+    <div class="cms-f"><label>${T("الفرع والمسار","Branch and path")}</label><div class="row" style="gap:6px"><input id="ghB" dir="ltr" value="${h(g.b)}" style="flex:1;min-width:0"><input id="ghP" dir="ltr" value="${h(g.p)}" style="flex:2;min-width:0"></div></div>
+    <div class="cms-f"><label for="ghT">${T("رمز الوصول","Access token")}</label><input id="ghT" type="password" dir="ltr" autocomplete="off" value="${h(g.t)}" placeholder="github_pat_…"></div>
+    <button class="btn ghost" type="button" data-a="ghsave">${T("حفظ الإعداد","Save setup")}</button> ${g.t?`<button class="btn ghost" type="button" data-a="ghclear">${T("حذف الرمز من هذا الجهاز","Remove token from this device")}</button>`:""}</details></div>
+  <div class="panel"><h2>${T("نسخ احتياطي واستيراد","Backup and import")}</h2><p class="muted small">${T("نزّل ملف cms.json لحفظ نسخة، أو لرفعه يدوياً إلى مجلد altayyibat في المستودع. ويمكنك استيراد ملف سابق.","Download cms.json for a backup, or to upload by hand to the altayyibat folder. You can also import a previous file.")}</p><div class="row" style="gap:8px"><button class="btn ghost" type="button" data-a="dl">${T("تنزيل cms.json","Download cms.json")}</button><label class="btn ghost" style="cursor:pointer">${T("استيراد ملف","Import file")}<input type="file" id="cmsImp" accept=".json,application/json" hidden></label><button class="btn ghost" type="button" data-a="discard">${T("تجاهل مسودتي والعودة للمنشور","Discard my draft, back to published")}</button></div></div>
+  <div class="panel"><h2>${T("سجل التعديلات والتراجع","History and undo")}</h2>${hist.length?hist.map((x,i)=>`<div class="cms-hist"><span>${new Date(x.t).toLocaleString(EN?"en-GB":"ar-EG-u-nu-latn")} · ${h(x.l)}</span><button class="btn ghost" type="button" data-a="undo" data-k="${i}">${T("استرجاع ما قبل هذا التعديل","Restore the state before this edit")}</button></div>`).join(""):`<p class="muted">${T("لا يوجد سجل بعد.","No history yet.")}</p>`}</div>`;
+}
+const b64 = s => { const b=new TextEncoder().encode(s); let t=""; for(let i=0;i<b.length;i+=8192) t+=String.fromCharCode.apply(null,b.subarray(i,i+8192)); return btoa(t); };
+async function publish(){
+  const msg=q("#cmsPubMsg"); const set=(m,bad)=>{ if(msg){ msg.textContent=m; msg.className="small "+(bad?"cms-bad":"cms-ok") } };
+  const g=Object.assign({},GH0,jr(LS.gh,{})); if(!g.t){ set(T("أدخل رمز الوصول أولاً (الإعداد أدناه).","Enter the access token first (setup below)."),1); return; }
+  set(T("جارٍ النشر…","Publishing…"));
+  try{
+    const api=`https://api.github.com/repos/${g.o}/${g.r}/contents/${g.p}`, hd={Authorization:"Bearer "+g.t,Accept:"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"};
+    let sha; const r0=await fetch(api+"?ref="+encodeURIComponent(g.b),{headers:hd,cache:"no-store"});
+    if(r0.ok) sha=(await r0.json()).sha; else if(r0.status!==404) throw new Error(r0.status===401||r0.status===403?T("الرمز غير صالح أو بلا صلاحية كافية","Token invalid or lacks permission"):("HTTP "+r0.status));
+    const doc=core(D); doc.updated=new Date().toISOString();
+    const r1=await fetch(api,{method:"PUT",headers:{...hd,"Content-Type":"application/json"},body:JSON.stringify({message:"تحديث محتوى الطيبات من محرر المحتوى",content:b64(JSON.stringify(doc,null,1)+"\n"),sha,branch:g.b})});
+    if(!r1.ok){ let m=""; try{ m=(await r1.json()).message }catch{} throw new Error((r1.status===401||r1.status===403?T("الرمز غير صالح أو بلا صلاحية كتابة","Token invalid or no write permission"):"HTTP "+r1.status)+(m?" · "+m:"")); }
+    PUB=norm(doc); D=norm(doc); D.base=doc.updated; jw(LS.pub,PUB); jw(LS.draft,D);
+    set(T("تم النشر ✓ ستظهر التعديلات لكل الزوار خلال دقيقة أو دقيقتين (حتى يُحدّث GitHub Pages الموقع).","Published ✓ Changes reach all visitors within a minute or two (once GitHub Pages rebuilds)."));
+    draw(); q("#cmsPubMsg") && (q("#cmsPubMsg").textContent=T("تم النشر ✓ ستظهر التعديلات لكل الزوار خلال دقيقة أو دقيقتين.","Published ✓ Changes reach all visitors within a minute or two."), q("#cmsPubMsg").className="small cms-ok");
+  }catch(e){ set(T("تعذّر النشر: ","Publish failed: ")+(e.message||e),1); }
+}
+async function verify(){
+  const msg=q("#cmsPubMsg"); try{ const r=await fetch("cms.json?cb="+Date.now(),{cache:"no-store"}); const j=await r.json(); const ok=PUB.updated&&j.updated===PUB.updated; msg.textContent=ok?T("النسخة الحية مطابقة لآخر نشر ✓","The live copy matches the last publish ✓"):T("النسخة الحية لم تتحدث بعد (آخر تحديث لها: ","The live copy has not updated yet (its version: ")+(j.updated||"—")+")"; msg.className="small "+(ok?"cms-ok":"cms-bad"); }catch{ msg.textContent=T("تعذّر قراءة النسخة الحية.","Could not read the live copy."); msg.className="small cms-bad"; }
+}
+async function pubAct(a,k){
+  if(a==="publish") return publish();
+  if(a==="verify") return verify();
+  if(a==="ghsave"){ jw(LS.gh,{o:q("#ghO").value.trim(),r:q("#ghR").value.trim(),b:q("#ghB").value.trim(),p:q("#ghP").value.trim(),t:q("#ghT").value.trim()}); say(T("تم حفظ الإعداد على هذا الجهاز","Setup saved on this device")); return draw(); }
+  if(a==="ghclear"){ const g=jr(LS.gh,{}); g.t=""; jw(LS.gh,g); return draw(); }
+  if(a==="dl"){ const doc=core(D); doc.updated=doc.updated||new Date().toISOString(); const bl=new Blob([JSON.stringify(doc,null,1)],{type:"application/json"}); const l=document.createElement("a"); l.href=URL.createObjectURL(bl); l.download="cms.json"; l.click(); setTimeout(()=>URL.revokeObjectURL(l.href),2000); return; }
+  if(a==="discard"){ if(!await ask(T("تجاهل كل تعديلاتك غير المنشورة؟","Discard all your unpublished changes?"),T("تجاهل","Discard"))) return; D=norm(PUB); jw(LS.draft,D); applyAll(D); refreshView(); return draw(); }
+  if(a==="undo"){ const hist=jr(LS.hist,[]); const x=hist[+k]; if(!x) return; if(!await ask(T("استرجاع الحالة السابقة؟","Restore the earlier state?"),T("استرجاع","Restore"))) return; D=norm(x.d); D.updated=PUB.updated; hist.splice(0,+k+1); jw(LS.hist,hist); jw(LS.draft,D); applyAll(D); refreshView(); return draw(); }
+}
+document.addEventListener("change",e=>{ if(e.target.id!=="cmsImp") return; const f=e.target.files[0]; if(!f) return; f.text().then(t=>{ try{ const j=JSON.parse(t); if(j.v!==1||typeof j.c!=="object") throw 0; D=norm(j); commit(T("استيراد","Import")); refreshView(); draw(); say(T("تم الاستيراد كمسودة. راجعها ثم انشر.","Imported as a draft. Review it, then publish.")); }catch{ say(T("ملف غير صالح","Invalid file")); } }); });
+
+// ---------- التسجيل في التنقل والإدارة ----------
+if(isAdm()&&!VIEWS.some(v=>v[0]==="cms")){ const i=VIEWS.findIndex(v=>v[0]==="admin"); VIEWS.splice(i<0?VIEWS.length:i+1,0,["cms",T("محرر المحتوى","Content editor")]); BASEV.push(["cms",T("محرر المحتوى","Content editor")]); }
+window.TY_NAV_META = Object.assign(window.TY_NAV_META||{}, {cms:{g:"svc", d:["أضف أو عدّل أو احذف أو رتّب أي محتوى في المنصة، وانشره لكل الزوار","Add, edit, delete or reorder any content and publish it to all visitors"]}});
+META0.cms="svc";
+if(typeof I18N_EN!=="undefined") I18N_EN["محرر المحتوى"]="Content editor";
+const _ad=AFTER.admin;
+AFTER.admin = function(){ const r=_ad&&_ad.apply(this,arguments); if(isAdm()){ q("#main section[data-view]")?.querySelector(".view-head")?.insertAdjacentHTML("afterend",`<div class="card" style="margin-bottom:16px"><div class="acc-who"><div><b>${T("محرر المحتوى الشامل","Full content editor")}</b><div class="small muted">${T("أضف أو عدّل أو احذف أو رتّب أي محتوى أو قسم أو نص، ثم انشره لكل الزوار.","Add, edit, delete or reorder any content, section or text, then publish it to all visitors.")}</div></div><a class="btn" href="#cms">${T("فتح المحرر","Open the editor")}</a></div></div>`); } return r; };
+// مؤشر المسودة لحساب المدير في بقية الصفحات
+function pill(){ q(".cms-pill")?.remove(); if(isAdm()&&dirty()&&location.hash!=="#cms") document.body.insertAdjacentHTML("beforeend",`<a class="cms-pill" data-cms-skip href="#cms" onclick="try{var u=JSON.parse(localStorage.getItem('ty_cms_ui')||'{}');u.tab='publish';localStorage.setItem('ty_cms_ui',JSON.stringify(u))}catch(e){}">${T("تعديلات غير منشورة · انشر","Unpublished changes · publish")}</a>`); }
+window.addEventListener("hashchange",()=>setTimeout(pill,50)); setInterval(pill,4000);
+
+// ---------- التشغيل ----------
+applyAll(D); runUserJs(D); pill();
+if(isAdm()||RULES.length) applyText(document.body);
+if(location.hash==="#cms"||RULES.length||dirty()||PUB.updated) refreshView();
+if(location.protocol!=="file:") fetch("cms.json",{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>{
+  if(!j||j.v!==1||typeof j.c!=="object") return;
+  const nj=norm(j); if(same(nj,PUB)) return;
+  const wasDirty=dirty(); PUB=nj; jw(LS.pub,PUB);
+  if(!isAdm()) D=PUB; else if(!wasDirty) { D=norm(PUB); jw(LS.draft,D); }
+  applyAll(D); runUserJs(D); applyText(document.body); refreshView(); pill();
+}).catch(()=>{});
 })();
 </script><script src="pwa-install.js" defer></script>
 
