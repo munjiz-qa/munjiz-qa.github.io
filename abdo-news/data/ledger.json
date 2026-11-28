@@ -1,18 +1,18 @@
 {
- "brief": "2026-11-28-md",
- "checked": "2026-11-28T11:54:46+03:00",
+ "brief": "2026-11-28-pm",
+ "checked": "2026-11-28T17:55:47+03:00",
  "summary": {
-  "items": 22,
-  "sources": 357,
-  "outlets": 115,
-  "reachable": 327,
-  "blocked": 29,
+  "items": 23,
+  "sources": 366,
+  "outlets": 112,
+  "reachable": 335,
+  "blocked": 30,
   "broken": 1,
-  "verified": 20,
-  "review": 0,
-  "multi_source": 22,
-  "numbers_total": 37,
-  "numbers_grounded": 37,
+  "verified": 22,
+  "review": 1,
+  "multi_source": 23,
+  "numbers_total": 63,
+  "numbers_grounded": 62,
   "dropped": 0
  },
  "items": {
@@ -22,12 +22,12 @@
    "outlets": 3,
    "reach": [
     "blocked",
-    "blocked",
+    "ok",
     "ok"
    ],
    "numbers": {
-    "total": 1,
-    "grounded": 1,
+    "total": 0,
+    "grounded": 0,
     "checked": true,
     "unseen": []
    },
@@ -35,19 +35,20 @@
   },
   "q2": {
    "zone": "qatar",
-   "sources": 2,
-   "outlets": 2,
+   "sources": 3,
+   "outlets": 3,
    "reach": [
-    "blocked",
-    "blocked"
+    "ok",
+    "ok",
+    "ok"
    ],
    "numbers": {
-    "total": 2,
-    "grounded": 0,
-    "checked": false,
+    "total": 3,
+    "grounded": 3,
+    "checked": true,
     "unseen": []
    },
-   "status": "blocked"
+   "status": "verified"
   },
   "q3": {
    "zone": "qatar",
@@ -58,8 +59,8 @@
     "blocked"
    ],
    "numbers": {
-    "total": 2,
-    "grounded": 2,
+    "total": 5,
+    "grounded": 5,
     "checked": true,
     "unseen": []
    },
@@ -67,15 +68,16 @@
   },
   "q4": {
    "zone": "qatar",
-   "sources": 2,
-   "outlets": 2,
+   "sources": 3,
+   "outlets": 3,
    "reach": [
     "ok",
-    "blocked"
+    "blocked",
+    "ok"
    ],
    "numbers": {
-    "total": 4,
-    "grounded": 4,
+    "total": 2,
+    "grounded": 2,
     "checked": true,
     "unseen": []
    },
@@ -83,19 +85,20 @@
   },
   "q5": {
    "zone": "qatar",
-   "sources": 2,
-   "outlets": 2,
+   "sources": 3,
+   "outlets": 3,
    "reach": [
+    "ok",
     "blocked",
-    "blocked"
+    "ok"
    ],
    "numbers": {
-    "total": 0,
-    "grounded": 0,
-    "checked": false,
+    "total": 7,
+    "grounded": 7,
+    "checked": true,
     "unseen": []
    },
-   "status": "blocked"
+   "status": "verified"
   },
   "q6": {
    "zone": "qatar",
@@ -103,7 +106,7 @@
    "outlets": 3,
    "reach": [
     "ok",
-    "ok",
+    "blocked",
     "ok"
    ],
    "numbers": {
@@ -116,10 +119,12 @@
   },
   "g1": {
    "zone": "gulf",
-   "sources": 3,
-   "outlets": 3,
+   "sources": 5,
+   "outlets": 4,
    "reach": [
     "ok",
+    "ok",
+    "blocked",
     "ok",
     "ok"
    ],
@@ -168,15 +173,15 @@
   "g4": {
    "zone": "gulf",
    "sources": 3,
-   "outlets": 3,
+   "outlets": 2,
    "reach": [
     "ok",
     "ok",
     "ok"
    ],
    "numbers": {
-    "total": 2,
-    "grounded": 2,
+    "total": 8,
+    "grounded": 8,
     "checked": true,
     "unseen": []
    },
@@ -191,24 +196,8 @@
     "ok"
    ],
    "numbers": {
-    "total": 0,
-    "grounded": 0,
-    "checked": true,
-    "unseen": []
-   },
-   "status": "verified"
-  },
-  "g6": {
-   "zone": "gulf",
-   "sources": 2,
-   "outlets": 2,
-   "reach": [
-    "ok",
-    "ok"
-   ],
-   "numbers": {
-    "total": 4,
-    "grounded": 4,
+    "total": 2,
+    "grounded": 2,
     "checked": true,
     "unseen": []
    },
@@ -219,13 +208,13 @@
    "sources": 3,
    "outlets": 3,
    "reach": [
-    "ok",
+    "blocked",
     "ok",
     "ok"
    ],
    "numbers": {
-    "total": 1,
-    "grounded": 1,
+    "total": 2,
+    "grounded": 2,
     "checked": true,
     "unseen": []
    },
@@ -236,7 +225,7 @@
    "sources": 3,
    "outlets": 3,
    "reach": [
-    "ok",
+    "blocked",
     "ok",
     "ok"
    ],
@@ -250,15 +239,16 @@
   },
   "e3": {
    "zone": "egypt",
-   "sources": 2,
+   "sources": 3,
    "outlets": 2,
    "reach": [
+    "blocked",
     "ok",
     "ok"
    ],
    "numbers": {
-    "total": 1,
-    "grounded": 1,
+    "total": 5,
+    "grounded": 5,
     "checked": true,
     "unseen": []
    },
@@ -273,25 +263,26 @@
     "ok"
    ],
    "numbers": {
-    "total": 4,
-    "grounded": 4,
+    "total": 11,
+    "grounded": 10,
     "checked": true,
-    "unseen": []
+    "unseen": [
+     "2.4"
+    ]
    },
-   "status": "verified"
+   "status": "review"
   },
   "e5": {
    "zone": "egypt",
-   "sources": 3,
-   "outlets": 3,
+   "sources": 2,
+   "outlets": 2,
    "reach": [
-    "ok",
     "ok",
     "ok"
    ],
    "numbers": {
-    "total": 2,
-    "grounded": 2,
+    "total": 0,
+    "grounded": 0,
     "checked": true,
     "unseen": []
    },
@@ -306,8 +297,8 @@
     "ok"
    ],
    "numbers": {
-    "total": 1,
-    "grounded": 1,
+    "total": 2,
+    "grounded": 2,
     "checked": true,
     "unseen": []
    },
@@ -315,37 +306,22 @@
   },
   "w2": {
    "zone": "world",
-   "sources": 2,
+   "sources": 3,
    "outlets": 2,
    "reach": [
+    "ok",
     "ok",
     "ok"
    ],
    "numbers": {
-    "total": 4,
-    "grounded": 4,
+    "total": 1,
+    "grounded": 1,
     "checked": true,
     "unseen": []
    },
    "status": "verified"
   },
   "w3": {
-   "zone": "world",
-   "sources": 2,
-   "outlets": 2,
-   "reach": [
-    "ok",
-    "ok"
-   ],
-   "numbers": {
-    "total": 5,
-    "grounded": 5,
-    "checked": true,
-    "unseen": []
-   },
-   "status": "verified"
-  },
-  "w4": {
    "zone": "world",
    "sources": 2,
    "outlets": 2,
@@ -361,7 +337,56 @@
    },
    "status": "verified"
   },
+  "w4": {
+   "zone": "world",
+   "sources": 2,
+   "outlets": 2,
+   "reach": [
+    "ok",
+    "ok"
+   ],
+   "numbers": {
+    "total": 2,
+    "grounded": 2,
+    "checked": true,
+    "unseen": []
+   },
+   "status": "verified"
+  },
   "w5": {
+   "zone": "world",
+   "sources": 3,
+   "outlets": 2,
+   "reach": [
+    "ok",
+    "ok",
+    "ok"
+   ],
+   "numbers": {
+    "total": 5,
+    "grounded": 5,
+    "checked": true,
+    "unseen": []
+   },
+   "status": "verified"
+  },
+  "w6": {
+   "zone": "world",
+   "sources": 2,
+   "outlets": 2,
+   "reach": [
+    "ok",
+    "ok"
+   ],
+   "numbers": {
+    "total": 2,
+    "grounded": 2,
+    "checked": true,
+    "unseen": []
+   },
+   "status": "verified"
+  },
+  "w7": {
    "zone": "world",
    "sources": 2,
    "outlets": 2,
@@ -382,7 +407,6 @@
  "sources_state": {
   "24n-unsc13": "ok",
   "abc-tar26": "ok",
-  "abc-tw28": "ok",
   "ah-uni16": "ok",
   "aj-apec18": "ok",
   "aj-asiancup": "ok",
@@ -390,17 +414,25 @@
   "aj-dem24": "ok",
   "aj-eis25": "ok",
   "aj-es27": "ok",
+  "aj-es28": "ok",
   "aj-f1": "ok",
+  "aj-fk28": "ok",
   "aj-gb27": "ok",
   "aj-has24": "ok",
+  "aj-kun28": "ok",
+  "aj-kw28": "ok",
+  "aj-meth28": "ok",
+  "aj-msf28": "ok",
   "aj-pui25": "ok",
   "aj-qager20": "ok",
   "aj-srb27": "ok",
-  "aj-tw28": "ok",
+  "aj-tw28b": "ok",
+  "aj-yem28": "ok",
   "ajn-austerity5": "ok",
+  "ajn-fr28": "ok",
+  "ajn-wish28": "ok",
   "akh-forum14": "ok",
   "alain-usd12": "ok",
-  "alm-mk26": "ok",
   "amw-debt11": "ok",
   "an-dakar": "blocked",
   "an-g20": "blocked",
@@ -408,9 +440,9 @@
   "an-opec12": "blocked",
   "an-tasi10": "blocked",
   "an-zel16": "ok",
-  "anpk-mk26": "ok",
   "araby-icup": "ok",
   "at-concealment": "ok",
+  "at-kw27": "ok",
   "at-rai27": "ok",
   "aw-musk26": "ok",
   "aw-nik26": "ok",
@@ -444,6 +476,7 @@
   "cm-wage15n": "ok",
   "cn-motogp8": "ok",
   "cp-gold25": "ok",
+  "dac-att27": "ok",
   "dde-richter06": "ok",
   "de-etihad13": "broken",
   "dn-cab18": "ok",
@@ -452,18 +485,30 @@
   "dst-hun": "blocked",
   "dw-fdi16": "ok",
   "eb-cab18": "ok",
+  "eb-cab28": "ok",
+  "eb-cur28": "ok",
+  "eb-qasim28": "ok",
   "eg-cab18": "ok",
   "egyin-fuel14": "ok",
   "elb-agenda8": "ok",
+  "elb-alb28": "ok",
   "elb-bb28": "ok",
   "elb-caf27": "ok",
+  "elb-don28": "ok",
+  "elb-gold28": "ok",
+  "elb-ift28": "ok",
+  "elb-lby28": "ok",
   "elb-syr21": "ok",
   "elb-thn15": "ok",
   "elb-usd26": "ok",
   "elb-usd27": "ok",
+  "en-alb28": "ok",
   "en-arg27": "ok",
   "en-asiancup": "ok",
   "en-eis8": "ok",
+  "en-es28": "ok",
+  "en-fk28": "ok",
+  "en-fr28": "ok",
   "ent-rem11": "ok",
   "esa-bepi": "ok",
   "et-cab18": "ok",
@@ -471,7 +516,10 @@
   "ey-btc21": "ok",
   "f1-qa26": "ok",
   "ff-gold5": "ok",
+  "fia-att27": "ok",
   "fmt-cn16": "ok",
+  "ft-nuc28": "ok",
+  "ft-tc28": "ok",
   "gn-10": "ok",
   "gn-7th25": "ok",
   "gn-ey27": "ok",
@@ -490,18 +538,23 @@
   "gt-bepi22": "ok",
   "gt-de18": "ok",
   "gt-df23": "ok",
+  "gt-dff27": "ok",
   "gt-fifa19": "ok",
   "gt-gmt": "ok",
   "gt-hack": "ok",
   "gt-maml25": "ok",
+  "gt-mk28": "ok",
   "gt-qm": "ok",
   "gt-shura": "ok",
   "gt-traffic19": "ok",
+  "gt-wish27": "ok",
+  "gt-ws28": "ok",
   "gt-wsj27": "ok",
   "hapi-bh": "ok",
   "hsd-aswaq18": "ok",
   "ib-oil27": "ok",
   "il-eu5": "ok",
+  "iri-meth27": "ok",
   "irn-fifa17": "ok",
   "ja-ws24": "ok",
   "jb-ws27": "ok",
@@ -525,8 +578,14 @@
   "m24-steel15": "ok",
   "ma-sum19": "ok",
   "mars-qse26": "ok",
+  "ms-bs28": "ok",
   "ms-egx25": "ok",
+  "ms-gold28b": "ok",
+  "ms-hosp28": "ok",
+  "ms-ift28": "ok",
+  "ms-psy28": "ok",
   "ms-syr21": "ok",
+  "ms-wx28": "ok",
   "msr-caf27": "ok",
   "msr-enp25": "blocked",
   "msr-gold25n": "blocked",
@@ -557,12 +616,14 @@
   "oo-rail8": "ok",
   "oo-sal12": "ok",
   "pen-aswaq18": "ok",
+  "pen-att28": "ok",
   "pen-boat27": "ok",
   "pen-cab11": "ok",
   "pen-camel24": "ok",
   "pen-confisc18": "ok",
   "pen-culture": "ok",
   "pen-design": "ok",
+  "pen-dff28": "ok",
   "pen-endur11": "ok",
   "pen-f1saad19": "ok",
   "pen-fivb24": "ok",
@@ -572,6 +633,7 @@
   "pen-hpv21": "ok",
   "pen-k7": "ok",
   "pen-misnad12": "ok",
+  "pen-ml28": "ok",
   "pen-para": "ok",
   "pen-pdf11": "ok",
   "pen-pdf12": "ok",
@@ -591,24 +653,36 @@
   "pen-wknd26": "ok",
   "pen-zoo23": "ok",
   "qna-ab23": "ok",
+  "qna-al28": "ok",
   "qna-bok26": "ok",
   "qna-camel24": "ok",
   "qna-camp": "blocked",
   "qna-df23": "ok",
   "qna-eu27": "ok",
+  "qna-exp28": "ok",
+  "qna-gz28": "ok",
   "qna-hb24": "ok",
   "qna-jppi12": "ok",
   "qna-kse23": "ok",
-  "qna-kwoil27": "ok",
+  "qna-kwoil28": "ok",
   "qna-maml25": "ok",
+  "qna-mk28": "ok",
+  "qna-msf28": "ok",
+  "qna-msl28": "ok",
   "qna-msx23": "ok",
+  "qna-msx28": "ok",
   "qna-omoil27": "ok",
   "qna-pol26": "ok",
+  "qna-ppi28": "ok",
+  "qna-qba28": "ok",
   "qna-qiaf22": "ok",
   "qna-qr23": "ok",
   "qna-sadd27": "ok",
+  "qna-un28": "ok",
   "qt-ashghal16": "ok",
   "qt-aswaq19": "ok",
+  "qt-bel27": "ok",
+  "qt-exp28": "ok",
   "qt-fivb24": "ok",
   "qt-hia9": "ok",
   "qt-hpv0913": "ok",
@@ -623,6 +697,8 @@
   "ral-oil27": "ok",
   "rte-rba": "ok",
   "rte-tar26": "ok",
+  "ry-dff28": "blocked",
+  "ry-exp28": "blocked",
   "ry-k7": "ok",
   "ry-oil27": "ok",
   "ry-qrbf24": "blocked",
@@ -630,14 +706,20 @@
   "ry-usd27": "ok",
   "ry-vq21": "ok",
   "ry-wish27": "ok",
+  "ry-wish28": "blocked",
+  "ry-ws28": "blocked",
   "ry-wx21": "ok",
   "rz-iea13": "ok",
   "sg-eis25": "ok",
+  "sg-kun28": "ok",
+  "sg-mk28": "ok",
+  "sg-msl28": "ok",
   "sg-tax19": "ok",
   "sh-ab22": "blocked",
   "sh-aid": "blocked",
   "sh-bal24": "blocked",
   "sh-boat27": "ok",
+  "sh-qba28": "blocked",
   "sh-qiaf22": "blocked",
   "sh-qrbf23": "blocked",
   "sh-richter21": "ok",
@@ -652,6 +734,7 @@
   "tl-pui25": "ok",
   "tn-dfm27": "ok",
   "to-fuel": "blocked",
+  "tom-ppi28": "ok",
   "too-has24": "ok",
   "too-oia18": "ok",
   "ts-ws13": "blocked",
@@ -659,6 +742,7 @@
   "uan-ukr17": "ok",
   "urg-tasi26": "ok",
   "vt-hajj25": "ok",
+  "vt-lby28": "ok",
   "vt-sisi17": "ok",
   "vt-spt21": "ok",
   "wi-ukr18": "ok",
@@ -669,10 +753,14 @@
   "wy-rain27": "ok",
   "xh-gb27": "ok",
   "xh-jpgdp16": "ok",
+  "y7-bs28": "blocked",
+  "y7-cab28": "ok",
+  "y7-dna28": "blocked",
   "y7-exam25": "blocked",
   "y7-hajj25": "blocked",
+  "y7-ift28": "blocked",
+  "y7-msl28": "blocked",
   "y7-usd27": "ok",
-  "y7-wx28": "ok",
   "yf-ant20": "ok",
   "yf-close20": "ok",
   "yf-fed": "ok",
@@ -682,61 +770,7 @@
   "yh-sisi17": "ok",
   "yl-egx25": "ok",
   "youm7-icup": "ok",
-  "zw-wage6": "ok",
-  "ry-gh28": "blocked",
-  "sh-gh27": "blocked",
-  "qsl-gh27": "ok",
-  "ry-hb28": "blocked",
-  "sh-hb27": "blocked",
-  "gt-animal27": "ok",
-  "ry-animal27": "blocked",
-  "gt-seal27": "ok",
-  "ry-seal26": "blocked",
-  "ry-qnb28": "blocked",
-  "al-qnb28": "blocked",
-  "qna-mr28": "ok",
-  "pen-al28": "ok",
-  "qt-mr28": "ok",
-  "gt-f1-27": "ok",
-  "qt-f1-28": "ok",
-  "oo-hij28": "ok",
-  "pen-hij28": "ok",
-  "gn-live28": "ok",
-  "qna-cm28": "ok",
-  "sg-cm28": "ok",
-  "kt-live28": "ok",
-  "gn-mk28": "ok",
-  "gt-mk28": "ok",
-  "sg-mk28": "ok",
-  "gn-cc28": "ok",
-  "eu-pa28": "ok",
-  "ms-irgc28": "ok",
-  "gn-aj28": "ok",
-  "kt-aj28": "ok",
-  "y7-cab28": "ok",
-  "eb-cab28": "ok",
-  "y7-bs28": "ok",
-  "eb-bs28": "ok",
-  "c24-bs28": "ok",
-  "sh-comp28": "ok",
-  "c24-comp28": "ok",
-  "sh-rum28": "ok",
-  "ms-32-28": "ok",
-  "ms-wx28": "ok",
-  "eb-qasim28": "ok",
-  "c24-gold28": "ok",
-  "ms-gold28": "ok",
-  "eb-cur28": "ok",
-  "aj-kun28": "ok",
-  "eb-kun28": "ok",
-  "aj-eb28": "ok",
-  "eu-eb27": "ok",
-  "ey-peru28": "ok",
-  "ms-peru28": "ok",
-  "tt-gdp28": "ok",
-  "ft-gdp27": "ok",
-  "eu-dr28": "ok",
-  "ukr-dr28": "ok"
+  "zw-wage6": "ok"
  },
  "runs": [],
  "agent_dropped": []
