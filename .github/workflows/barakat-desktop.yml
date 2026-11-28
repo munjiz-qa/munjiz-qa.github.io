@@ -37,6 +37,7 @@ jobs:
           python3 -m http.server 8099 >/dev/null 2>&1 &
           sleep 1
           BASE=http://127.0.0.1:8099/barakat/ node scripts/barakat-desktop/e2e.cjs - shots-site
+          BASE=http://127.0.0.1:8099/barakat/ node scripts/barakat-desktop/cms-e2e.cjs shots-site barakat
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
@@ -123,7 +124,9 @@ jobs:
           for old in shatirhassan/ shatirhassan/app/ baitalmal/ surra/; do curl -fsSL "https://munjiz-qa.github.io/$old" | grep -q "barakat" && echo "redirect ok: $old"; done
           curl -fsIL "https://github.com/munjiz-qa/munjiz-qa.github.io/releases/download/barakat-desktop/Barakat-Desktop.zip" | grep -i "^HTTP" | tail -1
       - name: Test all roles on the published site
-        run: BASE=https://munjiz-qa.github.io/barakat/ node scripts/barakat-desktop/e2e.cjs - shots-live
+        run: |
+          BASE=https://munjiz-qa.github.io/barakat/ node scripts/barakat-desktop/e2e.cjs - shots-live
+          BASE=https://munjiz-qa.github.io/barakat/ node scripts/barakat-desktop/cms-e2e.cjs shots-live
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:

@@ -22,7 +22,7 @@ const logout=async p=>{await p.click('[data-act=logout]');await p.waitForTimeout
 const ADMIN=['admin@barakat.qa','Barakat@Admin2026'],CLIENT=['client@barakat.qa','Client@2026'];
 (async()=>{
  if(!WEB){fs.rmSync(path.join(PKG,'data'),{recursive:true,force:true});fs.rmSync(path.join(PKG,'..','profile-new'),{recursive:true,force:true})}
- await start();let c=await ctx();let p=c.pages()[0]||await c.newPage();const errs=[];p.on('pageerror',e=>errs.push(e.message));
+ await start();let c=await ctx();let p=c.pages()[0]||await c.newPage();const errs=[];p.on('pageerror',e=>errs.push(e.message+' @ '+p.url()+' '+String(e.stack||'').split('\n').slice(1,4).join(' ')));
  // ---------- visitor
  await p.goto(APP);await p.waitForSelector('.hero');
  T((await p.textContent('h1')).includes('بركات'),'الزائر: الصفحة الرئيسية تفتح باسم «بركات»');
