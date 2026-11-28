@@ -71,6 +71,7 @@ function render() { renderOv(); renderReqs(); renderUsers(); renderPlans(); rend
 function tab(p) {
   document.querySelectorAll("#dTabs button").forEach((b) => b.setAttribute("aria-selected", b.dataset.p === p));
   document.querySelectorAll("[data-pane]").forEach((d) => (d.hidden = d.dataset.pane !== p));
+  if (p === "cms") import("./cms-admin.js?v=3").then((m) => m.mount(ME)).catch((e) => { $("cmsRoot").innerHTML = `<p class="msg err">${esc(errMsg(e))}</p>`; });
 }
 document.querySelectorAll("#dTabs button").forEach((b) => (b.onclick = () => tab(b.dataset.p)));
 
@@ -267,13 +268,21 @@ function renderCat() {
     <td><input type="number" data-k="price" value="${c.price ?? ""}" min="0" step="0.01" style="width:110px"></td>
     <td><select data-k="kind">${Object.entries(KIND).map(([k, v]) => `<option value="${k}" ${c.kind === k ? "selected" : ""}>${v}</option>`).join("")}</select></td>
     <td><input type="checkbox" data-k="active" ${c.active !== false ? "checked" : ""} style="width:22px;min-height:22px"></td>
-    <td style="white-space:nowrap"><button class="btn sm pri" data-save>حفظ</button> <button class="btn sm bad" data-del>حذف</button></td></tr>`).join("")
+    <td style="white-space:nowrap"><button class="btn sm" data-mv="-1" aria-label="تحريك البند للأعلى">↑</button> <button class="btn sm" data-mv="1" aria-label="تحريك البند للأسفل">↓</button> <button class="btn sm pri" data-save>حفظ</button> <button class="btn sm bad" data-del>حذف</button></td></tr>`).join("")
     || `<tr><td colspan="8" class="mute" style="text-align:center;padding:24px">الكتالوج فارغ. اضغط «استيراد الأسعار الافتراضية لبراق» أو أضف بنداً.</td></tr>`;
 }
 $("catRows").onclick = async (e) => {
   const tr = e.target.closest("tr[data-id]"); if (!tr) return;
   const ref = F.doc(db, "catalog", tr.dataset.id);
   if (e.target.closest("[data-del]")) { if (confirm("حذف هذا البند من الكتالوج؟")) try { await F.deleteDoc(ref); toast("حُذف البند."); } catch (err) { toast(errMsg(err), true); } return; }
+  const mv = e.target.closest("[data-mv]");
+  if (mv) {
+    const i = CAT.findIndex((c) => c.id === tr.dataset.id), j = i + Number(mv.dataset.mv);
+    if (i < 0 || j < 0 || j >= CAT.length) return;
+    const arr = CAT.slice(); [arr[i], arr[j]] = [arr[j], arr[i]];
+    try { const b = F.writeBatch(db); arr.forEach((c, k) => b.update(F.doc(db, "catalog", c.id), { order: k + 1, updatedAt: F.serverTimestamp() })); await b.commit(); toast("تغيّر ترتيب البنود على الموقع."); } catch (err) { toast(errMsg(err), true); }
+    return;
+  }
   if (!e.target.closest("[data-save]")) return;
   const g = (k) => tr.querySelector(`[data-k=${k}]`);
   const price = g("price").value === "" ? null : Number(g("price").value);
