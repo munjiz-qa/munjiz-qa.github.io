@@ -286,11 +286,12 @@ const PATHS = [
 ];
 const PATH_OF = {}; PATHS.forEach((p, gi) => p[3].forEach((x, i) => { PATH_OF[x[0]] = [gi, i]; }));
 const secTotal = () => PATHS.reduce((t, g) => t + g[3].length, 0);
-const finderHTML = (id) => `<form class="sfind" role="search" onsubmit="return false"><svg><use href="#i-search"/></svg><input type="search" class="sf-in" id="${id}" placeholder="ابحث عن قسم بين ${n(secTotal())} قسماً" aria-label="ابحث عن قسم" autocomplete="off"><span class="sf-n muted small" aria-live="polite"></span></form>`;
+const finderHTML = (id) => `<form class="sfind" role="search"><svg><use href="#i-search"/></svg><input type="search" class="sf-in" id="${id}" placeholder="ابحث عن قسم بين ${n(secTotal())} قسماً" aria-label="ابحث عن قسم" autocomplete="off"><span class="sf-n muted small" aria-live="polite"></span></form>`;
 const normAr = x => (x || '').replace(/[\u064B-\u065F\u0670\u0640]/g, '').replace(/[أإآٱ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه').toLowerCase().trim();
 /* باحث الأقسام: يرشّح بطاقات الرئيسية وفهرس الجوال وقائمة «المزيد» بالاسم والوصف */
 function bindFinder(root) {
   const ins = [...root.querySelectorAll('.sf-in')]; if (!ins.length) return;
+  root.querySelectorAll('form.sfind').forEach(f => f.addEventListener('submit', e => e.preventDefault()));
   const items = [...root.querySelectorAll('.mi-tile,.scard,.nav a,.jr-step')];
   items.forEach(a => { a._q = normAr(a.dataset.q || a.textContent); });
   const run = src => {
