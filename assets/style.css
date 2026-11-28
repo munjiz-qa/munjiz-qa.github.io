@@ -712,3 +712,13 @@ footer.mf .grow-trust{margin-top:14px;padding-top:14px;border-top:1px solid rgba
 .pwi-bar{display:none!important}
 .menu .m-inst{display:none}
 @media (max-width:980px){.pwi-on .menu .m-inst{display:list-item}}
+/* recently viewed services under the search */
+.seen{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:4px 0 14px;font-size:14px}
+.seen[hidden]{display:none}
+.seen-t{font-weight:700;color:var(--muted,#5b6470)}
+.seen-c{display:inline-flex;align-items:center;gap:6px;max-width:100%;padding:6px 12px;border-radius:999px;border:1px solid var(--line,#dfe3e8);background:var(--card,#fff);color:inherit;text-decoration:none;min-height:36px}
+.seen-c:hover,.seen-c:focus-visible{border-color:currentColor}
+.seen-c .code{font-size:12px;opacity:.75}
+.seen-c{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.seen-x{background:none;border:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer;opacity:.8;min-height:36px;padding:0 4px}
+@media (max-width:640px){.seen{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;padding-bottom:4px;-webkit-overflow-scrolling:touch}.seen>*{flex:0 0 auto}.seen-c{max-width:78vw}}

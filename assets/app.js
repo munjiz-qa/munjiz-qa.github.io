@@ -209,7 +209,7 @@ fPick.onchange=()=>{if(fPick.value){if(!$('fSvc').value.trim()&&isSample())cart.
 
 // ---- service details dialog ----
 const dlg=$('dlg');
-function openSvc(code){const s=byCode[code];if(!s||!dlg)return;const d=s.d||{};
+function openSvc(code){const s=byCode[code];if(!s||!dlg)return;const d=s.d||{};rememberSeen(s.c);
   const steps=String(s.inc||'').split(/[،,]\s*/).filter(Boolean);
   $('dlgBody').innerHTML=`<div class="dhead"><span class="code">${s.c}</span><small>${esc(s.entName)}</small></div><h3 id="dlgT">${esc(s.n)}</h3>
    <div class="dprice">${T.fee}: ${priceHTML(s)}${isOnce(s)&&s.kind==='setup'?` <small>${T.once}</small>`:''}${s.core?` <span class="tag">${T.core}</span>`:''}</div>
@@ -376,3 +376,14 @@ route();
 // keep the breadcrumb bar just under the sticky header
 const setHH=()=>document.documentElement.style.setProperty('--hh',document.querySelector('header.top').offsetHeight+'px');setHH();addEventListener('resize',setHH);
 addEventListener('load',()=>{if(location.hash&&!/^#svc=/.test(location.hash))window.scrollTo({top:0,behavior:'instant'})});
+
+// ---- recently viewed services: the last six opened on this device, shown under the search so a returning visitor picks up where they left off ----
+var SEEN_KEY='munjiz_seen';
+function seenList(){try{return (JSON.parse(localStorage.getItem(SEEN_KEY)||'[]')||[]).filter(c=>byCode[c]).slice(0,6)}catch(e){return []}}
+function rememberSeen(c){try{const l=seenList().filter(x=>x!==c);l.unshift(c);localStorage.setItem(SEEN_KEY,JSON.stringify(l.slice(0,6)))}catch(e){}renderSeen()}
+function renderSeen(){const tools=document.querySelector('#services .tools');if(!tools)return;let box=$('seen');
+  if(!box){box=document.createElement('div');box.id='seen';box.className='seen';tools.after(box);
+    box.addEventListener('click',e=>{if(e.target.closest('[data-seenclr]')){try{localStorage.removeItem(SEEN_KEY)}catch(x){}renderSeen()}})}
+  const l=seenList();box.hidden=!l.length;if(!l.length){box.innerHTML='';return}
+  box.innerHTML=`<span class="seen-t">${L('شاهدتها مؤخراً:','Recently viewed:')}</span>`+l.map(c=>`<a class="seen-c" href="#svc=${c}" title="${esc(byCode[c].entName||'')}"><span class="code">${c}</span>${esc(byCode[c].n)}</a>`).join('')+`<button type="button" class="seen-x" data-seenclr>${L('مسح','Clear')}</button>`}
+renderSeen();
